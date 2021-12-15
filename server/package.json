@@ -1,8 +1,8 @@
 {
-  "name": "crypto_app",
+  "name": "crypto_app_server",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "crypto platform api",
+  "main": "App.js",
   "scripts": {
     "dev": "nodemon dist/App.js"
   },

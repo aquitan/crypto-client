@@ -19,7 +19,6 @@ function FreePort(port: number): any {
   return clear
 }
 
-
 app.use(cors(CORS_OPTIONS))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -33,12 +32,10 @@ app.use('/api', router)
 // const request_url = req.protocol + '://' + req.hostname + ':' + process.env.PORT + req.path
 
 
-
 server.listen(PORT, () => {
   try {
     if (process.pid === PORT) {
       console.log('port is busy..');
-
       FreePort(process.pid)
     }
     console.clear()
