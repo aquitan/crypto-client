@@ -1,0 +1,23 @@
+.button {
+    background-color: #fff;
+    display: block;
+    padding: 12px 20px 11px;
+    color: #5741d9;
+    border-radius: 30px;
+    text-align: center;
+    text-decoration: none;
+    font-family: Celias;
+    font-size: 11px;
+    line-height: 11px;
+    font-weight: 700;
+    position: relative;
+    transition: opacity .2s linear 0s;
+    border: 2px solid transparent;
+    cursor: pointer;
+    margin: 0 10px;
+    font-family: 'Assistant', sans-serif;
+}
+
+.transparent {
+    background-color: transparent;
+}
