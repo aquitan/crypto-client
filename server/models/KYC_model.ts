@@ -1,0 +1,25 @@
+
+export default interface User_KYC {
+  id: number
+  userId: number
+  firstName: string
+  lastName: string
+  email: string
+  phoneNumber: number
+  dateOfBirth: string
+  documentNumber: number
+  mainAddress: string
+  subAddress?: string
+  city: string
+  state?: string
+  zipCode: number
+  documentType: string
+  // file ????
+  frontDocument: any
+  backDocument: any
+  selfyWithDocument: any
+}
+
+// by kyc submit - send fetch from front with email
+// if new email equals old email => send fetch
+// if not equals => popup with: 'use new email to login?'
