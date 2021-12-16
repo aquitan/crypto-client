@@ -1,22 +1,38 @@
-import React, { useState } from 'react'
-import { Routes, Route } from 'react-router-dom'
-import { AuthContext } from '../../context/authContext'
-import Dashboard from '../../pages/Dashboard/Dashboard'
-import Landing from '../../pages/Landing/Landing'
-import SignIn from '../../pages/SignIn/SignIn'
-import SignUp from '../../pages/SignUp/SignUp'
+import React, {useContext, useEffect} from 'react'
+import { Routes, Route, Navigate } from 'react-router-dom'
+import { authRoutes, publicRoutes } from '../../router/routes'
+import {v4 as uuid} from 'uuid'
+import {Context} from "../../index";
 
 const AppRouter = () => {
-    const [isAuth, setIsAuth] = useState(false)
+    console.log(<Navigate />)
+    const {store} = useContext(Context)
+
+    useEffect(() => {
+        if (localStorage.getItem('token')) {
+            store.checkAuth()
+        }
+    }, [])
     return (
-        <AuthContext.Provider value={{isAuth, setIsAuth}}>
-            <Routes>
-                <Route path='/' element={<Landing/>} />
-                <Route exact path='/signin' element={<SignIn/>} />
-                <Route exact path='/signup' element={<SignUp/>} />
-                <Route exact path='/dashboard' element={<Dashboard/>} />
-            </Routes>
-        </AuthContext.Provider>
+        <div>
+            {
+                !store.isAuth
+                    ?
+                    <Routes>
+                        {
+                            publicRoutes.map(route => <Route key={uuid()} exact path={route.path} element={route.component} />)
+                        }
+                        <Route path='*' element={<Navigate exact to='/'/>} />
+                    </Routes>
+                    :
+                    <Routes>
+                        {
+                            authRoutes.map(route => <Route key={uuid()} exact path={route.path} element={route.component} />)
+                        }
+                        <Route path='*' element={<Navigate exact to='/dashboard'/>} />
+                    </Routes>
+            }
+        </div>
     )
 }
 
