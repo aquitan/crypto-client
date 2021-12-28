@@ -1,17 +1,24 @@
-// import mysql from '../config/mysql_config';
+// import mysql from '../config/mysql_config'
+// import UserModel from '../models/User_model'
+// import TokenModel from '../models/Token_model'
+
 
 
 // class Database {
 
-//   async CreateUser(email: string, password: string, isUser: boolean, isAdmin: boolean, isStaff: boolean, name?: string,) {
-//     mysql.query(`
-//         INSERT INTO task 
-//         (name, email, password, isUser, isAdmin, isStaff ) 
-//         VALUES ("${name}", "${email}", "${password}", "${isUser}", "${isAdmin}", "${isStaff}")`,
-//       (err, result) => {
-//         if (err) console.error(err);
-//         console.log('done')
-//       })
+//   async CreateUser(email: string, password: string, name?: string,) {
+
+
+
+//     return user;
+//     // mysql.query(`
+//     //     INSERT INTO task 
+//     //     (name, email, password, isUser, isAdmin, isStaff ) 
+//     //     VALUES ("${name}", "${email}", "${password}", "${isUser}", "${isAdmin}", "${isStaff}")`,
+//     //   (err, result) => {
+//     //     if (err) console.error(err);
+//     //     console.log('done')
+//     //   })
 //   }
 
 //   async GetUserById(id: number) {
@@ -46,13 +53,19 @@
 //   //  
 
 //   async CreateAndSaveToken(userID: number, refresh_token: string) {
-//     mysql.query(`
-//         INSERT INTO auth_tokens (user_id, refresh_token, ) 
-//         VALUES ("${userID}", "${refresh_token}")`,
-//       (err) => {
-//         if (err) console.error(err);
-//         console.log('done')
-//       })
+
+//     const token = await TokenModel.findOne({
+//       user: userID
+//     })
+
+//     return token
+//     // mysql.query(`
+//     //     INSERT INTO auth_tokens (user_id, refresh_token, ) 
+//     //     VALUES ("${userID}", "${refresh_token}")`,
+//     //   (err) => {
+//     //     if (err) console.error(err);
+//     //     console.log('done')
+//     //   })
 //   }
 
 

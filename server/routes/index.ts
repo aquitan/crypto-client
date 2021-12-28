@@ -16,7 +16,7 @@ router.post('/registration/',
 
 router.post('/login/', authController.login)
 router.post('/logout/', authController.logout)
-// router.get('/activate/:link', authController.activate)
+router.get('/activate/:link', authController.activate)
 router.get('/refresh/', authController.refresh)
 
 // admin - staff routes

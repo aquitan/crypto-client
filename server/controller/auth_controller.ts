@@ -14,13 +14,14 @@ class AuthController {
         return next(ApiError.BadRequest('validation error', errors.array()))
       }
 
-      const { email, password } = req.body
-      const userData = await authService.registration(email, password)
+      const { email, password, name } = req.body
+      const userData = await authService.registration(email, password, name)
 
       res.cookie('refreshToken', userData.refreshToken, {
         maxAge: 30 * 4 * 60 * 60 * 1000,
         httpOnly: true
       })
+
 
       return res.json(userData)
     } catch (e) {
@@ -44,21 +45,27 @@ class AuthController {
     }
   }
 
-  // async activate(req: express.Request, res: express.Response, next: express.NextFunction) {
-  //   try {
-  //     const activationLink = req.params.link
-  //     const clientUrl: any = process.env.CLIENT_URL
-  //     await authService.activate(activationLink)
-  //     return res.redirect(clientUrl)
-  //   } catch (e) {
-  //     next(e)
-  //   }
-  // }
+  async activate(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const activationLink: string = req.params.link
+      const clientUrl: string | any = process.env.CLIENT_URL
+      await authService.activate(activationLink)
+      return res.redirect(clientUrl)
+    } catch (e) {
+      next(e)
+    }
+  }
 
 
   async logout(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
+      console.log(req.cookies);
+      console.log('---------------');
+
       const { refreshToken } = req.cookies
+      console.log(refreshToken);
+
+
       const token = await authService.logout(refreshToken)
       res.clearCookie('refreshToken')
       return res.json(token)
