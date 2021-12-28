@@ -1,6 +1,22 @@
+@import './src/styles/constants.module.scss';
+
 .sign_in {
     background-image: url('https://wallup.net/wp-content/uploads/2016/01/230662-minimalism-simple-simple_background-abstract.jpg');
     background-repeat: no-repeat;
     background-position: 0 0;
     height: 100%;
+}
+
+.error {
+    font-size: 12px;
+    color: tomato;
+}
+
+.link {
+    color: $colorBlue;
+    text-decoration: none;
+    padding: 0 5px;
+}
+.checkbox {
+    margin-right: 10px;
 }

@@ -3,7 +3,7 @@ import Button from '../UI/Button/Button'
 import HeaderLink from '../UI/HeaderLink/HeaderLink'
 import Logo from '../UI/Logo/Logo'
 import NavBtn from '../UI/NavBtn/NavBtn'
-import cls from './LandingHeader.module.css'
+import cls from './LandingHeader.module.scss'
 
 
 const LandingHeader = () => {
