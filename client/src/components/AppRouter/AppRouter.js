@@ -14,7 +14,7 @@ const AppRouter = () => {
         }
     }, [])
     return (
-        <div>
+        <div className='wrapper' >
             {
                 !store.isAuth
                     ?

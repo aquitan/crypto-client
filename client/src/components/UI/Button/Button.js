@@ -1,5 +1,5 @@
 import React from 'react'
-import cls from './Button.module.css'
+import cls from './Button.module.scss'
 
 const Button = ({children}, props) => {
     let classes = [cls.button]

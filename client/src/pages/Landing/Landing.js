@@ -1,13 +1,16 @@
-import React, {useState} from 'react'
+import React, {useRef, useState} from 'react'
 import LandingHeader from '../../components/LandingHeader/LandingHeader'
 import Section from '../../layouts/Section/Section'
+import cls from './Landing.modules.scss'
 import '../../styles/landing.scss'
 import AnchorLink from 'react-anchor-link-smooth-scroll'
+import {Container} from "react-bootstrap";
 
 
 const Landing = () => {
 
     const [active, setActive] = useState('')
+    const [goingUp, setGoingUp] = useState(false);
 
     const handleClick = event => {
         console.log(!event.target.classList.contains('active'))
@@ -18,16 +21,26 @@ const Landing = () => {
         }
     }
 
+    let linkCls = ['']
+    window.addEventListener('scroll', () => {
+        let el = document.getElementById('section3')
+        if (window.pageYOffset === el.offsetTop ) {
+            console.log('this is offset')
+        }
+
+    })
+
+
     return (
-        <article>
+        <article >
             <LandingHeader/>
             <nav className="nav__wrapper" id="navbar-example">
                 <ul className="nav">
 
-                    <li onClick={handleClick} role="presentation" className="active">
+                    <li onClick={handleClick} role="presentation" className="">
                     <AnchorLink href="#section1">
                         <span className="nav__counter">01</span>
-                        <h3 className="nav__title">Intro</h3>
+                        <h3 className='nav__title'>Intro</h3>
                         <p className="nav__body"><strong>Timeline-style navigation</strong>. Scroll down to see what happens, or click on a number in the nav.</p>
                     </AnchorLink>
                     </li>
@@ -40,7 +53,7 @@ const Landing = () => {
                     </AnchorLink>
                     </li>
 
-                    <li onClick={handleClick} role="presentation">
+                    <li id='anchorLink3' onClick={handleClick} role="presentation" className={linkCls}>
                     <AnchorLink href="#section3">
                         <span className="nav__counter">03</span>
                         <h3 className="nav__title">Section 3 Title</h3>
@@ -74,24 +87,38 @@ const Landing = () => {
 
                 </ul>
             </nav>
-            <Section id='section1' color='tomato'>
-                <h2>Section</h2>
-            </Section>
-            <Section id='section2' color='blue'>
-                <h2>Section</h2>
-            </Section>
-            <Section id='section3' color='orange'>
-                <h2>Section</h2>
-            </Section>
-            <Section id='section4' color='purple'>
-                <h2>Section</h2>
-            </Section>
-            <Section id='section5' color='green'>
-                <h2>Section</h2>
-            </Section>
-            <Section id='section6' color='yellow'>
-                <h2>Section</h2>
-            </Section>
+            <div className="content">
+                <Section id='section1' color='tomato'>
+                    <Container>
+                        <h2 className={cls.title}>Section</h2>
+                    </Container>
+                </Section>
+                <Section id='section2' color='blue'>
+                    <Container>
+                        <h2 className={cls.title}>Section</h2>
+                    </Container>
+                </Section>
+                <Section id='section3' color='orange'>
+                    <Container>
+                        <h2 className={cls.title}>Section</h2>
+                    </Container>
+                </Section>
+                <Section id='section4' color='purple'>
+                    <Container>
+                        <h2 className={cls.title}>Section</h2>
+                    </Container>
+                </Section>
+                <Section id='section5' color='green'>
+                    <Container>
+                        <h2 className={cls.title}>Section</h2>
+                    </Container>
+                </Section>
+                <Section id='section6' color='yellow'>
+                    <Container>
+                        <h2 className={cls.title}>Section</h2>
+                    </Container>
+                </Section>
+            </div>
         </article>
     )
 }

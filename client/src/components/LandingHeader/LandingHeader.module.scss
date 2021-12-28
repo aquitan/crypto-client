@@ -1,6 +1,8 @@
+@import './src/styles/constants.module.scss';
+
 .landing_header {
     padding: 20px;
-    background-color: rgb(82,74,208);
+    background-color: $colorDarkBlue;
 }
 .row {
     display: flex;
