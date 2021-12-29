@@ -80,7 +80,7 @@ class AuthService {
   }
 
   async logout(refreshToken: string) {
-    const token: string = await tokenService.removeToken(refreshToken)
+    const token: string | any = await tokenService.removeToken(refreshToken)
     return token
   }
 

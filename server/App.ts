@@ -4,6 +4,7 @@ const app = express()
 import dotenv from 'dotenv'
 dotenv.config()
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
 import compression from 'compression'
 import mongo from './config/mongo_DB_config'
 import router from './routes/index'
@@ -14,6 +15,7 @@ const PORT: any = process.env.PORT
 
 app.use(cors(CORS_OPTIONS))
 app.use(express.json())
+app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }))
 app.use(compression())
 app.disable('x-powered-by')

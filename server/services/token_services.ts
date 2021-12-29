@@ -1,18 +1,19 @@
 import jwt from 'jsonwebtoken'
 import TokenModel from '../models/Token_model'
-import dotenv from 'dotenv'
-dotenv.config()
+// import dotenv from 'dotenv'
+// dotenv.config()
 
 // token secret here 
-const secret: string | any = process.env.JWT_ACCESS_SECRET
+const accessSecret: string | any = process.env.JWT_ACCESS_SECRET
+const refreshSecret: string | any = process.env.JWT_REFRESH_SECRET
 
 class TokenService {
 
   generateTokens(payload: any) {
-    const accessToken = jwt.sign(payload, secret, {
+    const accessToken = jwt.sign(payload, accessSecret, {
       expiresIn: '30m'
     })
-    const refreshToken = jwt.sign(payload, secret, {
+    const refreshToken = jwt.sign(payload, refreshSecret, {
       expiresIn: '4h'
     })
     return {
@@ -23,7 +24,7 @@ class TokenService {
 
   validateAccessToken(token: string) {
     try {
-      const userData = jwt.verify(token, secret)
+      const userData = jwt.verify(token, accessSecret)
       return userData
     } catch (e) {
       return null
@@ -32,7 +33,7 @@ class TokenService {
 
   validateRefreshToken(token: string) {
     try {
-      const userData = jwt.verify(token, secret)
+      const userData = jwt.verify(token, refreshSecret)
       return userData
     } catch (e) {
       return null
@@ -54,7 +55,13 @@ class TokenService {
   }
 
   async removeToken(refreshToken: string) {
-    const tokenData: any = await TokenModel.findOneAndDelete({
+    const foundToken: any = await TokenModel.find({
+      refreshToken: refreshToken
+    })
+    console.log(foundToken);
+
+
+    const tokenData: any = await TokenModel.deleteOne({
       refreshToken: refreshToken
     })
     return tokenData
