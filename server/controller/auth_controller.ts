@@ -2,8 +2,6 @@ import * as express from 'express'
 import { validationResult } from 'express-validator'
 import ApiError from '../exeptions/api_error'
 import authService from '../services/auth_services'
-import * as dotenv from 'dotenv'
-dotenv.config()
 
 class AuthController {
 
@@ -31,8 +29,14 @@ class AuthController {
 
   async login(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
+      // const errors = validationResult(req)
+      // if (!errors.isEmpty()) {
+      //   return next(ApiError.BadRequest('validation error', errors.array()))
+      // }
       const { email, password } = req.body
       const userData = await authService.login(email, password)
+
+
 
       res.cookie('refreshToken', userData.refreshToken, {
         maxAge: 30 * 4 * 60 * 60 * 1000,
