@@ -21,15 +21,6 @@ const Landing = () => {
         }
     }
 
-    let linkCls = ['']
-    window.addEventListener('scroll', () => {
-        let el = document.getElementById('section3')
-        if (window.pageYOffset === el.offsetTop ) {
-            console.log('this is offset')
-        }
-
-    })
-
 
     return (
         <article >
@@ -53,7 +44,7 @@ const Landing = () => {
                     </AnchorLink>
                     </li>
 
-                    <li id='anchorLink3' onClick={handleClick} role="presentation" className={linkCls}>
+                    <li id='anchorLink3' onClick={handleClick} role="presentation" >
                     <AnchorLink href="#section3">
                         <span className="nav__counter">03</span>
                         <h3 className="nav__title">Section 3 Title</h3>

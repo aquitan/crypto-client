@@ -5,17 +5,14 @@ import App from './components/App/App'
 import Store from "./store/store";
 
 
-const store = new Store()
-
-export const Context = createContext({
-    store
-})
+export const store = new Store()
+export const AuthContext = createContext({store})
 
 ReactDOM.render(
   <React.StrictMode>
-    <Context.Provider value={{store}}>
+    <AuthContext.Provider value={{store}}>
         <App />
-    </Context.Provider>
+    </AuthContext.Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

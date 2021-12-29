@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form'
 import cls from './SignUp.module.scss'
 import '../../styles/index.css'
 import { Card, Col, FormCheck, FormGroup, FormText, Row } from 'react-bootstrap'
-import { Context } from "../../index";
+import {AuthContext} from "../../index";
 import { Link } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
 import { isValidEmail } from "../../utils/checkEmail";
@@ -22,11 +22,11 @@ const SignUp = () => {
     const password = useRef({})
     password.current = watch('password', '')
 
-    const {store} = useContext(Context)
+    const {store} = useContext(AuthContext)
 
     const onSubmit = (data, e) => {
         e.preventDefault()
-        store.register(data.email, data.password).then(response => console.log(response))
+        store.registration(data.email, data.password, data.name = 'user')
     }
 
     const onClick = (e) => {
