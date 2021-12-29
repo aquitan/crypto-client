@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import Button from '../../components/UI/Button/Button'
 import Form from '../../components/UI/Form/Form'
 import Input from '../../components/UI/Input/Input'
@@ -8,19 +8,22 @@ import '../../styles/index.css'
 import {Card, Col, FormCheck, FormText, Row} from "react-bootstrap";
 import {isValidEmail} from "../../utils/checkEmail";
 import {Link} from "react-router-dom";
+import {AuthContext} from "../../index";
 
 
 const SignIn = () => {
     const {register, handleSubmit} = useForm()
+    const {store} = useContext(AuthContext)
 
     const onSubmit = (data, e) => {
+        store.login(data.email, data.password)
         console.log(data)
-        console.log(e)
         e.preventDefault()
     }
 
     const onClick = (e) => {
         e.preventDefault()
+
     }
 
     return (

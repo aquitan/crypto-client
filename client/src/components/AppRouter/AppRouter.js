@@ -2,17 +2,19 @@ import React, {useContext, useEffect} from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { authRoutes, publicRoutes } from '../../router/routes'
 import {v4 as uuid} from 'uuid'
-import {Context} from "../../index";
+import {AuthContext} from "../../index";
+import {observer} from "mobx-react-lite";
 
 const AppRouter = () => {
-    console.log(<Navigate />)
-    const {store} = useContext(Context)
+    const {store} = useContext(AuthContext)
 
     useEffect(() => {
         if (localStorage.getItem('token')) {
             store.checkAuth()
         }
+        console.log('store', store)
     }, [])
+
     return (
         <div className='wrapper' >
             {
@@ -36,4 +38,4 @@ const AppRouter = () => {
     )
 }
 
-export default AppRouter
+export default observer(AppRouter)
