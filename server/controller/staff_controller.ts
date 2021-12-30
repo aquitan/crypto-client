@@ -22,9 +22,26 @@ class StaffController {
     }
   }
 
+  async userDetail(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+
+      // get all users list
+    } catch (e) {
+      next(e)
+    }
+  }
+
   async kyc(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       // get all users & their kyc
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async createNewUser(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      // create user request
     } catch (e) {
       next(e)
     }
@@ -114,14 +131,6 @@ class StaffController {
     }
   }
 
-  async createNewUser(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
-      // create user request
-    } catch (e) {
-      next(e)
-    }
-  }
-
   async promocode(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       // add promocode & add before sign up
@@ -146,13 +155,13 @@ class StaffController {
     }
   }
 
-  async ercTwenty(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
-      //  ????
-    } catch (e) {
-      next(e)
-    }
-  }
+  // async ercTwenty(req: express.Request, res: express.Response, next: express.NextFunction) {
+  //   try {
+  //     //  ????
+  //   } catch (e) {
+  //     next(e)
+  //   }
+  // }
 
   async recruiterList(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {

@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser'
 import compression from 'compression'
 import mongo from './config/mongo_DB_config'
 import router from './routes/index'
+import authChecker from './middlewares/auth_middleware'
 import CORS_OPTIONS from './config/cors_config'
 
 const server = http.createServer(app)
@@ -21,7 +22,7 @@ app.use(compression())
 app.disable('x-powered-by')
 
 // routers
-app.use('/api', router)
+app.use('/api', authChecker, router)
 
 // const request_url = req.protocol + '://' + req.hostname + ':' + process.env.PORT + req.path
 
@@ -36,8 +37,8 @@ server.listen(PORT, async () => {
       console.log('port is busy..')
       process.kill(process.pid)
     }
-    await Connection()
     console.clear()
+    await Connection()
   } catch (e: any) {
     console.error(new Error(e))
   }
