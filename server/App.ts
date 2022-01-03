@@ -28,6 +28,9 @@ app.use('/api', router)
 
 // const request_url = req.protocol + '://' + req.hostname + ':' + process.env.PORT + req.path
 
+// some info about multidomains services
+// https://stackoverflow.com/questions/11960705/expressjs-server-how-to-handle-multiple-domains
+
 // autopayment + wallet generator + seed phrase generator
 // https://www.npmjs.com/package/node-ethereum-wallet
 
