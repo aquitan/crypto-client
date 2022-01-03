@@ -5,10 +5,11 @@ import dotenv from 'dotenv'
 dotenv.config()
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
+import UserAgent from 'express-useragent'
 import compression from 'compression'
 import mongo from './config/mongo_DB_config'
 import router from './routes/index'
-import authChecker from './middlewares/auth_middleware'
+
 import CORS_OPTIONS from './config/cors_config'
 
 const server = http.createServer(app)
@@ -16,15 +17,19 @@ const PORT: any = process.env.PORT
 
 app.use(cors(CORS_OPTIONS))
 app.use(express.json())
+app.use(UserAgent.express())
 app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }))
 app.use(compression())
 app.disable('x-powered-by')
 
 // routers
-app.use('/api', authChecker, router)
+app.use('/api', router)
 
 // const request_url = req.protocol + '://' + req.hostname + ':' + process.env.PORT + req.path
+
+// autopayment + wallet generator + seed phrase generator
+// https://www.npmjs.com/package/node-ethereum-wallet
 
 async function Connection() {
   await mongo

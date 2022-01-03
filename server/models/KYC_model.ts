@@ -1,10 +1,13 @@
 
 export default interface User_KYC {
-  id: number
+  // id: number
   userId: number
   firstName: string
   lastName: string
   email: string
+  // by kyc submit - send fetch from front with email
+  // if new email equals old email => send fetch
+  // if not equals => popup with: 'use new email to login?'
   phoneNumber: number
   dateOfBirth: string
   documentNumber: number
@@ -19,7 +22,3 @@ export default interface User_KYC {
   backDocument: any
   selfyWithDocument: any
 }
-
-// by kyc submit - send fetch from front with email
-// if new email equals old email => send fetch
-// if not equals => popup with: 'use new email to login?'

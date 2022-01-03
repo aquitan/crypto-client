@@ -3,6 +3,8 @@ import { validationResult } from 'express-validator'
 import ApiError from '../exeptions/api_error'
 import authService from '../services/auth_services'
 
+import UserAgent from 'express-useragent'
+
 class AuthController {
 
   async registration(req: express.Request, res: express.Response, next: express.NextFunction) {
@@ -20,7 +22,6 @@ class AuthController {
         httpOnly: true
       })
 
-
       return res.json(userData)
     } catch (e) {
       next(e)
@@ -35,6 +36,16 @@ class AuthController {
       // }
       const { email, password } = req.body
       const userData = await authService.login(email, password)
+
+
+      console.log('ip address: ', req.socket.remoteAddress);
+      console.log('method', req.method);
+      console.log('path: ', req.hostname + process.env.PORT + req.originalUrl);
+
+      console.log(req.useragent);
+
+
+
 
 
 

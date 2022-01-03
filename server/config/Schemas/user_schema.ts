@@ -11,15 +11,23 @@ const USER_SCHEMA_SETTINGS = {
   },
   name: {
     type: String,
+    default: '',
   },
   isUser: {
-    type: Boolean
+    type: Boolean,
+    default: true
   },
   isStaff: {
-    type: Boolean
+    type: Boolean,
+    default: false
   },
   isAdmin: {
-    type: Boolean
+    type: Boolean,
+    default: false
+  },
+  isBanned: {
+    type: Boolean,
+    default: false
   },
   isActivated: {
     type: Boolean,

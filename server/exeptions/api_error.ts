@@ -12,7 +12,7 @@ export default class ApiError extends Error {
     return new ApiError(401, 'unauthorized user')
   }
 
-  static BadRequest(message: string, errors: any[] = []) {
+  static BadRequest(message: string, errors: any[] | undefined = []) {
     return new ApiError(400, message, errors)
   }
 

@@ -28,6 +28,7 @@ class AuthService {
       isUser: true,
       isAdmin: false,
       isStaff: false,
+      isBanned: false,
       isActivated: false,
       activationLink: activationLink
     })

@@ -10,6 +10,7 @@ export interface USER extends Mongoose.Document {
   isUser: boolean
   isStaff: boolean
   isAdmin: boolean
+  isBanned: boolean
   isActivated: boolean
   activationLink: string
 }

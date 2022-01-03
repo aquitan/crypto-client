@@ -5,6 +5,7 @@ export default class UserDto {
   isUser
   isStaff
   isAdmin
+  isBanned
 
   constructor(model: any) {
     this.email = model.email
@@ -13,6 +14,6 @@ export default class UserDto {
     this.isUser = model.isUser
     this.isStaff = model.isStaff
     this.isAdmin = model.isAdmin
-
+    this.isBanned = model.isBanned
   }
 }

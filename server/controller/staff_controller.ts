@@ -13,7 +13,7 @@ class StaffController {
     }
   }
 
-  async users(req: express.Request, res: express.Response, next: express.NextFunction) {
+  async usersList(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
 
       // get all users list
@@ -31,7 +31,7 @@ class StaffController {
     }
   }
 
-  async kyc(req: express.Request, res: express.Response, next: express.NextFunction) {
+  async kycList(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       // get all users & their kyc
     } catch (e) {
@@ -63,7 +63,7 @@ class StaffController {
   //   }
   // }
 
-  async logs(req: express.Request, res: express.Response, next: express.NextFunction) {
+  async logsList(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       // get all users logs
     } catch (e) {
@@ -114,7 +114,16 @@ class StaffController {
     }
   }
 
-  async domains(req: express.Request, res: express.Response, next: express.NextFunction) {
+  async domainsAdd(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+
+      // add domain form + base user errors + active domains (id, domain_name, stadd user, date, actions with it)
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async domainsList(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
 
       // add domain form + base user errors + active domains (id, domain_name, stadd user, date, actions with it)
@@ -131,7 +140,15 @@ class StaffController {
     }
   }
 
-  async promocode(req: express.Request, res: express.Response, next: express.NextFunction) {
+  async promocodeCreate(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      // add promocode & add before sign up
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async promocodeList(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       // add promocode & add before sign up
     } catch (e) {

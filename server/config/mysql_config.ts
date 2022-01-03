@@ -1,14 +1,14 @@
-import * as db from 'mysql2'
+import * as myDatabase from 'mysql2'
 
-const mysql = db.createConnection({
+const mysql: myDatabase.Connection = myDatabase.createConnection({
   host: process.env.HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: 'crypto_app'
 })
 
-mysql.connect((e: any) => {
-  if (e) console.error(new Error(e))
+mysql.connect((err: myDatabase.QueryError | null) => {
+  if (err) console.error(err)
   console.log('mysql database was connected.')
 
 })
