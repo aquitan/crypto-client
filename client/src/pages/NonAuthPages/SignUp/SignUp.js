@@ -27,7 +27,7 @@ const SignUp = () => {
 
     const onSubmit = (data, e) => {
         e.preventDefault()
-        store.registration(data.email, data.password, data.name = 'user')
+        store.registration(data.email, data.password, data.name)
     }
 
     const onClick = (e) => {
