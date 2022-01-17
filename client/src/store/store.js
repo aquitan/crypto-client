@@ -6,6 +6,12 @@ import {BASE_URL} from "../API";
 export default class Store {
     user = {}
     isAuth = false
+    isLoading = false
+    isActivated = false
+    isAdmin = false
+    showConfirmation = false
+
+
     constructor() {
         makeAutoObservable(this)
     }
@@ -16,12 +22,31 @@ export default class Store {
     setUser(obj) {
         this.user = obj
     }
+    setIsLoading(bool) {
+        this.isLoading = bool
+    }
+    setIsActivated(bool) {
+        this.isActivated = bool
+    }
+    setIsAdmin(bool) {
+        this.isAdmin = bool
+    }
+    setShowConfirmation(bool) {
+        this.showConfirmation = bool
+    }
 
     async login(email, password) {
         try {
             const response = await AuthService.login(email, password)
-            console.log('login', response)
             localStorage.setItem('token', response.data.accessToken)
+            if (response.data.user.isActivated === true) {
+                this.setIsActivated(true)
+            } else {
+                localStorage.removeItem('token')
+            }
+            if (response.data.user.isAdmin === true) {
+                this.setIsAdmin(true)
+            }
             this.setAuth(true)
             this.setUser(response.data.user)
         } catch(e) {
@@ -33,6 +58,7 @@ export default class Store {
             const response = await AuthService.registration(email, password, name)
             console.log('register', response)
             localStorage.setItem('token', response.data.accessToken)
+            this.setShowConfirmation(true)
             this.setAuth(true)
             this.setUser(response.data.user)
         } catch(e) {
@@ -44,6 +70,7 @@ export default class Store {
             const response = await AuthService.logout()
             localStorage.removeItem('token')
             this.setAuth(false)
+            this.setIsActivated(false)
             this.setUser({})
         } catch(e) {
             console.log('error', e)
@@ -51,14 +78,20 @@ export default class Store {
     }
 
     async checkAuth() {
+        this.setIsLoading(true)
         try {
             const response = await axios.get(`${BASE_URL}/refresh`, {withCredentials: true})
             console.log('refresh', response)
             localStorage.setItem('token', response.data.accessToken)
+            if (response.data.user.isActivated === true) {
+                this.setIsActivated(true)
+            }
             this.setAuth(true)
             this.setUser(response.data.user)
         } catch(e) {
             console.log('error', e)
+        } finally {
+            this.setIsLoading(false)
         }
     }
 }

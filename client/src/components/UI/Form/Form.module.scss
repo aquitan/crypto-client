@@ -6,4 +6,7 @@
     margin: 5% auto;
     border: 1px solid #cecece;
     padding: 20px;
+    &_big {
+        max-width: 100%;
+    }
 }
