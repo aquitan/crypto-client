@@ -1,8 +1,8 @@
 import React, {useRef, useState} from 'react'
-import LandingHeader from '../../components/LandingHeader/LandingHeader'
-import Section from '../../layouts/Section/Section'
+import LandingHeader from '../../../components/LandingHeader/LandingHeader'
+import Section from '../../../layouts/Section/Section'
 import cls from './Landing.modules.scss'
-import '../../styles/landing.scss'
+import '../../../styles/landing.scss'
 import AnchorLink from 'react-anchor-link-smooth-scroll'
 import {Container} from "react-bootstrap";
 

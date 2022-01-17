@@ -1,15 +1,16 @@
 import React, { useContext, useRef } from 'react'
-import Button from '../../components/UI/Button/Button'
-import Form from '../../components/UI/Form/Form'
-import Input from '../../components/UI/Input/Input'
+import Button from '../../../components/UI/Button/Button'
+import Form from '../../../components/UI/Form/Form'
+import Input from '../../../components/UI/Input/Input'
 import { useForm } from 'react-hook-form'
 import cls from './SignUp.module.scss'
-import '../../styles/index.css'
-import { Card, Col, FormCheck, FormGroup, FormText, Row } from 'react-bootstrap'
-import {AuthContext} from "../../index";
-import { Link } from "react-router-dom";
+import '../../../styles/index.css'
+import {Card, Col, Container, FormCheck, FormGroup, FormText, Row} from 'react-bootstrap'
+import {AuthContext} from "../../../index";
+import {Link} from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
-import { isValidEmail } from "../../utils/checkEmail";
+import {emailValidate} from "../../../utils/checkEmail";
+import {observer} from "mobx-react-lite";
 
 
 
@@ -33,13 +34,8 @@ const SignUp = () => {
         e.preventDefault()
     }
 
-    const emailValidate = (email) => {
-        isValidEmail(email)
-        return isValidEmail(email);
-    }
-
     return (
-        <Card className={cls.sign_up}>
+        <Container>
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <Row>
                     <h2 className='mb-4'>Sign Up</h2>
@@ -90,15 +86,15 @@ const SignUp = () => {
                     </Row>
                 </FormGroup>
                 <FormGroup>
-                   <Row className='mt-3'>
-                       <Col>
-                           <FormText className='d-flex'>
-                               <FormCheck {...register('checkbox', {
-                                   required: true
-                               })} className={cls.checkbox} type='checkbox' /> I agree with <Link className={cls.link} to='#'>Terms and conditions.</Link>
-                           </FormText>
-                       </Col>
-                   </Row>
+                    <Row className='mt-3'>
+                        <Col>
+                            <FormText className='d-flex'>
+                                <FormCheck {...register('checkbox', {
+                                    required: true
+                                })} className={cls.checkbox} type='checkbox' /> I agree with <Link className={cls.link} to='#'>Terms and conditions.</Link>
+                            </FormText>
+                        </Col>
+                    </Row>
                 </FormGroup>
                 <FormGroup>
                     <Row className='mt-3 align-items-center'>
@@ -112,9 +108,9 @@ const SignUp = () => {
                 </FormGroup>
 
             </Form>
-        </Card>
+        </Container>
         
     )
 }
 
-export default SignUp
+export default observer(SignUp)
