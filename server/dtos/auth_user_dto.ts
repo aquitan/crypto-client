@@ -1,4 +1,4 @@
-export default class UserDto {
+export default class AuthUserDto {
   email
   id
   isActivated

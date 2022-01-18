@@ -5,7 +5,7 @@ class Database {
 
   async CreateUser(email: string, password: string, isUser: boolean, isAdmin: boolean, isStaff: boolean, name?: string,) {
     mysql.query(`
-        INSERT INTO task 
+        INSERT INTO user_auth 
         (name, email, password, isUser, isAdmin, isStaff ) 
         VALUES ("${name}", "${email}", "${password}", "${isUser}", "${isAdmin}", "${isStaff}")`,
       (err, result) => {
@@ -19,7 +19,7 @@ class Database {
       mysql.query(`
         SELECT * 
         FROM Users 
-        WHERE id = ${id}`,
+        WHERE ID = ${id}`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -34,6 +34,21 @@ class Database {
         SELECT * 
         FROM Users 
         WHERE email = ${email}`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+
+
+  async GetUserKycById(id: number) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM users_kyc 
+        WHERE user_id = ${id}`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)

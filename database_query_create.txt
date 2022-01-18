@@ -1,0 +1,14 @@
+
+** base tables for mysql **
+
+
+CREATE TABLE user_auth(ID INT AUTO_INCREMENT PRIMARY KEY, email VARCHAR(150) NOT NULL, password VARCHAR(80) NOT NULL, name VARCHAR(50),
+ isUser BOOLEAN NOT NULL, isStaff BOOLEAN NOT NULL, isAdmin BOOLEAN NOT NULL, isBanned BOOLEAN NOT NULL, isActivated BOOLEAN NOT NULL,
+  activation_link VARCHAR(255) NOT NULL, date_of_entry DATE NOT NULL);
+
+CREATE TABLE user_kyc(ID INT AUTO_INCREMENT PRIMARY KEY, first_name VARCHAR(255) NOT NULL, last_name VARCHAR(255) NOT NULL, email VARCHAR(150) NOT NULL,
+ phone_number INT, date_of_birth DATE NOT NULL, document_number INT NOT NULL, main_address VARCHAR(255) NOT NULL, sub_address VARCHAR(255), city VARCHAR(30) NOT NULL,
+  state VARCHAR(100) NOT NULL, zip_code INT NOT NULL, document_type VARCHAR(50) NOT NULL, front_document LONGBLOB NOT NULL, back_document LONGBLOB NOT NULL,
+   selfy_with_document LONGBLOB NOT NULL, status VARCHAR(30) NOT NULL, user_id INT NOT NULL, FOREIGN KEY(user_id) REFERENCES user_auth(ID));
+
+CREATE TABLE token(ID INT AUTO_INCREMENT PRIMARY KEY, refresh_token VARCHAR(150) NOT NULL, user_id INT NOT NULL, FOREIGN KEY(user_id) REFERENCES user_auth(ID));

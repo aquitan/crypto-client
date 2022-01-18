@@ -1,21 +1,30 @@
 import * as express from 'express'
 import { validationResult } from 'express-validator'
 import ApiError from '../exeptions/api_error'
+import UserServices from '../services/user_services'
+// import database from '../services/database_query'
 
 class UserController {
 
   async dashboard(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
 
+      // get user id & => 
       // get total balance & currency balances 
+      const user: any = await UserServices.personalAreaProfile(req.body.id)
+
     } catch (e) {
       next(e)
     }
   }
 
-  async personalArea(req: express.Request, res: express.Response, next: express.NextFunction) {
+  async personalAreaProfile(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       // get accoutn personal info
+      const user: any = await UserServices.personalAreaProfile(req.body.id)
+      console.log('found user is: ', user);
+
+
     } catch (e) {
       next(e)
     }

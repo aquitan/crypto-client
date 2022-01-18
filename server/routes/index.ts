@@ -22,7 +22,7 @@ router.get('/refresh/', authController.refresh)
 
 // user area routes
 router.get('/dashboard/', authChecker, userController.dashboard)
-router.get('/personal_area/', userController.personalArea)
+router.get('/personal_area/profile/', userController.personalAreaProfile)
 router.get('/personal_area/security/', userController.personalAreaSecurity)
 router.get('/personal_area/verification/', userController.verification)
 

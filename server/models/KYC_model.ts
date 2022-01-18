@@ -21,4 +21,5 @@ export default interface User_KYC {
   frontDocument: any
   backDocument: any
   selfyWithDocument: any
+  status: string
 }

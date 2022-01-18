@@ -7,20 +7,16 @@ import axios, {
 
 class Telegram {
 
-  async sendMessageFromContactUs(name: string, email: string, phone: string, text: string) {
+  async sendMessageFromContactUs(text: string) {
 
-    const userRequest: any = [
-      `Name: ${name}` + '\n',
-      `Email: ${email}` + '\n',
-      `Phone: ${phone}` + '\n',
-      `Message: ` + '\n' + `${text}`
-    ]
+    const userRequest: string = `Message: ` + '\n' + `${text}`
 
     console.log(userRequest)
 
     const message: string = encodeURI(userRequest)
 
     // https://github.com/axios/axios/blob/master/test/typescript/axios.ts
+
     if (userRequest) {
       console.log('log from server :', userRequest)
       const token: string | undefined = process.env.TELEGRAM_TOKEN
@@ -62,8 +58,51 @@ class Telegram {
     // user actions bot 
   }
 
-  async sendMessageToNewUserBot() {
-    // i someone sing up => send message
+  async sendMessageToNewUserBot(userEmail: string, domain_name: string) {
+    // if someone sing up => send message
+    const userRequest: string = `User` + `${userEmail}` + `was registred at ` + `${domain_name}`
+
+    console.log(userRequest)
+
+    const message: string = encodeURI(userRequest)
+
+    // https://github.com/axios/axios/blob/master/test/typescript/axios.ts
+
+    if (userRequest) {
+      console.log('log from server :', userRequest)
+      const token: string | undefined = process.env.TELEGRAM_TOKEN
+      const chatId: string | undefined = process.env.TELEGRAM_PERSONAL_CHAT_ID
+
+      const url: string = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&parse_mode=html&text=${message}`
+
+
+      const config: AxiosRequestConfig = {
+        method: 'GET',
+        data: userRequest,
+        responseType: 'stream'
+      }
+      const handleResponse = (response: AxiosResponse) => {
+        console.log(response.data)
+        console.log(response.status)
+        console.log(response.statusText)
+        console.log(response.headers)
+        // console.log(response.config)
+      }
+
+      const handleError = (error: AxiosError) => {
+        if (error.response) {
+          console.log(error.response.data)
+          console.log(error.response.status)
+          console.log(error.response.headers)
+        } else {
+          console.log(error.message)
+        }
+      }
+
+      await axios(url, config)
+        .then(handleResponse)
+        .catch(handleError)
+    }
   }
 
   async getMessageFromSupportChat() {
@@ -82,3 +121,5 @@ class Telegram {
     // secure deal guarant message
   }
 }
+
+export default new Telegram()

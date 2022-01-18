@@ -1,7 +1,7 @@
 // import * as express from 'express'
 import bcrypt from 'bcrypt'
 import tokenService from './token_services'
-import UserDto from '../dtos/user_dto'
+import AuthUserDto from '../dtos/auth_user_dto'
 // import DATABASE from '../config/mysql_config'
 import ApiError from '../exeptions/api_error'
 import UserModel from '../models/User_model'
@@ -18,6 +18,8 @@ class AuthService {
     if (candidate) {
       return ApiError.BadRequest(`email ${email} already in use.`)
     }
+
+    // save real password to db + hashed
     const hashPassword = await bcrypt.hash(password, 6)
     const activationLink: string = uuid.v4()
 
@@ -35,7 +37,7 @@ class AuthService {
     const API_URL: string | any = process.env.API_URL
     await mailService.sendActivationMail(email, `${API_URL}/api/activate/${activationLink}`)
 
-    const userDto: any = new UserDto(user)
+    const userDto: any = new AuthUserDto(user)
     const tokens: any = tokenService.generateTokens({ ...userDto })
     await tokenService.saveToken(userDto.id, tokens.refreshToken)
 
@@ -70,7 +72,7 @@ class AuthService {
       throw ApiError.BadRequest('wrong password')
     }
 
-    const userDto: any = new UserDto(user)
+    const userDto: any = new AuthUserDto(user)
     const tokens: any = tokenService.generateTokens({ ...userDto })
     await tokenService.saveToken(userDto.id, tokens.refreshToken)
 
@@ -99,7 +101,7 @@ class AuthService {
       _id: userData.id
     })
 
-    const userDto: any = new UserDto(user)
+    const userDto: any = new AuthUserDto(user)
     const tokens = tokenService.generateTokens({ ...userDto })
     await tokenService.saveToken(userDto.id, tokens.refreshToken)
 

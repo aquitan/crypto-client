@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken'
 import TokenModel from '../models/Token_model'
-// import dotenv from 'dotenv'
-// dotenv.config()
+
 
 // token secret here 
 const accessSecret: string | any = process.env.JWT_ACCESS_SECRET
