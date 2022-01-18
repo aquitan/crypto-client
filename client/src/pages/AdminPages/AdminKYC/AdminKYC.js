@@ -1,12 +1,12 @@
 import React from 'react'
 import {Container} from "react-bootstrap";
 
-const Dashboard = () => {
+const AdminKYC = () => {
     return (
         <Container>
-            <h2>Dashboard</h2>
+            <h1>Kyc</h1>
         </Container>
     )
 }
 
-export default Dashboard
+export default AdminKYC

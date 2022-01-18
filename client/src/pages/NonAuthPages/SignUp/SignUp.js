@@ -5,7 +5,7 @@ import Input from '../../../components/UI/Input/Input'
 import { useForm } from 'react-hook-form'
 import cls from './SignUp.module.scss'
 import '../../../styles/index.css'
-import {Card, Col, Container, FormCheck, FormGroup, FormText, Row} from 'react-bootstrap'
+import { Col, Container, FormCheck, FormGroup, FormText, Row} from 'react-bootstrap'
 import {AuthContext} from "../../../index";
 import {Link} from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
@@ -28,10 +28,6 @@ const SignUp = () => {
     const onSubmit = (data, e) => {
         e.preventDefault()
         store.registration(data.email, data.password, data.name)
-    }
-
-    const onClick = (e) => {
-        e.preventDefault()
     }
 
     return (
@@ -102,7 +98,7 @@ const SignUp = () => {
                             <Link className={cls.link} to='/signin/'>Have an account?</Link>
                         </Col>
                         <Col>
-                            <Button onClick={onClick} type='filled'>Sign Up</Button>
+                            <Button type='filled'>Sign Up</Button>
                         </Col>
                     </Row>
                 </FormGroup>

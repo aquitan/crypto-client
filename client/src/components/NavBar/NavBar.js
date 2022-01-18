@@ -1,7 +1,8 @@
 import React, {useContext} from 'react'
 import {Button, Container, Nav, Navbar} from "react-bootstrap";
 import {AuthContext} from "../../index";
-import {Link} from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import cls from './NavBar.module.scss'
 
 const NavBar = () => {
     const {store} = useContext(AuthContext)
@@ -14,13 +15,10 @@ const NavBar = () => {
             <Container>
                 <Navbar>
                     <Nav>
-                        <Link to='/profile'>Profile</Link>
-                    </Nav>
-                    <Nav>
-                        <Link to='/dashboard'>Dashboard</Link>
+                        <NavLink className={cls.link} to='/dashboard'>Dashboard</NavLink>
                     </Nav>
                     {
-                        store.isAdmin ? <Link to='/staff'>Staff</Link> : null
+                        store.isAdmin ? <NavLink className={cls.link} to='/admin'>Staff</NavLink> : null
                     }
                 </Navbar>
 

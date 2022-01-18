@@ -2,7 +2,7 @@ import React, {useRef, useState} from 'react'
 import LandingHeader from '../../../components/LandingHeader/LandingHeader'
 import Section from '../../../layouts/Section/Section'
 import cls from './Landing.modules.scss'
-import '../../../styles/landing.scss'
+import './landing.scss'
 import AnchorLink from 'react-anchor-link-smooth-scroll'
 import {Container} from "react-bootstrap";
 
@@ -26,7 +26,7 @@ const Landing = () => {
         <article >
             <LandingHeader/>
             <nav className="nav__wrapper" id="navbar-example">
-                <ul className="nav">
+                <ul className="navigation">
 
                     <li onClick={handleClick} role="presentation" className="">
                     <AnchorLink href="#section1">
