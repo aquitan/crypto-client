@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser'
 import UserAgent from 'express-useragent'
 import compression from 'compression'
 import mongo from './config/mongo_DB_config'
+import mysql from './config/mysql_config'
 import router from './routes/index'
 
 import CORS_OPTIONS from './config/cors_config'
@@ -35,7 +36,10 @@ app.use('/api', router)
 // https://www.npmjs.com/package/node-ethereum-wallet
 
 async function Connection() {
+  // connect to mongo
   await mongo
+  // connect to mysql
+  mysql
   console.log('process..')
 }
 
