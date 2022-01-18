@@ -4,7 +4,7 @@ import {
     DASHBOARD_ROUTE, ERROR, KYC_ROUTE,
     MAIN_ROUTE, PROFILE_ROUTE,
     REGISTER_CONFIRM, SIGNIN_ROUTE,
-    SIGNUP_ROUTE, ADMIN_ROUTE
+    SIGNUP_ROUTE, ADMIN_ROUTE, USERS_ROUTE, ADMINKYC_ROUTE, ADMINMAIN_ROUTE
 } from "../utils/constants"
 import SignUp from '../pages/NonAuthPages/SignUp/SignUp'
 import SignIn from '../pages/NonAuthPages/SignIn/SignIn'
@@ -16,12 +16,15 @@ import AccountSecurity from "../pages/AuthPages/AccountSecurity/AccountSecurity"
 import KYC from "../pages/AuthPages/KYC/KYC";
 import Error from "../pages/Error/Error";
 import AdminDashboard from "../pages/AdminPages/AdminDashboard/AdminDashboard";
+import Users from "../pages/AdminPages/Users/Users";
+import AdminKYC from "../pages/AdminPages/AdminKYC/AdminKYC";
+import AdminLayout from "../layouts/AdminLayout/AdminLayout";
 
 export const authRoutes = [
-    {
-        path: DASHBOARD_ROUTE,
-        component: <Dashboard/>
-    },
+    // {
+    //     path: DASHBOARD_ROUTE,
+    //     component: <Dashboard/>
+    // },
     {
         path: PROFILE_ROUTE,
         component: <Profile/>
@@ -30,20 +33,32 @@ export const authRoutes = [
         path: ACCOUNT_ROUTE,
         component: <MyAccount/>
     },
-    {
-        path: ACCOUNT_SECURITY_ROUTE,
-        component: <AccountSecurity/>
-    },
-    {
-        path: KYC_ROUTE,
-        component: <KYC/>
-    },
+    // {
+    //     path: ACCOUNT_SECURITY_ROUTE,
+    //     component: <AccountSecurity/>
+    // },
+    // {
+    //     path: KYC_ROUTE,
+    //     component: <KYC/>
+    // },
     {
         path: ERROR,
         component: <Error/>
     },
+]
+
+export const adminRoutes = [
+
     {
-        path: ADMIN_ROUTE,
+        path: USERS_ROUTE,
+        component: <Users/>
+    },
+    {
+        path: ADMINKYC_ROUTE,
+        component: <AdminKYC/>
+    },
+    {
+        path: ADMINMAIN_ROUTE,
         component: <AdminDashboard/>
     },
 ]

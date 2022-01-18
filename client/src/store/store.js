@@ -86,6 +86,9 @@ export default class Store {
             if (response.data.user.isActivated === true) {
                 this.setIsActivated(true)
             }
+            if (response.data.user.isAdmin === true) {
+                this.setIsAdmin(true)
+            }
             this.setAuth(true)
             this.setUser(response.data.user)
         } catch(e) {

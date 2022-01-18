@@ -1,12 +1,13 @@
 import React from 'react'
 import {Container} from "react-bootstrap";
 
-const Dashboard = () => {
+const Users = () => {
+    console.log('users...')
     return (
         <Container>
-            <h2>Dashboard</h2>
+            <h1>Users</h1>
         </Container>
     )
 }
 
-export default Dashboard
+export default Users

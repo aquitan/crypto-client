@@ -3,7 +3,7 @@ import Button from '../../../components/UI/Button/Button'
 import Form from '../../../components/UI/Form/Form'
 import Input from '../../../components/UI/Input/Input'
 import { useForm } from 'react-hook-form'
-import { Col, Container, FormCheck, FormText, Row} from "react-bootstrap";
+import { Col, Container, Row} from "react-bootstrap";
 import { emailValidate } from "../../../utils/checkEmail";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../../index";
@@ -23,11 +23,6 @@ const SignIn = () => {
     const onSubmit = (data, e) => {
         store.login(data.email, data.password)
         store.checkAuth()
-        e.preventDefault()
-    }
-
-    const onClick = (e) => {
-        e.preventDefault()
     }
 
     return (
@@ -56,21 +51,12 @@ const SignIn = () => {
                         <ErrorMessage name='password' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
                     </Col>
                 </Row>
-                <Row className='mt-3'>
-                    <Col>
-                        <FormText className='d-flex'>
-                            <FormCheck {...register('checkbox', {
-                                required: true
-                            })} className={cls.checkbox} type='checkbox' /> I agree with <Link className={cls.link} to='#'>Terms and conditions.</Link>
-                        </FormText>
-                    </Col>
-                </Row>
                 <Row className='mt-3 align-items-center'>
                     <Col>
                         <Link className={cls.link} to='/signup/'>Create an account</Link>
                     </Col>
                     <Col>
-                        <Button onClick={onClick} type='filled'>Sign In</Button>
+                        <Button type='filled'>Sign In</Button>
                     </Col>
                 </Row>
             </Form>

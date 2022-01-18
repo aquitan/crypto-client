@@ -1,10 +1,13 @@
 import React from 'react'
+import {Container, Nav} from "react-bootstrap";
+
 
 const AdminDashboard = () => {
+    console.log('route')
     return (
-        <div>
+        <Container>
             <h1>Admin</h1>
-        </div>
+        </Container>
     )
 }
 

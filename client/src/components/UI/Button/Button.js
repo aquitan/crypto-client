@@ -1,7 +1,7 @@
 import React from 'react'
 import cls from './Button.module.scss'
 
-const Button = ({children}, props) => {
+const Button = ({children, ...props}) => {
     let classes = [cls.button]
 
     if (props.type === 'transparent') {
@@ -12,7 +12,7 @@ const Button = ({children}, props) => {
 
 
     return (
-        <button className={classes.join(' ')} {...props}>
+        <button className={classes.join(' ')} onClick={props.onClick}>
             {children}
         </button>
     )
