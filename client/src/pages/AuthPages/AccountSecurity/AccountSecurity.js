@@ -7,8 +7,13 @@ import Modal from "../../../components/UI/Modal/Modal";
 
 const AccountSecurity = () => {
     const [modalChangePass, setModalChangePass] = useState(false)
+    const [modal2FA, setModal2FA] = useState(false)
     const showChangePass = () => {
-        setModalActive(true)
+        setModalChangePass(true)
+    }
+
+    const show2FA = () => {
+        setModal2FA(true)
     }
 
     return (
@@ -25,7 +30,7 @@ const AccountSecurity = () => {
                     </Row>
                 </Form>
             </Modal>
-            <Modal active={modalActive} setActive={setModalActive}>
+            <Modal active={modal2FA} setActive={setModal2FA}>
                 <Form>
                     <h3>Enable 2FA</h3>
                     <Row>

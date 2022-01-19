@@ -1,14 +1,17 @@
-import React, {useContext} from 'react'
+import React, {useContext, useEffect} from 'react'
 import {Button, Container, Nav, Navbar} from "react-bootstrap";
 import {AuthContext} from "../../index";
 import { NavLink } from "react-router-dom";
 import cls from './NavBar.module.scss'
+import {observer} from "mobx-react-lite";
 
 const NavBar = () => {
     const {store} = useContext(AuthContext)
+    console.log('store.isAdmin', store.isAdmin)
     const onLogOut = () => {
         store.logout()
     }
+
 
     return (
         <Navbar bg='dark'>
@@ -33,4 +36,4 @@ const NavBar = () => {
     )
 }
 
-export default NavBar
+export default observer(NavBar)

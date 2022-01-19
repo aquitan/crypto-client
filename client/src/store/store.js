@@ -39,18 +39,19 @@ export default class Store {
         try {
             const response = await AuthService.login(email, password)
             localStorage.setItem('token', response.data.accessToken)
-            if (response.data.user.isActivated === true) {
-                this.setIsActivated(true)
-            } else {
-                localStorage.removeItem('token')
-            }
+            this.setIsLoading(true)
             if (response.data.user.isAdmin === true) {
                 this.setIsAdmin(true)
+            }
+            if (response.data.user.isActivated === true) {
+                this.setIsActivated(true)
             }
             this.setAuth(true)
             this.setUser(response.data.user)
         } catch(e) {
             console.log('error', e)
+        } finally {
+            this.setIsLoading(false)
         }
     }
     async registration(email, password, name) {
@@ -71,6 +72,7 @@ export default class Store {
             localStorage.removeItem('token')
             this.setAuth(false)
             this.setIsActivated(false)
+            this.setIsAdmin(false)
             this.setUser({})
         } catch(e) {
             console.log('error', e)

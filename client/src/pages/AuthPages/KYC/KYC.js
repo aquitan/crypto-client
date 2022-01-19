@@ -11,19 +11,27 @@ import {emailValidate} from "../../../utils/checkEmail";
 import {ErrorMessage} from "@hookform/error-message";
 import error from '../../../styles/Error.module.scss'
 import Button from "../../../components/UI/Button/Button";
+import InputMask from 'react-input-mask';
+
 
 const KYC = () => {
     const [startDate, setStartDate] = useState()
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
     })
+    const [phoneNumber, setPhoneNumber] = useState('')
 
     const onSubmit = (data) => {
-        console.log(data)
+        console.log('data....', data)
+        // let phone = phoneNumber.split(/[.,()\/ -]/)
+        // let phoneCleared = phone.join('')
+        // console.log('phone', parseInt(phoneCleared))
     }
-    const onClick = (e) => {
-        e.preventDefault()
-    }
+
+   // const onNumberChange = (e) => {
+   //      setPhoneNumber(e.target.value)
+   // }
+
 
     return (
         <Container>
@@ -45,7 +53,7 @@ const KYC = () => {
                 </Row>
                 <Row>
                     <Col>
-                        <DatePickert required className='date_picker_custom' placeholderText='date of birth' selected={startDate} onChange={(date) => setStartDate(date)} />
+                        <DatePickert required className='date_picker_custom' placeholderText='date of birth' selected={startDate} dateFormat='yyyy/MM/dd' onChange={(date) => setStartDate(date)} />
                     </Col>
                     <Col>
                         <Input {...register('email', {
@@ -58,10 +66,10 @@ const KYC = () => {
                 <br/>
                 <Row>
                     <Col>
-                        <Input {...register('phoneNumber', {
-                            required: true,
-                        })} name='phoneNumber' placeholder='phone number' type='number'/>
-                        <ErrorMessage  name='phoneNumber' errors={errors} render={() => <p className={error.error}>this field is required</p>} />
+                        <InputMask mask='9-(999)-999-99-99' {...register('phoneNumber')}>
+                            {(inputProps) => <Input {...inputProps} name='phoneNumber' placeholder='phone number' type='tel'/>}
+                        </InputMask>
+
                     </Col>
                     <Col>
                         <Input {...register('id', {
@@ -98,7 +106,7 @@ const KYC = () => {
                 <br/>
                 <Row>
                     <Col className='col-sm-12 col-lg-3 m-auto'>
-                        <Button onClick={onClick} >Verify</Button>
+                        <Button>Verify</Button>
                     </Col>
                 </Row>
             </Form>

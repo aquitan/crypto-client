@@ -13,8 +13,6 @@ import cls from './AppRouter.module.scss'
 const AppRouter = () => {
     const navigate = useNavigate()
     const {store} = useContext(AuthContext)
-    // const location = useLocation()
-    // const [isDark, setIsDark] = useState(false)
 
     useEffect(() => {
         if (localStorage.getItem('token')) {
@@ -22,22 +20,10 @@ const AppRouter = () => {
         }
     }, [])
 
-    // const chekAdminBg = () => {
-    //     let myLoc = location.pathname
-    //     let locSplit = myLoc.split(/[\\\/]/)
-    //     if (locSplit[1] === 'admin') {
-    //         setIsDark(true)
-    //     }
-    //     else {
-    //         setIsDark(false)
-    //     }
-    // }
-
 
     if (store.isLoading) {
         return <h1>Loading...</h1>
     }
-
 
     return (
         <div className={`wrapper` } >
