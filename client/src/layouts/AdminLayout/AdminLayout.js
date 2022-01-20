@@ -10,7 +10,7 @@ const AuthLayout = () => {
                     <Nav>
                         <NavLink to='/admin/users'>Users</NavLink>
                         <NavLink to='/admin/admin-kyc'>Kyc</NavLink>
-                        <NavLink to='/admin/main'>Dashboard</NavLink>
+                        <NavLink to='/admin'>Dashboard</NavLink>
                     </Nav>
                     <Outlet/>
 

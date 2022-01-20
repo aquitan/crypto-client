@@ -18,7 +18,7 @@ const NavBar = () => {
             <Container>
                 <Navbar>
                     <Nav>
-                        <NavLink className={cls.link} to='/dashboard'>Dashboard</NavLink>
+                        <NavLink className={cls.link} to='/'>Dashboard</NavLink>
                     </Nav>
                     {
                         store.isAdmin ? <NavLink className={cls.link} to='/admin'>Staff</NavLink> : null

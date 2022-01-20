@@ -6,7 +6,7 @@ const AdminDashboard = () => {
     console.log('route')
     return (
         <Container>
-            <h1>Admin</h1>
+            <h1>Главная</h1>
         </Container>
     )
 }

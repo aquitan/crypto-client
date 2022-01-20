@@ -1,11 +1,12 @@
-import React from 'react'
-import {Col, Container, Row, Tab, Tabs} from "react-bootstrap";
-import {Link} from "react-router-dom";
+import React, {useState} from 'react'
+import {Container, Row, Tab, Tabs} from "react-bootstrap";
 import MyAccount from "../MyAccount/MyAccount";
 import AccountSecurity from "../AccountSecurity/AccountSecurity";
 import KYC from "../KYC/KYC";
 
 const Profile = () => {
+    const [kycStatus, setKycStatus] = useState('')
+
     return (
         <Container>
             <h1>Profile</h1>
@@ -18,7 +19,7 @@ const Profile = () => {
                         <AccountSecurity/>
                     </Tab>
                     <Tab eventKey='kyc' title='Verification'>
-                        <KYC/>
+                        <KYC status={kycStatus}/>
                     </Tab>
                 </Tabs>
 

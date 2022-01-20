@@ -7,7 +7,7 @@ const UserLayout = () => {
         <div className={'layout'}>
             <Container>
                 <Nav>
-                    <Link to='/dashboard/profile'>Profile</Link>
+                    <Link to='/profile'>Profile</Link>
                 </Nav>
                 <Outlet/>
             </Container>

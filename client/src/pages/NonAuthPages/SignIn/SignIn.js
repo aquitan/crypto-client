@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import React, {useContext, useState} from 'react'
 import Button from '../../../components/UI/Button/Button'
 import Form from '../../../components/UI/Form/Form'
 import Input from '../../../components/UI/Input/Input'
@@ -11,18 +11,29 @@ import { observer } from "mobx-react-lite";
 import { ErrorMessage } from "@hookform/error-message";
 import cls from './SignIn.module.scss'
 import '../../../styles/index.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons'
+import {getGeoData, sendDate} from "../../../queries/getSendGeoData";
+
 
 
 
 const SignIn = () => {
+    const [isShowPassword, setIsShowPassword] = useState(false)
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
     })
     const {store} = useContext(AuthContext)
 
     const onSubmit = (data, e) => {
-        store.login(data.email, data.password)
-        store.checkAuth()
+        const location = window.location.host
+        store.login(data.email, data.password, location)
+        getGeoData()
+        sendDate()
+    }
+
+    const showPassword = () => {
+        setIsShowPassword(!isShowPassword)
     }
 
     return (
@@ -32,7 +43,7 @@ const SignIn = () => {
                     <h2>Sign In</h2>
                 </Row>
                 <Row className='mt-3'>
-                    <Col>
+                    <Col className={cls.relative}>
                         <Input {...register('email', {
                             required: 'You must specify email to SignIn',
                             validate: emailValidate,
@@ -40,15 +51,25 @@ const SignIn = () => {
                         })} name='email' placeholder='Email' id='login' />
                         <ErrorMessage  name='email' errors={errors} render={() => <p className={cls.error}>email is invalid</p>} />
 
+                       
+                    </Col>
+                </Row>
+                <Row>
+                    <Col className={cls.relative}>
                         <Input {...register('password', {
                                 required: 'You must specify your password',
                                 minLength: {
-                                    value: 5,
+                                    value: 8,
                                     message: 'Your password must be at least 8 characters'
+                                },
+                                maxLength: {
+                                    value: 32,
+                                    message: 'Your password must be less than 32 characters'
                                 }
                             }
-                        )} type='password' name='password' placeholder='password' id='password' />
+                        )} type={isShowPassword ? 'text' : 'password'} name='password' placeholder='password' id='password' />
                         <ErrorMessage name='password' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
+                        <FontAwesomeIcon onClick={showPassword} className={cls.eye_icon} icon={isShowPassword ? faEye : faEyeSlash} />
                     </Col>
                 </Row>
                 <Row className='mt-3 align-items-center'>
