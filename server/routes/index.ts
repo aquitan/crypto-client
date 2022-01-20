@@ -16,11 +16,11 @@ router.post('/registration/',
   authController.registration)
 router.post('/login/', authController.login)
 router.post('/logout/', authController.logout)
-router.get('/activate/', authController.activate)
+router.post('/activate/', authController.activate)
 router.get('/refresh/', authController.refresh)
 
 // save user actions 
-router.get('/user_logs/', userController.saveUserLogs)
+router.post('/user_logs/', userController.saveUserLogs)
 
 // user area routes
 router.get('/dashboard/', authChecker, userController.dashboard)

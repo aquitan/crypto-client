@@ -13,7 +13,7 @@ class AuthService {
     const candidate: any = await database.GetUserByEmail(email)
 
     if (!candidate) {
-      return ApiError.BadRequest(`email ${email} already in use.`)
+      throw ApiError.BadRequest(`email ${email} already in use.`)
     }
     // save real password to db + hashed
     // const hashPassword = await bcrypt.hash(password, 6)
@@ -24,6 +24,9 @@ class AuthService {
 
     await mailService.sendActivationMail(email, `${domain_name}`, `${activationLink}`)
 
+    const userActivationLink: any = await database.FindActivationLink(activationLink)
+    console.log('get link from db: ', userActivationLink);
+
     const userDto: any = new AuthUserDto(user[0])
     const tokens: any = tokenService.generateTokens({ ...userDto })
 
@@ -31,7 +34,8 @@ class AuthService {
 
     return {
       ...tokens,
-      user: userDto
+      user: userDto,
+      activationLink: userActivationLink
     }
 
 
