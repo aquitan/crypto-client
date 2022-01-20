@@ -3,14 +3,18 @@ import mysql from '../config/mysql_config';
 
 class Database {
 
-  async CreateUser(email: string, password: string, isUser: boolean, isAdmin: boolean, isStaff: boolean, name?: string,) {
+  async CreateUser(email: string, password: string, isUser: boolean, isAdmin: boolean, isStaff: boolean, isBanned: boolean, isActivated: boolean, activationLink: string, domainName: string, dateOfEntry: string, name?: string) {
+
     mysql.query(`
         INSERT INTO user_auth 
-        (name, email, password, isUser, isAdmin, isStaff ) 
-        VALUES ("${name}", "${email}", "${password}", "${isUser}", "${isAdmin}", "${isStaff}")`,
+        ( email, password, isUser, isAdmin, isStaff, isBanned, isActivated, activationLink, domainName, dateOfEntry, name) 
+        VALUES 
+        ( "${email}", "${password}", ${isUser}, ${isAdmin}, ${isStaff}, ${isBanned}, ${isActivated}, "${activationLink}", "${domainName}", "${dateOfEntry}", "${name || ''}")`,
       (err, result) => {
-        if (err) console.error(err);
+        if (err) return console.error(err);
         console.log('done')
+        console.log('user was created');
+
       })
   }
 
@@ -18,7 +22,7 @@ class Database {
     return new Promise((resolve, reject) => {
       mysql.query(`
         SELECT * 
-        FROM Users 
+        FROM user_auth
         WHERE ID = ${id}`,
         (e: any, result) => {
           if (e) reject(new Error(e))
@@ -31,9 +35,22 @@ class Database {
   async GetUserByEmail(email: string) {
     return new Promise((resolve, reject) => {
       mysql.query(`
-        SELECT * 
-        FROM Users 
-        WHERE email = ${email}`,
+        SELECT *
+        FROM user_auth
+        WHERE email = "${email}"`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async GetUserByEmailAndPassword(email: string, password: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT password
+        FROM user_auth
+        WHERE email = "${email}", password = "${password}"`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -56,14 +73,61 @@ class Database {
     })
   }
 
+
+  async ChangeUserPassword(user_id: number, password: string) {
+    mysql.query(`
+        UPDATE user_auth
+        SET password = "${password}"
+        WHERE user_id = ${user_id}`,
+      (err, result) => {
+        if (err) console.error(err);
+        console.log('update password in auth table is done')
+      })
+
+    mysql.query(`
+        UPDATE user_kyc
+        SET password = "${password}"
+        WHERE user_id = ${user_id}`,
+      (err, result) => {
+        if (err) console.error(err);
+        console.log('update password in kyc table is done')
+      })
+  }
+
   //
   // token queries ------------------------------------------------------------------
   //  
 
-  async CreateAndSaveToken(userID: number, refresh_token: string) {
+  async FindActivationLink(activationLink: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT activationLink
+        FROM user_auth
+        WHERE activationLink = "${activationLink}"`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async ActivateUserByLink(activationLink: string) {
     mysql.query(`
-        INSERT INTO auth_tokens (user_id, refresh_token, ) 
-        VALUES ("${userID}", "${refresh_token}")`,
+        UPDATE user_auth
+        SET isActivated = ${true}
+        WHERE activationLink = "${activationLink}"`,
+      (err, result) => {
+        if (err) console.error(err);
+        console.log('update isActivated status in auth table is done')
+      })
+  }
+
+  async CreateAndSaveToken(user_id: number, refresh_token: string) {
+    mysql.query(`
+        UPDATE auth_token
+        SET refresh_token = "${refresh_token}"
+        WHERE user_id = "${user_id}"
+        `,
       (err) => {
         if (err) console.error(err);
         console.log('done')
@@ -75,7 +139,7 @@ class Database {
     return new Promise((resolve, reject) => {
       mysql.query(`
         SELECT * 
-        FROM auth_tokens
+        FROM auth_token
         WHERE user_id = ${id}`,
         (e: any, result) => {
           if (e) reject(new Error(e))
@@ -86,8 +150,8 @@ class Database {
 
   async UpdateAuthTokenForCurrentUser(userID: number, token: string) {
     mysql.query(`
-      UPDATE auth_tokens 
-      SET refresh_token = "${token}",
+      UPDATE auth_token
+      SET refresh_token = "${token}"
       WHERE ID = ${userID} `,
       (err) => {
         if (err) console.error(err);
@@ -95,12 +159,25 @@ class Database {
       })
   }
 
-  async FindAuthToken(refresh_token: string) {
+  async FindAuthTokenByUserId(user_id: number,) {
     return new Promise((resolve, reject) => {
       mysql.query(`
-        SELECT * 
-        FROM auth_tokens
-        WHERE refresh_token = ${refresh_token}`,
+        SELECT *
+        FROM auth_token
+        WHERE user_id = ${user_id}`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async FindAuthTokenByRefreshToken(refresh_token: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM auth_token
+        WHERE refresh_token = "${refresh_token}"`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -110,8 +187,8 @@ class Database {
 
   async FindAuthTokenAndDelete(refresh_token: string) {
     mysql.query(
-      `DELETE FROM auth_tokens 
-      WHERE refresh_token = ${refresh_token} `,
+      `DELETE FROM auth_token 
+      WHERE refresh_token = "${refresh_token}" `,
       (err) => {
         if (err) console.error(err)
         console.log('done');

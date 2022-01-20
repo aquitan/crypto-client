@@ -20,17 +20,17 @@ class MailService {
     })
   }
 
-  async sendActivationMail(to: string, link: string) {
+  async sendActivationMail(to: string, user_domain: string, link: string) {
     await this.transporter.sendMail({
       from: process.env.SMTP_USER,
       to: to,
-      subject: 'Account activate ' + process.env.API_URL,
+      subject: 'Activate account at ' + `${user_domain}`,
       text: '',
       html:
         `
           <div>
-            <h1>Click to activate: </h1>
-            <a href='${link}'>${link}</a>
+            <h1>Copy this string and past in activation form at the  + '${user_domain}': </h1>
+            <p>${link}</p>
           </div>
         `
     })

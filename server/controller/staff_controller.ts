@@ -39,6 +39,15 @@ class StaffController {
     }
   }
 
+  async getUserLogs() {
+    try {
+
+      // chat with support
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
   async createNewUser(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       // create user request

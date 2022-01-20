@@ -1,15 +1,18 @@
 export default class AuthUserDto {
+  ID
+  name
   email
-  id
   isActivated
   isUser
   isStaff
   isAdmin
   isBanned
 
+
   constructor(model: any) {
+    this.ID = model.ID
+    this.name = model.name || null
     this.email = model.email
-    this.id = model.id
     this.isActivated = model.isActivated
     this.isUser = model.isUser
     this.isStaff = model.isStaff

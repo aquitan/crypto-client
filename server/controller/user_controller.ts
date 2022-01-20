@@ -2,6 +2,7 @@ import * as express from 'express'
 import { validationResult } from 'express-validator'
 import ApiError from '../exeptions/api_error'
 import UserServices from '../services/user_services'
+import telegram from '../api/telegram_api'
 // import database from '../services/database_query'
 
 class UserController {
@@ -11,8 +12,10 @@ class UserController {
 
       // get user id & => 
       // get total balance & currency balances 
-      const user: any = await UserServices.personalAreaProfile(req.body.id)
+      const user: any = await UserServices.dashboard(req.body.id)
 
+      await telegram.sendMessageDashboard(user.email, user.userDomain)
+      return res.json(user)
     } catch (e) {
       next(e)
     }
@@ -22,9 +25,9 @@ class UserController {
     try {
       // get accoutn personal info
       const user: any = await UserServices.personalAreaProfile(req.body.id)
-      console.log('found user is: ', user);
+      console.log('found user is: ', user)
 
-
+      return res.json(user)
     } catch (e) {
       next(e)
     }
@@ -44,6 +47,40 @@ class UserController {
       // post kyc form
     } catch (e) {
       next(e)
+    }
+  }
+
+  async saveUserLogs(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const { ipAddress, city, countryName, coordinates, currentDate } = req.body
+
+      const userLogs: any = {
+        ip_address: req.body.ipAddress,
+        user_city: req.body.city,
+        country_name: req.body.countryName,
+        location_on_map: req.body.coordinates,
+        date_time: req.body.currentDate
+      }
+      console.log('recieved logs is: ', userLogs)
+
+
+
+      if (userLogs) {
+        return res.json('logs was recieved')
+      }
+
+      // post kyc form
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async getUserLogs() {
+    try {
+
+      // chat with support
+    } catch (e) {
+      console.log(e)
     }
   }
 
