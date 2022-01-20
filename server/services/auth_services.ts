@@ -13,7 +13,7 @@ class AuthService {
     const candidate: any = await database.GetUserByEmail(email)
 
     if (!candidate) {
-      return ApiError.BadRequest(`email ${email} already in use.`)
+      throw ApiError.BadRequest(`email ${email} already in use.`)
     }
     // save real password to db + hashed
     // const hashPassword = await bcrypt.hash(password, 6)

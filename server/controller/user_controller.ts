@@ -52,8 +52,6 @@ class UserController {
 
   async saveUserLogs(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      const { ipAddress, city, countryName, coordinates, currentDate } = req.body
-
       const userLogs: any = {
         ip_address: req.body.ipAddress,
         user_city: req.body.city,
@@ -63,12 +61,11 @@ class UserController {
       }
       console.log('recieved logs is: ', userLogs)
 
-
-
       if (userLogs) {
         return res.json('logs was recieved')
       }
 
+      return res.json('logs was rejected')
       // post kyc form
     } catch (e) {
       next(e)

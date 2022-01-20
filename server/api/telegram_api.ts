@@ -18,7 +18,7 @@ async function SendMessage(userRequest: string, currentChatId?: string) {
     if (currentChatId) {
       chatId = currentChatId
     } else {
-      chatId = process.env.TELEGRAM_PERSONAL_CHAT_ID
+      chatId = process.env.TELEGRAM_CHAT_ID
     }
 
     const url: string = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&parse_mode=html&text=${message}`
