@@ -13,6 +13,7 @@ import {emailValidate} from "../../../utils/checkEmail";
 import {observer} from "mobx-react-lite";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons'
+import {sendDate} from "../../../queries/getSendGeoData";
 
 
 
@@ -30,8 +31,10 @@ const SignUp = () => {
 
     const onSubmit = (data, e) => {
         const location = window.location.host
+        console.log(data)
         e.preventDefault()
-        store.registration(data.email, data.password, data.name, location)
+        sendDate()
+        // store.registration(data.email, data.password, data.name, location)
     }
 
     const showPassword = () => {

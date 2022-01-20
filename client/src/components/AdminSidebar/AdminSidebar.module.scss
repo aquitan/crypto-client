@@ -1,0 +1,15 @@
+.admin_sidebar {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #cecece;
+  padding: 30px 20px 20px 0;
+  background-color: #141414;
+}
+.link {
+  color: #fff;
+  text-decoration: none;
+  padding: 10px;
+  &:hover {
+    color: #cecece;
+  }
+}

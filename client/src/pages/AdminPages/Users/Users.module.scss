@@ -17,3 +17,18 @@
 .orange {
   background-color: lightyellow;
 }
+
+.table_header {
+  font-weight: bold;
+  padding: 30px 0 10px;
+  border-bottom: 1px solid #fff;
+}
+.table_item {
+  padding: 20px 0 20px;
+  border-bottom: 1px solid #cecece;
+}
+
+.users_table_inner {
+  max-height: 400px;
+  overflow-y: auto;
+}

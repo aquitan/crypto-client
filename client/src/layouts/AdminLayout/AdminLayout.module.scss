@@ -1,4 +1,8 @@
 .layout {
   height: 100%;
   color: #fff;
+  &_inner {
+    display: flex;
+    height: 100%;
+  }
 }

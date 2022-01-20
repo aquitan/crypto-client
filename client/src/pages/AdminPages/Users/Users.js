@@ -1,7 +1,8 @@
 import React from 'react'
 import {Card, Col, Container, Row} from "react-bootstrap";
 import UsersInfoCard from "./components/UsersInfoCard/UsersInfoCard";
-import Input from "../../../components/UI/Input/Input";
+import cls from './Users.module.scss'
+import UsersTableItem from "./components/UsersTableItem/UsersTableItem";
 
 const Users = () => {
     console.log('users...')
@@ -23,26 +24,33 @@ const Users = () => {
 
             <Row>
                 <div className="users_table">
-                    <div className="users_table_card">
-                        <Row className='header'>
+                    <div className={cls.users_table_inner}>
+                        <Row className={cls.table_header}>
                             <Col>
+                                #
                             </Col>
                             <Col>
-
+                                Date of registration
                             </Col>
                             <Col>
-
+                                Name
                             </Col>
                             <Col>
-
+                                Email
                             </Col>
                             <Col>
-
+                                KYC
                             </Col>
                             <Col>
-
+                                Action
                             </Col>
                         </Row>
+                        <UsersTableItem id={'001'} registerDate={'Jan 10, 2022, 2:20 p.m.'} name={'user'} email={'1@1gmail.com'} kycStatus={true} staff={true}/>
+                        <UsersTableItem id={'001'} registerDate={'Jan 10, 2022, 2:20 p.m.'} name={'user'} email={'1@1gmail.com'} kycStatus={true} staff={true}/>
+                        <UsersTableItem id={'001'} registerDate={'Jan 10, 2022, 2:20 p.m.'} name={'user'} email={'1@1gmail.com'} kycStatus={true} staff={true}/>
+                        <UsersTableItem id={'001'} registerDate={'Jan 10, 2022, 2:20 p.m.'} name={'user'} email={'1@1gmail.com'} kycStatus={true} staff={true}/>
+                        <UsersTableItem id={'001'} registerDate={'Jan 10, 2022, 2:20 p.m.'} name={'user'} email={'1@1gmail.com'} kycStatus={true} staff={true}/>
+
                     </div>
                 </div>
             </Row>
