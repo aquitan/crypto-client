@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import Button from '../../../components/UI/Button/Button'
 import Form from '../../../components/UI/Form/Form'
 import Input from '../../../components/UI/Input/Input'
@@ -11,14 +11,17 @@ import {Link} from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
 import {emailValidate} from "../../../utils/checkEmail";
 import {observer} from "mobx-react-lite";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons'
+
 
 
 
 const SignUp = () => {
+    const [isShowPassword, setIsShowPassword] = useState(false)
     const {register, handleSubmit, formState: {errors}, watch} = useForm({
         mode: "onBlur",
     })
-
 
     const password = useRef({})
     password.current = watch('password', '')
@@ -26,8 +29,13 @@ const SignUp = () => {
     const {store} = useContext(AuthContext)
 
     const onSubmit = (data, e) => {
+        const location = window.location.host
         e.preventDefault()
-        store.registration(data.email, data.password, data.name)
+        store.registration(data.email, data.password, data.name, location)
+    }
+
+    const showPassword = () => {
+        setIsShowPassword(!isShowPassword)
     }
 
     return (
@@ -61,22 +69,27 @@ const SignUp = () => {
                 </FormGroup>
                 <FormGroup>
                     <Row className='mt-3'>
-                        <Col>
+                        <Col className={cls.relative}>
                             <Input {...register('password', {
                                 required: 'You must specify your password',
                                 minLength: {
                                     value: 8,
                                     message: 'Your password must be at least 8 characters'
+                                },
+                                maxLength: {
+                                    value: 32,
+                                    message: 'Your password must be less than 32 characters'
                                 }
-                            })} name='password' type='password' placeholder='password' id='password' />
+                            })} name='password' type={isShowPassword ? 'text' : 'password'} placeholder='password' id='password' />
                             <ErrorMessage name='password' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
+                            <FontAwesomeIcon onClick={showPassword} className={cls.eye_icon} icon={isShowPassword ? faEye : faEyeSlash} />
                         </Col>
-                        <Col>
+                        <Col className={cls.relative}>
                             <Input {...register('repeatPassword', {
                                 required: 'You have to repeat your password',
                                 validate: value => value === password.current || 'Password is not the same',
                                 message: 'The password does not match'
-                            })} name='repeatPassword' type='password' placeholder='repeat password' id='repeatPassword' />
+                            })} name='repeatPassword' type={isShowPassword ? 'text' : 'password'} placeholder='repeat password' id='repeatPassword' />
                             <ErrorMessage name='repeatPassword' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
                         </Col>
                     </Row>

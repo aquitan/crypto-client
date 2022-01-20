@@ -1,7 +1,8 @@
 import {makeAutoObservable} from "mobx";
 import AuthService from "../services/AuthService";
 import axios from "axios";
-import {BASE_URL} from "../API";
+import {BASE_URL, GEO_API} from "../API";
+import SendLocationService from "../services/SendLocationService";
 
 export default class Store {
     user = {}
@@ -10,6 +11,7 @@ export default class Store {
     isActivated = false
     isAdmin = false
     showConfirmation = false
+    geoData = {}
 
 
     constructor() {
@@ -35,27 +37,33 @@ export default class Store {
         this.showConfirmation = bool
     }
 
-    async login(email, password) {
+    setGeoData(obj) {
+        this.geoData = obj
+    }
+
+    async login(email, password, location) {
         try {
-            const response = await AuthService.login(email, password)
+            const response = await AuthService.login(email, password, location)
             localStorage.setItem('token', response.data.accessToken)
-            if (response.data.user.isActivated === true) {
-                this.setIsActivated(true)
-            } else {
-                localStorage.removeItem('token')
-            }
+            console.log('response login', location)
+            this.setIsLoading(true)
             if (response.data.user.isAdmin === true) {
                 this.setIsAdmin(true)
+            }
+            if (response.data.user.isActivated === true) {
+                this.setIsActivated(true)
             }
             this.setAuth(true)
             this.setUser(response.data.user)
         } catch(e) {
             console.log('error', e)
+        } finally {
+            this.setIsLoading(false)
         }
     }
-    async registration(email, password, name) {
+    async registration(email, password, name, login) {
         try {
-            const response = await AuthService.registration(email, password, name)
+            const response = await AuthService.registration(email, password, name, login)
             console.log('register', response)
             localStorage.setItem('token', response.data.accessToken)
             this.setShowConfirmation(true)
@@ -71,6 +79,7 @@ export default class Store {
             localStorage.removeItem('token')
             this.setAuth(false)
             this.setIsActivated(false)
+            this.setIsAdmin(false)
             this.setUser({})
         } catch(e) {
             console.log('error', e)
@@ -92,9 +101,19 @@ export default class Store {
             this.setAuth(true)
             this.setUser(response.data.user)
         } catch(e) {
-            console.log('error', e)
+            console.log('error---', e)
         } finally {
             this.setIsLoading(false)
+        }
+    }
+
+    async sendPath(path) {
+        try {
+            const response = await SendLocationService.path(path)
+            console.log('path----', path)
+
+        } catch(e) {
+            console.log('path error', e)
         }
     }
 }

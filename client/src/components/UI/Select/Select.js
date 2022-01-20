@@ -1,10 +1,11 @@
 import React, {forwardRef} from 'react'
 
-const Select = forwardRef(({}) => {
+const Select = forwardRef((props, ref) => {
     return (
-        <select name={name} ref={ref} onChange={onChange} onBlur={onBlur}>
-            <option value="20">20</option>
-            <option value="30">30</option>
+        <select ref={ref} {...props}>
+            <option value="Google">Google</option>
+            <option value="Email">Email</option>
+            <option value="Telegram">Telegram</option>
         </select>
     )
 })
