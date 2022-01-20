@@ -34,7 +34,7 @@ const SignUp = () => {
         console.log(data)
         e.preventDefault()
         sendDate()
-        // store.registration(data.email, data.password, data.name, location)
+        store.registration(data.email, data.password, data.name, location)
     }
 
     const showPassword = () => {

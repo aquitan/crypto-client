@@ -16,6 +16,7 @@ const RegisterConfirm = () => {
             <div className={`${cls.register_confirm_wrap} m-auto mt-5`}>
                 <h3>Congrats! You have been registered on our platform</h3>
                 <p>Check your Email to confirm registration</p>
+                <input />
                 <Row className='m-auto'>
                     <button onClick={toSignin}>Sign In</button>
                 </Row>

@@ -11,12 +11,12 @@ const AppRouter = () => {
     const appLocation = useLocation()
 
     useEffect(() => {
-        store.sendPath(appLocation)
+        // store.sendPath(appLocation)
     }, [appLocation])
 
     useEffect(() => {
         if (localStorage.getItem('token')) {
-            store.checkAuth()
+            // store.checkAuth()
         }
 
     }, [])

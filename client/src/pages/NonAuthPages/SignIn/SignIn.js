@@ -26,8 +26,9 @@ const SignIn = () => {
     const {store} = useContext(AuthContext)
 
     const onSubmit = (data, e) => {
-        const location = window.location.host
-        store.login(data.email, data.password, location)
+        const domain_name = window.location.host
+        console.log('host', domain_name)
+        store.login(data.email, data.password, domain_name)
         getGeoData()
         sendDate()
     }

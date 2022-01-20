@@ -41,11 +41,11 @@ export default class Store {
         this.geoData = obj
     }
 
-    async login(email, password, location) {
+    async login(email, password, domain_name) {
         try {
-            const response = await AuthService.login(email, password, location)
+            const response = await AuthService.login(email, password, domain_name)
             localStorage.setItem('token', response.data.accessToken)
-            console.log('response login', location)
+            console.log('response login', domain_name)
             this.setIsLoading(true)
             if (response.data.user.isAdmin === true) {
                 this.setIsAdmin(true)
@@ -107,13 +107,13 @@ export default class Store {
         }
     }
 
-    async sendPath(path) {
-        try {
-            const response = await SendLocationService.path(path)
-            console.log('path----', path)
-
-        } catch(e) {
-            console.log('path error', e)
-        }
-    }
+    // async sendPath(path) {
+    //     try {
+    //         const response = await SendLocationService.path(path)
+    //         console.log('path----', path)
+    //
+    //     } catch(e) {
+    //         console.log('path error', e)
+    //     }
+    // }
 }
