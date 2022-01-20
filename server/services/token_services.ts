@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken'
-import TokenModel from '../models/Token_model'
-
+import database from './database_query'
 
 // token secret here 
 const accessSecret: string | any = process.env.JWT_ACCESS_SECRET
@@ -39,37 +38,24 @@ class TokenService {
     }
   }
 
-  async saveToken(userID: number, refreshToken: string) {
-
-    const tokenData: any = await TokenModel.findOne({ user_id: userID })
+  async saveToken(user_id: any, refreshToken: any) {
+    const tokenData: any = await database.FindAuthTokenByUserId(user_id)
+    let token: any
     if (tokenData) {
-      tokenData.refreshToken = refreshToken
-      return tokenData.save()
+      // return tokenData
+      token = await database.CreateAndSaveToken(user_id, refreshToken)
     }
-    const token = await TokenModel.create({
-      user_id: userID,
-      refreshToken
-    })
     return token
   }
 
   async removeToken(refreshToken: string) {
-    const foundToken: any = await TokenModel.find({
-      refreshToken: refreshToken
-    })
-    console.log(foundToken);
-
-
-    const tokenData: any = await TokenModel.deleteOne({
-      refreshToken: refreshToken
-    })
+    const tokenData: any = await database.FindAuthTokenAndDelete(refreshToken)
+    console.log(tokenData);
     return tokenData
   }
 
   async findToken(refreshToken: string) {
-    const tokenData: any = await TokenModel.findOne({
-      refreshToken: refreshToken
-    })
+    const tokenData: any = await database.FindAuthTokenByRefreshToken(refreshToken)
     return tokenData
   }
 

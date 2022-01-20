@@ -1,8 +1,5 @@
-import { Schema, model } from 'mongoose'
-import * as Mongoose from 'mongoose'
-import USER_SCHEMA_SETTINGS from '../config/Schemas/user_schema'
 
-export interface USER extends Mongoose.Document {
+export interface USER {
   // id: number
   email: string
   password: string
@@ -13,12 +10,9 @@ export interface USER extends Mongoose.Document {
   isBanned: boolean
   isActivated: boolean
   activationLink: string
+  userDomain: string
 }
 
-const User = new Schema<USER>(USER_SCHEMA_SETTINGS)
-
-export default model('Users', User)
-
-//  add 2fa types
-//  google, telegram, phone ?
-//
+// //  add 2fa types
+// //  google, telegram, phone ?
+// //

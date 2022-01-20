@@ -10,7 +10,7 @@ export default interface User_KYC {
   // if not equals => popup with: 'use new email to login?'
   phoneNumber: number
   dateOfBirth: string
-  documentNumber: number
+  documentNumber: string
   mainAddress: string
   subAddress?: string
   city: string

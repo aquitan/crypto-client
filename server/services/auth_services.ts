@@ -1,85 +1,87 @@
-// import * as express from 'express'
-import bcrypt from 'bcrypt'
+// import bcrypt from 'bcrypt'
 import tokenService from './token_services'
 import AuthUserDto from '../dtos/auth_user_dto'
-// import DATABASE from '../config/mysql_config'
+import database from '../services/database_query'
 import ApiError from '../exeptions/api_error'
-import UserModel from '../models/User_model'
-import TokenModel from '../models/Token_model'
 import mailService from '../services/mail_services'
 import * as uuid from 'uuid'
 
 class AuthService {
 
-  async registration(email: string, password: string, name: string) {
-    const candidate: any = await UserModel.findOne({
-      email: email
-    })
-    if (candidate) {
+  async registration(email: string, password: string, domain_name: string, datetime: any, name: string) {
+
+    const candidate: any = await database.GetUserByEmail(email)
+
+    if (!candidate) {
       return ApiError.BadRequest(`email ${email} already in use.`)
     }
-
     // save real password to db + hashed
-    const hashPassword = await bcrypt.hash(password, 6)
+    // const hashPassword = await bcrypt.hash(password, 6)
     const activationLink: string = uuid.v4()
 
-    const user = await UserModel.create({
-      email: email,
-      password: hashPassword,
-      name: name || '',
-      isUser: true,
-      isAdmin: false,
-      isStaff: false,
-      isBanned: false,
-      isActivated: false,
-      activationLink: activationLink
-    })
-    const API_URL: string | any = process.env.API_URL
-    await mailService.sendActivationMail(email, `${API_URL}/api/activate/${activationLink}`)
+    await database.CreateUser(email, password, true, false, false, false, false, activationLink, domain_name, datetime, name || '',)
+    const user: any = await database.GetUserByEmail(email)
 
-    const userDto: any = new AuthUserDto(user)
+    await mailService.sendActivationMail(email, `${domain_name}`, `${activationLink}`)
+
+    const userDto: any = new AuthUserDto(user[0])
     const tokens: any = tokenService.generateTokens({ ...userDto })
-    await tokenService.saveToken(userDto.id, tokens.refreshToken)
 
+    await tokenService.saveToken(userDto.ID, tokens.refreshToken)
 
     return {
       ...tokens,
       user: userDto
     }
+
+
   }
 
-  async activate(activationLink: string) {
-    const user = await UserModel.findOne({
-      activationLink
-    })
-    if (!user) {
-      throw ApiError.BadRequest('incorrect link =/')
+  async activate(user_id: number, activationLink: string) {
+
+    const userActivationLink: any = await database.FindActivationLink(activationLink)
+    console.log('get link from db: ', userActivationLink);
+
+    const curLink: string = activationLink.toString()
+    // console.log('cur: ', curLink);
+
+    if (!userActivationLink) {
+      return ApiError.BadRequest('incorrect link =/')
     }
-    user.isActivated = true
-    await user.save()
+
+    const user: any = await database.GetUserById(user_id)
+    console.log('user log: ', user);
+
+    await database.ActivateUserByLink(curLink)
+    const isActivated: any = await database.GetUserById(user_id)
+    console.log('act status' + isActivated[0].isActivated);
+
+    return isActivated
   }
 
-  async login(email: string, password: string) {
-    const user: any = await UserModel.findOne({
-      email: email
-    })
-    if (!user) {
+  async login(email: string, password: string, user_domain: string) {
+
+    const user: any = await database.GetUserByEmail(email)
+    console.log('found user: ', user[0].email);
+
+    if (!user[0].email || user[0].domainName !== user_domain) {
       throw ApiError.BadRequest('can`t find any user')
     }
-
-    const isPasswordEquals: boolean = await bcrypt.compare(password, user.password)
-    if (isPasswordEquals === false) {
+    // const isPasswordEquals: boolean = await bcrypt.compare(password, user.password)
+    if (user[0].password !== password) {
       throw ApiError.BadRequest('wrong password')
     }
 
-    const userDto: any = new AuthUserDto(user)
+    const userDto: any = new AuthUserDto(user[0])
     const tokens: any = tokenService.generateTokens({ ...userDto })
-    await tokenService.saveToken(userDto.id, tokens.refreshToken)
+    await tokenService.saveToken(userDto.ID, tokens.refreshToken)
 
     return {
       ...tokens,
       user: userDto
     }
+
+
   }
 
   async logout(refreshToken: string) {
@@ -92,18 +94,21 @@ class AuthService {
       throw ApiError.UnauthorizedError()
     }
     const userData: any = tokenService.validateRefreshToken(refreshToken)
+    console.log('dataUser: ', userData)
+
     const tokenFromDatabase = await tokenService.findToken(refreshToken)
+    console.log('token from db: ', tokenFromDatabase)
 
     if (!userData || !tokenFromDatabase) {
       throw ApiError.UnauthorizedError()
     }
-    const user = await UserModel.findById({
-      _id: userData.id
-    })
 
-    const userDto: any = new AuthUserDto(user)
+    const user: any = await database.GetUserById(userData.ID)
+    console.log(user, 'found user');
+
+    const userDto: any = new AuthUserDto(user[0])
     const tokens = tokenService.generateTokens({ ...userDto })
-    await tokenService.saveToken(userDto.id, tokens.refreshToken)
+    await tokenService.saveToken(userDto.ID, tokens.refreshToken)
 
     return {
       ...tokens,
