@@ -3,18 +3,20 @@ import {GEO_API} from "../API";
 import SendLocationService from "../services/SendLocationService";
 
 const timeDate = new Date()
-const currentDate = timeDate.getFullYear() + '/' + timeDate.getMonth()+1 + '/' + timeDate.getDate() + ' ' + timeDate.getHours() + ':' + timeDate.getMinutes()
+const currentDate = timeDate.getFullYear() + '-' + timeDate.getMonth()+1 + '-' + timeDate.getDate() + ' ' + timeDate.getHours() + ':' + timeDate.getMinutes() + ':' + timeDate.getSeconds()
 
 export const getGeoData = async () => {
     try {
         const response = await axios.get(GEO_API)
         let location = response.data.latitude.toString() + ', ' + response.data.longitude.toString()
         let geoDatas = {
-            IPv4: response.data.IPv4,
+            ipAddress: response.data.IPv4,
             city: response.data.city,
-            country_name: response.data.country_name,
-            coordinates: location
+            countryName: response.data.country_name,
+            coordinates: location,
+            currentDate: currentDate
         }
+        console.log('geoDatas', geoDatas)
         await sendGeoData(geoDatas)
     } catch (e) {
         console.log('geo api error', e)
