@@ -5,7 +5,7 @@ import Input from '../../../components/UI/Input/Input'
 import { useForm } from 'react-hook-form'
 import { Col, Container, Row} from "react-bootstrap";
 import { emailValidate } from "../../../utils/checkEmail";
-import { Link } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import { AuthContext } from "../../../index";
 import { observer } from "mobx-react-lite";
 import { ErrorMessage } from "@hookform/error-message";
@@ -14,23 +14,33 @@ import '../../../styles/index.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons'
 import {getGeoData, sendDate} from "../../../queries/getSendGeoData";
+import {BASE_URL} from "../../../API";
+import Modal from "../../../components/UI/Modal/Modal";
 
 
 
 
 const SignIn = () => {
+    const [modal, setModal] = useState(false)
     const [isShowPassword, setIsShowPassword] = useState(false)
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
     })
     const {store} = useContext(AuthContext)
+    const navigate = useNavigate()
 
     const onSubmit = (data, e) => {
-        const domain_name = window.location.host
-        console.log('host', domain_name)
-        store.login(data.email, data.password, domain_name)
-        getGeoData()
-        sendDate()
+        if (!store.isAuth && store.isActivated) {
+            const domain_name = window.location.host
+            store.login(data.email, data.password, domain_name)
+            getGeoData()
+        } else if (!store.isAuth && !store.isActivated) {
+            const domain_name = window.location.host
+            store.login(data.email, data.password, domain_name)
+            getGeoData()
+        } else {
+            setModal(true)
+        }
     }
 
     const showPassword = () => {
@@ -39,6 +49,10 @@ const SignIn = () => {
 
     return (
         <Container>
+            <Modal active={modal} setActive={setModal}>
+                <h2>You need to activate your account!</h2>
+                <Button onClick={() => navigate('/register-confirm')}>Verify</Button>
+            </Modal>
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <Row className='mb-4'>
                     <h2>Sign In</h2>

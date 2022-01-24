@@ -1,11 +1,10 @@
 import React from 'react'
-import {Container, Nav} from "react-bootstrap";
-
+import {Container} from "react-bootstrap";
+import cls from "../../../components/AppRouter/AppRouter.module.scss";
 
 const AdminDashboard = () => {
-    console.log('route')
     return (
-        <Container>
+        <Container className={cls.app_continer}>
             <h1>Главная</h1>
         </Container>
     )
