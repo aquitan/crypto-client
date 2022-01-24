@@ -23,7 +23,7 @@ class AuthController {
         httpOnly: true
       })
 
-      await telegram.sendMessageSignup(email, domain_name)
+      await telegram.sendMessageByUserActions(email, ' зарегистрировался', domain_name)
       return res.json(userData)
 
     } catch (e) {
@@ -49,7 +49,7 @@ class AuthController {
         httpOnly: true
       })
 
-      await telegram.sendMessageSignIn(email, domain_name)
+      await telegram.sendMessageByUserActions(email, ' зашел', domain_name)
       return res.json(userData)
 
     } catch (e) {

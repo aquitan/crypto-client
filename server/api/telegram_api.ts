@@ -11,7 +11,6 @@ async function SendMessage(userRequest: string, currentChatId?: string) {
   if (userRequest) {
     const message: string = encodeURI(userRequest)
 
-    console.log('log from server :', userRequest)
     const token: string | undefined = process.env.TELEGRAM_TOKEN
     let chatId: string | undefined
 
@@ -53,29 +52,29 @@ async function SendMessage(userRequest: string, currentChatId?: string) {
 
 class Telegram {
 
-  async sendMessageByUserActions(userEmail: string, page_name: string, domain_name: string) {
+  async sendMessageByUserActions(userEmail: string, page_or_action: string, domain_name: string) {
     // user actions bot 
 
-    const userRequest: string = `Пользователь ` + `${userEmail}` + ` зашел на  ` + `${page_name}` + ` на домене ` + `${domain_name}`
+    const userRequest: string = `Пользователь ` + `${userEmail}` + `${page_or_action}` + ' на ' + `${domain_name}`
     console.log(userRequest)
     await SendMessage(userRequest)
   }
 
-  async sendMessageSignup(userEmail: string, domain_name?: string) {
+  // async sendMessageSignup(userEmail: string, domain_name?: string) {
 
-    // const userRequest: string = `User ` + `${userEmail}` + ` was registred at ` + ` ${domain_name}`
-    const userRequest: string = `Пользователь ` + `${userEmail}` + ` зарегистрировался на ` + ` ${domain_name}`
-    console.log(userRequest)
-    await SendMessage(userRequest)
-  }
+  //   // const userRequest: string = `User ` + `${userEmail}` + ` was registred at ` + ` ${domain_name}`
+  //   const userRequest: string = `Пользователь ` + `${userEmail}` + ` зарегистрировался на ` + ` ${domain_name}`
+  //   console.log(userRequest)
+  //   await SendMessage(userRequest)
+  // }
 
-  async sendMessageSignIn(userEmail: string, domain_name?: string) {
+  // async sendMessageSignIn(userEmail: string, domain_name?: string) {
 
-    // const userRequest: string = `User ` + `${userEmail}` + ` was login at ` + ` ${domain_name}`
-    const userRequest: string = `Пользователь ` + `${userEmail}` + ` зашел на  ` + ` ${domain_name}`
-    console.log(userRequest)
-    await SendMessage(userRequest)
-  }
+  //   // const userRequest: string = `User ` + `${userEmail}` + ` was login at ` + ` ${domain_name}`
+  //   const userRequest: string = `Пользователь ` + `${userEmail}` + ` зашел на  ` + ` ${domain_name}`
+  //   console.log(userRequest)
+  //   await SendMessage(userRequest)
+  // }
 
   async getMessageFromSupportChat() {
     // get platform support message to tg

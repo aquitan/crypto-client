@@ -75,12 +75,14 @@ class Database {
   async SaveUserKyc(first_name: string, last_name: string, email: string, phone_number: number, date_of_birth: string, document_number: string, main_address: string, city: string, zip_code: number, document_type: string, status: string, user_id: number, state?: string, sub_address?: string) {
 
     mysql.query(`
-       INSERT INTO user_kyc
-        ( first_name, last_name, email, phone_number, date_of_birth, document_number, main_address, city, zip_code, document_type, status, user_id, state, sub_address)
-        VALUES
-        ( "${first_name}", "${last_name}", "${email}", ${phone_number}, "${date_of_birth}", "${document_number}", "${main_address}", "${city}", ${zip_code}, "${document_type}", "${status}" ${user_id}, "${state || ''}", "${sub_address || ''}", )`,
+      INSERT INTO user_kyc
+      ( first_name, last_name, email, phone_number, date_of_birth, document_number, main_address, city, zip_code, document_type, status, user_id, state, sub_address)
+      VALUES
+      ( "${first_name}", "${last_name}", "${email}", ${phone_number}, "${date_of_birth}", "${document_number}", "${main_address}", "${city}", ${zip_code}, "${document_type}", "${status}", ${user_id}, "${state || ''}", "${sub_address || ''}" )`,
       (e: any, result) => {
-        if (e) console.error(new Error(e));
+        if (e) return console.error(new Error(e));
+        console.log('db res: ', result);
+
         console.log('done')
         console.log('user ' + `${email} ` + 'kyc was saved.')
       })
@@ -90,13 +92,12 @@ class Database {
   async SaveUserLogs(user_id: number, email: string, ipAddress: string, city: string, countryName: string, coordinates: string, currentDate: string, user_action: string, user_domain: string) {
 
     mysql.query(`
-       INSERT INTO user_logs
-        ( email, ip_address, request_city, country_name, location, current_date, action_date, user_domain, user_id )
-        VALUES
-        ( "${email}", "${ipAddress}", "${city}", "${countryName}", "${coordinates}", "${currentDate}", "${user_action}", "${user_domain}", ${user_id} )
-        `,
+      INSERT INTO user_logs
+      ( email, ip_address, request_city, country_name, location, action_date, user_action, user_domain, user_id )
+      VALUES
+      ( "${email}", "${ipAddress}", "${city}", "${countryName}", "${coordinates}", "${currentDate}", "${user_action}", "${user_domain}", ${user_id} )`,
       (e: any, result) => {
-        if (e) console.error(new Error(e));
+        if (e) return console.error(new Error(e));
         console.log('done')
         console.log('user ' + `${email} ` + 'kyc was saved.')
       })
@@ -106,9 +107,9 @@ class Database {
     mysql.query(`
         UPDATE user_auth
         SET password = "${password}"
-        WHERE user_id = ${user_id}`,
+        WHERE ID = ${user_id}`,
       (err, result) => {
-        if (err) console.error(err);
+        if (err) return console.error(err);
         console.log('update password in auth table is done')
       })
   }
@@ -136,7 +137,7 @@ class Database {
         SET isActivated = ${true}
         WHERE activationLink = "${activationLink}"`,
       (err, result) => {
-        if (err) console.error(err);
+        if (err) return console.error(err);
         console.log('update isActivated status in auth table is done')
       })
   }
@@ -148,7 +149,7 @@ class Database {
         WHERE user_id = "${user_id}"
         `,
       (err) => {
-        if (err) console.error(err);
+        if (err) return console.error(err);
         console.log('done')
       })
   }
@@ -173,7 +174,7 @@ class Database {
       SET refresh_token = "${token}"
       WHERE ID = ${userID} `,
       (err) => {
-        if (err) console.error(err);
+        if (err) return console.error(err);
         console.log('done')
       })
   }
@@ -209,7 +210,7 @@ class Database {
       DELETE FROM auth_token 
       WHERE refresh_token = "${refresh_token}" `,
       (err) => {
-        if (err) console.error(err)
+        if (err) return console.error(err)
         console.log('done');
       })
   }

@@ -37,7 +37,7 @@ app.use('/api', router)
 
 async function Connection() {
   // connect to mongo
-  await mongo
+  // await mongo
   // connect to mysql
   mysql
   console.log('process..')
@@ -45,7 +45,8 @@ async function Connection() {
 
 server.listen(PORT, async () => {
   try {
-    if (process.pid === PORT) {
+    const processPID: number = process.pid
+    if (process.pid === processPID) {
       console.log('port is busy..')
       process.kill(process.pid)
     }

@@ -77,9 +77,10 @@ class UserServices {
     }
   }
 
-  async personalAreaSendKyc(user_id: number, first_name: string, last_name: string, email: string, phone_number: number, date_of_birth: string, document_number: string, main_address: string, city: string, zip_code: number, document_type: string, state?: string, sub_address?: string) {
+  async personalAreaSendKyc(user_id: number, first_name: string, last_name: string, email: string, phone_number: number, date_of_birth: string, document_number: string, main_address: string, city: string, zip_code: number, document_type: string, state: string, sub_address: string) {
     try {
       const candidate: any = await database.GetUserKycByUserId(user_id)
+      console.log('candid: ', candidate);
 
       if (candidate[0]) {
         return candidate[0]
@@ -114,7 +115,8 @@ class UserServices {
         user_city: city,
         country_name: countryName,
         location_on_map: coordinates,
-        date_time: currentDate
+        date_time: currentDate,
+        user_action: user_action
       }
       console.log('recieved logs is: ', userLogs)
       await database.SaveUserLogs(user_id, email, ipAddress, city, countryName, coordinates, currentDate, user_action, user_domain)
