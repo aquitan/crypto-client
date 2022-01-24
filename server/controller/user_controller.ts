@@ -9,7 +9,7 @@ async function saveUserLogs(id: number, email: string, ipAddress: string, city: 
 
   const userLogs: any = await UserServices.saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, userDomain)
   if (userLogs) {
-    console.log('result is: ', userLogs)
+    console.log('result from save logs func is : ', userLogs)
     return { status: 'logs was recieved.' }
   }
   return { status: 'logs was rejected' }
@@ -27,7 +27,7 @@ class UserController {
       console.log('found user is: ', user)
 
       await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, userDomain)
-      await telegram.sendMessageByUserActions(email, 'dashboard', userDomain)
+      await telegram.sendMessageByUserActions(email, ' перешел на dashboard на ', userDomain)
 
       return res.json(user)
 
@@ -44,7 +44,7 @@ class UserController {
       console.log('found user is: ', user)
       if (user) {
         await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, userDomain)
-        await telegram.sendMessageByUserActions(email, userAction, userDomain)
+        await telegram.sendMessageByUserActions(email, ` перешел на ${userAction}`, userDomain)
         return res.json({
           user: user,
           status: 'complete'
@@ -73,7 +73,7 @@ class UserController {
     try {
       // get accoutn security (2fa, login history)
 
-      const result: any = await UserServices.personalAreaChangePassword(req.body.id, req.body.new_password)
+      const result: any = await UserServices.personalAreaChangePassword(req.body.id, req.body.newPassword)
       if (result === true) {
         console.log('operation status: ', result)
         return res.json({ status: 'complete' })
@@ -110,12 +110,15 @@ class UserController {
         userDomain
       } = req.body
 
+      console.log('req body kyc: ', req.body);
+
+
       const result: boolean = await UserServices.personalAreaSendKyc(id, firstName, lastName, email, phoneNumber, dateOfBirth, documentNumber, mainAddress, city, zipCode, documentType, state, subAddress)
       console.log('operation result is: ', result)
 
       if (result === true) {
         await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, userDomain)
-        await telegram.sendMessageByUserActions(email, ' отправил KYC на домене ', userDomain)
+        await telegram.sendMessageByUserActions(email, ' отправил KYC', userDomain)
         return res.json({
           kyc: true,
           stasus: 'complete'
@@ -125,6 +128,7 @@ class UserController {
 
       return res.json({
         kyc: false,
+        message: 'already added',
         stasus: 'rejected'
       })
 

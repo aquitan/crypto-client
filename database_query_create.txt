@@ -6,12 +6,12 @@ CREATE TABLE user_auth (ID INT AUTO_INCREMENT PRIMARY KEY, email VARCHAR(255) NO
 
 CREATE TABLE user_logs (ID INT AUTO_INCREMENT PRIMARY KEY, email VARCHAR(255) NOT NULL, ip_address VARCHAR(150) NOT NULL, request_city VARCHAR(100) NOT NULL, country_name VARCHAR(50) NOT NULL, location VARCHAR(150) NOT NULL, action_date VARCHAR(50) NOT NULL, user_action VARCHAR(255) NOT NULL, user_domain VARCHAR(255) NOT NULL, user_id INT NOT NULL, FOREIGN KEY(user_id) REFERENCES user_auth(ID));
 
-CREATE TABLE user_kyc (ID INT AUTO_INCREMENT PRIMARY KEY, first_name VARCHAR(255) NOT NULL, last_name VARCHAR(255) NOT NULL, email VARCHAR(150) NOT NULL, phone_number INT, date_of_birth DATE NOT NULL, document_number VARCHAR(100) NOT NULL, main_address VARCHAR(255) NOT NULL, sub_address VARCHAR(255), city VARCHAR(30) NOT NULL, state VARCHAR(100) NOT NULL, zip_code INT NOT NULL, document_type VARCHAR(50) NOT NULL, status VARCHAR(30) NOT NULL, user_id INT NOT NULL, FOREIGN KEY(user_id) REFERENCES user_auth(ID));
+CREATE TABLE user_kyc (ID INT AUTO_INCREMENT PRIMARY KEY, first_name VARCHAR(255) NOT NULL, last_name VARCHAR(255) NOT NULL, email VARCHAR(150) NOT NULL, phone_number VARCHAR(50) NOT NULL, date_of_birth VARCHAR(50) NOT NULL, document_number VARCHAR(100) NOT NULL, main_address VARCHAR(255) NOT NULL, sub_address VARCHAR(255), city VARCHAR(30) NOT NULL, state VARCHAR(100) NOT NULL, zip_code INT NOT NULL, document_type VARCHAR(50) NOT NULL, status VARCHAR(30) NOT NULL, user_id INT NOT NULL, FOREIGN KEY(user_id) REFERENCES user_auth (ID) );
 
 CREATE TABLE auth_token (ID INT AUTO_INCREMENT PRIMARY KEY, refresh_token VARCHAR(1024) NOT NULL, user_id INT NOT NULL, FOREIGN KEY(user_id) REFERENCES user_auth(ID));
 
 
-
+** use it later **
 
 CREATE TABLE user_kyc (ID INT AUTO_INCREMENT PRIMARY KEY, first_name VARCHAR(255) NOT NULL, last_name VARCHAR(255) NOT NULL, email VARCHAR(150) NOT NULL, phone_number INT, date_of_birth DATE NOT NULL, document_number VARCHAR(100) NOT NULL, main_address VARCHAR(255) NOT NULL, sub_address VARCHAR(255), city VARCHAR(30) NOT NULL, state VARCHAR(100) NOT NULL, zip_code INT NOT NULL, document_type VARCHAR(50) NOT NULL, front_document LONGBLOB NOT NULL, back_document LONGBLOB NOT NULL, selfy_with_document LONGBLOB NOT NULL, status VARCHAR(30) NOT NULL, user_id INT NOT NULL, FOREIGN KEY(user_id) REFERENCES user_auth(ID));
 
