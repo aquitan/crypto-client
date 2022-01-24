@@ -4,20 +4,26 @@ import MyAccount from "../MyAccount/MyAccount";
 import AccountSecurity from "../AccountSecurity/AccountSecurity";
 import KYC from "../KYC/KYC";
 import {store} from "../../../index";
+import {getGeoData} from "../../../queries/getSendGeoData";
+import {useLocation} from "react-router-dom";
 
 const Profile = () => {
-    const [kycStatus, setKycStatus] = useState('')
     const [profileData, setProfileData] = useState('')
+    const appLocation = useLocation()
+
     const getProfile = async () => {
-        const res = await fetch('/api/personal_area/profile/', {
+        let geodata =  await getGeoData()
+        geodata.userAction = appLocation.pathname
+        const res = await fetch(`/api/personal_area/profile/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + localStorage.getItem('token')
             },
-            body: JSON.stringify({id: parseInt(store.userId)})
+            body: JSON.stringify(geodata)
         })
         const data = await res.json()
+
         setProfileData(data)
         console.log('dataProfile', data)
     }
@@ -36,13 +42,13 @@ const Profile = () => {
             <Row>
                 <Tabs>
                     <Tab eventKey='profile' title='My Account'>
-                        <MyAccount data={profileData}/>
+                        <MyAccount data={profileData.user}/>
                     </Tab>
                     <Tab eventKey='security' title='Security'>
                         <AccountSecurity/>
                     </Tab>
                     <Tab eventKey='kyc' title='Verification'>
-                        <KYC status={kycStatus}/>
+                        <KYC status={profileData.status}/>
                     </Tab>
                 </Tabs>
 
