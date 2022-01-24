@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react'
+import React, {useContext} from 'react'
 import {Button, Container, Nav, Navbar} from "react-bootstrap";
 import {AuthContext} from "../../index";
 import { NavLink } from "react-router-dom";

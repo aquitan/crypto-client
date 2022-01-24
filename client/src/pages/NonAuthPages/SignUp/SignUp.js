@@ -7,7 +7,7 @@ import cls from './SignUp.module.scss'
 import '../../../styles/index.css'
 import { Col, Container, FormCheck, FormGroup, FormText, Row} from 'react-bootstrap'
 import {AuthContext} from "../../../index";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
 import {emailValidate} from "../../../utils/checkEmail";
 import {observer} from "mobx-react-lite";
@@ -19,6 +19,7 @@ import {sendDate} from "../../../queries/getSendGeoData";
 
 
 const SignUp = () => {
+    const navigate = useNavigate()
     const [isShowPassword, setIsShowPassword] = useState(false)
     const {register, handleSubmit, formState: {errors}, watch} = useForm({
         mode: "onBlur",
@@ -30,11 +31,13 @@ const SignUp = () => {
     const {store} = useContext(AuthContext)
 
     const onSubmit = (data, e) => {
-        const location = window.location.host
+        const domain_name = window.location.host
+        const timeDate = new Date()
+        const datetime = timeDate.getFullYear() + '-' + timeDate.getMonth()+1 + '-' + timeDate.getDate() + ' ' + timeDate.getHours() + ':' + timeDate.getMinutes() + ':' + timeDate.getSeconds()
         console.log(data)
         e.preventDefault()
         sendDate()
-        // store.registration(data.email, data.password, data.name, location)
+        store.registration(data.email, data.password, data.name, domain_name, datetime)
     }
 
     const showPassword = () => {

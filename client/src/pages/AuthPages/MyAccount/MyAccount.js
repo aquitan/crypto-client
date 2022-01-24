@@ -2,8 +2,8 @@ import React from 'react'
 import {Col, Container, Row} from "react-bootstrap";
 import cls from './MyAccount.module.scss'
 
-const MyAccount = () => {
-
+const MyAccount = (props) => {
+console.log('my acc', props)
 
     return (
         <Container>
@@ -13,7 +13,7 @@ const MyAccount = () => {
                     <div>Name</div>
                 </Col>
                 <Col>
-                    <div>aquitan</div>
+                    <div>{props.data.name === '' ? '-' : props.data.name}</div>
                 </Col>
             </Row>
             <Row className={cls.account_row}>
@@ -21,7 +21,7 @@ const MyAccount = () => {
                     <div>Email</div>
                 </Col>
                 <Col>
-                    <div>aquitanfw@gmail.com</div>
+                    <div>{props.data.email === '' ? '-' : props.data.email}</div>
                 </Col>
             </Row>
             <Row className={cls.account_row}>
