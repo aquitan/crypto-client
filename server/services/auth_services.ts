@@ -39,6 +39,12 @@ class AuthService {
     }
 
 
+    // get domain 
+    // if user domain = domains arr i
+    // user owner = domain ownew
+    // else 
+    // self registration
+
   }
 
   async activate(user_id: number, activationLink: string) {

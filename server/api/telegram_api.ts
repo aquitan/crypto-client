@@ -53,17 +53,12 @@ async function SendMessage(userRequest: string, currentChatId?: string) {
 
 class Telegram {
 
-  async sendMessageFromContactUs(email: string, text: string, phone: number) {
+  async sendMessageByUserActions(userEmail: string, page_name: string, domain_name: string) {
+    // user actions bot 
 
-    // const userRequest: string = `Request to contact from user : ` + '\n' + `${email}` + `\n` + `${phone}` + `\n` + `${text}`
-    const userRequest: string = `Новый запрос в contact us от пользователя ` + '\n' + `${email}` + `\n` + `${phone}` + `\n` + `${text}`
+    const userRequest: string = `Пользователь ` + `${userEmail}` + ` зашел на  ` + `${page_name}` + ` на домене ` + `${domain_name}`
     console.log(userRequest)
     await SendMessage(userRequest)
-  }
-
-
-  async sendMessageToActionsBot(userId: any, user: string, message: string, time: string, location: string, ipAddress: string) {
-    // user actions bot 
   }
 
   async sendMessageSignup(userEmail: string, domain_name?: string) {
@@ -78,20 +73,6 @@ class Telegram {
 
     // const userRequest: string = `User ` + `${userEmail}` + ` was login at ` + ` ${domain_name}`
     const userRequest: string = `Пользователь ` + `${userEmail}` + ` зашел на  ` + ` ${domain_name}`
-    console.log(userRequest)
-    await SendMessage(userRequest)
-  }
-
-  async sendMessageDashboard(userEmail: string, domain_name?: string) {
-
-    const userRequest: string = `User ` + `${userEmail}` + ' ' + ` go to dashboard page at ` + ` ${domain_name}`
-    console.log(userRequest)
-    await SendMessage(userRequest)
-  }
-
-  async sendMessageProfile(userEmail: string, domain_name?: string) {
-
-    const userRequest: string = `User ` + `${userEmail}` + ' ' + ` go to profile page at ` + ` ${domain_name}`
     console.log(userRequest)
     await SendMessage(userRequest)
   }
@@ -114,6 +95,13 @@ class Telegram {
 
   async sendMessageToSecureDealChatAsStaff() {
     // secure deal guarant message
+  }
+
+  async sendMessageFromContactUs(email: string, text: string, phone: number) {
+    // const userRequest: string = `Request to contact from user : ` + '\n' + `${email}` + `\n` + `${phone}` + `\n` + `${text}`
+    const userRequest: string = `Новый запрос в contact us от пользователя ` + '\n' + `${email}` + `\n` + `${phone}` + `\n` + `${text}`
+    console.log(userRequest)
+    await SendMessage(userRequest)
   }
 }
 

@@ -2,16 +2,20 @@
 export default class ProfileUserDto {
   name
   email
-  dateOfBirth
-  phone
-  mainAddress
+  date_of_bitrh
+  phone_number
+  main_address
+  kyc_status
+
 
 
   constructor(model: any) {
     this.name = model.name
     this.email = model.email
-    this.dateOfBirth = model.dateOfBirth
-    this.phone = model.phone
-    this.mainAddress = model.main_address
+    this.date_of_bitrh = model.dateOfBirth
+    this.phone_number = model.phone
+    this.main_address = model.main_address
+    this.kyc_status = model.kyc_status
+
   }
 }

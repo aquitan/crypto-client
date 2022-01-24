@@ -7,7 +7,7 @@ class Database {
 
     mysql.query(`
         INSERT INTO user_auth 
-        ( email, password, isUser, isAdmin, isStaff, isBanned, isActivated, activationLink, domainName, dateOfEntry, name) 
+        ( email, password, isUser, isAdmin, isStaff, isBanned, isActivated, activationLink, domain_name, date_of_entry, name) 
         VALUES 
         ( "${email}", "${password}", ${isUser}, ${isAdmin}, ${isStaff}, ${isBanned}, ${isActivated}, "${activationLink}", "${domainName}", "${dateOfEntry}", "${name || ''}")`,
       (err, result) => {
@@ -48,7 +48,7 @@ class Database {
   async GetUserByEmailAndPassword(email: string, password: string) {
     return new Promise((resolve, reject) => {
       mysql.query(`
-        SELECT password
+        SELECT email, password
         FROM user_auth
         WHERE email = "${email}", password = "${password}"`,
         (e: any, result) => {
@@ -59,13 +59,12 @@ class Database {
   }
 
 
-
-  async GetUserKycById(id: number) {
+  async GetUserKycByUserId(user_id: number) {
     return new Promise((resolve, reject) => {
       mysql.query(`
         SELECT *
-        FROM users_kyc 
-        WHERE user_id = ${id}`,
+        FROM user_kyc 
+        WHERE user_id = ${user_id}`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -73,6 +72,35 @@ class Database {
     })
   }
 
+  async SaveUserKyc(first_name: string, last_name: string, email: string, phone_number: number, date_of_birth: string, document_number: string, main_address: string, city: string, zip_code: number, document_type: string, status: string, user_id: number, state?: string, sub_address?: string) {
+
+    mysql.query(`
+       INSERT INTO user_kyc
+        ( first_name, last_name, email, phone_number, date_of_birth, document_number, main_address, city, zip_code, document_type, status, user_id, state, sub_address)
+        VALUES
+        ( "${first_name}", "${last_name}", "${email}", ${phone_number}, "${date_of_birth}", "${document_number}", "${main_address}", "${city}", ${zip_code}, "${document_type}", "${status}" ${user_id}, "${state || ''}", "${sub_address || ''}", )`,
+      (e: any, result) => {
+        if (e) console.error(new Error(e));
+        console.log('done')
+        console.log('user ' + `${email} ` + 'kyc was saved.')
+      })
+
+  }
+
+  async SaveUserLogs(user_id: number, email: string, ipAddress: string, city: string, countryName: string, coordinates: string, currentDate: string, user_action: string, user_domain: string) {
+
+    mysql.query(`
+       INSERT INTO user_logs
+        ( email, ip_address, request_city, country_name, location, current_date, action_date, user_domain, user_id )
+        VALUES
+        ( "${email}", "${ipAddress}", "${city}", "${countryName}", "${coordinates}", "${currentDate}", "${user_action}", "${user_domain}", ${user_id} )
+        `,
+      (e: any, result) => {
+        if (e) console.error(new Error(e));
+        console.log('done')
+        console.log('user ' + `${email} ` + 'kyc was saved.')
+      })
+  }
 
   async ChangeUserPassword(user_id: number, password: string) {
     mysql.query(`
@@ -82,15 +110,6 @@ class Database {
       (err, result) => {
         if (err) console.error(err);
         console.log('update password in auth table is done')
-      })
-
-    mysql.query(`
-        UPDATE user_kyc
-        SET password = "${password}"
-        WHERE user_id = ${user_id}`,
-      (err, result) => {
-        if (err) console.error(err);
-        console.log('update password in kyc table is done')
       })
   }
 
@@ -186,8 +205,8 @@ class Database {
   }
 
   async FindAuthTokenAndDelete(refresh_token: string) {
-    mysql.query(
-      `DELETE FROM auth_token 
+    mysql.query(`
+      DELETE FROM auth_token 
       WHERE refresh_token = "${refresh_token}" `,
       (err) => {
         if (err) console.error(err)
@@ -195,65 +214,85 @@ class Database {
       })
   }
 
+  //
+  // staff pages ------------------------------------------------------------------
+  //  
 
-  async GetAllUsersForAdmin(isAdmin: boolean) {
+  async GetAllUsersForStaff() {
 
-    if (isAdmin === true) {
-      return new Promise((resolve, reject) => {
-        mysql.query(
-          `SELECT id, joinDate, name, email, userOwner
-           FROM users`
-          ,
-          (e: any, result) => {
-            if (e) reject(new Error(e))
-            resolve(result)
-          })
-      })
-    }
-
-  }
-
-
-  async GetAllUsersForStaff(isStaff: boolean, domainOwner: string) {
-
-
-    if (isStaff === true) {
-      const getDomainsList: any = new Promise((resolve, reject) => {
-        mysql.query(
-          `SELECT * 
-          FROM domains
-          WHERE domainOwner = ${domainOwner}`,
-          (e: any, result) => {
-            if (e) reject(new Error(e))
-            resolve(result)
-          })
-      })
-      await getDomainsList;
-      console.log(getDomainsList);
-
-
-      for (let i = 0; i <= getDomainsList.length; i++) {
-        return new Promise((resolve, reject) => {
-          mysql.query(
-            `SELECT * 
-            FROM users
-            WHERE userDomain = ${i}`
-            ,
-            (e: any, result) => {
-              if (e) reject(new Error(e))
-              resolve(result)
-            })
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM user_kyc
+        WHERE isAdmin = ${false}`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
         })
-      }
-
-
-
-    }
-
-    mysql.query(
-      `SELECT * FROM users;`
-    )
+    })
   }
+
+  async GetLogsByUserId(user_id: number) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM user_logs
+        WHERE user_id = ${user_id}`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async GetKycForStaff(user_domain: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM user_kyc
+        WHERE user_id = ${user_domain}`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+
+  // async GetAllUserInfo(user_id: number) { 
+  //   return new Promise((resolve, reject) => {
+  //     mysql.query(`
+  //       SELECT *
+  //       FROM user_kyc
+  //       WHERE isAdmin = "${false}"
+  //       RIGHT JOIN user_auth
+  //       ON (user_auth.ID = ${user_id}) 
+
+  //       `,
+  //       (e: any, result) => {
+  //         if (e) reject(new Error(e))
+  //         resolve(result)
+  //       })
+  //   })
+  // }
+
+  //
+  // admin pages ------------------------------------------------------------------
+  // 
+
+  async GetAllUsersForAdmin() {
+
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM user_kyc`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
 }
 
 export default new Database()
