@@ -1,6 +1,5 @@
 import React from 'react'
-import {Container, Nav} from "react-bootstrap";
-import {NavLink, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import cls from './AdminLayout.module.scss'
 import AdminSidebar from "../../components/AdminSidebar/AdminSidebar";
 

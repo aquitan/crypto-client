@@ -26,10 +26,12 @@ const KYC = ({status}) => {
 
     const onSubmit = (data) => {
         console.log('data....', data)
-        sendKycData(data)
+        // sendKycData(data)
         // let phone = phoneNumber.split(/[.,()\/ -]/)
         // let phoneCleared = phone.join('')
         // console.log('phone', parseInt(phoneCleared))
+        let newData =
+        console.log('kyc ', data.phoneNumber.split(/[.,()\/ -]/).join(''))
     }
 
    // const onNumberChange = (e) => {
@@ -119,23 +121,23 @@ const KYC = ({status}) => {
                                     <Input {...register('state')} name='state' placeholder='state'/>
                                 </Col>
                             </Row>
-                            <Row className='mt-4'>
-                                <Col>
-                                    <FileUpload {...register('file1', {
-                                        required: 'This field is required'
-                                    })} name='file1'/>
-                                </Col>
-                                <Col>
-                                    <FileUpload {...register('file2', {
-                                        required: 'This field is required'
-                                    })} name='file2'/>
-                                </Col>
-                                <Col>
-                                    <FileUpload {...register('file3', {
-                                        required: 'This field is required'
-                                    })} name='file3'/>
-                                </Col>
-                            </Row>
+                            {/*<Row className='mt-4'>*/}
+                            {/*    <Col>*/}
+                            {/*        <FileUpload {...register('file1', {*/}
+                            {/*            required: 'This field is required'*/}
+                            {/*        })} name='file1'/>*/}
+                            {/*    </Col>*/}
+                            {/*    <Col>*/}
+                            {/*        <FileUpload {...register('file2', {*/}
+                            {/*            required: 'This field is required'*/}
+                            {/*        })} name='file2'/>*/}
+                            {/*    </Col>*/}
+                            {/*    <Col>*/}
+                            {/*        <FileUpload {...register('file3', {*/}
+                            {/*            required: 'This field is required'*/}
+                            {/*        })} name='file3'/>*/}
+                            {/*    </Col>*/}
+                            {/*</Row>*/}
                             <Row className='mt-4'>
                                 <Col className='col-sm-12 col-lg-3 m-auto'>
                                     <Button>Verify</Button>

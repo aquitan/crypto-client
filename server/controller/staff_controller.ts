@@ -1,6 +1,8 @@
 import * as express from 'express'
 import { validationResult } from 'express-validator'
 import ApiError from '../exeptions/api_error'
+import staffService from '../services/staff_services'
+import adminService from '../services/admin_services'
 
 class StaffController {
 
@@ -16,7 +18,21 @@ class StaffController {
   async usersList(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
 
-      // get all users list
+      const adminPermission: boolean = req.body.isAdmin
+      const staffPremisstion: boolean = req.body.isStaff
+      console.log('req body is: ', req.body)
+
+      if (adminPermission === true) {
+        const usersList: any = await adminService.GetUsersList()
+        return res.json(usersList)
+      }
+      if (staffPremisstion === true) {
+        const usersList: any = await staffService.GetUsersList()
+        return res.json(usersList)
+      }
+
+      return res.json({ response: 'permission denied' })
+
     } catch (e) {
       next(e)
     }
@@ -25,7 +41,17 @@ class StaffController {
   async userDetail(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
 
-      // get all users list
+      const user: any = await staffService.GetUserDetail(req.body.id)
+      console.log('found user: ', user)
+
+      if (user) {
+        return res.json({
+          user: user,
+          status: 'done'
+        })
+      }
+      return res.json({ message: 'some querry error' })
+
     } catch (e) {
       next(e)
     }
@@ -33,6 +59,21 @@ class StaffController {
 
   async kycList(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
+
+      const adminPermission: boolean = req.body.isAdmin
+      const staffPremisstion: boolean = req.body.isStaff
+      const userDomain: string = req.body.domain_name
+      console.log('req body is: ', req.body)
+
+      // if (adminPermission === true) {
+      //   const usersList: any = await adminService.GetKycForStaff(userDomain)
+      //   return res.json(usersList)
+      // }
+      // if (staffPremisstion === true) {
+      //   const usersList: any = await staffService.GetKycForAdmin()
+      //   return res.json(usersList)
+      // }
+
       // get all users & their kyc
     } catch (e) {
       next(e)

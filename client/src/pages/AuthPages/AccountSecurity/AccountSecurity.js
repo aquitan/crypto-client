@@ -39,7 +39,7 @@ const AccountSecurity = () => {
                 <Form onSubmit={handleSubmit(onChangePassword)}>
                     <h3>Change Password</h3>
                     <Row>
-                        <Input {...register('oldPassword')} name='oldPassword' placeholder='old password'/>
+                        <Input name='oldPassword' placeholder='old password'/>
                         <Input {...register('newPassword')} name='newPassword' placeholder='new password'/>
                     </Row>
                     <Row className='mt-3'>

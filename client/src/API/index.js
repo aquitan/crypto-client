@@ -6,7 +6,6 @@ export const GEO_API = 'https://geolocation-db.com/json/'
 const $api = axios.create({
     baseURL: BASE_URL,
     withCredentials: true,
-    useProxies: 'never'
 })
 export const $geo_api = axios.create({
     baseURL: GEO_API,
@@ -14,7 +13,7 @@ export const $geo_api = axios.create({
 })
 
 $api.interceptors.request.use((config) => {
-    config.headers.Authorizetion = `Bearer ${localStorage.getItem('token')}`
+    config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`
     return config
 })
 

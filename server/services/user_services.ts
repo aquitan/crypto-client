@@ -5,50 +5,48 @@ import DashboardUserDto from '../dtos/dashboard_user_dto'
 
 class UserServices {
 
-  async dashboard(user_Id: number) {
-    const userKyc: any = await database.GetUserKycById(user_Id)
-    console.log('kyc of current user: ' + '\n' + userKyc)
+  async dashboard(user_id: number) {
 
-    const dashboardUserDto: any = new DashboardUserDto(userKyc)
-    console.log('user dto is: ', dashboardUserDto)
+    const userKyc: any = await database.GetUserKycByUserId(user_id)
+    const user: any = await database.GetUserById(user_id)
+    console.log('kyc of current user: ' + '\n' + userKyc[0])
+    console.log('info of current user: ' + '\n' + user[0])
 
-    return { user: dashboardUserDto }
+    if (userKyc[0]) {
+      const dashboardUserDto: any = new DashboardUserDto(userKyc[0])
+      console.log('user dto is: ', dashboardUserDto)
+      return dashboardUserDto
 
-  }
-
-  async personalAreaProfile(user_Id: number) {
-    try {
-      // get accoutn personal info
-      const user = await database.GetUserById(user_Id)
-      console.log('found user is: ', user);
-
-
-      const profileUserDto: any = new ProfileUserDto(user)
-      console.log('user dto is: ', profileUserDto)
-
-      return { user: profileUserDto }
-
-    } catch (e) {
-      console.log(e);
-
+    } else {
+      const dashboardUserDto: any = new DashboardUserDto(user[0])
+      console.log('user dto is: ', dashboardUserDto)
+      return dashboardUserDto
     }
+
+
   }
 
-  async personalAreaSecurityChangePassword(user_id: number, newPassword: string) {
+  async personalAreaProfile(user_id: number) {
     try {
       // get accoutn personal info
-      let user: any = await database.GetUserKycById(user_id)
+      // const user: any = await database.GetUserById(user_id)
+      // console.log('found user is: ', user[0]);
 
-      const oldPassword: string = user.password
-      console.log(oldPassword, ' old user password');
 
-      database.ChangeUserPassword(user.id, newPassword)
+      const userKyc: any = await database.GetUserKycByUserId(user_id)
+      const user: any = await database.GetUserById(user_id)
+      console.log('kyc of current user: ' + '\n' + userKyc[0])
+      console.log('info of current user: ' + '\n' + user[0])
 
-      const updatedUser: any = await database.GetUserKycById(user_id)
+      if (userKyc[0]) {
+        const dashboardUserDto: any = new ProfileUserDto(userKyc[0])
+        console.log('user dto is: ', dashboardUserDto)
+        return dashboardUserDto
 
-      return {
-        user_password: updatedUser.password,
-        status: 'complete'
+      } else {
+        const profileUserDto: any = new ProfileUserDto(user[0])
+        console.log('user dto is: ', profileUserDto)
+        return profileUserDto
       }
 
     } catch (e) {
@@ -57,7 +55,47 @@ class UserServices {
     }
   }
 
-  async personalAreaSendKyc() {
+  async personalAreaChangePassword(user_id: number, newPassword: string) {
+    try {
+      // get accoutn personal info
+      let user: any = await database.GetUserById(user_id)
+
+      const oldPassword: string = user[0].password
+      console.log(oldPassword, ' old user password');
+
+      await database.ChangeUserPassword(user[0].ID, newPassword)
+
+      const updatedUser: any = await database.GetUserById(user_id)
+      console.log('updated pass is: ', updatedUser[0].password);
+
+
+      return true
+
+    } catch (e) {
+      console.log(e);
+
+    }
+  }
+
+  async personalAreaSendKyc(user_id: number, first_name: string, last_name: string, email: string, phone_number: number, date_of_birth: string, document_number: string, main_address: string, city: string, zip_code: number, document_type: string, state?: string, sub_address?: string) {
+    try {
+      const candidate: any = await database.GetUserKycByUserId(user_id)
+
+      if (candidate[0]) {
+        return candidate[0]
+      }
+
+      await database.SaveUserKyc(first_name, last_name, email, phone_number, date_of_birth, document_number, main_address, city, zip_code, document_type, 'pending', user_id, state, sub_address)
+
+      return true
+      // post kyc form
+    } catch (e) {
+      console.log(e);
+
+    }
+  }
+
+  async personalAreaSaveKyc() {
     try {
 
       // post kyc form
@@ -67,20 +105,20 @@ class UserServices {
     }
   }
 
-  async personalAreaGetKyc() {
+  async saveUserLogs(user_id: number, email: string, ipAddress: string, city: string, countryName: string, coordinates: string, currentDate: string, user_action: string, user_domain: string) {
     try {
-
-      // post kyc form
-    } catch (e) {
-      console.log(e);
-
-    }
-  }
-
-  async saveUserLogs() {
-    try {
-
-
+      const userLogs: any = {
+        user_id: user_id,
+        email: email,
+        ip_address: ipAddress,
+        user_city: city,
+        country_name: countryName,
+        location_on_map: coordinates,
+        date_time: currentDate
+      }
+      console.log('recieved logs is: ', userLogs)
+      await database.SaveUserLogs(user_id, email, ipAddress, city, countryName, coordinates, currentDate, user_action, user_domain)
+      return userLogs
 
       // chat with support
     } catch (e) {

@@ -3,19 +3,34 @@ import { validationResult } from 'express-validator'
 import ApiError from '../exeptions/api_error'
 import UserServices from '../services/user_services'
 import telegram from '../api/telegram_api'
-// import database from '../services/database_query'
+
+
+async function saveUserLogs(id: number, email: string, ipAddress: string, city: string, countryName: string, coordinates: string, currentDate: string, userAction: string, userDomain: string) {
+
+  const userLogs: any = await UserServices.saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, userDomain)
+  if (userLogs) {
+    console.log('result is: ', userLogs)
+    return { status: 'logs was recieved.' }
+  }
+  return { status: 'logs was rejected' }
+}
 
 class UserController {
 
   async dashboard(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-
       // get user id & => 
       // get total balance & currency balances 
-      const user: any = await UserServices.dashboard(req.body.id)
+      const { id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, userDomain } = req.body
+      console.log(req.body)
+      const user: any = await UserServices.dashboard(id)
+      console.log('found user is: ', user)
 
-      await telegram.sendMessageDashboard(user.email, user.userDomain)
+      await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, userDomain)
+      await telegram.sendMessageByUserActions(email, 'dashboard', userDomain)
+
       return res.json(user)
+
     } catch (e) {
       next(e)
     }
@@ -24,10 +39,22 @@ class UserController {
   async personalAreaProfile(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       // get accoutn personal info
-      const user: any = await UserServices.personalAreaProfile(req.body.id)
+      const { id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, userDomain } = req.body
+      const user: any = await UserServices.personalAreaProfile(id)
       console.log('found user is: ', user)
+      if (user) {
+        await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, userDomain)
+        await telegram.sendMessageByUserActions(email, userAction, userDomain)
+        return res.json({
+          user: user,
+          status: 'complete'
+        })
+      }
+      return res.json({
+        user: 'not found',
+        status: 'rejected'
+      })
 
-      return res.json(user)
     } catch (e) {
       next(e)
     }
@@ -36,13 +63,70 @@ class UserController {
   async personalAreaSecurity(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       // get accoutn security (2fa, login history)
+
     } catch (e) {
       next(e)
     }
   }
 
-  async verification(req: express.Request, res: express.Response, next: express.NextFunction) {
+  async personalAreaSecurityChangePassword(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
+      // get accoutn security (2fa, login history)
+
+      const result: any = await UserServices.personalAreaChangePassword(req.body.id, req.body.new_password)
+      if (result === true) {
+        console.log('operation status: ', result)
+        return res.json({ status: 'complete' })
+      }
+      console.log('operation status: ', result)
+      return res.json({ status: 'rejected' })
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async personalAreaKyc(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const {
+        id,
+        email,
+        firstName,
+        lastName,
+        phoneNumber,
+        dateOfBirth,
+        documentNumber,
+        mainAddress,
+        zipCode,
+        documentType,
+        ipAddress,
+        state,
+        city,
+        subAddress,
+        countryName,
+        coordinates,
+        currentDate,
+        userAction,
+        userDomain
+      } = req.body
+
+      const result: boolean = await UserServices.personalAreaSendKyc(id, firstName, lastName, email, phoneNumber, dateOfBirth, documentNumber, mainAddress, city, zipCode, documentType, state, subAddress)
+      console.log('operation result is: ', result)
+
+      if (result === true) {
+        await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, userDomain)
+        await telegram.sendMessageByUserActions(email, ' отправил KYC на домене ', userDomain)
+        return res.json({
+          kyc: true,
+          stasus: 'complete'
+        })
+
+      }
+
+      return res.json({
+        kyc: false,
+        stasus: 'rejected'
+      })
 
       // post kyc form
     } catch (e) {
@@ -50,27 +134,18 @@ class UserController {
     }
   }
 
-  async saveUserLogs(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
-      const userLogs: any = {
-        ip_address: req.body.ipAddress,
-        user_city: req.body.city,
-        country_name: req.body.countryName,
-        location_on_map: req.body.coordinates,
-        date_time: req.body.currentDate
-      }
-      console.log('recieved logs is: ', userLogs)
+  // async saveUserLogs(req: express.Request, res: express.Response, next: express.NextFunction) {
+  //   try {
+  //     const { id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, userDomain } = req.body
 
-      if (userLogs) {
-        return res.json('logs was recieved')
-      }
+  //     await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, userDomain)
+  //     await telegram.sendMessageByUserActions(email, userAction, userDomain)
 
-      return res.json('logs was rejected')
-      // post kyc form
-    } catch (e) {
-      next(e)
-    }
-  }
+  //   } catch (e) {
+  //     next(e)
+  //   }
+  // }
+
 
   async getUserLogs() {
     try {

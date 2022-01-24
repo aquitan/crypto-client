@@ -45,11 +45,11 @@ const Users = () => {
                                 Action
                             </Col>
                         </Row>
-                        <UsersTableItem id={'001'} registerDate={'Jan 10, 2022, 2:20 p.m.'} name={'user'} email={'1@1gmail.com'} kycStatus={true} staff={true}/>
-                        <UsersTableItem id={'001'} registerDate={'Jan 10, 2022, 2:20 p.m.'} name={'user'} email={'1@1gmail.com'} kycStatus={true} staff={true}/>
-                        <UsersTableItem id={'001'} registerDate={'Jan 10, 2022, 2:20 p.m.'} name={'user'} email={'1@1gmail.com'} kycStatus={true} staff={true}/>
-                        <UsersTableItem id={'001'} registerDate={'Jan 10, 2022, 2:20 p.m.'} name={'user'} email={'1@1gmail.com'} kycStatus={true} staff={true}/>
-                        <UsersTableItem id={'001'} registerDate={'Jan 10, 2022, 2:20 p.m.'} name={'user'} email={'1@1gmail.com'} kycStatus={true} staff={true}/>
+                        <UsersTableItem id={1} registerDate={'Jan 10, 2022, 2:20 p.m.'} name={'user'} email={'1@1gmail.com'} kycStatus={true} staff={true}/>
+                        <UsersTableItem id={2} registerDate={'Jan 10, 2022, 2:20 p.m.'} name={'user'} email={'1@1gmail.com'} kycStatus={true} staff={true}/>
+                        <UsersTableItem id={3} registerDate={'Jan 10, 2022, 2:20 p.m.'} name={'user'} email={'1@1gmail.com'} kycStatus={true} staff={true}/>
+                        <UsersTableItem id={4} registerDate={'Jan 10, 2022, 2:20 p.m.'} name={'user'} email={'1@1gmail.com'} kycStatus={true} staff={true}/>
+                        <UsersTableItem id={5} registerDate={'Jan 10, 2022, 2:20 p.m.'} name={'user'} email={'1@1gmail.com'} kycStatus={true} staff={true}/>
 
                     </div>
                 </div>

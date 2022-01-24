@@ -19,14 +19,15 @@ router.post('/logout/', authController.logout)
 router.post('/activate/', authController.activate)
 router.get('/refresh/', authController.refresh)
 
-// save user actions 
-router.post('/user_logs/', userController.saveUserLogs)
+// // save user actions 
+// router.post('/user_logs/', userController.saveUserLogs)
 
 // user area routes
-router.get('/dashboard/', authChecker, userController.dashboard)
-router.get('/personal_area/profile/', authChecker, userController.personalAreaProfile)
-router.get('/personal_area/security/', authChecker, userController.personalAreaSecurity)
-router.get('/personal_area/verification/', authChecker, userController.verification)
+router.post('/dashboard/', authChecker, userController.dashboard)
+router.post('/personal_area/profile/', authChecker, userController.personalAreaProfile)
+router.post('/personal_area/security/', authChecker, userController.personalAreaSecurity)
+router.post('/personal_area/security/change_password/', authChecker, userController.personalAreaSecurityChangePassword)
+router.post('/personal_area/verification/', authChecker, userController.personalAreaKyc)
 
 
 // admin - staff routes
