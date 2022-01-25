@@ -15,6 +15,7 @@ import InputMask from 'react-input-mask';
 import FileUpload from "../../../components/UI/FileUpload/FileUpload";
 import {sendKycData} from "../../../queries/sendKycData";
 import KycResults from "./KycResults/KysResults";
+import {getGeoData} from "../../../queries/getSendGeoData";
 
 
 const KYC = ({status}) => {
@@ -24,14 +25,21 @@ const KYC = ({status}) => {
     })
     const [phoneNumber, setPhoneNumber] = useState('')
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
+        const domain_name = window.location.host
         console.log('data....', data)
-        // sendKycData(data)
-        // let phone = phoneNumber.split(/[.,()\/ -]/)
-        // let phoneCleared = phone.join('')
-        // console.log('phone', parseInt(phoneCleared))
-        let newData =
-        console.log('kyc ', data.phoneNumber.split(/[.,()\/ -]/).join(''))
+        console.log('lsdkjflskdflk', await getGeoData())
+        let geodata =  await getGeoData()
+        data.phoneNumber = parseInt(data.phoneNumber.split(/[.,()\/ -]/).join(''))
+        data.city = geodata.city
+        data.ipAddress = geodata.ipAddress
+        data.countryName = geodata.countryName
+        data.coordinates = geodata.coordinates
+        data.userAction = geodata.userAction
+        data.userDomain = domain_name
+        data.currentDate = geodata.currentDate
+        data.id = geodata.id
+        sendKycData(data)
     }
 
    // const onNumberChange = (e) => {
@@ -90,9 +98,9 @@ const KYC = ({status}) => {
 
                                 </Col>
                                 <Col>
-                                    <Input {...register('id', {
+                                    <Input {...register('documentNumber', {
                                         required: true,
-                                    })} name='id' placeholder='ID Number'/>
+                                    })} name='documentNumber' placeholder='ID Number'/>
                                     <ErrorMessage  name='id' errors={errors} render={() => <p className={error.error}>this field is required</p>} />
                                 </Col>
                             </Row>

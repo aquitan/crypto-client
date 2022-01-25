@@ -1,10 +1,16 @@
-import React, {useEffect} from 'react'
-import {Container, Nav} from "react-bootstrap";
-import {Link, Outlet} from "react-router-dom";
+import React, {useEffect, useState} from 'react'
+import {Container, Nav, Row} from "react-bootstrap";
+import {Link, Outlet, useLocation} from "react-router-dom";
 import {store} from "../../index";
+import {getGeoData} from "../../queries/getSendGeoData";
 
 const UserLayout = () => {
+    const [dashboardInfo, setDashboardInfo] = useState('')
+    const appLocation = useLocation()
+
     const getDashboard = async () => {
+        let geodata =  await getGeoData()
+        geodata.userAction = appLocation.pathname
         const res = await fetch('/api/dashboard/', {
             method: 'POST',
             headers: {
@@ -14,6 +20,7 @@ const UserLayout = () => {
             body: JSON.stringify({id: store.userId})
         })
         const data = await res.json()
+        setDashboardInfo(data)
         console.log('data', data)
     }
     useEffect(() => {
@@ -23,7 +30,19 @@ const UserLayout = () => {
         <div className={'layout'}>
             <Container>
                 <Nav>
-                    <Link to='/profile'>Profile</Link>
+                    <Row>
+                        <h3>
+                            Hello
+                            {
+                                dashboardInfo.name ? ' ' + dashboardInfo.name : ' ' + dashboardInfo.email
+                            }
+
+                        </h3>
+                    </Row>
+                    <br/>
+                    <Row>
+                        <Link to='/profile'>Profile</Link>
+                    </Row>
                 </Nav>
                 <Outlet/>
             </Container>

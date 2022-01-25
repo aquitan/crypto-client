@@ -6,6 +6,8 @@ import Input from "../../../components/UI/Input/Input";
 import Modal from "../../../components/UI/Modal/Modal";
 import Select from '../../../components/UI/Select/Select';
 import {useForm} from 'react-hook-form'
+import {getGeoData} from "../../../queries/getSendGeoData";
+import {store} from "../../../index";
 
 const AccountSecurity = () => {
     
@@ -24,8 +26,18 @@ const AccountSecurity = () => {
         setModal2FA(true)
     }
 
-    const onChangePassword = (data) => {
-        console.log(data)
+    const onChangePassword = async (data) => {
+        data.id = store.userId
+        const res = await fetch(`/api/personal_area/security/change_password`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            },
+            body: JSON.stringify(data)
+        })
+        const datares = await res.json()
+        console.log(datares)
     }
 
     const on2FAChange = (e) => {
@@ -40,7 +52,7 @@ const AccountSecurity = () => {
                     <h3>Change Password</h3>
                     <Row>
                         <Input name='oldPassword' placeholder='old password'/>
-                        <Input {...register('newPassword')} name='newPassword' placeholder='new password'/>
+                        <Input {...register('new_password')} name='new_password' placeholder='new password'/>
                     </Row>
                     <Row className='mt-3'>
                         <Button>Confirm</Button>

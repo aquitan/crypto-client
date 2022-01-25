@@ -16,9 +16,11 @@ export const getGeoData = async () => {
             countryName: response.data.country_name,
             coordinates: location,
             currentDate: currentDate,
-            path: store.path
+            userAction: store.path,
+            id: store.userId,
+            email: store.userEmail
         }
-        await sendGeoData(geoDatas)
+        return geoDatas
     } catch (e) {
         console.log('geo api error', e)
     }

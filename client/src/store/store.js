@@ -5,8 +5,8 @@ import {BASE_URL, GEO_API} from "../API";
 import SendLocationService from "../services/SendLocationService";
 
 export default class Store {
-    user = {}
     userId = ''
+    userEmail = ''
     path = ''
     isAuth = false
     isLoading = false
@@ -19,7 +19,6 @@ export default class Store {
     constructor() {
         makeAutoObservable(this)
     }
-
     setAuth(bool) {
         this.isAuth = bool
     }
@@ -44,12 +43,16 @@ export default class Store {
     setPath(str) {
         this.path = str
     }
+    setUserEmail(str) {
+        this.userEmail = str
+    }
 
     async login(email, password, domain_name) {
         try {
             const response = await AuthService.login(email, password, domain_name)
             localStorage.setItem('token', response.data.accessToken)
-            console.log('response login', domain_name)
+            this.setUserId(response.data.user.ID)
+            this.setUserEmail(response.data.user.email)
             this.setIsLoading(true)
             if (response.data.user.isAdmin === 1) {
                 this.setIsAdmin(true)
@@ -66,7 +69,6 @@ export default class Store {
         }
     }
     async registration(email, password, name, domain_name, datetime) {
-
         try {
             const response = await AuthService.registration(email, password, name, domain_name, datetime)
             console.log('register', response)
@@ -101,7 +103,7 @@ export default class Store {
             const response = await axios.get(`${BASE_URL}/refresh`, {withCredentials: true})
             console.log('refresh', response)
             this.setUserId(response.data.user.ID)
-            console.log('userID', this.userId)
+            this.setUserEmail(response.data.user.email)
             localStorage.setItem('token', response.data.accessToken)
             if (response.data.user.isActivated === 1) {
                 this.setIsActivated(true)

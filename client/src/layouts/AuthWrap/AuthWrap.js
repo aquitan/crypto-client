@@ -13,13 +13,14 @@ import {getGeoData} from "../../queries/getSendGeoData";
 const AuthWrap = () => {
     const {store} = useContext(AuthContext)
     const appLocation = useLocation()
-    console.log('apppppppppp', appLocation)
+    console.log('appLocation', appLocation)
 
-    useEffect(() => {
-        store.sendPath(appLocation.pathname)
-        getGeoData()
-        console.log('app location', appLocation)
-    }, [appLocation])
+
+    // useEffect(() => {
+    //     store.sendPath(appLocation.pathname)
+    //     getGeoData()
+    //     console.log('app location', appLocation)
+    // }, [appLocation])
 
     const renderAdminRoutes = () => {
         if (store.isAdmin) {
