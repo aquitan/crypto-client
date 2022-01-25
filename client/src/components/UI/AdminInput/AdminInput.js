@@ -3,7 +3,7 @@ import cls from './AdminInput.module.scss'
 
 const AdminInput = forwardRef((props, ref) => {
     return (
-        <input className={cls.admin_input} {...props} />
+        <input ref={ref} className={cls.admin_input} {...props} />
     )
 })
 

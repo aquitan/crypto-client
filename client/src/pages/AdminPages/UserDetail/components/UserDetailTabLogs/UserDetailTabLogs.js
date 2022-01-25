@@ -3,7 +3,15 @@ import {Col, Form, Row} from "react-bootstrap";
 import cls from '../../UserDetail.module.scss'
 import {Link} from "react-router-dom";
 
-const UserDetailTabLogs = () => {
+const UserDetailTabLogs = ({data}) => {
+    console.log('log user', data)
+    if (!data) {
+        return <h1>Loading</h1>
+    }
+
+    const reversedLogs = data.user_logs.slice(0).reverse()
+    console.log('initial logs', data.user_logs)
+    console.log('reversed', reversedLogs)
     return (
         <div>
             <Col className='col-2'>
@@ -18,12 +26,20 @@ const UserDetailTabLogs = () => {
                 <Col>Location</Col>
                 <Col>IP address</Col>
             </Row>
-            <Row className={cls.users_detail_table_row}>
-                <Col>Jan. 21, 2022, 11:06 a.m.</Col>
-                <Col>Staff User super go to staff index</Col>
-                <Col>Russia Lipetsk, <Link to={'/'} target="_blank" rel="noopener noreferrer">map</Link></Col>
-                <Col>None</Col>
-            </Row>
+            <div className={cls.logs_container}>
+                {
+                    reversedLogs.map((log) => {
+                        return (
+                            <Row key={log.ID} className={cls.users_detail_table_row}>
+                                <Col>{log.action_date}</Col>
+                                <Col>Пользователь <b>{log.email}</b> перешел на <b>{log.user_action}</b> на <b>{log.user_domain}</b></Col>
+                                <Col>{log.country_name} {log.request_city}, <a href={`https://google.com.ua/maps/place/${log.request_city}/@${log.location}`} target="_blank" rel="noopener noreferrer">map</a></Col>
+                                <Col>{log.ip_address}</Col>
+                            </Row>
+                        )
+                    })
+                }
+            </div>
         </div>
     )
 }

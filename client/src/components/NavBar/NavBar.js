@@ -18,10 +18,12 @@ const NavBar = () => {
             <Container>
                 <Navbar>
                     <Nav>
+
                         <NavLink className={cls.link} to='/'>Dashboard</NavLink>
+                        <NavLink className={cls.link} to='/contact-us'>contact us</NavLink>
                     </Nav>
                     {
-                        store.isAdmin ? <NavLink className={cls.link} to='/admin'>Staff</NavLink> : null
+                        store.isStaff ? <NavLink className={cls.link} to='/admin'>Staff</NavLink> : null
                     }
                 </Navbar>
 

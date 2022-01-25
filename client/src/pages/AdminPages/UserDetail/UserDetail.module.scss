@@ -13,3 +13,7 @@
 .bg_black {
   background-color: #000;
 }
+.logs_container {
+  max-height: 500px;
+  overflow-y: auto;
+}

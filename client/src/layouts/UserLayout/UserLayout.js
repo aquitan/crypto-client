@@ -17,7 +17,7 @@ const UserLayout = () => {
                 'Content-Type': 'application/json',
                 'authorization': 'Bearer ' + localStorage.getItem('token')
             },
-            body: JSON.stringify({id: store.userId})
+            body: JSON.stringify(geodata)
         })
         const data = await res.json()
         setDashboardInfo(data)
@@ -33,11 +33,10 @@ const UserLayout = () => {
                     <Row>
                         <h3>
                             Hello
-                            {
-                                dashboardInfo.name ? ' ' + dashboardInfo.name : ' ' + dashboardInfo.email
-                            }
-
                         </h3>
+                        {
+                            dashboardInfo.name ? ' ' + dashboardInfo.name : ' ' + dashboardInfo.email
+                        }
                     </Row>
                     <br/>
                     <Row>
