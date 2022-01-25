@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import UserDetailTab from "./components/UserDetailTab/UserDetailTab";
 import {Container, Tab, Tabs} from "react-bootstrap";
 import UserDetailTabInfo from "./components/UserDetailTabInfo/UserDetailTabInfo";
@@ -8,9 +8,11 @@ import UserDetailTabAct from "./components/UserDetailTabAct/UserDetailTabAct";
 import {store} from "../../../index";
 
 const UserDetail = (props) => {
+    console.log(props)
+    const [userDetail, setUserDetails] = useState('')
 
     const getAdminUsersDetail = async () => {
-        const res = await fetch('/api/staff/users/user_detail', {
+        const res = await fetch('/api/staff/users/user_detail/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -19,7 +21,7 @@ const UserDetail = (props) => {
             body: JSON.stringify({id: store.userId})
         })
         const data = await res.json()
-        console.log('data user', data)
+        setUserDetails(data)
     }
 
     useEffect(() => {
@@ -28,13 +30,13 @@ const UserDetail = (props) => {
 
     return (
         <Container className={cls.app_continer}>
-            <h2>user 1 page</h2>
-            <Tabs defaultActiveKey="info" id="uncontrolled-tab-example" className="mb-3">
+            <h2>user page</h2>
+            <Tabs defaultActiveKey="info" id="uncontrolled-tab-example" className="mb-3 mt-3">
                 <Tab eventKey="info" title="Инфо">
-                    <UserDetailTabInfo />
+                    <UserDetailTabInfo data={userDetail} />
                 </Tab>
                 <Tab eventKey="logs" title="Логи">
-                    <UserDetailTabLogs />
+                    <UserDetailTabLogs data={userDetail.user} />
                 </Tab>
                 <Tab eventKey="actions" title="Действия" >
                     <UserDetailTabAct />

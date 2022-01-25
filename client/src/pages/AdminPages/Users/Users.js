@@ -1,11 +1,32 @@
-import React from 'react'
-import {Card, Col, Container, Row} from "react-bootstrap";
+import React, {useEffect, useState} from 'react'
+import { Col, Container, Row} from "react-bootstrap";
 import UsersInfoCard from "./components/UsersInfoCard/UsersInfoCard";
 import cls from './Users.module.scss'
 import UsersTableItem from "./components/UsersTableItem/UsersTableItem";
+import {store} from "../../../index";
 
 const Users = () => {
-    console.log('users...')
+    const [users, setUsers] = useState('')
+    const getProfile = async () => {
+        const userData = {
+            isAdmin: store.isAdmin,
+            isStaff: store.isStaff
+        }
+        const res = await fetch(`/api/staff/users/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            },
+            body: JSON.stringify(userData)
+        })
+        const data = await res.json()
+        console.log('dataProfile', data)
+    }
+    useEffect(() => {
+        getProfile()
+    }, [])
+
     return (
         <Container>
             <h1 className='mt-4'>Пользователи</h1>
@@ -26,26 +47,17 @@ const Users = () => {
                 <div className="users_table">
                     <div className={cls.users_table_inner}>
                         <Row className={cls.table_header}>
-                            <Col>
-                                #
-                            </Col>
-                            <Col>
-                                Date of registration
-                            </Col>
-                            <Col>
-                                Name
-                            </Col>
-                            <Col>
-                                Email
-                            </Col>
-                            <Col>
-                                KYC
-                            </Col>
-                            <Col>
-                                Action
-                            </Col>
+                            <Col>#</Col>
+                            <Col>Date of registration</Col>
+                            <Col>Name</Col>
+                            <Col>Email</Col>
+                            <Col>KYC</Col>
+                            <Col>Action</Col>
                         </Row>
-                        <UsersTableItem id={1} registerDate={'Jan 10, 2022, 2:20 p.m.'} name={'user'} email={'1@1gmail.com'} kycStatus={true} staff={true}/>
+                        {
+
+                        }
+                        <UsersTableItem id={16} registerDate={'Jan 10, 2022, 2:20 p.m.'} name={'user'} email={'1@1gmail.com'} kycStatus={true} staff={true}/>
                         <UsersTableItem id={2} registerDate={'Jan 10, 2022, 2:20 p.m.'} name={'user'} email={'1@1gmail.com'} kycStatus={true} staff={true}/>
                         <UsersTableItem id={3} registerDate={'Jan 10, 2022, 2:20 p.m.'} name={'user'} email={'1@1gmail.com'} kycStatus={true} staff={true}/>
                         <UsersTableItem id={4} registerDate={'Jan 10, 2022, 2:20 p.m.'} name={'user'} email={'1@1gmail.com'} kycStatus={true} staff={true}/>

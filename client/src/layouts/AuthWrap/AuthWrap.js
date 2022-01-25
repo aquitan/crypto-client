@@ -23,7 +23,7 @@ const AuthWrap = () => {
     // }, [appLocation])
 
     const renderAdminRoutes = () => {
-        if (store.isAdmin) {
+        if (store.isStaff) {
             return (
                 <Route exact path='/admin' element={<AdminLayout/>}>
                     {
@@ -49,7 +49,7 @@ const AuthWrap = () => {
                     }
 
                     {
-                        store.isAdmin ?  <Route path='*' element={<Navigate to={'/admin'}/>} /> : <Route path='*' element={<Navigate to={'/'}/>} />
+                        store.isStaff ?  <Route path='*' element={<Navigate to={'/admin'}/>} /> : <Route path='*' element={<Navigate to={'/'}/>} />
                     }
                 </Routes>
             </div>

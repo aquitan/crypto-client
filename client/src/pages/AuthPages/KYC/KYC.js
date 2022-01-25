@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Col, Container, Row} from "react-bootstrap";
 import Form from "../../../components/UI/Form/Form";
 import Input from "../../../components/UI/Input/Input";
@@ -16,39 +16,36 @@ import FileUpload from "../../../components/UI/FileUpload/FileUpload";
 import {sendKycData} from "../../../queries/sendKycData";
 import KycResults from "./KycResults/KysResults";
 import {getGeoData} from "../../../queries/getSendGeoData";
+import moment from 'moment'
+import {useLocation} from "react-router-dom";
+import InputRadio from "../../../components/UI/InputRadio/InputRadio";
 
 
 const KYC = ({status}) => {
     const [startDate, setStartDate] = useState()
+    const locatioan = useLocation()
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
     })
-    const [phoneNumber, setPhoneNumber] = useState('')
+    let userLocation = locatioan.pathname.split(/[\\\/]/)
 
     const onSubmit = async (data) => {
-        const domain_name = window.location.host
-        console.log('data....', data)
-        console.log('lsdkjflskdflk', await getGeoData())
         let geodata =  await getGeoData()
         data.phoneNumber = parseInt(data.phoneNumber.split(/[.,()\/ -]/).join(''))
         data.city = geodata.city
         data.ipAddress = geodata.ipAddress
         data.countryName = geodata.countryName
         data.coordinates = geodata.coordinates
-        data.userAction = geodata.userAction
-        data.userDomain = domain_name
+        data.userAction = userLocation[userLocation.length - 1]
+        data.dateOfBirth = moment(startDate).format('yyyy/MM/DD')
         data.currentDate = geodata.currentDate
         data.id = geodata.id
         sendKycData(data)
     }
 
-   // const onNumberChange = (e) => {
-   //      setPhoneNumber(e.target.value)
-   // }
-
     const checkKycStatus = (status) => {
         if (status) {
-            return <KycResults status={status} />
+            return <KycResults status={'none'} />
         }
     }
 
@@ -127,6 +124,17 @@ const KYC = ({status}) => {
                                 </Col>
                                 <Col>
                                     <Input {...register('state')} name='state' placeholder='state'/>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    <InputRadio {...register('documentType')} value='Passport' label='Passport' />
+                                </Col>
+                                <Col>
+                                    <InputRadio {...register('documentType')} value='National ID' label='National ID' />
+                                </Col>
+                                <Col>
+                                    <InputRadio {...register('documentType')} value='Driving License' label='Driving License' />
                                 </Col>
                             </Row>
                             {/*<Row className='mt-4'>*/}

@@ -1,9 +1,18 @@
 import Dashboard from "../pages/AuthPages/Dashboard/Dashboard"
 import {
-    ACCOUNT_ROUTE, ERROR,
-    MAIN_ROUTE, PROFILE_ROUTE,
-    REGISTER_CONFIRM, SIGNIN_ROUTE,
-    SIGNUP_ROUTE, USERS_ROUTE, ADMINKYC_ROUTE, ADMINMAIN_ROUTE, USERSDETAIL_ROUTE
+    ACCOUNT_ROUTE,
+    ERROR,
+    MAIN_ROUTE,
+    PROFILE_ROUTE,
+    REGISTER_CONFIRM,
+    SIGNIN_ROUTE,
+    SIGNUP_ROUTE,
+    USERS_ROUTE,
+    ADMINKYC_ROUTE,
+    ADMINMAIN_ROUTE,
+    USERSDETAIL_ROUTE,
+    CONTACTUS_ROUTE,
+    FORGOT_PASSWORD_ROUTE, PROMOCODES_ROUTE, CREATEUSER_ROUTE
 } from "../utils/constants"
 import SignUp from '../pages/NonAuthPages/SignUp/SignUp'
 import SignIn from '../pages/NonAuthPages/SignIn/SignIn'
@@ -16,6 +25,10 @@ import AdminDashboard from "../pages/AdminPages/AdminDashboard/AdminDashboard";
 import Users from "../pages/AdminPages/Users/Users";
 import AdminKYC from "../pages/AdminPages/AdminKYC/AdminKYC";
 import UserDetail from "../pages/AdminPages/UserDetail/UserDetail";
+import ContactUs from "../pages/AuthPages/ContactUs/ContactUs";
+import ForgotPassword from "../pages/NonAuthPages/ForgotPassword/ForgotPassword";
+import Promocodes from "../pages/AdminPages/Promocodes/Promocodes";
+import CreateUser from "../pages/AdminPages/CreateUser/CreateUser";
 
 export const authRoutes = [
     {
@@ -25,6 +38,10 @@ export const authRoutes = [
     {
         path: ACCOUNT_ROUTE,
         component: <MyAccount/>
+    },
+    {
+        path: CONTACTUS_ROUTE,
+        component: <ContactUs/>
     },
     {
         path: ERROR,
@@ -50,6 +67,14 @@ export const adminRoutes = [
         path: USERSDETAIL_ROUTE,
         component: <UserDetail/>
     },
+    {
+        path: PROMOCODES_ROUTE,
+        component: <Promocodes/>
+    },
+    {
+        path: CREATEUSER_ROUTE,
+        component: <CreateUser/>
+    },
 ]
 
 export const publicRoutes = [
@@ -68,6 +93,10 @@ export const publicRoutes = [
     {
         path: REGISTER_CONFIRM,
         component: <RegisterConfirm/>
+    },
+    {
+        path: FORGOT_PASSWORD_ROUTE,
+        component: <ForgotPassword/>
     },
     {
         path: ERROR,

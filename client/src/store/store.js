@@ -12,6 +12,7 @@ export default class Store {
     isLoading = false
     isActivated = false
     isAdmin = false
+    isStaff = false
     showConfirmation = false
     geoData = {}
 
@@ -46,6 +47,9 @@ export default class Store {
     setUserEmail(str) {
         this.userEmail = str
     }
+    setIsStaff(bool) {
+        this.isStaff = bool
+    }
 
     async login(email, password, domain_name) {
         try {
@@ -56,6 +60,9 @@ export default class Store {
             this.setIsLoading(true)
             if (response.data.user.isAdmin === 1) {
                 this.setIsAdmin(true)
+            }
+            if (response.data.user.isStaff === 1) {
+                this.setIsStaff(true)
             }
             if (response.data.user.isActivated === 1) {
                 this.setIsActivated(true)
@@ -68,9 +75,9 @@ export default class Store {
             this.setIsLoading(false)
         }
     }
-    async registration(email, password, name, domain_name, datetime) {
+    async registration(email, password, name, domain_name, datetime, promocode) {
         try {
-            const response = await AuthService.registration(email, password, name, domain_name, datetime)
+            const response = await AuthService.registration(email, password, name, domain_name, datetime, promocode)
             console.log('register', response)
             localStorage.setItem('token', response.data.accessToken)
             this.setUserId(response.data.user.ID)
@@ -107,6 +114,9 @@ export default class Store {
             localStorage.setItem('token', response.data.accessToken)
             if (response.data.user.isActivated === 1) {
                 this.setIsActivated(true)
+            }
+            if (response.data.user.isStaff === 1) {
+                this.setIsStaff(true)
             }
             if (response.data.user.isAdmin === 1) {
                 this.setIsAdmin(true)

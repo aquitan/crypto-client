@@ -4,10 +4,20 @@ import cls from '../../UserDetail.module.scss'
 import Button from "../../../../../components/UI/Button/Button";
 import Input from "../../../../../components/UI/Input/Input";
 import {Link} from "react-router-dom";
+import Preloader from "../../../../../components/UI/Preloader/Preloader";
 
-const UserDetailTabInfo = () => {
+const UserDetailTabInfo = ({data}) => {
+    console.log(data)
     let isPremium = false
     let doubleDep = false
+
+    if (data) {
+
+    }
+    if (!data) {
+        return <h1>Loading</h1>
+    }
+
     return (
         <div>
             <Row>
@@ -17,7 +27,7 @@ const UserDetailTabInfo = () => {
                             ID
                         </Col>
                         <Col className={cls.users_detail_table_col}>
-                            5
+                            {data.user.base_data.ID}
                         </Col>
                     </Row>
                     <Row className={cls.users_detail_table_row}>
@@ -25,7 +35,7 @@ const UserDetailTabInfo = () => {
                             Тип пользователя
                         </Col>
                         <Col className={cls.users_detail_table_col}>
-                            Админ
+                            {data.user.base_data.isAdmin ? 'Админ' : 'Стафф'}
                         </Col>
                     </Row>
                     <Row className={cls.users_detail_table_row}>
@@ -33,7 +43,7 @@ const UserDetailTabInfo = () => {
                             Ник
                         </Col>
                         <Col className={cls.users_detail_table_col}>
-                            super
+                            {data.user.base_data.name ? data.user.base_data.name : '-'}
                         </Col>
                     </Row>
                     <Row className={cls.users_detail_table_row}>
@@ -49,7 +59,7 @@ const UserDetailTabInfo = () => {
                             Домен
                         </Col>
                         <Col className={cls.users_detail_table_col}>
-                            127.0.0.1:8000
+                            {data.user.base_data.domainName}
                         </Col>
                     </Row>
                     <Row className={cls.users_detail_table_row}>
@@ -57,7 +67,7 @@ const UserDetailTabInfo = () => {
                             Email
                         </Col>
                         <Col className={cls.users_detail_table_col}>
-                            1@1gmail.com
+                            {data.user.base_data.email}
                         </Col>
                     </Row>
                     <Row className={cls.users_detail_table_row}>
@@ -65,7 +75,7 @@ const UserDetailTabInfo = () => {
                             Пароль
                         </Col>
                         <Col className={cls.users_detail_table_col}>
-                            None
+                            {data.user.base_data.password}
                         </Col>
                     </Row>
                     <Row className={cls.users_detail_table_row}>
@@ -104,7 +114,7 @@ const UserDetailTabInfo = () => {
                             Email подтверждён
                         </Col>
                         <Col className={cls.users_detail_table_col}>
-                            Саморег
+                            {data.user.base_data.isActivated ? 'Подтвержден' : 'Не подтвержден'}
                         </Col>
                     </Row>
                     <Row className={cls.users_detail_table_row}>
@@ -120,7 +130,7 @@ const UserDetailTabInfo = () => {
                             Зарегистрирован
                         </Col>
                         <Col className={cls.users_detail_table_col}>
-                            Jan. 14, 2022, 2:26 p.m.
+                            {data.user.base_data.dateOfEntry}
                         </Col>
                     </Row>
                     <Row className={cls.users_detail_table_row}>

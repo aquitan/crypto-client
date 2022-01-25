@@ -87,13 +87,16 @@ const SignIn = () => {
                         <FontAwesomeIcon onClick={showPassword} className={cls.eye_icon} icon={isShowPassword ? faEye : faEyeSlash} />
                     </Col>
                 </Row>
-                <Row className='mt-3 align-items-center'>
+                <Row className='mt-3 justify-content-center'>
                     <Col>
                         <Link className={cls.link} to='/signup/'>Create an account</Link>
                     </Col>
-                    <Col>
-                        <Button type='filled'>Sign In</Button>
+                    <Col className='text-end'>
+                        <Link className={cls.link} to='/forgot-password'>Forgot password</Link>
                     </Col>
+                    <Row className='mt-4'>
+                        <Button type='filled'>Sign In</Button>
+                    </Row>
                 </Row>
             </Form>
         </Container>

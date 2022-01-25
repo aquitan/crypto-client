@@ -13,6 +13,7 @@ const Profile = () => {
 
     const getProfile = async () => {
         let geodata =  await getGeoData()
+        console.log('hostname ====', geodata.domainName)
         geodata.userAction = appLocation.pathname
         const res = await fetch(`/api/personal_area/profile/`, {
             method: 'POST',
@@ -48,7 +49,7 @@ const Profile = () => {
                         <AccountSecurity/>
                     </Tab>
                     <Tab eventKey='kyc' title='Verification'>
-                        <KYC status={profileData.status}/>
+                        <KYC status={''}/>
                     </Tab>
                 </Tabs>
 
