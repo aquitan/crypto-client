@@ -10,6 +10,19 @@ class StaffController {
     try {
       // get main info 
 
+      const user_id: any = req.params.id
+      console.log('params is: ', req.params.id);
+      const current_id: number = parseInt(user_id)
+      console.log('int id is: ', current_id);
+
+      const user: any = await staffService.GetUserDetail(current_id)
+      console.log('found user: ', user)
+
+      return res.json({
+        message: 'data will be here',
+        staff_user: user,
+        status: 'complete'
+      })
     } catch (e) {
       next(e)
     }
@@ -20,18 +33,32 @@ class StaffController {
 
       const adminPermission: boolean = req.body.isAdmin
       const staffPremisstion: boolean = req.body.isStaff
+      const userDomain: string = req.body.domainName
       console.log('req body is: ', req.body)
 
       if (adminPermission === true) {
         const usersList: any = await adminService.GetUsersList()
-        return res.json(usersList)
+        if (usersList !== 'error') {
+          return res.json({
+            usersList: usersList,
+            status: 'complete'
+          })
+        }
       }
       if (staffPremisstion === true) {
-        const usersList: any = await staffService.GetUsersList()
-        return res.json(usersList)
+        const usersList: any = await staffService.GetUsersList(userDomain)
+        if (usersList !== 'error') {
+          return res.json({
+            usersList: usersList,
+            status: 'complete'
+          })
+        }
       }
 
-      return res.json({ response: 'permission denied' })
+      return res.json({
+        message: 'permission denied',
+        status: 'rejected'
+      })
 
     } catch (e) {
       next(e)
@@ -41,16 +68,24 @@ class StaffController {
   async userDetail(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
 
-      const user: any = await staffService.GetUserDetail(req.body.id)
+      const user_id: any = req.params.id
+      console.log('params is: ', req.params.id);
+      const current_id: number = parseInt(user_id)
+      console.log('int id is: ', current_id);
+
+      const user: any = await staffService.GetUserDetail(current_id)
       console.log('found user: ', user)
 
       if (user) {
         return res.json({
           user: user,
-          status: 'done'
+          status: 'complete'
         })
       }
-      return res.json({ message: 'some querry error' })
+      return res.json({
+        message: 'some querry error',
+        status: 'rejected'
+      })
 
     } catch (e) {
       next(e)
@@ -62,40 +97,80 @@ class StaffController {
 
       const adminPermission: boolean = req.body.isAdmin
       const staffPremisstion: boolean = req.body.isStaff
-      const userDomain: string = req.body.domain_name
+      const domainName: string = req.body.domainName
       console.log('req body is: ', req.body)
 
-      // if (adminPermission === true) {
-      //   const usersList: any = await adminService.GetKycForStaff(userDomain)
-      //   return res.json(usersList)
-      // }
-      // if (staffPremisstion === true) {
-      //   const usersList: any = await staffService.GetKycForAdmin()
-      //   return res.json(usersList)
-      // }
+      if (adminPermission === true) {
+        const usersKycList: any = await adminService.GetKycForAdmin()
+        if (usersKycList !== 'error') {
+          return res.json({
+            usersKycList: usersKycList,
+            status: 'complete'
+          })
+        }
+      }
+      if (staffPremisstion === true) {
+        const usersKycList: any = await staffService.GetKycForStaff(domainName)
+        if (usersKycList !== 'error') {
+          return res.json({
+            usersKycList: usersKycList,
+            status: 'complete'
+          })
+        }
+      }
 
-      // get all users & their kyc
+      return res.json({
+        message: 'permission denied',
+        status: 'rejected'
+      })
+
     } catch (e) {
       next(e)
-    }
-  }
-
-  async getUserLogs() {
-    try {
-
-      // chat with support
-    } catch (e) {
-      console.log(e)
     }
   }
 
   async createNewUser(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        return res.json({
+          message: 'validation error',
+          status: 'rejected'
+        })
+      }
+
+      const { staff_id, email, password, promocode, domainName, datetime, name } = req.body
+      const result: boolean = await staffService.CreateUserAsStaff(staff_id, email, password, promocode, domainName, datetime, name || '')
+
+      if (result === true) {
+        console.log('operation result is: ', result);
+        return res.json({
+          message: 'user was created',
+          status: 'complete'
+        })
+      }
+
+      return res.json({
+        message: 'some server error',
+        statusCode: 500,
+        status: 'rejected'
+      })
       // create user request
     } catch (e) {
       next(e)
     }
   }
+
+  // async getUserLogs() {
+  //   try {
+
+  //     // chat with support
+  //   } catch (e) {
+  //     console.log(e)
+  //   }
+  // }
+
+
 
   async support(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
@@ -112,14 +187,6 @@ class StaffController {
   //     next(e)
   //   }
   // }
-
-  async logsList(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
-      // get all users logs
-    } catch (e) {
-      next(e)
-    }
-  }
 
   async staffList(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
@@ -193,6 +260,30 @@ class StaffController {
   async promocodeCreate(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       // add promocode & add before sign up
+
+      const { date, value, staff, domain, counter } = req.body
+      console.log('body is: ', req.body);
+
+      const result: any = await staffService.CreatePromocode(date, value, staff, domain, counter)
+      console.log('operation result is: ', result);
+
+      const codesArray: any = result.codeArray
+
+      if (result !== []) {
+        return res.json({
+          message: 'code was created',
+          query_result: true,
+          codesArray: codesArray,
+          status: 'complete'
+        })
+      }
+
+      return res.json({
+        message: 'something went wrong',
+        query_result: false,
+        code: result,
+        status: 'rejected'
+      })
     } catch (e) {
       next(e)
     }
@@ -200,6 +291,51 @@ class StaffController {
 
   async promocodeList(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
+      console.log('req body is: ', req.body)
+
+      const adminPermission: boolean = req.body.isAdmin
+      const staffPremisstion: boolean = req.body.isStaff
+      // const domainName: string = req.body.domainName
+      const staff_id: number = req.body.id
+
+
+      if (adminPermission === true) {
+        const codesList: any = await adminService.GetPromocodeListForAdmin()
+        if (codesList !== 'empty') {
+          return res.json({
+            usersKycList: codesList,
+            status: 'complete'
+          })
+        }
+        return res.json({
+          message: 'something went wrong',
+          status: 'rejected'
+        })
+
+      }
+      if (staffPremisstion === true) {
+        const codesList: any = await staffService.GetPromocodeList(staff_id)
+        if (codesList !== 'empty') {
+          return res.json({
+            usersKycList: codesList,
+            status: 'complete'
+          })
+        }
+        return res.json({
+          message: 'something went wrong',
+          status: 'rejected'
+        })
+      }
+
+      return res.json({
+        message: 'permission denied',
+        status: 'rejected'
+      })
+
+
+
+
+
       // add promocode & add before sign up
     } catch (e) {
       next(e)

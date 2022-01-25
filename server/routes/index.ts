@@ -18,6 +18,7 @@ router.post('/login/', authController.login)
 router.post('/logout/', authController.logout)
 router.post('/activate/', authController.activate)
 router.get('/refresh/', authController.refresh)
+router.post('/forgot_password/', authController.forgotPassword)
 
 // // save user actions 
 // router.post('/user_logs/', userController.saveUserLogs)
@@ -32,11 +33,10 @@ router.post('/personal_area/verification/', authChecker, userController.personal
 
 // admin - staff routes
 router.get('/staff/', staffController.staffDashboard)
-router.get('/staff/users/', staffController.usersList)
+router.post('/staff/users/', staffController.usersList)
 router.get('/staff/users/user_detail', staffController.userDetail)
-router.get('/staff/users/user_logs', staffController.getUserLogs)
-router.get('/staff/users/kyc/', staffController.kycList)
-router.get('/staff/create_user', staffController.createNewUser)
+router.post('/staff/users/kyc/', staffController.kycList)
+router.post('/staff/create_user', body('email').isEmail(), staffController.createNewUser)
 
 
 export default router;

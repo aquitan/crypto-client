@@ -6,9 +6,12 @@ class adminService {
 
   async GetUsersList() {
     const usersList: any = database.GetAllUsersForAdmin()
-    console.log('userBaseData info is: ', usersList)
-
-    return usersList
+    if (usersList !== []) {
+      console.log("list is: ", usersList)
+      return usersList
+    }
+    console.log('list is empty');
+    return 'error'
   }
 
   async GetUserDetail(user_id: number) {
@@ -30,6 +33,21 @@ class adminService {
     }
 
     return UserData
+  }
+
+  async GetKycForAdmin() {
+    const kycList: any = await database.GetKycForAdmin()
+
+    if (kycList !== []) {
+      console.log("list is: ", kycList)
+      return kycList
+    }
+    console.log('list is empty');
+    return 'error'
+  }
+
+  async GetPromocodeListForAdmin() {
+    const promocodeList: any = await database.GetPromocodeListForAdmin()
   }
 
 }

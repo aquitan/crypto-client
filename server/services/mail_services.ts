@@ -29,8 +29,24 @@ class MailService {
       html:
         `
           <div>
-            <h1>Copy this string and past in activation form at the  + '${user_domain}': </h1>
+            <h1>Copy this string and past in activation form at the  '${user_domain}': </h1>
             <p>${link}</p>
+          </div>
+        `
+    })
+  }
+
+  async sendNewPassword(to: string, user_domain: string, password: string) {
+    await this.transporter.sendMail({
+      from: process.env.SMTP_USER,
+      to: to,
+      subject: 'New password at ' + `${user_domain}`,
+      text: '',
+      html:
+        `
+          <div>
+            <h1>Your new password at '${user_domain}': </h1>
+            <p>${password}</p>
           </div>
         `
     })

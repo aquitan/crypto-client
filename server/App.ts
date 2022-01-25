@@ -45,11 +45,13 @@ async function Connection() {
 
 server.listen(PORT, async () => {
   try {
-    const processPID: number = process.pid
-    if (process.pid === processPID) {
-      console.log('port is busy..')
-      process.kill(process.pid)
-    }
+    // const processPID: number = process.pid
+    // if (process.pid === processPID) {
+    //   console.log('port is busy..')
+    //   process.kill(process.pid)
+
+
+    // }
     console.clear()
     await Connection()
   } catch (e: any) {

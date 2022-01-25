@@ -39,9 +39,9 @@ class UserServices {
       console.log('info of current user: ' + '\n' + user[0])
 
       if (userKyc[0]) {
-        const dashboardUserDto: any = new ProfileUserDto(userKyc[0])
-        console.log('user dto is: ', dashboardUserDto)
-        return dashboardUserDto
+        const profileUserDto: any = new ProfileUserDto(userKyc[0])
+        console.log('user dto is: ', profileUserDto)
+        return profileUserDto
 
       } else {
         const profileUserDto: any = new ProfileUserDto(user[0])

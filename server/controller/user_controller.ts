@@ -21,13 +21,13 @@ class UserController {
     try {
       // get user id & => 
       // get total balance & currency balances 
-      const { id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, userDomain } = req.body
+      const { id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName } = req.body
       console.log(req.body)
       const user: any = await UserServices.dashboard(id)
       console.log('found user is: ', user)
 
-      await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, userDomain)
-      await telegram.sendMessageByUserActions(email, ' перешел на dashboard на ', userDomain)
+      await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName)
+      await telegram.sendMessageByUserActions(email, ' перешел на dashboard ', domainName)
 
       return res.json(user)
 
@@ -39,12 +39,12 @@ class UserController {
   async personalAreaProfile(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       // get accoutn personal info
-      const { id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, userDomain } = req.body
+      const { id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName } = req.body
       const user: any = await UserServices.personalAreaProfile(id)
       console.log('found user is: ', user)
       if (user) {
-        await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, userDomain)
-        await telegram.sendMessageByUserActions(email, ` перешел на ${userAction}`, userDomain)
+        await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName)
+        await telegram.sendMessageByUserActions(email, ` перешел на ${userAction}`, domainName)
         return res.json({
           user: user,
           status: 'complete'
@@ -107,7 +107,7 @@ class UserController {
         coordinates,
         currentDate,
         userAction,
-        userDomain
+        domainName
       } = req.body
 
       console.log('req body kyc: ', req.body);
@@ -117,8 +117,8 @@ class UserController {
       console.log('operation result is: ', result)
 
       if (result === true) {
-        await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, userDomain)
-        await telegram.sendMessageByUserActions(email, ' отправил KYC', userDomain)
+        await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName)
+        await telegram.sendMessageByUserActions(email, ' отправил KYC', domainName)
         return res.json({
           kyc: true,
           stasus: 'complete'
@@ -223,6 +223,22 @@ class UserController {
     try {
 
       // current secure deal info & support chat
+    } catch (e) {
+      next(e)
+    }
+  }
+
+
+
+
+  async contactUs(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const userRequest = req.body
+      console.log('body is: ', req.body);
+
+      console.log('req is: ', userRequest);
+
+
     } catch (e) {
       next(e)
     }

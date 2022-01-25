@@ -15,8 +15,8 @@ class AuthController {
         return next(ApiError.BadRequest('validation error', errors.array()))
       }
 
-      const { email, password, name, domain_name, datetime } = req.body
-      const userData = await authService.registration(email, password, domain_name, datetime, name)
+      const { email, password, name, promocode, domain_name, datetime } = req.body
+      const userData = await authService.registration(email, password, promocode, domain_name, datetime, name)
 
       res.cookie('refreshToken', userData.refreshToken, {
         maxAge: 30 * 4 * 60 * 60 * 1000,
@@ -96,6 +96,28 @@ class AuthController {
       next(e)
     }
   }
+
+  async forgotPassword(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const user: any = authService.forgotPassword(req.body.email)
+
+      if (user === true) {
+        return res.json({
+          message: 'new password was send',
+          status: 'complete'
+        })
+      }
+
+      return res.json({
+        message: 'wrong email address',
+        status: 'rejected'
+      })
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
 }
 
 export default new AuthController()

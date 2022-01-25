@@ -3,19 +3,33 @@ import mysql from '../config/mysql_config';
 
 class Database {
 
-  async CreateUser(email: string, password: string, isUser: boolean, isAdmin: boolean, isStaff: boolean, isBanned: boolean, isActivated: boolean, activationLink: string, domainName: string, dateOfEntry: string, name?: string) {
+  async CreateUser(email: string, password: string, isUser: boolean, isAdmin: boolean, isStaff: boolean, isBanned: boolean, isActivated: boolean, activationLink: string, self_registration: string, promocode: string, domainName: string, dateOfEntry: string, name?: string) {
 
     mysql.query(`
         INSERT INTO user_auth 
-        ( email, password, isUser, isAdmin, isStaff, isBanned, isActivated, activationLink, domain_name, date_of_entry, name) 
+        ( email, password, isUser, isAdmin, isStaff, isBanned, isActivated, activationLink, self_registration, promocode, domain_name, date_of_entry, name) 
         VALUES 
-        ( "${email}", "${password}", ${isUser}, ${isAdmin}, ${isStaff}, ${isBanned}, ${isActivated}, "${activationLink}", "${domainName}", "${dateOfEntry}", "${name || ''}")`,
+        ( "${email}", "${password}", ${isUser}, ${isAdmin}, ${isStaff}, ${isBanned}, ${isActivated}, "${activationLink}", "${self_registration}", "${promocode}", "${domainName}", "${dateOfEntry}", "${name || ''}")`,
       (err, result) => {
         if (err) return console.error(err);
         console.log('done')
         console.log('user was created');
 
       })
+  }
+
+  async UpdateUserPassword(email: string, password: string) {
+
+    mysql.query(`
+      UPDATE user_auth
+      SET password = "${password}"
+      WHERE email = "${email}"`,
+      (e: any, result) => {
+        if (e) return console.error(new Error(e))
+        console.log('password was update');
+
+      })
+
   }
 
   async GetUserById(id: number) {
@@ -219,13 +233,13 @@ class Database {
   // staff pages ------------------------------------------------------------------
   //  
 
-  async GetAllUsersForStaff() {
+  async GetAllUsersForStaff(domain_name: string) {
 
     return new Promise((resolve, reject) => {
       mysql.query(`
         SELECT *
-        FROM user_kyc
-        WHERE isAdmin = ${false}`,
+        FROM user_auth
+        WHERE isAdmin = ${false} AND domain_name = "${domain_name}"`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -251,7 +265,37 @@ class Database {
       mysql.query(`
         SELECT *
         FROM user_kyc
-        WHERE user_id = ${user_domain}`,
+        WHERE domain_name = ${user_domain}
+        JOIN user_auth 
+        ON user_auth.domain_name = ${user_domain}
+        WHERE user_auth.isAdmin = ${false}`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async SavePromocode(newCode: string, date: string, value: number, staff_user_id: number, domain: string) {
+    mysql.query(`
+      INSERT INTO user_promocode
+      ( newCode, date, value, staff_user_id, domain)
+      VALUES 
+      ( "${newCode}", "${date}", ${value}, ${staff_user_id}, "${domain}",) `,
+      (err) => {
+        if (err) return console.error(err)
+        console.log('done');
+      })
+  }
+
+  async GetPromocodeListForStaff(staff_id: number) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM user_promocode
+        WHERE staff_user_id = ${staff_id}
+        JOIN domains_list
+        ON user_promocode.staff_user_id = domains_list.domain_owner`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -286,7 +330,31 @@ class Database {
     return new Promise((resolve, reject) => {
       mysql.query(`
         SELECT *
+        FROM user_auth`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async GetKycForAdmin() {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
         FROM user_kyc`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async GetPromocodeListForAdmin() {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM user_promocode`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
