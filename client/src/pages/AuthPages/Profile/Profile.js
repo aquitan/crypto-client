@@ -15,6 +15,7 @@ const Profile = () => {
         let geodata =  await getGeoData()
         let userLocation = location.pathname.split(/[\\\/]/)
         geodata.userAction = userLocation[userLocation.length - 1]
+
         const res = await fetch(`/api/personal_area/profile/`, {
             method: 'POST',
             headers: {

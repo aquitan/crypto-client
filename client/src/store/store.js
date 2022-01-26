@@ -50,9 +50,9 @@ export default class Store {
         this.isStaff = bool
     }
 
-    async login(email, password, domain_name) {
+    async login(email, password, domainName) {
         try {
-            const response = await AuthService.login(email, password, domain_name)
+            const response = await AuthService.login(email, password, domainName)
             localStorage.setItem('token', response.data.accessToken)
             this.setUserId(response.data.user.ID)
             this.setUserEmail(response.data.user.email)
@@ -74,9 +74,9 @@ export default class Store {
             this.setIsLoading(false)
         }
     }
-    async registration(email, password, name, domain_name, datetime, promocode) {
+    async registration(email, password, name, domainName, datetime, promocode) {
         try {
-            const response = await AuthService.registration(email, password, name, domain_name, datetime, promocode)
+            const response = await AuthService.registration(email, password, name, domainName, datetime, promocode)
             console.log('register', response)
             localStorage.setItem('token', response.data.accessToken)
             this.setUserId(response.data.user.ID)

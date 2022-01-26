@@ -20,7 +20,8 @@ import {sendDate} from "../../../queries/getSendGeoData";
 
 const SignUp = () => {
     const navigate = useNavigate()
-    const [promos, setPromos] = useState(['1234', '12345', '123456'])
+    const [promoStatus, setPromoStatus] = useState(false)
+    // const [promos, setPromos] = useState()
     const [isShowPassword, setIsShowPassword] = useState(false)
     const {register, handleSubmit, formState: {errors}, watch} = useForm({
         mode: "onBlur",
@@ -30,49 +31,54 @@ const SignUp = () => {
     password.current = watch('password', '')
 
 
-    // useEffect(() => {
-    //     checkPromocodes()
-    // }, [])
+    useEffect(() => {
+        checkPromocodes()
+    }, [])
 
     const compareStr = (promo, inpVal) => {
-        for (let i = 0; i < promo.length; i++) {
-            if (promo[i] === inpVal) {
-                return true
-            } else if (inpVal === '') {
-                return 'empty'
-            } else {
-                return false
+        if (promoStatus.query_status) {
+            for (let i = 0; i < promo.length-1; i++) {
+                if (promo[i].code === inpVal) {
+                    console.log('promo[i].code', promo[i].code)
+                    return inpVal
+                } else if (inpVal === '') {
+                    return 'empty'
+                } else {
+                    return false
+                }
             }
-        }
+        } return 'empty'
     }
 
+    console.log('promoStatus.promocodeList', promoStatus.promocodeList)
+
     const onSubmit = (data, e) => {
-        const domain_name = window.location.host
+        const domainName = window.location.host
         const timeDate = new Date()
         const datetime = timeDate.getFullYear() + '-' + timeDate.getMonth()+1 + '-' + timeDate.getDate() + ' ' + timeDate.getHours() + ':' + timeDate.getMinutes() + ':' + timeDate.getSeconds()
         e.preventDefault()
-        compareStr(promos, data.promocode)
-        const promocode = compareStr(promos, data.promocode)
-        console.log('promocode', promocode)
-        console.log(data)
-        // sendDate()
-        // store.registration(data.email, data.password, data.name, domain_name, datetime)
+        const promocode = compareStr(promoStatus.promocodeList, data.promocode)
+
+
+        store.registration(data.email, data.password, data.name, domainName, datetime, promocode)
     }
 
     const checkPromocodes = async () => {
-        const checkPromoObj = {
-
+        const obj = {
+            domainName: window.location.host
         }
-        const res = await fetch('/api/staff/get_promocode_list/', {
+        console.log(obj)
+        const res = await fetch('/api/get_promocodes_before_signup/', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application-json',
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
+                'Content-Type': 'application/json',
             },
-            body: JSON.stringify(checkPromoObj)
+            body: JSON.stringify(obj)
         })
-        const promos = await res
-        setPromos(promos)
+        const status = await res.json()
+        console.log('status', status)
+        setPromoStatus(status)
+
     }
 
     const showPassword = () => {
@@ -97,13 +103,13 @@ const SignUp = () => {
                             <ErrorMessage  name='email' errors={errors} render={() => <p className={cls.error}>email is invalid</p>} />
                         </Col>
                         <Col>
-                            <Input {...register('displayName', {
+                            <Input {...register('name', {
                                 required: false,
                                 minLength: {
                                     value: 5,
                                     message: 'Minimal length must be over 5 characters'
                                 }
-                            })}  name='displayName' placeholder='display name' id='displayName' />
+                            })}  name='name' placeholder='display name' id='displayName' />
                             <ErrorMessage name='displayName' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
                         </Col>
                     </Row>
@@ -136,7 +142,7 @@ const SignUp = () => {
                     </Row>
                 </FormGroup>
                 {
-                    promos ?
+                    promoStatus.query_status ?
                         <FormGroup>
                             <Row className='mt-3'>
                                 <Col className={cls.relative}>
