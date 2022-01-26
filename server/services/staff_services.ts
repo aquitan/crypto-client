@@ -83,20 +83,23 @@ class staffService {
     console.log('counter is: ', counter);
 
 
-    // if (counter >= 1 && counter <= 10) {
-    //   let codeArray: any = []
-    //   for (let i = 0; i <= counter; i++) {
-    //     const code: string = await codeGenerator(8)
-    //     // await database.SavePromocode(codeArray[i)
-    //     await database.SavePromocode(`${i}`, date, value, staff_id, domain)
-    //     codeArray.push(code)
+    if (counter > 1 && counter <= 10) {
+      let codeArray: any = []
+      for (let i = 0; i <= counter; i++) {
+        const code: string = await codeGenerator(8)
+        // await database.SavePromocode(codeArray[i)
+        codeArray.push(code)
+      }
+      console.log('promocodes is: ', codeArray);
 
-    //   }
-    //   console.log('promocodes is: ', codeArray);
+      for (let i = 0; i <= codeArray.length - 1; i++) {
+        console.log('code was saved to db: ', codeArray[i]);
 
-    //   // await database.SavePromocode(codeArray[i])
-    //   return codeArray
-    // }
+        await database.SavePromocode(codeArray[i], date, value, staff_id, domain)
+      }
+      // await database.SavePromocode(codeArray[i])
+      return codeArray
+    }
 
     const newCode: string = await codeGenerator(8)
     console.log('generated code is: ', newCode);
