@@ -9,12 +9,12 @@ import {useLocation} from "react-router-dom";
 
 const Profile = () => {
     const [profileData, setProfileData] = useState('')
-    const appLocation = useLocation()
+    const location = useLocation()
 
     const getProfile = async () => {
         let geodata =  await getGeoData()
-        console.log('hostname ====', geodata.domainName)
-        geodata.userAction = appLocation.pathname
+        let userLocation = location.pathname.split(/[\\\/]/)
+        geodata.userAction = userLocation[userLocation.length - 1]
         const res = await fetch(`/api/personal_area/profile/`, {
             method: 'POST',
             headers: {

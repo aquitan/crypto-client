@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react'
+import React, {useContext} from 'react'
 import cls from "../../components/AppRouter/AppRouter.module.scss";
 import NavBar from "../../components/NavBar/NavBar";
 import {Link, Navigate, Route, Routes, useLocation} from "react-router-dom";
@@ -8,19 +8,9 @@ import AdminLayout from "../AdminLayout/AdminLayout";
 import Footer from "../../components/Footer/Footer";
 import {v4 as uuid} from 'uuid'
 import {AuthContext} from "../../index";
-import {getGeoData} from "../../queries/getSendGeoData";
 
 const AuthWrap = () => {
     const {store} = useContext(AuthContext)
-    const appLocation = useLocation()
-    console.log('appLocation', appLocation)
-
-
-    // useEffect(() => {
-    //     store.sendPath(appLocation.pathname)
-    //     getGeoData()
-    //     console.log('app location', appLocation)
-    // }, [appLocation])
 
     const renderAdminRoutes = () => {
         if (store.isStaff) {

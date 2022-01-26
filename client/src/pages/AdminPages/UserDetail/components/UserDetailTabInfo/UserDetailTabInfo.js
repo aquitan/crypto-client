@@ -1,19 +1,13 @@
 import React from 'react'
 import {Col, Row, Form} from "react-bootstrap";
 import cls from '../../UserDetail.module.scss'
-import Button from "../../../../../components/UI/Button/Button";
-import Input from "../../../../../components/UI/Input/Input";
 import {Link} from "react-router-dom";
-import Preloader from "../../../../../components/UI/Preloader/Preloader";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {faCheckCircle, faTimesCircle} from '@fortawesome/free-solid-svg-icons'
+
 
 const UserDetailTabInfo = ({data}) => {
-    console.log(data)
-    let isPremium = false
-    let doubleDep = false
 
-    if (data) {
-
-    }
     if (!data) {
         return <h1>Loading</h1>
     }
@@ -43,7 +37,7 @@ const UserDetailTabInfo = ({data}) => {
                             Ник
                         </Col>
                         <Col className={cls.users_detail_table_col}>
-                            {data.user.base_data.name ? data.user.base_data.name : '-'}
+                            {data.user.base_data.name ? data.user.base_data.name : <FontAwesomeIcon color={'tomato'} icon={faTimesCircle} />}
                         </Col>
                     </Row>
                     <Row className={cls.users_detail_table_row}>
@@ -59,7 +53,7 @@ const UserDetailTabInfo = ({data}) => {
                             Домен
                         </Col>
                         <Col className={cls.users_detail_table_col}>
-                            {data.user.base_data.domainName}
+                            {data.user.base_data.domain_name}
                         </Col>
                     </Row>
                     <Row className={cls.users_detail_table_row}>
@@ -114,7 +108,7 @@ const UserDetailTabInfo = ({data}) => {
                             Email подтверждён
                         </Col>
                         <Col className={cls.users_detail_table_col}>
-                            {data.user.base_data.isActivated ? 'Подтвержден' : 'Не подтвержден'}
+                            {data.user.base_data.isActivated ? <FontAwesomeIcon color={'green'} icon={faCheckCircle} /> : <FontAwesomeIcon color={'tomato'} icon={faTimesCircle} />}
                         </Col>
                     </Row>
                     <Row className={cls.users_detail_table_row}>
@@ -130,7 +124,7 @@ const UserDetailTabInfo = ({data}) => {
                             Зарегистрирован
                         </Col>
                         <Col className={cls.users_detail_table_col}>
-                            {data.user.base_data.dateOfEntry}
+                            {data.user.base_data.date_of_entry}
                         </Col>
                     </Row>
                     <Row className={cls.users_detail_table_row}>
@@ -152,7 +146,7 @@ const UserDetailTabInfo = ({data}) => {
                             Привёл
                         </Col>
                         <Col className={cls.users_detail_table_col}>
-                            Саморег
+                            {data.user.base_data.self_registration === 'self registred' ? 'Саморег' : data.user.base_data.self_registration}
                         </Col>
                     </Row>
                     <Row className={cls.users_detail_table_row}>
@@ -160,7 +154,7 @@ const UserDetailTabInfo = ({data}) => {
                             2FA
                         </Col>
                         <Col className={cls.users_detail_table_col}>
-                            Off
+                            <FontAwesomeIcon color={'tomato'} icon={faTimesCircle} />
                         </Col>
                     </Row>
                     <Row className={cls.users_detail_table_row}>
