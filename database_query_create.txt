@@ -16,8 +16,6 @@ CREATE TABLE staff_logs (ID INT AUTO_INCREMENT PRIMARY KEY, staff_email VARCHAR(
 
 CREATE TABLE used_promocode (ID INT AUTO_INCREMENT PRIMARY KEY, code VARCHAR(30) NOT NULL, date VARCHAR(50) NOT NULL, value FLOAT NOT NULL, staff_user_id INT NOT NULL, domain_name VARCHAR(255) NOT NULL);
 
-usedPromocode[0].code, usedPromocode[0].date, usedPromocode[0].value, usedPromocode[0].staff_user_id, usedPromocode[0].domain_name, usedPromocode[0].ID
-
 
 ** use it later **
 

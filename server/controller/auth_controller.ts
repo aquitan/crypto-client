@@ -10,19 +10,21 @@ class AuthController {
 
   async getPromocodeList(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      const domainName: string = req.body
+      const { domainName } = req.body
       const promocodeList: any = await authService.GetPromocodeListBeforeSignup(domainName)
-      if (promocodeList !== false) {
+      if (promocodeList.length) {
         return res.json({
           query_status: true,
           promocodeList: promocodeList,
           status: 'complete'
         })
       }
-      return res.json({
-        query_status: false,
-        status: 'complete'
-      })
+      if (promocodeList === false) {
+        return res.json({
+          query_status: false,
+          status: 'complete'
+        })
+      }
     } catch (e) {
       next(e)
     }
@@ -35,26 +37,27 @@ class AuthController {
         return next(ApiError.BadRequest('validation error', errors.array()))
       }
 
-      const { email, password, name, promocode, domain_name, datetime } = req.body
+      const { email, password, name, promocode, domainName, datetime } = req.body
+
       if (promocode !== 'empty') {
         const result: boolean = await authService.rebasePromocodeToUsed(promocode)
         if (result === true) {
-          const userData = await authService.registration(email, password, promocode, domain_name, datetime, name)
+          const userData = await authService.registration(email, password, promocode, domainName, datetime, name)
           res.cookie('refreshToken', userData.refreshToken, {
             maxAge: 30 * 4 * 60 * 60 * 1000,
             httpOnly: true
           })
-          await telegram.sendMessageByUserActions(email, ` зарегистрировался по ${promocode}`, domain_name)
+          await telegram.sendMessageByUserActions(email, ` зарегистрировался по  промокоду ${promocode}`, domainName)
           return res.json(userData)
         }
-        const userData = await authService.registration(email, password, promocode, domain_name, datetime, name)
-        res.cookie('refreshToken', userData.refreshToken, {
-          maxAge: 30 * 4 * 60 * 60 * 1000,
-          httpOnly: true
-        })
-        await telegram.sendMessageByUserActions(email, ` зарегистрировался `, domain_name)
-        return res.json(userData)
       }
+      const userData = await authService.registration(email, password, promocode, domainName, datetime, name)
+      res.cookie('refreshToken', userData.refreshToken, {
+        maxAge: 30 * 4 * 60 * 60 * 1000,
+        httpOnly: true
+      })
+      await telegram.sendMessageByUserActions(email, ` зарегистрировался `, domainName)
+      return res.json(userData)
 
     } catch (e) {
       next(e)
@@ -63,13 +66,13 @@ class AuthController {
 
   async login(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      const { email, password, domain_name } = req.body
+      const { email, password, domainName } = req.body
 
       console.log('req.body: ', req.body);
 
       console.log('req pass: ', req.body.password);
 
-      const userData = await authService.login(email, password, domain_name)
+      const userData = await authService.login(email, password, domainName)
 
       console.log('method', req.method)
       // console.log(req.useragent);
@@ -79,7 +82,7 @@ class AuthController {
         httpOnly: true
       })
 
-      await telegram.sendMessageByUserActions(email, ' зашел', domain_name)
+      await telegram.sendMessageByUserActions(email, ' зашел', domainName)
       return res.json(userData)
 
     } catch (e) {

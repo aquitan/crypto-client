@@ -6,8 +6,8 @@ class Database {
   async GetPromocodeListBeforeSignup(domain_name: string) {
     return new Promise((resolve, reject) => {
       mysql.query(`
-        SELECT * 
-        FROM user_promocode
+        SELECT code 
+        FROM used_promocode
         WHERE domain_name = "${domain_name}"`,
         (e: any, result) => {
           if (e) reject(new Error(e))
@@ -352,9 +352,22 @@ class Database {
     })
   }
 
+  async DeletePromocodeFromUserPromocode(code: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        DELETE FROM user_promocode
+        WHERE code = "${code}"`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+
   async SaveUsedPromocode(code: string, date: string, value: number, staff_id: number, domain_name: string) {
     mysql.query(`
-      INSERT INTO user_promocodes
+      INSERT INTO user_promocode
       ( code, date, value, staff_id, domain_name)
       VALUES 
       ( "${code}", "${date}", ${value}, ${staff_id}, "${domain_name}" )`,

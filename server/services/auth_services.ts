@@ -12,10 +12,14 @@ import passwordGenerator from '../api/password_generator'
 class AuthService {
 
   async GetPromocodeListBeforeSignup(domainName: string) {
-    const codeArray: any = database.GetPromocodeListBeforeSignup(domainName)
+    const codeArray: any = await database.GetPromocodeListBeforeSignup(domainName)
     console.log('code array is: ', codeArray);
-    if (codeArray !== []) {
+
+    if (codeArray.length > 0) {
       return codeArray
+    }
+    if (!codeArray.length) {
+      return false
     }
     console.log('some error');
     return false
@@ -31,10 +35,6 @@ class AuthService {
     // save real password to db + hashed
     // const hashPassword = await bcrypt.hash(password, 6)
     const activationLink: string = await passwordGenerator(18)
-
-    if (promocode === 'empty') {
-      await database.CreateUser(email, password, true, false, false, false, false, activationLink, 'self registred', 'empty', domain_name, datetime, name || '',)
-    }
     await database.CreateUser(email, password, true, false, false, false, false, activationLink, 'self registred', promocode, domain_name, datetime, name || '',)
     const user: any = await database.GetUserByEmail(email)
 
@@ -60,9 +60,10 @@ class AuthService {
     console.log('recieved code is: ', usedPromocode[0]);
 
     await database.SaveUsedPromocode(usedPromocode[0].code, usedPromocode[0].date, usedPromocode[0].value, usedPromocode[0].staff_user_id, usedPromocode[0].domain_name)
+    await database.DeletePromocodeFromUserPromocode(promocode)
     const getUsedPromocode: any = await database.GetUsedPromocode(usedPromocode[0].code)
 
-    if (getUsedPromocode[0] !== []) {
+    if (getUsedPromocode !== []) {
       return true
     }
     console.log('some error');
