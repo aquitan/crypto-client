@@ -4,6 +4,7 @@ import {AuthContext} from "../../index";
 import { NavLink } from "react-router-dom";
 import cls from './NavBar.module.scss'
 import {observer} from "mobx-react-lite";
+import Dropdown from "../UI/Dropdown/Dropdown";
 
 const NavBar = () => {
     const {store} = useContext(AuthContext)
@@ -18,9 +19,7 @@ const NavBar = () => {
             <Container>
                 <Navbar>
                     <Nav>
-
-                        <NavLink className={cls.link} to='/'>Dashboard</NavLink>
-                        <NavLink className={cls.link} to='/contact-us'>contact us</NavLink>
+                        <Dropdown />
                     </Nav>
                     {
                         store.isStaff ? <NavLink className={cls.link} to='/admin'>Staff</NavLink> : null

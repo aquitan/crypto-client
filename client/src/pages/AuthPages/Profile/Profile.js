@@ -49,7 +49,7 @@ const Profile = () => {
                         <AccountSecurity/>
                     </Tab>
                     <Tab eventKey='kyc' title='Verification'>
-                        <KYC status={''}/>
+                        <KYC status={profileData.user}/>
                     </Tab>
                 </Tabs>
 

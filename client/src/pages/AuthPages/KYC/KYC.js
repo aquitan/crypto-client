@@ -46,7 +46,7 @@ const KYC = ({status}) => {
 
     const checkKycStatus = (status) => {
         if (status) {
-            return <KycResults status={'none'} />
+            return <KycResults status={status} />
         }
     }
 
@@ -54,9 +54,9 @@ const KYC = ({status}) => {
     return (
         <Container>
             {
-                status
+                status.kyc_status
                     ?
-                    checkKycStatus(status)
+                    checkKycStatus(status.kyc_status)
                     :
                     <>
                         <h1>Verify your ID</h1>

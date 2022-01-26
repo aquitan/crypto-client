@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react'
+import React, {useContext, useEffect, useRef, useState} from 'react'
 import Button from '../../../components/UI/Button/Button'
 import Form from '../../../components/UI/Form/Form'
 import Input from '../../../components/UI/Input/Input'
@@ -20,24 +20,59 @@ import {sendDate} from "../../../queries/getSendGeoData";
 
 const SignUp = () => {
     const navigate = useNavigate()
+    const [promos, setPromos] = useState(['1234', '12345', '123456'])
     const [isShowPassword, setIsShowPassword] = useState(false)
     const {register, handleSubmit, formState: {errors}, watch} = useForm({
         mode: "onBlur",
     })
-
+    const {store} = useContext(AuthContext)
     const password = useRef({})
     password.current = watch('password', '')
 
-    const {store} = useContext(AuthContext)
+
+    // useEffect(() => {
+    //     checkPromocodes()
+    // }, [])
+
+    const compareStr = (promo, inpVal) => {
+        for (let i = 0; i < promo.length; i++) {
+            if (promo[i] === inpVal) {
+                return true
+            } else if (inpVal === '') {
+                return 'empty'
+            } else {
+                return false
+            }
+        }
+    }
 
     const onSubmit = (data, e) => {
         const domain_name = window.location.host
         const timeDate = new Date()
         const datetime = timeDate.getFullYear() + '-' + timeDate.getMonth()+1 + '-' + timeDate.getDate() + ' ' + timeDate.getHours() + ':' + timeDate.getMinutes() + ':' + timeDate.getSeconds()
-        console.log(data)
         e.preventDefault()
-        sendDate()
-        store.registration(data.email, data.password, data.name, domain_name, datetime)
+        compareStr(promos, data.promocode)
+        const promocode = compareStr(promos, data.promocode)
+        console.log('promocode', promocode)
+        console.log(data)
+        // sendDate()
+        // store.registration(data.email, data.password, data.name, domain_name, datetime)
+    }
+
+    const checkPromocodes = async () => {
+        const checkPromoObj = {
+
+        }
+        const res = await fetch('/api/staff/get_promocode_list/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application-json',
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            },
+            body: JSON.stringify(checkPromoObj)
+        })
+        const promos = await res
+        setPromos(promos)
     }
 
     const showPassword = () => {
@@ -100,6 +135,17 @@ const SignUp = () => {
                         </Col>
                     </Row>
                 </FormGroup>
+                {
+                    promos ?
+                        <FormGroup>
+                            <Row className='mt-3'>
+                                <Col className={cls.relative}>
+                                    <Input {...register('promocode')} placeholder='enter promocode'/>
+                                </Col>
+                            </Row>
+                        </FormGroup>
+                        : null
+                }
                 <FormGroup>
                     <Row className='mt-3'>
                         <Col>

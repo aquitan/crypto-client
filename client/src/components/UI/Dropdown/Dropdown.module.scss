@@ -1,0 +1,22 @@
+.dropdown {
+  color: #cecece;
+  &_head {
+    border: 1px solid #cecece;
+    padding: 5px 10px;
+    margin-right: 20px;
+  }
+  &_body {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    background-color: rgb(33,37,41);
+    padding: 5px 10px;
+  }
+  &_link {
+    text-decoration: none;
+    color: #cecece;
+    &:hover {
+      color: #03C9A9;
+    }
+  }
+}
