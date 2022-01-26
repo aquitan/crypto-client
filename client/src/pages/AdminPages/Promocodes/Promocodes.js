@@ -25,7 +25,7 @@ const Promocodes = () => {
                             <AdminInput placeholder='Кол-во промокодов' />
                         </Col>
                         <Col>
-                            <AdminInput placeholder='Сумма вознаграждения до' />
+                            <AdminInput placeholder='Выбрать домен' />
                         </Col>
                     </Row>
                     <Row className='mb-4'>

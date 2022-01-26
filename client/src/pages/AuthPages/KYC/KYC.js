@@ -24,6 +24,7 @@ import InputRadio from "../../../components/UI/InputRadio/InputRadio";
 const KYC = ({status}) => {
     const [startDate, setStartDate] = useState()
     const locatioan = useLocation()
+
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
     })

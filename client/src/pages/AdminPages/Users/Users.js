@@ -10,7 +10,8 @@ const Users = () => {
     const getProfile = async () => {
         const userData = {
             isAdmin: store.isAdmin,
-            isStaff: store.isStaff
+            isStaff: store.isStaff,
+            domainName: window.location.host
         }
         const res = await fetch(`/api/staff/users/`, {
             method: 'POST',
@@ -21,11 +22,15 @@ const Users = () => {
             body: JSON.stringify(userData)
         })
         const data = await res.json()
+        const usersReversed = data.usersList.slice(0).reverse()
+        setUsers(usersReversed)
         console.log('dataProfile', data)
     }
     useEffect(() => {
         getProfile()
     }, [])
+
+
 
     return (
         <Container>
@@ -55,13 +60,15 @@ const Users = () => {
                             <Col>Action</Col>
                         </Row>
                         {
-
+                            users
+                                ?
+                                users.map(user => {
+                                    return(
+                                        <UsersTableItem id={user.ID} registerDate={user.date_of_entry} name={user.name} email={user.email} kycStatus={true} staff={true}/>
+                                    )
+                                })
+                                : <h1>Loading</h1>
                         }
-                        <UsersTableItem id={16} registerDate={'Jan 10, 2022, 2:20 p.m.'} name={'user'} email={'1@1gmail.com'} kycStatus={true} staff={true}/>
-                        <UsersTableItem id={2} registerDate={'Jan 10, 2022, 2:20 p.m.'} name={'user'} email={'1@1gmail.com'} kycStatus={true} staff={true}/>
-                        <UsersTableItem id={3} registerDate={'Jan 10, 2022, 2:20 p.m.'} name={'user'} email={'1@1gmail.com'} kycStatus={true} staff={true}/>
-                        <UsersTableItem id={4} registerDate={'Jan 10, 2022, 2:20 p.m.'} name={'user'} email={'1@1gmail.com'} kycStatus={true} staff={true}/>
-                        <UsersTableItem id={5} registerDate={'Jan 10, 2022, 2:20 p.m.'} name={'user'} email={'1@1gmail.com'} kycStatus={true} staff={true}/>
 
                     </div>
                 </div>

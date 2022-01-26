@@ -6,20 +6,23 @@ import cls from '../../../components/AppRouter/AppRouter.module.scss'
 import UserDetailTabLogs from "./components/UserDetailTabLogs/UserDetailTabLogs";
 import UserDetailTabAct from "./components/UserDetailTabAct/UserDetailTabAct";
 import {store} from "../../../index";
+import {useParams} from "react-router-dom";
 
-const UserDetail = (props) => {
-    console.log(props)
+const UserDetail = () => {
+
     const [userDetail, setUserDetails] = useState('')
+    const params = useParams()
 
     const getAdminUsersDetail = async () => {
-        const res = await fetch('/api/staff/users/user_detail/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
-            },
-            body: JSON.stringify({id: store.userId})
-        })
+        // const res = await fetch('/api/staff/users/user_detail/', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         'Authorization': 'Bearer ' + localStorage.getItem('token')
+        //     },
+        //     body: JSON.stringify({id: store.userId})
+        // })
+    const res = await fetch(`/api/staff/users/user_detail/${params.id}`)
         const data = await res.json()
         setUserDetails(data)
     }

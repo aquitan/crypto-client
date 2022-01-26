@@ -1,7 +1,8 @@
 import React from 'react'
 import {Col, Form, Row} from "react-bootstrap";
 import cls from '../../UserDetail.module.scss'
-import {Link} from "react-router-dom";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faMapMarkedAlt} from "@fortawesome/free-solid-svg-icons";
 
 const UserDetailTabLogs = ({data}) => {
     console.log('log user', data)
@@ -33,7 +34,12 @@ const UserDetailTabLogs = ({data}) => {
                             <Row key={log.ID} className={cls.users_detail_table_row}>
                                 <Col>{log.action_date}</Col>
                                 <Col>Пользователь <b>{log.email}</b> перешел на <b>{log.user_action}</b> на <b>{log.user_domain}</b></Col>
-                                <Col>{log.country_name} {log.request_city}, <a href={`https://google.com.ua/maps/place/${log.request_city}/@${log.location}`} target="_blank" rel="noopener noreferrer">map</a></Col>
+                                <Col>{log.country_name} {log.request_city},
+                                    <a href={`https://google.com.ua/maps/place/${log.request_city}/@${log.location}`}
+                                       target="_blank" rel="noopener noreferrer">
+                                        <FontAwesomeIcon icon={faMapMarkedAlt} color='green' />
+                                    </a>
+                                </Col>
                                 <Col>{log.ip_address}</Col>
                             </Row>
                         )

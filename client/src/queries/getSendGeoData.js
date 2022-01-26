@@ -11,6 +11,7 @@ export const getGeoData = async () => {
         const response = await axios.get(GEO_API)
         let location = response.data.latitude.toString() + ', ' + response.data.longitude.toString()
         const domain_name = window.location.host
+        let userLocation = store.path.split(/[\\\/]/)
         console.log('window host', domain_name)
         let geoDatas = {
             ipAddress: response.data.IPv4,
@@ -18,7 +19,7 @@ export const getGeoData = async () => {
             countryName: response.data.country_name,
             coordinates: location,
             currentDate: currentDate,
-            userAction: store.path,
+            userAction: userLocation[userLocation.length - 1],
             id: store.userId,
             email: store.userEmail,
             domainName: domain_name
