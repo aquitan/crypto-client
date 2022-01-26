@@ -25,13 +25,26 @@ class adminService {
     const userLogsData: any = database.GetLogsByUserId(user_id)
     console.log('userLogsData info is: ', userLogsData)
 
+    if (userKycData === []) {
+      const UserData: any = {
+        base_data: userBaseData[0],
+        user_kyc: false,
+        user_logs: userLogsData
+      }
+      console.log('data from service: ', UserData);
+      return UserData
+    }
 
     const UserData: any = {
-      base_data: userBaseData,
-      user_kyc: userKycData,
+      base_data: userBaseData[0],
+      user_kyc: userKycData[0],
       user_logs: userLogsData
     }
 
+    // get user balances + get 2fa status + last deposit date 
+    // get user owner name + get recruiter  
+
+    console.log('data from service: ', UserData);
     return UserData
   }
 
@@ -48,6 +61,8 @@ class adminService {
 
   async GetPromocodeListForAdmin() {
     const promocodeList: any = await database.GetPromocodeListForAdmin()
+    console.log('promo list is: ', promocodeList);
+    return promocodeList
   }
 
 }

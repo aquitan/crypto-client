@@ -20,26 +20,32 @@ class staffService {
     const userBaseData: any = await database.GetUserById(user_id)
     console.log('userBaseData info is: ', userBaseData)
 
-    let userKycData: any = await database.GetUserKycByUserId(user_id)
+    const userKycData: any = await database.GetUserKycByUserId(user_id)
     console.log('userKycData info is: ', userKycData)
-
-    if (userKycData === []) {
-      userKycData = 'user haven`t kyc'
-    }
 
     const userLogsData: any = await database.GetLogsByUserId(user_id)
     console.log('userLogsData info is: ', userLogsData)
 
-    // get user balances + get 2fa status + last deposit date 
-    // get user owner name + get recruiter  
+    if (userKycData === []) {
+      const UserData: any = {
+        base_data: userBaseData[0],
+        user_kyc: false,
+        user_logs: userLogsData
+      }
+      console.log('data from service: ', UserData);
+      return UserData
+    }
 
     const UserData: any = {
       base_data: userBaseData[0],
-      user_kyc: userKycData[0] || userKycData,
+      user_kyc: userKycData[0],
       user_logs: userLogsData
     }
-    console.log('data from service: ', UserData);
 
+    // get user balances + get 2fa status + last deposit date 
+    // get user owner name + get recruiter  
+
+    console.log('data from service: ', UserData);
     return UserData
   }
 
@@ -74,14 +80,7 @@ class staffService {
   }
 
   async CreatePromocode(date: string, value: any, staff_id: number, domain: string, counter: number) {
-
-    // const getCode = async (recievedCode: string) => {
-    //   const currentCode: string = await database.GetPromocodesList(recievedCode)
-    //   console.log('recievedCode is: ', recievedCode);
-    //   return currentCode
-    // }
     console.log('counter is: ', counter);
-
 
     if (counter > 1 && counter <= 10) {
       let codeArray: any = []

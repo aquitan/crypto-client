@@ -265,16 +265,19 @@ class Database {
       mysql.query(`
         SELECT *
         FROM user_kyc
-        WHERE domain_name = "${user_domain}"
         JOIN user_auth 
         ON user_auth.email = user_kyc.email
-        WHERE user_auth.isAdmin = ${false}`,
+        WHERE user_auth.domain_name = "${user_domain}"
+        AND user_auth.isAdmin = ${false}`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
         })
     })
   }
+  // select * from user_kyc join user_auth on user_auth.email = user_kyc.email where user_auth.domain_name = "localhost:3000" and user_auth.isAdmin = false;
+
+
 
   async SavePromocode(newCode: string, date: string, value: number, staff_user_id: number, domain: string) {
     mysql.query(`
@@ -293,9 +296,7 @@ class Database {
       mysql.query(`
         SELECT *
         FROM user_promocode
-        WHERE staff_user_id = ${staff_id}
-        JOIN domains_list
-        ON user_promocode.staff_user_id = domains_list.domain_owner`,
+        WHERE staff_user_id = ${staff_id}`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -341,8 +342,10 @@ class Database {
   async GetKycForAdmin() {
     return new Promise((resolve, reject) => {
       mysql.query(`
-        SELECT *
-        FROM user_kyc`,
+         SELECT *
+        FROM user_kyc
+        JOIN user_auth 
+        ON user_auth.email = user_kyc.email`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)

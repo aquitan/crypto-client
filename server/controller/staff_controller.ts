@@ -273,7 +273,7 @@ class StaffController {
     }
   }
 
-  async promocodeList(req: express.Request, res: express.Response, next: express.NextFunction) {
+  async getPromocodeList(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       console.log('req body is: ', req.body)
 
@@ -287,7 +287,7 @@ class StaffController {
         const codesList: any = await adminService.GetPromocodeListForAdmin()
         if (codesList !== 'empty') {
           return res.json({
-            usersKycList: codesList,
+            promocodeList: codesList,
             status: 'complete'
           })
         }
@@ -301,7 +301,7 @@ class StaffController {
         const codesList: any = await staffService.GetPromocodeList(staff_id)
         if (codesList !== 'empty') {
           return res.json({
-            usersKycList: codesList,
+            promocodeList: codesList,
             status: 'complete'
           })
         }
@@ -315,12 +315,6 @@ class StaffController {
         message: 'permission denied',
         status: 'rejected'
       })
-
-
-
-
-
-      // add promocode & add before sign up
     } catch (e) {
       next(e)
     }

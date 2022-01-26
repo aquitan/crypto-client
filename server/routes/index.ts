@@ -38,6 +38,8 @@ router.get('/staff/users/user_detail/:id', staffController.userDetail)
 router.post('/staff/users/kyc/', staffController.kycList)
 router.post('/staff/create_user', staffController.createNewUser)
 router.post('/staff/create_promocode/', staffController.promocodeCreate)
+router.post('/staff/get_promocode_list/', staffController.getPromocodeList)
+
 
 
 export default router;
