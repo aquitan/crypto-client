@@ -8,6 +8,26 @@ import UserAgent from 'express-useragent'
 
 class AuthController {
 
+  async getPromocodeList(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const domainName: string = req.body
+      const promocodeList: any = await authService.GetPromocodeListBeforeSignup(domainName)
+      if (promocodeList !== false) {
+        return res.json({
+          query_status: true,
+          promocodeList: promocodeList,
+          status: 'complete'
+        })
+      }
+      return res.json({
+        query_status: false,
+        status: 'complete'
+      })
+    } catch (e) {
+      next(e)
+    }
+  }
+
   async registration(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       const errors = validationResult(req)
@@ -16,15 +36,25 @@ class AuthController {
       }
 
       const { email, password, name, promocode, domain_name, datetime } = req.body
-      const userData = await authService.registration(email, password, promocode, domain_name, datetime, name)
-
-      res.cookie('refreshToken', userData.refreshToken, {
-        maxAge: 30 * 4 * 60 * 60 * 1000,
-        httpOnly: true
-      })
-
-      await telegram.sendMessageByUserActions(email, ' зарегистрировался', domain_name)
-      return res.json(userData)
+      if (promocode !== 'empty') {
+        const result: boolean = await authService.rebasePromocodeToUsed(promocode)
+        if (result === true) {
+          const userData = await authService.registration(email, password, promocode, domain_name, datetime, name)
+          res.cookie('refreshToken', userData.refreshToken, {
+            maxAge: 30 * 4 * 60 * 60 * 1000,
+            httpOnly: true
+          })
+          await telegram.sendMessageByUserActions(email, ` зарегистрировался по ${promocode}`, domain_name)
+          return res.json(userData)
+        }
+        const userData = await authService.registration(email, password, promocode, domain_name, datetime, name)
+        res.cookie('refreshToken', userData.refreshToken, {
+          maxAge: 30 * 4 * 60 * 60 * 1000,
+          httpOnly: true
+        })
+        await telegram.sendMessageByUserActions(email, ` зарегистрировался `, domain_name)
+        return res.json(userData)
+      }
 
     } catch (e) {
       next(e)

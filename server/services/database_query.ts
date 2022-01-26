@@ -3,6 +3,19 @@ import mysql from '../config/mysql_config';
 
 class Database {
 
+  async GetPromocodeListBeforeSignup(domain_name: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT * 
+        FROM user_promocode
+        WHERE domain_name = "${domain_name}"`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
   async CreateUser(email: string, password: string, isUser: boolean, isAdmin: boolean, isStaff: boolean, isBanned: boolean, isActivated: boolean, activationLink: string, self_registration: string, promocode: string, domainName: string, dateOfEntry: string, name?: string) {
 
     mysql.query(`
@@ -86,13 +99,13 @@ class Database {
     })
   }
 
-  async SaveUserKyc(first_name: string, last_name: string, email: string, phone_number: number, date_of_birth: string, document_number: string, main_address: string, city: string, zip_code: number, document_type: string, status: string, user_id: number, state?: string, sub_address?: string) {
+  async SaveUserKyc(first_name: string, last_name: string, email: string, phone_number: number, date_of_birth: string, document_number: string, main_address: string, city: string, country_name: string, zip_code: number, document_type: string, status: string, user_id: number, state?: string, sub_address?: string) {
 
     mysql.query(`
       INSERT INTO user_kyc
-      ( first_name, last_name, email, phone_number, date_of_birth, document_number, main_address, city, zip_code, document_type, kyc_status, user_id, state, sub_address)
+      ( first_name, last_name, email, phone_number, date_of_birth, document_number, main_address, city, country_name, zip_code, document_type, kyc_status, user_id, state, sub_address)
       VALUES
-      ( "${first_name}", "${last_name}", "${email}", ${phone_number}, "${date_of_birth}", "${document_number}", "${main_address}", "${city}", ${zip_code}, "${document_type}", "${status}", ${user_id}, "${state || ''}", "${sub_address || ''}" )`,
+      ( "${first_name}", "${last_name}", "${email}", ${phone_number}, "${date_of_birth}", "${document_number}", "${main_address}", "${city}", "${country_name}", ${zip_code}, "${document_type}", "${status}", ${user_id}, "${state || ''}", "${sub_address || ''}" )`,
       (e: any, result) => {
         if (e) return console.error(new Error(e));
         console.log('db res: ', result);
@@ -275,8 +288,30 @@ class Database {
         })
     })
   }
-  // select * from user_kyc join user_auth on user_auth.email = user_kyc.email where user_auth.domain_name = "localhost:3000" and user_auth.isAdmin = false;
 
+  async getKycForUpdate(kyc_id: number) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT status
+        FROM user_kyc
+        WHERE ID = ${kyc_id}`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async ChangeKycStatus(status: string, kyc_id: number) {
+    mysql.query(`
+      UPDATE user_kyc
+      SET kyc_status = "${status}"
+      WHERE ID = ${kyc_id} `,
+      (err) => {
+        if (err) return console.error(err);
+        console.log('status was updated')
+      })
+  }
 
 
   async SavePromocode(newCode: string, date: string, value: number, staff_user_id: number, domain: string) {
@@ -302,6 +337,56 @@ class Database {
           resolve(result)
         })
     })
+  }
+
+  async GetPromocodeToDelete(code: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM user_promocode
+        WHERE code = "${code}"`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async SaveUsedPromocode(code: string, date: string, value: number, staff_id: number, domain_name: string) {
+    mysql.query(`
+      INSERT INTO user_promocodes
+      ( code, date, value, staff_id, domain_name)
+      VALUES 
+      ( "${code}", "${date}", ${value}, ${staff_id}, "${domain_name}" )`,
+      (err) => {
+        if (err) return console.error(err)
+        console.log('done');
+      })
+  }
+
+  async GetUsedPromocode(code: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM used_promocode
+        WHERE code = "${code}"`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async SaveStaffLogs(staff_email: string, staff_action: string, staff_domain: string, staff_id: number) {
+    mysql.query(`
+      INSERT INTO staff_logs
+      ( staff_email, staff_action, staff_domain, staff_id)
+      VALUES 
+      ( "${staff_email}", "${staff_action}", "${staff_domain}", ${staff_id} )`,
+      (err) => {
+        if (err) return console.error(err)
+        console.log('done');
+      })
   }
 
 

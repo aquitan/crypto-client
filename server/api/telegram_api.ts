@@ -60,6 +60,14 @@ class Telegram {
     await SendMessage(userRequest)
   }
 
+  async sendMessageBySupportActions(userEmail: string, action: string, domain_name: string) {
+    // user actions bot 
+
+    const userRequest: string = `Стафф ` + `${userEmail}` + `${action}` + ' на ' + `${domain_name}`
+    console.log(userRequest)
+    await SendMessage(userRequest)
+  }
+
   // async sendMessageSignup(userEmail: string, domain_name?: string) {
 
   //   // const userRequest: string = `User ` + `${userEmail}` + ` was registred at ` + ` ${domain_name}`

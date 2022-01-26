@@ -7,6 +7,7 @@ import staffController from '../controller/staff_controller'
 import authChecker from '../middlewares/auth_middleware'
 
 // auth routes
+router.post('/get_promocodes_before_signup/', authController.getPromocodeList)
 router.post('/registration/',
   body('email').isEmail(),
   body('password').isLength({
@@ -19,9 +20,6 @@ router.post('/logout/', authController.logout)
 router.post('/activate/', authController.activate)
 router.get('/refresh/', authController.refresh)
 router.post('/forgot_password/', authController.forgotPassword)
-
-// // save user actions 
-// router.post('/user_logs/', userController.saveUserLogs)
 
 // user area routes
 router.post('/dashboard/', authChecker, userController.dashboard)
@@ -36,6 +34,7 @@ router.get('/staff/:id', staffController.staffDashboard)
 router.post('/staff/users/', staffController.usersList)
 router.get('/staff/users/user_detail/:id', staffController.userDetail)
 router.post('/staff/users/kyc/', staffController.kycList)
+router.post('/staff/kyc/update_kyc_status/', staffController.changeKycStatus)
 router.post('/staff/create_user', staffController.createNewUser)
 router.post('/staff/create_promocode/', staffController.promocodeCreate)
 router.post('/staff/get_promocode_list/', staffController.getPromocodeList)

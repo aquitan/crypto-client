@@ -1,5 +1,6 @@
 import database from "../services/database_query"
 import codeGenerator from '../api/password_generator'
+import telegram from '../api/telegram_api'
 import fs from 'fs'
 
 
@@ -61,6 +62,21 @@ class staffService {
     return 'error'
   }
 
+  async changeKycStatusAsStaff(status: string, kyc_id: number) {
+
+    const old_status: any = await database.getKycForUpdate(kyc_id)
+    console.log('old kyc status: ', old_status.kyc_status);
+
+    if (old_status[0].kyc_status !== status) {
+      await database.ChangeKycStatus(status, kyc_id)
+      console.log('it`s working');
+      return true
+    }
+
+    console.log('some error');
+    return false
+  }
+
   async CreateUserAsStaff(staff_id: number, email: string, password: string, promocode: string, domain_name: string, datetime: string, name?: string) {
 
     const owner: any = await database.GetUserById(staff_id)
@@ -82,12 +98,23 @@ class staffService {
   async CreatePromocode(date: string, value: any, staff_id: number, domain: string, counter: number) {
     console.log('counter is: ', counter);
 
+    const currentPromocodes: any = await database.GetPromocodeListForStaff(staff_id)
+    // console.log('codes array: ', currentPromocodes);
+
     if (counter > 1 && counter <= 10) {
       let codeArray: any = []
       for (let i = 0; i < counter - 1; i++) {
         if (value.length > 1) {
           for (let j = 0; j < value.length; j++) {
-            const code: string = await codeGenerator(8)
+            let code: string = await codeGenerator(8)
+            // console.log('cur code: ', code);
+
+            for (let c = 0; c <= currentPromocodes.length - 1; c++) {
+              if (code === currentPromocodes[c].code) {
+                code = await codeGenerator(8)
+                // console.log('changed code: ', code);
+              }
+            }
             console.log('value was saved to db: ', value[j]);
             codeArray.push({
               code: code,
@@ -116,6 +143,10 @@ class staffService {
 
   }
 
+  async saveStaffLogs(staff_email: string, staff_action: string, staff_domain: string, staff_id: number) {
+    await database.SaveStaffLogs(staff_email, staff_action, staff_domain, staff_id)
+    console.log('staff logs was saved');
+  }
 
 }
 

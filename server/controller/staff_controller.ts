@@ -3,6 +3,7 @@ import { validationResult } from 'express-validator'
 import ApiError from '../exeptions/api_error'
 import staffService from '../services/staff_services'
 import adminService from '../services/admin_services'
+import telegram from '../api/telegram_api'
 
 class StaffController {
 
@@ -125,6 +126,34 @@ class StaffController {
     }
   }
 
+  async changeKycStatus(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    try {
+      const { status, staffId, staffEmail, userEmail, kycId, domainName } = req.body
+      console.log('req body: ', req.body);
+
+
+      const result: boolean = await staffService.changeKycStatusAsStaff(status, kycId)
+      console.log('operation result is: ', result);
+      if (result === true) {
+        await telegram.sendMessageBySupportActions(staffEmail, `изменил статус ${userEmail} на  ${status} на `, domainName)
+        await staffService.saveStaffLogs(staffEmail, `изменил статус ${userEmail} на  ${status} на ${domainName}`, domainName, staffId)
+
+        return res.json({
+          message: 'status was changed',
+          status: 'complete'
+        })
+      }
+
+      return res.json({
+        message: 'error',
+        status: 'rejected'
+      })
+    } catch (e) {
+      next(e)
+    }
+  }
+
   async createNewUser(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
 
@@ -144,7 +173,6 @@ class StaffController {
         statusCode: 500,
         status: 'rejected'
       })
-      // create user request
     } catch (e) {
       next(e)
     }

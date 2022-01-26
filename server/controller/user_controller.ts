@@ -113,7 +113,7 @@ class UserController {
       console.log('req body kyc: ', req.body);
 
 
-      const result: boolean = await UserServices.personalAreaSendKyc(id, firstName, lastName, email, phoneNumber, dateOfBirth, documentNumber, mainAddress, city, zipCode, documentType, 'pending', state, subAddress)
+      const result: boolean = await UserServices.personalAreaSendKyc(id, firstName, lastName, email, phoneNumber, dateOfBirth, documentNumber, mainAddress, city, countryName, zipCode, documentType, 'pending', state, subAddress)
       console.log('operation result is: ', result)
 
       if (result === true) {

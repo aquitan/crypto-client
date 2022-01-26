@@ -11,6 +11,16 @@ import passwordGenerator from '../api/password_generator'
 
 class AuthService {
 
+  async GetPromocodeListBeforeSignup(domainName: string) {
+    const codeArray: any = database.GetPromocodeListBeforeSignup(domainName)
+    console.log('code array is: ', codeArray);
+    if (codeArray !== []) {
+      return codeArray
+    }
+    console.log('some error');
+    return false
+  }
+
   async registration(email: string, password: string, promocode: string, domain_name: string, datetime: any, name: string) {
 
     const candidate: any = await database.GetUserByEmail(email)
@@ -22,6 +32,9 @@ class AuthService {
     // const hashPassword = await bcrypt.hash(password, 6)
     const activationLink: string = await passwordGenerator(18)
 
+    if (promocode === 'empty') {
+      await database.CreateUser(email, password, true, false, false, false, false, activationLink, 'self registred', 'empty', domain_name, datetime, name || '',)
+    }
     await database.CreateUser(email, password, true, false, false, false, false, activationLink, 'self registred', promocode, domain_name, datetime, name || '',)
     const user: any = await database.GetUserByEmail(email)
 
@@ -40,14 +53,20 @@ class AuthService {
       user: userDto,
       activationLink: userActivationLink
     }
+  }
 
+  async rebasePromocodeToUsed(promocode: string) {
+    const usedPromocode: any = await database.GetPromocodeToDelete(promocode)
+    console.log('recieved code is: ', usedPromocode[0]);
 
-    // get domain 
-    // if user domain = domains arr i
-    // user owner = domain ownew
-    // else 
-    // self registration
+    await database.SaveUsedPromocode(usedPromocode[0].code, usedPromocode[0].date, usedPromocode[0].value, usedPromocode[0].staff_user_id, usedPromocode[0].domain_name)
+    const getUsedPromocode: any = await database.GetUsedPromocode(usedPromocode[0].code)
 
+    if (getUsedPromocode[0] !== []) {
+      return true
+    }
+    console.log('some error');
+    return false
   }
 
   async activate(user_id: number, activationLink: string) {
