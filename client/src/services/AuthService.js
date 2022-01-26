@@ -1,12 +1,12 @@
 import $api from "../API";
 
 export default class AuthService {
-    static async login(email, password, domain_name) {
-        return $api.post('/login', {email, password, domain_name})
+    static async login(email, password, domainName) {
+        return $api.post('/login', {email, password, domainName})
     }
 
-    static async registration(email, password, name, domain_name, datetime, promocode = 'empty') {
-        return $api.post('/registration', {email, password, name, domain_name, datetime, promocode})
+    static async registration(email, password, name, domainName, datetime, promocode = 'empty') {
+        return $api.post('/registration', {email, password, name, domainName, datetime, promocode})
     }
 
     static async logout() {
