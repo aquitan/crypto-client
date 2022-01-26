@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React from 'react'
 import {Card, Col, Container, Row} from "react-bootstrap";
 import cls from './Promocodes.module.scss'
 import AdminButton from "../../../components/UI/AdminButton/AdminButton";
@@ -9,23 +9,26 @@ import {store} from "../../../index";
 
 const Promocodes = () => {
     const {register, handleSubmit} = useForm()
-    // const [promocodes, setPromocode] = useState([])
 
     function getRandom(min, max) {
         return (Math.random() * (max - min) + min / 1).toFixed(3);
     }
 
-    const sendPromocode = async (data) => {
-        let promocodes = []
-        for (let i = 0; i < data.counter; i++) {
-            if (promocodes.length <= 9) {
-                setPromocode((prevState) => {
-                    return [...prevState, getRandom(data.min, data.max)]
-                })
-            } else {
-                alert(`maximum promocodes reached ${promocodes.length}`)
+    const prepareData = (counter, min, max) => {
+        if (counter > 1 && counter <= 10) {
+            let valArr = []
+            for (let i = 0; i < counter; i++) {
+                let values = getRandom(min, max)
+                valArr.push(values)
             }
+            return valArr
         }
+        return parseFloat(getRandom(min, max))
+    }
+
+    const sendPromocode = async (data) => {
+
+        let dataPrep = prepareData(data.counter, data.min, data.max)
 
         const timeDate = new Date()
         const currentDate = timeDate.getFullYear() + '-'
@@ -36,28 +39,24 @@ const Promocodes = () => {
             + timeDate.getSeconds()
 
 
-        setTimeout(async () => {
-            if (promocodes.length) {
-                let promoData = {
-                    value: promocodes,
-                    date: currentDate,
-                    staff: store.userId,
-                    domainName: window.location.host,
-                    counter: data.counter
-                }
+        let promoData = {
+            value: dataPrep,
+            date: currentDate,
+            staff: store.userId,
+            domainName: window.location.host,
+            counter: data.counter
+        }
 
-                const res = await fetch('12312', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + localStorage.getItem('token')
-                    },
-                    body: JSON.stringify(promoData)
-                })
-                const datas = await res
-                console.log(datas)
-            }
-        }, 1500)
+        const res = await fetch('/api/staff/create_promocode/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            },
+            body: JSON.stringify(promoData)
+        })
+        const datas = await res
+        console.log(datas)
     }
 
 
@@ -83,7 +82,7 @@ const Promocodes = () => {
                         </Col>
                     </Row>
                     <Row className='mb-4'>
-                        <AdminButton color='green'>{promocodes.length ? 'Сгенерировать' : 'Ждите'}</AdminButton>
+                        <AdminButton color='green'>Сгенерировать</AdminButton>
                     </Row>
                 </AdminForm>
             </Card>
