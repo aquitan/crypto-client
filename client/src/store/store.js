@@ -1,8 +1,7 @@
 import {makeAutoObservable} from "mobx";
 import AuthService from "../services/AuthService";
 import axios from "axios";
-import {BASE_URL, GEO_API} from "../API";
-import SendLocationService from "../services/SendLocationService";
+import {BASE_URL} from "../API";
 
 export default class Store {
     userId = ''

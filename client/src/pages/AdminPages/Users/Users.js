@@ -64,7 +64,7 @@ const Users = () => {
                                 ?
                                 users.map(user => {
                                     return(
-                                        <UsersTableItem id={user.ID} registerDate={user.date_of_entry} name={user.name} email={user.email} kycStatus={true} staff={true}/>
+                                        <UsersTableItem key={user.ID} id={user.ID} registerDate={user.date_of_entry} name={user.name} email={user.email} kycStatus={true} staff={true}/>
                                     )
                                 })
                                 : <h1>Loading</h1>
