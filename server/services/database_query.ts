@@ -279,9 +279,9 @@ class Database {
   async SavePromocode(newCode: string, date: string, value: number, staff_user_id: number, domain: string) {
     mysql.query(`
       INSERT INTO user_promocode
-      ( newCode, date, value, staff_user_id, domain)
+      ( code, date, value, staff_user_id, domain_name)
       VALUES 
-      ( "${newCode}", "${date}", ${value}, ${staff_user_id}, "${domain}",) `,
+      ( "${newCode}", "${date}", ${value}, ${staff_user_id}, "${domain}") `,
       (err) => {
         if (err) return console.error(err)
         console.log('done');

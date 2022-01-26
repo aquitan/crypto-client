@@ -77,7 +77,7 @@ class AuthService {
     const user: any = await database.GetUserByEmail(email)
     console.log('found user: ', user[0].email);
 
-    if (!user[0].email || user[0].domainName !== user_domain) {
+    if (!user[0].email && user[0].domainName !== user_domain) {
       throw ApiError.BadRequest('can`t find any user')
     }
     // const isPasswordEquals: boolean = await bcrypt.compare(password, user.password)

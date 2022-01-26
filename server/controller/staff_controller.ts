@@ -127,13 +127,6 @@ class StaffController {
 
   async createNewUser(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      // const errors = validationResult(req)
-      // if (!errors.isEmpty()) {
-      //   return res.json({
-      //     message: 'validation error',
-      //     status: 'rejected'
-      //   })
-      // }
 
       const { staffId, email, password, promocode, domainName, datetime, name } = req.body
       const result: boolean = await staffService.CreateUserAsStaff(staffId, email, password, promocode, domainName, datetime, name || '')
@@ -257,10 +250,10 @@ class StaffController {
     try {
       // add promocode & add before sign up
 
-      const { date, value, staff, domain, counter } = req.body
+      const { date, value, staff, domainName, counter } = req.body
       console.log('body is: ', req.body);
 
-      const result: any = await staffService.CreatePromocode(date, value, staff, domain, counter)
+      const result: any = await staffService.CreatePromocode(date, value, staff, domainName, counter)
       console.log('operation result is: ', result);
 
       const codesArray: any = result.codeArray

@@ -37,6 +37,7 @@ router.post('/staff/users/', staffController.usersList)
 router.get('/staff/users/user_detail/:id', staffController.userDetail)
 router.post('/staff/users/kyc/', staffController.kycList)
 router.post('/staff/create_user', staffController.createNewUser)
+router.post('/staff/create_promocode/', staffController.promocodeCreate)
 
 
 export default router;

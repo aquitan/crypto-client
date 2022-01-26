@@ -57,11 +57,11 @@ class staffService {
 
   async CreateUserAsStaff(staff_id: number, email: string, password: string, promocode: string, domain_name: string, datetime: string, name?: string) {
 
-    const owner_id: any = await database.GetUserById(staff_id)
-    console.log('current staff: ', owner_id[0].email);
+    const owner: any = await database.GetUserById(staff_id)
+    console.log('current staff: ', owner[0].email);
 
     const activationLink: string = await codeGenerator(8)
-    await database.CreateUser(email, password, true, false, false, false, true, activationLink, owner_id[0].email, promocode, domain_name, datetime, name || '',)
+    await database.CreateUser(email, password, true, false, false, false, true, activationLink, owner[0].email, promocode, domain_name, datetime, name || '',)
     const user: any = await database.GetUserByEmail(email)
 
     if (user[0]) {
@@ -80,22 +80,23 @@ class staffService {
     //   console.log('recievedCode is: ', recievedCode);
     //   return currentCode
     // }
+    console.log('counter is: ', counter);
 
 
-    if (counter >= 1 && counter <= 10) {
-      let codeArray: any = []
-      for (let i = 0; i <= counter; i++) {
-        const code: string = await codeGenerator(8)
-        // await database.SavePromocode(codeArray[i)
-        await database.SavePromocode(`${i}`, date, value, staff_id, domain)
-        codeArray.push(code)
+    // if (counter >= 1 && counter <= 10) {
+    //   let codeArray: any = []
+    //   for (let i = 0; i <= counter; i++) {
+    //     const code: string = await codeGenerator(8)
+    //     // await database.SavePromocode(codeArray[i)
+    //     await database.SavePromocode(`${i}`, date, value, staff_id, domain)
+    //     codeArray.push(code)
 
-      }
-      console.log('promocodes is: ', codeArray);
+    //   }
+    //   console.log('promocodes is: ', codeArray);
 
-      // await database.SavePromocode(codeArray[i])
-      return codeArray
-    }
+    //   // await database.SavePromocode(codeArray[i])
+    //   return codeArray
+    // }
 
     const newCode: string = await codeGenerator(8)
     console.log('generated code is: ', newCode);
