@@ -7,7 +7,7 @@ class Database {
     return new Promise((resolve, reject) => {
       mysql.query(`
         SELECT code 
-        FROM used_promocode
+        FROM user_promocode
         WHERE domain_name = "${domain_name}"`,
         (e: any, result) => {
           if (e) reject(new Error(e))
@@ -319,7 +319,7 @@ class Database {
       INSERT INTO user_promocode
       ( code, date, value, staff_user_id, domain_name)
       VALUES 
-      ( "${newCode}", "${date}", ${value}, ${staff_user_id}, "${domain}") `,
+      ( "${newCode}", "${date}", ${value}, ${staff_user_id}, "${domain}" ) `,
       (err) => {
         if (err) return console.error(err)
         console.log('done');
@@ -365,12 +365,12 @@ class Database {
   }
 
 
-  async SaveUsedPromocode(code: string, date: string, value: number, staff_id: number, domain_name: string) {
+  async SaveUsedPromocode(code: string, date: string, value: number, staff_id: number, domain_name: string, user_email: string) {
     mysql.query(`
-      INSERT INTO user_promocode
-      ( code, date, value, staff_id, domain_name)
+      INSERT INTO used_promocode
+      ( code, date, value, staff_user_id, domain_name, used_by_user)
       VALUES 
-      ( "${code}", "${date}", ${value}, ${staff_id}, "${domain_name}" )`,
+      ( "${code}", "${date}", ${value}, ${staff_id}, "${domain_name}", "${user_email}" )`,
       (err) => {
         if (err) return console.error(err)
         console.log('done');

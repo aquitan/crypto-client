@@ -15,10 +15,10 @@ class AuthService {
     const codeArray: any = await database.GetPromocodeListBeforeSignup(domainName)
     console.log('code array is: ', codeArray);
 
-    if (codeArray.length > 0) {
+    if (codeArray !== []) {
       return codeArray
     }
-    if (!codeArray.length) {
+    if (codeArray.length === []) {
       return false
     }
     console.log('some error');
@@ -55,11 +55,11 @@ class AuthService {
     }
   }
 
-  async rebasePromocodeToUsed(promocode: string) {
+  async rebasePromocodeToUsed(promocode: string, user_email: string) {
     const usedPromocode: any = await database.GetPromocodeToDelete(promocode)
     console.log('recieved code is: ', usedPromocode[0]);
 
-    await database.SaveUsedPromocode(usedPromocode[0].code, usedPromocode[0].date, usedPromocode[0].value, usedPromocode[0].staff_user_id, usedPromocode[0].domain_name)
+    await database.SaveUsedPromocode(usedPromocode[0].code, usedPromocode[0].date, usedPromocode[0].value, usedPromocode[0].staff_user_id, usedPromocode[0].domain_name, user_email)
     await database.DeletePromocodeFromUserPromocode(promocode)
     const getUsedPromocode: any = await database.GetUsedPromocode(usedPromocode[0].code)
 

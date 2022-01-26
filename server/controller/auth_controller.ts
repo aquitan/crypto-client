@@ -11,8 +11,12 @@ class AuthController {
   async getPromocodeList(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       const { domainName } = req.body
+      console.log('body from front: ', req.body);
+
       const promocodeList: any = await authService.GetPromocodeListBeforeSignup(domainName)
-      if (promocodeList.length) {
+      console.log('promocodeList', promocodeList);
+
+      if (promocodeList.length > 0) {
         return res.json({
           query_status: true,
           promocodeList: promocodeList,
@@ -40,7 +44,7 @@ class AuthController {
       const { email, password, name, promocode, domainName, datetime } = req.body
 
       if (promocode !== 'empty') {
-        const result: boolean = await authService.rebasePromocodeToUsed(promocode)
+        const result: boolean = await authService.rebasePromocodeToUsed(promocode, email)
         if (result === true) {
           const userData = await authService.registration(email, password, promocode, domainName, datetime, name)
           res.cookie('refreshToken', userData.refreshToken, {
