@@ -90,7 +90,7 @@ class Database {
 
     mysql.query(`
       INSERT INTO user_kyc
-      ( first_name, last_name, email, phone_number, date_of_birth, document_number, main_address, city, zip_code, document_type, status, user_id, state, sub_address)
+      ( first_name, last_name, email, phone_number, date_of_birth, document_number, main_address, city, zip_code, document_type, kyc_status, user_id, state, sub_address)
       VALUES
       ( "${first_name}", "${last_name}", "${email}", ${phone_number}, "${date_of_birth}", "${document_number}", "${main_address}", "${city}", ${zip_code}, "${document_type}", "${status}", ${user_id}, "${state || ''}", "${sub_address || ''}" )`,
       (e: any, result) => {
@@ -160,7 +160,7 @@ class Database {
     mysql.query(`
         UPDATE auth_token
         SET refresh_token = "${refresh_token}"
-        WHERE user_id = "${user_id}"
+        WHERE user_id = ${user_id}
         `,
       (err) => {
         if (err) return console.error(err);
@@ -265,9 +265,9 @@ class Database {
       mysql.query(`
         SELECT *
         FROM user_kyc
-        WHERE domain_name = ${user_domain}
+        WHERE domain_name = "${user_domain}"
         JOIN user_auth 
-        ON user_auth.domain_name = ${user_domain}
+        ON user_auth.email = user_kyc.email
         WHERE user_auth.isAdmin = ${false}`,
         (e: any, result) => {
           if (e) reject(new Error(e))

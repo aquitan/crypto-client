@@ -15,12 +15,8 @@ class StaffController {
       const current_id: number = parseInt(user_id)
       console.log('int id is: ', current_id);
 
-      const user: any = await staffService.GetUserDetail(current_id)
-      console.log('found user: ', user)
-
       return res.json({
         message: 'data will be here',
-        staff_user: user,
         status: 'complete'
       })
     } catch (e) {
@@ -131,16 +127,16 @@ class StaffController {
 
   async createNewUser(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      const errors = validationResult(req)
-      if (!errors.isEmpty()) {
-        return res.json({
-          message: 'validation error',
-          status: 'rejected'
-        })
-      }
+      // const errors = validationResult(req)
+      // if (!errors.isEmpty()) {
+      //   return res.json({
+      //     message: 'validation error',
+      //     status: 'rejected'
+      //   })
+      // }
 
-      const { staff_id, email, password, promocode, domainName, datetime, name } = req.body
-      const result: boolean = await staffService.CreateUserAsStaff(staff_id, email, password, promocode, domainName, datetime, name || '')
+      const { staffId, email, password, promocode, domainName, datetime, name } = req.body
+      const result: boolean = await staffService.CreateUserAsStaff(staffId, email, password, promocode, domainName, datetime, name || '')
 
       if (result === true) {
         console.log('operation result is: ', result);

@@ -26,7 +26,7 @@ class UserController {
       const user: any = await UserServices.dashboard(id)
       console.log('found user is: ', user)
 
-      await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName)
+      await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, 'dashboard', domainName)
       await telegram.sendMessageByUserActions(email, ' перешел на dashboard ', domainName)
 
       return res.json(user)
@@ -113,7 +113,7 @@ class UserController {
       console.log('req body kyc: ', req.body);
 
 
-      const result: boolean = await UserServices.personalAreaSendKyc(id, firstName, lastName, email, phoneNumber, dateOfBirth, documentNumber, mainAddress, city, zipCode, documentType, state, subAddress)
+      const result: boolean = await UserServices.personalAreaSendKyc(id, firstName, lastName, email, phoneNumber, dateOfBirth, documentNumber, mainAddress, city, zipCode, documentType, 'pending', state, subAddress)
       console.log('operation result is: ', result)
 
       if (result === true) {

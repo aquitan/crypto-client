@@ -32,11 +32,11 @@ router.post('/personal_area/verification/', authChecker, userController.personal
 
 
 // admin - staff routes
-router.get('/staff/', staffController.staffDashboard)
+router.get('/staff/:id', staffController.staffDashboard)
 router.post('/staff/users/', staffController.usersList)
-router.get('/staff/users/user_detail', staffController.userDetail)
+router.get('/staff/users/user_detail/:id', staffController.userDetail)
 router.post('/staff/users/kyc/', staffController.kycList)
-router.post('/staff/create_user', body('email').isEmail(), staffController.createNewUser)
+router.post('/staff/create_user', staffController.createNewUser)
 
 
 export default router;

@@ -77,7 +77,7 @@ class UserServices {
     }
   }
 
-  async personalAreaSendKyc(user_id: number, first_name: string, last_name: string, email: string, phone_number: number, date_of_birth: string, document_number: string, main_address: string, city: string, zip_code: number, document_type: string, state: string, sub_address: string) {
+  async personalAreaSendKyc(user_id: number, first_name: string, last_name: string, email: string, phone_number: number, date_of_birth: string, document_number: string, main_address: string, city: string, zip_code: number, document_type: string, status: string, state: string, sub_address: string) {
     try {
       const candidate: any = await database.GetUserKycByUserId(user_id)
       console.log('candid: ', candidate);
@@ -86,7 +86,7 @@ class UserServices {
         return candidate[0]
       }
 
-      await database.SaveUserKyc(first_name, last_name, email, phone_number, date_of_birth, document_number, main_address, city, zip_code, document_type, 'pending', user_id, state, sub_address)
+      await database.SaveUserKyc(first_name, last_name, email, phone_number, date_of_birth, document_number, main_address, city, zip_code, document_type, status, user_id, state, sub_address)
 
       return true
       // post kyc form
