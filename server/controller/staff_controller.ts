@@ -253,15 +253,12 @@ class StaffController {
       const { date, value, staff, domainName, counter } = req.body
       console.log('body is: ', req.body);
 
-      const result: any = await staffService.CreatePromocode(date, value, staff, domainName, counter)
-      console.log('operation result is: ', result);
+      const codesArray: any = await staffService.CreatePromocode(date, value, staff, domainName, counter)
+      console.log('operation result is: ', codesArray);
 
-      const codesArray: any = result.codeArray
-
-      if (result !== []) {
+      if (codesArray !== []) {
         return res.json({
           message: 'code was created',
-          query_result: true,
           codesArray: codesArray,
           status: 'complete'
         })
@@ -269,8 +266,6 @@ class StaffController {
 
       return res.json({
         message: 'something went wrong',
-        query_result: false,
-        code: result,
         status: 'rejected'
       })
     } catch (e) {

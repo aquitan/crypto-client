@@ -73,7 +73,7 @@ class staffService {
     return false
   }
 
-  async CreatePromocode(date: string, value: number, staff_id: number, domain: string, counter: number) {
+  async CreatePromocode(date: string, value: any, staff_id: number, domain: string, counter: number) {
 
     // const getCode = async (recievedCode: string) => {
     //   const currentCode: string = await database.GetPromocodesList(recievedCode)
@@ -85,26 +85,28 @@ class staffService {
 
     if (counter > 1 && counter <= 10) {
       let codeArray: any = []
-      for (let i = 0; i <= counter; i++) {
-        const code: string = await codeGenerator(8)
-        // await database.SavePromocode(codeArray[i)
-        codeArray.push(code)
+      for (let i = 0; i < counter - 1; i++) {
+        if (value.length > 1) {
+          for (let j = 0; j < value.length; j++) {
+            const code: string = await codeGenerator(8)
+            console.log('value was saved to db: ', value[j]);
+            codeArray.push({
+              code: code,
+              value: value[j]
+            })
+          }
+          for (let x = 0; x <= codeArray.length - 1; x++) {
+            console.log('array sort: ', codeArray[x].code, codeArray[x].value);
+            await database.SavePromocode(codeArray[x].code, date, codeArray[x].value, staff_id, domain)
+          }
+          return codeArray
+        }
       }
-      console.log('promocodes is: ', codeArray);
-
-      for (let i = 0; i <= codeArray.length - 1; i++) {
-        console.log('code was saved to db: ', codeArray[i]);
-
-        await database.SavePromocode(codeArray[i], date, value, staff_id, domain)
-      }
-      // await database.SavePromocode(codeArray[i])
-      return codeArray
     }
 
     const newCode: string = await codeGenerator(8)
     console.log('generated code is: ', newCode);
     await database.SavePromocode(newCode, date, value, staff_id, domain)
-
     return newCode
   }
 
