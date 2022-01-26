@@ -9,10 +9,8 @@ const UserDetailTabLogs = ({data}) => {
     if (!data) {
         return <h1>Loading</h1>
     }
-
     const reversedLogs = data.user_logs.slice(0).reverse()
-    console.log('initial logs', data.user_logs)
-    console.log('reversed', reversedLogs)
+
     return (
         <div>
             <Col className='col-2'>
