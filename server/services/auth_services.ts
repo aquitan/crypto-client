@@ -35,7 +35,7 @@ class AuthService {
     // save real password to db + hashed
     // const hashPassword = await bcrypt.hash(password, 6)
     const activationLink: string = await passwordGenerator(18)
-    await database.CreateUser(email, password, true, false, false, false, false, activationLink, 'self registred', promocode, domain_name, datetime, name || '',)
+    await database.CreateUser(email, password, true, false, false, false, false, activationLink, 'self registred', promocode, false, false, domain_name, datetime, name || '',)
     const user: any = await database.GetUserByEmail(email)
 
     await mailService.sendActivationMail(email, `${domain_name}`, `${activationLink}`)

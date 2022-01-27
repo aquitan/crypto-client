@@ -7,6 +7,9 @@ export default class AuthUserDto {
   isStaff
   isAdmin
   isBanned
+  kyc_status
+  two_step_status
+  premium_status
 
 
   constructor(model: any) {
@@ -18,5 +21,8 @@ export default class AuthUserDto {
     this.isStaff = model.isStaff
     this.isAdmin = model.isAdmin
     this.isBanned = model.isBanned
+    this.kyc_status = model.kyc_status
+    this.two_step_status = model.two_step_status
+    this.premium_status = model.premium_status
   }
 }

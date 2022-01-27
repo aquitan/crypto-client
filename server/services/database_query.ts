@@ -16,13 +16,13 @@ class Database {
     })
   }
 
-  async CreateUser(email: string, password: string, isUser: boolean, isAdmin: boolean, isStaff: boolean, isBanned: boolean, isActivated: boolean, activationLink: string, self_registration: string, promocode: string, domainName: string, dateOfEntry: string, name?: string) {
+  async CreateUser(email: string, password: string, isUser: boolean, isAdmin: boolean, isStaff: boolean, isBanned: boolean, isActivated: boolean, activationLink: string, self_registration: string, promocode: string, premium_status: boolean, two_step_status: boolean, domainName: string, dateOfEntry: string, name?: string) {
 
     mysql.query(`
         INSERT INTO user_auth 
-        ( email, password, isUser, isAdmin, isStaff, isBanned, isActivated, activationLink, self_registration, promocode, domain_name, date_of_entry, name) 
+        ( email, password, isUser, isAdmin, isStaff, isBanned, isActivated, activationLink, self_registration, promocode, premium_status, two_step_status, domain_name, date_of_entry, name) 
         VALUES 
-        ( "${email}", "${password}", ${isUser}, ${isAdmin}, ${isStaff}, ${isBanned}, ${isActivated}, "${activationLink}", "${self_registration}", "${promocode}", "${domainName}", "${dateOfEntry}", "${name || ''}")`,
+        ( "${email}", "${password}", ${isUser}, ${isAdmin}, ${isStaff}, ${isBanned}, ${isActivated}, "${activationLink}", "${self_registration}", "${promocode}", ${premium_status}, ${two_step_status} "${domainName}", "${dateOfEntry}", "${name || ''}")`,
       (err, result) => {
         if (err) return console.error(err);
         console.log('done')
@@ -42,7 +42,42 @@ class Database {
         console.log('password was update');
 
       })
+  }
 
+  async DisableTwoStep(user_id: number) {
+    mysql.query(`
+      UPDATE user_auth
+      SET two_step_status = ${true}
+      WHERE ID = ${user_id}`,
+      (e: any, result) => {
+        if (e) return console.error(new Error(e))
+        console.log('password was update');
+
+      })
+  }
+
+  async EnablePremiumStatus(user_id: number) {
+    mysql.query(`
+      UPDATE user_auth
+      SET premium_status = ${true}
+      WHERE ID = ${user_id}`,
+      (e: any, result) => {
+        if (e) return console.error(new Error(e))
+        console.log('password was update');
+
+      })
+  }
+
+  async ChangeUserName(user_id: number, userName: string) {
+    mysql.query(`
+      UPDATE user_auth
+      SET name = "${userName}"
+      WHERE ID = ${user_id}`,
+      (e: any, result) => {
+        if (e) return console.error(new Error(e))
+        console.log('password was update');
+
+      })
   }
 
   async GetUserById(id: number) {
@@ -126,19 +161,20 @@ class Database {
       (e: any, result) => {
         if (e) return console.error(new Error(e));
         console.log('done')
-        console.log('user ' + `${email} ` + 'kyc was saved.')
       })
   }
 
-  async ChangeUserPassword(user_id: number, password: string) {
-    mysql.query(`
-        UPDATE user_auth
-        SET password = "${password}"
-        WHERE ID = ${user_id}`,
-      (err, result) => {
-        if (err) return console.error(err);
-        console.log('update password in auth table is done')
-      })
+  async GetLogsForUser(user_id: number) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT ip_address, action_date
+        FROM user_logs
+        WHERE user_id = ${user_id}`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
   }
 
   //
@@ -266,6 +302,20 @@ class Database {
         SELECT *
         FROM user_logs
         WHERE user_id = ${user_id}`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async GetUsersByIp(ip_address: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT email, ip_address
+        FROM user_logs
+        WHERE user_logs.ip_address = "${ip_address}"
+       `,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)

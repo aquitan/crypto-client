@@ -23,21 +23,27 @@ router.post('/forgot_password/', authController.forgotPassword)
 
 // user area routes
 router.post('/dashboard/', authChecker, userController.dashboard)
-router.post('/personal_area/profile/', authChecker, userController.personalAreaProfile)
+router.post('/personal_area/profile/', userController.personalAreaProfile)
+router.patch('/personal_area/profile/edit/', authChecker, userController.personalAreaProfileEdit)
 router.post('/personal_area/security/', authChecker, userController.personalAreaSecurity)
-router.post('/personal_area/security/change_password/', authChecker, userController.personalAreaSecurityChangePassword)
+router.patch('/personal_area/security/change_password/', authChecker, userController.personalAreaSecurityChangePassword)
 router.post('/personal_area/verification/', authChecker, userController.personalAreaKyc)
+router.patch('/personal_area/security/disable_two_step_status/', authChecker, userController.disableTwoStepVerificationStatus)
+router.patch('/personal_area/profile/update_premium_status/', authChecker, userController.updatePremiumStatus)
 
+// router.post('/deposit/make_deposit', authChecker, userController.makeDeposit)
+// router.post('/deposit/get_withdraw', authChecker, userController.getWithdraw)
 
 // admin - staff routes
-router.get('/staff/:id', staffController.staffDashboard)
+router.get('/staff/:id/', staffController.staffDashboard)
 router.post('/staff/users/', staffController.usersList)
-router.get('/staff/users/user_detail/:id', staffController.userDetail)
+router.get('/staff/users/user_detail/:id/', staffController.userDetail)
 router.post('/staff/users/kyc/', staffController.kycList)
-router.post('/staff/kyc/update_kyc_status/', staffController.changeKycStatus)
-router.post('/staff/create_user', staffController.createNewUser)
+router.patch('/staff/kyc/update_kyc_status/', staffController.changeKycStatus)
+router.post('/staff/create_user/', staffController.createNewUser)
 router.post('/staff/create_promocode/', staffController.promocodeCreate)
-router.post('/staff/get_promocode_list/', staffController.getPromocodeList)
+router.post('/staff/get_promocode_list/', staffController.getPromocodeListForStaff)
+router.post('/staff/ip_match_checker/', staffController.getIpForMatch)
 
 
 

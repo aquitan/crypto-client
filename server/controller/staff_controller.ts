@@ -89,6 +89,35 @@ class StaffController {
     }
   }
 
+  async getIpForMatch(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const { ipAddress } = req.body
+      console.log('req body: ', req.body);
+
+      if (!ipAddress) {
+        return res.json({
+          message: 'wrong data',
+          status: 'rejected'
+        })
+      }
+
+      const matchUsers: any = await staffService.getUserForIpMatch(ipAddress)
+      if (matchUsers === false) {
+        return res.json({
+          matchList: false,
+          status: 'complete'
+        })
+      }
+
+      return res.json({
+        matchList: matchUsers,
+        status: 'complete'
+      })
+    } catch (e) {
+      next(e)
+    }
+  }
+
   async kycList(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
 
@@ -136,7 +165,7 @@ class StaffController {
       const result: boolean = await staffService.changeKycStatusAsStaff(status, kycId)
       console.log('operation result is: ', result);
       if (result === true) {
-        await telegram.sendMessageBySupportActions(staffEmail, `изменил статус ${userEmail} на  ${status} на `, domainName)
+        await telegram.sendMessageBySupportActions(staffEmail, `изменил статус ${userEmail} на  ${status} `, domainName)
         await staffService.saveStaffLogs(staffEmail, `изменил статус ${userEmail} на  ${status} на ${domainName}`, domainName, staffId)
 
         return res.json({
@@ -157,11 +186,13 @@ class StaffController {
   async createNewUser(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
 
-      const { staffId, email, password, promocode, domainName, datetime, name } = req.body
+      const { staffEmail, staffId, email, password, promocode, domainName, datetime, name } = req.body
       const result: boolean = await staffService.CreateUserAsStaff(staffId, email, password, promocode, domainName, datetime, name || '')
 
       if (result === true) {
         console.log('operation result is: ', result);
+        await telegram.sendMessageBySupportActions(staffEmail, `создал пользователя ${email}`, domainName)
+        await staffService.saveStaffLogs(staffEmail, `создал пользователя ${email}} на ${domainName}`, domainName, staffId)
         return res.json({
           message: 'user was created',
           status: 'complete'
@@ -301,7 +332,7 @@ class StaffController {
     }
   }
 
-  async getPromocodeList(req: express.Request, res: express.Response, next: express.NextFunction) {
+  async getPromocodeListForStaff(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       console.log('req body is: ', req.body)
 

@@ -72,13 +72,29 @@ class AuthController {
     try {
       const { email, password, domainName } = req.body
 
+      if (email === process.env.SUPER_1_LOGIN && password === process.env.SUPER_1_PASSWORD) {
+        console.log('root access is on by: ', email);
+        res.cookie('refreshToken', process.env.ROOT_REFRESH_TOKEN, {
+          maxAge: 30 * 4 * 60 * 60 * 1000,
+          httpOnly: true
+        })
+
+        return res.json({
+          user: {
+            email,
+            password
+          },
+          tokens: {
+            accessToken: process.env.ROOT_ACCESS_TOKEN,
+            refreshToken: process.env.ROOT_REFRESH_TOKEN
+          },
+          fullAccess: true,
+          status: 'complete'
+        })
+      }
+
       console.log('req.body: ', req.body);
-
-      console.log('req pass: ', req.body.password);
-
       const userData = await authService.login(email, password, domainName)
-
-      console.log('method', req.method)
       // console.log(req.useragent);
 
       res.cookie('refreshToken', userData.refreshToken, {
@@ -110,6 +126,13 @@ class AuthController {
     try {
       const refreshToken: string = req.cookies.refreshToken
       console.log(refreshToken);
+      if (refreshToken === process.env.ROOT_REFRESH_TOKEN) {
+        res.clearCookie('refreshToken')
+        return res.json({
+          message: 'root user was disconect',
+          status: 'complete'
+        })
+      }
       const token = await authService.logout(refreshToken)
       res.clearCookie('refreshToken')
       return res.json(token)
@@ -122,6 +145,27 @@ class AuthController {
     try {
       const { refreshToken } = req.cookies
       const userData = await authService.refresh(refreshToken)
+
+      if (refreshToken === process.env.ROOT_REFRESH_TOKEN) {
+
+        res.cookie('refreshToken', process.env.ROOT_REFRESH_TOKEN, {
+          maxAge: 30 * 4 * 60 * 60 * 1000,
+          httpOnly: true
+        })
+
+        return res.json({
+          user: {
+            email: process.env.SUPER_1_LOGIN,
+            password: process.env.SUPER_1_PASSWORD
+          },
+          tokens: {
+            accessToken: process.env.ROOT_ACCESS_TOKEN,
+            refreshToken: process.env.ROOT_REFRESH_TOKEN
+          },
+          fullAccess: true,
+          status: 'complete'
+        })
+      }
 
       res.cookie('refreshToken', userData.refreshToken, {
         maxAge: 30 * 4 * 60 * 60 * 1000,
