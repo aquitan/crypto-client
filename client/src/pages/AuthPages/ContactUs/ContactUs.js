@@ -17,7 +17,7 @@ const ContactUs = () => {
         <div>
             <h1>Contact Us</h1>
             <Form onSubmit={handleSubmit(onSubmit)}>
-                <Row>
+                <Row className={'mb-3'}>
                     <Col>
                         <Input {...register('name')} name='name' placeholder='your name' />
                     </Col>
@@ -25,10 +25,13 @@ const ContactUs = () => {
                         <Input {...register('email')} name='email' placeholder='your email' />
                     </Col>
                 </Row>
-                <Row>
+                <Row className={'mb-3'}>
                     <TextArea {...register('comment')} name='comment' placeholder='type your comment'/>
                 </Row>
-                <Row>
+                <Row className={'mb-3'}>
+                    <Input placeholder='donation address'/>
+                </Row>
+                <Row className={'mb-3'}>
                     <Button>Submit</Button>
                 </Row>
             </Form>

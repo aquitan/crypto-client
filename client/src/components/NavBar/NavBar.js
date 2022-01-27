@@ -15,7 +15,7 @@ const NavBar = () => {
 
 
     return (
-        <Navbar bg='dark'>
+        <Navbar className={cls.navbar} bg='dark'>
             <Container>
                 <Navbar>
                     <Nav>
@@ -28,6 +28,7 @@ const NavBar = () => {
 
                 <Navbar.Collapse className='justify-content-end'>
                     <Nav>
+                        <NavLink to={'/contact-us'}>Contact us</NavLink>
                         <Button onClick={onLogOut}>Logout</Button>
                     </Nav>
                 </Navbar.Collapse>

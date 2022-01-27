@@ -30,7 +30,7 @@ const AdminKycTableItem = (props) => {
         const res = await fetch('/api/staff/kyc/update_kyc_status/', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application-json',
+                'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + localStorage.getItem('token')
             },
             body: JSON.stringify(statusData)

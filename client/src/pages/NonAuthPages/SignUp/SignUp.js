@@ -37,7 +37,8 @@ const SignUp = () => {
 
     const compareStr = (promo, inpVal) => {
         if (promoStatus.query_status) {
-            for (let i = 0; i < promo.length-1; i++) {
+            console.log('promoStatus.query_status', promoStatus.query_status)
+            for (let i = 0; i < promo.length; i++) {
                 if (promo[i].code === inpVal) {
                     console.log('promo[i].code', promo[i].code)
                     return inpVal
@@ -146,7 +147,16 @@ const SignUp = () => {
                         <FormGroup>
                             <Row className='mt-3'>
                                 <Col className={cls.relative}>
-                                    <Input {...register('promocode')} placeholder='enter promocode'/>
+                                    <Input {...register('promocode', {
+                                        validate: value => {
+                                            if (compareStr(promoStatus.promocodeList, value) || value === 'empty') {
+                                                return console.log('000', value)
+                                            }
+                                            return 'Wrong promocode'
+                                        },
+                                        message: 'Wrong promocode'
+                                    })} placeholder='enter promocode'/>
+                                    <ErrorMessage name='promocode' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
                                 </Col>
                             </Row>
                         </FormGroup>

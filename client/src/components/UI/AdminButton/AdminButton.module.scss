@@ -5,6 +5,8 @@
   padding: 10px 20px;
   color: #fff;
   transition: all .2s linear;
+  max-width: 200px;
+  width: 100%;
   &:hover {
     transition: all .2s linear;
     filter: opacity(80%)

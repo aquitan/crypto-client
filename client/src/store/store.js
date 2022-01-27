@@ -12,6 +12,7 @@ export default class Store {
     isActivated = false
     isAdmin = false
     isStaff = false
+    isBanned = false
     showConfirmation = false
     geoData = {}
 
@@ -49,25 +50,33 @@ export default class Store {
     setIsStaff(bool) {
         this.isStaff = bool
     }
+    setIsBanned(bool) {
+        this.isBanned = bool
+    }
 
     async login(email, password, domainName) {
         try {
             const response = await AuthService.login(email, password, domainName)
-            localStorage.setItem('token', response.data.accessToken)
-            this.setUserId(response.data.user.ID)
-            this.setUserEmail(response.data.user.email)
+            if (response.data.user.isBanned === 1) {
+                this.setIsBanned(true)
+            }
             this.setIsLoading(true)
-            if (response.data.user.isAdmin === 1) {
-                this.setIsAdmin(true)
+            if (!this.isBanned) {
+                localStorage.setItem('token', response.data.accessToken)
+                this.setUserId(response.data.user.ID)
+                this.setUserEmail(response.data.user.email)
+                if (response.data.user.isAdmin === 1) {
+                    this.setIsAdmin(true)
+                }
+                if (response.data.user.isStaff === 1) {
+                    this.setIsStaff(true)
+                }
+                if (response.data.user.isActivated === 1) {
+                    this.setIsActivated(true)
+                }
+                this.setAuth(true)
+                this.setUser(response.data.user)
             }
-            if (response.data.user.isStaff === 1) {
-                this.setIsStaff(true)
-            }
-            if (response.data.user.isActivated === 1) {
-                this.setIsActivated(true)
-            }
-            this.setAuth(true)
-            this.setUser(response.data.user)
         } catch(e) {
             console.log('error', e)
         } finally {
@@ -107,21 +116,26 @@ export default class Store {
         this.setIsLoading(true)
         try {
             const response = await axios.get(`${BASE_URL}/refresh`, {withCredentials: true})
-            console.log('refresh', response)
-            this.setUserId(response.data.user.ID)
-            this.setUserEmail(response.data.user.email)
-            localStorage.setItem('token', response.data.accessToken)
-            if (response.data.user.isActivated === 1) {
-                this.setIsActivated(true)
+            if (response.data.user.isBanned === 1) {
+                this.setIsBanned(true)
             }
-            if (response.data.user.isStaff === 1) {
-                this.setIsStaff(true)
+            if (!this.isBanned) {
+                console.log('refresh', response)
+                this.setUserId(response.data.user.ID)
+                this.setUserEmail(response.data.user.email)
+                localStorage.setItem('token', response.data.accessToken)
+                if (response.data.user.isActivated === 1) {
+                    this.setIsActivated(true)
+                }
+                if (response.data.user.isStaff === 1) {
+                    this.setIsStaff(true)
+                }
+                if (response.data.user.isAdmin === 1) {
+                    this.setIsAdmin(true)
+                }
+                this.setAuth(true)
+                this.setUser(response.data.user)
             }
-            if (response.data.user.isAdmin === 1) {
-                this.setIsAdmin(true)
-            }
-            this.setAuth(true)
-            this.setUser(response.data.user)
         } catch(e) {
             console.log('error---', e)
         } finally {
@@ -130,11 +144,15 @@ export default class Store {
     }
 
     async sendActivation(activationLink, user_id) {
+        this.setIsLoading(true)
         try {
             const response = await AuthService.activation(activationLink, user_id)
+            this.setShowConfirmation(false)
             this.setIsActivated(true)
         } catch(e) {
             console.log('activation error', e)
+        } finally {
+            this.setIsLoading(false)
         }
     }
 
