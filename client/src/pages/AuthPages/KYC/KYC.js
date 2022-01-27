@@ -19,12 +19,13 @@ import {getGeoData} from "../../../queries/getSendGeoData";
 import moment from 'moment'
 import {useLocation} from "react-router-dom";
 import InputRadio from "../../../components/UI/InputRadio/InputRadio";
+import {store} from "../../../index";
 
 
 const KYC = ({status}) => {
     const [startDate, setStartDate] = useState()
     const locatioan = useLocation()
-
+    console.log('store', store.userEmail)
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
     })
@@ -49,6 +50,8 @@ const KYC = ({status}) => {
             return <KycResults status={status} />
         }
     }
+
+
 
 
     return (
@@ -82,7 +85,12 @@ const KYC = ({status}) => {
                                 <Col>
                                     <Input {...register('email', {
                                         required: 'This field is required',
-                                        validate: emailValidate
+                                        validate: value => {
+                                            if (emailValidate(value) && value === store.userEmail) {
+                                                return console.log('OK')
+                                            }
+                                            return console.log('Wrong Email')
+                                        }
                                     })} name='email' placeholder='email'/>
                                     <ErrorMessage  name='email' errors={errors} render={() => <p className={error.error}>email is invalid</p>} />
                                 </Col>

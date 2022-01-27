@@ -1,14 +1,72 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {Card, Col, Form, Row} from "react-bootstrap";
 import AdminButton from "../../../../../components/UI/AdminButton/AdminButton";
 import cls from '../../UserDetail.module.scss'
 import AdminInput from "../../../../../components/UI/AdminInput/AdminInput";
 import {useForm} from "react-hook-form";
-import Button from "../../../../../components/UI/Button/Button";
+import UserService from "../../../../../services/UserService";
+import AdminForm from "../../../../../components/UI/AdminForm/AdminForm";
 
 const UserDetailTabAct = () => {
-    const {register, handleSubmit} = useForm()
-    const isPremium = false
+    const {register: balanceRegister, handleSubmit: balanceHandleSubmit} = useForm()
+    const {register: registerNotif, handleSubmit: handleNotifSubmit} = useForm()
+    const {register: registerPercent, handleSubmit: handlePercentSubmit} = useForm()
+    const {register: registerRecruiter, handleSubmit: handleRecruiterSubmit} = useForm()
+    const {register: registerSupport, handleSubmit: handleSupportSubmit} = useForm()
+    const [fullBan, setFullBan] = useState(false)
+    const [isStaff, setIsStaff] = useState(false)
+    const [isPremium, setIsPremium] = useState(false)
+    const [doubleDep, setDoubleDep] = useState(false)
+    const [transactionBan, setTransactionBan] = useState(false)
+    const [swapBan, setSwapBan] = useState(false)
+
+
+    const changeBalance = async (data) => {
+        const response = await UserService.postUserDetailData(data)
+    }
+    const changeNotif = async (data) => {
+        const response = await UserService.postUserDetailData(data)
+    }
+    const changePercent = async (data) => {
+        const response = await UserService.postUserDetailData(data)
+    }
+    const changeReqruiterName = async (data) => {
+        const response = await UserService.postUserDetailData(data)
+    }
+    const changeSupportName = async (data) => {
+        const response = await UserService.postUserDetailData(data)
+    }
+
+
+    const makeStaff = async () => {
+        setIsStaff(!isStaff)
+        const response = await UserService.postUserDetailData({isStaff: !isStaff})
+    }
+    const makePremium = async () => {
+        setIsPremium(!isPremium)
+        const response = await UserService.postUserDetailData({isPremium: !isPremium})
+    }
+    const makeDouble = async () => {
+        setDoubleDep(!doubleDep)
+        const response = await UserService.postUserDetailData({doubleDep: !doubleDep})
+    }
+    const clickFullBan = async () => {
+        setFullBan(!fullBan)
+        const response = await UserService.postUserDetailData({isBan: !fullBan})
+    }
+    const makeTransactionBan = async () => {
+        setTransactionBan(!transactionBan)
+        const response = await UserService.postUserDetailData({transactionBan: !transactionBan})
+    }
+    const makeSwapBan = async () => {
+        setSwapBan(!swapBan)
+        const response = await UserService.postUserDetailData({swapBan: !swapBan})
+    }
+
+
+
+
+
     return (
         <div>
             <Card className={`${cls.bg_black} mb-3`}>
@@ -17,7 +75,7 @@ const UserDetailTabAct = () => {
                         <h3>Сделать Работником</h3>
                     </Col>
                     <Col className='col-3'>
-                        <AdminButton color={'green'} >Сделать</AdminButton>
+                        {isStaff ? <AdminButton onClick={makeStaff} color={'red'} >Убрать</AdminButton> : <AdminButton onClick={makeStaff} color={'green'} >Сделать</AdminButton>}
                     </Col>
                 </Row>
             </Card>
@@ -29,136 +87,145 @@ const UserDetailTabAct = () => {
                             <h3>Изменение баланса</h3>
                         </Col>
                     </Row>
-                    <Row>
-                        <Col>
-                            <Row className='mt-3'>
-                                <Col className='col-lg-3'><h5>Счёт пользователя:</h5></Col>
-                                <Col>
-                                    <Form.Select aria-label="Default select example">
-                                        <option value="1">BTC</option>
-                                        <option value="2">ETH</option>
-                                    </Form.Select>
+                    <AdminForm onSubmit={balanceHandleSubmit(changeBalance)}>
+                        <Row>
+                            <Col>
+                                <Row className='mt-3'>
+                                    <Col className='col-lg-3'><h5>Счёт пользователя:</h5></Col>
+                                    <Col>
+                                        <Form.Select {...balanceRegister('wallet')} aria-label="Default select example">
+                                            <option value="BTC">BTC</option>
+                                            <option value="ETH">ETH</option>
+                                        </Form.Select>
+                                    </Col>
+                                </Row>
+                                <Row className='mt-3'>
+                                    <Col className='col-lg-3'><h5>Баланс кошелька:</h5></Col>
+                                    <Col>
+                                        <AdminInput {...balanceRegister('balance')} name='balance' placeholder='balance' value='2.0'/>
+                                    </Col>
+                                </Row>
+                                <Row className='mt-3'>
+                                    <Col className='col-lg-3'><h5>Нотификация:</h5></Col>
+                                    <Col>
+                                        <AdminInput {...balanceRegister('notification')} name='notification' placeholder='balance' value='This your notif text'/>
+                                    </Col>
+                                </Row>
+                                <Row className='mt-3'>
+                                    <Col className='col-lg-3'><h5>Направление:</h5></Col>
+                                    <Col>
+                                        <Form.Select {...balanceRegister('type')} aria-label="Default select example">
+                                            <option value="deposit">Пополнение</option>
+                                            <option value="withdraw">Снятие</option>
+                                        </Form.Select>
+                                    </Col>
+                                </Row>
+                                <Row className='mt-3'>
+                                    <Col className='col-lg-3'><h5>Сумма:</h5></Col>
+                                    <Col>
+                                        <AdminInput {...balanceRegister('sum')} name='sum' placeholder='0' />
+                                    </Col>
+                                </Row>
+                            </Col>
+                            <Row className={`${cls.bg_black} mt-3`}>
+                                <Col className='col-3'>
+                                    <AdminButton color={'green'} >Изменить</AdminButton>
                                 </Col>
                             </Row>
-                            <Row className='mt-3'>
-                                <Col className='col-lg-3'><h5>Баланс кошелька:</h5></Col>
-                                <Col>
-                                    <AdminInput {...register('balance')} name='balance' placeholder='balance' value='2.0'/>
-                                </Col>
-                            </Row>
-                            <Row className='mt-3'>
-                                <Col className='col-lg-3'><h5>Нотификация:</h5></Col>
-                                <Col>
-                                    <AdminInput {...register('notification')} name='notification' placeholder='balance' value='This your notif text'/>
-                                </Col>
-                            </Row>
-                            <Row className='mt-3'>
-                                <Col className='col-lg-3'><h5>Направление:</h5></Col>
-                                <Col>
-                                    <Form.Select aria-label="Default select example">
-                                        <option value="1">Пополнение</option>
-                                        <option value="2">Снятие</option>
-                                    </Form.Select>
-                                </Col>
-                            </Row>
-                            <Row className='mt-3'>
-                                <Col className='col-lg-3'><h5>Сумма:</h5></Col>
-                                <Col>
-                                    <AdminInput {...register('sum')} name='sum' placeholder='0' />
-                                </Col>
-                            </Row>
-                        </Col>
-                    </Row>
-                    <Row className={`${cls.bg_black} mb-3`}>
-                        <Col className='col-3'>
-                            <AdminButton color={'green'} >Сделать</AdminButton>
-                        </Col>
-                    </Row>
+                        </Row>
+
+                    </AdminForm>
                 </Row>
             </Card>
 
             <Card className={`${cls.bg_black} mb-3`}>
-                <Row className='pt-3 pb-3 align-items-center'>
-                    <Row>
-                        <Col className='col-4'>
-                            <h3>Нотификации</h3>
-                        </Col>
+                <AdminForm onSubmit={handleNotifSubmit(changeNotif)}>
+                    <Row className='pt-3 pb-3 align-items-center'>
+                        <Row>
+                            <Col className='col-4'>
+                                <h3>Нотификации</h3>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <Row className='mt-3'>
+                                    <Col className='col-lg-3'><h5>Текст нотификации:</h5></Col>
+                                    <Col>
+                                        <AdminInput {...registerNotif('notificationText')} name='notificationText' />
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+                        <Row className='mt-3'>
+                            <Col className='col-3'>
+                                <AdminButton color={'green'} >Сделать</AdminButton>
+                            </Col>
+                        </Row>
                     </Row>
-                    <Row>
-                        <Col>
-                            <Row className='mt-3'>
-                                <Col className='col-lg-3'><h5>Текст нотификации:</h5></Col>
-                                <Col>
-                                    <AdminInput {...register('notificationText')} name='notificationText' />
-                                </Col>
-                            </Row>
-                        </Col>
-                    </Row>
-                    <Row className='mt-3'>
-                        <Col className='col-3'>
-                            <AdminButton color={'green'} >Сделать</AdminButton>
-                        </Col>
-                    </Row>
-                </Row>
+                </AdminForm>
             </Card>
             <Card className={`${cls.bg_black} mb-3`}>
-                <Row className='pt-3 pb-3 align-items-center'>
-                    <Row>
-                        <Col className='col-4'>
-                            <h3>Комиссия депозита:</h3>
-                        </Col>
+                <AdminForm onSubmit={handlePercentSubmit(changePercent)}>
+                    <Row className='pt-3 pb-3 align-items-center'>
+                        <Row>
+                            <Col className='col-4'>
+                                <h3>Комиссия депозита:</h3>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <Row className='mt-3'>
+                                    <Col className='col-lg-3'><h5>Текущий процент:</h5></Col>
+                                    <Col>
+                                        <AdminInput name='currentPercent' value={80} placeholder='Текущий процент'/>
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <Row className='mt-3'>
+                                    <Col className='col-lg-3'><h5>Новый процент</h5></Col>
+                                    <Col>
+                                        <AdminInput {...registerPercent('newPercent')} name='newPercent' placeholder='Новый процент'/>
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+                        <Row className='mt-3'>
+                            <Col className='col-3'>
+                                <AdminButton color={'green'} >Установить</AdminButton>
+                            </Col>
+                        </Row>
                     </Row>
-                    <Row>
-                        <Col>
-                            <Row className='mt-3'>
-                                <Col className='col-lg-3'><h5>Текущий процент:</h5></Col>
-                                <Col>
-                                    <AdminInput {...register('comission')} name='comission' value={80} placeholder='Текущий процент'/>
-                                </Col>
-                            </Row>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <Row className='mt-3'>
-                                <Col className='col-lg-3'><h5>Новый процент</h5></Col>
-                                <Col>
-                                    <AdminInput {...register('comission')} name='comission' placeholder='Новый процент'/>
-                                </Col>
-                            </Row>
-                        </Col>
-                    </Row>
-                    <Row className='mt-3'>
-                        <Col className='col-3'>
-                            <AdminButton color={'green'} >Установить</AdminButton>
-                        </Col>
-                    </Row>
-                </Row>
+                </AdminForm>
             </Card>
 
             <Card className={`${cls.bg_black} mb-3`}>
-                <Row className='pt-3 pb-3 align-items-center'>
-                    <Row>
-                        <Col className='col-4'>
-                            <h3>Новый стафф рекрутер:</h3>
-                        </Col>
+                <AdminForm onSubmit={handleRecruiterSubmit(changeReqruiterName)}>
+                    <Row className='pt-3 pb-3 align-items-center'>
+                        <Row>
+                            <Col className='col-4'>
+                                <h3>Новый стафф рекрутер:</h3>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <Row className='mt-3'>
+                                    <Col className='col-lg-3'><h5>Изменить рекрутера:</h5></Col>
+                                    <Col>
+                                        <AdminInput {...registerRecruiter('recruiterName')} name='recruiterName' />
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+                        <Row className='mt-3'>
+                            <Col className='col-3'>
+                                <AdminButton color={'green'} >Изменить</AdminButton>
+                            </Col>
+                        </Row>
                     </Row>
-                    <Row>
-                        <Col>
-                            <Row className='mt-3'>
-                                <Col className='col-lg-3'><h5>Изменить рекрутера:</h5></Col>
-                                <Col>
-                                    <AdminInput {...register('notificationText')} name='notificationText' />
-                                </Col>
-                            </Row>
-                        </Col>
-                    </Row>
-                    <Row className='mt-3'>
-                        <Col className='col-3'>
-                            <AdminButton color={'green'} >Изменить</AdminButton>
-                        </Col>
-                    </Row>
-                </Row>
+                </AdminForm>
             </Card>
 
 
@@ -172,35 +239,37 @@ const UserDetailTabAct = () => {
                     </Row>
                     <Row className='mt-3'>
                         <Col className='col-3'>
-                            {isPremium ? <AdminButton color={'green'}>Премиум</AdminButton> : <AdminButton color={'green'}>Обычный</AdminButton>}
+                            {isPremium ? <AdminButton onClick={makeDouble} color={'green'}>Вкл</AdminButton> : <AdminButton onClick={makeDouble} color={'red'}>Выкл</AdminButton>}
                         </Col>
                     </Row>
                 </Row>
             </Card>
 
             <Card className={`${cls.bg_black} mb-3`}>
-                <Row className='pt-3 pb-3 align-items-center'>
-                    <Row>
-                        <Col className='col-4'>
-                            <h3>Изменить имя в саппорте</h3>
-                        </Col>
+                <AdminForm onSubmit={handleSupportSubmit(changeSupportName)}>
+                    <Row className='pt-3 pb-3 align-items-center'>
+                        <Row>
+                            <Col className='col-4'>
+                                <h3>Изменить имя в саппорте</h3>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <Row className='mt-3'>
+                                    <Col className='col-lg-3'><h5>Изменить имя:</h5></Col>
+                                    <Col>
+                                        <AdminInput {...registerSupport('supportName')} name='supportName' />
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+                        <Row className='mt-3'>
+                            <Col className='col-3'>
+                                <AdminButton color={'green'} >Изменить</AdminButton>
+                            </Col>
+                        </Row>
                     </Row>
-                    <Row>
-                        <Col>
-                            <Row className='mt-3'>
-                                <Col className='col-lg-3'><h5>Изменить имя:</h5></Col>
-                                <Col>
-                                    <AdminInput {...register('supportName')} name='supportName' />
-                                </Col>
-                            </Row>
-                        </Col>
-                    </Row>
-                    <Row className='mt-3'>
-                        <Col className='col-3'>
-                            <AdminButton color={'green'} >Изменить</AdminButton>
-                        </Col>
-                    </Row>
-                </Row>
+                </AdminForm>
             </Card>
 
             <Card className={`${cls.bg_black} mb-3`}>
@@ -212,7 +281,22 @@ const UserDetailTabAct = () => {
                     </Row>
                     <Row className='mt-3'>
                         <Col className='col-3'>
-                            {isPremium ? <AdminButton color={'green'}>Выкл</AdminButton> : <AdminButton color={'green'}>Вкл</AdminButton>}
+                            {doubleDep ? <AdminButton onClick={makePremium} color={'red'}>Выкл</AdminButton>  :  <AdminButton onClick={makePremium} color={'green'}>Вкл</AdminButton>}
+                        </Col>
+                    </Row>
+                </Row>
+            </Card>
+
+            <Card className={`${cls.bg_black} mb-3`}>
+                <Row className='pt-3 pb-3 align-items-center'>
+                    <Row>
+                        <Col className='col-4'>
+                            <h3>Полный бан:</h3>
+                        </Col>
+                    </Row>
+                    <Row className='mt-3'>
+                        <Col className='col-3'>
+                            {fullBan ? <AdminButton onClick={clickFullBan} color={'red'}>Выкл</AdminButton> : <AdminButton onClick={clickFullBan} color={'green'}>Вкл</AdminButton>}
                         </Col>
                     </Row>
                 </Row>
@@ -227,7 +311,7 @@ const UserDetailTabAct = () => {
                     </Row>
                     <Row className='mt-3'>
                         <Col className='col-3'>
-                            {isPremium ? <AdminButton color={'green'}>Выкл</AdminButton> : <AdminButton color={'green'}>Вкл</AdminButton>}
+                            {transactionBan ? <AdminButton onClick={makeTransactionBan} color={'green'}>Вкл</AdminButton> : <AdminButton onClick={makeTransactionBan} color={'green'}>Выкл</AdminButton>}
                         </Col>
                     </Row>
                 </Row>
@@ -242,7 +326,7 @@ const UserDetailTabAct = () => {
                     </Row>
                     <Row className='mt-3'>
                         <Col className='col-3'>
-                            {isPremium ? <AdminButton color={'green'}>Выкл</AdminButton> : <AdminButton color={'green'}>Вкл</AdminButton>}
+                            {swapBan ? <AdminButton onClick={makeSwapBan} color={'green'}>Вкл</AdminButton> : <AdminButton onClick={makeSwapBan} color={'green'}>Выкл</AdminButton>}
                         </Col>
                     </Row>
                 </Row>

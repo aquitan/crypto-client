@@ -14,7 +14,7 @@ const RegisterConfirm = () => {
     const toSignin = (data) => {
         console.log(data)
         store.sendActivation(data.activationLink, store.userId)
-        navigate('/signin')
+        navigate('/')
     }
 
     return (

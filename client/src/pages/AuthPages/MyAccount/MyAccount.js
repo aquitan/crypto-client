@@ -1,9 +1,27 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {Col, Container, Row} from "react-bootstrap";
 import cls from './MyAccount.module.scss'
+import Button from "../../../components/UI/Button/Button";
+import UserService from "../../../services/UserService";
 
 const MyAccount = (props) => {
-console.log('my acc', props)
+
+    const [name, setName] = useState(props.data.name)
+    const [changeName, setChangeName] = useState(false)
+    console.log('my acc', props)
+
+    const onChangeName = (e) => {
+        setName(e.target.value)
+    }
+    const setNewName = async () => {
+        if (changeName) {
+            const response = await UserService.editUser({name})
+            setChangeName(false)
+        } else {
+            setChangeName(true)
+        }
+
+    }
 
     return (
         <Container>
@@ -13,7 +31,8 @@ console.log('my acc', props)
                     <div>Name</div>
                 </Col>
                 <Col>
-                    <div>{props.data.name === '' ? '-' : props.data.name}</div>
+                    {!changeName ? <div>{name === '' ? '-' : name}</div> : <input onChange={onChangeName} />}
+                    <button onClick={setNewName}>{changeName ? 'Change' : 'Change name'}</button>
                 </Col>
             </Row>
             <Row className={cls.account_row}>

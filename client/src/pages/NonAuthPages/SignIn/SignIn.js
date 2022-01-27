@@ -22,6 +22,7 @@ import Modal from "../../../components/UI/Modal/Modal";
 
 const SignIn = () => {
     const [modal, setModal] = useState(false)
+    const [modalBan, setModalBan] = useState(false)
     const [isShowPassword, setIsShowPassword] = useState(false)
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
@@ -30,21 +31,30 @@ const SignIn = () => {
     const navigate = useNavigate()
 
     const onSubmit = (data, e) => {
-        if (!store.isAuth && store.isActivated) {
+        if (!store.isAuth && store.isActivated && !store.isBanned) {
             const domain_name = window.location.host
             store.login(data.email, data.password, domain_name)
             getGeoData()
-        } else if (!store.isAuth && !store.isActivated) {
+        } else if (!store.isAuth && !store.isActivated && !store.isBanned) {
             const domain_name = window.location.host
             store.login(data.email, data.password, domain_name)
             getGeoData()
-        } else {
+        } else if (store.isBanned) {
+            setModalBan(true)
+        }
+        else {
             setModal(true)
         }
+
     }
 
     const showPassword = () => {
         setIsShowPassword(!isShowPassword)
+    }
+    const hideModalBan = () => {
+        if (store.isBanned) {
+            setModalBan(false)
+        }
     }
 
     return (
@@ -52,6 +62,10 @@ const SignIn = () => {
             <Modal active={modal} setActive={setModal}>
                 <h2>You need to activate your account!</h2>
                 <Button onClick={() => navigate('/register-confirm')}>Verify</Button>
+            </Modal>
+            <Modal active={modalBan} setActive={setModalBan}>
+                <h2>Your account is blocked!</h2>
+                <Button onClick={hideModalBan}>Ok</Button>
             </Modal>
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <Row className='mb-4'>

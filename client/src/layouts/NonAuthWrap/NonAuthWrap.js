@@ -18,12 +18,6 @@ const NonAuthWrap = () => {
         <>
             <Routes>
                 {publicRoutes.map(route => <Route key={uuid()} exact path={route.path} element={route.component}/>)}
-                {/*{*/}
-                {/*    publicRoutes.map(route => <Route key={uuid()} exact path={route.path} element={route.component} />)*/}
-                {/*}*/}
-                {/*{*/}
-                {/*    store.showConfirmation ? <Route path='*' element={<Navigate to={'/register-confirm'}/>} /> : console.log('not-confirm')*/}
-                {/*}*/}
                 <Route path='*' element={<Navigate exact to='/'/>} />
             </Routes>
             <Footer>
