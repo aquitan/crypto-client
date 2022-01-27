@@ -25,7 +25,7 @@ class AuthService {
     return false
   }
 
-  async registration(email: string, password: string, promocode: string, domain_name: string, datetime: any, name: string) {
+  async registration(email: string, password: string, promocode: string, agreement: boolean, domain_name: string, datetime: any, name: string) {
 
     const candidate: any = await database.GetUserByEmail(email)
 
@@ -35,7 +35,7 @@ class AuthService {
     // save real password to db + hashed
     // const hashPassword = await bcrypt.hash(password, 6)
     const activationLink: string = await passwordGenerator(18)
-    await database.CreateUser(email, password, true, false, false, false, false, activationLink, 'self registred', promocode, false, false, domain_name, datetime, name || '',)
+    await database.CreateUser(email, password, true, false, false, false, false, activationLink, 'self registred', promocode, agreement, false, false, domain_name, datetime, name || '',)
     const user: any = await database.GetUserByEmail(email)
 
     await mailService.sendActivationMail(email, `${domain_name}`, `${activationLink}`)
@@ -59,6 +59,9 @@ class AuthService {
     const usedPromocode: any = await database.GetPromocodeToDelete(promocode)
     console.log('recieved code is: ', usedPromocode[0]);
 
+    if (!usedPromocode[0]) {
+      return false
+    }
     await database.SaveUsedPromocode(usedPromocode[0].code, usedPromocode[0].date, usedPromocode[0].value, usedPromocode[0].staff_user_id, usedPromocode[0].domain_name, user_email)
     await database.DeletePromocodeFromUserPromocode(promocode)
     const getUsedPromocode: any = await database.GetUsedPromocode(usedPromocode[0].code)
@@ -153,18 +156,16 @@ class AuthService {
     const candidate: any = await database.GetUserByEmail(email)
     console.log('found user is: ', candidate);
 
+    if (!candidate[0]) {
+      return false
+    }
+
     const new_password: string = await passwordGenerator(12)
     console.log('new password is: ', new_password);
 
-    console.log();
-
-    if (candidate[0].email === email) {
-      await database.UpdateUserPassword(email, new_password)
-      await mailService.sendNewPassword(email, `${candidate[0].domain_name}`, `${new_password}`)
-      return true
-    }
-
-    return false
+    await database.UpdateUserPassword(email, new_password)
+    await mailService.sendNewPassword(email, `${candidate[0].domain_name}`, `${new_password}`)
+    return true
   }
 
 }

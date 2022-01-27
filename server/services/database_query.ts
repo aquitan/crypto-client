@@ -8,7 +8,10 @@ class Database {
       mysql.query(`
         SELECT code 
         FROM user_promocode
-        WHERE domain_name = "${domain_name}"`,
+        WHERE domain_name = "${domain_name}"
+        GROUP BY ID
+        ORDER BY MAX (ID)
+        desc`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -16,13 +19,13 @@ class Database {
     })
   }
 
-  async CreateUser(email: string, password: string, isUser: boolean, isAdmin: boolean, isStaff: boolean, isBanned: boolean, isActivated: boolean, activationLink: string, self_registration: string, promocode: string, premium_status: boolean, two_step_status: boolean, domainName: string, dateOfEntry: string, name?: string) {
+  async CreateUser(email: string, password: string, isUser: boolean, isAdmin: boolean, isStaff: boolean, isBanned: boolean, isActivated: boolean, activationLink: string, self_registration: string, promocode: string, agreement: boolean, premium_status: boolean, two_step_status: boolean, domainName: string, dateOfEntry: string, name?: string) {
 
     mysql.query(`
         INSERT INTO user_auth 
-        ( email, password, isUser, isAdmin, isStaff, isBanned, isActivated, activationLink, self_registration, promocode, premium_status, two_step_status, domain_name, date_of_entry, name) 
+        ( email, password, isUser, isAdmin, isStaff, isBanned, isActivated, activationLink, self_registration, promocode, agreement, premium_status, two_step_status, domain_name, date_of_entry, name) 
         VALUES 
-        ( "${email}", "${password}", ${isUser}, ${isAdmin}, ${isStaff}, ${isBanned}, ${isActivated}, "${activationLink}", "${self_registration}", "${promocode}", ${premium_status}, ${two_step_status} "${domainName}", "${dateOfEntry}", "${name || ''}")`,
+        ( "${email}", "${password}", ${isUser}, ${isAdmin}, ${isStaff}, ${isBanned}, ${isActivated}, "${activationLink}", "${self_registration}", "${promocode}", ${agreement} ${premium_status}, ${two_step_status}, "${domainName}", "${dateOfEntry}", "${name || ''}")`,
       (err, result) => {
         if (err) return console.error(err);
         console.log('done')
@@ -169,7 +172,10 @@ class Database {
       mysql.query(`
         SELECT ip_address, action_date
         FROM user_logs
-        WHERE user_id = ${user_id}`,
+        WHERE user_id = ${user_id}
+        GROUP BY ID
+        ORDER BY MAX (ID)
+        desc`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -288,7 +294,10 @@ class Database {
       mysql.query(`
         SELECT *
         FROM user_auth
-        WHERE isAdmin = ${false} AND domain_name = "${domain_name}"`,
+        WHERE isAdmin = ${false} AND domain_name = "${domain_name}"
+        GROUP BY ID
+        ORDER BY MAX (ID)
+        desc`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -301,7 +310,10 @@ class Database {
       mysql.query(`
         SELECT *
         FROM user_logs
-        WHERE user_id = ${user_id}`,
+        WHERE user_id = ${user_id}
+        GROUP BY ID
+        ORDER BY MAX (ID)
+        desc`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -312,10 +324,10 @@ class Database {
   async GetUsersByIp(ip_address: string) {
     return new Promise((resolve, reject) => {
       mysql.query(`
-        SELECT email, ip_address
+        SELECT DISTINCT email, ip_address
         FROM user_logs
         WHERE user_logs.ip_address = "${ip_address}"
-       `,
+        GROUP BY ID`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -326,10 +338,10 @@ class Database {
   async GetKycForStaff(user_domain: string) {
     return new Promise((resolve, reject) => {
       mysql.query(`
-        SELECT *
+        SELECT user_kyc.ID, user_auth.date_of_entry, user_auth.name, user_auth.email, user_kyc.document_type, user_kyc.country_name, user_kyc.city, user_kyc.zip_code, user_kyc.state, user_kyc.kyc_status
         FROM user_kyc
         JOIN user_auth 
-        ON user_auth.email = user_kyc.email
+        ON user_kyc.user_id = user_auth.ID
         WHERE user_auth.domain_name = "${user_domain}"
         AND user_auth.isAdmin = ${false}`,
         (e: any, result) => {
@@ -342,7 +354,7 @@ class Database {
   async getKycForUpdate(kyc_id: number) {
     return new Promise((resolve, reject) => {
       mysql.query(`
-        SELECT status
+        SELECT kyc_status
         FROM user_kyc
         WHERE ID = ${kyc_id}`,
         (e: any, result) => {
@@ -381,7 +393,10 @@ class Database {
       mysql.query(`
         SELECT *
         FROM user_promocode
-        WHERE staff_user_id = ${staff_id}`,
+        WHERE staff_user_id = ${staff_id}
+        GROUP BY ID
+        ORDER BY MAX (ID)
+        desc`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -432,7 +447,26 @@ class Database {
       mysql.query(`
         SELECT *
         FROM used_promocode
-        WHERE code = "${code}"`,
+        WHERE code = "${code}"
+        GROUP BY ID
+        ORDER BY MAX (ID)
+        desc`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async GetUsedPromocodeListForStaff(staff_id: number) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM used_promocode
+        WHERE staff_user_id = ${staff_id}
+        GROUP BY ID
+        ORDER BY MAX (ID)
+        desc`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -479,7 +513,10 @@ class Database {
     return new Promise((resolve, reject) => {
       mysql.query(`
         SELECT *
-        FROM user_auth`,
+        FROM user_auth
+        GROUP BY ID
+        ORDER BY MAX (ID)
+        desc`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -490,10 +527,13 @@ class Database {
   async GetKycForAdmin() {
     return new Promise((resolve, reject) => {
       mysql.query(`
-         SELECT *
+        SELECT *
         FROM user_kyc
         JOIN user_auth 
-        ON user_auth.email = user_kyc.email`,
+        ON user_kyc.email = user_auth.email
+        GROUP BY ID
+        ORDER BY MAX (ID)
+        desc`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -505,7 +545,25 @@ class Database {
     return new Promise((resolve, reject) => {
       mysql.query(`
         SELECT *
-        FROM user_promocode`,
+        FROM user_promocode
+        GROUP BY ID
+        ORDER BY MAX (ID)
+        desc`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async GetUsedPromocodeListForAdmin() {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM used_promocode
+        GROUP BY ID
+        ORDER BY MAX (ID)
+        desc`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)

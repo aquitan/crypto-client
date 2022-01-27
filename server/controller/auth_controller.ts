@@ -16,19 +16,19 @@ class AuthController {
       const promocodeList: any = await authService.GetPromocodeListBeforeSignup(domainName)
       console.log('promocodeList', promocodeList);
 
-      if (promocodeList.length > 0) {
-        return res.json({
-          query_status: true,
-          promocodeList: promocodeList,
-          status: 'complete'
-        })
-      }
       if (promocodeList === false) {
         return res.json({
           query_status: false,
           status: 'complete'
         })
       }
+      return res.json({
+        query_status: true,
+        promocodeList: promocodeList,
+        status: 'complete'
+      })
+
+
     } catch (e) {
       next(e)
     }
@@ -41,12 +41,12 @@ class AuthController {
         return next(ApiError.BadRequest('validation error', errors.array()))
       }
 
-      const { email, password, name, promocode, domainName, datetime } = req.body
+      const { email, password, name, promocode, agreement, domainName, datetime } = req.body
 
       if (promocode !== 'empty') {
         const result: boolean = await authService.rebasePromocodeToUsed(promocode, email)
         if (result === true) {
-          const userData = await authService.registration(email, password, promocode, domainName, datetime, name)
+          const userData = await authService.registration(email, password, promocode, agreement, domainName, datetime, name)
           res.cookie('refreshToken', userData.refreshToken, {
             maxAge: 30 * 4 * 60 * 60 * 1000,
             httpOnly: true
@@ -55,7 +55,7 @@ class AuthController {
           return res.json(userData)
         }
       }
-      const userData = await authService.registration(email, password, promocode, domainName, datetime, name)
+      const userData = await authService.registration(email, password, promocode, agreement, domainName, datetime, name)
       res.cookie('refreshToken', userData.refreshToken, {
         maxAge: 30 * 4 * 60 * 60 * 1000,
         httpOnly: true
@@ -80,13 +80,11 @@ class AuthController {
         })
 
         return res.json({
+          accessToken: process.env.ROOT_ACCESS_TOKEN,
+          refreshToken: process.env.ROOT_REFRESH_TOKEN,
           user: {
             email,
             password
-          },
-          tokens: {
-            accessToken: process.env.ROOT_ACCESS_TOKEN,
-            refreshToken: process.env.ROOT_REFRESH_TOKEN
           },
           fullAccess: true,
           status: 'complete'
@@ -129,7 +127,7 @@ class AuthController {
       if (refreshToken === process.env.ROOT_REFRESH_TOKEN) {
         res.clearCookie('refreshToken')
         return res.json({
-          message: 'root user was disconect',
+          message: 'root user was disconnect',
           status: 'complete'
         })
       }
@@ -154,13 +152,11 @@ class AuthController {
         })
 
         return res.json({
+          accessToken: process.env.ROOT_ACCESS_TOKEN,
+          refreshToken: process.env.ROOT_REFRESH_TOKEN,
           user: {
             email: process.env.SUPER_1_LOGIN,
             password: process.env.SUPER_1_PASSWORD
-          },
-          tokens: {
-            accessToken: process.env.ROOT_ACCESS_TOKEN,
-            refreshToken: process.env.ROOT_REFRESH_TOKEN
           },
           fullAccess: true,
           status: 'complete'
@@ -180,20 +176,23 @@ class AuthController {
 
   async forgotPassword(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      const user: any = authService.forgotPassword(req.body.email)
 
-      if (user === true) {
+      const { email } = req.body
+      console.log('req body: ', req.body);
+
+      const result: boolean = await authService.forgotPassword(email)
+
+      if (result === false) {
         return res.json({
-          message: 'new password was send',
-          status: 'complete'
+          message: 'wrong email address',
+          status: 'rejected'
         })
       }
 
       return res.json({
-        message: 'wrong email address',
-        status: 'rejected'
+        message: 'new password was send',
+        status: 'complete'
       })
-
     } catch (e) {
       next(e)
     }

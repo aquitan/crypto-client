@@ -19,7 +19,7 @@ router.post('/login/', authController.login)
 router.post('/logout/', authController.logout)
 router.post('/activate/', authController.activate)
 router.get('/refresh/', authController.refresh)
-router.post('/forgot_password/', authController.forgotPassword)
+router.patch('/forgot_password/', authController.forgotPassword)
 
 // user area routes
 router.post('/dashboard/', authChecker, userController.dashboard)
@@ -43,6 +43,7 @@ router.patch('/staff/kyc/update_kyc_status/', staffController.changeKycStatus)
 router.post('/staff/create_user/', staffController.createNewUser)
 router.post('/staff/create_promocode/', staffController.promocodeCreate)
 router.post('/staff/get_promocode_list/', staffController.getPromocodeListForStaff)
+router.post('/staff/get_used_promocode_list/', staffController.getUsedPromocodeListForStaff)
 router.post('/staff/ip_match_checker/', staffController.getIpForMatch)
 
 

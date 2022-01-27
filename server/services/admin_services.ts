@@ -5,13 +5,11 @@ class adminService {
 
 
   async GetUsersList() {
-    const usersList: any = database.GetAllUsersForAdmin()
-    if (usersList !== []) {
-      console.log("list is: ", usersList)
-      return usersList
-    }
-    console.log('list is empty');
-    return 'error'
+
+    const usersList: any = await database.GetAllUsersForAdmin()
+    console.log("list is: ", usersList)
+    if (!usersList[0]) return false
+    return usersList
   }
 
   async GetUserDetail(user_id: number) {
@@ -25,7 +23,7 @@ class adminService {
     const userLogsData: any = database.GetLogsByUserId(user_id)
     console.log('userLogsData info is: ', userLogsData)
 
-    if (userKycData === []) {
+    if (!userKycData[0]) {
       const UserData: any = {
         base_data: userBaseData[0],
         user_kyc: false,
@@ -41,7 +39,7 @@ class adminService {
       user_logs: userLogsData
     }
 
-    // get user balances + get 2fa status + last deposit date 
+    // get user balances + last deposit date 
     // get user owner name + get recruiter  
 
     console.log('data from service: ', UserData);
@@ -50,18 +48,24 @@ class adminService {
 
   async GetKycForAdmin() {
     const kycList: any = await database.GetKycForAdmin()
+    console.log("list is: ", kycList)
+    if (!kycList[0]) return false
+    return kycList
 
-    if (kycList !== []) {
-      console.log("list is: ", kycList)
-      return kycList
-    }
-    console.log('list is empty');
-    return 'error'
   }
 
   async GetPromocodeListForAdmin() {
     const promocodeList: any = await database.GetPromocodeListForAdmin()
     console.log('promo list is: ', promocodeList);
+    if (!promocodeList[0]) return false
+    return promocodeList
+  }
+
+
+  async GetUsedPromocodeListForAdmin() {
+    const promocodeList: any = await database.GetPromocodeListForAdmin()
+    console.log('promo list is: ', promocodeList);
+    if (!promocodeList[0]) return false
     return promocodeList
   }
 

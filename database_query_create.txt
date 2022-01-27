@@ -18,6 +18,7 @@ CREATE TABLE used_promocode (ID INT AUTO_INCREMENT PRIMARY KEY, code VARCHAR(30)
 
 CREATE TABLE staff_wallets
 
+**** agreement field in table where user do some actions ****
 
 ** use it later **
 

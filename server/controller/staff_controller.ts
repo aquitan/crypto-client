@@ -35,7 +35,7 @@ class StaffController {
 
       if (adminPermission === true) {
         const usersList: any = await adminService.GetUsersList()
-        if (usersList !== 'error') {
+        if (usersList !== false) {
           return res.json({
             usersList: usersList,
             status: 'complete'
@@ -44,7 +44,7 @@ class StaffController {
       }
       if (staffPremisstion === true) {
         const usersList: any = await staffService.GetUsersList(userDomain)
-        if (usersList !== 'error') {
+        if (usersList !== false) {
           return res.json({
             usersList: usersList,
             status: 'complete'
@@ -73,16 +73,18 @@ class StaffController {
       const user: any = await staffService.GetUserDetail(current_id)
       console.log('found user: ', user)
 
-      if (user) {
+      if (!user)
         return res.json({
-          user: user,
-          status: 'complete'
+          message: 'some querry error',
+          status: 'rejected'
         })
-      }
+
+
       return res.json({
-        message: 'some querry error',
-        status: 'rejected'
+        user: user,
+        status: 'complete'
       })
+
 
     } catch (e) {
       next(e)
@@ -128,7 +130,7 @@ class StaffController {
 
       if (adminPermission === true) {
         const usersKycList: any = await adminService.GetKycForAdmin()
-        if (usersKycList !== 'error') {
+        if (usersKycList !== false) {
           return res.json({
             usersKycList: usersKycList,
             status: 'complete'
@@ -137,7 +139,7 @@ class StaffController {
       }
       if (staffPremisstion === true) {
         const usersKycList: any = await staffService.GetKycForStaff(domainName)
-        if (usersKycList !== 'error') {
+        if (usersKycList !== false) {
           return res.json({
             usersKycList: usersKycList,
             status: 'complete'
@@ -161,22 +163,20 @@ class StaffController {
       const { status, staffId, staffEmail, userEmail, kycId, domainName } = req.body
       console.log('req body: ', req.body);
 
-
       const result: boolean = await staffService.changeKycStatusAsStaff(status, kycId)
       console.log('operation result is: ', result);
-      if (result === true) {
-        await telegram.sendMessageBySupportActions(staffEmail, `изменил статус ${userEmail} на  ${status} `, domainName)
-        await staffService.saveStaffLogs(staffEmail, `изменил статус ${userEmail} на  ${status} на ${domainName}`, domainName, staffId)
-
+      if (result === false) {
         return res.json({
-          message: 'status was changed',
-          status: 'complete'
+          message: 'error',
+          status: 'rejected'
         })
       }
+      await telegram.sendMessageBySupportActions(staffEmail, `изменил статус ${userEmail} на  ${status} `, domainName)
+      await staffService.saveStaffLogs(staffEmail, ` изменил статус ${userEmail} на  ${status} на ${domainName}`, domainName, staffId)
 
       return res.json({
-        message: 'error',
-        status: 'rejected'
+        message: 'status was changed',
+        status: 'complete'
       })
     } catch (e) {
       next(e)
@@ -189,20 +189,19 @@ class StaffController {
       const { staffEmail, staffId, email, password, promocode, domainName, datetime, name } = req.body
       const result: boolean = await staffService.CreateUserAsStaff(staffId, email, password, promocode, domainName, datetime, name || '')
 
-      if (result === true) {
-        console.log('operation result is: ', result);
-        await telegram.sendMessageBySupportActions(staffEmail, `создал пользователя ${email}`, domainName)
-        await staffService.saveStaffLogs(staffEmail, `создал пользователя ${email}} на ${domainName}`, domainName, staffId)
+      if (result === false) {
         return res.json({
-          message: 'user was created',
-          status: 'complete'
+          message: 'some server error',
+          statusCode: 500,
+          status: 'rejected'
         })
       }
-
+      console.log('operation result is: ', result);
+      await telegram.sendMessageBySupportActions(staffEmail, `создал пользователя ${email}`, domainName)
+      await staffService.saveStaffLogs(staffEmail, `создал пользователя ${email}} на ${domainName}`, domainName, staffId)
       return res.json({
-        message: 'some server error',
-        statusCode: 500,
-        status: 'rejected'
+        message: 'user was created',
+        status: 'complete'
       })
     } catch (e) {
       next(e)
@@ -315,14 +314,13 @@ class StaffController {
       const codesArray: any = await staffService.CreatePromocode(date, value, staff, domainName, counter)
       console.log('operation result is: ', codesArray);
 
-      if (codesArray !== []) {
+      if (!codesArray[0]) {
         return res.json({
           message: 'code was created',
           codesArray: codesArray,
           status: 'complete'
         })
       }
-
       return res.json({
         message: 'something went wrong',
         status: 'rejected'
@@ -341,35 +339,24 @@ class StaffController {
       // const domainName: string = req.body.domainName
       const staff_id: number = req.body.id
 
-
       if (adminPermission === true) {
         const codesList: any = await adminService.GetPromocodeListForAdmin()
-        if (codesList !== 'empty') {
+        if (codesList !== false) {
           return res.json({
             promocodeList: codesList,
             status: 'complete'
           })
         }
-        return res.json({
-          message: 'something went wrong',
-          status: 'rejected'
-        })
-
       }
       if (staffPremisstion === true) {
         const codesList: any = await staffService.GetPromocodeList(staff_id)
-        if (codesList !== 'empty') {
+        if (codesList !== false) {
           return res.json({
             promocodeList: codesList,
             status: 'complete'
           })
         }
-        return res.json({
-          message: 'something went wrong',
-          status: 'rejected'
-        })
       }
-
       return res.json({
         message: 'permission denied',
         status: 'rejected'
@@ -378,6 +365,44 @@ class StaffController {
       next(e)
     }
   }
+
+  async getUsedPromocodeListForStaff(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      console.log('req body is: ', req.body)
+
+      const adminPermission: boolean = req.body.isAdmin
+      const staffPremisstion: boolean = req.body.isStaff
+      // const domainName: string = req.body.domainName
+      const staff_id: number = req.body.id
+
+      if (adminPermission === true) {
+        const codesList: any = await adminService.GetUsedPromocodeListForAdmin()
+        if (codesList !== false) {
+          return res.json({
+            promocodeList: codesList,
+            status: 'complete'
+          })
+        }
+      }
+      if (staffPremisstion === true) {
+        const codesList: any = await staffService.GetUsedPromocodeList(staff_id)
+        if (codesList !== false) {
+          return res.json({
+            promocodeList: codesList,
+            status: 'complete'
+          })
+        }
+      }
+      return res.json({
+        message: 'permission denied',
+        status: 'rejected'
+      })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+
 
   async makeTransaction(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {

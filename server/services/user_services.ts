@@ -9,8 +9,8 @@ class UserServices {
 
     const userKyc: any = await database.GetUserKycByUserId(user_id)
     const user: any = await database.GetUserById(user_id)
-    console.log('kyc of current user: ' + '\n' + userKyc[0])
-    console.log('info of current user: ' + '\n' + user[0])
+    console.log('kyc of current user: ', userKyc[0])
+    console.log('info of current user: ', user[0])
 
     if (!userKyc[0]) {
       const dashboardUserDto: any = new DashboardUserDto(user[0])
@@ -29,8 +29,8 @@ class UserServices {
 
     const userKyc: any = await database.GetUserKycByUserId(user_id)
     const user: any = await database.GetUserById(user_id)
-    console.log('kyc of current user: ', '\n', userKyc[0])
-    console.log('info of current user: ', '\n', user[0])
+    console.log('kyc of current user: ', userKyc[0])
+    console.log('info of current user: ', user[0])
 
     const userLogs: any = await database.GetLogsForUser(user_id)
     console.log('user logs is:', userLogs[0]);
@@ -39,6 +39,8 @@ class UserServices {
       let profileUserDto: any = new ProfileUserDto(userKyc[0])
       profileUserDto.ip_address = userLogs[0].ip_address
       profileUserDto.login_date = userLogs[0].action_date
+      profileUserDto.name = user[0].name
+      profileUserDto.two_step_status = user[0].two_step_status
       console.log('user dto is: ', profileUserDto)
 
       return profileUserDto
@@ -46,7 +48,7 @@ class UserServices {
 
     let profileUserDto: any = new ProfileUserDto(user[0])
     profileUserDto.ip_address = userLogs[0].ip_address
-    profileUserDto.userLogs[0].action_date
+    profileUserDto.login_date = userLogs[0].action_date
     console.log('user dto is: ', profileUserDto)
 
     return profileUserDto
@@ -117,10 +119,7 @@ class UserServices {
     const candidate: any = await database.GetUserKycByUserId(user_id)
     console.log('candid: ', candidate);
 
-    if (candidate[0]) {
-      console.log('kyc already added');
-      return candidate[0]
-    }
+    if (candidate[0]) return candidate[0]
 
     await database.SaveUserKyc(first_name, last_name, email, phone_number, date_of_birth, document_number, main_address, city, country_name, zip_code, document_type, status, user_id, state, sub_address)
     return true

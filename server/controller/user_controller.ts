@@ -74,17 +74,17 @@ class UserController {
         })
       }
       const result: boolean = await UserServices.changeNameInProfile(userId, userName)
-      if (result === true) {
-        await saveUserLogs(userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName)
-        await telegram.sendMessageByUserActions(userEmail, `поменял имя на ${userName}`, domainName)
+      if (result === false) {
         return res.json({
-          message: 'name was changed',
-          status: 'complete'
+          message: 'error',
+          status: 'rejected'
         })
       }
+      await saveUserLogs(userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName)
+      await telegram.sendMessageByUserActions(userEmail, `поменял имя на ${userName} `, domainName)
       return res.json({
-        message: 'error',
-        status: 'rejected'
+        message: 'name was changed',
+        status: 'complete'
       })
     } catch (e) {
       next(e)
@@ -141,7 +141,7 @@ class UserController {
       }
 
       await saveUserLogs(userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName)
-      await telegram.sendMessageByUserActions(userEmail, `выключил 2фа аутентификацию`, domainName)
+      await telegram.sendMessageByUserActions(userEmail, `выключил 2фа аутентификацию `, domainName)
       return res.json({
         message: '2fa turned off',
         status: 'complete'
@@ -168,7 +168,7 @@ class UserController {
       }
 
       await saveUserLogs(userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName)
-      await telegram.sendMessageByUserActions(userEmail, `получил премиум статус`, domainName)
+      await telegram.sendMessageByUserActions(userEmail, `получил премиум статус `, domainName)
       return res.json({
         message: 'premium status was update',
         status: 'complete'
@@ -208,23 +208,20 @@ class UserController {
       const result: boolean = await UserServices.personalAreaSendKyc(id, firstName, lastName, email, phoneNumber, dateOfBirth, documentNumber, mainAddress, city, countryName, zipCode, documentType, 'pending', state, subAddress)
       console.log('operation result is: ', result)
 
-      if (result === true) {
-        await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName)
-        await telegram.sendMessageByUserActions(email, ' отправил KYC', domainName)
+      if (result === false) {
         return res.json({
-          kyc: true,
-          stasus: 'complete'
+          kyc: false,
+          message: 'already added',
+          stasus: 'rejected'
         })
-
       }
-
+      await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName)
+      await telegram.sendMessageByUserActions(email, ' отправил KYC', domainName)
       return res.json({
-        kyc: false,
-        message: 'already added',
-        stasus: 'rejected'
+        kyc: true,
+        stasus: 'complete'
       })
 
-      // post kyc form
     } catch (e) {
       next(e)
     }
@@ -315,22 +312,6 @@ class UserController {
     try {
 
       // current secure deal info & support chat
-    } catch (e) {
-      next(e)
-    }
-  }
-
-
-
-
-  async contactUs(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
-      const userRequest = req.body
-      console.log('body is: ', req.body);
-
-      console.log('req is: ', userRequest);
-
-
     } catch (e) {
       next(e)
     }

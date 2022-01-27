@@ -1,6 +1,5 @@
 import database from "../services/database_query"
 import codeGenerator from '../api/password_generator'
-import telegram from '../api/telegram_api'
 import fs from 'fs'
 
 
@@ -9,12 +8,9 @@ class staffService {
   async GetUsersList(domainName: string) {
 
     const usersList: any = await database.GetAllUsersForStaff(domainName)
-    if (usersList !== []) {
-      console.log("list is: ", usersList)
-      return usersList
-    }
-    console.log('list is empty');
-    return 'error'
+    console.log('user list: ', usersList);
+    if (!usersList[0]) return usersList
+    return false
   }
 
   async GetUserDetail(user_id: number) {
@@ -27,7 +23,7 @@ class staffService {
     const userLogsData: any = await database.GetLogsByUserId(user_id)
     console.log('userLogsData info is: ', userLogsData)
 
-    if (userKycData === []) {
+    if (!userKycData[0]) {
       const UserData: any = {
         base_data: userBaseData[0],
         user_kyc: false,
@@ -51,27 +47,17 @@ class staffService {
 
   async getUserForIpMatch(ip_address: string) {
     const usersList: any = await database.GetUsersByIp(ip_address)
-    console.log('users list: ', usersList);
-
-    if (!usersList[0]) {
-      console.log('list is empty');
-      return false
-    }
-
-    return usersList
-
+    console.log('list is: ', usersList);
+    if (!usersList[0]) return usersList
+    return false
   }
 
   async GetKycForStaff(userDomain: string) {
 
     const kycList: any = await database.GetKycForStaff(userDomain)
-
-    if (kycList !== []) {
-      console.log("list is: ", kycList)
-      return kycList
-    }
-    console.log('list is empty');
-    return 'error'
+    console.log('list is: ', kycList);
+    if (!kycList[0]) return kycList
+    return false
   }
 
   async changeKycStatusAsStaff(status: string, kyc_id: number) {
@@ -95,13 +81,10 @@ class staffService {
     console.log('current staff: ', owner[0].email);
 
     const activationLink: string = await codeGenerator(8)
-    await database.CreateUser(email, password, true, false, false, false, true, activationLink, owner[0].email, promocode, false, false, domain_name, datetime, name || '',)
+    await database.CreateUser(email, password, true, false, false, false, true, activationLink, owner[0].email, promocode, true, false, false, domain_name, datetime, name || '',)
     const user: any = await database.GetUserByEmail(email)
 
-    if (user[0]) {
-      console.log('new user is: ', user);
-      return true
-    }
+    if (user[0]) return true
 
     console.log('something went wrong');
     return false
@@ -153,13 +136,25 @@ class staffService {
     const codeList: any = await database.GetPromocodeListForStaff(staff_id)
     console.log('service code list is: ', codeList);
 
+    if (!codeList[0]) return false
+    return codeList
+
   }
 
   async GetPromocodeListForStaff(staff_id: number) {
 
     const codeList: any = await database.GetPromocodeListForStaff(staff_id)
     console.log('service code list is: ', codeList);
+    if (!codeList[0]) return false
+    return codeList
 
+  }
+
+  async GetUsedPromocodeList(staff_id: number) {
+    const codeList: any = await database.GetUsedPromocodeListForStaff(staff_id)
+    console.log('service code list is: ', codeList);
+    if (!codeList[0]) return false
+    return codeList
   }
 
   async saveStaffLogs(staff_email: string, staff_action: string, staff_domain: string, staff_id: number) {
