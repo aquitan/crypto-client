@@ -171,7 +171,7 @@ class StaffController {
           status: 'rejected'
         })
       }
-      await telegram.sendMessageBySupportActions(staffEmail, `изменил статус ${userEmail} на  ${status} `, domainName)
+      await telegram.sendMessageByStaffActions(staffEmail, `изменил статус ${userEmail} на  ${status} `, domainName)
       await staffService.saveStaffLogs(staffEmail, ` изменил статус ${userEmail} на  ${status} на ${domainName}`, domainName, staffId)
 
       return res.json({
@@ -198,17 +198,17 @@ class StaffController {
       }
       if (status === true) {
         await staffService.saveStaffLogs(staffEmail, ` изменил премиум статус ${userEmail} на  ${status} на ${domainName}`, domainName, staffId)
-        await telegram.sendMessageByUserActions(staffEmail, ` изменил премиум статус ${userEmail} на  ${status} на`, domainName)
+        await telegram.sendMessageByStaffActions(staffEmail, ` изменил премиум статус ${userEmail} на  ${status} на`, domainName)
         return res.json({
-          message: 'premium status was update',
+          message: 'premium status was enabled',
           status: 'complete'
         })
       }
 
       await staffService.saveStaffLogs(staffEmail, ` отменил премиум статус ${userEmail} на ${domainName}`, domainName, staffId)
-      await telegram.sendMessageByUserActions(staffEmail, ` отменил премиум статус ${userEmail} на`, domainName)
+      await telegram.sendMessageByStaffActions(staffEmail, ` отменил премиум статус ${userEmail} на`, domainName)
       return res.json({
-        message: 'premium status was update',
+        message: 'premium status disabled',
         status: 'complete'
       })
     } catch (e) {
@@ -230,7 +230,7 @@ class StaffController {
         })
       }
       console.log('operation result is: ', result);
-      await telegram.sendMessageBySupportActions(staffEmail, `создал пользователя ${email}`, domainName)
+      await telegram.sendMessageByStaffActions(staffEmail, `создал пользователя ${email}`, domainName)
       await staffService.saveStaffLogs(staffEmail, `создал пользователя ${email}} на ${domainName}`, domainName, staffId)
       return res.json({
         message: 'user was created',

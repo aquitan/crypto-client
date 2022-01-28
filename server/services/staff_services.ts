@@ -93,8 +93,9 @@ class staffService {
     console.log('current staff: ', owner[0].email);
 
     const activationLink: string = await codeGenerator(8)
-    await database.CreateUser(email, password, true, false, false, false, true, activationLink, owner[0].email, promocode, true, false, false, domain_name, datetime, name || '',)
-    const user: any = await database.GetUserByEmail(email)
+    await database.CreateUser(email, password, activationLink, owner[0].email, promocode, true, domain_name, datetime, name || '',)
+    const user: any = await database.GetBaseUserParamsByEmail(email)
+    await database.SaveBaseUserParams(false, false, false, true, false, false, false, false, false, false, true, user[0].ID)
 
     if (user[0]) return true
 

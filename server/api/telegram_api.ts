@@ -60,29 +60,13 @@ class Telegram {
     await SendMessage(userRequest)
   }
 
-  async sendMessageBySupportActions(userEmail: string, action: string, domain_name: string) {
+  async sendMessageByStaffActions(userEmail: string, action: string, domain_name: string) {
     // user actions bot 
 
     const userRequest: string = `Стафф ` + `${userEmail}` + `${action}` + ' на ' + `${domain_name}`
     console.log(userRequest)
     await SendMessage(userRequest)
   }
-
-  // async sendMessageSignup(userEmail: string, domain_name?: string) {
-
-  //   // const userRequest: string = `User ` + `${userEmail}` + ` was registred at ` + ` ${domain_name}`
-  //   const userRequest: string = `Пользователь ` + `${userEmail}` + ` зарегистрировался на ` + ` ${domain_name}`
-  //   console.log(userRequest)
-  //   await SendMessage(userRequest)
-  // }
-
-  // async sendMessageSignIn(userEmail: string, domain_name?: string) {
-
-  //   // const userRequest: string = `User ` + `${userEmail}` + ` was login at ` + ` ${domain_name}`
-  //   const userRequest: string = `Пользователь ` + `${userEmail}` + ` зашел на  ` + ` ${domain_name}`
-  //   console.log(userRequest)
-  //   await SendMessage(userRequest)
-  // }
 
   async getMessageFromSupportChat() {
     // get platform support message to tg

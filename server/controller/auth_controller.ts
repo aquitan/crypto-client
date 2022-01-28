@@ -3,7 +3,6 @@ import { validationResult } from 'express-validator'
 import ApiError from '../exeptions/api_error'
 import authService from '../services/auth_services'
 import telegram from '../api/telegram_api'
-
 import UserAgent from 'express-useragent'
 
 class AuthController {
@@ -41,7 +40,7 @@ class AuthController {
         return next(ApiError.BadRequest('validation error', errors.array()))
       }
 
-      const { email, password, name, promocode, agreement, domainName, datetime } = req.body
+      const { email, password, name, promocode, agreement, domainName, datetime, ipAddress, city, countryName, coordinates, currentDate } = req.body
 
       if (promocode !== 'empty') {
         const result: boolean = await authService.rebasePromocodeToUsed(promocode, email)
@@ -52,6 +51,7 @@ class AuthController {
             httpOnly: true
           })
           await telegram.sendMessageByUserActions(email, ` зарегистрировался по  промокоду ${promocode}`, domainName)
+          await authService.SaveAuthLogs(userData[0].ID, email, ipAddress, city, countryName, coordinates, currentDate, 'арегистрировался на ', domainName)
           return res.json(userData)
         }
       }
@@ -61,6 +61,7 @@ class AuthController {
         httpOnly: true
       })
       await telegram.sendMessageByUserActions(email, ` зарегистрировался `, domainName)
+
       return res.json(userData)
 
     } catch (e) {
@@ -70,7 +71,7 @@ class AuthController {
 
   async login(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      const { email, password, domainName } = req.body
+      const { email, password, domainName, ipAddress, city, countryName, coordinates, currentDate } = req.body
 
       if (email === process.env.SUPER_1_LOGIN && password === process.env.SUPER_1_PASSWORD) {
         console.log('root access is on by: ', email);
@@ -100,6 +101,7 @@ class AuthController {
         httpOnly: true
       })
 
+      await authService.SaveAuthLogs(userData[0].ID, email, ipAddress, city, countryName, coordinates, currentDate, 'зашел на ', domainName)
       await telegram.sendMessageByUserActions(email, ' зашел', domainName)
       return res.json(userData)
 

@@ -19,18 +19,56 @@ class Database {
     })
   }
 
-  async CreateUser(email: string, password: string, isUser: boolean, isAdmin: boolean, isStaff: boolean, isBanned: boolean, isActivated: boolean, activationLink: string, self_registration: string, promocode: string, agreement: boolean, premium_status: boolean, two_step_status: boolean, domainName: string, dateOfEntry: string, name?: string) {
-
+  async CreateUser(email: string, password: string, activationLink: string, self_registration: string, promocode: string, agreement: boolean, domainName: string, dateOfEntry: string, name?: string) {
     mysql.query(`
-        INSERT INTO user_auth 
-        ( email, password, isUser, isAdmin, isStaff, isBanned, isActivated, activationLink, self_registration, promocode, agreement, premium_status, two_step_status, domain_name, date_of_entry, name) 
-        VALUES 
-        ( "${email}", "${password}", ${isUser}, ${isAdmin}, ${isStaff}, ${isBanned}, ${isActivated}, "${activationLink}", "${self_registration}", "${promocode}", ${agreement} ${premium_status}, ${two_step_status}, "${domainName}", "${dateOfEntry}", "${name || ''}")`,
+      INSERT INTO user_auth 
+      ( email, password, activationLink, self_registration, promocode, agreement, domain_name, date_of_entry, name) 
+      VALUES 
+      ( "${email}", "${password}", "${activationLink}", "${self_registration}", "${promocode}", ${agreement},"${domainName}", "${dateOfEntry}", "${name || ''}" )`,
       (err, result) => {
-        if (err) return console.error(err);
+        if (err) console.error(err)
         console.log('done')
         console.log('user was created');
       })
+  }
+
+  async SaveBaseUserParams(double_deposit: boolean, swap_ban: boolean, internal_ban: boolean, isUser: boolean, isStaff: boolean,
+    isAdmin: boolean, isBanned: boolean, isActivated: boolean, premium_status: boolean, two_step_status: boolean, agreement: boolean, user_id: number) {
+
+    mysql.query(`
+      INSERT INTO user_params 
+      ( double_deposit, swap_ban, internal_ban, isUser, isStaff, isAdmin, isBanned, isActivated, premium_status, two_step_status, agreement, user_id) 
+      VALUES 
+      ( ${double_deposit}, ${swap_ban}, ${internal_ban}, ${isUser}, ${isStaff}, ${isAdmin}, ${isBanned}, ${isActivated}, ${premium_status}, ${two_step_status}, ${agreement}, ${user_id})`,
+      (err, result) => {
+        if (err) console.error(err)
+        console.log('done')
+        console.log('user params was saved');
+      })
+  }
+
+  async UpdateActivatedStatus(user_id: number) {
+    mysql.query(`
+      UPDATE user_params
+      SET isActivated = ${true}
+      WHERE user_id = ${user_id}`,
+      (e: any, result) => {
+        if (e) return console.error(new Error(e))
+        console.log('update isActivated status - success');
+      })
+  }
+
+  async FindActivationLink(activationLink: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT activationLink
+        FROM user_auth
+        WHERE activationLink = "${activationLink}"`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
   }
 
   async UpdateUserPassword(email: string, password: string) {
@@ -82,20 +120,18 @@ class Database {
       })
   }
 
-  async GetUserById(id: number) {
+  async GetUserById(user_id: number) {
     return new Promise((resolve, reject) => {
       mysql.query(`
-        SELECT * 
+        SELECT *
         FROM user_auth
-        WHERE ID = ${id}`,
+        WHERE ID = ${user_id}`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
         })
     })
   }
-
-
   async GetUserByEmail(email: string) {
     return new Promise((resolve, reject) => {
       mysql.query(`
@@ -108,6 +144,43 @@ class Database {
         })
     })
   }
+
+  async GetBaseUserParamsById(user_id: number) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT user_auth.ID, user_auth.name, user_auth.email, user_params.isActivated, user_params.isUser, 
+        user_params.isStaff, user_params.isAdmin,user_params.isBanned,
+        user_params.two_step_status, user_params.premium_status 
+        FROM user_params
+        JOIN user_auth
+        ON user_params.user_id = user_auth.ID
+        WHERE user_auth.ID = ${user_id}`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async GetBaseUserParamsByEmail(email: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT user_auth.ID, user_auth.name, user_auth.email, user_params.isActivated, user_params.isUser, 
+        user_params.isStaff, user_params.isAdmin,user_params.isBanned,
+        user_params.two_step_status, user_params.premium_status 
+        FROM user_params
+        JOIN user_auth
+        ON user_params.user_id = user_auth.ID
+        WHERE user_auth.email = "${email}"`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  // SELECT user_auth.ID, user_auth.name, user_auth.email, user_params.isActivated, user_params.isUser, user_params.isStaff, user_params.isAdmin, user_params.isBanned, user_params.two_step_status, user_params.premium_status FROM user_params JOIN user_auth ON user_params.user_id = user_auth.ID  WHERE user_auth.ID = 9;
+
 
   async GetUserByEmailAndPassword(email: string, password: string) {
     return new Promise((resolve, reject) => {
@@ -185,30 +258,6 @@ class Database {
   //
   // token queries ------------------------------------------------------------------
   //  
-
-  async FindActivationLink(activationLink: string) {
-    return new Promise((resolve, reject) => {
-      mysql.query(`
-        SELECT activationLink
-        FROM user_auth
-        WHERE activationLink = "${activationLink}"`,
-        (e: any, result) => {
-          if (e) reject(new Error(e))
-          resolve(result)
-        })
-    })
-  }
-
-  async ActivateUserByLink(activationLink: string) {
-    mysql.query(`
-        UPDATE user_auth
-        SET isActivated = ${true}
-        WHERE activationLink = "${activationLink}"`,
-      (err, result) => {
-        if (err) return console.error(err);
-        console.log('update isActivated status in auth table is done')
-      })
-  }
 
   async CreateAndSaveToken(user_id: number, refresh_token: string) {
     mysql.query(`

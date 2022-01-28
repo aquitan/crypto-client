@@ -14,34 +14,27 @@ class AuthService {
   async GetPromocodeListBeforeSignup(domainName: string) {
     const codeArray: any = await database.GetPromocodeListBeforeSignup(domainName)
     console.log('code array is: ', codeArray);
-
-    if (codeArray !== []) {
-      return codeArray
-    }
-    if (codeArray.length === []) {
-      return false
-    }
+    if (codeArray !== []) return codeArray
+    if (codeArray.length === []) return false
     console.log('some error');
     return false
   }
 
-  async registration(email: string, password: string, promocode: string, agreement: boolean, domain_name: string, datetime: any, name: string) {
+  async registration(email: string, password: string, promocode: string, agreement: boolean, domain_name: string, datetime: any, name?: string) {
 
-    const candidate: any = await database.GetUserByEmail(email)
+    const candidate: any = await database.GetBaseUserParamsByEmail(email)
 
-    if (!candidate) {
-      throw ApiError.BadRequest(`email ${email} already in use.`)
-    }
+    if (candidate[0]) throw ApiError.BadRequest(`email ${email} already in use.`)
     // save real password to db + hashed
     // const hashPassword = await bcrypt.hash(password, 6)
     const activationLink: string = await passwordGenerator(18)
-    await database.CreateUser(email, password, true, false, false, false, false, activationLink, 'self registred', promocode, agreement, false, false, domain_name, datetime, name || '',)
-    const user: any = await database.GetUserByEmail(email)
+    await database.CreateUser(email, password, activationLink, 'self registred', promocode, agreement, domain_name, datetime, name || '',)
 
+    const user: any = await database.GetBaseUserParamsByEmail(email)
+    console.log(user);
+
+    await database.SaveBaseUserParams(false, false, false, true, false, false, false, false, false, false, true, user[0].ID)
     await mailService.sendActivationMail(email, `${domain_name}`, `${activationLink}`)
-
-    const userActivationLink: any = await database.FindActivationLink(activationLink)
-    console.log('get link from db: ', userActivationLink);
 
     const userDto: any = new AuthUserDto(user[0])
     const tokens: any = tokenService.generateTokens({ ...userDto })
@@ -51,8 +44,10 @@ class AuthService {
     return {
       ...tokens,
       user: userDto,
-      activationLink: userActivationLink
+      activationLink: user[0].activationLink
     }
+
+
   }
 
   async rebasePromocodeToUsed(promocode: string, user_email: string) {
@@ -75,24 +70,18 @@ class AuthService {
 
   async activate(user_id: number, activationLink: string) {
 
-    const userActivationLink: any = await database.FindActivationLink(activationLink)
-    console.log('get link from db: ', userActivationLink);
-
-    const curLink: string = activationLink.toString()
-    // console.log('cur: ', curLink);
-
-    if (!userActivationLink) {
-      return ApiError.BadRequest('incorrect link =/')
-    }
+    const db_result: any = await database.FindActivationLink(activationLink)
+    // console.log('get link from db: ', db_result[0]);
+    if (!db_result[0]) throw ApiError.BadRequest('incorrect link =/')
 
     const user: any = await database.GetUserById(user_id)
-    console.log('user log: ', user);
+    // console.log('user log: ', user);
+    await database.UpdateActivatedStatus(user_id)
+    const activated_status: any = await database.GetBaseUserParamsById(user_id)
+    // console.log('activation status', activated_status[0].isActivated);
+    if (!activated_status) return false
 
-    await database.ActivateUserByLink(curLink)
-    const isActivated: any = await database.GetUserById(user_id)
-    console.log('act status' + isActivated[0].isActivated);
-
-    return isActivated
+    return true
   }
 
   async login(email: string, password: string, user_domain: string) {
@@ -100,21 +89,19 @@ class AuthService {
     const user: any = await database.GetUserByEmail(email)
     console.log('found user: ', user[0].email);
 
-    if (!user[0].email && user[0].domainName !== user_domain) {
-      throw ApiError.BadRequest('can`t find any user')
-    }
     // const isPasswordEquals: boolean = await bcrypt.compare(password, user.password)
-    if (user[0].password !== password) {
-      throw ApiError.BadRequest('wrong password')
-    }
+    if (user[0].password !== password) throw ApiError.BadRequest('wrong password')
 
-    const userDto: any = new AuthUserDto(user[0])
+    if (!user[0].email && user[0].domainName !== user_domain) throw ApiError.BadRequest('can`t find any user')
+
+    const getFullUser: any = await database.GetBaseUserParamsByEmail(email)
+    const userDto: any = new AuthUserDto(getFullUser[0])
     const tokens: any = tokenService.generateTokens({ ...userDto })
     await tokenService.saveToken(userDto.ID, tokens.refreshToken)
 
     return {
       ...tokens,
-      user: userDto
+      user: getFullUser[0]
     }
 
 
@@ -126,23 +113,20 @@ class AuthService {
   }
 
   async refresh(refreshToken: string) {
-    if (!refreshToken) {
-      throw ApiError.UnauthorizedError()
-    }
+    if (!refreshToken) throw ApiError.UnauthorizedError()
+
     const userData: any = tokenService.validateRefreshToken(refreshToken)
     console.log('dataUser: ', userData)
 
     const tokenFromDatabase = await tokenService.findToken(refreshToken)
     console.log('token from db: ', tokenFromDatabase)
 
-    if (!userData || !tokenFromDatabase) {
-      throw ApiError.UnauthorizedError()
-    }
+    if (!userData || !tokenFromDatabase) throw ApiError.UnauthorizedError()
 
-    const user: any = await database.GetUserById(userData.ID)
-    console.log(user, 'found user');
+    const getFullUser: any = await database.GetUserById(userData.ID)
+    console.log(getFullUser, 'found user');
 
-    const userDto: any = new AuthUserDto(user[0])
+    const userDto: any = new AuthUserDto(getFullUser[0])
     const tokens = tokenService.generateTokens({ ...userDto })
     await tokenService.saveToken(userDto.ID, tokens.refreshToken)
 
@@ -153,7 +137,7 @@ class AuthService {
   }
 
   async forgotPassword(email: string) {
-    const candidate: any = await database.GetUserByEmail(email)
+    const candidate: any = await database.GetBaseUserParamsByEmail(email)
     console.log('found user is: ', candidate);
 
     if (!candidate[0]) {
@@ -168,6 +152,24 @@ class AuthService {
     return true
   }
 
+
+  async SaveAuthLogs(user_id: number, email: string, ipAddress: string, city: string, countryName: string, coordinates: string, currentDate: string, user_action: string, user_domain: string) {
+
+    const userLogs: any = {
+      user_id: user_id,
+      email: email,
+      ip_address: ipAddress,
+      user_city: city,
+      country_name: countryName,
+      location_on_map: coordinates,
+      date_time: currentDate,
+      user_action: user_action
+    }
+    console.log('recieved logs is: ', userLogs)
+    await database.SaveUserLogs(user_id, email, ipAddress, city, countryName, coordinates, currentDate, user_action, user_domain)
+    return userLogs
+
+  }
 }
 
 export default new AuthService()

@@ -68,7 +68,7 @@ class UserServices {
 
   async personalAreaChangePassword(userEmail: string, newPassword: string) {
 
-    let user: any = await database.GetUserByEmail(userEmail)
+    let user: any = await database.GetBaseUserParamsByEmail(userEmail)
     console.log('found user is: ', user[0]);
 
     if (!user[0]) {
@@ -77,7 +77,7 @@ class UserServices {
     }
 
     await database.UpdateUserPassword(userEmail, newPassword)
-    const updatedUser: any = await database.GetUserByEmail(userEmail)
+    const updatedUser: any = await database.GetBaseUserParamsByEmail(userEmail)
     console.log('updated pass is: ', updatedUser[0].password);
     return true
   }
@@ -92,7 +92,7 @@ class UserServices {
     }
 
     await database.DisableTwoStep(user_id)
-    const updatedData: any = await database.GetUserById(user_id)
+    const updatedData: any = await database.GetBaseUserParamsById(user_id)
     console.log('2fa status is:', updatedData[0].two_step_status);
 
     return true

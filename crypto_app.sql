@@ -42,6 +42,33 @@ LOCK TABLES `auth_token` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `domain_list`
+--
+
+DROP TABLE IF EXISTS `domain_list`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `domain_list` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `domain_name` varchar(100) NOT NULL,
+  `creation_date` varchar(100) NOT NULL,
+  `domain_owner` int NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `domain_owner` (`domain_owner`),
+  CONSTRAINT `domain_list_ibfk_1` FOREIGN KEY (`domain_owner`) REFERENCES `user_auth` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `domain_list`
+--
+
+LOCK TABLES `domain_list` WRITE;
+/*!40000 ALTER TABLE `domain_list` DISABLE KEYS */;
+/*!40000 ALTER TABLE `domain_list` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `staff_logs`
 --
 
@@ -67,6 +94,64 @@ CREATE TABLE `staff_logs` (
 LOCK TABLES `staff_logs` WRITE;
 /*!40000 ALTER TABLE `staff_logs` DISABLE KEYS */;
 /*!40000 ALTER TABLE `staff_logs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `staff_params`
+--
+
+DROP TABLE IF EXISTS `staff_params`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `staff_params` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `staff_email` varchar(255) NOT NULL,
+  `payment_params` int NOT NULL,
+  `support_name` varchar(100) NOT NULL,
+  `get_staff_access_date` varchar(50) NOT NULL,
+  `user_who_give_access` int NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `user_who_give_access` (`user_who_give_access`),
+  CONSTRAINT `staff_params_ibfk_1` FOREIGN KEY (`user_who_give_access`) REFERENCES `user_auth` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `staff_params`
+--
+
+LOCK TABLES `staff_params` WRITE;
+/*!40000 ALTER TABLE `staff_params` DISABLE KEYS */;
+/*!40000 ALTER TABLE `staff_params` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `support_chat`
+--
+
+DROP TABLE IF EXISTS `support_chat`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `support_chat` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `message_date` varchar(50) NOT NULL,
+  `message_body` varchar(550) NOT NULL,
+  `user_email` varchar(255) NOT NULL,
+  `staff_email` varchar(255) NOT NULL,
+  `staff_id` int NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `staff_id` (`staff_id`),
+  CONSTRAINT `support_chat_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `user_auth` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `support_chat`
+--
+
+LOCK TABLES `support_chat` WRITE;
+/*!40000 ALTER TABLE `support_chat` DISABLE KEYS */;
+/*!40000 ALTER TABLE `support_chat` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -109,18 +194,14 @@ CREATE TABLE `user_auth` (
   `email` varchar(255) NOT NULL,
   `password` varchar(50) NOT NULL,
   `name` varchar(50) DEFAULT NULL,
-  `isUser` tinyint(1) NOT NULL,
-  `isStaff` tinyint(1) NOT NULL,
-  `isAdmin` tinyint(1) NOT NULL,
-  `isBanned` tinyint(1) NOT NULL,
-  `isActivated` tinyint(1) NOT NULL,
   `activationLink` varchar(255) NOT NULL,
   `self_registration` varchar(30) NOT NULL,
   `promocode` varchar(50) NOT NULL,
+  `agreement` tinyint(1) NOT NULL,
   `domain_name` varchar(255) NOT NULL,
   `date_of_entry` varchar(50) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -129,8 +210,92 @@ CREATE TABLE `user_auth` (
 
 LOCK TABLES `user_auth` WRITE;
 /*!40000 ALTER TABLE `user_auth` DISABLE KEYS */;
-INSERT INTO `user_auth` VALUES (1,'onegin343@ukr.net','Qwe12345','',1,1,0,0,1,'Jh7LD8FyotE6plz5lK','self registred','empty','localhost:3000','2022-01-26 10:20:39');
+INSERT INTO `user_auth` VALUES (8,'aquitan@mail.ru','11111111','','qaVfslkRDRbcp6iP5V','self registred','empty',0,'localhost:3000','2022-01-27 18:50:35'),(10,'onegin343@ukr.net','11111111','','G7YXqbP2ZFzG0hdyRa','self registred','empty',1,'localhost:3000','2022-01-27 18:50:35');
 /*!40000 ALTER TABLE `user_auth` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_balance`
+--
+
+DROP TABLE IF EXISTS `user_balance`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_balance` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `coin_name` varchar(30) NOT NULL,
+  `coin_full_name` varchar(50) NOT NULL,
+  `coin_balance` float NOT NULL,
+  `coin_rate` float NOT NULL,
+  `user_id` int NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `user_balance_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user_auth` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_balance`
+--
+
+LOCK TABLES `user_balance` WRITE;
+/*!40000 ALTER TABLE `user_balance` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_balance` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_info_for_action`
+--
+
+DROP TABLE IF EXISTS `user_info_for_action`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_info_for_action` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `deposit_fee` int NOT NULL,
+  `last_deposit` date DEFAULT NULL,
+  `active_notification` varchar(1024) NOT NULL,
+  `active_error` varchar(1024) NOT NULL,
+  `user_id` int NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `user_info_for_action_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user_auth` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_info_for_action`
+--
+
+LOCK TABLES `user_info_for_action` WRITE;
+/*!40000 ALTER TABLE `user_info_for_action` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_info_for_action` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_ip_match`
+--
+
+DROP TABLE IF EXISTS `user_ip_match`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_ip_match` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `user_email` varchar(255) NOT NULL,
+  `user_ip_address` varchar(150) NOT NULL,
+  `login_date` varchar(50) NOT NULL,
+  `browser` varchar(50) NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_ip_match`
+--
+
+LOCK TABLES `user_ip_match` WRITE;
+/*!40000 ALTER TABLE `user_ip_match` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_ip_match` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -160,7 +325,7 @@ CREATE TABLE `user_kyc` (
   PRIMARY KEY (`ID`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `user_kyc_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user_auth` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -169,7 +334,6 @@ CREATE TABLE `user_kyc` (
 
 LOCK TABLES `user_kyc` WRITE;
 /*!40000 ALTER TABLE `user_kyc` DISABLE KEYS */;
-INSERT INTO `user_kyc` VALUES (1,'Niko','Belik','onegin343@ukr.net','98721717273','2022/01/04','18201 12','some str.','123 ulitsa str.','Kyiv','','NY',189621,'National ID','pending',1);
 /*!40000 ALTER TABLE `user_kyc` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -187,6 +351,7 @@ CREATE TABLE `user_logs` (
   `request_city` varchar(100) NOT NULL,
   `country_name` varchar(50) NOT NULL,
   `location` varchar(150) NOT NULL,
+  `browser` varchar(50) NOT NULL,
   `action_date` varchar(50) NOT NULL,
   `user_action` varchar(255) NOT NULL,
   `user_domain` varchar(255) NOT NULL,
@@ -194,7 +359,7 @@ CREATE TABLE `user_logs` (
   PRIMARY KEY (`ID`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `user_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user_auth` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -203,8 +368,44 @@ CREATE TABLE `user_logs` (
 
 LOCK TABLES `user_logs` WRITE;
 /*!40000 ALTER TABLE `user_logs` DISABLE KEYS */;
-INSERT INTO `user_logs` VALUES (1,'onegin343@ukr.net','194.28.102.5','Kyiv','Ukraine','50.4547, 30.5238','2022-01-26 10:21:26','/','localhost:3000',1),(2,'onegin343@ukr.net','194.28.102.5','Kyiv','Ukraine','50.4547, 30.5238','2022-01-26 10:21:26','/profile','localhost:3000',1),(3,'onegin343@ukr.net','194.28.102.5','Kyiv','Ukraine','50.4547, 30.5238','2022-01-26 10:21:26','profile','undefined',1),(4,'onegin343@ukr.net','194.28.102.5','Kyiv','Ukraine','50.4547, 30.5238','2022-01-26 10:29:30','dashboard','localhost:3000',1),(5,'onegin343@ukr.net','194.28.102.5','Kyiv','Ukraine','50.4547, 30.5238','2022-01-26 10:29:30','/profile','localhost:3000',1),(6,'onegin343@ukr.net','194.28.102.5','Kyiv','Ukraine','50.4547, 30.5238','2022-01-26 10:29:30','profile','undefined',1),(7,'onegin343@ukr.net','194.28.102.5','Kyiv','Ukraine','50.4547, 30.5238','2022-01-26 10:31:17','dashboard','localhost:3000',1),(8,'onegin343@ukr.net','194.28.102.5','Kyiv','Ukraine','50.4547, 30.5238','2022-01-26 10:31:17','/profile','localhost:3000',1),(9,'onegin343@ukr.net','194.28.102.5','Kyiv','Ukraine','50.4547, 30.5238','2022-01-26 10:31:17','profile','undefined',1),(10,'onegin343@ukr.net','194.28.102.5','Kyiv','Ukraine','50.4547, 30.5238','2022-01-26 10:39:35','dashboard','localhost:3000',1),(11,'onegin343@ukr.net','194.28.102.5','Kyiv','Ukraine','50.4547, 30.5238','2022-01-26 10:39:35','profile','localhost:3000',1),(12,'onegin343@ukr.net','194.28.102.5','Kyiv','Ukraine','50.4547, 30.5238','2022-01-26 10:39:35','profile','localhost:3000',1),(13,'onegin343@ukr.net','194.28.102.5','Kyiv','Ukraine','50.4547, 30.5238','2022-01-26 10:49:47','dashboard','localhost:3000',1),(14,'onegin343@ukr.net','194.28.102.5','Kyiv','Ukraine','50.4547, 30.5238','2022-01-27 12:48:55','dashboard','localhost:3000',1),(15,'onegin343@ukr.net','194.28.102.5','Kyiv','Ukraine','50.4547, 30.5238','2022-01-27 12:49:55','dashboard','localhost:3000',1),(16,'onegin343@ukr.net','194.28.102.5','Kyiv','Ukraine','50.4547, 30.5238','2022-01-27 12:49:56','dashboard','localhost:3000',1),(17,'onegin343@ukr.net','194.28.102.5','Kyiv','Ukraine','50.4547, 30.5238','2022-01-27 12:50:24','dashboard','localhost:3000',1),(18,'mail@mail.com','129.12.221.33','logdon','undefined','919182561 129841 192','2022/11/12','undefined','localhost:3000',1),(19,'mail@mail.com','129.12.221.33','logdon','undefined','919182561 129841 192','2022/11/12','смотрит работу логов для секурити юзера','localhost:3000',1),(20,'onegin343@ukr.net','129.12.221.33','logdon','undefined','919182561 129841 192','2022/11/12','смотрит работу логов для секурити юзера','localhost:3000',1),(21,'onegin343@ukr.net','129.12.221.33','logdon','undefined','919182561 129841 192','2022/11/12','смотрит работу логов для секурити юзера','localhost:3000',1),(22,'onegin343@ukr.net','129.12.221.33','logdon','undefined','919182561 129841 192','2022/11/12','смотрит работу логов для секурити юзера','localhost:3000',1),(23,'onegin343@ukr.net','129.12.221.33','logdon','undefined','919182561 129841 192','2022/11/12','смотрит работу логов для секурити юзера','localhost:3000',1),(24,'onegin343@ukr.net','129.12.221.33','logdon','undefined','919182561 129841 192','2022/11/12','смотрит работу логов для секурити юзера','localhost:3000',1),(25,'onegin343@ukr.net','129.12.221.33','logdon','undefined','919182561 129841 192','2022/11/12','смотрит работу логов для секурити юзера','localhost:3000',1),(26,'onegin343@ukr.net','129.12.221.33','logdon','undefined','919182561 129841 192','2022/11/12','смотрит работу логов для секурити юзера','localhost:3000',1),(27,'onegin343@ukr.net','129.12.221.33','logdon','undefined','919182561 129841 192','2022/11/12','смотрит работу логов для секурити юзера','localhost:3000',1),(28,'onegin343@ukr.net','129.12.221.33','logdon','undefined','919182561 129841 192','2022/11/12','смотрит работу логов для секурити юзера','localhost:3000',1);
 /*!40000 ALTER TABLE `user_logs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_params`
+--
+
+DROP TABLE IF EXISTS `user_params`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_params` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `double_deposit` tinyint(1) NOT NULL,
+  `swap_ban` tinyint(1) NOT NULL,
+  `internal_ban` tinyint(1) NOT NULL,
+  `isUser` tinyint(1) NOT NULL,
+  `isStaff` tinyint(1) NOT NULL,
+  `isAdmin` tinyint(1) NOT NULL,
+  `isBanned` tinyint(1) NOT NULL,
+  `isActivated` tinyint(1) NOT NULL,
+  `premium_status` tinyint(1) NOT NULL,
+  `two_step_status` tinyint(1) NOT NULL,
+  `agreement` tinyint(1) NOT NULL,
+  `user_id` int NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `user_params_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user_auth` (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_params`
+--
+
+LOCK TABLES `user_params` WRITE;
+/*!40000 ALTER TABLE `user_params` DISABLE KEYS */;
+INSERT INTO `user_params` VALUES (3,0,0,0,1,0,0,0,1,0,0,1,10);
+/*!40000 ALTER TABLE `user_params` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -224,7 +425,7 @@ CREATE TABLE `user_promocode` (
   PRIMARY KEY (`ID`),
   KEY `staff_user_id` (`staff_user_id`),
   CONSTRAINT `user_promocode_ibfk_1` FOREIGN KEY (`staff_user_id`) REFERENCES `user_auth` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -233,8 +434,35 @@ CREATE TABLE `user_promocode` (
 
 LOCK TABLES `user_promocode` WRITE;
 /*!40000 ALTER TABLE `user_promocode` DISABLE KEYS */;
-INSERT INTO `user_promocode` VALUES (1,'0','2020/11/11',0.32,1,'opentrade.cc'),(2,'1','2020/11/11',0.32,1,'opentrade.cc'),(3,'NYDxO2mV','2020/11/11',0.32,1,'opentrade.cc'),(4,'PkPhEaq9','2020/11/11',0.32,1,'opentrade.cc'),(5,'Xng0dW3K','2020/11/11',0.32,1,'opentrade.cc'),(6,'LZuY9AsN','2020/11/11',0.32,1,'opentrade.cc'),(7,'OgVFcL5v','2020/11/11',0.32,1,'opentrade.cc'),(8,'SXE4wp8h','2020/11/11',0.32,1,'opentrade.cc'),(9,'qI535aCB','2020/11/11',0.32,1,'opentrade.cc'),(10,'UUjM66iE','2020/11/11',0.32,1,'opentrade.cc'),(11,'LHJBS2Jm','2020/11/11',0.32,1,'opentrade.cc'),(12,'LHJBS2Jm','2020/11/11',0.41,1,'opentrade.cc'),(13,'LHJBS2Jm','2020/11/11',0.51,1,'opentrade.cc'),(14,'xWB4E3bR','2020/11/11',0.32,1,'opentrade.cc'),(15,'xWB4E3bR','2020/11/11',0.41,1,'opentrade.cc'),(16,'xWB4E3bR','2020/11/11',0.51,1,'opentrade.cc'),(17,'ylkhdXC2','2020/11/11',0.32,1,'opentrade.cc'),(18,'ylkhdXC2','2020/11/11',0.41,1,'opentrade.cc'),(19,'ylkhdXC2','2020/11/11',0.51,1,'opentrade.cc'),(20,'D65O4ldL','2020/11/11',0.32,1,'opentrade.cc'),(21,'D65O4ldL','2020/11/11',0.41,1,'opentrade.cc'),(22,'D65O4ldL','2020/11/11',0.51,1,'opentrade.cc'),(23,'SPg3STfD','2020/11/11',0.32,1,'opentrade.cc'),(24,'SPg3STfD','2020/11/11',0.41,1,'opentrade.cc'),(25,'SPg3STfD','2020/11/11',0.51,1,'opentrade.cc'),(26,'HM1eANUz','2020/11/11',0.32,1,'opentrade.cc'),(27,'HM1eANUz','2020/11/11',0.41,1,'opentrade.cc'),(28,'HM1eANUz','2020/11/11',0.51,1,'opentrade.cc'),(29,'[object Object]','2020/11/11',0.32,1,'opentrade.cc'),(30,'[object Object]','2020/11/11',0.41,1,'opentrade.cc'),(31,'[object Object]','2020/11/11',0.51,1,'opentrade.cc'),(32,'[object Object]','2020/11/11',0.004,1,'opentrade.cc'),(33,'[object Object]','2020/11/11',0.032,1,'opentrade.cc'),(34,'t06Lf3QR','2020/11/11',0.32,1,'opentrade.cc'),(35,'T99zSwV0','2020/11/11',0.41,1,'opentrade.cc'),(36,'GobwUBp8','2020/11/11',0.51,1,'opentrade.cc'),(37,'N5R85IAl','2020/11/11',0.004,1,'opentrade.cc'),(38,'Lkq0HzqM','2020/11/11',0.032,1,'opentrade.cc'),(39,'CJh2cSnq','2020/11/11',0.92,1,'opentrade.cc'),(40,'OhPkdLj9','2022/11/12',0.22,1,'localhost:3000'),(41,'43H6bECJ','2022/11/12',0.032,1,'localhost:3000'),(42,'SLi384oH','2022/11/12',0.321,1,'localhost:3000'),(43,'A1rv3APw','2022/11/12',0.003,1,'localhost:3000'),(44,'KhQJA90X','2022/11/12',0.7,1,'localhost:3000');
 /*!40000 ALTER TABLE `user_promocode` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_wallet`
+--
+
+DROP TABLE IF EXISTS `user_wallet`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_wallet` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `coin_name` varchar(30) NOT NULL,
+  `coin_full_name` varchar(50) NOT NULL,
+  `wallet_address` varchar(60) DEFAULT NULL,
+  `user_id` int NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `user_wallet_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user_auth` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_wallet`
+--
+
+LOCK TABLES `user_wallet` WRITE;
+/*!40000 ALTER TABLE `user_wallet` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_wallet` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -246,4 +474,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-01-27 17:22:06
+-- Dump completed on 2022-01-28 19:20:20
