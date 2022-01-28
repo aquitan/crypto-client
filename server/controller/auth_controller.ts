@@ -40,12 +40,12 @@ class AuthController {
         return next(ApiError.BadRequest('validation error', errors.array()))
       }
 
-      const { email, password, name, promocode, agreement, domainName, datetime, ipAddress, city, countryName, coordinates, currentDate } = req.body
+      const { email, password, name, promocode, domainName, ipAddress, city, countryName, coordinates, currentDate } = req.body
 
       if (promocode !== 'empty') {
         const result: boolean = await authService.rebasePromocodeToUsed(promocode, email)
         if (result === true) {
-          const userData = await authService.registration(email, password, promocode, agreement, domainName, datetime, name)
+          const userData = await authService.registration(email, password, promocode, true, domainName, currentDate, name)
           res.cookie('refreshToken', userData.refreshToken, {
             maxAge: 30 * 4 * 60 * 60 * 1000,
             httpOnly: true
@@ -55,7 +55,7 @@ class AuthController {
           return res.json(userData)
         }
       }
-      const userData = await authService.registration(email, password, promocode, agreement, domainName, datetime, name)
+      const userData = await authService.registration(email, password, promocode, true, domainName, currentDate, name)
       res.cookie('refreshToken', userData.refreshToken, {
         maxAge: 30 * 4 * 60 * 60 * 1000,
         httpOnly: true
@@ -93,7 +93,7 @@ class AuthController {
       }
 
       console.log('req.body: ', req.body);
-      const userData = await authService.login(email, password, domainName)
+      const userData: any = await authService.login(email, password, domainName)
       // console.log(req.useragent);
 
       res.cookie('refreshToken', userData.refreshToken, {
@@ -101,7 +101,7 @@ class AuthController {
         httpOnly: true
       })
 
-      await authService.SaveAuthLogs(userData[0].ID, email, ipAddress, city, countryName, coordinates, currentDate, 'зашел на ', domainName)
+      await authService.SaveAuthLogs(userData.ID, email, ipAddress, city, countryName, coordinates, currentDate, 'зашел на ', domainName)
       await telegram.sendMessageByUserActions(email, ' зашел', domainName)
       return res.json(userData)
 

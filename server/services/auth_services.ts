@@ -14,15 +14,13 @@ class AuthService {
   async GetPromocodeListBeforeSignup(domainName: string) {
     const codeArray: any = await database.GetPromocodeListBeforeSignup(domainName)
     console.log('code array is: ', codeArray);
-    if (codeArray !== []) return codeArray
-    if (codeArray.length === []) return false
-    console.log('some error');
-    return false
+    if (!codeArray[0]) return false
+    return codeArray
   }
 
   async registration(email: string, password: string, promocode: string, agreement: boolean, domain_name: string, datetime: any, name?: string) {
 
-    const candidate: any = await database.GetBaseUserParamsByEmail(email)
+    const candidate: any = await database.GetUserByEmail(email)
 
     if (candidate[0]) throw ApiError.BadRequest(`email ${email} already in use.`)
     // save real password to db + hashed
@@ -30,10 +28,12 @@ class AuthService {
     const activationLink: string = await passwordGenerator(18)
     await database.CreateUser(email, password, activationLink, 'self registred', promocode, agreement, domain_name, datetime, name || '',)
 
+
+    const curUser: any = await database.GetUserByEmail(email)
+    await database.SaveBaseUserParams(false, false, false, true, false, false, false, false, false, false, true, curUser[0].ID)
+
     const user: any = await database.GetBaseUserParamsByEmail(email)
     console.log(user);
-
-    await database.SaveBaseUserParams(false, false, false, true, false, false, false, false, false, false, true, user[0].ID)
     await mailService.sendActivationMail(email, `${domain_name}`, `${activationLink}`)
 
     const userDto: any = new AuthUserDto(user[0])
@@ -54,14 +54,12 @@ class AuthService {
     const usedPromocode: any = await database.GetPromocodeToDelete(promocode)
     console.log('recieved code is: ', usedPromocode[0]);
 
-    if (!usedPromocode[0]) {
-      return false
-    }
+    if (!usedPromocode[0]) return false
     await database.SaveUsedPromocode(usedPromocode[0].code, usedPromocode[0].date, usedPromocode[0].value, usedPromocode[0].staff_user_id, usedPromocode[0].domain_name, user_email)
     await database.DeletePromocodeFromUserPromocode(promocode)
     const getUsedPromocode: any = await database.GetUsedPromocode(usedPromocode[0].code)
 
-    if (getUsedPromocode !== []) {
+    if (getUsedPromocode[0]) {
       return true
     }
     console.log('some error');

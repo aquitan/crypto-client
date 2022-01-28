@@ -56,8 +56,8 @@ class staffService {
 
     const kycList: any = await database.GetKycForStaff(userDomain)
     console.log('list is: ', kycList);
-    if (!kycList[0]) return kycList
-    return false
+    if (!kycList[0]) return false
+    return kycList
   }
 
   async changeKycStatusAsStaff(status: string, kyc_id: number) {
