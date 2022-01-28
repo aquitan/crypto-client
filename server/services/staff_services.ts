@@ -62,7 +62,7 @@ class staffService {
 
   async changeKycStatusAsStaff(status: string, kyc_id: number) {
 
-    const old_status: any = await database.getKycForUpdate(kyc_id)
+    const old_status: any = await database.GetKycForUpdate(kyc_id)
     console.log('old kyc status: ', old_status.kyc_status);
 
     if (old_status[0].kyc_status !== status) {
@@ -74,6 +74,17 @@ class staffService {
     console.log('some error');
     return false
   }
+
+  async DeleteKyc(kyc_id: number) {
+    const user_kyc: any = await database.GetKycBeforeDelete(kyc_id)
+    console.log('old kyc status: ', user_kyc[0]);
+
+    if (!user_kyc[0]) return false
+
+    await database.DeleteKyc(kyc_id)
+    return true
+  }
+
 
   async enablePremiumStatus(user_id: number, status: boolean) {
     const user: any = await database.GetUserById(user_id)

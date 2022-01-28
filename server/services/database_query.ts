@@ -399,7 +399,7 @@ class Database {
     })
   }
 
-  async getKycForUpdate(kyc_id: number) {
+  async GetKycForUpdate(kyc_id: number) {
     return new Promise((resolve, reject) => {
       mysql.query(`
         SELECT kyc_status
@@ -420,6 +420,28 @@ class Database {
       (err) => {
         if (err) return console.error(err);
         console.log('status was updated')
+      })
+  }
+
+  async GetKycBeforeDelete(kyc_id: number) {
+    mysql.query(`
+      SELECT *
+      FROM user_kyc
+      WHERE ID = ${kyc_id} `,
+      (err) => {
+        if (err) return console.error(err);
+        console.log('status was updated')
+      })
+  }
+
+
+  async DeleteKyc(kyc_id: number) {
+    mysql.query(`
+      DELETE FROM user_kyc
+      WHERE ID = ${kyc_id} `,
+      (err) => {
+        if (err) return console.error(err);
+        console.log('kyc was delete')
       })
   }
 
