@@ -71,9 +71,9 @@ export default class Store {
         this.twoFactor = bool
     }
 
-    async login(email, password, domainName) {
+    async login(obj) {
         try {
-            const response = await AuthService.login(email, password, domainName)
+            const response = await AuthService.login(obj)
             if (response.data.fullAccess) {
                 this.setFullAccess(true)
             } else {
@@ -104,9 +104,9 @@ export default class Store {
             this.setIsLoading(false)
         }
     }
-    async registration(email, password, name, domainName, datetime, promocode) {
+    async registration(obj) {
         try {
-            const response = await AuthService.registration(email, password, name, domainName, datetime, promocode)
+            const response = await AuthService.registration(obj)
             console.log('register', response)
             localStorage.setItem('token', response.data.accessToken)
             this.setUserId(response.data.user.ID)

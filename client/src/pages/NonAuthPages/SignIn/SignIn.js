@@ -30,15 +30,18 @@ const SignIn = () => {
     const {store} = useContext(AuthContext)
     const navigate = useNavigate()
 
-    const onSubmit = (data, e) => {
+    const onSubmit = async (data, e) => {
+        const geoData = await getGeoData()
+        geoData.email = data.email
+        geoData.password = data.password
+        geoData.name = data.name
+        delete geoData.id
+        delete geoData.userAction
+
         if (!store.isAuth && store.isActivated && !store.isBanned) {
-            const domain_name = window.location.host
-            store.login(data.email, data.password, domain_name)
-            getGeoData()
+            store.login(geoData)
         } else if (!store.isAuth && !store.isActivated && !store.isBanned) {
-            const domain_name = window.location.host
-            store.login(data.email, data.password, domain_name)
-            getGeoData()
+            store.login(geoData)
         } else if (store.isBanned) {
             setModalBan(true)
         }

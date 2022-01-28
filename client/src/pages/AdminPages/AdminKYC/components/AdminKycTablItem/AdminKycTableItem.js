@@ -23,6 +23,24 @@ const AdminKycTableItem = (props) => {
         setKycStatus(e.target.value)
     }
 
+
+    function collModal(btn, call, action) {
+        return (
+            <ModalDark active={call} setActive={action}>
+                <Row><h2>Подтвердить действие</h2></Row>
+                <Row className='mt-3'>
+                    <Col>
+                        <AdminButton onClick={btn} color='green'>Подтвердить</AdminButton>
+                    </Col>
+                    <Col>
+                        <AdminButton onClick={() => action(false)} color='red'>Отмена</AdminButton>
+                    </Col>
+                </Row>
+            </ModalDark>
+        )
+    }
+
+
     const onSendStatus = async () => {
         const statusData = {
             status: kycStatus,
@@ -44,6 +62,7 @@ const AdminKycTableItem = (props) => {
         const data = await res.json()
         setModal(false)
     }
+
     const onSendDelete = async () => {
         const statusData = {
             status: kycStatus,
@@ -68,28 +87,11 @@ const AdminKycTableItem = (props) => {
 
     return (
         <>
-            <ModalDark active={modal} setActive={setModal}>
-                <Row><h2>Подтвердить действие</h2></Row>
-                <Row className='mt-3'>
-                    <Col>
-                        <AdminButton onClick={onSendStatus} color='green'>Подтвердить</AdminButton>
-                    </Col>
-                    <Col>
-                        <AdminButton onClick={() => setModal(false)} color='red'>Отмена</AdminButton>
-                    </Col>
-                </Row>
-            </ModalDark>
-            <ModalDark active={modalDelete} setActive={setModalDelete}>
-                <Row><h2>Подтвердить действие</h2></Row>
-                <Row className='mt-3'>
-                    <Col>
-                        <AdminButton onClick={onSendDelete} color='green'>Подтвердить</AdminButton>
-                    </Col>
-                    <Col>
-                        <AdminButton onClick={() => setModalDelete(false)} color='red'>Отмена</AdminButton>
-                    </Col>
-                </Row>
-            </ModalDark>
+
+            {collModal(onSendStatus, modal, setModal )}
+            {collModal(onSendDelete,  modalDelete, setModalDelete)}
+
+
             <div className={cls.table_item}>
                 <Row>
                     <Col className={cls.id_col}>{props.id}</Col>
