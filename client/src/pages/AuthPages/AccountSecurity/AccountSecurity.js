@@ -16,6 +16,7 @@ const AccountSecurity = (props) => {
     const [type2FA, setType2FA] = useState()
     const [modalChangePass, setModalChangePass] = useState(false)
     const [modal2FA, setModal2FA] = useState(false)
+    const [responseModal, setResponseModal] = useState(false)
 
     console.log('my account ip address', props)
 
@@ -44,6 +45,9 @@ const AccountSecurity = (props) => {
             body: JSON.stringify(geodata)
         })
         const datares = await res.json()
+        if (datares.status === 'complete') {
+            set
+        }
         console.log(datares)
     }
 

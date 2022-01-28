@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {Col, Container, Row} from "react-bootstrap";
+import {Col, Container, NavLink, Row} from "react-bootstrap";
 import Form from "../../../components/UI/Form/Form";
 import Input from "../../../components/UI/Input/Input";
 import DatePickert from 'react-datepicker'
@@ -17,7 +17,7 @@ import {sendKycData} from "../../../queries/sendKycData";
 import KycResults from "./KycResults/KysResults";
 import {getGeoData} from "../../../queries/getSendGeoData";
 import moment from 'moment'
-import {useLocation} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import InputRadio from "../../../components/UI/InputRadio/InputRadio";
 import {store} from "../../../index";
 
@@ -135,16 +135,23 @@ const KYC = ({status}) => {
                                     <Input {...register('state')} name='state' placeholder='state'/>
                                 </Col>
                             </Row>
-                            <Row>
+                            <Row className='mt-4'>
                                 <Col>
-                                    <InputRadio {...register('documentType')} value='Passport' label='Passport' />
+                                    <InputRadio {...register('documentType', {
+                                        required: true
+                                    })} value='Passport' type='radio' label='Passport' />
                                 </Col>
                                 <Col>
-                                    <InputRadio {...register('documentType')} value='National ID' label='National ID' />
+                                    <InputRadio {...register('documentType', {
+                                        required: true
+                                    })} value='National ID' type='radio' label='National ID' />
                                 </Col>
                                 <Col>
-                                    <InputRadio {...register('documentType')} value='Driving License' label='Driving License' />
+                                    <InputRadio {...register('documentType', {
+                                        required: true
+                                    })} value='Driving License' type='radio' label='Driving License' />
                                 </Col>
+                                <ErrorMessage  name='zipCode' errors={errors} render={() => <p className={error.error}>you have to accept terms and conditions</p>} />
                             </Row>
                             {/*<Row className='mt-4'>*/}
                             {/*    <Col>*/}
@@ -163,6 +170,22 @@ const KYC = ({status}) => {
                             {/*        })} name='file3'/>*/}
                             {/*    </Col>*/}
                             {/*</Row>*/}
+                            <Row className='mt-4'>
+                                <Col>
+                                    <input {...register('terms', {
+                                        required: true
+                                    })} type='checkbox' />
+                                    <Link to={'/'}>Terms and conditions</Link>
+                                    <ErrorMessage  name='terms' errors={errors} render={() => <p className={error.error}>you have to accept terms and conditions</p>} />
+                                </Col>
+                                <Col>
+                                    <input {...register('privacy', {
+                                        required: true
+                                    })} type='checkbox' />
+                                    <Link to={'/'}>Terms and conditions</Link>
+                                    <ErrorMessage  name='privacy' errors={errors} render={() => <p className={error.error}>you have to accept terms and conditions</p>} />
+                                </Col>
+                            </Row>
                             <Row className='mt-4'>
                                 <Col className='col-sm-12 col-lg-3 m-auto'>
                                     <Button>Verify</Button>

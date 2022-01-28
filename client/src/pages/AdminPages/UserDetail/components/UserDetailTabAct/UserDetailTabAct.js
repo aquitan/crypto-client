@@ -7,8 +7,12 @@ import {useForm} from "react-hook-form";
 import UserService from "../../../../../services/UserService";
 import AdminForm from "../../../../../components/UI/AdminForm/AdminForm";
 import {v4 as uuid} from 'uuid'
+import ModalDark from "../../../../../components/UI/ModalDark/ModalDark";
 
 const UserDetailTabAct = (props) => {
+    const [isModal, setIsModal] = useState()
+
+
     const {register: balanceRegister, handleSubmit: balanceHandleSubmit} = useForm()
     const {register: registerNotif, handleSubmit: handleNotifSubmit} = useForm()
     const {register: registerPercent, handleSubmit: handlePercentSubmit} = useForm()
@@ -20,56 +24,77 @@ const UserDetailTabAct = (props) => {
     const [doubleDep, setDoubleDep] = useState(false)
     const [transactionBan, setTransactionBan] = useState(false)
     const [swapBan, setSwapBan] = useState(false)
+    const [premium, setPremium] = useState(false)
     console.log('ipData', props.ipData)
 
     const changeBalance = async (data) => {
-        const response = await UserService.postUserDetailData(data)
+        const response = await UserService.postUserDetailData('/123', data)
     }
     const changeNotif = async (data) => {
-        const response = await UserService.postUserDetailData(data)
+        const response = await UserService.postUserDetailData('/123', data)
     }
     const changePercent = async (data) => {
-        const response = await UserService.postUserDetailData(data)
+        const response = await UserService.postUserDetailData('/123', data)
     }
     const changeReqruiterName = async (data) => {
-        const response = await UserService.postUserDetailData(data)
+        const response = await UserService.postUserDetailData('/123', data)
     }
     const changeSupportName = async (data) => {
-        const response = await UserService.postUserDetailData(data)
+        const response = await UserService.postUserDetailData('/123', data)
     }
 
 
     const makeStaff = async () => {
         setIsStaff(!isStaff)
-        const response = await UserService.postUserDetailData({isStaff: !isStaff})
+        const response = await UserService.postUserDetailData('/123',{isStaff: !isStaff})
     }
-    const makePremium = async () => {
-        setIsPremium(!isPremium)
-        const response = await UserService.postUserDetailData({isPremium: !isPremium})
+    const makePremium = () => {
+        setIsModal(true)
     }
     const makeDouble = async () => {
         setDoubleDep(!doubleDep)
-        const response = await UserService.postUserDetailData({doubleDep: !doubleDep})
+        const response = await UserService.postUserDetailData('/123',{doubleDep: !doubleDep})
     }
     const clickFullBan = async () => {
         setFullBan(!fullBan)
-        const response = await UserService.postUserDetailData({isBan: !fullBan})
+        const response = await UserService.postUserDetailData('/123',{isBan: !fullBan})
     }
     const makeTransactionBan = async () => {
         setTransactionBan(!transactionBan)
-        const response = await UserService.postUserDetailData({transactionBan: !transactionBan})
+        const response = await UserService.postUserDetailData('/123',{transactionBan: !transactionBan})
     }
     const makeSwapBan = async () => {
         setSwapBan(!swapBan)
-        const response = await UserService.postUserDetailData({swapBan: !swapBan})
+        const response = await UserService.postUserDetailData('/123',{swapBan: !swapBan})
     }
 
+    const sendPremStatus = async () => {
+        setIsModal(false)
+        const response = await UserService.postUserDetailData('/personal_area/profile/update_premium_status/',{
+            status: !isPremium
+        })
+        setIsPremium(!isPremium)
+    }
 
 
 
 
     return (
         <div>
+
+            <ModalDark active={isModal} setActive={setIsModal}>
+                <Row>Вы уверены?</Row>
+                <Row>
+                    <Col>
+                        <AdminButton color={'green'} onClick={sendPremStatus}>Да</AdminButton>
+                    </Col>
+                    <Col>
+                        <AdminButton color={'red'} onClick={() => setIsModal(false)}>Нет</AdminButton>
+                    </Col>
+                </Row>
+            </ModalDark>
+
+
             <Card className={`${cls.bg_black} mb-3`}>
                 <Row className='pt-3 pb-3 align-items-center'>
                     <Col className='col-4'>
@@ -240,7 +265,7 @@ const UserDetailTabAct = (props) => {
                     </Row>
                     <Row className='mt-3'>
                         <Col className='col-3'>
-                            {isPremium ? <AdminButton onClick={makeDouble} color={'green'}>Вкл</AdminButton> : <AdminButton onClick={makeDouble} color={'red'}>Выкл</AdminButton>}
+                            {isPremium ? <AdminButton onClick={makePremium} color={'green'}>Вкл</AdminButton> : <AdminButton onClick={makePremium} color={'red'}>Выкл</AdminButton>}
                         </Col>
                     </Row>
                 </Row>
@@ -278,6 +303,21 @@ const UserDetailTabAct = (props) => {
                     <Row>
                         <Col className='col-4'>
                             <h3>Дабл депов:</h3>
+                        </Col>
+                    </Row>
+                    <Row className='mt-3'>
+                        <Col className='col-3'>
+                            {doubleDep ? <AdminButton onClick={makePremium} color={'red'}>Выкл</AdminButton>  :  <AdminButton onClick={makePremium} color={'green'}>Вкл</AdminButton>}
+                        </Col>
+                    </Row>
+                </Row>
+            </Card>
+
+            <Card className={`${cls.bg_black} mb-3`}>
+                <Row className='pt-3 pb-3 align-items-center'>
+                    <Row>
+                        <Col className='col-4'>
+                            <h3>Премиум статус:</h3>
                         </Col>
                     </Row>
                     <Row className='mt-3'>
