@@ -30,7 +30,6 @@ class Database {
         if (err) return console.error(err);
         console.log('done')
         console.log('user was created');
-
       })
   }
 
@@ -54,19 +53,19 @@ class Database {
       WHERE ID = ${user_id}`,
       (e: any, result) => {
         if (e) return console.error(new Error(e))
-        console.log('password was update');
+        console.log('2fa status was update');
 
       })
   }
 
-  async EnablePremiumStatus(user_id: number) {
+  async EnablePremiumStatus(user_id: number, status: boolean) {
     mysql.query(`
       UPDATE user_auth
-      SET premium_status = ${true}
+      SET premium_status = ${status}
       WHERE ID = ${user_id}`,
       (e: any, result) => {
         if (e) return console.error(new Error(e))
-        console.log('password was update');
+        console.log('premium status was update');
 
       })
   }

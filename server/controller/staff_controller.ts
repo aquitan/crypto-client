@@ -183,6 +183,39 @@ class StaffController {
     }
   }
 
+  async updatePremiumStatus(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const { userId, staffId, status, staffEmail, userEmail, domainName } = req.body
+      console.log('req body: ', req.body);
+
+      const result: boolean = await staffService.enablePremiumStatus(userId, status)
+      if (result === false) {
+        console.log('error');
+        return res.json({
+          message: 'error',
+          status: 'rejected'
+        })
+      }
+      if (status === true) {
+        await staffService.saveStaffLogs(staffEmail, ` изменил премиум статус ${userEmail} на  ${status} на ${domainName}`, domainName, staffId)
+        await telegram.sendMessageByUserActions(staffEmail, ` изменил премиум статус ${userEmail} на  ${status} на`, domainName)
+        return res.json({
+          message: 'premium status was update',
+          status: 'complete'
+        })
+      }
+
+      await staffService.saveStaffLogs(staffEmail, ` отменил премиум статус ${userEmail} на ${domainName}`, domainName, staffId)
+      await telegram.sendMessageByUserActions(staffEmail, ` отменил премиум статус ${userEmail} на`, domainName)
+      return res.json({
+        message: 'premium status was update',
+        status: 'complete'
+      })
+    } catch (e) {
+      next(e)
+    }
+  }
+
   async createNewUser(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
 

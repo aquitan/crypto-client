@@ -153,31 +153,6 @@ class UserController {
     }
   }
 
-  async updatePremiumStatus(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
-      const { userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName } = req.body
-      console.log('req body: ', req.body);
-
-      const result: boolean = await UserServices.enablePremiumStatus(userId)
-      if (result === false) {
-        console.log('error');
-        return res.json({
-          message: 'error',
-          status: 'rejected'
-        })
-      }
-
-      await saveUserLogs(userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName)
-      await telegram.sendMessageByUserActions(userEmail, `получил премиум статус `, domainName)
-      return res.json({
-        message: 'premium status was update',
-        status: 'complete'
-      })
-    } catch (e) {
-      next(e)
-    }
-  }
-
   async personalAreaKyc(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       const {

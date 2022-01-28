@@ -98,22 +98,6 @@ class UserServices {
     return true
   }
 
-  async enablePremiumStatus(user_id: number) {
-    const user: any = await database.GetUserById(user_id)
-    console.log('found user is: ', user[0]);
-
-    if (!user[0]) {
-      console.log('error');
-      return false
-    }
-
-    await database.EnablePremiumStatus(user_id)
-    const updatedData: any = await database.GetUserById(user_id)
-    console.log('status is:', updatedData[0].premium_status);
-
-    return true
-  }
-
   async personalAreaSendKyc(user_id: number, first_name: string, last_name: string, email: string, phone_number: number, date_of_birth: string, document_number: string, main_address: string, city: string, country_name: string, zip_code: number, document_type: string, status: string, state: string, sub_address: string) {
 
     const candidate: any = await database.GetUserKycByUserId(user_id)

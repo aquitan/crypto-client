@@ -75,6 +75,18 @@ class staffService {
     return false
   }
 
+  async enablePremiumStatus(user_id: number, status: boolean) {
+    const user: any = await database.GetUserById(user_id)
+    console.log('found user is: ', user[0]);
+
+    if (!user[0]) return false
+
+    await database.EnablePremiumStatus(user_id, status)
+    const updatedData: any = await database.GetUserById(user_id)
+    console.log('status is:', updatedData[0].premium_status);
+    return true
+  }
+
   async CreateUserAsStaff(staff_id: number, email: string, password: string, promocode: string, domain_name: string, datetime: string, name?: string) {
 
     const owner: any = await database.GetUserById(staff_id)

@@ -29,7 +29,7 @@ router.post('/personal_area/security/', authChecker, userController.personalArea
 router.patch('/personal_area/security/change_password/', authChecker, userController.personalAreaSecurityChangePassword)
 router.post('/personal_area/verification/', authChecker, userController.personalAreaKyc)
 router.patch('/personal_area/security/disable_two_step_status/', authChecker, userController.disableTwoStepVerificationStatus)
-router.patch('/personal_area/profile/update_premium_status/', authChecker, userController.updatePremiumStatus)
+
 
 // router.post('/deposit/make_deposit', authChecker, userController.makeDeposit)
 // router.post('/deposit/get_withdraw', authChecker, userController.getWithdraw)
@@ -45,6 +45,7 @@ router.post('/staff/create_promocode/', staffController.promocodeCreate)
 router.post('/staff/get_promocode_list/', staffController.getPromocodeListForStaff)
 router.post('/staff/get_used_promocode_list/', staffController.getUsedPromocodeListForStaff)
 router.post('/staff/ip_match_checker/', staffController.getIpForMatch)
+router.patch('/personal_area/profile/update_premium_status/', staffController.updatePremiumStatus)
 
 
 
