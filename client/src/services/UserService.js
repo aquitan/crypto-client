@@ -5,13 +5,16 @@ export default class UserService {
       return $api.get('/users')
    }
 
-   static postUserDetailData(obj) {
-      return $api.post('/123', obj)
+   static postUserDetailData(path, obj) {
+      return $api.patch(path, obj)
    }
    static editUser(obj) {
       return $api.patch('/personal_area/profile/edit/', obj)
    }
    static getWallets(obj) {
       return $api.patch('/123', obj)
+   }
+   static sendLogs(path, obj) {
+      return $api.post(path, obj)
    }
 }

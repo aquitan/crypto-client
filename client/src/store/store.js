@@ -7,6 +7,7 @@ export default class Store {
     userId = ''
     userEmail = ''
     path = ''
+    isUser = false
     isAuth = false
     isLoading = false
     isActivated = false

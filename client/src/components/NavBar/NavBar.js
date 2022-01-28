@@ -1,13 +1,17 @@
-import React, {useContext} from 'react'
-import {Button, Container, Nav, Navbar} from "react-bootstrap";
+import React, {useContext, useState} from 'react'
+import {Button, Col, Container, Nav, Navbar, Row} from "react-bootstrap";
 import {AuthContext} from "../../index";
 import { NavLink } from "react-router-dom";
 import cls from './NavBar.module.scss'
 import {observer} from "mobx-react-lite";
 import Dropdown from "../UI/Dropdown/Dropdown";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faBell} from "@fortawesome/free-solid-svg-icons";
+import Notification from "../UI/Notification/Notification";
 
 const NavBar = () => {
     const {store} = useContext(AuthContext)
+    const [showNotif, setShowNotif] = useState(false)
     console.log('store.isAdmin', store.isAdmin)
     const onLogOut = () => {
         store.logout()
@@ -30,10 +34,20 @@ const NavBar = () => {
                     </div>
                 </Navbar>
 
-                <Navbar.Collapse className='justify-content-end'>
-                    <Nav>
-                        <NavLink to={'/contact-us'}>Contact us</NavLink>
-                        <Button onClick={onLogOut}>Logout</Button>
+                <Navbar.Collapse className={`${cls.right_nav} justify-content-end`}>
+
+                    <Nav style={{width: '100%'}}>
+                        <Row style={{width: '100%'}}>
+                            <Col>
+                                <Notification />
+                            </Col>
+                            <Col>
+                                <NavLink to={'/contact-us'}>Contact us</NavLink>
+                            </Col>
+                            <Col>
+                                <Button onClick={onLogOut}>Logout</Button>
+                            </Col>
+                        </Row>
                     </Nav>
                 </Navbar.Collapse>
 

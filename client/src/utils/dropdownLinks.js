@@ -17,4 +17,7 @@ export const dropdownLinks = [
     {
         name: 'Secure Deal', to: '/', id: 6
     },
+    {
+        name: 'Test', to: '/test', id: 6
+    },
 ]
