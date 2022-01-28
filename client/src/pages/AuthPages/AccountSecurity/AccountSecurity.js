@@ -46,7 +46,7 @@ const AccountSecurity = (props) => {
         })
         const datares = await res.json()
         if (datares.status === 'complete') {
-            set
+
         }
         console.log(datares)
     }
