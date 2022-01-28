@@ -21,7 +21,7 @@ const AppRouter = () => {
     const renderPages = () => {
         if (store.isAuth && store.showConfirmation) {
             return <RegisterConfirm />
-        } else if (store.isAuth && store.isActivated) {
+        } else if (store.isAuth && store.isActivated || store.fullAccess) {
             return <AuthWrap />
         } else {
             return  <NonAuthWrap />

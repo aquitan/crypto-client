@@ -20,10 +20,14 @@ const NavBar = () => {
                 <Navbar>
                     <Nav>
                         <Dropdown />
+
                     </Nav>
                     {
                         store.isStaff ? <NavLink className={cls.link} to='/admin'>Staff</NavLink> : null
                     }
+                    <div style={{color: '#fff'}} className={cls.top}>
+                        {window.location.host}
+                    </div>
                 </Navbar>
 
                 <Navbar.Collapse className='justify-content-end'>

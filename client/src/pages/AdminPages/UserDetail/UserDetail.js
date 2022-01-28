@@ -7,23 +7,33 @@ import UserDetailTabLogs from "./components/UserDetailTabLogs/UserDetailTabLogs"
 import UserDetailTabAct from "./components/UserDetailTabAct/UserDetailTabAct";
 import {store} from "../../../index";
 import {useParams} from "react-router-dom";
+import {getGeoData} from "../../../queries/getSendGeoData";
 
 const UserDetail = () => {
 
     const [userDetail, setUserDetails] = useState('')
+    const [ipData, setIpData] = useState('')
     const params = useParams()
 
     const getAdminUsersDetail = async () => {
-        // const res = await fetch('/api/staff/users/user_detail/', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //         'Authorization': 'Bearer ' + localStorage.getItem('token')
-        //     },
-        //     body: JSON.stringify({id: store.userId})
-        // })
-    const res = await fetch(`/api/staff/users/user_detail/${params.id}`)
+        const res = await fetch(`/api/staff/users/user_detail/${params.id}`)
+        let geodata = await getGeoData()
         const data = await res.json()
+        const {ipAddress} = geodata
+        console.log('user data', data)
+        if (data.status === 'complete') {
+            const ipRes = await fetch(`/api//staff/ip_match_checker/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+                body: JSON.stringify({ipAddress})
+            })
+            const ipData = await ipRes.json()
+            console.log('ip ---', ipData.matchList)
+            setIpData(ipData.matchList)
+        }
         setUserDetails(data)
     }
 
@@ -42,7 +52,9 @@ const UserDetail = () => {
                     <UserDetailTabLogs data={userDetail.user} />
                 </Tab>
                 <Tab eventKey="actions" title="Действия" >
-                    <UserDetailTabAct />
+                    {
+                        ipData.length ? <UserDetailTabAct ipData={ipData} /> : <h3>Loading...</h3>
+                    }
                 </Tab>
                 <Tab eventKey="statistics" title="Статистика" >
                     <UserDetailTab num={4}/>

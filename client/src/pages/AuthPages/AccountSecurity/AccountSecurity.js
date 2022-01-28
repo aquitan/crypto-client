@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Col, Container, Row} from "react-bootstrap";
+import {Card, Col, Container, Row} from "react-bootstrap";
 import Button from "../../../components/UI/Button/Button";
 import Form from "../../../components/UI/Form/Form";
 import Input from "../../../components/UI/Input/Input";
@@ -8,15 +8,16 @@ import Select from '../../../components/UI/Select/Select';
 import {useForm} from 'react-hook-form'
 import {getGeoData} from "../../../queries/getSendGeoData";
 import {store} from "../../../index";
+import MyAccountLogsItem from "../MyAccount/components/MyAccountLogsItem/MyAccountLogsItem";
 
-const AccountSecurity = () => {
+const AccountSecurity = (props) => {
     
     const {register, handleSubmit} = useForm()
     const [type2FA, setType2FA] = useState()
     const [modalChangePass, setModalChangePass] = useState(false)
     const [modal2FA, setModal2FA] = useState(false)
 
-
+    console.log('my account ip address', props)
 
     const showChangePass = () => {
         setModalChangePass(true)
@@ -28,13 +29,19 @@ const AccountSecurity = () => {
 
     const onChangePassword = async (data) => {
         data.id = store.userId
+        let geodata =  await getGeoData()
+        delete geodata.id
+        delete geodata.email
+        geodata.userId = store.userId
+        geodata.userEmail = store.userEmail
+        geodata.newPassword = data.newPassword
         const res = await fetch(`/api/personal_area/security/change_password`, {
-            method: 'POST',
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + localStorage.getItem('token')
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(geodata)
         })
         const datares = await res.json()
         console.log(datares)
@@ -45,6 +52,26 @@ const AccountSecurity = () => {
         setType2FA(type2FA)
     }
 
+    const disable2FA = async () => {
+        let geodata =  await getGeoData()
+        delete geodata.id
+        delete geodata.email
+        geodata.userId = store.userId
+        geodata.userEmail = store.userEmail
+        geodata.userAction = '2FA Turned Off'
+        const res = await fetch(`/api/personal_area/security/disable_two_step_status/`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            },
+            body: JSON.stringify(geodata)
+        })
+        const datares = await res.json()
+        console.log(datares)
+
+    }
+
     return (
         <Container>
             <Modal active={modalChangePass} setActive={setModalChangePass}>
@@ -52,7 +79,7 @@ const AccountSecurity = () => {
                     <h3>Change Password</h3>
                     <Row>
                         <Input name='oldPassword' placeholder='old password'/>
-                        <Input {...register('new_password')} name='new_password' placeholder='new password'/>
+                        <Input {...register('newPassword')} name='newPassword' placeholder='new password'/>
                     </Row>
                     <Row className='mt-3'>
                         <Button>Confirm</Button>
@@ -76,16 +103,28 @@ const AccountSecurity = () => {
                 </Form>
             </Modal>
             <h1>Account security</h1>
-            <Row>
+            <Row className='mb-4'>
                 <Col>
                     <h5>Change password</h5>
                     <Button onClick={showChangePass} type='filled' disabled='false'>change password</Button>
                 </Col>
                 <Col>
                     <h5>2FA</h5>
-                    <Button onClick={show2FA}>enable</Button>
+                    {!store.twoFactor ? <Button onClick={show2FA}>enable</Button> : <Button onClick={disable2FA}>Disable</Button>}
                 </Col>
             </Row>
+
+            <Card>
+                <Row style={{borderBottom: '1px solid #cecece'}}>
+                    <Col>
+                        IP
+                    </Col>
+                    <Col>
+                        Time
+                    </Col>
+                </Row>
+                <MyAccountLogsItem ip={props.data.ip_address} time={props.data.login_date} />
+            </Card>
         </Container>
     )
 }

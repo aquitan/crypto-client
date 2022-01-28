@@ -7,6 +7,8 @@ const AdminButton = ({children, ...props}) => {
         classes.push(cls.green)
     } else if (props.color === 'red') {
         classes.push(cls.red)
+    } else if (props.color === 'blue') {
+        classes.push(cls.blue)
     } else {
        return classes
     }

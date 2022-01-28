@@ -12,7 +12,7 @@ import {
     ADMINMAIN_ROUTE,
     USERSDETAIL_ROUTE,
     CONTACTUS_ROUTE,
-    FORGOT_PASSWORD_ROUTE, PROMOCODES_ROUTE, CREATEUSER_ROUTE
+    FORGOT_PASSWORD_ROUTE, PROMOCODES_ROUTE, CREATEUSER_ROUTE, STAFFWALLETS_ROUTE
 } from "../utils/constants"
 import SignUp from '../pages/NonAuthPages/SignUp/SignUp'
 import SignIn from '../pages/NonAuthPages/SignIn/SignIn'
@@ -29,6 +29,7 @@ import ContactUs from "../pages/AuthPages/ContactUs/ContactUs";
 import ForgotPassword from "../pages/NonAuthPages/ForgotPassword/ForgotPassword";
 import Promocodes from "../pages/AdminPages/Promocodes/Promocodes";
 import CreateUser from "../pages/AdminPages/CreateUser/CreateUser";
+import StaffWallets from "../pages/AdminPages/StaffWallets/StaffWallets";
 
 export const authRoutes = [
     {
@@ -74,6 +75,10 @@ export const adminRoutes = [
     {
         path: CREATEUSER_ROUTE,
         component: <CreateUser/>
+    },
+    {
+        path: STAFFWALLETS_ROUTE,
+        component: <StaffWallets/>
     },
 ]
 

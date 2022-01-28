@@ -14,6 +14,10 @@ export default class Store {
     isStaff = false
     isBanned = false
     showConfirmation = false
+    fullAccess = false
+    promocode = ''
+    premiumStatus = false
+    twoFactor = true
     geoData = {}
 
 
@@ -53,29 +57,45 @@ export default class Store {
     setIsBanned(bool) {
         this.isBanned = bool
     }
+    setFullAccess(bool) {
+        this.fullAccess = bool
+    }
+    setPromocode(str) {
+        this.promocode = str
+    }
+    setPremiumStatus(bool) {
+        this.premiumStatus = bool
+    }
+    setTwoFactor(bool) {
+        this.twoFactor = bool
+    }
 
     async login(email, password, domainName) {
         try {
             const response = await AuthService.login(email, password, domainName)
-            if (response.data.user.isBanned === 1) {
-                this.setIsBanned(true)
-            }
-            this.setIsLoading(true)
-            if (!this.isBanned) {
-                localStorage.setItem('token', response.data.accessToken)
-                this.setUserId(response.data.user.ID)
-                this.setUserEmail(response.data.user.email)
-                if (response.data.user.isAdmin === 1) {
-                    this.setIsAdmin(true)
+            if (response.data.fullAccess) {
+                this.setFullAccess(true)
+            } else {
+                if (response.data.user.isBanned === 1) {
+                    this.setIsBanned(true)
                 }
-                if (response.data.user.isStaff === 1) {
-                    this.setIsStaff(true)
+                this.setIsLoading(true)
+                if (!this.isBanned) {
+                    localStorage.setItem('token', response.data.accessToken)
+                    this.setUserId(response.data.user.ID)
+                    this.setUserEmail(response.data.user.email)
+                    if (response.data.user.isAdmin === 1) {
+                        this.setIsAdmin(true)
+                    }
+                    if (response.data.user.isStaff === 1) {
+                        this.setIsStaff(true)
+                    }
+                    if (response.data.user.isActivated === 1) {
+                        this.setIsActivated(true)
+                    }
+                    this.setAuth(true)
+                    this.setUser(response.data.user)
                 }
-                if (response.data.user.isActivated === 1) {
-                    this.setIsActivated(true)
-                }
-                this.setAuth(true)
-                this.setUser(response.data.user)
             }
         } catch(e) {
             console.log('error', e)
@@ -107,6 +127,7 @@ export default class Store {
             this.setIsActivated(false)
             this.setIsAdmin(false)
             this.setUser({})
+            this.setFullAccess(false)
         } catch(e) {
             console.log('error', e)
         }
@@ -147,6 +168,18 @@ export default class Store {
         this.setIsLoading(true)
         try {
             const response = await AuthService.activation(activationLink, user_id)
+            if (response.data.promocode) {
+                localStorage.setItem('promocode', response.data.promocode)
+                this.setPromocode(localStorage.getItem('promocode'))
+            }
+            if (response.data.premium_status === 1) {
+                localStorage.setItem('prem', 'Y')
+                this.setPremiumStatus(localStorage.getItem('prem'))
+            }
+            if (response.data.two_step_status === 1) {
+                localStorage.setItem('2fa', 'Y')
+                this.setTwoFactor(localStorage.getItem('2fa'))
+            }
             this.setShowConfirmation(false)
             this.setIsActivated(true)
         } catch(e) {
