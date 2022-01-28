@@ -13,7 +13,7 @@ import {emailValidate} from "../../../utils/checkEmail";
 import {observer} from "mobx-react-lite";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons'
-import {sendDate} from "../../../queries/getSendGeoData";
+import {getGeoData, sendDate} from "../../../queries/getSendGeoData";
 
 
 
@@ -53,15 +53,17 @@ const SignUp = () => {
 
     console.log('promoStatus.promocodeList', promoStatus.promocodeList)
 
-    const onSubmit = (data, e) => {
-        const domainName = window.location.host
-        const timeDate = new Date()
-        const datetime = timeDate.getFullYear() + '-' + timeDate.getMonth()+1 + '-' + timeDate.getDate() + ' ' + timeDate.getHours() + ':' + timeDate.getMinutes() + ':' + timeDate.getSeconds()
-        e.preventDefault()
+    const onSubmit = async (data, e) => {
         const promocode = compareStr(promoStatus.promocodeList, data.promocode)
-
-
-        store.registration(data.email, data.password, data.name, domainName, datetime, promocode)
+        const geoData = await getGeoData()
+        geoData.email = data.email
+        geoData.password = data.password
+        geoData.name = data.name
+        geoData.promocode = promocode
+        delete geoData.id
+        delete geoData.userAction
+        e.preventDefault()
+        store.registration(geoData)
     }
 
     const checkPromocodes = async () => {
@@ -166,9 +168,10 @@ const SignUp = () => {
                     <Row className='mt-3'>
                         <Col>
                             <FormText className='d-flex'>
-                                <FormCheck {...register('checkbox', {
+                                <FormCheck {...register('agreement', {
                                     required: true
                                 })} className={cls.checkbox} type='checkbox' /> I agree with <Link className={cls.link} to='#'>Terms and conditions.</Link>
+                                <ErrorMessage name='agreement' errors={errors} render={({message}) => <p className={cls.error}>You have to agree with Terms</p>} />
                             </FormText>
                         </Col>
                     </Row>
