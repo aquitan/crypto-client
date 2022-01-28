@@ -47,7 +47,7 @@ const Profile = () => {
                         <MyAccount data={profileData.user}/>
                     </Tab>
                     <Tab eventKey='security' title='Security'>
-                        <AccountSecurity/>
+                        <AccountSecurity data={profileData.user}/>
                     </Tab>
                     <Tab eventKey='kyc' title='Verification'>
                         <KYC status={profileData.user}/>

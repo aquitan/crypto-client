@@ -24,18 +24,19 @@ const AdminKycTableItem = (props) => {
             staffEmail: store.userEmail,
             userEmail: props.email,
             kycId: props.id,
-            domainName: window.location.host
+            domainName: window.location.host,
+            staffId: store.userId
         }
 
         const res = await fetch('/api/staff/kyc/update_kyc_status/', {
-            method: 'POST',
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + localStorage.getItem('token')
             },
             body: JSON.stringify(statusData)
         })
-        const data = await res
+        const data = await res.json()
         setModal(false)
     }
 

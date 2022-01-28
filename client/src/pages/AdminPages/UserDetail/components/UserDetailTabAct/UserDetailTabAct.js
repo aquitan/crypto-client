@@ -6,8 +6,9 @@ import AdminInput from "../../../../../components/UI/AdminInput/AdminInput";
 import {useForm} from "react-hook-form";
 import UserService from "../../../../../services/UserService";
 import AdminForm from "../../../../../components/UI/AdminForm/AdminForm";
+import {v4 as uuid} from 'uuid'
 
-const UserDetailTabAct = () => {
+const UserDetailTabAct = (props) => {
     const {register: balanceRegister, handleSubmit: balanceHandleSubmit} = useForm()
     const {register: registerNotif, handleSubmit: handleNotifSubmit} = useForm()
     const {register: registerPercent, handleSubmit: handlePercentSubmit} = useForm()
@@ -19,7 +20,7 @@ const UserDetailTabAct = () => {
     const [doubleDep, setDoubleDep] = useState(false)
     const [transactionBan, setTransactionBan] = useState(false)
     const [swapBan, setSwapBan] = useState(false)
-
+    console.log('ipData', props.ipData)
 
     const changeBalance = async (data) => {
         const response = await UserService.postUserDetailData(data)
@@ -338,12 +339,17 @@ const UserDetailTabAct = () => {
                             <h3>IP адреса:</h3>
                         </Col>
                     </Row>
-                    <Row>
-                        <Col className='col-4'>
-                            <h5>12.231.123123</h5>
-                            <h5>12.231.123123</h5>
-                            <h5>12.231.123123</h5>
-                        </Col>
+                    <Row className={cls.ip_list}>
+                        {
+                            props.ipData.map(ip => {
+                                return (
+                                    <Row key={uuid()}>
+                                        <Col className='col-3'>{ip.ip_address}</Col>
+                                        <Col className='col-3'>{ip.email}</Col>
+                                    </Row>
+                                )
+                            })
+                        }
                     </Row>
                     <Row className='mt-3'>
                         <Col className='col-3'>

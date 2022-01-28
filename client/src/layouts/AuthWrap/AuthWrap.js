@@ -11,6 +11,9 @@ import {AuthContext} from "../../index";
 
 const AuthWrap = () => {
     const {store} = useContext(AuthContext)
+    const location = useLocation()
+    let userLocation = location.pathname.split(/[\\\/]/)
+    console.log('location', userLocation)
 
     const renderAdminRoutes = () => {
         if (store.isStaff) {
@@ -27,7 +30,10 @@ const AuthWrap = () => {
     return (
         <>
             <div className={cls.content}>
-                <NavBar/>
+                {
+                    userLocation[1] === 'admin' ? null : <NavBar/>
+                }
+
                 <Routes>
                     <Route path='/' element={<UserLayout/>}>
                         {

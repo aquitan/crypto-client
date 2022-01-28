@@ -9,6 +9,9 @@ export default class UserService {
       return $api.post('/123', obj)
    }
    static editUser(obj) {
-      return $api.post('/personal_area/profile/edit/', obj)
+      return $api.patch('/personal_area/profile/edit/', obj)
+   }
+   static getWallets(obj) {
+      return $api.patch('/123', obj)
    }
 }

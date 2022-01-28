@@ -27,10 +27,11 @@ const ForgotPassword = () => {
                 'Content-Type': 'application/json',
                 'authorization': 'Bearer ' + localStorage.getItem('token')
             },
-        body: JSON.stringify( {data})
+        body: JSON.stringify( data)
         })
         const datas = await res.json()
         console.log('forgot', datas.status)
+        setForgotStatus(datas.status)
         setModal(true)
         if (data.status === 'rejected') {
             setForgotStatus(datas.status)
