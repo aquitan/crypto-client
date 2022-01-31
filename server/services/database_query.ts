@@ -96,11 +96,11 @@ class Database {
       })
   }
 
-  async EnablePremiumStatus(user_id: number, status: boolean) {
+  async UpdatePremiumStatus(user_id: number, status: boolean) {
     mysql.query(`
-      UPDATE user_auth
+      UPDATE user_params
       SET premium_status = ${status}
-      WHERE ID = ${user_id}`,
+      WHERE user_id = ${user_id}`,
       (e: any, result) => {
         if (e) return console.error(new Error(e))
         console.log('premium status was update');
@@ -145,7 +145,7 @@ class Database {
     })
   }
 
-  async GetBaseUserParamsById(user_id: number) {
+  async GetBaseUserParamsById(user_id: number | false,) {
     return new Promise((resolve, reject) => {
       mysql.query(`
         SELECT user_auth.ID, user_auth.name, user_auth.email, user_params.isActivated, user_params.isUser, 
@@ -230,9 +230,9 @@ class Database {
 
     mysql.query(`
       INSERT INTO user_logs
-      ( email, ip_address, request_city, country_name, location, action_date, user_action, user_domain, user_id )
+      ( email, ip_address, request_city, country_name, location, browser, action_date, user_action, user_domain, user_id )
       VALUES
-      ( "${email}", "${ipAddress}", "${city}", "${countryName}", "${coordinates}", "${currentDate}", "${user_action}", "${user_domain}", ${user_id} )`,
+      ( "${email}", "${ipAddress}", "${city}", "${countryName}", "${coordinates}", "some browsr", "${currentDate}", "${user_action}", "${user_domain}", ${user_id} )`,
       (e: any, result) => {
         if (e) return console.error(new Error(e));
         console.log('done')
@@ -337,21 +337,20 @@ class Database {
   //  
 
   async GetAllUsersForStaff(domain_name: string) {
-
     return new Promise((resolve, reject) => {
       mysql.query(`
         SELECT *
         FROM user_auth
-        WHERE isAdmin = ${false} AND domain_name = "${domain_name}"
-        GROUP BY ID
-        ORDER BY MAX (ID)
-        desc`,
+        JOIN user_params
+        ON user_auth.ID = user_params.user_id
+        WHERE isAdmin = ${false} AND domain_name = "${domain_name}"`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
         })
     })
   }
+
 
   async GetLogsByUserId(user_id: number) {
     return new Promise((resolve, reject) => {
@@ -386,12 +385,14 @@ class Database {
   async GetKycForStaff(user_domain: string) {
     return new Promise((resolve, reject) => {
       mysql.query(`
-        SELECT user_kyc.ID, user_auth.date_of_entry, user_auth.name, user_auth.email, user_kyc.document_type, user_kyc.country_name, user_kyc.city, user_kyc.zip_code, user_kyc.state, user_kyc.kyc_status
+        SELECT user_kyc.ID, user_params.user_id, user_auth.date_of_entry, user_auth.name, user_auth.email, user_kyc.document_type, user_kyc.country_name, user_kyc.city, user_kyc.zip_code, user_kyc.state, user_kyc.kyc_status
         FROM user_kyc
         JOIN user_auth 
         ON user_kyc.user_id = user_auth.ID
+        JOIN user_params
+        ON user_params.user_id = user_kyc.user_id
         WHERE user_auth.domain_name = "${user_domain}"
-        AND user_auth.isAdmin = ${false}`,
+        AND user_params.isAdmin = ${false}`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -424,14 +425,16 @@ class Database {
   }
 
   async GetKycBeforeDelete(kyc_id: number) {
-    mysql.query(`
-      SELECT *
-      FROM user_kyc
-      WHERE ID = ${kyc_id} `,
-      (err) => {
-        if (err) return console.error(err);
-        console.log('status was updated')
-      })
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM user_kyc
+        WHERE ID = ${kyc_id}`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
   }
 
 

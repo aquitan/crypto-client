@@ -93,6 +93,8 @@ class AuthService {
     if (!user[0].email && user[0].domainName !== user_domain) throw ApiError.BadRequest('can`t find any user')
 
     const getFullUser: any = await database.GetBaseUserParamsByEmail(email)
+    console.log('full info: ', getFullUser);
+
     const userDto: any = new AuthUserDto(getFullUser[0])
     const tokens: any = tokenService.generateTokens({ ...userDto })
     await tokenService.saveToken(userDto.ID, tokens.refreshToken)
@@ -121,7 +123,7 @@ class AuthService {
 
     if (!userData || !tokenFromDatabase) throw ApiError.UnauthorizedError()
 
-    const getFullUser: any = await database.GetUserById(userData.ID)
+    const getFullUser: any = await database.GetBaseUserParamsById(userData.ID)
     console.log(getFullUser, 'found user');
 
     const userDto: any = new AuthUserDto(getFullUser[0])

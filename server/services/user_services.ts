@@ -8,7 +8,7 @@ class UserServices {
   async dashboard(user_id: number) {
 
     const userKyc: any = await database.GetUserKycByUserId(user_id)
-    const user: any = await database.GetUserById(user_id)
+    const user: any = await database.GetBaseUserParamsById(user_id)
     console.log('kyc of current user: ', userKyc[0])
     console.log('info of current user: ', user[0])
 
@@ -28,7 +28,7 @@ class UserServices {
   async personalAreaProfile(user_id: number) {
 
     const userKyc: any = await database.GetUserKycByUserId(user_id)
-    const user: any = await database.GetUserById(user_id)
+    const user: any = await database.GetBaseUserParamsById(user_id)
     console.log('kyc of current user: ', userKyc[0])
     console.log('info of current user: ', user[0])
 
@@ -55,7 +55,7 @@ class UserServices {
   }
 
   async changeNameInProfile(user_id: number, userName: string) {
-    const user: any = await database.GetUserById(user_id)
+    const user: any = await database.GetBaseUserParamsById(user_id)
     console.log('recieved user is: ', user);
 
     if (!user[0]) {
@@ -83,7 +83,7 @@ class UserServices {
   }
 
   async disableUserTwoStep(user_id: number) {
-    let user: any = await database.GetUserById(user_id)
+    let user: any = await database.GetBaseUserParamsById(user_id)
     console.log('found user is: ', user[0]);
 
     if (!user[0]) {

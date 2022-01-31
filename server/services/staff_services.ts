@@ -9,12 +9,12 @@ class staffService {
 
     const usersList: any = await database.GetAllUsersForStaff(domainName)
     console.log('user list: ', usersList);
-    if (!usersList[0]) return usersList
-    return false
+    if (!usersList[0]) return false
+    return usersList
   }
 
   async GetUserDetail(user_id: number) {
-    const userBaseData: any = await database.GetUserById(user_id)
+    const userBaseData: any = await database.GetBaseUserParamsById(user_id)
     console.log('userBaseData info is: ', userBaseData)
 
     const userKycData: any = await database.GetUserKycByUserId(user_id)
@@ -63,11 +63,10 @@ class staffService {
   async changeKycStatusAsStaff(status: string, kyc_id: number) {
 
     const old_status: any = await database.GetKycForUpdate(kyc_id)
-    console.log('old kyc status: ', old_status.kyc_status);
+    console.log('old kyc status: ', old_status);
 
-    if (old_status[0].kyc_status !== status) {
+    if (old_status[0] !== status) {
       await database.ChangeKycStatus(status, kyc_id)
-      console.log('it`s working');
       return true
     }
 
@@ -77,7 +76,7 @@ class staffService {
 
   async DeleteKyc(kyc_id: number) {
     const user_kyc: any = await database.GetKycBeforeDelete(kyc_id)
-    console.log('old kyc status: ', user_kyc[0]);
+    console.log('current kyc is: ', user_kyc[0]);
 
     if (!user_kyc[0]) return false
 
@@ -86,21 +85,21 @@ class staffService {
   }
 
 
-  async enablePremiumStatus(user_id: number, status: boolean) {
-    const user: any = await database.GetUserById(user_id)
+  async UpdatePremiumStatus(user_id: number, status: boolean) {
+    const user: any = await database.GetBaseUserParamsById(user_id)
     console.log('found user is: ', user[0]);
 
     if (!user[0]) return false
 
-    await database.EnablePremiumStatus(user_id, status)
-    const updatedData: any = await database.GetUserById(user_id)
+    await database.UpdatePremiumStatus(user_id, status)
+    const updatedData: any = await database.GetBaseUserParamsById(user_id)
     console.log('status is:', updatedData[0].premium_status);
     return true
   }
 
   async CreateUserAsStaff(staff_id: number, email: string, password: string, promocode: string, domain_name: string, datetime: string, name?: string) {
 
-    const owner: any = await database.GetUserById(staff_id)
+    const owner: any = await database.GetBaseUserParamsById(staff_id)
     console.log('current staff: ', owner[0].email);
 
     const activationLink: string = await codeGenerator(8)

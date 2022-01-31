@@ -172,7 +172,7 @@ class StaffController {
         })
       }
       await telegram.sendMessageByStaffActions(staffEmail, `изменил статус ${userEmail} на  ${status} `, domainName)
-      await staffService.saveStaffLogs(staffEmail, ` изменил статус ${userEmail} на  ${status} на `, domainName, staffId)
+      await staffService.saveStaffLogs(staffEmail, ` изменил статус ${userEmail} на  ${status} `, domainName, staffId)
 
       return res.json({
         message: 'status was changed',
@@ -185,10 +185,10 @@ class StaffController {
 
   async deleteKyc(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      const { kyc_id, staffId, staffEmail, userEmail, domainName } = req.body
+      const { kycId, staffId, staffEmail, userEmail, domainName } = req.body
       console.log('req body: ', req.body);
 
-      const result: boolean = await staffService.DeleteKyc(kyc_id)
+      const result: boolean = await staffService.DeleteKyc(kycId)
       console.log('operation result is: ', result);
 
       if (result === false) {
@@ -199,7 +199,7 @@ class StaffController {
       }
 
       await telegram.sendMessageByStaffActions(staffEmail, ` удалил KYC юзера ${userEmail} на `, domainName)
-      await staffService.saveStaffLogs(staffEmail, ` удалил KYC юзера ${userEmail} на `, domainName, staffId)
+      await staffService.saveStaffLogs(staffEmail, ` удалил KYC юзера ${userEmail} `, domainName, staffId)
 
       return res.json({
         message: 'status was changed',
@@ -215,7 +215,7 @@ class StaffController {
       const { userId, staffId, status, staffEmail, userEmail, domainName } = req.body
       console.log('req body: ', req.body);
 
-      const result: boolean = await staffService.enablePremiumStatus(userId, status)
+      const result: boolean = await staffService.UpdatePremiumStatus(userId, status)
       if (result === false) {
         console.log('error');
         return res.json({
@@ -224,8 +224,8 @@ class StaffController {
         })
       }
       if (status === true) {
-        await staffService.saveStaffLogs(staffEmail, ` изменил премиум статус ${userEmail} на  ${status} на `, domainName, staffId)
-        await telegram.sendMessageByStaffActions(staffEmail, ` изменил премиум статус ${userEmail} на  ${status} на`, domainName)
+        await staffService.saveStaffLogs(staffEmail, ` изменил премиум статус ${userEmail} на  ${status} `, domainName, staffId)
+        await telegram.sendMessageByStaffActions(staffEmail, ` изменил премиум статус ${userEmail} на  ${status} `, domainName)
         return res.json({
           message: 'premium status was enabled',
           status: 'complete'
@@ -233,7 +233,7 @@ class StaffController {
       }
 
       await staffService.saveStaffLogs(staffEmail, ` отменил премиум статус ${userEmail} на ${domainName}`, domainName, staffId)
-      await telegram.sendMessageByStaffActions(staffEmail, ` отменил премиум статус ${userEmail} на`, domainName)
+      await telegram.sendMessageByStaffActions(staffEmail, ` отменил премиум статус ${userEmail} `, domainName)
       return res.json({
         message: 'premium status disabled',
         status: 'complete'
@@ -258,7 +258,7 @@ class StaffController {
       }
       console.log('operation result is: ', result);
       await telegram.sendMessageByStaffActions(staffEmail, `создал пользователя ${email}`, domainName)
-      await staffService.saveStaffLogs(staffEmail, `создал пользователя ${email}} на `, domainName, staffId)
+      await staffService.saveStaffLogs(staffEmail, `создал пользователя ${email}} `, domainName, staffId)
       return res.json({
         message: 'user was created',
         status: 'complete'

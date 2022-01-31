@@ -45,7 +45,7 @@ class UserController {
       const user: any = await UserServices.personalAreaProfile(id)
       console.log('found user is: ', user)
       if (user) {
-        await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, `перешел на ${userAction} на`, domainName)
+        await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, `перешел на ${userAction} `, domainName)
         await telegram.sendMessageByUserActions(email, ` перешел на ${userAction}`, domainName)
         return res.json({
           user: user,
@@ -80,7 +80,7 @@ class UserController {
           status: 'rejected'
         })
       }
-      await saveUserLogs(userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, `поменял имя на ${userName} на `, domainName)
+      await saveUserLogs(userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, `поменял имя на ${userName} `, domainName)
       await telegram.sendMessageByUserActions(userEmail, `поменял имя на ${userName} `, domainName)
       return res.json({
         message: 'name was changed',

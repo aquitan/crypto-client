@@ -101,7 +101,10 @@ class AuthController {
         httpOnly: true
       })
 
-      await authService.SaveAuthLogs(userData.ID, email, ipAddress, city, countryName, coordinates, currentDate, 'зашел на ', domainName)
+      console.log('auth log: ', userData);
+
+      await authService.SaveAuthLogs(userData.user.ID, email, ipAddress, city, countryName, coordinates, currentDate, 'зашел на ', domainName)
+
       await telegram.sendMessageByUserActions(email, ' зашел', domainName)
       return res.json(userData)
 
