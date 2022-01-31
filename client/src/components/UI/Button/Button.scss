@@ -13,13 +13,24 @@
     font-weight: 700;
     position: relative;
     transition: opacity .2s linear 0s;
-    border: 2px solid transparent;
+    border: 2px solid $colorDarkBlue;
     cursor: pointer;
     font-family: 'Assistant', sans-serif;
     box-sizing: border-box;
     width: 100%;
 }
 
+.small {
+    max-width: 150px;
+}
+
 .transparent {
     background-color: transparent;
+    color: $colorDarkBlue;
+    transition: all .2s linear;
+    &:hover {
+        background-color: $colorDarkBlue;
+        color: #fff;
+        transition: all .2s linear;
+    }
 }

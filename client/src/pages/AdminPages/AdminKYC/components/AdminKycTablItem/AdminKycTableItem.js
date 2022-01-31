@@ -72,9 +72,8 @@ const AdminKycTableItem = (props) => {
             domainName: window.location.host,
             staffId: store.userId
         }
-
-        const res = await fetch('/api/staff/kyc/update_kyc_status/', {
-            method: 'PATCH',
+        const res = await fetch('/api/staff/kyc/delete_kyc/', {
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + localStorage.getItem('token')

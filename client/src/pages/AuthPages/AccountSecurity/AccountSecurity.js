@@ -9,21 +9,21 @@ import {useForm} from 'react-hook-form'
 import {getGeoData} from "../../../queries/getSendGeoData";
 import {store} from "../../../index";
 import MyAccountLogsItem from "../MyAccount/components/MyAccountLogsItem/MyAccountLogsItem";
+import {patchData} from "../../../services/StaffServices";
 
 const AccountSecurity = (props) => {
     
     const {register, handleSubmit} = useForm()
     const [type2FA, setType2FA] = useState()
-    const [modalChangePass, setModalChangePass] = useState(false)
+    const [modalChangePass, setModalChangePass] = useState({
+        isModal: false,
+        isStatus: ''
+    })
     const [modal2FA, setModal2FA] = useState(false)
-    const [responseModal, setResponseModal] = useState(false)
-
-    console.log('my account ip address', props)
 
     const showChangePass = () => {
-        setModalChangePass(true)
+        setModalChangePass({...modalChangePass, isModal: true})
     }
-
     const show2FA = () => {
         setModal2FA(true)
     }
@@ -36,19 +36,12 @@ const AccountSecurity = (props) => {
         geodata.userId = store.userId
         geodata.userEmail = store.userEmail
         geodata.newPassword = data.newPassword
-        const res = await fetch(`/api/personal_area/security/change_password`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
-            },
-            body: JSON.stringify(geodata)
-        })
-        const datares = await res.json()
-        if (datares.status === 'complete') {
+        const res = await patchData('/personal_area/security/change_password', geodata)
 
+        const datares = await res
+        if (datares.data.status === 'complete') {
+            setModalChangePass({...modalChangePass, isStatus: 'complete'})
         }
-        console.log(datares)
     }
 
     const on2FAChange = (e) => {
@@ -63,32 +56,42 @@ const AccountSecurity = (props) => {
         geodata.userId = store.userId
         geodata.userEmail = store.userEmail
         geodata.userAction = '2FA Turned Off'
-        const res = await fetch(`/api/personal_area/security/disable_two_step_status/`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
-            },
-            body: JSON.stringify(geodata)
-        })
-        const datares = await res.json()
-        console.log(datares)
-
+        const res = await patchData('/personal_area/security/disable_two_step_status/', geodata)
+        const datares = await res
+        console.log('2fa', datares.data)
     }
 
     return (
         <Container>
-            <Modal active={modalChangePass} setActive={setModalChangePass}>
-                <Form onSubmit={handleSubmit(onChangePassword)}>
-                    <h3>Change Password</h3>
-                    <Row>
-                        <Input name='oldPassword' placeholder='old password'/>
-                        <Input {...register('newPassword')} name='newPassword' placeholder='new password'/>
-                    </Row>
-                    <Row className='mt-3'>
-                        <Button>Confirm</Button>
-                    </Row>
-                </Form>
+            <Modal active={modalChangePass.isModal} title='Change password' setActive={setModalChangePass}>
+                {
+                    !modalChangePass.isStatus ?
+                        <Form onSubmit={handleSubmit(onChangePassword)}>
+                            <Row>
+                                <Input name='oldPassword' placeholder='old password'/>
+                                <Input {...register('newPassword')} name='newPassword' placeholder='new password'/>
+                            </Row>
+                            <Row className='mt-3'>
+                                <Button>Confirm</Button>
+                            </Row>
+                        </Form>
+                        : modalChangePass.isStatus === 'complete' ?
+                            <Row>
+                                <p>Password is changed</p>
+                                <Button onClick={() => setModalChangePass({
+                                    isModal: false,
+                                    isStatus: ''
+                                })}>Ok</Button>
+                            </Row>
+                            :
+                            <Row>
+                                <p>Ooops! Something went wrong</p>
+                                <Button onClick={() => setModalChangePass({
+                                    isModal: false,
+                                    isStatus: ''
+                                })}>Ok</Button>
+                            </Row>
+                }
             </Modal>
             <Modal active={modal2FA} setActive={setModal2FA}>
                 <Form>
@@ -110,7 +113,7 @@ const AccountSecurity = (props) => {
             <Row className='mb-4'>
                 <Col>
                     <h5>Change password</h5>
-                    <Button onClick={showChangePass} type='filled' disabled='false'>change password</Button>
+                    <Button onClick={showChangePass} type='filled'>change password</Button>
                 </Col>
                 <Col>
                     <h5>2FA</h5>

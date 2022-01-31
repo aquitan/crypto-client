@@ -3,13 +3,23 @@ import axios from "axios";
 export const BASE_URL = '/api'
 export const GEO_API = 'https://geolocation-db.com/json/'
 
-const $api = axios.create({
+export const $usersApi = axios.create({
     baseURL: BASE_URL,
     withCredentials: true,
+    headers: {
+        'Content-type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+    }
 })
+
 export const $geo_api = axios.create({
     baseURL: GEO_API,
     withCredentials: true
+})
+
+export const $api = axios.create({
+    baseURL: BASE_URL,
+    withCredentials: true,
 })
 
 $api.interceptors.request.use((config) => {
@@ -31,5 +41,4 @@ $api.interceptors.response.use((config) => {
         }
     } throw error
 })
-
-export default $api
+export default $api;

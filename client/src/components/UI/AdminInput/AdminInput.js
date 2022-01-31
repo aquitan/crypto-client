@@ -1,10 +1,21 @@
 import React, {forwardRef} from 'react'
-import cls from './AdminInput.module.scss'
+import './AdminInput.scss'
+import classNames from "classnames";
+import PropTypes from "prop-types";
 
-const AdminInput = forwardRef((props, ref) => {
+const AdminInput = forwardRef(({className ,...attrs}, ref) => {
+    let classes = classNames(
+        'admin_input',
+        className
+    )
+
     return (
-        <input ref={ref} className={cls.admin_input} {...props} />
+        <input ref={ref} className={classes} {...attrs}/>
     )
 })
+
+AdminInput.propTypes = {
+    className: PropTypes.string
+}
 
 export default AdminInput

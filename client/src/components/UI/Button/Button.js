@@ -1,21 +1,45 @@
 import React from 'react'
-import cls from './Button.module.scss'
+import './Button.scss'
+import PropTypes, {bool} from "prop-types";
+import classNames from "classnames";
 
-const Button = ({children, ...props}) => {
-    let classes = [cls.button]
+const Button = ({children, onClick, className, disabled, active, ...attrs}) => {
+    let classes = classNames(
+        'button',
+        className,
+        {active})
 
-    if (props.type === 'transparent') {
-        classes.push(cls.transparent)
-    } else if (props.type === 'filled') {
-        classes.push(cls.filled)
+    const onClickAction = (e) => {
+        if (disabled) {
+            e.preventDefault()
+        } else {
+            return onClick(e)
+        }
     }
 
+    const Tag = attrs.href ? 'a' : 'button'
 
     return (
-        <button className={classes.join(' ')} onClick={props.onClick}>
+        <Tag {...attrs} className={classes} onClick={onClickAction} disabled={disabled}>
             {children}
-        </button>
+        </Tag>
     )
+}
+
+Button.propTypes = {
+    children: PropTypes.node,
+    onClick: PropTypes.func,
+    className: PropTypes.string,
+    disabled: bool,
+    active: bool
+}
+
+Button.defaultProps = {
+    children: 'Submit',
+    onClick: () => {},
+    className: '',
+    disabled: false,
+    active: false
 }
 
 export default Button

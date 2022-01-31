@@ -10,7 +10,7 @@ export default class Store {
     isUser = false
     isAuth = false
     isLoading = false
-    isActivated = false
+    isActivated = true
     isAdmin = false
     isStaff = false
     isBanned = false
@@ -18,7 +18,8 @@ export default class Store {
     fullAccess = false
     promocode = ''
     premiumStatus = false
-    twoFactor = true
+    twoFactor = false
+    isError = false
     geoData = {}
 
 
@@ -70,6 +71,9 @@ export default class Store {
     setTwoFactor(bool) {
         this.twoFactor = bool
     }
+    setIsError(bool) {
+        this.isError = bool
+    }
 
     async login(obj) {
         try {
@@ -99,6 +103,7 @@ export default class Store {
                 }
             }
         } catch(e) {
+            this.setIsError(true)
             console.log('error', e)
         } finally {
             this.setIsLoading(false)
@@ -115,6 +120,7 @@ export default class Store {
             this.setAuth(true)
             this.setUser(response.data.user)
         } catch(e) {
+            this.setIsError(true)
             console.log('error', e)
         } finally {
             this.setIsLoading(false)
@@ -130,6 +136,7 @@ export default class Store {
             this.setUser({})
             this.setFullAccess(false)
         } catch(e) {
+            this.setIsError(true)
             console.log('error', e)
         }
     }

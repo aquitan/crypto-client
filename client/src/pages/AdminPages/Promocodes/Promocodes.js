@@ -1,15 +1,20 @@
 import React, {useEffect, useState} from 'react'
 import {Card, Col, Container, Row} from "react-bootstrap";
 import cls from './Promocodes.module.scss'
+import error from '../../../styles/Error.module.scss'
 import AdminButton from "../../../components/UI/AdminButton/AdminButton";
 import AdminInput from "../../../components/UI/AdminInput/AdminInput";
 import AdminForm from "../../../components/UI/AdminForm/AdminForm";
 import {useForm} from "react-hook-form";
 import {store} from "../../../index";
 import PromocodesItem from "./components/PromocodesItem/PromocodesItem";
+import {emailValidate, validateInput} from "../../../utils/checkEmail";
+import {ErrorMessage} from "@hookform/error-message";
 
 const Promocodes = () => {
-    const {register, handleSubmit} = useForm()
+    const {register, handleSubmit, formState: {errors}} = useForm({
+        mode: "onBlur"
+    })
     const [promocodeList, setpromocodeList] = useState()
 
     function getRandom(min, max) {
@@ -92,22 +97,49 @@ const Promocodes = () => {
                 <AdminForm onSubmit={handleSubmit(sendPromocode)}>
                     <Row className='mb-4'>
                         <Col>
-                            <AdminInput {...register('min')} maxLength='5' placeholder='Сумма вознаграждения от' />
+                            <AdminInput {...register('min',{
+                                required: true,
+                                message: 'Заполните поле'
+                            })} maxLength='5' placeholder='Сумма вознаграждения от' />
+                            <ErrorMessage  name='domainName' errors={errors} render={() => <p className={error.error}>Заполните поле</p>} />
                         </Col>
                         <Col>
-                            <AdminInput {...register('max')} maxLength='5' placeholder='Сумма вознаграждения до' />
+                            <AdminInput {...register('max', {
+                                required: true,
+                                message: 'Заполните поле'
+                            })} maxLength='5' placeholder='Сумма вознаграждения до' />
+                            <ErrorMessage  name='domainName' errors={errors} render={() => <p className={error.error}>Заполните поле</p>} />
                         </Col>
                     </Row>
                     <Row className='mb-4'>
                         <Col>
-                            <AdminInput {...register('counter')} placeholder='Кол-во промокодов' />
+                            <AdminInput {...register('counter', {
+                                required: true,
+                                message: 'Заполните поле'
+                            })} placeholder='Кол-во промокодов' />
+                            <ErrorMessage  name='domainName' errors={errors} render={() => <p className={error.error}>Заполните поле</p>} />
                         </Col>
                         <Col>
-                            <AdminInput {...register('domainName')} placeholder='Выбрать домен' />
+                            <AdminInput {...register('domainName', {
+                                required: true,
+                                message: 'Заполните поле'
+                            })} placeholder='Выбрать домен' />
+                            <ErrorMessage  name='domainName' errors={errors} render={() => <p className={error.error}>Заполните поле</p>} />
                         </Col>
                     </Row>
                     <Row className='mb-4'>
-                        <AdminButton color='green'>Сгенерировать</AdminButton>
+                        <Col className='col-12'>
+                            <AdminInput {...register('notification', {
+                                validate: validateInput,
+                                message: 'Заполните поле'
+                            })} placeholder='Нотификация' />
+                            <ErrorMessage  name='notification' errors={errors} render={() => <p className={error.error}>Только английские буквы</p>} />
+                        </Col>
+                    </Row>
+                    <Row className='mb-4'>
+                        <Col>
+                            <AdminButton className='green'>Сгенерировать</AdminButton>
+                        </Col>
                     </Row>
                 </AdminForm>
             </Card>

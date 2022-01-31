@@ -14,7 +14,6 @@ import '../../../styles/index.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons'
 import {getGeoData, sendDate} from "../../../queries/getSendGeoData";
-import {BASE_URL} from "../../../API";
 import Modal from "../../../components/UI/Modal/Modal";
 
 
@@ -23,6 +22,7 @@ import Modal from "../../../components/UI/Modal/Modal";
 const SignIn = () => {
     const [modal, setModal] = useState(false)
     const [modalBan, setModalBan] = useState(false)
+    const [modalError, setModalError] = useState(false)
     const [isShowPassword, setIsShowPassword] = useState(false)
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
@@ -37,7 +37,9 @@ const SignIn = () => {
         geoData.name = data.name
         delete geoData.id
         delete geoData.userAction
-
+        if (store.isError) {
+            setModalError(true)
+        }
         if (!store.isAuth && store.isActivated && !store.isBanned) {
             store.login(geoData)
         } else if (!store.isAuth && !store.isActivated && !store.isBanned) {
@@ -47,6 +49,10 @@ const SignIn = () => {
         }
         else {
             setModal(true)
+        }
+
+        if (store.isError) {
+            setModalError(true)
         }
 
     }
@@ -62,12 +68,16 @@ const SignIn = () => {
 
     return (
         <Container>
+            <Modal active={modalError} setActive={setModalError}>
+                <h2 className='mb-2'>Oops! Check your email</h2>
+                <Button onClick={() => setModalError(false)}>Ok</Button>
+            </Modal>
             <Modal active={modal} setActive={setModal}>
-                <h2>You need to activate your account!</h2>
+                <h2 className='mb-2'>You need to activate your account!</h2>
                 <Button onClick={() => navigate('/register-confirm')}>Verify</Button>
             </Modal>
             <Modal active={modalBan} setActive={setModalBan}>
-                <h2>Your account is blocked!</h2>
+                <h2 className='mb-2'>Your account is blocked!</h2>
                 <Button onClick={hideModalBan}>Ok</Button>
             </Modal>
             <Form onSubmit={handleSubmit(onSubmit)}>
@@ -112,7 +122,7 @@ const SignIn = () => {
                         <Link className={cls.link} to='/forgot-password'>Forgot password</Link>
                     </Col>
                     <Row className='mt-4'>
-                        <Button type='filled'>Sign In</Button>
+                        <Button className='transparent' type='submit'>Sign In</Button>
                     </Row>
                 </Row>
             </Form>

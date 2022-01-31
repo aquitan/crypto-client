@@ -26,7 +26,7 @@ const AdminKYC = () => {
         })
         const data = await res.json()
         setUsersKyc(data.usersKycList)
-        console.log('dataProfile', data.usersKycList)
+        console.log('dataProfile', data)
     }
 
     useEffect(() => {

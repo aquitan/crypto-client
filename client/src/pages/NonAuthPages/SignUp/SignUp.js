@@ -13,15 +13,15 @@ import {emailValidate} from "../../../utils/checkEmail";
 import {observer} from "mobx-react-lite";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons'
-import {getGeoData, sendDate} from "../../../queries/getSendGeoData";
-
-
+import {getGeoData} from "../../../queries/getSendGeoData";
+import Modal from "../../../components/UI/Modal/Modal";
+import {postData} from "../../../services/StaffServices";
 
 
 const SignUp = () => {
     const navigate = useNavigate()
     const [promoStatus, setPromoStatus] = useState(false)
-    // const [promos, setPromos] = useState()
+    const [modalError, setModalError] = useState(false)
     const [isShowPassword, setIsShowPassword] = useState(false)
     const {register, handleSubmit, formState: {errors}, watch} = useForm({
         mode: "onBlur",
@@ -51,8 +51,6 @@ const SignUp = () => {
         } return 'empty'
     }
 
-    console.log('promoStatus.promocodeList', promoStatus.promocodeList)
-
     const onSubmit = async (data, e) => {
         const promocode = compareStr(promoStatus.promocodeList, data.promocode)
         const geoData = await getGeoData()
@@ -64,24 +62,18 @@ const SignUp = () => {
         delete geoData.userAction
         e.preventDefault()
         store.registration(geoData)
+        if (store.isError) {
+            setModalError(true)
+        }
     }
 
     const checkPromocodes = async () => {
         const obj = {
             domainName: window.location.host
         }
-        console.log(obj)
-        const res = await fetch('/api/get_promocodes_before_signup/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(obj)
-        })
-        const status = await res.json()
-        console.log('status', status)
+        const res = await postData('/get_promocodes_before_signup/', obj)
+        const status = await res.data
         setPromoStatus(status)
-
     }
 
     const showPassword = () => {
@@ -90,6 +82,10 @@ const SignUp = () => {
 
     return (
         <Container>
+            <Modal active={modalError} setActive={setModalError}>
+                <h2 className='mb-2'>Oops! Check your email</h2>
+                <Button onClick={() => setModalError(false)}>Ok</Button>
+            </Modal>
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <Row>
                     <h2 className='mb-4'>Sign Up</h2>
@@ -182,14 +178,13 @@ const SignUp = () => {
                             <Link className={cls.link} to='/signin/'>Have an account?</Link>
                         </Col>
                         <Col>
-                            <Button type='filled'>Sign Up</Button>
+                            <Button type='submit' className='transparent' >Sign Up</Button>
                         </Col>
                     </Row>
                 </FormGroup>
 
             </Form>
         </Container>
-        
     )
 }
 
