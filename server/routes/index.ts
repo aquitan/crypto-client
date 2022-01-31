@@ -8,7 +8,7 @@ import authChecker from '../middlewares/auth_middleware'
 
 // auth routes
 router.post('/get_promocodes_before_signup/', authController.getPromocodeList)
-router.post('/registration/',
+router.put('/registration/',
   body('email').isEmail(),
   body('password').isLength({
     min: 8,
@@ -30,6 +30,8 @@ router.patch('/personal_area/security/change_password/', authChecker, userContro
 router.post('/personal_area/verification/', authChecker, userController.personalAreaKyc)
 router.patch('/personal_area/security/disable_two_step_status/', authChecker, userController.disableTwoStepVerificationStatus)
 
+// router.put('/wallets/create_user_wallet/', authChecker, userController.createUserWallet)
+// router.get('/internal_wallets/get_user_internal_wallet/', authChecker, userController.getInternalWallet)
 
 // router.post('/deposit/make_deposit', authChecker, userController.makeDeposit)
 // router.post('/deposit/get_withdraw', authChecker, userController.getWithdraw)
@@ -39,6 +41,15 @@ router.get('/staff/:id/', staffController.staffDashboard)
 router.post('/staff/users/', staffController.usersList)
 router.get('/staff/users/user_detail/:id/', staffController.userDetail)
 router.post('/staff/users/kyc/', staffController.kycList)
+router.patch('/staff/users/user_detail/update_premium_status/', staffController.updatePremiumStatus)
+router.patch('/staff/users/user_detail/update_swap_ban_status/', staffController.updateSwapBan)
+router.patch('/staff/users/user_detail/update_internal_ban_status/', staffController.updateInternalBan)
+router.patch('/staff/users/user_detail/update_full_ban_status/', staffController.updateFullBan)
+router.patch('/staff/users/user_detail/update_double_deposit/', staffController.updateDoubleDeposit)
+router.patch('/staff/users/user_detail/clear_match_ip_list/', staffController.crearMatchIpList)
+router.patch('/staff/users/user_detail/update_staff_status/', staffController.updateStaffStatus)
+router.patch('/staff/users/user_detail/update_staff_support_name/', staffController.updateStaffSupportName)
+
 router.patch('/staff/kyc/update_kyc_status/', staffController.changeKycStatus)
 router.delete('/staff/kyc/delete_kyc/', staffController.deleteKyc)
 router.post('/staff/create_user/', staffController.createNewUser)
@@ -46,7 +57,12 @@ router.post('/staff/create_promocode/', staffController.promocodeCreate)
 router.post('/staff/get_promocode_list/', staffController.getPromocodeListForStaff)
 router.post('/staff/get_used_promocode_list/', staffController.getUsedPromocodeListForStaff)
 router.post('/staff/ip_match_checker/', staffController.getIpForMatch)
-router.patch('/personal_area/profile/update_premium_status/', staffController.updatePremiumStatus)
+
+// router.put('/staff/notifications/create_new_notification/', staffController.createNewNotification)
+// router.get('/staff/notifications/get_all_notifications/', staffController.getNotificationList)
+// router.post('/staff/errors/create_new_error/', staffController.createNewError)
+// router.get('/staff/errors/get_all_errors/', staffController.getAllErrors)
+// router.put('/staff/wallets/create_staff_wallet/', staffController.createStaffWallet)
 
 
 

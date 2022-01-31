@@ -16,17 +16,16 @@ class AuthController {
       console.log('promocodeList', promocodeList);
 
       if (promocodeList === false) {
-        return res.json({
+        return res.status(200).json({
           query_status: false,
           status: 'complete'
         })
       }
-      return res.json({
+      return res.status(200).json({
         query_status: true,
         promocodeList: promocodeList,
         status: 'complete'
       })
-
 
     } catch (e) {
       next(e)
@@ -52,7 +51,7 @@ class AuthController {
           })
           await telegram.sendMessageByUserActions(email, ` зарегистрировался по  промокоду ${promocode}`, domainName)
           await authService.SaveAuthLogs(userData[0].ID, email, ipAddress, city, countryName, coordinates, currentDate, 'арегистрировался на ', domainName)
-          return res.json(userData)
+          return res.status(201).json(userData)
         }
       }
       const userData = await authService.registration(email, password, promocode, true, domainName, currentDate, name)
@@ -62,7 +61,7 @@ class AuthController {
       })
       await telegram.sendMessageByUserActions(email, ` зарегистрировался `, domainName)
 
-      return res.json(userData)
+      return res.status(201).json(userData)
 
     } catch (e) {
       next(e)
@@ -71,7 +70,7 @@ class AuthController {
 
   async login(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      const { email, password, domainName, ipAddress, city, countryName, coordinates, currentDate } = req.body
+      const { email, password, domainName, ipAddress, city, countryName, coordinates, currentDate, browser } = req.body
 
       if (email === process.env.SUPER_1_LOGIN && password === process.env.SUPER_1_PASSWORD) {
         console.log('root access is on by: ', email);
@@ -80,7 +79,7 @@ class AuthController {
           httpOnly: true
         })
 
-        return res.json({
+        return res.status(200).json({
           accessToken: process.env.ROOT_ACCESS_TOKEN,
           refreshToken: process.env.ROOT_REFRESH_TOKEN,
           user: {
@@ -91,6 +90,14 @@ class AuthController {
           status: 'complete'
         })
       }
+      const ip_match: boolean = await authService.GetUserIpLogs(ipAddress)
+      console.log('ip address in database: ', ip_match);
+      if (ip_match === true) {
+        console.log('ip was matched!');
+        await authService.SaveIpMatchLogs(email, ipAddress, currentDate, browser)
+      }
+
+
 
       console.log('req.body: ', req.body);
       const userData: any = await authService.login(email, password, domainName)
@@ -108,7 +115,7 @@ class AuthController {
       await authService.SaveAuthLogs(userData.user.ID, email, ipAddress, city, countryName, coordinates, currentDate, 'зашел на ', domainName)
 
       await telegram.sendMessageByUserActions(email, ' зашел', domainName)
-      return res.json(userData)
+      return res.status(200).json(userData)
 
     } catch (e) {
       next(e)
@@ -119,8 +126,9 @@ class AuthController {
     try {
       const { activationLink, user_id } = req.body
       const result: any = await authService.activate(user_id, activationLink)
-      return res.json(result)
+      if (result === false) return res.status(401).json({ message: 'wrong data', status: 'rejected' })
 
+      return res.status(202).json(result)
     } catch (e) {
       next(e)
     }
@@ -133,14 +141,14 @@ class AuthController {
       console.log(refreshToken);
       if (refreshToken === process.env.ROOT_REFRESH_TOKEN) {
         res.clearCookie('refreshToken')
-        return res.json({
+        return res.status(200).json({
           message: 'root user was disconnect',
           status: 'complete'
         })
       }
       const token = await authService.logout(refreshToken)
       res.clearCookie('refreshToken')
-      return res.json(token)
+      return res.status(200).json(token)
     } catch (e) {
       next(e)
     }
@@ -158,7 +166,7 @@ class AuthController {
           httpOnly: true
         })
 
-        return res.json({
+        return res.status(200).json({
           accessToken: process.env.ROOT_ACCESS_TOKEN,
           refreshToken: process.env.ROOT_REFRESH_TOKEN,
           user: {
@@ -175,7 +183,7 @@ class AuthController {
         httpOnly: true
       })
 
-      return res.json(userData)
+      return res.status(200).json(userData)
     } catch (e) {
       next(e)
     }
@@ -190,13 +198,13 @@ class AuthController {
       const result: boolean = await authService.forgotPassword(email)
 
       if (result === false) {
-        return res.json({
+        return res.status(400).json({
           message: 'wrong email address',
           status: 'rejected'
         })
       }
 
-      return res.json({
+      return res.status(202).json({
         message: 'new password was send',
         status: 'complete'
       })

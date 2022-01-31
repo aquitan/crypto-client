@@ -94,7 +94,6 @@ class AuthService {
       console.log('wrong user data');
       return false
     }
-
     const getFullUser: any = await database.GetBaseUserParamsByEmail(email)
     console.log('full info: ', getFullUser);
 
@@ -170,6 +169,17 @@ class AuthService {
     await database.SaveUserLogs(user_id, email, ipAddress, city, countryName, coordinates, currentDate, user_action, user_domain)
     return userLogs
 
+  }
+
+  async GetUserIpLogs(ipAddress: string) {
+    const is_match: any = await database.GetUserLogs(ipAddress)
+    if (!is_match[0]) return false
+    return true
+  }
+
+  async SaveIpMatchLogs(email: string, ipAddress: string, currentDate: string, browser: string) {
+    await database.SaveIpMatch(email, ipAddress, currentDate, browser)
+    return true
   }
 }
 

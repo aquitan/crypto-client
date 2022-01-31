@@ -97,6 +97,70 @@ class staffService {
     return true
   }
 
+  async UpdateSwapBan(user_id: number, status: boolean) {
+    const user: any = await database.GetBaseUserParamsById(user_id)
+    console.log('found user is: ', user[0]);
+
+    if (!user[0]) return false
+
+    await database.UpdateSwapBanStatus(user_id, status)
+    const updatedData: any = await database.GetBaseUserParamsById(user_id)
+    console.log('status is:', updatedData[0].premium_status);
+    return true
+  }
+
+  async UpdateInternalBan(user_id: number, status: boolean) {
+    const user: any = await database.GetBaseUserParamsById(user_id)
+    console.log('found user is: ', user[0]);
+
+    if (!user[0]) return false
+
+    await database.UpdateInternalBanStatus(user_id, status)
+    const updatedData: any = await database.GetBaseUserParamsById(user_id)
+    console.log('status is:', updatedData[0].premium_status);
+    return true
+  }
+
+  async UpdateFullBan(user_id: number, status: boolean) {
+    const user: any = await database.GetBaseUserParamsById(user_id)
+    console.log('found user is: ', user[0]);
+
+    if (!user[0]) return false
+
+    await database.UpdateFullBanStatus(user_id, status)
+    const updatedData: any = await database.GetBaseUserParamsById(user_id)
+    console.log('status is:', updatedData[0].premium_status);
+    return true
+  }
+
+  async UpdateStaffSupportName(staff_email: string, updatedName: string) {
+
+    const user_to_update: any = await database.GetStaffParamsById(staff_email)
+    console.log('user to update: ', user_to_update);
+
+    if (!user_to_update[0]) return false
+    await database.UpdateStaffSupportName(staff_email, updatedName)
+    return true
+  }
+
+  async UpdateDoubleDepositStatus(userId: number, status: boolean) {
+    const user_to_update: any = await database.GetBaseUserParamsById(userId)
+    console.log('user to update: ', user_to_update);
+
+    if (!user_to_update[0]) return false
+    await database.UpdateDoubleDepositStatus(userId, status)
+    return true
+  }
+
+  async ClearMatchIpUsers(user_id: number, ipAddress: string) {
+    const user_to_update: any = await database.GetIpMatch(user_id)
+    console.log('user to update: ', user_to_update);
+
+    if (!user_to_update[0]) return false
+    await database.DeleteIpMatchLogs(ipAddress)
+    return true
+  }
+
   async CreateUserAsStaff(staff_id: number, email: string, password: string, promocode: string, domain_name: string, datetime: string, name?: string) {
 
     const owner: any = await database.GetBaseUserParamsById(staff_id)

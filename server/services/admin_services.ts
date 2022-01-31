@@ -46,6 +46,17 @@ class adminService {
     return UserData
   }
 
+  async UpdateStaffStatus(staff_email: string, currentDate: string, user_id: number, status: boolean) {
+    const user: any = await database.GetBaseUserParamsById(user_id)
+    console.log('found user: ', user[0])
+
+    if (!user[0]) return false
+    await database.SaveStaffParams(staff_email, 80, 'support team', currentDate, user_id)
+
+    await database.UpdateStaffStatus(user_id, status)
+    return true
+  }
+
   async GetKycForAdmin() {
     const kycList: any = await database.GetKycForAdmin()
     console.log("list is: ", kycList)

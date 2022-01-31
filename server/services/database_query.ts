@@ -32,6 +32,55 @@ class Database {
       })
   }
 
+  async GetUserLogs(ipAddress: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT ip_address
+        FROM user_logs
+        WHERE ip_address = "${ipAddress}"`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async SaveIpMatch(user_email: string, user_ip_address: string, login_date: string, browser: string) {
+    mysql.query(`
+      INSERT INTO user_ip_match
+      ( user_email, user_ip_address, login_date, browser) 
+      VALUES 
+      ( "${user_email}", "${user_ip_address}", "${login_date}", "${browser}" )`,
+      (err, result) => {
+        if (err) console.error(err)
+        console.log('done')
+        console.log('ip match logs was saved');
+      })
+  }
+
+  async GetIpMatch(user_id: number) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM user_ip_match
+        WHERE user_id = ${user_id}`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async DeleteIpMatchLogs(ipAddress: string) {
+    mysql.query(`
+      DELETE FROM  user_ip_match
+      WHERE user_ip_address = "${ipAddress}"`,
+      (err) => {
+        if (err) return console.error(err)
+        console.log('done');
+      })
+  }
+
   async SaveBaseUserParams(double_deposit: boolean, swap_ban: boolean, internal_ban: boolean, isUser: boolean, isStaff: boolean,
     isAdmin: boolean, isBanned: boolean, isActivated: boolean, premium_status: boolean, two_step_status: boolean, agreement: boolean, user_id: number) {
 
@@ -149,6 +198,7 @@ class Database {
     return new Promise((resolve, reject) => {
       mysql.query(`
         SELECT user_auth.ID, user_auth.name, user_auth.email, user_params.isActivated, user_params.isUser, 
+        user_params.double_deposit, user_params.swap_ban, user_params.internal_ban, user_params.isBanned, 
         user_params.isStaff, user_params.isAdmin,user_params.isBanned,
         user_params.two_step_status, user_params.premium_status 
         FROM user_params
@@ -336,6 +386,7 @@ class Database {
   // staff pages ------------------------------------------------------------------
   //  
 
+
   async GetAllUsersForStaff(domain_name: string) {
     return new Promise((resolve, reject) => {
       mysql.query(`
@@ -413,6 +464,39 @@ class Database {
     })
   }
 
+  async UpdateSwapBanStatus(user_id: number, status: boolean) {
+    mysql.query(`
+      UPDATE user_params
+      SET swap_ban = ${status}
+      WHERE user_id = ${user_id} `,
+      (err) => {
+        if (err) return console.error(err);
+        console.log('status was updated')
+      })
+  }
+
+  async UpdateInternalBanStatus(user_id: number, status: boolean) {
+    mysql.query(`
+      UPDATE user_params
+      SET internal_ban = ${status}
+      WHERE user_id = ${user_id} `,
+      (err) => {
+        if (err) return console.error(err);
+        console.log('status was updated')
+      })
+  }
+
+  async UpdateFullBanStatus(user_id: number, status: boolean) {
+    mysql.query(`
+      UPDATE user_params
+      SET isBanned = ${status}
+      WHERE user_id = ${user_id} `,
+      (err) => {
+        if (err) return console.error(err);
+        console.log('status was updated')
+      })
+  }
+
   async ChangeKycStatus(status: string, kyc_id: number) {
     mysql.query(`
       UPDATE user_kyc
@@ -435,6 +519,55 @@ class Database {
           resolve(result)
         })
     })
+  }
+
+  async SaveStaffParams(staff_email: string, payment_fee: number, support_name: string, get_staff_access_date: string, user_who_give_access: number) {
+    mysql.query(`
+      INSERT INTO staff_params
+      (staff_email, payment_fee, support_name, get_staff_access_date, user_who_give_access )
+      VALUES
+      ( "${staff_email}", ${payment_fee}, "${support_name}", "${get_staff_access_date}", ${user_who_give_access})`,
+      (e: any, result) => {
+        if (e) return console.error(new Error(e));
+        console.log('db res: ', result);
+
+      })
+
+  }
+
+  async GetStaffParamsById(staff_email: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM staff_params
+        WHERE staff_email = "${staff_email}"`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async UpdateStaffSupportName(staff_email: string, updated_name: string) {
+    mysql.query(`
+      UPDATE staff_params
+      SET support_name = "${updated_name}"
+      WHERE staff_email = "${staff_email}" `,
+      (err) => {
+        if (err) return console.error(err);
+        console.log('support name was updated')
+      })
+  }
+
+  async UpdateDoubleDepositStatus(user_id: number, status: boolean) {
+    mysql.query(`
+      UPDATE user_params
+      SET status = ${status}
+      WHERE user_id = ${user_id} `,
+      (err) => {
+        if (err) return console.error(err);
+        console.log('status was updated')
+      })
   }
 
 
@@ -577,6 +710,8 @@ class Database {
   //   })
   // }
 
+
+
   //
   // admin pages ------------------------------------------------------------------
   // 
@@ -643,6 +778,19 @@ class Database {
         })
     })
   }
+
+  async UpdateStaffStatus(user_id: number, status: boolean) {
+    mysql.query(`
+      UPDATE user_params
+      SET isStaff = ${status}
+      WHERE user_id = ${user_id} `,
+      (err) => {
+        if (err) return console.error(err);
+        console.log('status was updated')
+      })
+  }
+
+
 
 }
 

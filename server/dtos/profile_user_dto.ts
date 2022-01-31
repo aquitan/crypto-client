@@ -7,6 +7,10 @@ export default class ProfileUserDto {
   main_address
   kyc_status
   two_step_status
+  double_deposit
+  swap_ban
+  internal_ban
+  isBanned
 
   constructor(model: any) {
     this.name = model.name
@@ -16,5 +20,9 @@ export default class ProfileUserDto {
     this.main_address = model.main_address
     this.kyc_status = model.kyc_status
     this.two_step_status = model.two_step_status
+    this.double_deposit = model.double_deposit
+    this.swap_ban = model.swap_ban
+    this.internal_ban = model.internal_ban
+    this.isBanned = model.isBanned
   }
 }
