@@ -1,23 +1,46 @@
 import React from 'react'
-import cls from './AdminButton.module.scss'
+import './AdminButton.scss'
+import PropTypes from "prop-types";
+import classNames from "classnames";
 
-const AdminButton = ({children, ...props}) => {
-    let classes = [cls.default]
-    if (props.color === 'green') {
-        classes.push(cls.green)
-    } else if (props.color === 'red') {
-        classes.push(cls.red)
-    } else if (props.color === 'blue') {
-        classes.push(cls.blue)
-    } else {
-       return classes
+const AdminButton = ({children, className, onClick, disabled, active, ...attr}) => {
+    let classes = classNames(
+        'default',
+        className
+    )
+
+    const onClickAction = (e) => {
+        console.log(e.target)
+        if (disabled) {
+            e.preventDefault()
+        } else {
+            return onClick(e)
+        }
     }
 
+
     return (
-        <button className={classes.join(' ')} onClick={props.onClick}>
+        <button {...attr} className={classes} onClick={onClickAction}>
             {children}
         </button>
     )
+}
+
+AdminButton.propTypes = {
+    children: PropTypes.node,
+    className: PropTypes.string,
+    onClick: PropTypes.func,
+    disabled: PropTypes.bool,
+    active: PropTypes.bool
+
+}
+
+AdminButton.defaultProps = {
+    children: 'изменить',
+    classNames: '',
+    onClick: () => {},
+    disabled: false,
+    active: false
 }
 
 export default AdminButton

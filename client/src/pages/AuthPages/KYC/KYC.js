@@ -182,7 +182,7 @@ const KYC = ({status}) => {
                                     <input {...register('privacy', {
                                         required: true
                                     })} type='checkbox' />
-                                    <Link to={'/'}>Terms and conditions</Link>
+                                    <Link to={'/'}>Privacy policy</Link>
                                     <ErrorMessage  name='privacy' errors={errors} render={() => <p className={error.error}>you have to accept terms and conditions</p>} />
                                 </Col>
                             </Row>

@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Card, Col, Form, Row} from "react-bootstrap";
 import AdminButton from "../../../../../components/UI/AdminButton/AdminButton";
 import cls from '../../UserDetail.module.scss'
@@ -8,103 +8,157 @@ import UserService from "../../../../../services/UserService";
 import AdminForm from "../../../../../components/UI/AdminForm/AdminForm";
 import {v4 as uuid} from 'uuid'
 import ModalDark from "../../../../../components/UI/ModalDark/ModalDark";
+import {store} from "../../../../../index";
+import Modal from "../../../../../components/UI/Modal/Modal";
+import AdminButtonCard from "../../../../../components/AdminButtonCard/AdminButtonCard";
 
 const UserDetailTabAct = (props) => {
-    const [isModal, setIsModal] = useState()
-
+    const [isModal, setIsModal] = useState(false)
+    const [state, setState] = useState({
+        isOpen: false,
+        onClickConfirm: null,
+    })
+    const [btns, setBtns] = useState({
+        currentPrem: props.isPremium,
+        fullBan: false,
+        double: false,
+        transactionBan: false,
+        isStaff: false
+    })
 
     const {register: balanceRegister, handleSubmit: balanceHandleSubmit} = useForm()
     const {register: registerNotif, handleSubmit: handleNotifSubmit} = useForm()
     const {register: registerPercent, handleSubmit: handlePercentSubmit} = useForm()
     const {register: registerRecruiter, handleSubmit: handleRecruiterSubmit} = useForm()
     const {register: registerSupport, handleSubmit: handleSupportSubmit} = useForm()
-    const [fullBan, setFullBan] = useState(false)
-    const [isStaff, setIsStaff] = useState(false)
-    const [isPremium, setIsPremium] = useState(false)
-    const [doubleDep, setDoubleDep] = useState(false)
-    const [transactionBan, setTransactionBan] = useState(false)
-    const [swapBan, setSwapBan] = useState(false)
-    const [premium, setPremium] = useState(false)
-    console.log('ipData', props.ipData)
 
     const changeBalance = async (data) => {
         const response = await UserService.postUserDetailData('/123', data)
     }
     const changeNotif = async (data) => {
-        const response = await UserService.postUserDetailData('/123', data)
+        // const response = await UserService.postUserDetailData('/123', data)
+        console.log('notif', data)
     }
     const changePercent = async (data) => {
         const response = await UserService.postUserDetailData('/123', data)
     }
     const changeReqruiterName = async (data) => {
-        const response = await UserService.postUserDetailData('/123', data)
+        // const response = await UserService.postUserDetailData('/123', data)
+        console.log('chage')
     }
     const changeSupportName = async (data) => {
-        const response = await UserService.postUserDetailData('/123', data)
+        // const response = await UserService.postUserDetailData('/123', data)
+        console.log('reqruiter')
     }
-
-
     const makeStaff = async () => {
-        setIsStaff(!isStaff)
-        const response = await UserService.postUserDetailData('/123',{isStaff: !isStaff})
-    }
-    const makePremium = () => {
-        setIsModal(true)
+        setBtns({...btns, isStaff: !btns.isStaff})
+        handleCloseModal()
+        // const response = await UserService.postUserDetailData('/123',{isStaff: !isStaff})
     }
     const makeDouble = async () => {
-        setDoubleDep(!doubleDep)
-        const response = await UserService.postUserDetailData('/123',{doubleDep: !doubleDep})
+        setBtns({...btns, double: !btns.double})
+        handleCloseModal()
+        // const response = await UserService.postUserDetailData('/123',{doubleDep: !doubleDep})
+        console.log('double')
     }
-    const clickFullBan = async () => {
-        setFullBan(!fullBan)
-        const response = await UserService.postUserDetailData('/123',{isBan: !fullBan})
+    const makeFullBan = async () => {
+        setBtns({...btns, fullBan: !btns.fullBan})
+        handleCloseModal()
+        // const response = await UserService.postUserDetailData('/123',{isBan: !fullBan})
+        console.log('full ban')
     }
     const makeTransactionBan = async () => {
-        setTransactionBan(!transactionBan)
-        const response = await UserService.postUserDetailData('/123',{transactionBan: !transactionBan})
+        setBtns({...btns, transactionBan: !btns.transactionBan})
+        handleCloseModal()
+        // const response = await UserService.postUserDetailData('/123',{transactionBan: !transactionBan})
+        console.log('internal ban')
     }
     const makeSwapBan = async () => {
-        setSwapBan(!swapBan)
-        const response = await UserService.postUserDetailData('/123',{swapBan: !swapBan})
+        // setSwapBan(!swapBan)
+        // const response = await UserService.postUserDetailData('/123',{swapBan: !swapBan})
+        console.log('swap ban')
     }
 
     const sendPremStatus = async () => {
-        setIsModal(false)
         const response = await UserService.postUserDetailData('/personal_area/profile/update_premium_status/',{
-            status: !isPremium
+            status: btns.currentPrem,
+            userId: props.data.user_kyc.user_id,
+            staffId: store.userId,
+            staffEmail: store.userEmail,
+            userEmail: props.data.user_kyc.email,
+            domainName: window.location.host
         })
-        setIsPremium(!isPremium)
+        const premResp = response
+        setBtns({...btns, currentPrem: !btns.currentPrem})
+        setState({isOpen: false, onClickConfirm: null})
+        handleCloseModal()
     }
 
+    const handleCloseModal = () => {
+        setState({
+            isOpen: false,
+            onClickConfirm: null
+        })
+    }
 
+    const handleFindType = (requestType) => {
+        console.log('requestType', requestType)
+        switch (requestType) {
+            case 'change':
+                return changeReqruiterName;
+            case 'double':
+                return makeDouble;
+            case 'premium':
+                return sendPremStatus;
+            case 'full-ban':
+                return makeFullBan;
+            case 'internal-ban':
+                return makeTransactionBan;
+            case 'swap-ban':
+                return makeSwapBan;
+            case 'staff-reqruiter':
+                return changeSupportName;
+            case 'new-percent':
+                return changePercent;
+            case 'notification':
+                return changeNotif;
+            case 'make-staff':
+                return makeStaff;
+            default:
+                return () => {
+                    console.log('default')
+                }
+        }
+    }
 
+    const handleOpenModal = (requestType) => {
+        const onClickConfirm = handleFindType(requestType)
+        setState({
+            isOpen: true,
+            onClickConfirm
+        })
+    }
+
+    if (!props) {
+        return <h1>Loading...</h1>
+    }
+
+    const {isOpen, onClickConfirm} = state
 
     return (
         <div>
 
-            <ModalDark active={isModal} setActive={setIsModal}>
+            <ModalDark active={isOpen} onClick={onClickConfirm} setActive={handleCloseModal}>
                 <Row>Вы уверены?</Row>
-                <Row>
-                    <Col>
-                        <AdminButton color={'green'} onClick={sendPremStatus}>Да</AdminButton>
-                    </Col>
-                    <Col>
-                        <AdminButton color={'red'} onClick={() => setIsModal(false)}>Нет</AdminButton>
-                    </Col>
-                </Row>
             </ModalDark>
 
-
-            <Card className={`${cls.bg_black} mb-3`}>
-                <Row className='pt-3 pb-3 align-items-center'>
-                    <Col className='col-4'>
-                        <h3>Сделать Работником</h3>
-                    </Col>
-                    <Col className='col-3'>
-                        {isStaff ? <AdminButton onClick={makeStaff} color={'red'} >Убрать</AdminButton> : <AdminButton onClick={makeStaff} color={'green'} >Сделать</AdminButton>}
-                    </Col>
-                </Row>
-            </Card>
+            <AdminButtonCard title='Сделать Работником'>
+                {
+                    !btns.isStaff
+                        ? <AdminButton onClick={() => handleOpenModal('make-staff')} className={'green'}>Сделать</AdminButton>
+                        : <AdminButton onClick={() => handleOpenModal('make-staff')} className={'red'}>Убрать</AdminButton>
+                }
+            </AdminButtonCard>
 
             <Card className={`${cls.bg_black} mb-3`}>
                 <Row className='pt-3 pb-3 align-items-center'>
@@ -164,223 +218,60 @@ const UserDetailTabAct = (props) => {
                 </Row>
             </Card>
 
-            <Card className={`${cls.bg_black} mb-3`}>
-                <AdminForm onSubmit={handleNotifSubmit(changeNotif)}>
-                    <Row className='pt-3 pb-3 align-items-center'>
-                        <Row>
-                            <Col className='col-4'>
-                                <h3>Нотификации</h3>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                <Row className='mt-3'>
-                                    <Col className='col-lg-3'><h5>Текст нотификации:</h5></Col>
-                                    <Col>
-                                        <AdminInput {...registerNotif('notificationText')} name='notificationText' />
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                        <Row className='mt-3'>
-                            <Col className='col-3'>
-                                <AdminButton color={'green'} >Сделать</AdminButton>
-                            </Col>
-                        </Row>
-                    </Row>
-                </AdminForm>
-            </Card>
-            <Card className={`${cls.bg_black} mb-3`}>
-                <AdminForm onSubmit={handlePercentSubmit(changePercent)}>
-                    <Row className='pt-3 pb-3 align-items-center'>
-                        <Row>
-                            <Col className='col-4'>
-                                <h3>Комиссия депозита:</h3>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                <Row className='mt-3'>
-                                    <Col className='col-lg-3'><h5>Текущий процент:</h5></Col>
-                                    <Col>
-                                        <AdminInput name='currentPercent' value={80} placeholder='Текущий процент'/>
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                <Row className='mt-3'>
-                                    <Col className='col-lg-3'><h5>Новый процент</h5></Col>
-                                    <Col>
-                                        <AdminInput {...registerPercent('newPercent')} name='newPercent' placeholder='Новый процент'/>
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                        <Row className='mt-3'>
-                            <Col className='col-3'>
-                                <AdminButton color={'green'} >Установить</AdminButton>
-                            </Col>
-                        </Row>
-                    </Row>
-                </AdminForm>
-            </Card>
+            <AdminButtonCard title='Нотификации'>
+                <AdminInput {...registerRecruiter('notification')} className='mb-3' name='recruiterName' placeholder='Текст нотификации' />
+                <AdminButton onClick={() => handleOpenModal('notification')} className={'green'}>Изменить</AdminButton>
+            </AdminButtonCard>
 
-            <Card className={`${cls.bg_black} mb-3`}>
-                <AdminForm onSubmit={handleRecruiterSubmit(changeReqruiterName)}>
-                    <Row className='pt-3 pb-3 align-items-center'>
-                        <Row>
-                            <Col className='col-4'>
-                                <h3>Новый стафф рекрутер:</h3>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                <Row className='mt-3'>
-                                    <Col className='col-lg-3'><h5>Изменить рекрутера:</h5></Col>
-                                    <Col>
-                                        <AdminInput {...registerRecruiter('recruiterName')} name='recruiterName' />
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                        <Row className='mt-3'>
-                            <Col className='col-3'>
-                                <AdminButton color={'green'} >Изменить</AdminButton>
-                            </Col>
-                        </Row>
-                    </Row>
-                </AdminForm>
-            </Card>
+            <AdminButtonCard title='Комиссия депозита'>
+                <Row className='mb-1'>Текущий процент: 80%</Row>
+                <AdminInput {...registerRecruiter('newPercent')} className='mb-3' name='recruiterName' placeholder='Изменить процент' />
+                <AdminButton onClick={() => handleOpenModal('new-percent')} className={'green'}>Изменить</AdminButton>
+            </AdminButtonCard>
 
+            <AdminButtonCard title='Новый стафф рекрутер'>
+                <AdminInput {...registerRecruiter('recruiterName')} className='mb-3' name='recruiterName' placeholder='Изменить рекрутера' />
+                <AdminButton onClick={() => handleOpenModal('staff-reqruiter')} className={'green'}>Изменить</AdminButton>
+            </AdminButtonCard>
 
+            <AdminButtonCard title='Премиум статус'>
+                {
+                    btns.currentPrem ?
+                        <AdminButton onClick={() => handleOpenModal('premium')} className={'green'}>Вкл</AdminButton>
+                        :
+                        <AdminButton onClick={() => handleOpenModal('premium')} className={'red'}>выкл</AdminButton>
+                }
+            </AdminButtonCard>
 
-            <Card className={`${cls.bg_black} mb-3`}>
-                <Row className='pt-3 pb-3 align-items-center'>
-                    <Row>
-                        <Col className='col-4'>
-                            <h3>Премиум статус:</h3>
-                        </Col>
-                    </Row>
-                    <Row className='mt-3'>
-                        <Col className='col-3'>
-                            {isPremium ? <AdminButton onClick={makePremium} color={'green'}>Вкл</AdminButton> : <AdminButton onClick={makePremium} color={'red'}>Выкл</AdminButton>}
-                        </Col>
-                    </Row>
-                </Row>
-            </Card>
+            <AdminButtonCard title='Изменить имя в саппорте'>
+                <AdminInput {...registerSupport('supportName')} name='supportName' className='mb-3' placeholder='Изменить имя'/>
+                <AdminButton onClick={() => handleOpenModal('change')} className={'green'} >Изменить</AdminButton>
+            </AdminButtonCard>
 
-            <Card className={`${cls.bg_black} mb-3`}>
-                <AdminForm onSubmit={handleSupportSubmit(changeSupportName)}>
-                    <Row className='pt-3 pb-3 align-items-center'>
-                        <Row>
-                            <Col className='col-4'>
-                                <h3>Изменить имя в саппорте</h3>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                <Row className='mt-3'>
-                                    <Col className='col-lg-3'><h5>Изменить имя:</h5></Col>
-                                    <Col>
-                                        <AdminInput {...registerSupport('supportName')} name='supportName' />
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                        <Row className='mt-3'>
-                            <Col className='col-3'>
-                                <AdminButton color={'green'} >Изменить</AdminButton>
-                            </Col>
-                        </Row>
-                    </Row>
-                </AdminForm>
-            </Card>
+            <AdminButtonCard title='Дабл депов'>
+                {
+                   !btns.double
+                       ? <AdminButton onClick={() => handleOpenModal('double')} className={'green'}>Вкл</AdminButton>
+                       : <AdminButton onClick={() => handleOpenModal('double')} className={'red'}>Выкл</AdminButton>
+                }
+            </AdminButtonCard>
 
-            <Card className={`${cls.bg_black} mb-3`}>
-                <Row className='pt-3 pb-3 align-items-center'>
-                    <Row>
-                        <Col className='col-4'>
-                            <h3>Дабл депов:</h3>
-                        </Col>
-                    </Row>
-                    <Row className='mt-3'>
-                        <Col className='col-3'>
-                            {doubleDep ? <AdminButton onClick={makePremium} color={'red'}>Выкл</AdminButton>  :  <AdminButton onClick={makePremium} color={'green'}>Вкл</AdminButton>}
-                        </Col>
-                    </Row>
-                </Row>
-            </Card>
+            <AdminButtonCard title='Полный бан'>
+                <AdminButton onClick={() => handleOpenModal('full-ban')} className={'green'}>Вкл</AdminButton>
+            </AdminButtonCard>
 
-            <Card className={`${cls.bg_black} mb-3`}>
-                <Row className='pt-3 pb-3 align-items-center'>
-                    <Row>
-                        <Col className='col-4'>
-                            <h3>Премиум статус:</h3>
-                        </Col>
-                    </Row>
-                    <Row className='mt-3'>
-                        <Col className='col-3'>
-                            {doubleDep ? <AdminButton onClick={makePremium} color={'red'}>Выкл</AdminButton>  :  <AdminButton onClick={makePremium} color={'green'}>Вкл</AdminButton>}
-                        </Col>
-                    </Row>
-                </Row>
-            </Card>
+            <AdminButtonCard title='Бан внутренних транзакций'>
+                <AdminButton onClick={() => handleOpenModal('internal-ban')} className={'green'}>Вкл</AdminButton>
+            </AdminButtonCard>
 
-            <Card className={`${cls.bg_black} mb-3`}>
-                <Row className='pt-3 pb-3 align-items-center'>
-                    <Row>
-                        <Col className='col-4'>
-                            <h3>Полный бан:</h3>
-                        </Col>
-                    </Row>
-                    <Row className='mt-3'>
-                        <Col className='col-3'>
-                            {fullBan ? <AdminButton onClick={clickFullBan} color={'red'}>Выкл</AdminButton> : <AdminButton onClick={clickFullBan} color={'green'}>Вкл</AdminButton>}
-                        </Col>
-                    </Row>
-                </Row>
-            </Card>
+            <AdminButtonCard title='Бан свапов'>
+                <AdminButton onClick={() => handleOpenModal('swap-ban')} className={'green'}>Вкл</AdminButton>
+            </AdminButtonCard>
 
-            <Card className={`${cls.bg_black} mb-3`}>
-                <Row className='pt-3 pb-3 align-items-center'>
-                    <Row>
-                        <Col className='col-4'>
-                            <h3>Бан внутренних транзакций:</h3>
-                        </Col>
-                    </Row>
-                    <Row className='mt-3'>
-                        <Col className='col-3'>
-                            {transactionBan ? <AdminButton onClick={makeTransactionBan} color={'green'}>Вкл</AdminButton> : <AdminButton onClick={makeTransactionBan} color={'green'}>Выкл</AdminButton>}
-                        </Col>
-                    </Row>
-                </Row>
-            </Card>
-
-            <Card className={`${cls.bg_black} mb-3`}>
-                <Row className='pt-3 pb-3 align-items-center'>
-                    <Row>
-                        <Col className='col-4'>
-                            <h3>Бан свапов:</h3>
-                        </Col>
-                    </Row>
-                    <Row className='mt-3'>
-                        <Col className='col-3'>
-                            {swapBan ? <AdminButton onClick={makeSwapBan} color={'green'}>Вкл</AdminButton> : <AdminButton onClick={makeSwapBan} color={'green'}>Выкл</AdminButton>}
-                        </Col>
-                    </Row>
-                </Row>
-            </Card>
-            <Card className={`${cls.bg_black} mb-3`}>
-                <Row className='pt-3 pb-3 align-items-center'>
-                    <Row>
-                        <Col className='col-4'>
-                            <h3>IP адреса:</h3>
-                        </Col>
-                    </Row>
-                    <Row className={cls.ip_list}>
-                        {
+            <AdminButtonCard title='IP адреса'>
+                <Row className={cls.ip_list}>
+                    {
+                        props.ipData.length ?
                             props.ipData.map(ip => {
                                 return (
                                     <Row key={uuid()}>
@@ -389,16 +280,11 @@ const UserDetailTabAct = (props) => {
                                     </Row>
                                 )
                             })
-                        }
-                    </Row>
-                    <Row className='mt-3'>
-                        <Col className='col-3'>
-                            <AdminButton color={'green'}>Очистить IP</AdminButton>
-                        </Col>
-                    </Row>
+                            : <h5>User is unique</h5>
+                    }
                 </Row>
-            </Card>
-
+                <AdminButton onClick={() => handleOpenModal('swap-ban')} className={'green'}>Очистить IP</AdminButton>
+            </AdminButtonCard>
         </div>
     )
 }

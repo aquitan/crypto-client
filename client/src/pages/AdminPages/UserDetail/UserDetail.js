@@ -8,11 +8,13 @@ import UserDetailTabAct from "./components/UserDetailTabAct/UserDetailTabAct";
 import {store} from "../../../index";
 import {useParams} from "react-router-dom";
 import {getGeoData} from "../../../queries/getSendGeoData";
+import {postData} from "../../../services/StaffServices";
 
 const UserDetail = () => {
 
     const [userDetail, setUserDetails] = useState('')
     const [ipData, setIpData] = useState('')
+    const [isPremium, setIsPremium] = useState(false)
     const params = useParams()
 
     const getAdminUsersDetail = async () => {
@@ -21,18 +23,11 @@ const UserDetail = () => {
         const data = await res.json()
         const {ipAddress} = geodata
         console.log('user data', data)
+
         if (data.status === 'complete') {
-            const ipRes = await fetch(`/api//staff/ip_match_checker/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                },
-                body: JSON.stringify({ipAddress})
-            })
-            const ipData = await ipRes.json()
-            console.log('ip ---', ipData.matchList)
-            setIpData(ipData.matchList)
+            const ipRes = await postData('/staff/ip_match_checker/', {ipAddress})
+            console.log('ipRes', ipRes.data)
+            setIpData(ipRes.data.matchList)
         }
         setUserDetails(data)
     }
@@ -52,9 +47,7 @@ const UserDetail = () => {
                     <UserDetailTabLogs data={userDetail.user} />
                 </Tab>
                 <Tab eventKey="actions" title="Действия" >
-                    {
-                        ipData.length ? <UserDetailTabAct ipData={ipData} /> : <h3>Loading...</h3>
-                    }
+                    <UserDetailTabAct isPremium={isPremium} data={userDetail.user} ipData={ipData} />
                 </Tab>
                 <Tab eventKey="statistics" title="Статистика" >
                     <UserDetailTab num={4}/>
