@@ -85,12 +85,15 @@ class AuthService {
   async login(email: string, password: string, user_domain: string) {
 
     const user: any = await database.GetUserByEmail(email)
-    console.log('found user: ', user[0].email);
+    console.log('found user: ', user[0]);
 
     // const isPasswordEquals: boolean = await bcrypt.compare(password, user.password)
-    if (user[0].password !== password) throw ApiError.BadRequest('wrong password')
+    if (user[0] === undefined || user[0].password !== password) return false
 
-    if (!user[0].email && user[0].domainName !== user_domain) throw ApiError.BadRequest('can`t find any user')
+    if (user[0].email !== email || user[0].domain_name !== user_domain) {
+      console.log('wrong user data');
+      return false
+    }
 
     const getFullUser: any = await database.GetBaseUserParamsByEmail(email)
     console.log('full info: ', getFullUser);
@@ -103,8 +106,6 @@ class AuthService {
       ...tokens,
       user: getFullUser[0]
     }
-
-
   }
 
   async logout(refreshToken: string) {
