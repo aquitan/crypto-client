@@ -5,7 +5,7 @@ const isValidEmail = email =>
     );
 const isValidText = text => {
     // eslint-disable-next-line no-useless-escape
-    /^((([a-zA-Z0-9 ])))$/.test(
+    /^((([0-9A-Za-z])))$/.test(
         text
     );
 }

@@ -2,6 +2,7 @@ import axios from "axios";
 import {GEO_API} from "../API";
 import SendLocationService from "../services/SendLocationService";
 import {store} from "../index";
+import {detectBrowser} from "../utils/detectBrowser";
 
 const timeDate = new Date()
 const currentDate = timeDate.getFullYear() + '-' + timeDate.getMonth()+1 + '-' + timeDate.getDate() + ' ' + timeDate.getHours() + ':' + timeDate.getMinutes() + ':' + timeDate.getSeconds()
@@ -22,7 +23,8 @@ export const getGeoData = async () => {
             userAction: userLocation[userLocation.length - 1],
             id: store.userId,
             email: store.userEmail,
-            domainName: domain_name
+            domainName: domain_name,
+            browser: detectBrowser()
         }
         return geoDatas
     } catch (e) {

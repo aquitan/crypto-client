@@ -188,7 +188,7 @@ const UserDetailTabInfo = ({data}) => {
                             Внутренние транзакции
                         </Col>
                         <Col className={cls.users_detail_table_col}>
-                            <Link to='/admin/users'>Создать/Посмотреть</Link>
+                            <Link to='/staff/users'>Создать/Посмотреть</Link>
                         </Col>
                     </Row>
                     <Row className={cls.users_detail_table_row}>
@@ -196,7 +196,7 @@ const UserDetailTabInfo = ({data}) => {
                             Внутренние обмены
                         </Col>
                         <Col className={cls.users_detail_table_col}>
-                            <Link to='/admin/users'>Создать/Посмотреть</Link>
+                            <Link to='/staff/users'>Создать/Посмотреть</Link>
                         </Col>
                     </Row>
                     <Row className={cls.users_detail_table_row}>
@@ -204,7 +204,7 @@ const UserDetailTabInfo = ({data}) => {
                             Проверка на депы (последняя: None)
                         </Col>
                         <Col className={cls.users_detail_table_col}>
-                            <Link to='/admin/users'>Посмотреть</Link>
+                            <Link to='/staff/users'>Посмотреть</Link>
                         </Col>
                     </Row>
 

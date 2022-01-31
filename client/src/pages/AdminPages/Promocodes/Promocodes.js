@@ -130,7 +130,7 @@ const Promocodes = () => {
                     <Row className='mb-4'>
                         <Col className='col-12'>
                             <AdminInput {...register('notification', {
-                                validate: validateInput,
+                                pattern: /^[A-Za-z]+$/i,
                                 message: 'Заполните поле'
                             })} placeholder='Нотификация' />
                             <ErrorMessage  name='notification' errors={errors} render={() => <p className={error.error}>Только английские буквы</p>} />
