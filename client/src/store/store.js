@@ -78,6 +78,7 @@ export default class Store {
     async login(obj) {
         try {
             const response = await AuthService.login(obj)
+            console.log('response', response)
             if (response.data.fullAccess) {
                 this.setFullAccess(true)
             } else {

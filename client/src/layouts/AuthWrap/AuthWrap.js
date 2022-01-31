@@ -13,12 +13,11 @@ const AuthWrap = () => {
     const {store} = useContext(AuthContext)
     const location = useLocation()
     let userLocation = location.pathname.split(/[\\\/]/)
-    console.log('location', userLocation)
 
     const renderAdminRoutes = () => {
         if (store.isStaff) {
             return (
-                <Route exact path='/admin' element={<AdminLayout/>}>
+                <Route exact path='/staff' element={<AdminLayout/>}>
                     {
                         adminRoutes.map(route => <Route key={uuid()} exact path={route.path} element={route.component} />)
                     }
@@ -31,9 +30,8 @@ const AuthWrap = () => {
         <>
             <div className={cls.content}>
                 {
-                    userLocation[1] === 'admin' ? null : <NavBar/>
+                    userLocation[1] === 'staff' ? null : <NavBar/>
                 }
-
                 <Routes>
                     <Route path='/' element={<UserLayout/>}>
                         {
@@ -45,7 +43,7 @@ const AuthWrap = () => {
                     }
 
                     {
-                        store.isStaff ?  <Route path='*' element={<Navigate to={'/admin'}/>} /> : <Route path='*' element={<Navigate to={'/'}/>} />
+                        store.isStaff ?  <Route path='*' element={<Navigate to={'/staff'}/>} /> : <Route path='*' element={<Navigate to={'/'}/>} />
                     }
                 </Routes>
             </div>

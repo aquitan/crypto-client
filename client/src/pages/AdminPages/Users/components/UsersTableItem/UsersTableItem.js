@@ -1,9 +1,13 @@
 import React, {useState} from 'react'
 import cls from '../../Users.module.scss'
 import {Col, Row} from "react-bootstrap";
-import {NavLink} from "react-router-dom";
+import AdminButton from "../../../../../components/UI/AdminButton/AdminButton";
+import {useNavigate} from "react-router-dom";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faCheck, faTimesCircle} from "@fortawesome/free-solid-svg-icons";
 
 const UsersTableItem = (props) => {
+    const navigate = useNavigate()
     return (
         <div className={cls.table_item}>
             <Row>
@@ -11,8 +15,8 @@ const UsersTableItem = (props) => {
                 <Col>{props.registerDate}</Col>
                 <Col>{props.name}</Col>
                 <Col>{props.email}</Col>
-                <Col>{props.kycStatus ? 'Yes' : 'No'}</Col>
-                <Col><NavLink exact to={`/admin/users/${props.id}`}>User details</NavLink></Col>
+                <Col>{props.kycStatus ? <FontAwesomeIcon color='green' icon={faCheck} /> : <FontAwesomeIcon color='tomato' icon={faTimesCircle} />}</Col>
+                <Col><AdminButton className='green' exact onClick={() => navigate(`/staff/users/${props.id}`)}>User details</AdminButton></Col>
             </Row>
         </div>
     )

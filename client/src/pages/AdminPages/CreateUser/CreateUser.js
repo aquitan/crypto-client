@@ -5,9 +5,14 @@ import AdminInput from "../../../components/UI/AdminInput/AdminInput";
 import AdminButton from "../../../components/UI/AdminButton/AdminButton";
 import {useForm} from "react-hook-form";
 import {store} from "../../../index";
+import error from "../../../styles/Error.module.scss";
+import {ErrorMessage} from "@hookform/error-message";
+import {emailValidate} from "../../../utils/checkEmail";
 
 const CreateUser = () => {
-    const {register, handleSubmit} = useForm()
+    const {register, handleSubmit, formState: {errors}} = useForm({
+        mode: "onBlur"
+    })
 
     const onSubmit = async (data, e) => {
         e.preventDefault()
@@ -35,19 +40,30 @@ const CreateUser = () => {
             <AdminForm onSubmit={handleSubmit(onSubmit)}>
                 <h2 className='mb-3'>Создать пользователя</h2>
                 <Row className='mb-3'>
-                    <AdminInput {...register('name')} placeholder='Имя'/>
+                    <AdminInput {...register('name', {
+                        required: true,
+                        pattern: /^[A-Za-z]+$/i
+                    })} placeholder='Имя'/>
+                    <ErrorMessage  name='name' errors={errors} render={() => <p className={error.error}>Только английские буквы</p>} />
                 </Row>
                 <Row className='mb-3'>
-                    <AdminInput {...register('email')} placeholder='Почта'/>
+                    <AdminInput {...register('email', {
+                        required: true,
+                        validate: emailValidate,
+                    })} placeholder='Почта'/>
+                    <ErrorMessage  name='email' errors={errors} render={() => <p className={error.error}>Почта не верна</p>} />
                 </Row>
                 <Row className='mb-3'>
-                    <AdminInput {...register('password')} placeholder='Пароль'/>
+                    <AdminInput {...register('password', {
+                        required: true,
+                    })} placeholder='Пароль'/>
+                    <ErrorMessage  name='password' errors={errors} render={() => <p className={error.error}>Необходимо ввести пароль</p>} />
                 </Row>
                 {/*<Row className='mb-3'>*/}
                 {/*    <AdminInput {...register('domain')} placeholder='Домен'/>*/}
                 {/*</Row>*/}
                 <Row className='mb-3'>
-                    <AdminButton color='green'>Создать пользователя</AdminButton>
+                    <AdminButton className='green'>Создать пользователя</AdminButton>
                 </Row>
             </AdminForm>
         </Container>

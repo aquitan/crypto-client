@@ -4,9 +4,12 @@ import {observer} from "mobx-react-lite";
 import AuthWrap from "../../layouts/AuthWrap/AuthWrap";
 import NonAuthWrap from "../../layouts/NonAuthWrap/NonAuthWrap";
 import RegisterConfirm from "../../pages/NonAuthPages/RegisterConfirm/RegisterConfirm";
+import {detectBrowser} from "../../utils/detectBrowser";
 
 const AppRouter = () => {
     const {store} = useContext(AuthContext)
+
+    console.log('browser', detectBrowser())
 
     useEffect(() => {
         if (localStorage.getItem('token')) {

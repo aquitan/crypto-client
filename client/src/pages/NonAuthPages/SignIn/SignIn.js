@@ -20,14 +20,14 @@ import Modal from "../../../components/UI/Modal/Modal";
 
 
 const SignIn = () => {
+    const {store} = useContext(AuthContext)
     const [modal, setModal] = useState(false)
     const [modalBan, setModalBan] = useState(false)
-    const [modalError, setModalError] = useState(false)
+    const [modalError, setModalError] = useState(store.isError)
     const [isShowPassword, setIsShowPassword] = useState(false)
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
     })
-    const {store} = useContext(AuthContext)
     const navigate = useNavigate()
 
     const onSubmit = async (data, e) => {
@@ -37,24 +37,17 @@ const SignIn = () => {
         geoData.name = data.name
         delete geoData.id
         delete geoData.userAction
-        if (store.isError) {
-            setModalError(true)
-        }
+
         if (!store.isAuth && store.isActivated && !store.isBanned) {
             store.login(geoData)
         } else if (!store.isAuth && !store.isActivated && !store.isBanned) {
             store.login(geoData)
         } else if (store.isBanned) {
             setModalBan(true)
-        }
-        else {
+        } else {
             setModal(true)
         }
-
-        if (store.isError) {
-            setModalError(true)
-        }
-
+        setModalError(store.isError)
     }
 
     const showPassword = () => {

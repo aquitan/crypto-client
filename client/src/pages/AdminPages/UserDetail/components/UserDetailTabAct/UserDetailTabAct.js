@@ -11,6 +11,8 @@ import ModalDark from "../../../../../components/UI/ModalDark/ModalDark";
 import {store} from "../../../../../index";
 import Modal from "../../../../../components/UI/Modal/Modal";
 import AdminButtonCard from "../../../../../components/AdminButtonCard/AdminButtonCard";
+import error from "../../../../../styles/Error.module.scss";
+import {ErrorMessage} from "@hookform/error-message";
 
 const UserDetailTabAct = (props) => {
     const [isModal, setIsModal] = useState(false)
@@ -23,14 +25,25 @@ const UserDetailTabAct = (props) => {
         fullBan: false,
         double: false,
         transactionBan: false,
-        isStaff: false
+        isStaff: false,
+        swapBan: false
     })
 
-    const {register: balanceRegister, handleSubmit: balanceHandleSubmit} = useForm()
-    const {register: registerNotif, handleSubmit: handleNotifSubmit} = useForm()
-    const {register: registerPercent, handleSubmit: handlePercentSubmit} = useForm()
-    const {register: registerRecruiter, handleSubmit: handleRecruiterSubmit} = useForm()
-    const {register: registerSupport, handleSubmit: handleSupportSubmit} = useForm()
+    const {register: balanceRegister, handleSubmit: balanceHandleSubmit, formState: {errors}} = useForm({
+        mode: 'onBlur'
+    })
+    const {register: registerNotif, handleSubmit: handleNotifSubmit, formState: {errors: errors2}} = useForm({
+        mode: 'onBlur'
+    })
+    const {register: registerPercent, handleSubmit: handlePercentSubmit, formState: {errors: errors5}} = useForm({
+        mode: 'onBlur'
+    })
+    const {register: registerRecruiter, handleSubmit: handleRecruiterSubmit, formState: {errors: errors3}} = useForm({
+        mode: 'onBlur'
+    })
+    const {register: registerSupport, handleSubmit: handleSupportSubmit, formState: {errors: errors4}} = useForm({
+        mode: 'onBlur'
+    })
 
     const changeBalance = async (data) => {
         const response = await UserService.postUserDetailData('/123', data)
@@ -44,7 +57,7 @@ const UserDetailTabAct = (props) => {
     }
     const changeReqruiterName = async (data) => {
         // const response = await UserService.postUserDetailData('/123', data)
-        console.log('chage')
+        console.log('chage', data)
     }
     const changeSupportName = async (data) => {
         // const response = await UserService.postUserDetailData('/123', data)
@@ -74,6 +87,7 @@ const UserDetailTabAct = (props) => {
         console.log('internal ban')
     }
     const makeSwapBan = async () => {
+        setBtns({...btns, swapBan: !btns.swapBan})
         // setSwapBan(!swapBan)
         // const response = await UserService.postUserDetailData('/123',{swapBan: !swapBan})
         console.log('swap ban')
@@ -82,7 +96,7 @@ const UserDetailTabAct = (props) => {
     const sendPremStatus = async () => {
         const response = await UserService.postUserDetailData('/personal_area/profile/update_premium_status/',{
             status: btns.currentPrem,
-            userId: props.data.user_kyc.user_id,
+            userId: props.data.base_data.ID,
             staffId: store.userId,
             staffEmail: store.userEmail,
             userEmail: props.data.user_kyc.email,
@@ -104,8 +118,8 @@ const UserDetailTabAct = (props) => {
     const handleFindType = (requestType) => {
         console.log('requestType', requestType)
         switch (requestType) {
-            case 'change':
-                return changeReqruiterName;
+            case 'support':
+                return changeSupportName;
             case 'double':
                 return makeDouble;
             case 'premium':
@@ -117,7 +131,7 @@ const UserDetailTabAct = (props) => {
             case 'swap-ban':
                 return makeSwapBan;
             case 'staff-reqruiter':
-                return changeSupportName;
+                return changeReqruiterName;
             case 'new-percent':
                 return changePercent;
             case 'notification':
@@ -152,13 +166,17 @@ const UserDetailTabAct = (props) => {
                 <Row>Вы уверены?</Row>
             </ModalDark>
 
-            <AdminButtonCard title='Сделать Работником'>
-                {
-                    !btns.isStaff
-                        ? <AdminButton onClick={() => handleOpenModal('make-staff')} className={'green'}>Сделать</AdminButton>
-                        : <AdminButton onClick={() => handleOpenModal('make-staff')} className={'red'}>Убрать</AdminButton>
-                }
-            </AdminButtonCard>
+            {
+                store.isAdmin ?
+                    <AdminButtonCard title='Сделать Работником'>
+                        {
+                            !btns.isStaff
+                                ? <AdminButton onClick={() => handleOpenModal('make-staff')} className={'green'}>Сделать</AdminButton>
+                                : <AdminButton onClick={() => handleOpenModal('make-staff')} className={'red'}>Убрать</AdminButton>
+                        }
+                    </AdminButtonCard>
+                    : null
+            }
 
             <Card className={`${cls.bg_black} mb-3`}>
                 <Row className='pt-3 pb-3 align-items-center'>
@@ -188,7 +206,7 @@ const UserDetailTabAct = (props) => {
                                 <Row className='mt-3'>
                                     <Col className='col-lg-3'><h5>Нотификация:</h5></Col>
                                     <Col>
-                                        <AdminInput {...balanceRegister('notification')} name='notification' placeholder='balance' value='This your notif text'/>
+                                        <AdminInput {...balanceRegister('notification')} name='notification' placeholder='This your notif text'/>
                                     </Col>
                                 </Row>
                                 <Row className='mt-3'>
@@ -209,7 +227,7 @@ const UserDetailTabAct = (props) => {
                             </Col>
                             <Row className={`${cls.bg_black} mt-3`}>
                                 <Col className='col-3'>
-                                    <AdminButton color={'green'} >Изменить</AdminButton>
+                                    <AdminButton className={'green'} >Изменить</AdminButton>
                                 </Col>
                             </Row>
                         </Row>
@@ -219,24 +237,31 @@ const UserDetailTabAct = (props) => {
             </Card>
 
             <AdminButtonCard title='Нотификации'>
-                <AdminInput {...registerRecruiter('notification')} className='mb-3' name='recruiterName' placeholder='Текст нотификации' />
+                <AdminInput {...registerNotif('notification', {
+                    pattern: /^[A-Za-z]+$/
+                })} className='mb-3' name='recruiterName' placeholder='Текст нотификации' />
+                <ErrorMessage  name='notification' errors={errors2} render={() => <p className={error.error}>Только английские буквы</p>} />
+
                 <AdminButton onClick={() => handleOpenModal('notification')} className={'green'}>Изменить</AdminButton>
             </AdminButtonCard>
 
             <AdminButtonCard title='Комиссия депозита'>
                 <Row className='mb-1'>Текущий процент: 80%</Row>
-                <AdminInput {...registerRecruiter('newPercent')} className='mb-3' name='recruiterName' placeholder='Изменить процент' />
+                <AdminInput {...registerPercent('newPercent')} className='mb-3' name='recruiterName' placeholder='Изменить процент' />
                 <AdminButton onClick={() => handleOpenModal('new-percent')} className={'green'}>Изменить</AdminButton>
             </AdminButtonCard>
 
             <AdminButtonCard title='Новый стафф рекрутер'>
-                <AdminInput {...registerRecruiter('recruiterName')} className='mb-3' name='recruiterName' placeholder='Изменить рекрутера' />
+                <AdminInput {...registerRecruiter('recruiterName', {
+                    pattern: /^[A-Za-z]+$/
+                })} className='mb-3' name='recruiterName' placeholder='Изменить рекрутера' />
+                <ErrorMessage  name='recruiterName' errors={errors2} render={() => <p className={error.error}>Только английские буквы</p>} />
                 <AdminButton onClick={() => handleOpenModal('staff-reqruiter')} className={'green'}>Изменить</AdminButton>
             </AdminButtonCard>
 
             <AdminButtonCard title='Премиум статус'>
                 {
-                    btns.currentPrem ?
+                    !btns.currentPrem ?
                         <AdminButton onClick={() => handleOpenModal('premium')} className={'green'}>Вкл</AdminButton>
                         :
                         <AdminButton onClick={() => handleOpenModal('premium')} className={'red'}>выкл</AdminButton>
@@ -244,8 +269,11 @@ const UserDetailTabAct = (props) => {
             </AdminButtonCard>
 
             <AdminButtonCard title='Изменить имя в саппорте'>
-                <AdminInput {...registerSupport('supportName')} name='supportName' className='mb-3' placeholder='Изменить имя'/>
-                <AdminButton onClick={() => handleOpenModal('change')} className={'green'} >Изменить</AdminButton>
+                <AdminInput {...registerSupport('supportName',{
+                    pattern: /^[A-Za-z]+$/i
+                })} name='supportName' className='mb-3' placeholder='Изменить имя'/>
+                <ErrorMessage  name='supportName' errors={errors3} render={() => <p className={error.error}>Только английские буквы</p>} />
+                <AdminButton onClick={() => handleOpenModal('support')} className={'green'} >Изменить</AdminButton>
             </AdminButtonCard>
 
             <AdminButtonCard title='Дабл депов'>
@@ -257,15 +285,27 @@ const UserDetailTabAct = (props) => {
             </AdminButtonCard>
 
             <AdminButtonCard title='Полный бан'>
-                <AdminButton onClick={() => handleOpenModal('full-ban')} className={'green'}>Вкл</AdminButton>
+                {
+                    !btns.fullBan ?
+                        <AdminButton onClick={() => handleOpenModal('full-ban')} className={'green'}>Вкл</AdminButton>
+                        : <AdminButton onClick={() => handleOpenModal('full-ban')} className={'red'}>Выкл</AdminButton>
+                }
             </AdminButtonCard>
 
             <AdminButtonCard title='Бан внутренних транзакций'>
-                <AdminButton onClick={() => handleOpenModal('internal-ban')} className={'green'}>Вкл</AdminButton>
+                {
+                    !btns.transactionBan ?
+                        <AdminButton onClick={() => handleOpenModal('internal-ban')} className={'green'}>Вкл</AdminButton>
+                        : <AdminButton onClick={() => handleOpenModal('internal-ban')} className={'red'}>Выкл</AdminButton>
+                }
             </AdminButtonCard>
 
             <AdminButtonCard title='Бан свапов'>
-                <AdminButton onClick={() => handleOpenModal('swap-ban')} className={'green'}>Вкл</AdminButton>
+                {
+                    !btns.swapBan ?
+                        <AdminButton onClick={() => handleOpenModal('swap-ban')} className={'green'}>Вкл</AdminButton>
+                        : <AdminButton onClick={() => handleOpenModal('swap-ban')} className={'red'}>Выкл</AdminButton>
+                }
             </AdminButtonCard>
 
             <AdminButtonCard title='IP адреса'>
