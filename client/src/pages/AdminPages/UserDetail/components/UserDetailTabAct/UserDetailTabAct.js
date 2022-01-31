@@ -96,7 +96,7 @@ const UserDetailTabAct = (props) => {
     const sendPremStatus = async () => {
         const response = await UserService.postUserDetailData('/personal_area/profile/update_premium_status/',{
             status: btns.currentPrem,
-            userId: props.data.user_kyc.user_id,
+            userId: props.data.base_data.ID,
             staffId: store.userId,
             staffEmail: store.userEmail,
             userEmail: props.data.user_kyc.email,
@@ -261,7 +261,7 @@ const UserDetailTabAct = (props) => {
 
             <AdminButtonCard title='Премиум статус'>
                 {
-                    btns.currentPrem ?
+                    !btns.currentPrem ?
                         <AdminButton onClick={() => handleOpenModal('premium')} className={'green'}>Вкл</AdminButton>
                         :
                         <AdminButton onClick={() => handleOpenModal('premium')} className={'red'}>выкл</AdminButton>
