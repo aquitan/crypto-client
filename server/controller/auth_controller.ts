@@ -96,6 +96,8 @@ class AuthController {
       const userData: any = await authService.login(email, password, domainName)
       // console.log(req.useragent);
 
+      if (userData === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+
       res.cookie('refreshToken', userData.refreshToken, {
         maxAge: 30 * 4 * 60 * 60 * 1000,
         httpOnly: true
