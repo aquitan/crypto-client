@@ -3,7 +3,6 @@ import { validationResult } from 'express-validator'
 import ApiError from '../exeptions/api_error'
 import authService from '../services/auth_services'
 import telegram from '../api/telegram_api'
-import UserAgent from 'express-useragent'
 
 class AuthController {
 

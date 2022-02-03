@@ -1,54 +1,7 @@
-import axios, {
-  AxiosRequestConfig,
-  AxiosResponse,
-  AxiosError,
-} from 'axios';
+import SendActionMessage from '../config/telegram_action_message'
+import SendMessageTwoStepVerification from '../config/telegram_two_step_verification'
+import codeGenerator from '../api/password_generator'
 
-async function SendMessage(userRequest: string, currentChatId?: string) {
-
-  // https://github.com/axios/axios/blob/master/test/typescript/axios.ts
-
-  if (userRequest) {
-    const message: string = encodeURI(userRequest)
-
-    const token: string | undefined = process.env.TELEGRAM_TOKEN
-    let chatId: string | undefined
-
-    if (currentChatId) {
-      chatId = currentChatId
-    } else {
-      chatId = process.env.TELEGRAM_CHAT_ID
-    }
-
-    const url: string = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&parse_mode=html&text=${message}`
-
-    const config: AxiosRequestConfig = {
-      method: 'GET',
-      data: userRequest,
-      responseType: 'stream'
-    }
-    const handleResponse = (response: AxiosResponse) => {
-      console.log(response.status)
-      console.log(response.statusText)
-    }
-
-    const handleError = (error: AxiosError) => {
-      if (error.response) {
-        // console.log(error.response.data)
-        console.log(error.response.status)
-        // console.log(error.response.headers)
-      } else {
-        console.log(error.message)
-      }
-    }
-
-    await axios(url, config)
-      .then(handleResponse)
-      .catch(handleError)
-  }
-}
-
-// main logic
 
 class Telegram {
 
@@ -57,7 +10,7 @@ class Telegram {
 
     const userRequest: string = `Пользователь ` + `${userEmail}` + `${page_or_action}` + ' на ' + `${domain_name}`
     console.log(userRequest)
-    await SendMessage(userRequest)
+    await SendActionMessage(userRequest)
   }
 
   async sendMessageByStaffActions(userEmail: string, action: string, domain_name: string) {
@@ -65,7 +18,16 @@ class Telegram {
 
     const userRequest: string = `Стафф ` + `${userEmail}` + `${action}` + ' на ' + `${domain_name}`
     console.log(userRequest)
-    await SendMessage(userRequest)
+    await SendActionMessage(userRequest)
+  }
+
+  async send2faMessage(userEmail: string, domain_name: string, code: string) {
+    const generated_code: string = await codeGenerator(8)
+    console.log('new code is: ', generated_code);
+
+    // 
+
+    // await SendMessageTwoStepVerification("To turn on two step verification on ", domain_name, " copy this code to ")
   }
 
   async getMessageFromSupportChat() {
@@ -92,7 +54,7 @@ class Telegram {
     // const userRequest: string = `Request to contact from user : ` + '\n' + `${email}` + `\n` + `${phone}` + `\n` + `${text}`
     const userRequest: string = `Новый запрос в contact us от пользователя ` + '\n' + `${email}` + `\n` + `${phone}` + `\n` + `${text}`
     console.log(userRequest)
-    await SendMessage(userRequest)
+    await SendActionMessage(userRequest)
   }
 }
 

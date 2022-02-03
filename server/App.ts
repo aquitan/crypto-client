@@ -5,9 +5,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
-import UserAgent from 'express-useragent'
 import compression from 'compression'
-import mongo from './config/mongo_DB_config'
 import mysql from './config/mysql_config'
 import router from './routes/index'
 
@@ -18,7 +16,6 @@ const PORT: any = process.env.PORT
 
 app.use(cors(CORS_OPTIONS))
 app.use(express.json())
-app.use(UserAgent.express())
 app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }))
 app.use(compression())
@@ -26,14 +23,6 @@ app.disable('x-powered-by')
 
 // routers
 app.use('/api', router)
-
-// const request_url = req.protocol + '://' + req.hostname + ':' + process.env.PORT + req.path
-
-// some info about multidomains services
-// https://stackoverflow.com/questions/11960705/expressjs-server-how-to-handle-multiple-domains
-
-// autopayment + wallet generator + seed phrase generator
-// https://www.npmjs.com/package/node-ethereum-wallet
 
 async function Connection() {
   // connect to mongo
@@ -45,17 +34,20 @@ async function Connection() {
 
 server.listen(PORT, async () => {
   try {
-    // const processPID: number = process.pid
-    // if (process.pid === processPID) {
-    //   console.log('port is busy..')
-    //   process.kill(process.pid)
-
-
-    // }
     console.clear()
     await Connection()
   } catch (e: any) {
-    console.error(new Error(e))
+    return console.error(new Error(e))
   }
 })
 
+// 2fa google 
+// https://medium.com/@allistair.vilakazi/2fa-with-node-js-and-google-authenticator-7ddd44881493
+
+
+// autopayment + wallet generator + seed phrase generator
+// https://www.npmjs.com/package/node-ethereum-wallet
+
+// https://github.com/sagivo/accept-bitcoin
+
+// https://www.npmjs.com/package/bitcoinjs-lib#examples

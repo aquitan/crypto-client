@@ -391,12 +391,12 @@ class StaffController {
     }
   }
 
-  async crearMatchIpList(req: express.Request, res: express.Response, next: express.NextFunction) {
+  async clearMatchIpList(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       const { userId, staffId, staffEmail, userEmail, domainName, ipAddress } = req.body
       console.log('req body: ', req.body);
 
-      const result: boolean = await staffService.ClearMatchIpUsers(userId, ipAddress)
+      const result: boolean = await staffService.ClearMatchIpUsers(userEmail, ipAddress)
       if (result === false) {
         console.log('error');
         return res.status(401).json({
@@ -405,7 +405,7 @@ class StaffController {
         })
       }
 
-      await staffService.saveStaffLogs(staffEmail, ` очистил повторяющиеся IP пользователя ${userEmail} на`, domainName, staffId)
+      await staffService.saveStaffLogs(staffEmail, ` очистил повторяющиеся IP пользователя ${userEmail}`, domainName, staffId)
       await telegram.sendMessageByStaffActions(staffEmail, ` очистил повторяющиеся IP пользователя  ${userEmail} `, domainName)
       return res.status(202).json({
         message: 'Match IP addresses was cleared',
@@ -440,6 +440,232 @@ class StaffController {
     }
   }
 
+  async createDomain(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      interface request_object {
+        staffEmail: string
+        fullDomainName: string
+        domainName: string
+        companyAddress: string
+        companyPhoneNumber: number
+        companyEmail: string
+        companyOwnerName: string
+        companyYear: number
+        companyCountry: string
+        showNews: boolean
+        doubleDeposit: boolean
+        depositFee: boolean
+        rateCorrectSum: number
+        minDepositSum: number
+        minWithdrawalSum: number
+        internalSwapFee: number
+        currencySwapFee: number
+        errorList: {
+          verif_document: {
+            domainName: string
+            errorName: string
+            title: string
+            text: string
+            button: string
+          },
+          verif_address: {
+            domainName: string
+            errorName: string
+            title: string
+            text: string
+            button: string
+          },
+          insurance: {
+            domainName: string
+            errorName: string
+            title: string
+            text: string
+            button: string
+          },
+          premium: {
+            domainName: string
+            errorName: string
+            title: string
+            text: string
+            button: string
+          },
+          multi_account: {
+            domainName: string
+            errorName: string
+            title: string
+            text: string
+            button: string
+          }
+        }
+        dateOfDomainCreate: string
+        staffId: number
+      }
+
+      console.log('req body is: ', req.body);
+
+      const object_to_send: request_object = {
+        staffEmail: req.body.staffEmail,
+        fullDomainName: req.body.fullDomainName,
+        domainName: req.body.domainName,
+        companyAddress: req.body.companyAddress,
+        companyPhoneNumber: req.body.companyPhoneNumber,
+        companyEmail: req.body.companyEmail,
+        companyOwnerName: req.body.companyOwnerName,
+        companyYear: req.body.companyYear,
+        companyCountry: req.body.companyCountry,
+        showNews: req.body.showNews,
+        doubleDeposit: req.body.doubleDeposit,
+        depositFee: req.body.depositFee,
+        rateCorrectSum: req.body.rateCorrectSum,
+        minDepositSum: req.body.minDepositSum,
+        minWithdrawalSum: req.body.minWithdrawalSum,
+        internalSwapFee: req.body.internalSwapFee,
+        currencySwapFee: req.body.currencySwapFee,
+        errorList: {
+          verif_document: {
+            domainName: req.body.fullDomainName,
+            errorName: req.body.errorList.errorName,
+            title: req.body.errorList.verifiedDocumentsErrorTitle,
+            text: req.body.errorList.verifiedDocumentsErrorText,
+            button: req.body.errorList.verifiedDocumentsErrorBtn
+          },
+          verif_address: {
+            domainName: req.body.fullDomainName,
+            errorName: req.body.errorList.errorName,
+            title: req.body.errorList.verifiedAddressErrorTitle,
+            text: req.body.errorList.verifiedAddressErrorText,
+            button: req.body.errorList.verifiedAddressErrorBtn,
+          },
+          insurance: {
+            domainName: req.body.fullDomainName,
+            errorName: req.body.errorList.errorName,
+            title: req.body.errorList.insuranceErrorTitle,
+            text: req.body.errorList.insuranceErrorText,
+            button: req.body.errorList.insuranceErrorBtn,
+          },
+          premium: {
+            domainName: req.body.fullDomainName,
+            errorName: req.body.errorList.errorName,
+            title: req.body.errorList.premiumStatusErrorTitle,
+            text: req.body.errorList.premiumStatusErrorText,
+            button: req.body.errorList.insuranceErrorBtn
+          },
+          multi_account: {
+            domainName: req.body.fullDomainName,
+            errorName: req.body.errorList.errorName,
+            title: req.body.errorList.multiAccountErrorTitle,
+            text: req.body.errorList.multiAccountErrorText,
+            button: req.body.errorList.multiAccountErrorBtn
+          }
+        },
+        dateOfDomainCreate: req.body.dateOfDomainCreate,
+        staffId: req.body.staffId
+      }
+
+
+      console.log('add domain req body: ', req.body);
+
+      const result: string | boolean = await staffService.CreateNewDomain(object_to_send)
+
+      if (result === false) return res.status(400).json({
+        message: 'wrong data. please try one more time.',
+        status: 'rejected'
+      })
+      if (result === 'error') return res.status(500).json({
+        message: 'internal server error.',
+        status: 'rejected'
+      })
+
+      await telegram.sendMessageByStaffActions(req.body.staffEmail, ` создал новый домен ${req.body.fullDomainName}} `, req.body.domainName)
+      await staffService.saveStaffLogs(req.body.staffEmail, ` создал новый домен ${req.body.fullDomainName}} `, '', req.body.staffId)
+      return res.status(201).json({
+        message: 'domain was created with all settings.',
+        status: 'complete'
+      })
+
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async createCustomError(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      interface request_object {
+        domainName: string
+        staffEmail: string
+        errorName: string
+        errorTitle: string
+        errorText: string
+        errorButton: string
+      }
+      const staffId: number = req.body.staffId
+
+      const obj_to_send: request_object = {
+        domainName: req.body.domainName,
+        errorName: req.body.errorName,
+        errorTitle: req.body.errorTitle,
+        errorText: req.body.errorText,
+        errorButton: req.body.errorButton,
+        staffEmail: req.body.staffEmail
+      }
+
+      const result: any = await staffService.CreateCustomError(obj_to_send)
+      console.log('result is: ', result);
+
+      if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+
+      await telegram.sendMessageByStaffActions(obj_to_send.staffEmail, ` создал кастомную ошибку `, obj_to_send.domainName)
+      await staffService.saveStaffLogs(obj_to_send.staffEmail, ` создал новый домен ${req.body.fullDomainName}} `, obj_to_send.domainName, staffId)
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async getAllErrors(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async getDomainsList(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const adminPermission: boolean = req.body.isAdmin
+      const staffPremisstion: boolean = req.body.isStaff
+      const staffEmail: string = req.body.staffEmail
+      console.log('req body is: ', req.body)
+
+      if (adminPermission === true) {
+        const result: any = await adminService.GetDomainListForAdmin(staffEmail)
+        if (result !== false) {
+          return res.status(200).json({
+            usersKycList: result,
+            status: 'complete'
+          })
+        }
+      }
+      if (staffPremisstion === true) {
+        const result: any = await staffService.GetDomainListForStaff(staffEmail)
+        if (result !== false) {
+          return res.status(200).json({
+            usersKycList: result,
+            status: 'complete'
+          })
+        }
+      }
+
+      return res.status(403).json({
+        message: 'permission denied',
+        status: 'rejected'
+      })
+    } catch (e) {
+      next(e)
+    }
+  }
+
   // async getUserLogs() {
   //   try {
 
@@ -448,6 +674,27 @@ class StaffController {
   //     console.log(e)
   //   }
   // }
+
+  async getNotificationList(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const userId: number = req.body.userId
+      console.log('req body is: ', req.body);
+      const result: any = await staffService.GetNotificationForUser(userId)
+
+      if (result === false) return res.status(200).json({
+        message: 'empty list',
+        status: 'complete'
+      })
+
+      return res.status(200).json({
+        listForUser: result,
+        status: 'complete'
+      })
+
+    } catch (e) {
+      next(e)
+    }
+  }
 
 
 

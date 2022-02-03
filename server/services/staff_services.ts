@@ -105,7 +105,7 @@ class staffService {
 
     await database.UpdateSwapBanStatus(user_id, status)
     const updatedData: any = await database.GetBaseUserParamsById(user_id)
-    console.log('status is:', updatedData[0].premium_status);
+    console.log('status is:', updatedData[0].swap_ban);
     return true
   }
 
@@ -117,7 +117,7 @@ class staffService {
 
     await database.UpdateInternalBanStatus(user_id, status)
     const updatedData: any = await database.GetBaseUserParamsById(user_id)
-    console.log('status is:', updatedData[0].premium_status);
+    console.log('status is:', updatedData[0].internal_ban);
     return true
   }
 
@@ -129,7 +129,7 @@ class staffService {
 
     await database.UpdateFullBanStatus(user_id, status)
     const updatedData: any = await database.GetBaseUserParamsById(user_id)
-    console.log('status is:', updatedData[0].premium_status);
+    console.log('status is:', updatedData[0].isBanned);
     return true
   }
 
@@ -152,8 +152,8 @@ class staffService {
     return true
   }
 
-  async ClearMatchIpUsers(user_id: number, ipAddress: string) {
-    const user_to_update: any = await database.GetIpMatch(user_id)
+  async ClearMatchIpUsers(user_email: string, ipAddress: string) {
+    const user_to_update: any = await database.GetIpMatch(user_email)
     console.log('user to update: ', user_to_update);
 
     if (!user_to_update[0]) return false
@@ -175,6 +175,109 @@ class staffService {
 
     console.log('something went wrong');
     return false
+  }
+
+  async CreateNewDomain(data_object: any) {
+
+    console.log('recieved object: ', data_object);
+
+
+    const domains: any = await database.GetDomainList(data_object.staffEmail)
+    console.log('recieved domains list is: ', domains);
+
+    console.log(`staff ${data_object.staffEmail} domains list: `);
+    for (let i = 0; i <= domains.length - 1; i++) {
+      console.log(domains[i].fullDomainName);
+
+      if (domains[i].fullDomainName === data_object.fullDomainName) {
+        console.log('domain already in use');
+        return false
+      }
+    }
+
+    const baseDomainData: any = {
+      fullDomainName: data_object.fullDomainName,
+      domainName: data_object.domainName,
+      companyAddress: data_object.companyAddress,
+      companyPhoneNumber: data_object.companyPhoneNumber,
+      companyEmail: data_object.companyEmail,
+      companyOwnerName: data_object.companyOwnerName,
+      companyYear: data_object.companyYear,
+      companyCountry: data_object.companyCountry,
+      domainOwnerEmail: data_object.staffEmail
+    }
+
+    const saveBaseDomainData: any = await database.CreateNewDomain(baseDomainData)
+    const curDomain: any = await database.GetBaseDomainInfo(saveBaseDomainData[0].ID)
+    console.log('base info from db: ', curDomain[0]);
+
+
+    const domainDetailInfo: any = {
+      showNews: data_object.showNews,
+      double_deposit: data_object.doubleDeposit,
+      depositFee: data_object.depositFee,
+      rateCorrectSum: data_object.rateCorrectSum,
+      minDepositSum: data_object.minDepositSum,
+      minWithdrawalSum: data_object.minWithdrawalSum,
+      internalSwapFee: data_object.internalSwapFee,
+      currencySwapFee: data_object.currencySwapFee,
+      dateOfDomainCreate: data_object.dateOfDomainCreate,
+      domainId: curDomain[0].ID
+    }
+    await database.SaveDomainDetailInfo(domainDetailInfo)
+
+    const domainErrors: any = [
+      data_object.errorList.verif_document,
+      data_object.errorList.verif_address,
+      data_object.errorList.insurance,
+      data_object.errorList.premium,
+      data_object.errorList.multi_account
+    ]
+
+    for (let i = 0; i < domainErrors.length; i++) {
+      await database.SaveDomainErrors(domainErrors[i].domainName, domainErrors[i].errorName, domainErrors[i].title, domainErrors[i].text, domainErrors[i].button,)
+      console.log('error item is: ', '\n', domainErrors[i], '\n', ' was waved');
+    }
+
+    const db_error_list: any = await database.GetDomainErrorsList(data_object.fullDomainName)
+    console.log('db errors: ', db_error_list);
+
+    if (db_error_list.length < 5) {
+      console.log('some writing error in <save domain errors>');
+      return 'error'
+    }
+
+    return true
+  }
+
+  async CreateCustomError(data_object: any) {
+
+    await database.SaveDomainErrors(data_object.domainName, data_object.errorName, data_object.errorTitle, data_object.errorText, data_object.errorButton)
+
+    const savedErrors: any = database.GetDomainErrorsList(data_object.fullDomainName)
+    console.log('saved domain error: ', savedErrors);
+    if (!savedErrors[0]) return false
+
+    return savedErrors
+
+  }
+
+  async GetDomainListForStaff(staffEmail: string) {
+    // select * from domains where domain_owner = staffEmail
+    // from both of params & detail
+    const domainList: any = await database.GetDomainListForStaff(staffEmail)
+    console.log('domainList is: ', domainList);
+    if (!domainList[0]) return false
+    return domainList
+
+  }
+
+
+  async GetNotificationForUser(user_id: number) {
+    const notification_list: any = await database.GetUserNotification(user_id)
+    console.log('active notif: ', notification_list);
+    if (notification_list[0]) return false
+
   }
 
   async CreatePromocode(date: string, value: any, staff_id: number, domain: string, counter: number) {

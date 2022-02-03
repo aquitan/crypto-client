@@ -34,7 +34,7 @@ router.patch('/personal_area/security/disable_two_step_status/', authChecker, us
 // router.get('/internal_wallets/get_user_internal_wallet/', authChecker, userController.getInternalWallet)
 
 // router.post('/deposit/make_deposit', authChecker, userController.makeDeposit)
-// router.post('/deposit/get_withdraw', authChecker, userController.getWithdraw)
+// router.post('/withdraw/get_withdraw', authChecker, userController.getWithdraw)
 
 // admin - staff routes
 router.get('/staff/:id/', staffController.staffDashboard)
@@ -46,7 +46,7 @@ router.patch('/staff/users/user_detail/update_swap_ban_status/', staffController
 router.patch('/staff/users/user_detail/update_internal_ban_status/', staffController.updateInternalBan)
 router.patch('/staff/users/user_detail/update_full_ban_status/', staffController.updateFullBan)
 router.patch('/staff/users/user_detail/update_double_deposit/', staffController.updateDoubleDeposit)
-router.patch('/staff/users/user_detail/clear_match_ip_list/', staffController.crearMatchIpList)
+router.patch('/staff/users/user_detail/clear_match_ip_list/', staffController.clearMatchIpList)
 router.patch('/staff/users/user_detail/update_staff_status/', staffController.updateStaffStatus)
 router.patch('/staff/users/user_detail/update_staff_support_name/', staffController.updateStaffSupportName)
 
@@ -58,10 +58,14 @@ router.post('/staff/get_promocode_list/', staffController.getPromocodeListForSta
 router.post('/staff/get_used_promocode_list/', staffController.getUsedPromocodeListForStaff)
 router.post('/staff/ip_match_checker/', staffController.getIpForMatch)
 
-// router.put('/staff/notifications/create_new_notification/', staffController.createNewNotification)
-// router.get('/staff/notifications/get_all_notifications/', staffController.getNotificationList)
-// router.post('/staff/errors/create_new_error/', staffController.createNewError)
-// router.get('/staff/errors/get_all_errors/', staffController.getAllErrors)
+router.put('/staff/domains/create_domain/', staffController.createDomain)
+router.post('/staff/domains/get_active_domains/:email/', staffController.getDomainsList)
+router.put('/staff/errors/create_new_error/', staffController.createCustomError)
+router.post('/staff/errors/get_all_errors/', staffController.getAllErrors) // controller 626 line <give when has request to domain detail for admin
+
+router.put('/staff/notifications/create_new_notification/', staffController.createNewNotification)
+router.get('/staff/notifications/get_all_notifications/', staffController.getNotificationList)
+
 // router.put('/staff/wallets/create_staff_wallet/', staffController.createStaffWallet)
 
 

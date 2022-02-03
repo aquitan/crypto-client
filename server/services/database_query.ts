@@ -58,12 +58,12 @@ class Database {
       })
   }
 
-  async GetIpMatch(user_id: number) {
+  async GetIpMatch(user_email: string) {
     return new Promise((resolve, reject) => {
       mysql.query(`
         SELECT *
         FROM user_ip_match
-        WHERE user_id = ${user_id}`,
+        WHERE user_email = "${user_email}"`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -562,7 +562,7 @@ class Database {
   async UpdateDoubleDepositStatus(user_id: number, status: boolean) {
     mysql.query(`
       UPDATE user_params
-      SET status = ${status}
+      SET double_deposit = ${status}
       WHERE user_id = ${user_id} `,
       (err) => {
         if (err) return console.error(err);

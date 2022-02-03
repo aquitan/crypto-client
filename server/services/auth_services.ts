@@ -1,11 +1,9 @@
-// import bcrypt from 'bcrypt'
 import tokenService from './token_services'
 import AuthUserDto from '../dtos/auth_user_dto'
 import database from '../services/database_query'
 import ApiError from '../exeptions/api_error'
 import mailService from '../services/mail_services'
 import passwordGenerator from '../api/password_generator'
-// import * as uuid from 'uuid'
 
 
 
@@ -23,8 +21,6 @@ class AuthService {
     const candidate: any = await database.GetUserByEmail(email)
 
     if (candidate[0]) throw ApiError.BadRequest(`email ${email} already in use.`)
-    // save real password to db + hashed
-    // const hashPassword = await bcrypt.hash(password, 6)
     const activationLink: string = await passwordGenerator(18)
     await database.CreateUser(email, password, activationLink, 'self registred', promocode, agreement, domain_name, datetime, name || '',)
 
@@ -87,7 +83,6 @@ class AuthService {
     const user: any = await database.GetUserByEmail(email)
     console.log('found user: ', user[0]);
 
-    // const isPasswordEquals: boolean = await bcrypt.compare(password, user.password)
     if (user[0] === undefined || user[0].password !== password) return false
 
     if (user[0].email !== email || user[0].domain_name !== user_domain) {
