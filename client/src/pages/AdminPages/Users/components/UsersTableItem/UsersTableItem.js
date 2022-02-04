@@ -16,7 +16,7 @@ const UsersTableItem = (props) => {
                 <Col>{props.name}</Col>
                 <Col>{props.email}</Col>
                 <Col>{props.kycStatus ? <FontAwesomeIcon color='green' icon={faCheck} /> : <FontAwesomeIcon color='tomato' icon={faTimesCircle} />}</Col>
-                <Col><AdminButton className='green' exact onClick={() => navigate(`/staff/users/${props.id}`)}>User details</AdminButton></Col>
+                <Col><AdminButton classname='green' exact onClick={() => navigate(`/staff/users/${props.id}`)}>User details</AdminButton></Col>
             </Row>
         </div>
     )

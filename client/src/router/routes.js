@@ -12,7 +12,14 @@ import {
     ADMINMAIN_ROUTE,
     USERSDETAIL_ROUTE,
     CONTACTUS_ROUTE,
-    FORGOT_PASSWORD_ROUTE, PROMOCODES_ROUTE, CREATEUSER_ROUTE, STAFFWALLETS_ROUTE, TEST
+    FORGOT_PASSWORD_ROUTE,
+    PROMOCODES_ROUTE,
+    CREATEUSER_ROUTE,
+    STAFFWALLETS_ROUTE,
+    TEST,
+    ERRORS_ROUTE,
+    DOMAINS_ROUTE,
+    WITHDRAW_ROUTE, DEPOSIT_ROUTE, PROJECTSUPPORT_ROUTE
 } from "../utils/constants"
 import SignUp from '../pages/NonAuthPages/SignUp/SignUp'
 import SignIn from '../pages/NonAuthPages/SignIn/SignIn'
@@ -31,6 +38,11 @@ import Promocodes from "../pages/AdminPages/Promocodes/Promocodes";
 import CreateUser from "../pages/AdminPages/CreateUser/CreateUser";
 import StaffWallets from "../pages/AdminPages/StaffWallets/StaffWallets";
 import TestPage from "../pages/AuthPages/TestPage/TestPage";
+import StaffErrors from "../pages/AdminPages/StafErrors/StaffErrors";
+import Domains from "../pages/AdminPages/Domains/Domains";
+import Withdraw from "../pages/AuthPages/Withdraw/Withdraw";
+import Deposit from "../pages/AuthPages/Deposit/Deposit";
+import ProjectSupport from "../pages/AdminPages/ProjectSupport/ProjectSupport";
 
 export const authRoutes = [
     {
@@ -44,6 +56,14 @@ export const authRoutes = [
     {
         path: CONTACTUS_ROUTE,
         component: <ContactUs/>
+    },
+    {
+        path: WITHDRAW_ROUTE,
+        component: <Withdraw/>
+    },
+    {
+        path: DEPOSIT_ROUTE,
+        component: <Deposit/>
     },
     {
         path: ERROR,
@@ -86,6 +106,18 @@ export const adminRoutes = [
     {
         path: STAFFWALLETS_ROUTE,
         component: <StaffWallets/>
+    },
+    {
+        path: ERRORS_ROUTE,
+        component: <StaffErrors/>
+    },
+    {
+        path: DOMAINS_ROUTE,
+        component: <Domains/>
+    },
+    {
+        path: PROJECTSUPPORT_ROUTE,
+        component: <ProjectSupport/>
     },
 ]
 

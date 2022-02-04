@@ -1,12 +1,12 @@
 import React from 'react'
-import cls from './Form.module.scss'
+import './Form.scss'
+import classNames from "classnames";
 
-const Form = ({children, ...props}) => {
-    let classes = [cls.form]
-
-    if (props.type === 'big') {
-        classes.push(cls.form_big)
-    }
+const Form = ({children, classnames, ...props}) => {
+    let classes = classNames(
+        'form',
+        classnames
+    )
 
     return (
         <form className={classes} {...props}>

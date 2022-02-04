@@ -21,6 +21,7 @@ export default class Store {
     twoFactor = false
     isError = false
     geoData = {}
+    notifications = []
 
 
     constructor() {
@@ -73,6 +74,9 @@ export default class Store {
     }
     setIsError(bool) {
         this.isError = bool
+    }
+    setNotification(obj) {
+        this.notifications.push(obj)
     }
 
     async login(obj) {

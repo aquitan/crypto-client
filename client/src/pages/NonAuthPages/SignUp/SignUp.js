@@ -178,7 +178,7 @@ const SignUp = () => {
                             <Link className={cls.link} to='/signin/'>Have an account?</Link>
                         </Col>
                         <Col>
-                            <Button type='submit' className='transparent' >Sign Up</Button>
+                            <Button type='submit' classname='transparent' >Sign Up</Button>
                         </Col>
                     </Row>
                 </FormGroup>

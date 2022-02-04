@@ -11,7 +11,7 @@ import Notification from "../UI/Notification/Notification";
 
 const NavBar = () => {
     const {store} = useContext(AuthContext)
-    const [showNotif, setShowNotif] = useState(false)
+    const [showNotif, setShowNotif] = useState(true)
     console.log('store.isAdmin', store.isAdmin)
     const onLogOut = () => {
         store.logout()
@@ -39,7 +39,7 @@ const NavBar = () => {
                     <Nav style={{width: '100%'}}>
                         <Row style={{width: '100%'}}>
                             <Col>
-                                <Notification />
+                                <Notification bell={showNotif} />
                             </Col>
                             <Col>
                                 <NavLink to={'/contact-us'}>Contact us</NavLink>

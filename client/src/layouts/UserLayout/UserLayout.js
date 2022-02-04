@@ -24,20 +24,15 @@ const UserLayout = () => {
     return (
         <div className={'layout'}>
             <Container>
-                <Nav>
-                    <Row>
-                        <h3>
-                            Hello
-                        </h3>
+                <Row className='mb-5'>
+                    <div>
+                        <h3>Hello</h3>
                         {
-                            dashboardInfo.name ? ' ' + dashboardInfo.name : ' ' + dashboardInfo.email
+                            dashboardInfo.name ?  <span>{dashboardInfo.name}</span> : <span>{dashboardInfo.email}</span>
                         }
-                    </Row>
-                    <br/>
-                    <Row>
-                        <Link to='/profile'>Profile</Link>
-                    </Row>
-                </Nav>
+                    </div>
+
+                </Row>
                 <Outlet/>
             </Container>
         </div>

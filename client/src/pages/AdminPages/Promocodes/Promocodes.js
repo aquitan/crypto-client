@@ -138,7 +138,7 @@ const Promocodes = () => {
                     </Row>
                     <Row className='mb-4'>
                         <Col>
-                            <AdminButton className='green'>Сгенерировать</AdminButton>
+                            <AdminButton classname='green'>Сгенерировать</AdminButton>
                         </Col>
                     </Row>
                 </AdminForm>

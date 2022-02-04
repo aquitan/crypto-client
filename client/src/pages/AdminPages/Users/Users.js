@@ -4,9 +4,15 @@ import UsersInfoCard from "./components/UsersInfoCard/UsersInfoCard";
 import cls from './Users.module.scss'
 import UsersTableItem from "./components/UsersTableItem/UsersTableItem";
 import {store} from "../../../index";
+import AdminInput from "../../../components/UI/AdminInput/AdminInput";
+import AdminButton from "../../../components/UI/AdminButton/AdminButton";
+import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
+import AdminForm from "../../../components/UI/AdminForm/AdminForm";
+import {useForm} from "react-hook-form";
 
 const Users = () => {
     const [users, setUsers] = useState('')
+    const {register, handleSubmit} = useForm()
     const getProfile = async () => {
         const userData = {
             isAdmin: store.isAdmin,
@@ -30,6 +36,9 @@ const Users = () => {
         getProfile()
     }, [])
 
+    const onSubmit = (data) => {
+        console.log(data)
+    }
 
 
     return (
@@ -41,38 +50,49 @@ const Users = () => {
                 <UsersInfoCard color={'red'} type={'Banned'} amount={0} />
                 <UsersInfoCard color={'orange'} type={'Not active 7 days'} amount={0} />
             </Row>
-            <Row className='mt-4'>
-                <h4>Поиск пользователей</h4>
-                <Col className='col-lg-3'>
-                    <input type='search' placeholder='find user' />
-                </Col>
-            </Row>
-
-            <Row>
-                <div className="users_table">
-                    <div className={cls.users_table_inner}>
-                        <Row className={cls.table_header}>
-                            <Col>#</Col>
-                            <Col>Date of registration</Col>
-                            <Col>Name</Col>
-                            <Col>Email</Col>
-                            <Col>KYC</Col>
-                            <Col>Action</Col>
+            <AdminButtonCard>
+                <AdminForm onSubmit={handleSubmit(onSubmit)}>
+                    <Row className='mt-4'>
+                        <h4 className='mb-3'>Поиск пользователей</h4>
+                        <Row>
+                            <Col className='col-lg-3'>
+                                <AdminInput {...register('searchQuery')} type='search' placeholder='find user' />
+                            </Col>
+                            <Col>
+                                <AdminButton classname='small green'>Найти</AdminButton>
+                            </Col>
                         </Row>
-                        {
-                            users
-                                ?
-                                users.map(user => {
-                                    return(
-                                        <UsersTableItem key={user.user_id} id={user.user_id} registerDate={user.date_of_entry} name={user.name} email={user.email} kycStatus={true} staff={true}/>
-                                    )
-                                })
-                                : <h1>Loading</h1>
-                        }
+                    </Row>
+                </AdminForm>
+            </AdminButtonCard>
 
+            <AdminButtonCard>
+                <Row>
+                    <div className="users_table">
+                        <div className={cls.users_table_inner}>
+                            <Row className={cls.table_header}>
+                                <Col>#</Col>
+                                <Col>Date of registration</Col>
+                                <Col>Name</Col>
+                                <Col>Email</Col>
+                                <Col>KYC</Col>
+                                <Col>Action</Col>
+                            </Row>
+                            {
+                                users
+                                    ?
+                                    users.map(user => {
+                                        return(
+                                            <UsersTableItem key={user.user_id} id={user.user_id} registerDate={user.date_of_entry} name={user.name} email={user.email} kycStatus={true} staff={true}/>
+                                        )
+                                    })
+                                    : <h1>Loading</h1>
+                            }
+
+                        </div>
                     </div>
-                </div>
-            </Row>
+                </Row>
+            </AdminButtonCard>
         </Container>
     )
 }

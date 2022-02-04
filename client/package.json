@@ -29,6 +29,7 @@
     "react-moment": "^1.1.1",
     "react-router-dom": "^6.1.1",
     "react-scripts": "4.0.3",
+    "react-select": "^5.2.2",
     "web-vitals": "^1.1.2"
   },
   "proxy": "http://localhost:8888",

@@ -23,6 +23,7 @@ const CreateUser = () => {
         data.domainName = domain_name
         data.staffId = store.userId
         data.datetime = currentDate
+        data.staffEmail = store.userEmail
         const res = await fetch('/api/staff/create_user', {
             method: 'POST',
             headers: {
@@ -63,7 +64,7 @@ const CreateUser = () => {
                 {/*    <AdminInput {...register('domain')} placeholder='Домен'/>*/}
                 {/*</Row>*/}
                 <Row className='mb-3'>
-                    <AdminButton className='green'>Создать пользователя</AdminButton>
+                    <AdminButton classname='green'>Создать пользователя</AdminButton>
                 </Row>
             </AdminForm>
         </Container>

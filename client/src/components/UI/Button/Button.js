@@ -3,10 +3,10 @@ import './Button.scss'
 import PropTypes, {bool} from "prop-types";
 import classNames from "classnames";
 
-const Button = ({children, onClick, className, disabled, active, ...attrs}) => {
+const Button = ({children, onClick, classname, disabled, active, ...attrs}) => {
     let classes = classNames(
         'button',
-        className,
+        classname,
         {active})
 
     const onClickAction = (e) => {

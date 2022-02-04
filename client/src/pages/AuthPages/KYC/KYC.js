@@ -1,10 +1,9 @@
-import React, {useEffect, useState} from 'react'
-import {Col, Container, NavLink, Row} from "react-bootstrap";
+import React, {useState} from 'react'
+import {Col, Container, Row} from "react-bootstrap";
 import Form from "../../../components/UI/Form/Form";
 import Input from "../../../components/UI/Input/Input";
 import DatePickert from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css";
-import cls from './KYC.modules.scss'
 import './DatePicker.scss'
 import {useForm} from "react-hook-form";
 import {emailValidate} from "../../../utils/checkEmail";
@@ -63,7 +62,7 @@ const KYC = ({status}) => {
                     :
                     <>
                         <h1>Verify your ID</h1>
-                        <Form type='big' onSubmit={handleSubmit(onSubmit)}>
+                        <Form classnames='form_big' onSubmit={handleSubmit(onSubmit)}>
                             <Row>
                                 <Col>
                                     <Input {...register('firstName', {

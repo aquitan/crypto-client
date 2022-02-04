@@ -10,6 +10,7 @@ import {getGeoData} from "../../../queries/getSendGeoData";
 import {store} from "../../../index";
 import MyAccountLogsItem from "../MyAccount/components/MyAccountLogsItem/MyAccountLogsItem";
 import {patchData} from "../../../services/StaffServices";
+import {twoFaElems} from "../../../utils/staffConstants";
 
 const AccountSecurity = (props) => {
     
@@ -98,7 +99,7 @@ const AccountSecurity = (props) => {
                     <h3>Enable 2FA</h3>
                     <Row>
                         <Col>
-                            <Select name='select2FA' onChange={on2FAChange} value={type2FA} />
+                            <Select name='select2FA' options={twoFaElems} classname='light'  onChange={on2FAChange} value={type2FA} />
                         </Col>
                         <Col>
                             <Button>Select</Button>

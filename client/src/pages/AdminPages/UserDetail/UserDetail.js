@@ -36,6 +36,8 @@ const UserDetail = () => {
         getAdminUsersDetail()
     }, [])
 
+
+
     return (
         <Container className={cls.app_continer}>
             <h2>user page</h2>
@@ -47,7 +49,9 @@ const UserDetail = () => {
                     <UserDetailTabLogs data={userDetail.user} />
                 </Tab>
                 <Tab eventKey="actions" title="Действия" >
-                    <UserDetailTabAct isPremium={isPremium} data={userDetail.user} ipData={ipData} />
+                    {
+                        userDetail ? <UserDetailTabAct isPremium={isPremium} data={userDetail.user} ipData={ipData} /> : null
+                    }
                 </Tab>
                 <Tab eventKey="statistics" title="Статистика" >
                     <UserDetailTab num={4}/>
