@@ -187,7 +187,7 @@ const KYC = ({status}) => {
                             </Row>
                             <Row className='mt-4'>
                                 <Col className='col-sm-12 col-lg-3 m-auto'>
-                                    <Button>Verify</Button>
+                                    <Button type='submit'>Verify</Button>
                                 </Col>
                             </Row>
 

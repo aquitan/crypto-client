@@ -20,14 +20,14 @@ const ModalDark = ({children, active, setActive, onClick}) => {
                 <div className={classes.join(' ')} onClick={() => setActive}>
                     <div className='modal_content' onClick={(e) => e.stopPropagation()}>
                         <Row className='mb-2'>
-                           <h3>{children}</h3>
+                           <div>{children}</div>
                         </Row>
                         <Row>
                             <Col>
                                 <AdminButton classname='green' onClick={onClick}>Подтвердить</AdminButton>
                             </Col>
                             <Col>
-                                <AdminButton onClick={setActive} className='red'>Отмена</AdminButton>
+                                <AdminButton onClick={setActive} classname='red'>Отмена</AdminButton>
                             </Col>
                         </Row>
                     </div>

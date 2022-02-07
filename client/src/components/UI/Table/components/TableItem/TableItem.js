@@ -4,24 +4,23 @@ import {Col, Row} from "react-bootstrap";
 import AdminButton from "../../../AdminButton/AdminButton";
 import '../../Table.scss'
 
-const TableItem = () => {
+const TableItem = ({elems}) => {
     return (
         <Row className='table_item'>
-            <Col>
-                #001
-            </Col>
-            <Col>
-                127.0.0.1:8000
-            </Col>
-            <Col>
-                super
-            </Col>
-            <Col>
-                Jan. 11, 2022, 10:21 a.m.
-            </Col>
-            <Col>
-                <AdminButton classname='orange xs'>Редактировать</AdminButton>
-            </Col>
+            {
+                elems ?
+                    <>
+                        {
+                            elems.map(elem => {
+                                return <Col>{elem}</Col>
+                            })
+                        }
+                        <Col>
+                            <AdminButton classname='orange xs'>Редактировать</AdminButton>
+                        </Col>
+                    </>
+                    : <p className='text-center'>No users detected!</p>
+            }
             
         </Row>
     )

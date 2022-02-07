@@ -11,7 +11,7 @@ import Notification from "../UI/Notification/Notification";
 
 const NavBar = () => {
     const {store} = useContext(AuthContext)
-    const [showNotif, setShowNotif] = useState(true)
+    const [showNotif, setShowNotif] = useState(false)
     console.log('store.isAdmin', store.isAdmin)
     const onLogOut = () => {
         store.logout()

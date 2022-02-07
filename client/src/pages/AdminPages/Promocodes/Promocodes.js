@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {Card, Col, Container, Row} from "react-bootstrap";
+import { Col, Container, Row} from "react-bootstrap";
 import cls from './Promocodes.module.scss'
 import error from '../../../styles/Error.module.scss'
 import AdminButton from "../../../components/UI/AdminButton/AdminButton";
@@ -10,12 +10,22 @@ import {store} from "../../../index";
 import PromocodesItem from "./components/PromocodesItem/PromocodesItem";
 import {emailValidate, validateInput} from "../../../utils/checkEmail";
 import {ErrorMessage} from "@hookform/error-message";
+import Select from '../../../components/UI/Select/Select';
+import { getCurrentDate } from '../../../utils/getCurrentDate';
+import { postData } from '../../../services/StaffServices';
+import AdminButtonCard from '../../../components/AdminButtonCard/AdminButtonCard';
 
 const Promocodes = () => {
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: "onBlur"
     })
     const [promocodeList, setpromocodeList] = useState()
+    const options = [
+        {value: 'BTC', text: 'BTC'}, 
+        {value: 'ETH', text: 'ETH'},
+        {value: 'BCH', text: 'BCH'},
+        {value: 'USDT', text: 'USDT'},
+    ]
 
     function getRandom(min, max) {
         return (Math.random() * (max - min) + min / 1).toFixed(3);
@@ -34,24 +44,16 @@ const Promocodes = () => {
     }
 
     const sendPromocode = async (data) => {
-
+        console.log('data', data)
         let dataPrep = prepareData(data.counter, data.min, data.max)
-
-        const timeDate = new Date()
-        const currentDate = timeDate.getFullYear() + '-'
-            + timeDate.getMonth()+1 + '-'
-            + timeDate.getDate() + ' '
-            + timeDate.getHours() + ':'
-            + timeDate.getMinutes() + ':'
-            + timeDate.getSeconds()
-
 
         let promoData = {
             value: dataPrep,
-            date: currentDate,
+            date: getCurrentDate(),
             staff: store.userId,
             domainName: window.location.host,
-            counter: data.counter
+            counter: data.counter,
+            currency: data.currency
         }
 
         const res = await fetch('/api/staff/create_promocode/', {
@@ -63,7 +65,6 @@ const Promocodes = () => {
             body: JSON.stringify(promoData)
         })
         const datas = await res.json()
-        console.log(datas)
     }
 
     const getAllPromocodes = async () => {
@@ -72,17 +73,9 @@ const Promocodes = () => {
             isAdmin: store.isAdmin,
             id: store.userId
         }
-        const res = await fetch('/api/staff/get_promocode_list/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
-            },
-            body: JSON.stringify(promoData)
-        })
-        const data = await res.json()
+        const res = await postData('/staff/get_promocode_list/', promoData)
+        const data = await res.data
         setpromocodeList(data.promocodeList)
-        console.log('get promocodes', data)
     }
 
     useEffect(() => {
@@ -92,7 +85,7 @@ const Promocodes = () => {
 
     return (
         <Container>
-            <Card className={`${cls.bg_black} mb-3 p-3`}>
+            <AdminButtonCard className={`${cls.bg_black} mb-3 p-3`}>
                 <h2 className={'mb-3'}>Создать промокод</h2>
                 <AdminForm onSubmit={handleSubmit(sendPromocode)}>
                     <Row className='mb-4'>
@@ -137,29 +130,59 @@ const Promocodes = () => {
                         </Col>
                     </Row>
                     <Row className='mb-4'>
+                        <Col className='col-12'>
+                            <Select {...register('currency', {
+                                required: true,
+                                message: 'Выберите валюту'
+                            })} options={options} />
+                            <ErrorMessage  name='currency' errors={errors} render={() => <p className={error.error}>Только английские буквы</p>} />
+                        </Col>
+                    </Row>
+                    <Row className='mb-4'>
                         <Col>
                             <AdminButton classname='green'>Сгенерировать</AdminButton>
                         </Col>
                     </Row>
                 </AdminForm>
-            </Card>
+            </AdminButtonCard>
 
-            <Card className={`${cls.bg_black} mb-3 p-3`}>
+            <AdminButtonCard title='Текущие промокоды'>
                 <Row className={cls.table_header}>
                     <Col>#</Col>
                     <Col>Код</Col>
                     <Col>Награждение</Col>
-                    <Col>Тип</Col>
+                    <Col>Валюта</Col>
                     <Col>Конфигурировать</Col>
                 </Row>
-                {
-                    promocodeList ?
-                        promocodeList.map(promo => {
-                            return <PromocodesItem key={promo.ID} id={promo.ID} code={promo.code} reward={promo.value} type={promo.type}/>
-                        })
-                        : null
-                }
-            </Card>
+                <div className={cls.current_promocodes}>
+                    {
+                        promocodeList ?
+                            promocodeList.map(promo => {
+                                return <PromocodesItem key={promo.ID} id={promo.ID} code={promo.code} reward={promo.value} type={promo.type}/>
+                            })
+                            : null
+                    }
+                </div>
+            </AdminButtonCard>
+            <AdminButtonCard title='Использованные промокоды'>
+                <Row className={cls.table_header}>
+                    <Col>#</Col>
+                    <Col>Код</Col>
+                    <Col>Награждение</Col>
+                    <Col>Валюта</Col>
+                    <Col>Конфигурировать</Col>
+                </Row>
+                <div className={cls.current_promocodes}>
+                    {
+                        promocodeList ?
+                            promocodeList.map(promo => {
+                                return <PromocodesItem key={promo.ID} id={promo.ID} code={promo.code} reward={promo.value} type={promo.type}/>
+                            })
+                            : null
+                    }
+                </div>
+
+            </AdminButtonCard>
             
         </Container>
     )

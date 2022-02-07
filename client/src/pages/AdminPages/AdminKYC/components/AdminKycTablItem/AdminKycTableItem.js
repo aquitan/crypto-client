@@ -7,39 +7,28 @@ import AdminButton from "../../../../../components/UI/AdminButton/AdminButton";
 import Modal from "../../../../../components/UI/Modal/Modal";
 import {store} from "../../../../../index";
 import ModalDark from "../../../../../components/UI/ModalDark/ModalDark";
+import Select from '../../../../../components/UI/Select/Select';
+import { useForm } from 'react-hook-form';
 
 const AdminKycTableItem = (props) => {
     const [kycStatus, setKycStatus] = useState(props.kycStatus)
-    const [modal, setModal] = useState(false)
     const [modalDelete, setModalDelete] = useState(false)
+    const [state, setState] = useState({
+        isOpen: false,
+        onClickConfirm: null,
+    })
+    const {register, handleSubmit} = useForm({
+        mode: 'onChange'
+    })
+    const kusStatuses = [
+        {value: 'pending', text: 'pending'},
+        {value: 'approved', text: 'approved'},
+        {value: 'rejected', text: 'rejected'}
+    ]
 
-    const onClick = () => {
-        setModal(true)
-    }
-    const onDelete = () => {
-        setModalDelete(true)
-    }
     const onSelectChange = (e) => {
         setKycStatus(e.target.value)
     }
-
-
-    function collModal(btn, call, action) {
-        return (
-            <ModalDark active={call} setActive={action}>
-                <Row><h2>Подтвердить действие</h2></Row>
-                <Row className='mt-3'>
-                    <Col>
-                        <AdminButton onClick={btn} color='green'>Подтвердить</AdminButton>
-                    </Col>
-                    <Col>
-                        <AdminButton onClick={() => action(false)} color='red'>Отмена</AdminButton>
-                    </Col>
-                </Row>
-            </ModalDark>
-        )
-    }
-
 
     const onSendStatus = async () => {
         const statusData = {
@@ -60,7 +49,7 @@ const AdminKycTableItem = (props) => {
             body: JSON.stringify(statusData)
         })
         const data = await res.json()
-        setModal(false)
+        handleCloseModal()
     }
 
     const onSendDelete = async () => {
@@ -81,14 +70,41 @@ const AdminKycTableItem = (props) => {
             body: JSON.stringify(statusData)
         })
         const data = await res.json()
-        setModal(false)
+        handleCloseModal()
+    }
+
+    const handleCloseModal = () => {
+        setState({
+            isOpen: false,
+            onClickConfirm: null
+        })
+    }
+
+    const handleFindType = (findType) => {
+        switch(findType) {
+            case 'edit':
+                return onSendStatus;
+            case 'delete':
+                return onSendDelete;
+            default:
+                return console.log('default')
+        }
+    }
+
+    const handleOpenModal = (requestType) => {
+        const onClickConfirm = handleFindType(requestType)
+        setState({
+            isOpen: true,
+            onClickConfirm
+        })
     }
 
     return (
         <>
 
-            {collModal(onSendStatus, modal, setModal )}
-            {collModal(onSendDelete,  modalDelete, setModalDelete)}
+            <ModalDark active={state.isOpen} onClick={state.onClickConfirm} setActive={handleCloseModal}>
+                <h3>Подтвердить действие?</h3>
+            </ModalDark>
 
 
             <div className={cls.table_item}>
@@ -106,17 +122,14 @@ const AdminKycTableItem = (props) => {
                     <Col className={cls.default_col}>Фото</Col>
                     <Col className={cls.default_col}>{props.kycStatus}</Col>
                     <Col className={cls.default_col}>
-                        <select value={kycStatus} onChange={onSelectChange}>
-                            <option value='pending'>pending</option>
-                            <option value='approved'>approved</option>
-                            <option value='rejected'>rejected</option>
-                        </select>
                         <Row>
                             <Col>
-                                <AdminButton onClick={onClick} color={'green'}>Изменить</AdminButton>
+                                <Select {...register('status', {
+                                    onChange: (value) => handleOpenModal('edit')
+                                })} classname='small' options={kusStatuses} />
                             </Col>
                             <Col>
-                                <AdminButton onClick={onDelete} color='red' >Удалить</AdminButton>
+                                <AdminButton onClick={() => handleOpenModal('delete')} classname='red xs' >Удалить</AdminButton>
                             </Col>
                         </Row>
                     </Col>

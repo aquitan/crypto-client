@@ -9,6 +9,7 @@ import AdminButton from "../../../components/UI/AdminButton/AdminButton";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
 import AdminForm from "../../../components/UI/AdminForm/AdminForm";
 import {useForm} from "react-hook-form";
+import {postData} from "../../../services/StaffServices";
 
 const Users = () => {
     const [users, setUsers] = useState('')
@@ -19,15 +20,8 @@ const Users = () => {
             isStaff: store.isStaff,
             domainName: window.location.host
         }
-        const res = await fetch(`/api/staff/users/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
-            },
-            body: JSON.stringify(userData)
-        })
-        const data = await res.json()
+        const res = await postData('/staff/users/', userData)
+        const data = await res.data
         const usersReversed = data.usersList.slice(0).reverse()
         setUsers(usersReversed)
         console.log('dataProfile', data)
@@ -83,7 +77,14 @@ const Users = () => {
                                     ?
                                     users.map(user => {
                                         return(
-                                            <UsersTableItem key={user.user_id} id={user.user_id} registerDate={user.date_of_entry} name={user.name} email={user.email} kycStatus={true} staff={true}/>
+                                            <UsersTableItem
+                                                key={user.user_id}
+                                                id={user.user_id}
+                                                registerDate={user.date_of_entry}
+                                                name={user.name}
+                                                email={user.email}
+                                                kycStatus={true}
+                                                staff={true}/>
                                         )
                                     })
                                     : <h1>Loading</h1>

@@ -19,7 +19,7 @@ import {
     TEST,
     ERRORS_ROUTE,
     DOMAINS_ROUTE,
-    WITHDRAW_ROUTE, DEPOSIT_ROUTE, PROJECTSUPPORT_ROUTE
+    WITHDRAW_ROUTE, DEPOSIT_ROUTE, PROJECTSUPPORT_ROUTE, TERMS_ROUTE
 } from "../utils/constants"
 import SignUp from '../pages/NonAuthPages/SignUp/SignUp'
 import SignIn from '../pages/NonAuthPages/SignIn/SignIn'
@@ -43,6 +43,7 @@ import Domains from "../pages/AdminPages/Domains/Domains";
 import Withdraw from "../pages/AuthPages/Withdraw/Withdraw";
 import Deposit from "../pages/AuthPages/Deposit/Deposit";
 import ProjectSupport from "../pages/AdminPages/ProjectSupport/ProjectSupport";
+import Terms from "../pages/AdminPages/Terms/Terms";
 
 export const authRoutes = [
     {
@@ -118,6 +119,10 @@ export const adminRoutes = [
     {
         path: PROJECTSUPPORT_ROUTE,
         component: <ProjectSupport/>
+    },
+    {
+        path: TERMS_ROUTE,
+        component: <Terms/>
     },
 ]
 

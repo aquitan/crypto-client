@@ -17,7 +17,7 @@ const AuthWrap = () => {
     const renderAdminRoutes = () => {
         if (store.isStaff) {
             return (
-                <Route exact path='/staff' element={<AdminLayout/>}>
+                <Route path='/staff' element={<AdminLayout/>}>
                     {
                         adminRoutes.map(route => <Route key={uuid()} path={route.path} element={route.component} />)
                     }
@@ -41,7 +41,6 @@ const AuthWrap = () => {
                     {
                         renderAdminRoutes()
                     }
-
                     {
                         store.isStaff ?  <Route path='*' element={<Navigate to={'/staff'}/>} /> : <Route path='*' element={<Navigate to={'/'}/>} />
                     }

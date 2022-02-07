@@ -37,7 +37,6 @@ const UserDetailTabAct = (props) => {
         domainName: window.location.host
     }
 
-
     const {register: balanceRegister, handleSubmit: balanceHandleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
     })
@@ -131,6 +130,9 @@ const UserDetailTabAct = (props) => {
     const makeIpClear = async () => {
         const response = await patchData('/staff/users/user_detail/clear_match_ip_list/', dataObj)
     }
+    const makeEmailClear = async () => {
+        const response = await patchData('/123', dataObj)
+    }
 
     const handleCloseModal = () => {
         setState({
@@ -166,6 +168,8 @@ const UserDetailTabAct = (props) => {
                 return balanceHandleSubmit(changeBalance);
             case 'ip-clear':
                 return makeIpClear;
+            case 'email-clear':
+                return makeEmailClear;
             default:
                 return () => {
                     console.log('default')
@@ -199,8 +203,8 @@ const UserDetailTabAct = (props) => {
                     <AdminButtonCard title='Сделать Работником'>
                         {
                             !btns.isStaff
-                                ? <AdminButton onClick={() => handleOpenModal('make-staff')} className={'green'}>Сделать</AdminButton>
-                                : <AdminButton onClick={() => handleOpenModal('make-staff')} className={'red'}>Убрать</AdminButton>
+                                ? <AdminButton onClick={() => handleOpenModal('make-staff')} classname={'green'}>Сделать</AdminButton>
+                                : <AdminButton onClick={() => handleOpenModal('make-staff')} classname={'red'}>Убрать</AdminButton>
                         }
                     </AdminButtonCard>
                     : null
@@ -253,7 +257,7 @@ const UserDetailTabAct = (props) => {
                         <AdminInput className='mb-3' {...balanceRegister('sum')} name='sum' placeholder='0' />
                     </Col>
                 </Row>
-                <AdminButton classname='mb-3' onClick={() => handleOpenModal('balance')} className={'green'} >Изменить</AdminButton>
+                <AdminButton onClick={() => handleOpenModal('balance')} classname={'green mb-3'} >Изменить</AdminButton>
 
             </AdminButtonCard>
 
@@ -266,7 +270,7 @@ const UserDetailTabAct = (props) => {
                         <ErrorMessage  name='notification' errors={errors2} render={() => <p className={error.error}>Только английские буквы</p>} />
                     </Col>
                     <Col>
-                        <AdminButton onClick={() => handleOpenModal('notification')} className={'green'}>Изменить</AdminButton>
+                        <AdminButton onClick={() => handleOpenModal('notification')} classname={'green'}>Изменить</AdminButton>
                     </Col>
                 </Row>
             </AdminButtonCard>
@@ -278,7 +282,7 @@ const UserDetailTabAct = (props) => {
                         <AdminInput {...registerPercent('newPercent')} className='mb-3' name='newPercent' placeholder='Изменить процент' />
                     </Col>
                     <Col>
-                        <AdminButton onClick={() => handleOpenModal('new-percent')} className={'green'}>Изменить</AdminButton>
+                        <AdminButton onClick={() => handleOpenModal('new-percent')} classname={'green'}>Изменить</AdminButton>
                     </Col>
                 </Row>
             </AdminButtonCard>
@@ -292,7 +296,7 @@ const UserDetailTabAct = (props) => {
                         <ErrorMessage  name='recruiterName' errors={errors2} render={() => <p className={error.error}>Только английские буквы</p>} />
                     </Col>
                     <Col>
-                        <AdminButton onClick={() => handleOpenModal('staff-reqruiter')} className={'green'}>Изменить</AdminButton>
+                        <AdminButton onClick={() => handleOpenModal('staff-reqruiter')} classname={'green'}>Изменить</AdminButton>
                     </Col>
                 </Row>
             </AdminButtonCard>
@@ -306,7 +310,7 @@ const UserDetailTabAct = (props) => {
                         <ErrorMessage  name='supportName' errors={errors3} render={() => <p className={error.error}>Только английские буквы</p>} />
                     </Col>
                     <Col>
-                        <AdminButton onClick={() => handleOpenModal('support')} className={'green'} >Изменить</AdminButton>
+                        <AdminButton onClick={() => handleOpenModal('support')} classname={'green'} >Изменить</AdminButton>
                     </Col>
                 </Row>
             </AdminButtonCard>
@@ -314,60 +318,72 @@ const UserDetailTabAct = (props) => {
             <AdminButtonCard title='Премиум статус'>
                 {
                     !btns.currentPrem ?
-                        <AdminButton onClick={() => handleOpenModal('premium')} className={'green'}>Вкл</AdminButton>
+                        <AdminButton onClick={() => handleOpenModal('premium')} classname={'green'}>Вкл</AdminButton>
                         :
-                        <AdminButton onClick={() => handleOpenModal('premium')} className={'red'}>выкл</AdminButton>
+                        <AdminButton onClick={() => handleOpenModal('premium')} classname={'red'}>выкл</AdminButton>
                 }
             </AdminButtonCard>
 
             <AdminButtonCard title='Дабл депов'>
                 {
                    !btns.double
-                       ? <AdminButton onClick={() => handleOpenModal('double')} className={'green'}>Вкл</AdminButton>
-                       : <AdminButton onClick={() => handleOpenModal('double')} className={'red'}>Выкл</AdminButton>
+                       ? <AdminButton onClick={() => handleOpenModal('double')} classname={'green'}>Вкл</AdminButton>
+                       : <AdminButton onClick={() => handleOpenModal('double')} classname={'red'}>Выкл</AdminButton>
                 }
             </AdminButtonCard>
 
             <AdminButtonCard title='Полный бан'>
                 {
                     !btns.fullBan ?
-                        <AdminButton onClick={() => handleOpenModal('full-ban')} className={'green'}>Вкл</AdminButton>
-                        : <AdminButton onClick={() => handleOpenModal('full-ban')} className={'red'}>Выкл</AdminButton>
+                        <AdminButton onClick={() => handleOpenModal('full-ban')} classname={'green'}>Вкл</AdminButton>
+                        : <AdminButton onClick={() => handleOpenModal('full-ban')} classname={'red'}>Выкл</AdminButton>
                 }
             </AdminButtonCard>
 
             <AdminButtonCard title='Бан внутренних транзакций'>
                 {
                     !btns.transactionBan ?
-                        <AdminButton onClick={() => handleOpenModal('internal-ban')} className={'green'}>Вкл</AdminButton>
-                        : <AdminButton onClick={() => handleOpenModal('internal-ban')} className={'red'}>Выкл</AdminButton>
+                        <AdminButton onClick={() => handleOpenModal('internal-ban')} classname={'green'}>Вкл</AdminButton>
+                        : <AdminButton onClick={() => handleOpenModal('internal-ban')} classname={'red'}>Выкл</AdminButton>
                 }
             </AdminButtonCard>
 
             <AdminButtonCard title='Бан свапов'>
                 {
                     !btns.swapBan ?
-                        <AdminButton onClick={() => handleOpenModal('swap-ban')} className={'green'}>Вкл</AdminButton>
-                        : <AdminButton onClick={() => handleOpenModal('swap-ban')} className={'red'}>Выкл</AdminButton>
+                        <AdminButton onClick={() => handleOpenModal('swap-ban')} classname={'green'}>Вкл</AdminButton>
+                        : <AdminButton onClick={() => handleOpenModal('swap-ban')} classname={'red'}>Выкл</AdminButton>
                 }
             </AdminButtonCard>
 
-            <AdminButtonCard title='IP адреса'>
+            <AdminButtonCard title='IP адреса и почта'>
                 <Row className={cls.ip_list}>
-                    {
-                        props.ipData.length ?
-                            props.ipData.map(ip => {
-                                return (
-                                    <Row style={{color: 'tomato'}} key={uuid()}>
-                                        <Col className='col-3'>{ip.ip_address}</Col>
-                                        <Col className='col-3'>{ip.email}</Col>
-                                    </Row>
-                                )
-                            })
-                            : <h5>User is unique</h5>
-                    }
+                    <Col className='col-4'>
+                        {
+                            props.ipData.length ?
+                                props.ipData.map(ip => {
+                                    return (
+                                        <Row style={{color: 'tomato'}} key={uuid()}>
+                                            <Col className='col-3'>{ip.ip_address}</Col>
+                                            <Col className='col-3'>{ip.email}</Col>
+                                        </Row>
+                                    )
+                                })
+                                : <h5>User is unique</h5>
+                        }
+                        <AdminButton onClick={() => handleOpenModal('ip-clear')} classname={'green'}>Очистить IP</AdminButton>
+                    </Col>
+                    <Col className='col-4'>
+                        { props.data ?
+                            <Row>
+                                <Col>{props.data.base_data.email}</Col>
+                            </Row>
+                            : <h5>Email not found</h5>
+                        }
+                        <AdminButton onClick={() => handleOpenModal('email-clear')} classname={'green'}>Очистить Почту</AdminButton>
+                    </Col>
                 </Row>
-                <AdminButton onClick={() => handleOpenModal('ip-clear')} className={'green'}>Очистить IP</AdminButton>
+                
             </AdminButtonCard>
         </div>
     )

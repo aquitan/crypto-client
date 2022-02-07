@@ -19,7 +19,9 @@ const AuthLayout = () => {
                         })
                     }
                 </AdminSidebar>
-                <Outlet/>
+                <div className={cls.content_wrap}>
+                    <Outlet/>
+                </div>
 
             </div>
         </div>

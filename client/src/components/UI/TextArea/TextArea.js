@@ -10,7 +10,7 @@ const TextArea = forwardRef(({classnames, ...attr}, ref) => {
     )
 
     return (
-        <textarea className={classes} {...attr}/>
+        <textarea ref={ref} className={classes} {...attr}/>
     )
 })
 

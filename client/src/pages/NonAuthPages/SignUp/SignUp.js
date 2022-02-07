@@ -22,7 +22,10 @@ const SignUp = () => {
     const navigate = useNavigate()
     const [promoStatus, setPromoStatus] = useState(false)
     const [modalError, setModalError] = useState(false)
-    const [isShowPassword, setIsShowPassword] = useState(false)
+    const [visiblePass, setVisiblePass] = useState({
+        password: false,
+        repeatPassword: false
+    })
     const {register, handleSubmit, formState: {errors}, watch} = useForm({
         mode: "onBlur",
     })
@@ -77,7 +80,14 @@ const SignUp = () => {
     }
 
     const showPassword = () => {
-        setIsShowPassword(!isShowPassword)
+        setVisiblePass({
+            ...visiblePass, password: !visiblePass.password
+        })
+    }
+    const showRepeatPassword = () => {
+        setVisiblePass({
+            ...visiblePass, repeatPassword: !visiblePass.repeatPassword
+        })
     }
 
     return (
@@ -126,17 +136,18 @@ const SignUp = () => {
                                     value: 32,
                                     message: 'Your password must be less than 32 characters'
                                 }
-                            })} name='password' type={isShowPassword ? 'text' : 'password'} placeholder='password' id='password' />
+                            })} name='password' type={visiblePass.password ? 'text' : 'password'} placeholder='password' id='password' />
                             <ErrorMessage name='password' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
-                            <FontAwesomeIcon onClick={showPassword} className={cls.eye_icon} icon={isShowPassword ? faEye : faEyeSlash} />
+                            <FontAwesomeIcon onClick={showPassword} className={cls.eye_icon} icon={visiblePass.password ? faEye : faEyeSlash} />
                         </Col>
                         <Col className={cls.relative}>
                             <Input {...register('repeatPassword', {
                                 required: 'You have to repeat your password',
                                 validate: value => value === password.current || 'Password is not the same',
                                 message: 'The password does not match'
-                            })} name='repeatPassword' type={isShowPassword ? 'text' : 'password'} placeholder='repeat password' id='repeatPassword' />
+                            })} name='repeatPassword' type={visiblePass.repeatPassword ? 'text' : 'password'} placeholder='repeat password' id='repeatPassword' />
                             <ErrorMessage name='repeatPassword' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
+                            <FontAwesomeIcon onClick={showRepeatPassword} className={cls.eye_icon} icon={visiblePass.repeatPassword ? faEye : faEyeSlash} />
                         </Col>
                     </Row>
                 </FormGroup>

@@ -31,7 +31,7 @@ const Notification = ({bell}) => {
                                 <Col>message</Col>
                             </Row>
                             {
-                                notification ?
+                                notification.length > 0 ?
                                     <NotificationItem notif={notification} />
                                     : <p>No messages</p>
                             }
