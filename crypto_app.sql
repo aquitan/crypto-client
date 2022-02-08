@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.27, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.28, for Linux (x86_64)
 --
 -- Host: localhost    Database: crypto_app
 -- ------------------------------------------------------
--- Server version	8.0.27-0ubuntu0.20.04.1
+-- Server version	8.0.28-0ubuntu0.20.04.3
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -42,6 +42,40 @@ LOCK TABLES `auth_token` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `domain_detail`
+--
+
+DROP TABLE IF EXISTS `domain_detail`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `domain_detail` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `show_news` tinyint(1) NOT NULL,
+  `double_deposit` tinyint(1) NOT NULL,
+  `deposit_fee` int NOT NULL,
+  `rate_correct_sum` float NOT NULL,
+  `min_deposit_sum` int NOT NULL,
+  `min_withdrawal_sum` int NOT NULL,
+  `currency_swap_fee` int NOT NULL,
+  `internal_swap_fee` int NOT NULL,
+  `date_of_create` datetime NOT NULL,
+  `domain_id` int NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `domain_id` (`domain_id`),
+  CONSTRAINT `domain_detail_ibfk_1` FOREIGN KEY (`domain_id`) REFERENCES `domain_detail` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `domain_detail`
+--
+
+LOCK TABLES `domain_detail` WRITE;
+/*!40000 ALTER TABLE `domain_detail` DISABLE KEYS */;
+/*!40000 ALTER TABLE `domain_detail` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `domain_list`
 --
 
@@ -50,12 +84,16 @@ DROP TABLE IF EXISTS `domain_list`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `domain_list` (
   `ID` int NOT NULL AUTO_INCREMENT,
+  `full_domain_name` varchar(255) NOT NULL,
   `domain_name` varchar(100) NOT NULL,
-  `creation_date` varchar(100) NOT NULL,
-  `domain_owner` int NOT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `domain_owner` (`domain_owner`),
-  CONSTRAINT `domain_list_ibfk_1` FOREIGN KEY (`domain_owner`) REFERENCES `user_auth` (`ID`)
+  `company_address` varchar(255) NOT NULL,
+  `company_phone_number` int NOT NULL,
+  `company_email` varchar(255) NOT NULL,
+  `company_owner_name` varchar(150) NOT NULL,
+  `company_year` year NOT NULL,
+  `company_country` varchar(50) NOT NULL,
+  `domain_owner` varchar(255) NOT NULL,
+  PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -66,6 +104,35 @@ CREATE TABLE `domain_list` (
 LOCK TABLES `domain_list` WRITE;
 /*!40000 ALTER TABLE `domain_list` DISABLE KEYS */;
 /*!40000 ALTER TABLE `domain_list` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `domain_withdrawal_error`
+--
+
+DROP TABLE IF EXISTS `domain_withdrawal_error`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `domain_withdrawal_error` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `domain_id` int NOT NULL,
+  `error_name` varchar(100) NOT NULL,
+  `error_title` varchar(50) NOT NULL,
+  `error_text` varchar(1024) NOT NULL,
+  `error_btn` varchar(30) NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `domain_id` (`domain_id`),
+  CONSTRAINT `domain_withdrawal_error_ibfk_1` FOREIGN KEY (`domain_id`) REFERENCES `domain_list` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `domain_withdrawal_error`
+--
+
+LOCK TABLES `domain_withdrawal_error` WRITE;
+/*!40000 ALTER TABLE `domain_withdrawal_error` DISABLE KEYS */;
+/*!40000 ALTER TABLE `domain_withdrawal_error` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -106,9 +173,9 @@ DROP TABLE IF EXISTS `staff_params`;
 CREATE TABLE `staff_params` (
   `ID` int NOT NULL AUTO_INCREMENT,
   `staff_email` varchar(255) NOT NULL,
-  `payment_params` int NOT NULL,
+  `payment_fee` int NOT NULL,
   `support_name` varchar(100) NOT NULL,
-  `get_staff_access_date` varchar(50) NOT NULL,
+  `get_staff_access_date` date NOT NULL,
   `user_who_give_access` int NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `user_who_give_access` (`user_who_give_access`),
@@ -126,35 +193,6 @@ LOCK TABLES `staff_params` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `support_chat`
---
-
-DROP TABLE IF EXISTS `support_chat`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `support_chat` (
-  `ID` int NOT NULL AUTO_INCREMENT,
-  `message_date` varchar(50) NOT NULL,
-  `message_body` varchar(550) NOT NULL,
-  `user_email` varchar(255) NOT NULL,
-  `staff_email` varchar(255) NOT NULL,
-  `staff_id` int NOT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `staff_id` (`staff_id`),
-  CONSTRAINT `support_chat_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `user_auth` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `support_chat`
---
-
-LOCK TABLES `support_chat` WRITE;
-/*!40000 ALTER TABLE `support_chat` DISABLE KEYS */;
-/*!40000 ALTER TABLE `support_chat` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `used_promocode`
 --
 
@@ -164,8 +202,10 @@ DROP TABLE IF EXISTS `used_promocode`;
 CREATE TABLE `used_promocode` (
   `ID` int NOT NULL AUTO_INCREMENT,
   `code` varchar(30) NOT NULL,
-  `date` varchar(50) NOT NULL,
+  `date` date NOT NULL,
   `value` float NOT NULL,
+  `currency` varchar(30) NOT NULL,
+  `notification_text` varchar(1024) NOT NULL,
   `staff_user_id` int NOT NULL,
   `domain_name` varchar(255) NOT NULL,
   `used_by_user` varchar(255) NOT NULL,
@@ -195,13 +235,13 @@ CREATE TABLE `user_auth` (
   `password` varchar(50) NOT NULL,
   `name` varchar(50) DEFAULT NULL,
   `activationLink` varchar(255) NOT NULL,
-  `self_registration` varchar(30) NOT NULL,
-  `promocode` varchar(50) NOT NULL,
+  `self_registration` varchar(100) NOT NULL,
   `agreement` tinyint(1) NOT NULL,
+  `promocode` varchar(50) NOT NULL,
   `domain_name` varchar(255) NOT NULL,
-  `date_of_entry` varchar(50) NOT NULL,
+  `date_of_entry` datetime NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -210,37 +250,7 @@ CREATE TABLE `user_auth` (
 
 LOCK TABLES `user_auth` WRITE;
 /*!40000 ALTER TABLE `user_auth` DISABLE KEYS */;
-INSERT INTO `user_auth` VALUES (8,'aquitan@mail.ru','11111111','','qaVfslkRDRbcp6iP5V','self registred','empty',0,'localhost:3000','2022-01-27 18:50:35'),(10,'onegin343@ukr.net','11111111','','G7YXqbP2ZFzG0hdyRa','self registred','empty',1,'localhost:3000','2022-01-27 18:50:35');
 /*!40000 ALTER TABLE `user_auth` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `user_balance`
---
-
-DROP TABLE IF EXISTS `user_balance`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_balance` (
-  `ID` int NOT NULL AUTO_INCREMENT,
-  `coin_name` varchar(30) NOT NULL,
-  `coin_full_name` varchar(50) NOT NULL,
-  `coin_balance` float NOT NULL,
-  `coin_rate` float NOT NULL,
-  `user_id` int NOT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `user_id` (`user_id`),
-  CONSTRAINT `user_balance_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user_auth` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `user_balance`
---
-
-LOCK TABLES `user_balance` WRITE;
-/*!40000 ALTER TABLE `user_balance` DISABLE KEYS */;
-/*!40000 ALTER TABLE `user_balance` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -254,12 +264,14 @@ CREATE TABLE `user_info_for_action` (
   `ID` int NOT NULL AUTO_INCREMENT,
   `deposit_fee` int NOT NULL,
   `last_deposit` date DEFAULT NULL,
-  `active_notification` varchar(1024) NOT NULL,
-  `active_error` varchar(1024) NOT NULL,
+  `active_notification` varchar(1024) DEFAULT NULL,
+  `active_error` int NOT NULL,
   `user_id` int NOT NULL,
   PRIMARY KEY (`ID`),
+  KEY `active_error` (`active_error`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `user_info_for_action_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user_auth` (`ID`)
+  CONSTRAINT `user_info_for_action_ibfk_1` FOREIGN KEY (`active_error`) REFERENCES `domain_withdrawal_error` (`ID`),
+  CONSTRAINT `user_info_for_action_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user_auth` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -283,7 +295,7 @@ CREATE TABLE `user_ip_match` (
   `ID` int NOT NULL AUTO_INCREMENT,
   `user_email` varchar(255) NOT NULL,
   `user_ip_address` varchar(150) NOT NULL,
-  `login_date` varchar(50) NOT NULL,
+  `login_date` datetime NOT NULL,
   `browser` varchar(50) NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -310,8 +322,8 @@ CREATE TABLE `user_kyc` (
   `first_name` varchar(255) NOT NULL,
   `last_name` varchar(255) NOT NULL,
   `email` varchar(150) NOT NULL,
-  `phone_number` varchar(50) NOT NULL,
-  `date_of_birth` varchar(50) NOT NULL,
+  `phone_number` int NOT NULL,
+  `date_of_birth` date NOT NULL,
   `document_number` varchar(100) NOT NULL,
   `main_address` varchar(255) NOT NULL,
   `sub_address` varchar(255) DEFAULT NULL,
@@ -352,7 +364,7 @@ CREATE TABLE `user_logs` (
   `country_name` varchar(50) NOT NULL,
   `location` varchar(150) NOT NULL,
   `browser` varchar(50) NOT NULL,
-  `action_date` varchar(50) NOT NULL,
+  `action_date` datetime NOT NULL,
   `user_action` varchar(255) NOT NULL,
   `user_domain` varchar(255) NOT NULL,
   `user_id` int NOT NULL,
@@ -369,6 +381,30 @@ CREATE TABLE `user_logs` (
 LOCK TABLES `user_logs` WRITE;
 /*!40000 ALTER TABLE `user_logs` DISABLE KEYS */;
 /*!40000 ALTER TABLE `user_logs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_notification`
+--
+
+DROP TABLE IF EXISTS `user_notification`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_notification` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `text` varchar(1024) NOT NULL,
+  `user_email` varchar(255) NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_notification`
+--
+
+LOCK TABLES `user_notification` WRITE;
+/*!40000 ALTER TABLE `user_notification` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_notification` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -395,7 +431,7 @@ CREATE TABLE `user_params` (
   PRIMARY KEY (`ID`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `user_params_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user_auth` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -404,7 +440,6 @@ CREATE TABLE `user_params` (
 
 LOCK TABLES `user_params` WRITE;
 /*!40000 ALTER TABLE `user_params` DISABLE KEYS */;
-INSERT INTO `user_params` VALUES (3,0,0,0,1,0,0,0,1,0,0,1,10);
 /*!40000 ALTER TABLE `user_params` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -418,8 +453,10 @@ DROP TABLE IF EXISTS `user_promocode`;
 CREATE TABLE `user_promocode` (
   `ID` int NOT NULL AUTO_INCREMENT,
   `code` varchar(30) NOT NULL,
-  `date` varchar(50) NOT NULL,
+  `date` date NOT NULL,
   `value` float NOT NULL,
+  `currency` varchar(30) NOT NULL,
+  `notification_text` varchar(1024) NOT NULL,
   `staff_user_id` int NOT NULL,
   `domain_name` varchar(255) NOT NULL,
   PRIMARY KEY (`ID`),
@@ -436,34 +473,6 @@ LOCK TABLES `user_promocode` WRITE;
 /*!40000 ALTER TABLE `user_promocode` DISABLE KEYS */;
 /*!40000 ALTER TABLE `user_promocode` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `user_wallet`
---
-
-DROP TABLE IF EXISTS `user_wallet`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_wallet` (
-  `ID` int NOT NULL AUTO_INCREMENT,
-  `coin_name` varchar(30) NOT NULL,
-  `coin_full_name` varchar(50) NOT NULL,
-  `wallet_address` varchar(60) DEFAULT NULL,
-  `user_id` int NOT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `user_id` (`user_id`),
-  CONSTRAINT `user_wallet_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user_auth` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `user_wallet`
---
-
-LOCK TABLES `user_wallet` WRITE;
-/*!40000 ALTER TABLE `user_wallet` DISABLE KEYS */;
-/*!40000 ALTER TABLE `user_wallet` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -474,4 +483,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-01-28 19:20:20
+-- Dump completed on 2022-02-08 16:30:23

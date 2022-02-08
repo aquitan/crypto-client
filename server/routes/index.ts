@@ -64,7 +64,7 @@ router.put('/staff/errors/create_new_error/', staffController.createCustomError)
 router.post('/staff/errors/get_all_errors/', staffController.getAllErrors) // controller 626 line <give when has request to domain detail for admin
 
 router.put('/staff/notifications/create_new_notification/', staffController.createNewNotification)
-router.get('/staff/notifications/get_all_notifications/', staffController.getNotificationList)
+router.post('/staff/notifications/get_all_notifications/', staffController.getNotificationList)
 
 // router.put('/staff/wallets/create_staff_wallet/', staffController.createStaffWallet)
 

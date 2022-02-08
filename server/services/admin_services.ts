@@ -80,6 +80,15 @@ class adminService {
     return promocodeList
   }
 
+
+  async GetDomainListForAdmin() {
+    const list: any = await database.GetDomainListForAdmin()
+    console.log('recieved list is: ', list);
+
+    if (!list) return false
+    return list
+  }
+
 }
 
 export default new adminService()

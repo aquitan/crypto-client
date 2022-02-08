@@ -592,7 +592,7 @@ class StaffController {
   async createCustomError(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       interface request_object {
-        domainName: string
+        fullDomainName: string
         staffEmail: string
         errorName: string
         errorTitle: string
@@ -602,7 +602,7 @@ class StaffController {
       const staffId: number = req.body.staffId
 
       const obj_to_send: request_object = {
-        domainName: req.body.domainName,
+        fullDomainName: req.body.domainName,
         errorName: req.body.errorName,
         errorTitle: req.body.errorTitle,
         errorText: req.body.errorText,
@@ -615,8 +615,8 @@ class StaffController {
 
       if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
 
-      await telegram.sendMessageByStaffActions(obj_to_send.staffEmail, ` создал кастомную ошибку `, obj_to_send.domainName)
-      await staffService.saveStaffLogs(obj_to_send.staffEmail, ` создал новый домен ${req.body.fullDomainName}} `, obj_to_send.domainName, staffId)
+      await telegram.sendMessageByStaffActions(obj_to_send.staffEmail, ` создал кастомную ошибку `, obj_to_send.fullDomainName)
+      await staffService.saveStaffLogs(obj_to_send.staffEmail, ` создал новый домен ${req.body.fullDomainName}} `, obj_to_send.fullDomainName, staffId)
 
     } catch (e) {
       next(e)
@@ -639,7 +639,7 @@ class StaffController {
       console.log('req body is: ', req.body)
 
       if (adminPermission === true) {
-        const result: any = await adminService.GetDomainListForAdmin(staffEmail)
+        const result: any = await adminService.GetDomainListForAdmin()
         if (result !== false) {
           return res.status(200).json({
             usersKycList: result,
@@ -674,6 +674,33 @@ class StaffController {
   //     console.log(e)
   //   }
   // }
+  async createNewNotification(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      interface request_object {
+        user_email: string
+        notification_text: string
+        domain_name: string
+      }
+      console.log('req body is: ', req.body);
+
+      const obj_to_send: request_object = {
+        user_email: req.body.userEmail,
+        notification_text: req.body.notifText,
+        domain_name: req.body.domainName
+      }
+
+      const result: any = await staffService.CreateNotification(obj_to_send)
+      console.log('result is: ', result);
+      if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+
+      return res.status(201).json({ message: 'notification was create', status: 'complete' })
+
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
 
   async getNotificationList(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
@@ -787,10 +814,10 @@ class StaffController {
     try {
       // add promocode & add before sign up
 
-      const { date, value, staff, domainName, counter } = req.body
+      const { date, value, currency, notification, staff, domainName, counter } = req.body
       console.log('body is: ', req.body);
 
-      const codesArray: any = await staffService.CreatePromocode(date, value, staff, domainName, counter)
+      const codesArray: any = await staffService.CreatePromocode(date, value, currency, notification, staff, domainName, counter)
       console.log('operation result is: ', codesArray);
 
       if (!codesArray[0]) {

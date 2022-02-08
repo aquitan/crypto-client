@@ -182,7 +182,7 @@ class staffService {
     console.log('recieved object: ', data_object);
 
 
-    const domains: any = await database.GetDomainList(data_object.staffEmail)
+    const domains: any = await database.GetDomainListForStaff(data_object.staffEmail)
     console.log('recieved domains list is: ', domains);
 
     console.log(`staff ${data_object.staffEmail} domains list: `);
@@ -207,8 +207,8 @@ class staffService {
       domainOwnerEmail: data_object.staffEmail
     }
 
-    const saveBaseDomainData: any = await database.CreateNewDomain(baseDomainData)
-    const curDomain: any = await database.GetBaseDomainInfo(saveBaseDomainData[0].ID)
+    await database.CreateNewDomain(baseDomainData)
+    const curDomain: any = await database.GetBaseDomainInfo(baseDomainData.fullDomainName)
     console.log('base info from db: ', curDomain[0]);
 
 
@@ -235,11 +235,11 @@ class staffService {
     ]
 
     for (let i = 0; i < domainErrors.length; i++) {
-      await database.SaveDomainErrors(domainErrors[i].domainName, domainErrors[i].errorName, domainErrors[i].title, domainErrors[i].text, domainErrors[i].button,)
+      await database.SaveDomainErrors(domainDetailInfo.domainId, domainErrors[i].errorName, domainErrors[i].title, domainErrors[i].text, domainErrors[i].button,)
       console.log('error item is: ', '\n', domainErrors[i], '\n', ' was waved');
     }
 
-    const db_error_list: any = await database.GetDomainErrorsList(data_object.fullDomainName)
+    const db_error_list: any = await database.GetDomainErrorsList(domainDetailInfo.domainId)
     console.log('db errors: ', db_error_list);
 
     if (db_error_list.length < 5) {
@@ -252,7 +252,7 @@ class staffService {
 
   async CreateCustomError(data_object: any) {
 
-    await database.SaveDomainErrors(data_object.domainName, data_object.errorName, data_object.errorTitle, data_object.errorText, data_object.errorButton)
+    await database.SaveDomainErrors(data_object.fullDomainName, data_object.errorName, data_object.errorTitle, data_object.errorText, data_object.errorButton)
 
     const savedErrors: any = database.GetDomainErrorsList(data_object.fullDomainName)
     console.log('saved domain error: ', savedErrors);
@@ -263,8 +263,6 @@ class staffService {
   }
 
   async GetDomainListForStaff(staffEmail: string) {
-    // select * from domains where domain_owner = staffEmail
-    // from both of params & detail
     const domainList: any = await database.GetDomainListForStaff(staffEmail)
     console.log('domainList is: ', domainList);
     if (!domainList[0]) return false
@@ -272,15 +270,20 @@ class staffService {
 
   }
 
+  async CreateNotification(object: any) {
+    if (!object) return false
+    await database.SaveUserNotification(object.notification_text, object.user_email)
+    return true
+  }
 
   async GetNotificationForUser(user_id: number) {
     const notification_list: any = await database.GetUserNotification(user_id)
     console.log('active notif: ', notification_list);
-    if (notification_list[0]) return false
-
+    if (!notification_list[0]) return false
+    return notification_list
   }
 
-  async CreatePromocode(date: string, value: any, staff_id: number, domain: string, counter: number) {
+  async CreatePromocode(date: string, value: any, currency: string, notif: string, staff_id: number, domain: string, counter: number) {
     console.log('counter is: ', counter);
 
     const currentPromocodes: any = await database.GetPromocodeListForStaff(staff_id)
@@ -308,7 +311,7 @@ class staffService {
           }
           for (let x = 0; x <= codeArray.length - 1; x++) {
             console.log('array sort: ', codeArray[x].code, codeArray[x].value);
-            await database.SavePromocode(codeArray[x].code, date, codeArray[x].value, staff_id, domain)
+            await database.SavePromocode(codeArray[x].code, date, codeArray[x].value, currency, notif, staff_id, domain)
           }
           return codeArray
         }
@@ -317,7 +320,7 @@ class staffService {
 
     const newCode: string = await codeGenerator(8)
     console.log('generated code is: ', newCode);
-    await database.SavePromocode(newCode, date, value, staff_id, domain)
+    await database.SavePromocode(newCode, date, value, currency, notif, staff_id, domain)
     return newCode
   }
 

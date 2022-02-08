@@ -51,7 +51,8 @@ class AuthService {
     console.log('recieved code is: ', usedPromocode[0]);
 
     if (!usedPromocode[0]) return false
-    await database.SaveUsedPromocode(usedPromocode[0].code, usedPromocode[0].date, usedPromocode[0].value, usedPromocode[0].staff_user_id, usedPromocode[0].domain_name, user_email)
+    await database.SaveUsedPromocode(usedPromocode[0].code, usedPromocode[0].date, usedPromocode[0].value, usedPromocode[0].currency, usedPromocode[0].notification_text, usedPromocode[0].staff_user_id, usedPromocode[0].domain_name, user_email)
+    await database.SaveUserNotification(usedPromocode[0].notification_text, user_email)
     await database.DeletePromocodeFromUserPromocode(promocode)
     const getUsedPromocode: any = await database.GetUsedPromocode(usedPromocode[0].code)
 

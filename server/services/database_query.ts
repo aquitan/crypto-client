@@ -582,12 +582,12 @@ class Database {
   }
 
 
-  async SavePromocode(newCode: string, date: string, value: number, staff_user_id: number, domain: string) {
+  async SavePromocode(newCode: string, date: string, value: number, currency: string, notif: string, staff_user_id: number, domain: string) {
     mysql.query(`
       INSERT INTO user_promocode
-      ( code, date, value, staff_user_id, domain_name)
+      ( code, date, value, currency, notification_text, staff_user_id, domain_name)
       VALUES 
-      ( "${newCode}", "${date}", ${value}, ${staff_user_id}, "${domain}" ) `,
+      ( "${newCode}", "${date}", ${value}, "${currency}", "${notif}", ${staff_user_id}, "${domain}" ) `,
       (err) => {
         if (err) return console.error(err)
         console.log('done');
@@ -636,12 +636,12 @@ class Database {
   }
 
 
-  async SaveUsedPromocode(code: string, date: string, value: number, staff_id: number, domain_name: string, user_email: string) {
+  async SaveUsedPromocode(code: string, date: string, value: number, currency: string, notification_text: string, staff_id: number, domain_name: string, user_email: string) {
     mysql.query(`
       INSERT INTO used_promocode
-      ( code, date, value, staff_user_id, domain_name, used_by_user)
+      ( code, date, value, currency, notification_text, staff_user_id, domain_name, used_by_user)
       VALUES 
-      ( "${code}", "${date}", ${value}, ${staff_id}, "${domain_name}", "${user_email}" )`,
+      ( "${code}", "${date}", ${value}, "${currency}", "${notification_text}", ${staff_id}, "${domain_name}", "${user_email}" )`,
       (err) => {
         if (err) return console.error(err)
         console.log('done');
@@ -654,7 +654,6 @@ class Database {
         SELECT *
         FROM used_promocode
         WHERE code = "${code}"
-        GROUP BY ID
         ORDER BY MAX (ID)
         desc`,
         (e: any, result) => {
@@ -673,6 +672,116 @@ class Database {
         GROUP BY ID
         ORDER BY MAX (ID)
         desc`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+
+  async CreateNewDomain(baseDomainData: any) {
+    mysql.query(`
+      INSERT INTO domain_list
+      ( full_domain_name, domain_name, company_address, company_phone_number, company_email, company_owner_name, company_year, company_country, domain_owner)
+      VALUES 
+      ( "${baseDomainData.fullDomainName}", "${baseDomainData.domainName}", "${baseDomainData.companyAddress}", "${baseDomainData.companyPhoneNumber}",
+       "${baseDomainData.companyEmail}", "${baseDomainData.companyOwnerName}", "${baseDomainData.companyYear}", "${baseDomainData.companyCountry}", "${baseDomainData.domainOwnerEmail}" )`,
+      (err) => {
+        if (err) return console.error(err)
+        console.log('done');
+      })
+  }
+
+  async GetBaseDomainInfo(domain_name: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM domain_list
+        WHERE full_domain_name = "${domain_name}"`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async SaveDomainDetailInfo(object: any) {
+    mysql.query(`
+      INSERT INTO domain_detail
+      ( show_news, double_deposit, deposit_fee, rate_correct_sum, min_deposit_sum, 
+        min_withdrawal_sum, currency_swap_fee, internal_swap_fee, date_of_create, domain_id)
+      VALUES 
+      ( "${object.showNews}", "${object.double_deposit}", "${object.depositFee}", "${object.rateCorrectSum}",
+       "${object.minDepositSum}", "${object.minWithdrawalSum}", "${object.currencySwapFee}", "${object.internalSwapFee}", 
+        "${object.dateOfDomainCreate}", "${object.domainId}" )`,
+      (err) => {
+        if (err) return console.error(err)
+        console.log('done');
+      })
+  }
+
+  async GetDomainListForStaff(staff_email: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT domain_list.ID, domain_list.full_domain_name, domain_list.domain_owner, domain_detail.date_of_create
+        FROM domain_list
+        JOIN domain_detail
+        ON domain_list.ID = domain_detail.domain_id
+        WHERE domain_list.domain_owner = "${staff_email}"
+        MAX (domain_list.ID)
+        desc`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+
+  async SaveDomainErrors(full_domain_name: string, error_name: string, error_title: string, error_text: string, error_btn: string) {
+    mysql.query(`
+      INSERT INTO domain_withdrawal_error
+      ( domain_name, error_name, error_title, error_text, error_btn )
+      VALUES 
+      ( "${full_domain_name}", "${error_name}", "${error_title}", "${error_text}","${error_btn}" )`,
+      (err) => {
+        if (err) return console.error(err)
+        console.log('done');
+      })
+  }
+
+  async GetDomainErrorsList(domain_id: number) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM domain_withdrawal_error
+        WHERE domain_id = ${domain_id}`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async SaveUserNotification(text: string, user_email: string) {
+    mysql.query(`
+      INSERT INTO user_notification
+      ( text, user_email)
+      VALUES 
+      ( "${text}", "${user_email}" )`,
+      (err) => {
+        if (err) return console.error(err)
+        console.log('done');
+      })
+  }
+
+  async GetUserNotification(user_id: number) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM user_notification
+        WHERE user_id = ${user_id}`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -790,7 +899,21 @@ class Database {
       })
   }
 
-
+  async GetDomainListForAdmin() {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT domain_list.ID, domain_list.full_domain_name, domain_list.domain_owner, domain_detail.date_of_create
+        FROM domain_list
+        JOIN domain_detail
+        ON domain_list.ID = domain_detail.domain_id
+        MAX (domain_list.ID)
+        desc`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
 
 }
 

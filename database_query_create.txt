@@ -2,13 +2,13 @@
 ** base tables for mysql **
 
 
-CREATE TABLE user_auth (ID INT AUTO_INCREMENT PRIMARY KEY, email VARCHAR(255) NOT NULL, password VARCHAR(50) NOT NULL, name VARCHAR(50), activationLink VARCHAR(255) NOT NULL, self_registration VARCHAR(100) NOT NULL, agreement BOOLEAN NOT NUll promocode VARCHAR(50) NOT NULL, domain_name VARCHAR(255) NOT NULL, date_of_entry DATETIME NOT NULL );
+CREATE TABLE user_auth (ID INT AUTO_INCREMENT PRIMARY KEY, email VARCHAR(255) NOT NULL, password VARCHAR(50) NOT NULL, name VARCHAR(50), activationLink VARCHAR(255) NOT NULL, self_registration VARCHAR(100) NOT NULL, agreement BOOLEAN NOT NUll, promocode VARCHAR(50) NOT NULL, domain_name VARCHAR(255) NOT NULL, date_of_entry DATETIME NOT NULL );
 
 CREATE TABLE user_logs (ID INT AUTO_INCREMENT PRIMARY KEY, email VARCHAR(255) NOT NULL, ip_address VARCHAR(150) NOT NULL, request_city VARCHAR(100) NOT NULL, country_name VARCHAR(50) NOT NULL, location VARCHAR(150) NOT NULL, browser VARCHAR(50) NOT NULL, action_date DATETIME NOT NULL, user_action VARCHAR(255) NOT NULL, user_domain VARCHAR(255) NOT NULL, user_id INT NOT NULL, FOREIGN KEY(user_id) REFERENCES user_auth(ID));
 
 CREATE TABLE user_params (ID INT AUTO_INCREMENT PRIMARY KEY, double_deposit BOOLEAN NOT NULL, swap_ban BOOLEAN NOT NULL, internal_ban BOOLEAN NOT NULL, isUser BOOLEAN NOT NULL, isStaff BOOLEAN NOT NULL, isAdmin BOOLEAN NOT NULL, isBanned BOOLEAN NOT NULL, isActivated BOOLEAN NOT NULL, premium_status BOOLEAN NOT NULL, two_step_status BOOLEAN NOT NULL, agreement BOOLEAN NOT NUll, user_id INT NOT NULL, FOREIGN KEY (user_id) REFERENCES user_auth(ID));
 
-CREATE TABLE user_info_for_action (ID INT AUTO_INCREMENT PRIMARY KEY, deposit_fee INT NOT NULL, last_deposit DATE, active_notification VARCHAR(1024), active_error INT NOT NULL, FOREIGN KEY (active_error) REFERENCES user_withdrawal_error(ID), user_id INT NOT NULL, FOREIGN KEY (user_id) REFERENCES user_auth(ID) );
+CREATE TABLE user_info_for_action (ID INT AUTO_INCREMENT PRIMARY KEY, deposit_fee INT NOT NULL, last_deposit DATE, active_notification VARCHAR(1024), active_error INT NOT NULL, FOREIGN KEY (active_error) REFERENCES domain_withdrawal_error(ID), user_id INT NOT NULL, FOREIGN KEY (user_id) REFERENCES user_auth(ID) );
 
 
 CREATE TABLE user_ip_match (ID INT AUTO_INCREMENT PRIMARY KEY, user_email VARCHAR(255) NOT NULL, user_ip_address VARCHAR(150) NOT NULL, login_date DATETIME NOT NULL, browser VARCHAR(50) NOT NULL );
@@ -17,21 +17,27 @@ CREATE TABLE user_kyc (ID INT AUTO_INCREMENT PRIMARY KEY, first_name VARCHAR(255
 
 CREATE TABLE auth_token (ID INT AUTO_INCREMENT PRIMARY KEY, refresh_token VARCHAR(1024) NOT NULL, user_id INT NOT NULL, FOREIGN KEY(user_id) REFERENCES user_auth(ID));
 
-CREATE TABLE user_promocode (ID INT AUTO_INCREMENT PRIMARY KEY, code VARCHAR(30) NOT NULL, date DATE NOT NULL, value FLOAT NOT NULL, staff_user_id INT NOT NULL, domain_name VARCHAR(255) NOT NULL, FOREIGN KEY (staff_user_id) REFERENCES user_auth(ID) );
+CREATE TABLE user_promocode (ID INT AUTO_INCREMENT PRIMARY KEY, code VARCHAR(30) NOT NULL, date DATE NOT NULL, value FLOAT NOT NULL, currency VARCHAR(30) NOT NULL, notification_text VARCHAR(1024) NOT NULL, staff_user_id INT NOT NULL, domain_name VARCHAR(255) NOT NULL, FOREIGN KEY (staff_user_id) REFERENCES user_auth(ID) );
 
-CREATE TABLE used_promocode (ID INT AUTO_INCREMENT PRIMARY KEY, code VARCHAR(30) NOT NULL, date DATE NOT NULL, value FLOAT NOT NULL, staff_user_id INT NOT NULL, domain_name VARCHAR(255) NOT NULL, used_by_user VARCHAR(255) NOT NULL );
+CREATE TABLE used_promocode (ID INT AUTO_INCREMENT PRIMARY KEY, code VARCHAR(30) NOT NULL, date DATE NOT NULL, value FLOAT NOT NULL, currency VARCHAR(30) NOT NULL, notification_text VARCHAR(1024) NOT NULL, staff_user_id INT NOT NULL, domain_name VARCHAR(255) NOT NULL, used_by_user VARCHAR(255) NOT NULL );
+
+  
+CREATE TABLE user_notification (ID INT AUTO_INCREMENT PRIMARY KEY, text VARCHAR(1024) NOT NULL, user_email VARCHAR(255) NOT NULL);
+
+
+CREATE TABLE domain_list (ID INT AUTO_INCREMENT PRIMARY KEY, full_domain_name VARCHAR(255) NOT NULL, domain_name VARCHAR(100) NOT NULL, company_address VARCHAR(255) NOT NULL, company_phone_number INT NOT NULL, company_email VARCHAR(255) NOT NULL, company_owner_name VARCHAR(150) NOT NULL, company_year YEAR NOT NULL, company_country VARCHAR(50) NOT NULL, domain_owner VARCHAR(255) NOT NULL);
+
+CREATE TABLE domain_detail (ID INT AUTO_INCREMENT PRIMARY KEY, show_news BOOLEAN NOT NULL, double_deposit BOOLEAN NOT NULL, deposit_fee INT NOT NULL, rate_correct_sum FLOAT NOT NULL, min_deposit_sum INT NOT NULL, min_withdrawal_sum INT NOT NULL, currency_swap_fee INT NOT NULL, internal_swap_fee INT NOT NULL, date_of_create DATETIME NOT NULL, domain_id INT NOT NULL, FOREIGN KEY (domain_id) REFERENCES domain_detail(ID));
+
+CREATE TABLE domain_withdrawal_error (ID INT AUTO_INCREMENT PRIMARY KEY, domain_id INT NOT NULL, error_name VARCHAR(100) NOT NULL, error_title VARCHAR(50) NOT NULL, error_text VARCHAR(1024) NOT NULL, error_btn VARCHAR(30) NOT NULL, FOREIGN KEY (domain_id) REFERENCES domain_list(ID) );
+
+
 
 CREATE TABLE staff_logs (ID INT AUTO_INCREMENT PRIMARY KEY, staff_email VARCHAR(255) NOT NULL, staff_action VARCHAR(320) NOT NULL, staff_domain VARCHAR(255) NOT NULL, staff_id INT NOT NULL, FOREIGN KEY (staff_id) REFERENCES user_auth(ID));
 
 CREATE TABLE staff_params (ID INT AUTO_INCREMENT PRIMARY KEY, staff_email VARCHAR(255) NOT NULL, payment_fee INT NOT NULL, support_name VARCHAR(100) NOT NUll, get_staff_access_date DATE NOT NULL, user_who_give_access INT NOT NULL, FOREIGN KEY (user_who_give_access) REFERENCES user_auth(ID) );
 
 
-
-CREATE TABLE domain_detail (ID INT AUTO_INCREMENT PRIMARY KEY, full_domain_name VARCHAR(255) NOT NULL, domain_name VARCHAR(100) NOT NULL, company_address VARCHAR(255) NOT NULL, company_phone_number INT NOT NULL, company_email VARCHAR(255) NOT NULL, company_owner_name VARCHAR(150) NOT NULL, company_year YEAR NOT NULL, company_country VARCHAR(50) NOT NULL, domain_owner VARCHAR(255) NOT NULL, FOREIGN KEY(domain_owner) REFERENCES staff_params(staff_email));
-
-CREATE TABLE domain_detail_params (ID INT AUTO_INCREMENT PRIMARY KEY, show_news BOOLEAN NOT NULL, double_deposit BOOLEAN NOT NULL, deposit_fee INT NOT NULL, rate_correct_sum FLOAT NOT NULL, min_deposit_sum INT NOT NULL, min_withdrawal_sum INT NOT NULL, currency_swap_fee INT NOT NULL, internal_swap_fee INT NOT NULL, date_of_create DATETIME NOT NULL, domain_id INT NOT NULL, FOREIGN KEY (domain_id) REFERENCES domain_detail(ID));
-
-CREATE TABLE domain_withdrawal_error (ID INT AUTO_INCREMENT PRIMARY KEY, domain_name VARCHAR(255) NOT NULL, error_name VARCHAR(100) NOT NULL, error_title VARCHAR(50) NOT NULL, error_text VARCHAR(1024) NOT NULL, error_btn VARCHAR(30) NOT NULL, FOREIGN KEY (domain_name) REFERENCES domain_detail(full_domain_name) );
 
 
 
