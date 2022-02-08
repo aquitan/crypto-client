@@ -47,8 +47,7 @@ const MakeTransaction = () => {
                                          className='date_picker_dark'
                                          placeholderText='date of transaction'
                                          selected={startDate}
-                                         dateFormat='yyyy/MM/dd h:mm aa'
-                                         showTimeInput
+                                         dateFormat='yyyy/MM/dd'
                                          onChange={(date) => setStartDate(date)} />
                         </Col>
                         <Col>
@@ -60,7 +59,7 @@ const MakeTransaction = () => {
                                          showTimeSelectOnly
                                          timeIntervals={1}
                                          timeCaption="Время"
-                                         dateFormat="h:mm aa "
+                                         dateFormat="h:mm aa"
                                          onChange={(time) => setTimeDate(time)} />
                         </Col>
                         <Col>

@@ -53,7 +53,7 @@ router.patch('/staff/users/user_detail/update_staff_support_name/', staffControl
 router.patch('/staff/kyc/update_kyc_status/', staffController.changeKycStatus)
 router.delete('/staff/kyc/delete_kyc/', staffController.deleteKyc)
 router.post('/staff/create_user/', staffController.createNewUser)
-router.post('/staff/create_promocode/', staffController.promocodeCreate)
+router.put('/staff/create_promocode/', staffController.promocodeCreate)
 router.post('/staff/get_promocode_list/', staffController.getPromocodeListForStaff)
 router.post('/staff/get_used_promocode_list/', staffController.getUsedPromocodeListForStaff)
 router.post('/staff/ip_match_checker/', staffController.getIpForMatch)

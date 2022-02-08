@@ -27,7 +27,7 @@ const NavBar = () => {
 
                     </Nav>
                     {
-                        store.isStaff ? <NavLink className={cls.link} to='/admin'>Staff</NavLink> : null
+                        store.isStaff || store.fullAccess || store.isAdmin ? <NavLink className={cls.link} to='/admin'>Staff</NavLink> : null
                     }
                     <div style={{color: '#fff'}} className={cls.top}>
                         {window.location.host}

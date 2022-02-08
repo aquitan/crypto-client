@@ -12,9 +12,7 @@ const LandingHeader = () => {
             <div className={cls.row}>
                 <div className={cls.col}>
                     <Logo/>
-                    <HeaderLink to='/features'>Features</HeaderLink>
-                    <HeaderLink to='/prices'>Prices</HeaderLink>
-                    <HeaderLink to='/learn'>Learn</HeaderLink>
+                    <h4>{window.location.hostname}</h4>
 
                 </div>
                 

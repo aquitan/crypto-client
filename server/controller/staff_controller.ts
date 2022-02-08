@@ -524,38 +524,38 @@ class StaffController {
         errorList: {
           verif_document: {
             domainName: req.body.fullDomainName,
-            errorName: req.body.errorList.errorName,
-            title: req.body.errorList.verifiedDocumentsErrorTitle,
-            text: req.body.errorList.verifiedDocumentsErrorText,
-            button: req.body.errorList.verifiedDocumentsErrorBtn
+            errorName: req.body.errorList.verif_document.errorName,
+            title: req.body.errorList.verif_document.title,
+            text: req.body.errorList.verif_document.text,
+            button: req.body.errorList.verif_document.button
           },
           verif_address: {
             domainName: req.body.fullDomainName,
-            errorName: req.body.errorList.errorName,
-            title: req.body.errorList.verifiedAddressErrorTitle,
-            text: req.body.errorList.verifiedAddressErrorText,
-            button: req.body.errorList.verifiedAddressErrorBtn,
+            errorName: req.body.errorList.verif_address.errorName,
+            title: req.body.errorList.verif_address.title,
+            text: req.body.errorList.verif_address.text,
+            button: req.body.errorList.verif_address.button,
           },
           insurance: {
             domainName: req.body.fullDomainName,
-            errorName: req.body.errorList.errorName,
-            title: req.body.errorList.insuranceErrorTitle,
-            text: req.body.errorList.insuranceErrorText,
-            button: req.body.errorList.insuranceErrorBtn,
+            errorName: req.body.errorList.insurance.errorName,
+            title: req.body.errorList.insurance.title,
+            text: req.body.errorList.insurance.text,
+            button: req.body.errorList.insurance.button,
           },
           premium: {
             domainName: req.body.fullDomainName,
-            errorName: req.body.errorList.errorName,
-            title: req.body.errorList.premiumStatusErrorTitle,
-            text: req.body.errorList.premiumStatusErrorText,
-            button: req.body.errorList.insuranceErrorBtn
+            errorName: req.body.errorList.premium.errorName,
+            title: req.body.errorList.premium.title,
+            text: req.body.errorList.premium.text,
+            button: req.body.errorList.premium.button
           },
           multi_account: {
             domainName: req.body.fullDomainName,
-            errorName: req.body.errorList.errorName,
-            title: req.body.errorList.multiAccountErrorTitle,
-            text: req.body.errorList.multiAccountErrorText,
-            button: req.body.errorList.multiAccountErrorBtn
+            errorName: req.body.errorList.multi_account.errorName,
+            title: req.body.errorList.multi_account.title,
+            text: req.body.errorList.multi_account.text,
+            button: req.body.errorList.multi_account.button
           }
         },
         dateOfDomainCreate: req.body.dateOfDomainCreate,
@@ -592,7 +592,8 @@ class StaffController {
   async createCustomError(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       interface request_object {
-        fullDomainName: string
+        domain_id: number
+        domain_name: string
         staffEmail: string
         errorName: string
         errorTitle: string
@@ -602,7 +603,8 @@ class StaffController {
       const staffId: number = req.body.staffId
 
       const obj_to_send: request_object = {
-        fullDomainName: req.body.domainName,
+        domain_id: req.body.domainId,
+        domain_name: req.body.domainName,
         errorName: req.body.errorName,
         errorTitle: req.body.errorTitle,
         errorText: req.body.errorText,
@@ -615,9 +617,9 @@ class StaffController {
 
       if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
 
-      await telegram.sendMessageByStaffActions(obj_to_send.staffEmail, ` создал кастомную ошибку `, obj_to_send.fullDomainName)
-      await staffService.saveStaffLogs(obj_to_send.staffEmail, ` создал новый домен ${req.body.fullDomainName}} `, obj_to_send.fullDomainName, staffId)
-
+      await telegram.sendMessageByStaffActions(obj_to_send.staffEmail, ` создал кастомную ошибку `, obj_to_send.domain_name)
+      await staffService.saveStaffLogs(obj_to_send.staffEmail, ` создал новый домен ${req.body.fullDomainName}} `, obj_to_send.domain_name, staffId)
+      return res.status(201).json({ message: 'Error was created', status: 'completed' })
     } catch (e) {
       next(e)
     }
@@ -821,16 +823,17 @@ class StaffController {
       console.log('operation result is: ', codesArray);
 
       if (!codesArray[0]) {
-        return res.status(201).json({
-          message: 'code was created',
-          codesArray: codesArray,
-          status: 'complete'
+        return res.status(400).json({
+          message: 'wrong data',
+          status: 'rejected'
         })
       }
-      return res.status(500).json({
-        message: 'something went wrong',
-        status: 'rejected'
+      return res.status(201).json({
+        message: 'code was created',
+        codesArray: codesArray,
+        status: 'complete'
       })
+
     } catch (e) {
       next(e)
     }

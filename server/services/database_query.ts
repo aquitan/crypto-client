@@ -685,8 +685,7 @@ class Database {
       INSERT INTO domain_list
       ( full_domain_name, domain_name, company_address, company_phone_number, company_email, company_owner_name, company_year, company_country, domain_owner)
       VALUES 
-      ( "${baseDomainData.fullDomainName}", "${baseDomainData.domainName}", "${baseDomainData.companyAddress}", "${baseDomainData.companyPhoneNumber}",
-       "${baseDomainData.companyEmail}", "${baseDomainData.companyOwnerName}", "${baseDomainData.companyYear}", "${baseDomainData.companyCountry}", "${baseDomainData.domainOwnerEmail}" )`,
+      ( "${baseDomainData.fullDomainName}", "${baseDomainData.domainName}", "${baseDomainData.companyAddress}", ${baseDomainData.companyPhoneNumber}, "${baseDomainData.companyEmail}", "${baseDomainData.companyOwnerName}", "${baseDomainData.companyYear}", "${baseDomainData.companyCountry}", "${baseDomainData.domainOwnerEmail}" )`,
       (err) => {
         if (err) return console.error(err)
         console.log('done');
@@ -712,9 +711,7 @@ class Database {
       ( show_news, double_deposit, deposit_fee, rate_correct_sum, min_deposit_sum, 
         min_withdrawal_sum, currency_swap_fee, internal_swap_fee, date_of_create, domain_id)
       VALUES 
-      ( "${object.showNews}", "${object.double_deposit}", "${object.depositFee}", "${object.rateCorrectSum}",
-       "${object.minDepositSum}", "${object.minWithdrawalSum}", "${object.currencySwapFee}", "${object.internalSwapFee}", 
-        "${object.dateOfDomainCreate}", "${object.domainId}" )`,
+      ( ${object.showNews}, ${object.double_deposit}, ${object.depositFee}, ${object.rateCorrectSum}, ${object.minDepositSum}, ${object.minWithdrawalSum}, ${object.currencySwapFee}, ${object.internalSwapFee}, "${object.dateOfDomainCreate}", ${object.domainId} )`,
       (err) => {
         if (err) return console.error(err)
         console.log('done');
@@ -728,9 +725,7 @@ class Database {
         FROM domain_list
         JOIN domain_detail
         ON domain_list.ID = domain_detail.domain_id
-        WHERE domain_list.domain_owner = "${staff_email}"
-        MAX (domain_list.ID)
-        desc`,
+        WHERE domain_list.domain_owner = "${staff_email}"`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -739,12 +734,12 @@ class Database {
   }
 
 
-  async SaveDomainErrors(full_domain_name: string, error_name: string, error_title: string, error_text: string, error_btn: string) {
+  async SaveDomainErrors(domain_id: number, error_name: string, error_title: string, error_text: string, error_btn: string) {
     mysql.query(`
       INSERT INTO domain_withdrawal_error
-      ( domain_name, error_name, error_title, error_text, error_btn )
+      ( domain_id, error_name, error_title, error_text, error_btn )
       VALUES 
-      ( "${full_domain_name}", "${error_name}", "${error_title}", "${error_text}","${error_btn}" )`,
+      ( ${domain_id}, "${error_name}", "${error_title}", "${error_text}","${error_btn}" )`,
       (err) => {
         if (err) return console.error(err)
         console.log('done');

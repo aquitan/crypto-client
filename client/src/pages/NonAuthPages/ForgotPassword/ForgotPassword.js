@@ -22,7 +22,7 @@ const ForgotPassword = () => {
     const onSubmit = async (data) => {
         console.log(data)
         const res = await fetch(`${BASE_URL}/forgot_password/`, {
-            method: 'POST',
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 'authorization': 'Bearer ' + localStorage.getItem('token')

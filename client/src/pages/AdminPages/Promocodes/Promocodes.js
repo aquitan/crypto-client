@@ -47,17 +47,20 @@ const Promocodes = () => {
         console.log('data', data)
         let dataPrep = prepareData(data.counter, data.min, data.max)
 
+        let currentDate = new Date()
+        let fullDate = currentDate.getUTCFullYear() + '-' + currentDate.getUTCMonth() + '-' + currentDate.getUTCDate()
         let promoData = {
             value: dataPrep,
-            date: getCurrentDate(),
+            date: fullDate,
             staff: store.userId,
             domainName: window.location.host,
             counter: data.counter,
-            currency: data.currency
+            currency: data.currency,
+            notification: data.notification
         }
 
         const res = await fetch('/api/staff/create_promocode/', {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -124,6 +127,7 @@ const Promocodes = () => {
                     <Row className='mb-4'>
                         <Col className='col-12'>
                             <AdminInput {...register('notification', {
+                                required: true,
                                 pattern: /^[A-Za-z]+$/i,
                                 message: 'Заполните поле'
                             })} placeholder='Нотификация' />

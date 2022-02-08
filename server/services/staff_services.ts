@@ -252,9 +252,9 @@ class staffService {
 
   async CreateCustomError(data_object: any) {
 
-    await database.SaveDomainErrors(data_object.fullDomainName, data_object.errorName, data_object.errorTitle, data_object.errorText, data_object.errorButton)
+    await database.SaveDomainErrors(data_object.domain_id, data_object.errorName, data_object.errorTitle, data_object.errorText, data_object.errorButton)
 
-    const savedErrors: any = database.GetDomainErrorsList(data_object.fullDomainName)
+    const savedErrors: any = await database.GetDomainErrorsList(data_object.domain_id)
     console.log('saved domain error: ', savedErrors);
     if (!savedErrors[0]) return false
 
