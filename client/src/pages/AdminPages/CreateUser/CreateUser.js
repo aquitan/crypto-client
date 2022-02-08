@@ -66,9 +66,10 @@ const CreateUser = () => {
 
     return (
         <Container>
+            <h1 className='mt-4'>Создать пользователя</h1>
             <AdminButtonCard>
                 <AdminForm onSubmit={handleSubmit(onSubmit)}>
-                    <h2 className='mb-3'>Создать пользователя</h2>
+                    <h2 className='mb-3'>Создать</h2>
                     <Row className='mb-3'>
                         <AdminInput {...register('name', {
                             required: true,

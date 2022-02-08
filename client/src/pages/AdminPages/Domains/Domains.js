@@ -61,6 +61,7 @@ const CreateDomains = () => {
 
     return (
         <Container>
+            <h1 className='mt-4'>Домены</h1>
             <AdminButtonCard>
                 <h2 className='mb-3 text-center'>Добавить новый домен</h2>
                 <AdminForm onSubmit={handleSubmit(onSubmit)}>

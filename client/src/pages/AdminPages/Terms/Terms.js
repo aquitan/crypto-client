@@ -37,6 +37,7 @@ const Terms = () => {
 
     return (
         <Container>
+            <h1 className='mt-4'>Пользовательское соглашение</h1>
             <ModalDark active={modal.openModal} onClick={() => onSubmit()} setActive={closeModal}>
                 <h3>Подтвердить действие?</h3>
             </ModalDark>

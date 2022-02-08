@@ -13,7 +13,9 @@ body {
 .container {
   /*overflow-y: auto;*/
   position: relative;
+  max-width: 1540px;
 }
+
 html {
   height: 100%;
 }

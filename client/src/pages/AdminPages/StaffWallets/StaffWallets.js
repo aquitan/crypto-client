@@ -41,7 +41,7 @@ const StaffWallets = () => {
     }
 
     return (
-        <Container>
+        <Container className='container-xxl'>
             <h2 className='mt-4 mb-4'>Staff Wallets</h2>
             <AdminButtonCard className={`${cls.bg_black} mb-3 p-3`}>
                 <AdminForm onSubmit={handleSubmit(onSubmit)}>

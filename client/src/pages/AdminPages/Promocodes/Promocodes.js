@@ -85,6 +85,7 @@ const Promocodes = () => {
 
     return (
         <Container>
+            <h1 className='mt-4'>Промокоды</h1>
             <AdminButtonCard className={`${cls.bg_black} mb-3 p-3`}>
                 <h2 className={'mb-3'}>Создать промокод</h2>
                 <AdminForm onSubmit={handleSubmit(sendPromocode)}>

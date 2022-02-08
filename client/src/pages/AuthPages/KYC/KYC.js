@@ -24,7 +24,6 @@ import {store} from "../../../index";
 const KYC = ({status}) => {
     const [startDate, setStartDate] = useState()
     const locatioan = useLocation()
-    console.log('store', store.userEmail)
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
     })

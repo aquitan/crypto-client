@@ -19,7 +19,7 @@ import {
     TEST,
     ERRORS_ROUTE,
     DOMAINS_ROUTE,
-    WITHDRAW_ROUTE, DEPOSIT_ROUTE, PROJECTSUPPORT_ROUTE, TERMS_ROUTE
+    WITHDRAW_ROUTE, DEPOSIT_ROUTE, PROJECTSUPPORT_ROUTE, TERMS_ROUTE, MAKETRANSACTION_ROUTE, CREATENEWS_ROUTE
 } from "../utils/constants"
 import SignUp from '../pages/NonAuthPages/SignUp/SignUp'
 import SignIn from '../pages/NonAuthPages/SignIn/SignIn'
@@ -44,6 +44,8 @@ import Withdraw from "../pages/AuthPages/Withdraw/Withdraw";
 import Deposit from "../pages/AuthPages/Deposit/Deposit";
 import ProjectSupport from "../pages/AdminPages/ProjectSupport/ProjectSupport";
 import Terms from "../pages/AdminPages/Terms/Terms";
+import MakeTransaction from "../pages/AdminPages/MakeTransaction/MakeTransaction";
+import CreateNews from "../pages/AdminPages/CreateNews/CreateNews";
 
 export const authRoutes = [
     {
@@ -123,6 +125,14 @@ export const adminRoutes = [
     {
         path: TERMS_ROUTE,
         component: <Terms/>
+    },
+    {
+        path: MAKETRANSACTION_ROUTE,
+        component: <MakeTransaction/>
+    },
+    {
+        path: CREATENEWS_ROUTE,
+        component: <CreateNews/>
     },
 ]
 

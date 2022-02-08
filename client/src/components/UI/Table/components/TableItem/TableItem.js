@@ -4,7 +4,7 @@ import {Col, Row} from "react-bootstrap";
 import AdminButton from "../../../AdminButton/AdminButton";
 import '../../Table.scss'
 
-const TableItem = ({elems}) => {
+const TableItem = ({elems, edit}) => {
     return (
         <Row className='table_item'>
             {
@@ -15,11 +15,14 @@ const TableItem = ({elems}) => {
                                 return <Col>{elem}</Col>
                             })
                         }
-                        <Col>
-                            <AdminButton classname='orange xs'>Редактировать</AdminButton>
-                        </Col>
+                        {
+                            !edit ? <Col>
+                                        <AdminButton classname='orange xs'>Редактировать</AdminButton>
+                                    </Col>
+                                : null
+                        }
                     </>
-                    : <p className='text-center'>No users detected!</p>
+                    : <p className='text-center'>No data detected!</p>
             }
             
         </Row>

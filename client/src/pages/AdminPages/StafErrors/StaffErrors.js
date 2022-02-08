@@ -11,6 +11,7 @@ import {defaultErrors, optionsAction, optionsButton, optionsUsers} from "../../.
 const StaffErrors = () => {
     return (
         <Container>
+            <h1 className='mt-4'>Ошибки</h1>
            <AdminButtonCard>
                <h2 className='text-center'>Создание новой ошибки</h2>
                <Row className='mb-3'>

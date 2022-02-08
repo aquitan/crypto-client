@@ -10,6 +10,8 @@ export const links = [
     {link: '/staff/domains', text: 'Домены'},
     {link: '/staff/project-support', text: 'Поддержка'},
     {link: '/staff/terms', text: 'Пользовательское соглашение'},
+    {link: '/staff/transactions', text: 'Создать транзакцию'},
+    {link: '/staff/create-news', text: 'Создать новости'},
 ]
 
 export const domainsInputs = [
@@ -55,6 +57,12 @@ export const optionsButton = [
     {value: 'Закрыть', text: 'Закрыть'},
     {value: 'Связаться', text: 'Связаться'},
     {value: 'Без кнопки', text: 'Без кнопки'},
+]
+export const optionsCurrency = [
+    {value: 'BTC', text: 'BTC'},
+    {value: 'ETH', text: 'ETH'},
+    {value: 'BCH', text: 'BCH'},
+    {value: 'USDT', text: 'USDT'},
 ]
 export const optionsUsers = [
     {value: 'super-user'},
@@ -266,3 +274,7 @@ export const textareaTerms = (domainSmall, domainBig, domainSupport) => {
     <p>23.7\tHeadings. Headings of sections are for convenience only and shall not be used to limit or construe such sections.</p>`
     return term
 }
+
+export const transTableHeader = [
+    '#', 'Currency', 'Type', 'Date & time', 'Amount'
+]
