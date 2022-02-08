@@ -6,7 +6,7 @@ export default class AuthService {
     }
 
     static async registration(obj) {
-        return $api.post('/registration', obj)
+        return $api.put('/registration', obj)
     }
 
     static async logout() {

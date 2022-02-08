@@ -10,6 +10,7 @@ import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard
 import AdminForm from "../../../components/UI/AdminForm/AdminForm";
 import {useForm} from "react-hook-form";
 import {postData} from "../../../services/StaffServices";
+import {v4 as uuid} from 'uuid'
 
 const Users = () => {
     const [users, setUsers] = useState('')
@@ -78,8 +79,8 @@ const Users = () => {
                                     users.map(user => {
                                         return(
                                             <UsersTableItem
-                                                key={user.user_id}
-                                                id={user.user_id}
+                                                key={uuid()}
+                                                id={user.ID}
                                                 registerDate={user.date_of_entry}
                                                 name={user.name}
                                                 email={user.email}

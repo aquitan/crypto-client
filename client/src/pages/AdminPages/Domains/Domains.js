@@ -21,31 +21,39 @@ import Table from '../../../components/UI/Table/Table'
 import TableBody from "../../../components/UI/Table/components/TableBody/TableBody";
 import TableItem from "../../../components/UI/Table/components/TableItem/TableItem";
 import TextArea from "../../../components/UI/TextArea/TextArea";
+import {postData, putData} from "../../../services/StaffServices";
+import {getCurrentDate} from "../../../utils/getCurrentDate";
+import {store} from "../../../index";
 
 const CreateDomains = () => {
     const {register, handleSubmit} = useForm()
     const [errorList, setErrorList] = useState({
         verif_document: {
+            errorName: defaultErrors[0].errorName,
             title: defaultErrors[0].name,
             text: defaultErrors[0].text,
             button: 'ОК'
         },
         verif_address: {
+            errorName: defaultErrors[1].errorName,
             title: defaultErrors[1].name,
             text: defaultErrors[1].text,
             button: 'OK'
         },
         insurance: {
+            errorName: defaultErrors[2].errorName,
             title: defaultErrors[2].name,
             text: defaultErrors[2].text,
             button: 'OK'
         },
         premium: {
+            errorName: defaultErrors[3].errorName,
             title: defaultErrors[3].name,
             text: defaultErrors[3].text,
             button: 'OK'
         },
         multi_account: {
+            errorName: defaultErrors[4].errorName,
             title: defaultErrors[4].name,
             text: defaultErrors[4].text,
             button: 'OK'
@@ -53,9 +61,21 @@ const CreateDomains = () => {
     })
     const tableHeader = ['#001', '127.0.0.1:8000', 'super', 'Jan. 11, 2022, 10:21 a.m.']
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         data.errorList = errorList
+        data.dateOfDomainCreate = getCurrentDate()
+        data.depositFee = parseInt(data.depositFee)
+        data.rateCorrectSum = parseInt(data.rateCorrectSum)
+        data.minDepositSum = parseInt(data.minDepositSum)
+        data.minWithdrawalSum = parseInt(data.minWithdrawalSum)
+        data.internalSwapFee = parseInt(data.internalSwapFee)
+        data.currencySwapFee = parseInt(data.currencySwapFee)
+        data.companyPhoneNumber = parseInt(data.companyPhoneNumber)
+        data.staffId = 1
         console.log(data)
+        const res = await putData('/staff/domains/create_domain/', data)
+        const response = await res.data
+        console.log('res', response)
     }
 
 
@@ -78,7 +98,7 @@ const CreateDomains = () => {
                             return (
                                 <Row className='mb-3'>
                                     {input.text}
-                                    <AdminInput {...register(input.name, {
+                                    <AdminInput type={input.inp} {...register(input.name, {
                                         required: true
                                     })} placeholder={input.text}/>
                                 </Row>

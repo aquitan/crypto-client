@@ -13,6 +13,7 @@ import AdminButtonCard from "../../../../../components/AdminButtonCard/AdminButt
 import error from "../../../../../styles/Error.module.scss";
 import {ErrorMessage} from "@hookform/error-message";
 import {patchData, postData} from "../../../../../services/StaffServices";
+import {getCurrentDate} from "../../../../../utils/getCurrentDate";
 
 const UserDetailTabAct = (props) => {
     const [isModal, setIsModal] = useState(false)
@@ -34,7 +35,8 @@ const UserDetailTabAct = (props) => {
         staffId: store.userId,
         staffEmail: store.userEmail,
         userEmail: props.data.base_data.email,
-        domainName: window.location.host
+        domainName: window.location.host,
+        currentDate: getCurrentDate()
     }
 
     const {register: balanceRegister, handleSubmit: balanceHandleSubmit, formState: {errors}} = useForm({
@@ -78,8 +80,8 @@ const UserDetailTabAct = (props) => {
         console.log('reqruiter')
     }
     const makeStaff = async () => {
-        const response = await patchData('/staff/users/user_detail/update_double_deposit/', {
-            ...dataObj, status: !btns.double
+        const response = await patchData('/staff/users/user_detail/update_staff_status/', {
+            ...dataObj, status: !btns.isStaff
         })
         setBtns({...btns, isStaff: !btns.isStaff})
         handleCloseModal()

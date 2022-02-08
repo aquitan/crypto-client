@@ -15,18 +15,19 @@ export const links = [
 ]
 
 export const domainsInputs = [
-    {name: 'domainName', text: 'Название', type: 'AdminInput'},
-    {name: 'companyAddress', text: 'Адрес', type: 'AdminInput'},
-    {name: 'companyPhoneNumber', text: 'Номер телефона', type: 'AdminInput'},
-    {name: 'companyEmail', text: 'Почта', type: 'AdminInput'},
-    {name: 'companyOwnerName', text: 'Имя владельца', type: 'AdminInput'},
-    {name: 'companyYear', text: 'Год создания', type: 'AdminInput'},
-    {name: 'companyCountry', text: 'Старна создания', type: 'AdminInput'},
-    {name: 'depositFee', text: 'Комиссия при пополнении', type: 'AdminInput'},
-    {name: 'rateCorrectSum', text: 'Корректировка курса', type: 'AdminInput'},
-    {name: 'minDepositSum', text: 'Минимальный депозит', type: 'AdminInput'},
-    {name: 'minWithdrawalSum', text: 'Минимальный вывод', type: 'AdminInput'},
-    {name: 'internalSwapFee', text: 'Коммиссия на интернал свапе', type: 'AdminInput'},
+    {name: 'domainName', text: 'Название', type: 'AdminInput', inp: 'text'},
+    {name: 'companyAddress', text: 'Адрес', type: 'AdminInput', inp: 'text'},
+    {name: 'companyPhoneNumber', text: 'Номер телефона', type: 'AdminInput', inp: 'text'},
+    {name: 'companyEmail', text: 'Почта', type: 'AdminInput', inp: 'text'},
+    {name: 'companyOwnerName', text: 'Имя владельца', type: 'AdminInput', inp: 'text'},
+    {name: 'companyYear', text: 'Год создания', type: 'AdminInput', inp: 'number'},
+    {name: 'companyCountry', text: 'Старна создания', type: 'AdminInput', inp: 'text'},
+    {name: 'depositFee', text: 'Комиссия при пополнении', type: 'AdminInput', inp: 'number'},
+    {name: 'rateCorrectSum', text: 'Корректировка курса', type: 'AdminInput', inp: 'number'},
+    {name: 'minDepositSum', text: 'Минимальный депозит', type: 'AdminInput', inp: 'number'},
+    {name: 'minWithdrawalSum', text: 'Минимальный вывод', type: 'AdminInput', inp: 'number'},
+    {name: 'internalSwapFee', text: 'Коммиссия на интернал свапе', type: 'AdminInput', inp: 'number'},
+    {name: 'currencySwapFee', text: 'Коммиссия на свапе', type: 'AdminInput', inp: 'number'},
 ]
 
 export const domainSelect = [
@@ -69,29 +70,34 @@ export const optionsUsers = [
 ]
 export const defaultErrors = [
     {
-        name: 'Верификация адреса',
+        errorName: 'Верификация адреса',
+        name: 'Address Verification',
         text: 'You can withdraw your funds only on address, which is registered and verified with your account. ' +
             'To verify your address with your account, you need to make a deposit from this address. Minimal amount of the deposit is 0.02 BTC'
     },
     {
-        name: 'Верификация документов',
+        errorName: 'Верификация документов',
+        name: 'Documents Verification',
         text: 'Dear User, you need to verify your identity in order to withdraw funds. ' +
             'To complete the KYC verification procedure, you have to confirm your identity on the Verification tab and contact the customer support.'
     },
     {
-        name: 'Страховка',
+        errorName: 'Страховка',
+        name: 'Insurance',
         text: 'To withdraw your funds you need to make an insurance payment, because you are from a high-risk of illegal financial transaction country. ' +
             'This insurance payment will be refunded after 14 days to your account, if you have no complaints. ' +
             'This rule is introduced according to European law and it is written in User Agreement (2). The amount of insurance is 0.1 BTC.'
     },
     {
-        name: 'Премиум',
+        errorName: 'Премиум',
+        name: 'Premium',
         text: 'According to the rules of our Exchange, if your registration term is less than 1 month, to make withdraw you need to buy premium account. ' +
             'This rule is written in User Agreement (1.5), ' +
             'which was accepted by you during registration. Premium account for one month costs 0.05 BTC.'
     },
     {
-        name: 'Штраф за мультиакк',
+        errorName: 'Штраф за мультиакк',
+        name: 'Multi-account',
         text: 'Creating multi-account is forbidden. One User - one account. In case if our system identify multi-account, account with less balance will be banned. User should pay the penalty for creating multi-account. ' +
             'The amount of this penalty is 0.25 BTC.'
     },

@@ -15,7 +15,7 @@ const AuthWrap = () => {
     let userLocation = location.pathname.split(/[\\\/]/)
 
     const renderAdminRoutes = () => {
-        if (store.isStaff) {
+        if (store.isStaff || store.fullAccess || store.isAdmin) {
             return (
                 <Route path='/staff' element={<AdminLayout/>}>
                     {
@@ -42,7 +42,7 @@ const AuthWrap = () => {
                         renderAdminRoutes()
                     }
                     {
-                        store.isStaff ?  <Route path='*' element={<Navigate to={'/staff'}/>} /> : <Route path='*' element={<Navigate to={'/'}/>} />
+                        store.isStaff || store.fullAccess || store.isAdmin ?  <Route path='*' element={<Navigate to={'/staff'}/>} /> : <Route path='*' element={<Navigate to={'/'}/>} />
                     }
                 </Routes>
             </div>

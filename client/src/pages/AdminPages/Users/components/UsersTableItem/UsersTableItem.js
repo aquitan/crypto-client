@@ -8,6 +8,7 @@ import {faCheck, faTimesCircle} from "@fortawesome/free-solid-svg-icons";
 
 const UsersTableItem = (props) => {
     const navigate = useNavigate()
+    console.log('user props', props)
     return (
         <div className={cls.table_item}>
             <Row>
