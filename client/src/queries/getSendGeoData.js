@@ -3,9 +3,8 @@ import {GEO_API} from "../API";
 import SendLocationService from "../services/SendLocationService";
 import {store} from "../index";
 import {detectBrowser} from "../utils/detectBrowser";
+import {getCurrentDate} from '../utils/getCurrentDate'
 
-const timeDate = new Date()
-const currentDate = timeDate.getFullYear() + '-' + timeDate.getMonth()+1 + '-' + timeDate.getDate() + ' ' + timeDate.getHours() + ':' + timeDate.getMinutes() + ':' + timeDate.getSeconds()
 
 export const getGeoData = async () => {
     try {
@@ -19,7 +18,7 @@ export const getGeoData = async () => {
             city: response.data.city,
             countryName: response.data.country_name,
             coordinates: location,
-            currentDate: currentDate,
+            currentDate: getCurrentDate(),
             userAction: userLocation[userLocation.length - 1],
             id: store.userId,
             email: store.userEmail,
@@ -41,7 +40,7 @@ const sendGeoData = async (geoDatas) => {
 
 export const sendDate = async () => {
     try {
-        const response = await SendLocationService.sendDate(currentDate)
+        const response = await SendLocationService.sendDate(getCurrentDate())
     } catch (e) {
         console.log('')
     }

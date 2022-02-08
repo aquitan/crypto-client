@@ -17,17 +17,17 @@ const ModalDark = ({children, active, setActive, onClick}) => {
         <>
             {
                 active &&
-                <div className={classes.join(' ')} onClick={setActive}>
+                <div className={classes.join(' ')} onClick={() => setActive}>
                     <div className='modal_content' onClick={(e) => e.stopPropagation()}>
-                        <Row>
-                            {children}
+                        <Row className='mb-2'>
+                           <div>{children}</div>
                         </Row>
                         <Row>
                             <Col>
-                                <AdminButton className='green' onClick={onClick}>Подтвердить</AdminButton>
+                                <AdminButton classname='green' onClick={onClick}>Подтвердить</AdminButton>
                             </Col>
                             <Col>
-                                <AdminButton onClick={setActive} className='red'>Отмена</AdminButton>
+                                <AdminButton onClick={setActive} classname='red'>Отмена</AdminButton>
                             </Col>
                         </Row>
                     </div>
@@ -40,7 +40,7 @@ const ModalDark = ({children, active, setActive, onClick}) => {
 ModalDark.propTypes = {
     children: PropTypes.node,
     active: PropTypes.bool,
-    setActive: PropTypes.bool,
+    setActive: PropTypes.func,
     onClick: PropTypes.func
 }
 ModalDark.defaultProps = {

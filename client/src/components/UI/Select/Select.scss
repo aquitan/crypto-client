@@ -1,0 +1,34 @@
+.default-select {
+  background-color: #444;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 46px;
+  color: #fff;
+  border: none;
+}
+.light {
+  background-color: #fff;
+  border: none;
+  border-bottom: 1px solid #cecece;
+  color: #000;
+  min-width: 150px;
+  padding: 20px;
+}
+.select-xs {
+  max-width: 80px;
+  min-width: 50px;
+  min-height: 20px;
+  font-size: 14px;
+  padding: 20px 0;
+}
+.select-s {
+  max-width: 150px;
+  min-width: 50px;
+}
+.small {
+  padding: 5px 10px;
+  margin-bottom: 10px;
+  min-width: 50px;
+  min-height: 30px;
+  height: 30px;
+}

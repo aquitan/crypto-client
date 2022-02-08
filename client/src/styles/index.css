@@ -7,11 +7,23 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+* {
+  outline: none;
+}
+.container {
+  /*overflow-y: auto;*/
+  position: relative;
+  max-width: 1540px;
+}
+
 html {
   height: 100%;
 }
 #root {
   height: 100%;
+}
+.bg-black {
+  background-color: #000;
 }
 h1, h2, h3, h4 {
   margin: 0;

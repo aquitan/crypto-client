@@ -1,0 +1,12 @@
+.navigation-link {
+  color: #fff;
+  border-bottom: 1px solid #fff;
+  text-decoration: none;
+  padding: 10px 0 10px;
+  transition: all .2s linear;
+  &:hover {
+    transition: all .2s linear;
+    color: #000;
+    background-color: #cecece;
+  }
+}

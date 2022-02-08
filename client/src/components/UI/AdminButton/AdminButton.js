@@ -3,10 +3,10 @@ import './AdminButton.scss'
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
-const AdminButton = ({children, className, onClick, disabled, active, ...attr}) => {
+const AdminButton = ({children, classname, onClick, disabled, active, ...attr}) => {
     let classes = classNames(
         'default',
-        className
+        classname
     )
 
     const onClickAction = (e) => {

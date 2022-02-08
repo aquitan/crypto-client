@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react'
 import {NavLink} from "react-router-dom";
-import cls from './Dropdown.module.scss'
+import './Dropdown.scss'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronDown} from "@fortawesome/free-solid-svg-icons";
 import DropdownLink from "./components/DropdownLink/DropdownLink";
 import {dropdownLinks} from "../../../utils/dropdownLinks";
+import {v4 as uuid} from 'uuid'
 
 const Dropdown = () => {
     const [dropdown, setDropdown] = useState(false)
@@ -14,23 +15,25 @@ const Dropdown = () => {
     }
 
     return (
-        <div className={cls.dropdown}>
-            <div className={cls.dropdown_head} onClick={onDropdownHandler}>
+        <div className='dropdown'>
+            <div className='dropdown_head' onClick={onDropdownHandler}>
                 Menu
                 <FontAwesomeIcon icon={faChevronDown} color={'#cecece'} />
             </div>
-            {
-                dropdown
-                    ?
-                    <div className={cls.dropdown_body}>
-                        {
-                            dropdownLinks.map(link => {
-                                return <DropdownLink key={link.id} onClick={() => setDropdown(false)} to={link.to} name={link.name} />
-                            })
-                        }
-                    </div>
-                    : null
-            }
+            <div className="dropdown_body">
+                {
+                    dropdown
+                        ?
+                        <div className='dropdown_body'>
+                            {
+                                dropdownLinks.map(link => {
+                                    return <DropdownLink key={uuid()} onClick={() => setDropdown(!dropdown)} to={link.to} name={link.name} />
+                                })
+                            }
+                        </div>
+                        : null
+                }
+            </div>
         </div>
     )
 }

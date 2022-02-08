@@ -27,6 +27,12 @@ const MyAccount = (props) => {
             geodata.userId = store.userId
             const response = await UserService.editUser(geodata)
             setChangeName(false)
+            if (response.status === 200) {
+                store.setNotification({
+                    date: geodata.currentDate,
+                    message: 'name changed successfully'
+                })
+            }
         } else {
             setChangeName(true)
         }

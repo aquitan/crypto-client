@@ -39,7 +39,7 @@ const NavBar = () => {
                     <Nav style={{width: '100%'}}>
                         <Row style={{width: '100%'}}>
                             <Col>
-                                <Notification />
+                                <Notification bell={showNotif} />
                             </Col>
                             <Col>
                                 <NavLink to={'/contact-us'}>Contact us</NavLink>

@@ -17,9 +17,9 @@ const AuthWrap = () => {
     const renderAdminRoutes = () => {
         if (store.isStaff) {
             return (
-                <Route exact path='/staff' element={<AdminLayout/>}>
+                <Route path='/staff' element={<AdminLayout/>}>
                     {
-                        adminRoutes.map(route => <Route key={uuid()} exact path={route.path} element={route.component} />)
+                        adminRoutes.map(route => <Route key={uuid()} path={route.path} element={route.component} />)
                     }
                 </Route>
             )
@@ -35,25 +35,24 @@ const AuthWrap = () => {
                 <Routes>
                     <Route path='/' element={<UserLayout/>}>
                         {
-                            authRoutes.map(route => <Route key={uuid()} exact path={route.path} element={route.component} />)
+                            authRoutes.map(route => <Route key={uuid()} path={route.path} element={route.component} />)
                         }
                     </Route>
                     {
                         renderAdminRoutes()
                     }
-
                     {
                         store.isStaff ?  <Route path='*' element={<Navigate to={'/staff'}/>} /> : <Route path='*' element={<Navigate to={'/'}/>} />
                     }
                 </Routes>
             </div>
             <Footer>
-                <Link exact to='/'>Nowhere</Link>
-                <Link exact to='/'>Nowhere</Link>
-                <Link exact to='/'>Nowhere</Link>
-                <Link exact to='/'>Nowhere</Link>
-                <Link exact to='/'>Nowhere</Link>
-                <Link exact to='/'>Nowhere</Link>
+                <Link to='/'>Nowhere</Link>
+                <Link to='/'>Nowhere</Link>
+                <Link to='/'>Nowhere</Link>
+                <Link to='/'>Nowhere</Link>
+                <Link to='/'>Nowhere</Link>
+                <Link to='/'>Nowhere</Link>
             </Footer>
         </>
     )

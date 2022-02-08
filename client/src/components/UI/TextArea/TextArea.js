@@ -1,10 +1,21 @@
 import React, {forwardRef} from 'react'
-import cls from './TextArea.module.scss'
+import './TextArea.scss'
+import PropTypes from "prop-types";
+import classNames from "classnames";
 
-const TextArea = forwardRef((props, ref) => {
+const TextArea = forwardRef(({classnames, ...attr}, ref) => {
+    let classes = classNames(
+        'textarea',
+        classnames
+    )
+
     return (
-        <textarea className={cls.textarea} {...props}/>
+        <textarea ref={ref} className={classes} {...attr}/>
     )
 })
+
+TextArea.propTypes = {
+    classnames: PropTypes.string
+}
 
 export default TextArea

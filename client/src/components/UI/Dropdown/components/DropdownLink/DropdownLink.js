@@ -1,10 +1,10 @@
 import React from 'react'
-import cls from "../../Dropdown.module.scss";
+import "../../Dropdown.scss";
 import {NavLink} from "react-router-dom";
 
 const DropdownLink = (props) => {
     return (
-        <NavLink onClick={props.onClick} className={cls.dropdown_link} to={props.to}>{props.name}</NavLink>
+        <NavLink onClick={props.onClick} className='dropdown_link' to={props.to}>{props.name}</NavLink>
     )
 }
 

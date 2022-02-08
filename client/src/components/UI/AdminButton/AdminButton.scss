@@ -8,6 +8,7 @@
   max-width: 200px;
   width: 100%;
   font-size: 14px;
+  min-height: 46px;
   &:hover {
     transition: all .2s linear;
     filter: opacity(80%)
@@ -21,4 +22,14 @@
 }
 .blue {
   background-color: lightblue;
+}
+.orange {
+  background-color: orange;
+  color: #fff;
+}
+.xs {
+  padding: 5px 10px;
+  font-size: 14px;
+  min-height: 30px;
+  max-width: 150px;
 }

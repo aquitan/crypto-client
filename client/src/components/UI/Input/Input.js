@@ -1,10 +1,16 @@
 import React, { forwardRef } from 'react'
-import cls from './Input.module.scss'
+import './Input.scss'
+import classNames from "classnames";
 
-const Input = forwardRef((props, ref) => {
+const Input = forwardRef(({classname, ...attr}, ref) => {
+    let classes = classNames(
+        'input',
+        classname
+    )
+
     return (
-        <div className={cls.input_wrap}>
-            <input id={props.id} className={cls.input} ref={ref} {...props} />
+        <div className={'input_wrap'}>
+            <input {...attr}  className={classes} ref={ref} />
         </div>
     )
 })

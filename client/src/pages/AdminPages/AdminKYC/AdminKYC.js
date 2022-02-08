@@ -35,7 +35,7 @@ const AdminKYC = () => {
 
     return (
         <Container>
-            <h1>Kyc</h1>
+            <h1 className='mt-4'>Kyc</h1>
             <Row className='mt-4 mb-4'>
                 <UsersInfoCard color={'blue'} type={'Total'} amount={2} />
                 <UsersInfoCard color={'green'} type={'Online'} amount={1} />

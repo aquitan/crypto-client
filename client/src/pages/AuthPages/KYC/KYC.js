@@ -1,10 +1,9 @@
-import React, {useEffect, useState} from 'react'
-import {Col, Container, NavLink, Row} from "react-bootstrap";
+import React, {useState} from 'react'
+import {Col, Container, Row} from "react-bootstrap";
 import Form from "../../../components/UI/Form/Form";
 import Input from "../../../components/UI/Input/Input";
 import DatePickert from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css";
-import cls from './KYC.modules.scss'
 import './DatePicker.scss'
 import {useForm} from "react-hook-form";
 import {emailValidate} from "../../../utils/checkEmail";
@@ -25,7 +24,6 @@ import {store} from "../../../index";
 const KYC = ({status}) => {
     const [startDate, setStartDate] = useState()
     const locatioan = useLocation()
-    console.log('store', store.userEmail)
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
     })
@@ -63,7 +61,7 @@ const KYC = ({status}) => {
                     :
                     <>
                         <h1>Verify your ID</h1>
-                        <Form type='big' onSubmit={handleSubmit(onSubmit)}>
+                        <Form classnames='form_big' onSubmit={handleSubmit(onSubmit)}>
                             <Row>
                                 <Col>
                                     <Input {...register('firstName', {
@@ -188,7 +186,7 @@ const KYC = ({status}) => {
                             </Row>
                             <Row className='mt-4'>
                                 <Col className='col-sm-12 col-lg-3 m-auto'>
-                                    <Button>Verify</Button>
+                                    <Button type='submit'>Verify</Button>
                                 </Col>
                             </Row>
 

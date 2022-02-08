@@ -10,9 +10,9 @@ const PromocodesItem = (props) => {
                 <Col>{props.id}</Col>
                 <Col>{props.code}</Col>
                 <Col>{props.reward}</Col>
-                <Col>{props.type}</Col>
+                <Col>{props.cuurrency}</Col>
                 <Col>
-                    <AdminButton color='green'>Конфигурировать</AdminButton>
+                    <AdminButton classname='red xs'>Удалить</AdminButton>
                 </Col>
             </Row>
         </div>
