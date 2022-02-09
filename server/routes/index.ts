@@ -59,14 +59,16 @@ router.post('/staff/get_used_promocode_list/', staffController.getUsedPromocodeL
 router.post('/staff/ip_match_checker/', staffController.getIpForMatch)
 
 router.put('/staff/domains/create_domain/', staffController.createDomain)
-router.post('/staff/domains/get_active_domains/:email/', staffController.getDomainsList)
+router.get('/staff/domains/domain_detail/:id/', staffController.getDomainDetail)
+router.post('/staff/domains/get_active_domains/', staffController.getDomainsList)
 router.put('/staff/errors/create_new_error/', staffController.createCustomError)
-router.post('/staff/errors/get_all_errors/', staffController.getAllErrors) // controller 626 line <give when has request to domain detail for admin
+router.get('/staff/errors/get_all_errors/:id/', staffController.getAllErrors)
 
 router.put('/staff/notifications/create_new_notification/', staffController.createNewNotification)
 router.post('/staff/notifications/get_all_notifications/', staffController.getNotificationList)
 
 // router.put('/staff/wallets/create_staff_wallet/', staffController.createStaffWallet)
+router.get('/staff/project_support/', staffController.projectSupport)
 
 
 

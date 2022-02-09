@@ -191,20 +191,16 @@ class AuthController {
   async forgotPassword(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
 
-      const { email } = req.body
+      const { email, domainName } = req.body
       console.log('req body: ', req.body);
-
-      const result: boolean = await authService.forgotPassword(email)
-
-      if (result === false) {
-        return res.status(400).json({
-          message: 'wrong email address',
-          status: 'rejected'
-        })
-      }
+      const result: boolean = await authService.forgotPassword(email, domainName)
+      if (result === false) return res.status(400).json({
+        message: 'wrong email address',
+        status: 'rejected'
+      })
 
       return res.status(202).json({
-        message: 'new password was send',
+        message: 'new password was send to email.',
         status: 'complete'
       })
     } catch (e) {

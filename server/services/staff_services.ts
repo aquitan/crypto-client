@@ -250,6 +250,13 @@ class staffService {
     return true
   }
 
+  async GetDomainDetail(domain_id: number) {
+    const recieved_domain: any = await database.GetDomainDetailByDomainId(domain_id)
+    console.log('domain is: ', recieved_domain);
+    if (!recieved_domain[0]) return false
+    return recieved_domain
+  }
+
   async CreateCustomError(data_object: any) {
 
     await database.SaveDomainErrors(data_object.domain_id, data_object.errorName, data_object.errorTitle, data_object.errorText, data_object.errorButton)
@@ -260,6 +267,13 @@ class staffService {
 
     return savedErrors
 
+  }
+
+  async GetDomainErrors(domain_id: number) {
+    const domain_errors: any = await database.GetDomainErrorsList(domain_id)
+    console.log('domain is: ', domain_errors);
+    if (!domain_errors[0]) return false
+    return domain_errors
   }
 
   async GetDomainListForStaff(staffEmail: string) {

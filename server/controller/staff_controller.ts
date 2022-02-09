@@ -582,7 +582,23 @@ class StaffController {
         message: 'domain was created with all settings.',
         status: 'complete'
       })
+    } catch (e) {
+      next(e)
+    }
+  }
 
+  async getDomainDetail(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const id: string = req.params.id
+      const domain_id: number = parseInt(id)
+      console.log('current domain id is: ', domain_id);
+      const result: any = await staffService.GetDomainDetail(domain_id)
+      if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+
+      return res.status(202).json({
+        domain_detail: result,
+        status: 'complete'
+      })
 
     } catch (e) {
       next(e)
@@ -627,7 +643,16 @@ class StaffController {
 
   async getAllErrors(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
+      const id: string = req.params.id
+      const domain_id: number = parseInt(id)
+      console.log('current domain id is: ', domain_id);
+      const result: any = await staffService.GetDomainErrors(domain_id)
+      if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
 
+      return res.status(202).json({
+        domain_detail: result,
+        status: 'complete'
+      })
     } catch (e) {
       next(e)
     }
@@ -668,14 +693,6 @@ class StaffController {
     }
   }
 
-  // async getUserLogs() {
-  //   try {
-
-  //     // chat with support
-  //   } catch (e) {
-  //     console.log(e)
-  //   }
-  // }
   async createNewNotification(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       interface request_object {
@@ -726,23 +743,6 @@ class StaffController {
   }
 
 
-
-  async support(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
-      // get active users in platform, chat.
-    } catch (e) {
-      next(e)
-    }
-  }
-
-  // async wallet(req: express.Request, res: express.Response, next: express.NextFunction) {
-  //   try {
-
-  //   } catch (e) {
-  //     next(e)
-  //   }
-  // }
-
   async staffList(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
 
@@ -756,15 +756,6 @@ class StaffController {
     try {
 
       // get staff users statictics (dep, withdrw, total staff users, staff domains, total 30d, chats)
-    } catch (e) {
-      next(e)
-    }
-  }
-
-  async userErrors(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
-
-      // add customization to user action errors
     } catch (e) {
       next(e)
     }
@@ -786,27 +777,17 @@ class StaffController {
     }
   }
 
-  async domainsAdd(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
-
-      // add domain form + base user errors + active domains (id, domain_name, stadd user, date, actions with it)
-    } catch (e) {
-      next(e)
-    }
-  }
-
-  async domainsList(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
-
-      // add domain form + base user errors + active domains (id, domain_name, stadd user, date, actions with it)
-    } catch (e) {
-      next(e)
-    }
-  }
-
   async addStaffWallets(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       // post staff wirhdraw wallets and save
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async staffWalletsList(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      //  get & show staff wallets 
     } catch (e) {
       next(e)
     }
@@ -911,16 +892,6 @@ class StaffController {
     }
   }
 
-
-
-  async makeTransaction(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
-      // add transaction to history
-    } catch (e) {
-      next(e)
-    }
-  }
-
   async secureDeal(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       // secure deal
@@ -937,13 +908,6 @@ class StaffController {
     }
   }
 
-  async staffWalletsList(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
-      //  get & show staff wallets 
-    } catch (e) {
-      next(e)
-    }
-  }
 
   async addTerms(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
@@ -955,8 +919,15 @@ class StaffController {
 
   async projectSupport(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      //  add address for donation & get some info fiels from frontend to ask a question
+      console.log('req. body: ', req.body);
 
+      const wallet: string | undefined = process.env.SUPPORT_WALLET
+      console.log('wallet is: ', wallet);
+
+      return res.status(202).json({
+        wallet: wallet,
+        status: 'complete'
+      })
     } catch (e) {
       next(e)
     }

@@ -132,13 +132,12 @@ class AuthService {
     }
   }
 
-  async forgotPassword(email: string) {
+  async forgotPassword(email: string, domain_name: string) {
     const candidate: any = await database.GetBaseUserParamsByEmail(email)
     console.log('found user is: ', candidate);
 
-    if (!candidate[0]) {
-      return false
-    }
+    if (!candidate[0]) return false
+    if (candidate[0].domain_name !== domain_name) return false
 
     const new_password: string = await passwordGenerator(12)
     console.log('new password is: ', new_password);

@@ -13,7 +13,7 @@ CREATE TABLE user_info_for_action (ID INT AUTO_INCREMENT PRIMARY KEY, deposit_fe
 
 CREATE TABLE user_ip_match (ID INT AUTO_INCREMENT PRIMARY KEY, user_email VARCHAR(255) NOT NULL, user_ip_address VARCHAR(150) NOT NULL, login_date DATETIME NOT NULL, browser VARCHAR(50) NOT NULL );
 
-CREATE TABLE user_kyc (ID INT AUTO_INCREMENT PRIMARY KEY, first_name VARCHAR(255) NOT NULL, last_name VARCHAR(255) NOT NULL, email VARCHAR(150) NOT NULL, phone_number INT NOT NULL, date_of_birth DATE NOT NULL, document_number VARCHAR(100) NOT NULL, main_address VARCHAR(255) NOT NULL, sub_address VARCHAR(255), city VARCHAR(30) NOT NULL, country_name VARCHAR(50) NOT NULL, state VARCHAR(100) NOT NULL, zip_code INT NOT NULL, document_type VARCHAR(50) NOT NULL, kyc_status VARCHAR(30) NOT NULL, user_id INT NOT NULL, FOREIGN KEY(user_id) REFERENCES user_auth (ID) );
+CREATE TABLE user_kyc (ID INT AUTO_INCREMENT PRIMARY KEY, first_name VARCHAR(255) NOT NULL, last_name VARCHAR(255) NOT NULL, email VARCHAR(150) NOT NULL, phone_number VARCHAR(50) NOT NULL, date_of_birth DATE NOT NULL, document_number VARCHAR(100) NOT NULL, main_address VARCHAR(255) NOT NULL, sub_address VARCHAR(255), city VARCHAR(30) NOT NULL, country_name VARCHAR(50) NOT NULL, state VARCHAR(100) NOT NULL, zip_code INT NOT NULL, document_type VARCHAR(50) NOT NULL, kyc_status VARCHAR(30) NOT NULL, user_id INT NOT NULL, FOREIGN KEY(user_id) REFERENCES user_auth (ID) );
 
 CREATE TABLE auth_token (ID INT AUTO_INCREMENT PRIMARY KEY, refresh_token VARCHAR(1024) NOT NULL, user_id INT NOT NULL, FOREIGN KEY(user_id) REFERENCES user_auth(ID));
 
@@ -25,9 +25,9 @@ CREATE TABLE used_promocode (ID INT AUTO_INCREMENT PRIMARY KEY, code VARCHAR(30)
 CREATE TABLE user_notification (ID INT AUTO_INCREMENT PRIMARY KEY, text VARCHAR(1024) NOT NULL, user_email VARCHAR(255) NOT NULL);
 
 
-CREATE TABLE domain_list (ID INT AUTO_INCREMENT PRIMARY KEY, full_domain_name VARCHAR(255) NOT NULL, domain_name VARCHAR(100) NOT NULL, company_address VARCHAR(255) NOT NULL, company_phone_number INT NOT NULL, company_email VARCHAR(255) NOT NULL, company_owner_name VARCHAR(150) NOT NULL, company_year YEAR NOT NULL, company_country VARCHAR(50) NOT NULL, domain_owner VARCHAR(255) NOT NULL);
+CREATE TABLE domain_list (ID INT AUTO_INCREMENT PRIMARY KEY, full_domain_name VARCHAR(255) NOT NULL, domain_name VARCHAR(100) NOT NULL, company_address VARCHAR(255) NOT NULL, company_phone_number VARCHAR(50) NOT NULL, company_email VARCHAR(255) NOT NULL, company_owner_name VARCHAR(150) NOT NULL, company_year YEAR NOT NULL, company_country VARCHAR(50) NOT NULL, domain_owner VARCHAR(255) NOT NULL);
 
-CREATE TABLE domain_detail (ID INT AUTO_INCREMENT PRIMARY KEY, show_news BOOLEAN NOT NULL, double_deposit BOOLEAN NOT NULL, deposit_fee INT NOT NULL, rate_correct_sum FLOAT NOT NULL, min_deposit_sum INT NOT NULL, min_withdrawal_sum INT NOT NULL, currency_swap_fee INT NOT NULL, internal_swap_fee INT NOT NULL, date_of_create DATETIME NOT NULL, domain_id INT NOT NULL, FOREIGN KEY (domain_id) REFERENCES domain_detail(ID));
+CREATE TABLE domain_detail (ID INT AUTO_INCREMENT PRIMARY KEY, show_news BOOLEAN NOT NULL, double_deposit BOOLEAN NOT NULL, deposit_fee INT NOT NULL, rate_correct_sum FLOAT NOT NULL, min_deposit_sum INT NOT NULL, min_withdrawal_sum INT NOT NULL, currency_swap_fee INT NOT NULL, internal_swap_fee INT NOT NULL, date_of_create DATETIME NOT NULL, domain_id INT NOT NULL, FOREIGN KEY (domain_id) REFERENCES domain_list(ID));
 
 CREATE TABLE domain_withdrawal_error (ID INT AUTO_INCREMENT PRIMARY KEY, domain_id INT NOT NULL, error_name VARCHAR(100) NOT NULL, error_title VARCHAR(50) NOT NULL, error_text VARCHAR(1024) NOT NULL, error_btn VARCHAR(30) NOT NULL, FOREIGN KEY (domain_id) REFERENCES domain_list(ID) );
 

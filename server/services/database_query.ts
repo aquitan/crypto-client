@@ -215,7 +215,7 @@ class Database {
   async GetBaseUserParamsByEmail(email: string) {
     return new Promise((resolve, reject) => {
       mysql.query(`
-        SELECT user_auth.ID, user_auth.name, user_auth.email, user_params.isActivated, user_params.isUser, 
+        SELECT user_auth.ID, user_auth.name, user_auth.email, user_auth.domain_name, user_params.isActivated, user_params.isUser, 
         user_params.isStaff, user_params.isAdmin,user_params.isBanned,
         user_params.two_step_status, user_params.premium_status 
         FROM user_params
@@ -726,6 +726,26 @@ class Database {
         JOIN domain_detail
         ON domain_list.ID = domain_detail.domain_id
         WHERE domain_list.domain_owner = "${staff_email}"`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async GetDomainDetailByDomainId(domain_id: number) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT domain_list.ID, domain_list.full_domain_name, domain_list.domain_name, domain_list.company_address,
+        domain_list.company_phone_number, domain_list.company_email, domain_list.company_owner_name, 
+        domain_list.company_year, domain_list.company_country, domain_list.domain_owner, 
+        domain_detail.date_of_create, domain_detail.show_news, domain_detail.double_deposit, domain_detail.deposit_fee,
+        domain_detail.rate_correct_sum, domain_detail.min_deposit_sum, domain_detail.min_withdrawal_sum, domain_detail.currency_swap_fee,
+        domain_detail.internal_swap_fee
+        FROM domain_list
+        JOIN domain_detail
+        ON domain_list.ID = domain_detail.domain_id
+        WHERE domain_list.ID = ${domain_id}`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
