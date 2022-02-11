@@ -6,6 +6,7 @@ import UserService from "../../../services/UserService";
 import {store} from "../../../index";
 import {getGeoData} from "../../../queries/getSendGeoData";
 import Modal from "../../../components/UI/Modal/Modal";
+import {observer} from "mobx-react-lite";
 
 const MyAccount = (props) => {
 
@@ -98,4 +99,4 @@ const MyAccount = (props) => {
     )
 }
 
-export default MyAccount
+export default observer(MyAccount)

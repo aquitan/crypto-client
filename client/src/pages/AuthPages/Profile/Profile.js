@@ -6,6 +6,7 @@ import KYC from "../KYC/KYC";
 import {store} from "../../../index";
 import {getGeoData} from "../../../queries/getSendGeoData";
 import {useLocation} from "react-router-dom";
+import {postData} from "../../../services/StaffServices";
 
 const Profile = () => {
     const [profileData, setProfileData] = useState('')
@@ -16,15 +17,8 @@ const Profile = () => {
         let userLocation = location.pathname.split(/[\\\/]/)
         geodata.userAction = userLocation[userLocation.length - 1]
 
-        const res = await fetch(`/api/personal_area/profile/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
-            },
-            body: JSON.stringify(geodata)
-        })
-        const data = await res.json()
+        const res = await postData('/personal_area/profile/', geodata)
+        const data = await res.data
 
         setProfileData(data)
         console.log('dataProfile', data)

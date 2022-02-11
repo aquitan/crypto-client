@@ -83,30 +83,33 @@ export default class Store {
         try {
             const response = await AuthService.login(obj)
             console.log('response', response)
-            if (response.data.fullAccess) {
-                this.setFullAccess(true)
-            } else {
-                if (response.data.user.isBanned === 1) {
-                    this.setIsBanned(true)
-                }
-                this.setIsLoading(true)
-                if (!this.isBanned) {
-                    localStorage.setItem('token', response.data.accessToken)
-                    this.setUserId(response.data.user.ID)
-                    this.setUserEmail(response.data.user.email)
-                    if (response.data.user.isAdmin === 1) {
-                        this.setIsAdmin(true)
+            if (response.data.two_step_status !== 1) {
+                if (response.data.fullAccess) {
+                    this.setFullAccess(true)
+                } else {
+                    if (response.data.user.isBanned === 1) {
+                        this.setIsBanned(true)
                     }
-                    if (response.data.user.isStaff === 1) {
-                        this.setIsStaff(true)
+                    this.setIsLoading(true)
+                    if (!this.isBanned) {
+                        localStorage.setItem('token', response.data.accessToken)
+                        this.setUserId(response.data.user.ID)
+                        this.setUserEmail(response.data.user.email)
+                        if (response.data.user.isAdmin === 1) {
+                            this.setIsAdmin(true)
+                        }
+                        if (response.data.user.isStaff === 1) {
+                            this.setIsStaff(true)
+                        }
+                        if (response.data.user.isActivated === 1) {
+                            this.setIsActivated(true)
+                        }
+                        this.setAuth(true)
+                        this.setUser(response.data.user)
                     }
-                    if (response.data.user.isActivated === 1) {
-                        this.setIsActivated(true)
-                    }
-                    this.setAuth(true)
-                    this.setUser(response.data.user)
                 }
             }
+
         } catch(e) {
             this.setIsError(true)
             console.log('error', e)
@@ -172,6 +175,12 @@ export default class Store {
             }
         } catch(e) {
             console.log('error---', e)
+            localStorage.removeItem('token')
+            this.setAuth(false)
+            this.setIsActivated(false)
+            this.setIsAdmin(false)
+            this.setUser({})
+            this.setFullAccess(false)
         } finally {
             this.setIsLoading(false)
         }

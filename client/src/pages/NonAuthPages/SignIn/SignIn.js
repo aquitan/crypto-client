@@ -29,12 +29,7 @@ const SignIn = () => {
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onChange'
     })
-    const [match, setMatch] = useState({
-        active: false,
-        numbers: false,
-        characters: false,
-        uppercase: false
-    })
+
     const navigate = useNavigate()
 
     const onSubmit = async (data, e) => {
@@ -66,27 +61,7 @@ const SignIn = () => {
         }
     }
 
-    const checkForNums = (str) => {
-        let matches = str.match(/\d+/g)
-        return matches
-    }
-    const checkUppercase = (str) => {
-        let matches = str.match(/[A-Z]/)
-        return matches
-    }
 
-    const onCheckPassword = (e) => {
-        console.log(e.target.value)
-        setMatch({
-            characters: e.target.value.length > 7,
-            numbers: checkForNums(e.target.value),
-            uppercase: checkUppercase(e.target.value),
-            active: true
-        })
-    }
-    const showPasswordTip = () => {
-        setMatch({...match, active: false})
-    }
 
     return (
         <Container>
@@ -120,7 +95,7 @@ const SignIn = () => {
                 </Row>
                 <Row>
                     <Col className={cls.relative}>
-                        <Input onChange={onCheckPassword} {...register('password', {
+                        <Input {...register('password', {
                                 required: 'You must specify your password',
                                 minLength: {
                                     value: 8,
@@ -130,13 +105,11 @@ const SignIn = () => {
                                     value: 32,
                                     message: 'Your password must be less than 32 characters'
                                 },
-                                onChange: (e) => onCheckPassword(e),
-                                onBlur: () => showPasswordTip()
+
                             }
                         )} type={isShowPassword ? 'text' : 'password'} name='password' placeholder='password' id='password' />
                         {/* <ErrorMessage name='password' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} /> */}
                         <FontAwesomeIcon onClick={showPassword} className={cls.eye_icon} icon={isShowPassword ? faEye : faEyeSlash} />
-                        <PasswordStrength active={match.active} characters={match.characters} numbers={match.numbers} uppercase={match.uppercase} />
                     </Col>
                 </Row>
                 <Row className='mt-3 justify-content-center'>

@@ -8,7 +8,7 @@ import UserDetailTabAct from "./components/UserDetailTabAct/UserDetailTabAct";
 import {store} from "../../../index";
 import {useParams} from "react-router-dom";
 import {getGeoData} from "../../../queries/getSendGeoData";
-import {postData} from "../../../services/StaffServices";
+import {getData, postData} from "../../../services/StaffServices";
 
 const UserDetail = () => {
 
@@ -18,9 +18,9 @@ const UserDetail = () => {
     const params = useParams()
 
     const getAdminUsersDetail = async () => {
-        const res = await fetch(`/api/staff/users/user_detail/${params.id}`)
+        const res = await getData(`/staff/users/user_detail/${params.id}`)
         let geodata = await getGeoData()
-        const data = await res.json()
+        const data = await res.data
         const {ipAddress} = geodata
         console.log('user data', data)
 

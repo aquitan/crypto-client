@@ -12,14 +12,20 @@ import {emailValidate, validateInput} from "../../../utils/checkEmail";
 import {ErrorMessage} from "@hookform/error-message";
 import Select from '../../../components/UI/Select/Select';
 import { getCurrentDate } from '../../../utils/getCurrentDate';
-import { postData } from '../../../services/StaffServices';
+import {deleteData, postData, putData} from '../../../services/StaffServices';
 import AdminButtonCard from '../../../components/AdminButtonCard/AdminButtonCard';
 
 const Promocodes = () => {
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: "onBlur"
     })
-    const [promocodeList, setpromocodeList] = useState()
+    const currentDomains = [
+        {value: 'localhost:3000', text: 'localhost:3000'}
+    ]
+    const [state, setState] = useState({
+        currentPromocodes: '',
+        usedPromocodes: ''
+    })
     const options = [
         {value: 'BTC', text: 'BTC'}, 
         {value: 'ETH', text: 'ETH'},
@@ -44,7 +50,6 @@ const Promocodes = () => {
     }
 
     const sendPromocode = async (data) => {
-        console.log('data', data)
         let dataPrep = prepareData(data.counter, data.min, data.max)
 
         let currentDate = new Date()
@@ -58,16 +63,7 @@ const Promocodes = () => {
             currency: data.currency,
             notification: data.notification
         }
-
-        const res = await fetch('/api/staff/create_promocode/', {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
-            },
-            body: JSON.stringify(promoData)
-        })
-        const datas = await res.json()
+        const res = await putData('/staff/create_promocode/', promoData)
     }
 
     const getAllPromocodes = async () => {
@@ -78,13 +74,35 @@ const Promocodes = () => {
         }
         const res = await postData('/staff/get_promocode_list/', promoData)
         const data = await res.data
-        setpromocodeList(data.promocodeList)
+        console.log('current promos', res.data)
+        setState({
+            ...state, currentPromocodes: data.promocodeList
+        })
+    }
+
+    const getUsedPromocodes = async () => {
+        let promoData = {
+            isStaff: store.isStaff,
+            isAdmin: store.isAdmin,
+            id: store.userId
+        }
+        const res = await postData('/staff/get_used_promocode_list/', promoData)
+        const data = await res.data
+        console.log('used', data)
     }
 
     useEffect(() => {
         getAllPromocodes()
+        getUsedPromocodes()
     }, [])
 
+    const onDeletePromo = async (id) => {
+        console.log('id', id)
+        const res = await deleteData('/staff/delete_promocode', {id: id})
+        setState({
+            ...state, currentPromocodes: state.currentPromocodes.filter(el => el.ID !== id )
+        })
+    }
 
     return (
         <Container>
@@ -98,14 +116,14 @@ const Promocodes = () => {
                                 required: true,
                                 message: 'Заполните поле'
                             })} maxLength='5' placeholder='Сумма вознаграждения от' />
-                            <ErrorMessage  name='domainName' errors={errors} render={() => <p className={error.error}>Заполните поле</p>} />
+                            <ErrorMessage  name='min' errors={errors} render={() => <p className={error.error}>Заполните поле</p>} />
                         </Col>
                         <Col>
                             <AdminInput {...register('max', {
                                 required: true,
                                 message: 'Заполните поле'
                             })} maxLength='5' placeholder='Сумма вознаграждения до' />
-                            <ErrorMessage  name='domainName' errors={errors} render={() => <p className={error.error}>Заполните поле</p>} />
+                            <ErrorMessage  name='max' errors={errors} render={() => <p className={error.error}>Заполните поле</p>} />
                         </Col>
                     </Row>
                     <Row className='mb-4'>
@@ -114,13 +132,13 @@ const Promocodes = () => {
                                 required: true,
                                 message: 'Заполните поле'
                             })} placeholder='Кол-во промокодов' />
-                            <ErrorMessage  name='domainName' errors={errors} render={() => <p className={error.error}>Заполните поле</p>} />
+                            <ErrorMessage  name='counter' errors={errors} render={() => <p className={error.error}>Заполните поле</p>} />
                         </Col>
                         <Col>
-                            <AdminInput {...register('domainName', {
+                            <Select options={currentDomains} {...register('domainName', {
                                 required: true,
                                 message: 'Заполните поле'
-                            })} placeholder='Выбрать домен' />
+                            })} />
                             <ErrorMessage  name='domainName' errors={errors} render={() => <p className={error.error}>Заполните поле</p>} />
                         </Col>
                     </Row>
@@ -161,9 +179,9 @@ const Promocodes = () => {
                 </Row>
                 <div className={cls.current_promocodes}>
                     {
-                        promocodeList ?
-                            promocodeList.map(promo => {
-                                return <PromocodesItem key={promo.ID} id={promo.ID} code={promo.code} reward={promo.value} type={promo.type}/>
+                        state.currentPromocodes ?
+                            state.currentPromocodes.map(promo => {
+                                return <PromocodesItem onClick={onDeletePromo} key={promo.ID} id={promo.ID} code={promo.code} reward={promo.value} type={promo.type}/>
                             })
                             : null
                     }
@@ -179,8 +197,8 @@ const Promocodes = () => {
                 </Row>
                 <div className={cls.current_promocodes}>
                     {
-                        promocodeList ?
-                            promocodeList.map(promo => {
+                        state.usedPromocodes ?
+                            state.usedPromocodes.map(promo => {
                                 return <PromocodesItem key={promo.ID} id={promo.ID} code={promo.code} reward={promo.value} type={promo.type}/>
                             })
                             : null

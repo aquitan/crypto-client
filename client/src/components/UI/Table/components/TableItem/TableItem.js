@@ -3,8 +3,18 @@ import PropTypes from 'prop-types'
 import {Col, Row} from "react-bootstrap";
 import AdminButton from "../../../AdminButton/AdminButton";
 import '../../Table.scss'
+import {v4 as uuid} from 'uuid'
+import {useNavigate} from "react-router-dom";
 
-const TableItem = ({elems, edit}) => {
+const TableItem = ({elems, btn, id, onClick}) => {
+
+    const onBtnClick = (e) => {
+        if (btn === 'детальная') {
+            return onClick(id)
+        }
+        onClick(e)
+    }
+
     return (
         <Row className='table_item'>
             {
@@ -12,12 +22,12 @@ const TableItem = ({elems, edit}) => {
                     <>
                         {
                             elems.map(elem => {
-                                return <Col>{elem}</Col>
+                                return <Col key={uuid()}>{elem}</Col>
                             })
                         }
                         {
-                            !edit ? <Col>
-                                        <AdminButton classname='orange xs'>Редактировать</AdminButton>
+                            btn ? <Col>
+                                        <AdminButton onClick={onBtnClick} classname='orange xs'>{btn}</AdminButton>
                                     </Col>
                                 : null
                         }
@@ -30,7 +40,8 @@ const TableItem = ({elems, edit}) => {
 }
 
 TableItem.propTypes = {
-    
+    elems: PropTypes.array,
+    edit: PropTypes.string
 }
 TableItem.defaultProps = {
     

@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import {Accordion, Col, Container, Row} from "react-bootstrap";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
@@ -24,9 +24,15 @@ import TextArea from "../../../components/UI/TextArea/TextArea";
 import {postData, putData} from "../../../services/StaffServices";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
 import {store} from "../../../index";
+import cls from "../../NonAuthPages/SignIn/SignIn.module.scss";
+import {ErrorMessage} from "@hookform/error-message";
+import {useNavigate} from "react-router-dom";
 
 const CreateDomains = () => {
-    const {register, handleSubmit} = useForm()
+    const {register, handleSubmit, formState: {errors}} = useForm({
+        mode: "onBlur"
+    })
+    const navigate = useNavigate()
     const [errorList, setErrorList] = useState({
         verif_document: {
             errorName: defaultErrors[0].errorName,
@@ -70,7 +76,6 @@ const CreateDomains = () => {
         data.minWithdrawalSum = parseInt(data.minWithdrawalSum)
         data.internalSwapFee = parseInt(data.internalSwapFee)
         data.currencySwapFee = parseInt(data.currencySwapFee)
-        data.companyPhoneNumber = parseInt(data.companyPhoneNumber)
         data.staffId = 1
         console.log(data)
         const res = await putData('/staff/domains/create_domain/', data)
@@ -78,6 +83,20 @@ const CreateDomains = () => {
         console.log('res', response)
     }
 
+
+    useEffect(async () => {
+        const obj = {
+            isAdmin: store.isAdmin,
+            isStaff: store.isStaff,
+            staffEmail: store.userEmail
+        }
+        const res = await postData('/staff/domains/get_active_domains/', obj)
+        console.log('get domains', res.data)
+    }, [])
+
+    const onDetail = (id) => {
+        navigate(`/staff/domains/${id}`)
+    }
 
     return (
         <Container>
@@ -87,20 +106,27 @@ const CreateDomains = () => {
                 <AdminForm onSubmit={handleSubmit(onSubmit)}>
                     <Row className='mb-3'>
                         <Col>
-                            <AdminInput {...register('staffEmail')} placeholder='User email or name' />
+                            <AdminInput {...register('staffEmail', {
+                                required: true
+                            })} placeholder='User email or name' />
+                            <ErrorMessage  name='staffEmail' errors={errors} render={() => <p className={cls.error}>enter staff email or name</p>} />
                         </Col>
                         <Col>
-                            <AdminInput {...register('fullDomainName')} placeholder='bitdomain.com' />
+                            <AdminInput {...register('fullDomainName', {
+                                required: true,
+                            })} placeholder='bitdomain.com' />
+                            <ErrorMessage  name='fullDomainName' errors={errors} render={() => <p className={cls.error}>enter domain name</p>} />
                         </Col>
                     </Row>
                     {
                         domainsInputs.map(input => {
                             return (
-                                <Row className='mb-3'>
+                                <Row key={uuid()} className='mb-3'>
                                     {input.text}
                                     <AdminInput type={input.inp} {...register(input.name, {
                                         required: true
                                     })} placeholder={input.text}/>
+                                    <ErrorMessage  name={input.name} errors={errors} render={() => <p className={cls.error}>This field is required</p>} />
                                 </Row>
                             )
                         })
@@ -108,9 +134,10 @@ const CreateDomains = () => {
                     {
                         domainSelect.map(select => {
                             return (
-                                <Row className='mb-3'>
+                                <Row key={uuid()} className='mb-3'>
                                     {select.text}
                                     <Select {...register(select.name)} placeholder={select.text} options={select.options} />
+                                    <ErrorMessage  name={select.name} errors={errors} render={() => <p className={cls.error}>This field is required</p>} />
                                 </Row>
                             )
                         })
@@ -233,7 +260,8 @@ const CreateDomains = () => {
                 <Table>
                     <TableHeader elems={tableHeaderDomains} />
                     <TableBody>
-                        <TableItem elems={tableHeader} />
+                        <TableItem elems={tableHeader} btn={'детальная'} onClick={onDetail} id={1} />
+                        <TableItem elems={tableHeader} btn={'детальная'} onClick={onDetail} id={2} />
                     </TableBody>
                 </Table>
             </AdminButtonCard>

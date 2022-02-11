@@ -9,6 +9,7 @@ import {store} from "../../../../../index";
 import ModalDark from "../../../../../components/UI/ModalDark/ModalDark";
 import Select from '../../../../../components/UI/Select/Select';
 import { useForm } from 'react-hook-form';
+import {deleteData, patchData} from "../../../../../services/StaffServices";
 
 const AdminKycTableItem = (props) => {
     const [kycStatus, setKycStatus] = useState(props.kycStatus)
@@ -40,15 +41,8 @@ const AdminKycTableItem = (props) => {
             staffId: store.userId
         }
 
-        const res = await fetch('/api/staff/kyc/update_kyc_status/', {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
-            },
-            body: JSON.stringify(statusData)
-        })
-        const data = await res.json()
+        const res = await patchData('/staff/kyc/update_kyc_status/', statusData)
+        const data = await res.data
         handleCloseModal()
     }
 
@@ -61,15 +55,8 @@ const AdminKycTableItem = (props) => {
             domainName: window.location.host,
             staffId: store.userId
         }
-        const res = await fetch('/api/staff/kyc/delete_kyc/', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
-            },
-            body: JSON.stringify(statusData)
-        })
-        const data = await res.json()
+        const res = await deleteData('/staff/kyc/delete_kyc/', statusData)
+        const data = await res.data
         handleCloseModal()
     }
 
