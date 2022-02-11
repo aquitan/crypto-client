@@ -25,10 +25,15 @@ router.patch('/forgot_password/', authController.forgotPassword)
 router.post('/dashboard/', authChecker, userController.dashboard)
 router.post('/personal_area/profile/', userController.personalAreaProfile)
 router.patch('/personal_area/profile/edit/', authChecker, userController.personalAreaProfileEdit)
-router.post('/personal_area/security/', authChecker, userController.personalAreaSecurity)
+
+router.patch('/personal_area/security/', authChecker, userController.twoStepVerificationEnable)
+router.post('/personal_area/security/two_step_enable/', authChecker, userController.enableTwoStepVerificationStatus)
+
 router.patch('/personal_area/security/change_password/', authChecker, userController.personalAreaSecurityChangePassword)
 router.post('/personal_area/verification/', authChecker, userController.personalAreaKyc)
 router.patch('/personal_area/security/disable_two_step_status/', authChecker, userController.disableTwoStepVerificationStatus)
+
+router.put('/personal_area/security/two_step_enable/', authChecker, userController.twoStepVerificationEnable)
 
 // router.put('/wallets/create_user_wallet/', authChecker, userController.createUserWallet)
 // router.get('/internal_wallets/get_user_internal_wallet/', authChecker, userController.getInternalWallet)
@@ -56,13 +61,15 @@ router.post('/staff/create_user/', staffController.createNewUser)
 router.put('/staff/create_promocode/', staffController.promocodeCreate)
 router.post('/staff/get_promocode_list/', staffController.getPromocodeListForStaff)
 router.post('/staff/get_used_promocode_list/', staffController.getUsedPromocodeListForStaff)
+router.delete('/staff/delete_promocode/', staffController.removePromocode)
+
 router.post('/staff/ip_match_checker/', staffController.getIpForMatch)
 
 router.put('/staff/domains/create_domain/', staffController.createDomain)
 router.get('/staff/domains/domain_detail/:id/', staffController.getDomainDetail)
 router.post('/staff/domains/get_active_domains/', staffController.getDomainsList)
 router.put('/staff/errors/create_new_error/', staffController.createCustomError)
-router.get('/staff/errors/get_all_errors/:id/', staffController.getAllErrors)
+router.get('/staff/errors/get_all_errors/:id/', staffController.getAllErrors) // domain ID
 
 router.put('/staff/notifications/create_new_notification/', staffController.createNewNotification)
 router.post('/staff/notifications/get_all_notifications/', staffController.getNotificationList)

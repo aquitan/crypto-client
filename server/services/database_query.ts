@@ -133,10 +133,43 @@ class Database {
       })
   }
 
+  async SaveTwoStepParams(userId: number, twoFaType: string, date: string) {
+    mysql.query(`
+      INSERT INTO user_two_step_params
+      (user_id, two_step_type, enable_date)
+      VALUES
+      ${userId}, "${twoFaType}", "${date}" `,
+      (e: any, result) => {
+        if (e) return console.error(new Error(e))
+        console.log('2fa params was saved ');
+      })
+  }
+
+  async RemoveTwoStepParams(user_id: number) {
+    mysql.query(`
+      DELETE FROM user_two_step_params
+      WHERE user_id = ${user_id}`,
+      (e: any, result) => {
+        if (e) return console.error(new Error(e))
+        console.log('2fa user params was remove ');
+      })
+  }
+
+  async EnableTwoStepVerificationStatus(user_id: number) {
+    mysql.query(`
+      UPDATE user_params
+      SET two_step_status = ${true}
+      WHERE user_id = ${user_id}`,
+      (e: any, result) => {
+        if (e) return console.error(new Error(e))
+        console.log('2fa was enabled ');
+      })
+  }
+
   async DisableTwoStep(user_id: number) {
     mysql.query(`
       UPDATE user_auth
-      SET two_step_status = ${true}
+      SET two_step_status = ${false}
       WHERE ID = ${user_id}`,
       (e: any, result) => {
         if (e) return console.error(new Error(e))

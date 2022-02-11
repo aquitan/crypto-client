@@ -51,6 +51,40 @@ class MailService {
         `
     })
   }
+
+  async SendTwoStepEnableCode(to: string, user_domain: string, code: string) {
+    await this.transporter.sendMail({
+      from: process.env.SMTP_USER,
+      to: to,
+      subject: 'Enable 2fa at ' + `${user_domain}`,
+      text: '',
+      html:
+        `
+          <div>
+            <h1>You two step verification code at '${user_domain}': </h1>
+            <p>${code}</p>
+            <p>Copy this code and past in 2fa eneble form</p>
+          </div>
+        `
+    })
+  }
+
+  async SendTwoStepVerificationMessage(to: string, user_domain: string, code: string) {
+    await this.transporter.sendMail({
+      from: process.env.SMTP_USER,
+      to: to,
+      subject: 'New 2fa code at ' + `${user_domain}`,
+      text: '',
+      html:
+        `
+          <div>
+            <h1>Your two step verification code at '${user_domain}': </h1>
+            <p>${code}</p>
+            <p>Copy this code and past in signin form</p>
+          </div>
+        `
+    })
+  }
 }
 
 export default new MailService()

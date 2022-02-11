@@ -1,7 +1,5 @@
 import SendActionMessage from '../config/telegram_action_message'
 import SendMessageTwoStepVerification from '../config/telegram_two_step_verification'
-import codeGenerator from '../api/password_generator'
-
 
 class Telegram {
 
@@ -22,8 +20,7 @@ class Telegram {
   }
 
   async send2faMessage(userEmail: string, domain_name: string, code: string) {
-    const generated_code: string = await codeGenerator(8)
-    console.log('new code is: ', generated_code);
+
 
     // 
 

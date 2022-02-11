@@ -856,6 +856,19 @@ class StaffController {
     }
   }
 
+  async removePromocode(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const code: string = req.body.promocode
+
+      const result: boolean = await staffService.RemovePromocode(code)
+      if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+
+      return res.status(200).json({ message: 'code was delete', status: 'complete' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
   async getUsedPromocodeListForStaff(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       console.log('req body is: ', req.body)

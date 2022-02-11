@@ -357,6 +357,15 @@ class staffService {
 
   }
 
+  async RemovePromocode(code: string) {
+    await database.DeletePromocodeFromUserPromocode(code)
+    const getCode: any = await database.GetPromocodeToDelete(code)
+    console.log('recieved code is: ', getCode);
+    if (getCode[0]) return false
+    return true
+
+  }
+
   async GetUsedPromocodeList(staff_id: number) {
     const codeList: any = await database.GetUsedPromocodeListForStaff(staff_id)
     console.log('service code list is: ', codeList);

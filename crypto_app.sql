@@ -87,7 +87,7 @@ CREATE TABLE `domain_list` (
   `full_domain_name` varchar(255) NOT NULL,
   `domain_name` varchar(100) NOT NULL,
   `company_address` varchar(255) NOT NULL,
-  `company_phone_number` int NOT NULL,
+  `company_phone_number` varchar(50) NOT NULL,
   `company_email` varchar(255) NOT NULL,
   `company_owner_name` varchar(150) NOT NULL,
   `company_year` year NOT NULL,
@@ -322,7 +322,7 @@ CREATE TABLE `user_kyc` (
   `first_name` varchar(255) NOT NULL,
   `last_name` varchar(255) NOT NULL,
   `email` varchar(150) NOT NULL,
-  `phone_number` int NOT NULL,
+  `phone_number` varchar(50) NOT NULL,
   `date_of_birth` date NOT NULL,
   `document_number` varchar(100) NOT NULL,
   `main_address` varchar(255) NOT NULL,
@@ -473,6 +473,33 @@ LOCK TABLES `user_promocode` WRITE;
 /*!40000 ALTER TABLE `user_promocode` DISABLE KEYS */;
 /*!40000 ALTER TABLE `user_promocode` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `user_two_fa_params`
+--
+
+DROP TABLE IF EXISTS `user_two_fa_params`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_two_fa_params` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `two_step_type` varchar(30) NOT NULL,
+  `enable_date` datetime NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `user_two_fa_params_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user_auth` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_two_fa_params`
+--
+
+LOCK TABLES `user_two_fa_params` WRITE;
+/*!40000 ALTER TABLE `user_two_fa_params` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_two_fa_params` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -483,4 +510,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-02-08 16:30:23
+-- Dump completed on 2022-02-11 11:43:12

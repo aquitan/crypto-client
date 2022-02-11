@@ -8,6 +8,8 @@ CREATE TABLE user_logs (ID INT AUTO_INCREMENT PRIMARY KEY, email VARCHAR(255) NO
 
 CREATE TABLE user_params (ID INT AUTO_INCREMENT PRIMARY KEY, double_deposit BOOLEAN NOT NULL, swap_ban BOOLEAN NOT NULL, internal_ban BOOLEAN NOT NULL, isUser BOOLEAN NOT NULL, isStaff BOOLEAN NOT NULL, isAdmin BOOLEAN NOT NULL, isBanned BOOLEAN NOT NULL, isActivated BOOLEAN NOT NULL, premium_status BOOLEAN NOT NULL, two_step_status BOOLEAN NOT NULL, agreement BOOLEAN NOT NUll, user_id INT NOT NULL, FOREIGN KEY (user_id) REFERENCES user_auth(ID));
 
+CREATE TABLE user_two_fa_params (ID INT AUTO_INCREMENT PRIMARY KEY, user_id INT NOT NULL, two_step_type VARCHAR(30) NOT NULL, enable_date DATETIME NOT NULL, FOREIGN KEY (user_id) REFERENCES user_auth(ID) );
+
 CREATE TABLE user_info_for_action (ID INT AUTO_INCREMENT PRIMARY KEY, deposit_fee INT NOT NULL, last_deposit DATE, active_notification VARCHAR(1024), active_error INT NOT NULL, FOREIGN KEY (active_error) REFERENCES domain_withdrawal_error(ID), user_id INT NOT NULL, FOREIGN KEY (user_id) REFERENCES user_auth(ID) );
 
 
@@ -17,9 +19,9 @@ CREATE TABLE user_kyc (ID INT AUTO_INCREMENT PRIMARY KEY, first_name VARCHAR(255
 
 CREATE TABLE auth_token (ID INT AUTO_INCREMENT PRIMARY KEY, refresh_token VARCHAR(1024) NOT NULL, user_id INT NOT NULL, FOREIGN KEY(user_id) REFERENCES user_auth(ID));
 
-CREATE TABLE user_promocode (ID INT AUTO_INCREMENT PRIMARY KEY, code VARCHAR(30) NOT NULL, date DATE NOT NULL, value FLOAT NOT NULL, currency VARCHAR(30) NOT NULL, notification_text VARCHAR(1024) NOT NULL, staff_user_id INT NOT NULL, domain_name VARCHAR(255) NOT NULL, FOREIGN KEY (staff_user_id) REFERENCES user_auth(ID) );
+CREATE TABLE user_promocode (ID INT AUTO_INCREMENT PRIMARY KEY, code VARCHAR(30) NOT NULL, DATE DATE NOT NULL, value FLOAT NOT NULL, currency VARCHAR(30) NOT NULL, notification_text VARCHAR(1024) NOT NULL, staff_user_id INT NOT NULL, domain_name VARCHAR(255) NOT NULL, FOREIGN KEY (staff_user_id) REFERENCES user_auth(ID) );
 
-CREATE TABLE used_promocode (ID INT AUTO_INCREMENT PRIMARY KEY, code VARCHAR(30) NOT NULL, date DATE NOT NULL, value FLOAT NOT NULL, currency VARCHAR(30) NOT NULL, notification_text VARCHAR(1024) NOT NULL, staff_user_id INT NOT NULL, domain_name VARCHAR(255) NOT NULL, used_by_user VARCHAR(255) NOT NULL );
+CREATE TABLE used_promocode (ID INT AUTO_INCREMENT PRIMARY KEY, code VARCHAR(30) NOT NULL, DATE DATE NOT NULL, value FLOAT NOT NULL, currency VARCHAR(30) NOT NULL, notification_text VARCHAR(1024) NOT NULL, staff_user_id INT NOT NULL, domain_name VARCHAR(255) NOT NULL, used_by_user VARCHAR(255) NOT NULL );
 
   
 CREATE TABLE user_notification (ID INT AUTO_INCREMENT PRIMARY KEY, text VARCHAR(1024) NOT NULL, user_email VARCHAR(255) NOT NULL);

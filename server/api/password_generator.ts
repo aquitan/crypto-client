@@ -1,4 +1,4 @@
-function shuffleArray(array: any) {
+function shuffleArray(array: string[]) {
   for (let i = array.length - 1; i > 0; i--) {
     let j = Math.floor(Math.random() * (i + 1));
     let temp = array[i];
@@ -8,11 +8,11 @@ function shuffleArray(array: any) {
   return array;
 }
 
-export default async function generatePassword(passwordLength: any) {
-  const numberChars = "0123456789";
-  const upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  const lowerChars = "abcdefghijklmnopqrstuvwxyz";
-  const allChars = numberChars + upperChars + lowerChars;
+export default async function generatePassword(passwordLength: number) {
+  const numberChars: string = "0123456789";
+  const upperChars: string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const lowerChars: string = "abcdefghijklmnopqrstuvwxyz";
+  const allChars: string = numberChars + upperChars + lowerChars;
   let randPasswordArray = Array(passwordLength);
   randPasswordArray[0] = numberChars;
   randPasswordArray[1] = upperChars;

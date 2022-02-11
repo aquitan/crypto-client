@@ -1,7 +1,8 @@
 import database from "../services/database_query"
 import ProfileUserDto from '../dtos/profile_user_dto'
 import DashboardUserDto from '../dtos/dashboard_user_dto'
-
+import mailService from '../services/mail_services'
+import telegram from '../api/telegram_api'
 
 class UserServices {
 
@@ -82,16 +83,47 @@ class UserServices {
     return true
   }
 
+  async enableTwoStepVerification(transferObject: any) {
+
+    if (transferObject.twoFaType === 'email') {
+      await mailService.sendActivationMail(transferObject.userEmail, `${transferObject.domainName}`, `${transferObject.code}`)
+      return true
+    }
+
+    if (transferObject.twoFaType === 'telegram') {
+      await telegram.send2faMessage(transferObject.userEmail, `${transferObject.domainName}`, `${transferObject.code}`)
+      return true
+    }
+
+    if (transferObject.twoFaType === 'google') {
+      // google auth logic here
+      return true
+    }
+    return false
+  }
+
+  async enableTwoStepVerificationStatus(transferObject: any) {
+    let userToUpdate: any = await database.GetBaseUserParamsById(transferObject.userId)
+    console.log('found user: ', userToUpdate);
+    if (!userToUpdate[0]) return false
+
+    await database.SaveTwoStepParams(transferObject.userId, transferObject.twoFaType, transferObject.enableDate)
+    await database.EnableTwoStepVerificationStatus(transferObject.userId)
+    const updatedStatus: any = await database.GetBaseUserParamsById(transferObject.userId)
+    console.log('recieved user params is: ', updatedStatus);
+    if (updatedStatus[0].two_step_status === 0) return false
+    return true
+
+  }
+
   async disableUserTwoStep(user_id: number) {
     let user: any = await database.GetBaseUserParamsById(user_id)
     console.log('found user is: ', user[0]);
 
-    if (!user[0]) {
-      console.log('error');
-      return false
-    }
+    if (!user[0]) return false
 
     await database.DisableTwoStep(user_id)
+    await database.RemoveTwoStepParams(user_id)
     const updatedData: any = await database.GetBaseUserParamsById(user_id)
     console.log('2fa status is:', updatedData[0].two_step_status);
 
