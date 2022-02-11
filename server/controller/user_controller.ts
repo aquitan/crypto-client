@@ -129,6 +129,7 @@ class UserController {
   async enableTwoStepVerificationStatus(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       interface UserParams {
+        twoFaType: string
         userId: number
         userEmail: string
         domainName: string
@@ -137,6 +138,7 @@ class UserController {
       }
 
       const transferObject: UserParams = {
+        twoFaType: req.body.twoFaType,
         userId: req.body.userId,
         userEmail: req.body.userEmail,
         domainName: req.body.domainName,
@@ -168,7 +170,7 @@ class UserController {
       }
 
       await saveUserLogs(userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, `выключил 2фа аутентификацию на`, domainName)
-      await telegram.sendMessageByUserActions(userEmail, `выключил 2фа аутентификацию `, domainName)
+      await telegram.sendMessageByUserActions(userEmail, ` выключил 2фа аутентификацию `, domainName)
       return res.json({
         message: '2fa turned off',
         status: 'complete'

@@ -135,10 +135,10 @@ class Database {
 
   async SaveTwoStepParams(userId: number, twoFaType: string, date: string) {
     mysql.query(`
-      INSERT INTO user_two_step_params
+      INSERT INTO user_two_fa_params
       (user_id, two_step_type, enable_date)
       VALUES
-      ${userId}, "${twoFaType}", "${date}" `,
+      (${userId}, "${twoFaType}", "${date}") `,
       (e: any, result) => {
         if (e) return console.error(new Error(e))
         console.log('2fa params was saved ');
@@ -147,7 +147,7 @@ class Database {
 
   async RemoveTwoStepParams(user_id: number) {
     mysql.query(`
-      DELETE FROM user_two_step_params
+      DELETE FROM user_two_fa_params
       WHERE user_id = ${user_id}`,
       (e: any, result) => {
         if (e) return console.error(new Error(e))
@@ -168,9 +168,9 @@ class Database {
 
   async DisableTwoStep(user_id: number) {
     mysql.query(`
-      UPDATE user_auth
+      UPDATE user_params
       SET two_step_status = ${false}
-      WHERE ID = ${user_id}`,
+      WHERE user_id = ${user_id}`,
       (e: any, result) => {
         if (e) return console.error(new Error(e))
         console.log('2fa status was update');
@@ -925,10 +925,7 @@ class Database {
     return new Promise((resolve, reject) => {
       mysql.query(`
         SELECT *
-        FROM used_promocode
-        GROUP BY ID
-        ORDER BY MAX (ID)
-        desc`,
+        FROM used_promocode`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -953,9 +950,7 @@ class Database {
         SELECT domain_list.ID, domain_list.full_domain_name, domain_list.domain_owner, domain_detail.date_of_create
         FROM domain_list
         JOIN domain_detail
-        ON domain_list.ID = domain_detail.domain_id
-        MAX (domain_list.ID)
-        desc`,
+        ON domain_list.ID = domain_detail.domain_id`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)

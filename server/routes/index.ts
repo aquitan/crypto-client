@@ -33,8 +33,6 @@ router.patch('/personal_area/security/change_password/', authChecker, userContro
 router.post('/personal_area/verification/', authChecker, userController.personalAreaKyc)
 router.patch('/personal_area/security/disable_two_step_status/', authChecker, userController.disableTwoStepVerificationStatus)
 
-router.put('/personal_area/security/two_step_enable/', authChecker, userController.twoStepVerificationEnable)
-
 // router.put('/wallets/create_user_wallet/', authChecker, userController.createUserWallet)
 // router.get('/internal_wallets/get_user_internal_wallet/', authChecker, userController.getInternalWallet)
 
