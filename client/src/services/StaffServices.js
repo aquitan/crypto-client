@@ -9,6 +9,9 @@ export const putData = (path, data) => {
 export const patchData = (path, data) => {
     return $usersApi.patch(path, data)
 }
+export const getData = (path) => {
+    return $usersApi.get(path)
+}
 export const deleteData = (path, data) => {
     return $usersApi.delete(path, data)
 }

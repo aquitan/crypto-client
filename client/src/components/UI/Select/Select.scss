@@ -5,6 +5,8 @@
   min-height: 46px;
   color: #fff;
   border: none;
+  max-width: 100%;
+  padding: 0 20px;
 }
 .light {
   background-color: #fff;
@@ -15,14 +17,12 @@
   padding: 20px;
 }
 .select-xs {
-  max-width: 80px;
   min-width: 50px;
   min-height: 20px;
   font-size: 14px;
   padding: 20px 0;
 }
 .select-s {
-  max-width: 150px;
   min-width: 50px;
 }
 .small {

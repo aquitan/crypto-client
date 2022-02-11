@@ -12,6 +12,7 @@ export const links = [
     {link: '/staff/terms', text: 'Пользовательское соглашение'},
     {link: '/staff/transactions', text: 'Создать транзакцию'},
     {link: '/staff/create-news', text: 'Создать новости'},
+    {link: '/staff/group-list', text: 'Список групп'},
 ]
 
 export const domainsInputs = [

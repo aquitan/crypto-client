@@ -16,6 +16,7 @@ import { faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons'
 import {getGeoData} from "../../../queries/getSendGeoData";
 import Modal from "../../../components/UI/Modal/Modal";
 import {postData} from "../../../services/StaffServices";
+import PasswordStrength from "../../../components/UI/PasswordStrength/PasswordStrength";
 
 
 const SignUp = () => {
@@ -28,6 +29,12 @@ const SignUp = () => {
     })
     const {register, handleSubmit, formState: {errors}, watch} = useForm({
         mode: "onBlur",
+    })
+    const [match, setMatch] = useState({
+        active: false,
+        numbers: false,
+        characters: false,
+        uppercase: false
     })
     const {store} = useContext(AuthContext)
     const password = useRef({})
@@ -90,6 +97,28 @@ const SignUp = () => {
         })
     }
 
+    const checkForNums = (str) => {
+        let matches = str.match(/\d+/g)
+        return matches
+    }
+    const checkUppercase = (str) => {
+        let matches = str.match(/[A-Z]/)
+        return matches
+    }
+
+    const onCheckPassword = (e) => {
+        console.log(e.target.value)
+        setMatch({
+            characters: e.target.value.length > 7,
+            numbers: checkForNums(e.target.value),
+            uppercase: checkUppercase(e.target.value),
+            active: true
+        })
+    }
+    const showPasswordTip = () => {
+        setMatch({...match, active: false})
+    }
+
     return (
         <Container>
             <Modal active={modalError} setActive={setModalError}>
@@ -126,7 +155,7 @@ const SignUp = () => {
                 <FormGroup>
                     <Row className='mt-3'>
                         <Col className={cls.relative}>
-                            <Input {...register('password', {
+                            <Input onChange={onCheckPassword} {...register('password', {
                                 required: 'You must specify your password',
                                 minLength: {
                                     value: 8,
@@ -135,10 +164,13 @@ const SignUp = () => {
                                 maxLength: {
                                     value: 32,
                                     message: 'Your password must be less than 32 characters'
-                                }
+                                },
+                                onChange: (e) => onCheckPassword(e),
+                                onBlur: () => showPasswordTip()
                             })} name='password' type={visiblePass.password ? 'text' : 'password'} placeholder='password' id='password' />
                             <ErrorMessage name='password' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
                             <FontAwesomeIcon onClick={showPassword} className={cls.eye_icon} icon={visiblePass.password ? faEye : faEyeSlash} />
+                            <PasswordStrength active={match.active} characters={match.characters} numbers={match.numbers} uppercase={match.uppercase} />
                         </Col>
                         <Col className={cls.relative}>
                             <Input {...register('repeatPassword', {

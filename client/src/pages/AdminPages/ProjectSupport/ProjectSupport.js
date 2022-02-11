@@ -1,17 +1,28 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import {Container, Row} from "react-bootstrap";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
 import AdminInput from "../../../components/UI/AdminInput/AdminInput";
 import TextArea from "../../../components/UI/TextArea/TextArea";
+import {getData} from "../../../services/StaffServices";
 
 const ProjectSupport = () => {
+    const [state, setState] = useState('')
+
+    useEffect(async () => {
+        const res = await getData('/staff/project_support/')
+        console.log('data', state)
+        setState(res.data.message)
+    }, [])
+
     return (
         <Container>
             <h1 className='mt-3'>Донат</h1>
             <AdminButtonCard>
                 Wallet: <br/>
-                loisodf8324nb,nsazc.kmasd92394923492309oisjfdlskdf
+                {
+                    state ? <p>{state}</p> : <h4>No data</h4>
+                }
             </AdminButtonCard>
             <AdminButtonCard>
                 <h2 className='mb-3'>Сообщить о проблеме</h2>

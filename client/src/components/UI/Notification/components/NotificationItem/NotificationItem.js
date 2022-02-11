@@ -3,6 +3,7 @@ import {Col, Row} from "react-bootstrap";
 import cls from '../../Notification.module.scss'
 
 const NotificationItem = ({notif}) => {
+    console.log('asdasd', notif)
     return (
         <div className={cls.notification_item}>
             <Row>

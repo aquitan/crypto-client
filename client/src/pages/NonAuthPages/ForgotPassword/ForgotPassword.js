@@ -10,6 +10,7 @@ import {useForm} from "react-hook-form";
 import API, {BASE_URL} from "../../../API";
 import Modal from "../../../components/UI/Modal/Modal";
 import {useNavigate} from "react-router-dom";
+import {patchData} from "../../../services/StaffServices";
 
 const ForgotPassword = () => {
     const navigate = useNavigate()
@@ -20,20 +21,13 @@ const ForgotPassword = () => {
     })
 
     const onSubmit = async (data) => {
-        console.log(data)
-        const res = await fetch(`${BASE_URL}/forgot_password/`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                'authorization': 'Bearer ' + localStorage.getItem('token')
-            },
-        body: JSON.stringify( data)
-        })
-        const datas = await res.json()
+
+        const res = await patchData('/forgot_password/', data)
+        const datas = await res.data
         console.log('forgot', datas.status)
         setForgotStatus(datas.status)
         setModal(true)
-        if (data.status === 'rejected') {
+        if (datas.status === 'rejected') {
             setForgotStatus(datas.status)
         }
      }

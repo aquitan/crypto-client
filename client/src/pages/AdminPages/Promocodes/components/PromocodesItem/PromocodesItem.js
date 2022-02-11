@@ -12,7 +12,7 @@ const PromocodesItem = (props) => {
                 <Col>{props.reward}</Col>
                 <Col>{props.cuurrency}</Col>
                 <Col>
-                    <AdminButton classname='red xs'>Удалить</AdminButton>
+                    <AdminButton classname='red xs' onClick={() => props.onClick(props.id)}>Удалить</AdminButton>
                 </Col>
             </Row>
         </div>

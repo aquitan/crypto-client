@@ -1,0 +1,12 @@
+.date_picker {
+  background-color: #444;
+  width: 100%;
+  box-sizing: border-box;
+  height: 30px;
+  border: none;
+  color: #fff;
+  padding: 0 15px;
+  &::placeholder {
+    color: #fff;
+  }
+}

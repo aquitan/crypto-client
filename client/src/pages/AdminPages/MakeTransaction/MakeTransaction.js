@@ -14,6 +14,7 @@ import Table from "../../../components/UI/Table/Table";
 import TableHeader from "../../../components/UI/Table/components/TableHeader/TableHeader";
 import TableBody from "../../../components/UI/Table/components/TableBody/TableBody";
 import TableItem from "../../../components/UI/Table/components/TableItem/TableItem";
+import DatePickerCustom from "../../../components/UI/DatePickerCustom/DatePickerCustom";
 
 const MakeTransaction = () => {
     const [startDate, setStartDate] = useState()
@@ -44,22 +45,22 @@ const MakeTransaction = () => {
                         </Col>
                         <Col>
                             <DatePickert required
-                                         className='date_picker_dark'
-                                         placeholderText='date of transaction'
+                                         customInput={<DatePickerCustom/>}
+                                         placeholderText='Дата'
                                          selected={startDate}
                                          dateFormat='yyyy/MM/dd'
                                          onChange={(date) => setStartDate(date)} />
                         </Col>
                         <Col>
                             <DatePickert required
-                                         className='date_picker_dark'
-                                         placeholderText='time of transaction'
+                                         customInput={<DatePickerCustom/>}
+                                         placeholderText='Время'
                                          selected={timeDate}
                                          showTimeSelect
                                          showTimeSelectOnly
                                          timeIntervals={1}
                                          timeCaption="Время"
-                                         dateFormat="h:mm aa"
+                                         timeFormat="HH:mm "
                                          onChange={(time) => setTimeDate(time)} />
                         </Col>
                         <Col>

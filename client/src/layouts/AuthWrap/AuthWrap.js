@@ -8,12 +8,13 @@ import AdminLayout from "../AdminLayout/AdminLayout";
 import Footer from "../../components/Footer/Footer";
 import {v4 as uuid} from 'uuid'
 import {AuthContext} from "../../index";
+import Landing from "../../pages/NonAuthPages/Landing/Landing";
 
 const AuthWrap = () => {
     const {store} = useContext(AuthContext)
     const location = useLocation()
     let userLocation = location.pathname.split(/[\\\/]/)
-
+    console.log(store)
     const renderAdminRoutes = () => {
         if (store.isStaff || store.fullAccess || store.isAdmin) {
             return (
@@ -42,8 +43,10 @@ const AuthWrap = () => {
                         renderAdminRoutes()
                     }
                     {
-                        store.isStaff || store.fullAccess || store.isAdmin ?  <Route path='*' element={<Navigate to={'/staff'}/>} /> : <Route path='*' element={<Navigate to={'/'}/>} />
+                        store.isStaff || store.fullAccess || store.isAdmin ?
+                            <Route path='*' element={<Navigate to={'/staff'}/>} /> : <Route path='*' element={<Navigate to={'/'}/>} />
                     }
+                    <Route path='*' element={<Navigate to={'/error'}/>} />
                 </Routes>
             </div>
             <Footer>

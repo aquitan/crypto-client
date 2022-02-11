@@ -9,7 +9,7 @@ const TableHeader = ({elems}) => {
         <Row className='table_header'>
             {elems.map(element => {
                 return(
-                    <Col key={uuid()}>{element}</Col>
+                    <Col className='table_header_item' key={uuid()}>{element}</Col>
                 )
             })}
         </Row>

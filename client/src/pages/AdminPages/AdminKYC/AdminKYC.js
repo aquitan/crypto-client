@@ -5,6 +5,7 @@ import UsersInfoCard from "../Users/components/UsersInfoCard/UsersInfoCard";
 import cls from './AdminKYC.module.scss'
 import AdminInput from "../../../components/UI/AdminInput/AdminInput";
 import AdminKycTableItem from "./components/AdminKycTablItem/AdminKycTableItem";
+import {postData} from "../../../services/StaffServices";
 
 const AdminKYC = () => {
     const [usersKyc, setUsersKyc] = useState()
@@ -15,16 +16,8 @@ const AdminKYC = () => {
             isStaff: store.isStaff,
             domainName: window.location.host
         }
-
-        const res = await fetch(`/api/staff/users/kyc/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
-            },
-            body: JSON.stringify(userData)
-        })
-        const data = await res.json()
+        const res = await postData('/staff/users/kyc/', userData)
+        const data = await res.data
         setUsersKyc(data.usersKycList)
         console.log('dataProfile', data)
     }
@@ -79,7 +72,11 @@ const AdminKYC = () => {
                                     />
                                 )
                             })
-                            : <h1>Loading</h1>
+                            : <Row className='text-center'>
+                                <Col className='mt-4'>
+                                    <h4>No data!</h4>
+                                </Col>
+                            </Row>
                     }
                 </Card>
             </Row>

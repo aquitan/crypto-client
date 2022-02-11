@@ -5,25 +5,25 @@ import {Col, Row} from "react-bootstrap";
 import NotificationItem from "./components/NotificationItem/NotificationItem";
 import cls from './Notification.module.scss'
 import {store} from "../../../index";
+import {observer} from "mobx-react-lite";
 
-const Notification = ({bell}) => {
+const Notification = () => {
     const [notification, setNotification] = useState(store.notifications)
+    const [open, setOpen] = useState(false)
+    let notif = JSON.parse(JSON.stringify(store.notifications))
 
-    console.log('notification', notification)
     useEffect(() => {
-        setNotification(store.notifications)
+        setNotification(notif)
     }, [])
 
     return (
         <div className={cls.notification}>
-            <div className={cls.notification_header} onClick={() => setNotification(!notification)}>
+            <div className={cls.notification_header} onClick={() => setOpen(!open)}>
                 <FontAwesomeIcon icon={faBell} color='#fff' />
-                {
-                    bell ? <div className={cls.notification_mark}></div> : null
-                }
+                {notification.length ? <div className={cls.notification_mark}></div> : null}
             </div>
             {
-                notification ?
+                open ?
                     <div className={cls.notification_body}>
                         <div>
                             <Row className={cls.notification_body_top}>
@@ -31,8 +31,10 @@ const Notification = ({bell}) => {
                                 <Col>message</Col>
                             </Row>
                             {
-                                notification.length > 0 ?
-                                    <NotificationItem notif={notification} />
+                                notification.length  ?
+                                    notification.map(notif => {
+                                        return <NotificationItem notif={notif} />
+                                    })
                                     : <p>No messages</p>
                             }
 
@@ -44,4 +46,4 @@ const Notification = ({bell}) => {
     )
 }
 
-export default Notification
+export default observer(Notification)

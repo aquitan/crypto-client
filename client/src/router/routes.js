@@ -19,7 +19,13 @@ import {
     TEST,
     ERRORS_ROUTE,
     DOMAINS_ROUTE,
-    WITHDRAW_ROUTE, DEPOSIT_ROUTE, PROJECTSUPPORT_ROUTE, TERMS_ROUTE, MAKETRANSACTION_ROUTE, CREATENEWS_ROUTE
+    WITHDRAW_ROUTE,
+    DEPOSIT_ROUTE,
+    PROJECTSUPPORT_ROUTE,
+    TERMS_ROUTE,
+    MAKETRANSACTION_ROUTE,
+    CREATENEWS_ROUTE,
+    GROUPLIST_ROUTE, DOMAINSDETAIL_ROUTE
 } from "../utils/constants"
 import SignUp from '../pages/NonAuthPages/SignUp/SignUp'
 import SignIn from '../pages/NonAuthPages/SignIn/SignIn'
@@ -46,6 +52,8 @@ import ProjectSupport from "../pages/AdminPages/ProjectSupport/ProjectSupport";
 import Terms from "../pages/AdminPages/Terms/Terms";
 import MakeTransaction from "../pages/AdminPages/MakeTransaction/MakeTransaction";
 import CreateNews from "../pages/AdminPages/CreateNews/CreateNews";
+import GroupList from "../pages/AdminPages/GroupList/GroupList";
+import DomainsDetail from "../pages/AdminPages/DomainsDetail/DomainsDetail";
 
 export const authRoutes = [
     {
@@ -68,16 +76,6 @@ export const authRoutes = [
         path: DEPOSIT_ROUTE,
         component: <Deposit/>
     },
-    {
-        path: ERROR,
-        component: <Error/>
-    },
-    {
-        path: TEST,
-        component: <TestPage/>
-    },
-
-
 ]
 
 export const adminRoutes = [
@@ -116,7 +114,11 @@ export const adminRoutes = [
     },
     {
         path: DOMAINS_ROUTE,
-        component: <Domains/>
+        component: <Domains/>,
+    },
+    {
+        path: DOMAINSDETAIL_ROUTE,
+        component: <DomainsDetail/>
     },
     {
         path: PROJECTSUPPORT_ROUTE,
@@ -133,6 +135,10 @@ export const adminRoutes = [
     {
         path: CREATENEWS_ROUTE,
         component: <CreateNews/>
+    },
+    {
+        path: GROUPLIST_ROUTE,
+        component: <GroupList/>
     },
 ]
 
@@ -157,6 +163,13 @@ export const publicRoutes = [
         path: FORGOT_PASSWORD_ROUTE,
         component: <ForgotPassword/>
     },
+    {
+        path: ERROR,
+        component: <Error/>
+    }
+]
+
+export const Errors = [
     {
         path: ERROR,
         component: <Error/>

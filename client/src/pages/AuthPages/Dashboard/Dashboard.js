@@ -1,10 +1,11 @@
 import React, {useEffect} from 'react'
 import {Container} from "react-bootstrap";
+import {getData} from "../../../services/StaffServices";
 
 const Dashboard = () => {
     const getDashboard = async () => {
-        const res = await fetch('/api/dashboard/')
-        const data = await res.json()
+        const res = await getData('/dashboard/')
+        const data = await res.data
         console.log('data', data)
     }
     useEffect(() => {
