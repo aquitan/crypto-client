@@ -9,13 +9,16 @@ import {useForm} from 'react-hook-form'
 import {getGeoData} from "../../../queries/getSendGeoData";
 import {store} from "../../../index";
 import MyAccountLogsItem from "../MyAccount/components/MyAccountLogsItem/MyAccountLogsItem";
-import {patchData} from "../../../services/StaffServices";
+import {patchData, postData} from "../../../services/StaffServices";
 import {twoFaElems} from "../../../utils/staffConstants";
+import {getCurrentDate} from "../../../utils/getCurrentDate";
 
 const AccountSecurity = (props) => {
     
     const {register, handleSubmit} = useForm()
-    const [type2FA, setType2FA] = useState(twoFaElems[1])
+    const {register: twoFaReg, handleSubmit: twoFaHandle} = useForm()
+    const [type2FA, setType2FA] = useState()
+    const [twoFaStatus, setTwoFaStatus] = useState()
     const [fieldShow, setFieldShow] = useState(false)
     const [modalChangePass, setModalChangePass] = useState({
         isModal: false,
@@ -62,13 +65,36 @@ const AccountSecurity = (props) => {
         const datares = await res.data
     }
 
-    const onClickSelect = (e) => {
+    const onClickSelect = async (e) => {
+        const obj = {
+            domainName: window.location.host,
+            userEmail: store.userEmail,
+            userId: store.userId,
+            twoFaType: 'email',
+            twoFaStatus: true
+        }
         e.preventDefault()
+        const res = await patchData('/personal_area/security/', obj)
+        const data = res.data
+        setTwoFaStatus(res.data.userCode)
+
         setFieldShow(true)
     }
 
     const onSubmit = async (data) => {
         console.log(data)
+        const date = new Date()
+        const obj = {
+            userId: store.userId,
+            userEmail: store.userEmail,
+            domainName: window.location.host,
+            twoFaStatus: true,
+            twoFaType: 'email',
+            enableDate: getCurrentDate()
+        }
+        if (data.code === twoFaStatus) {
+            const res = await postData('/personal_area/security/two_step_enable/', obj)
+        }
     }
 
     return (
@@ -108,9 +134,9 @@ const AccountSecurity = (props) => {
                     <h3>Enable 2FA</h3>
                     <Row>
                         <Col>
-                            <Select {...register('twoFaType')} name='select2FA' options={twoFaElems} classname='light'  onChange={on2FAChange} value={type2FA} />
+                            <Select {...twoFaReg('twoFaType')} name='select2FA' options={twoFaElems} classname='light' />
                             {
-                                fieldShow ?  <Input {...register('code')} placeholder='code'/> : null
+                                fieldShow ?  <Input {...twoFaReg('code')} placeholder='code'/> : null
                             }
                         </Col>
 
@@ -119,7 +145,7 @@ const AccountSecurity = (props) => {
                         </Col>
                     </Row>
                     <Row className='mt-3'>
-                        <Button onClick={handleSubmit(onSubmit)}>Confirm</Button>
+                        <Button onClick={twoFaHandle(onSubmit)}>Confirm</Button>
                     </Row>
                 </Form>
             </Modal>
@@ -132,7 +158,7 @@ const AccountSecurity = (props) => {
                 </Col>
                 <Col>
                     <h5>2FA</h5>
-                    {!store.twoFactor ? <Button onClick={show2FA}>enable</Button> : <Button onClick={disable2FA}>Disable</Button>}
+                    {store.twoFactor ? <Button onClick={show2FA}>enable</Button> : <Button onClick={disable2FA}>Disable</Button>}
                 </Col>
             </Row>
 

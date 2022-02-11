@@ -74,7 +74,7 @@ class adminService {
 
 
   async GetUsedPromocodeListForAdmin() {
-    const promocodeList: any = await database.GetPromocodeListForAdmin()
+    const promocodeList: any = await database.GetUsedPromocodeListForAdmin()
     console.log('promo list is: ', promocodeList);
     if (!promocodeList[0]) return false
     return promocodeList
