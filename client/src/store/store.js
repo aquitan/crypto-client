@@ -82,10 +82,12 @@ export default class Store {
     async login(obj) {
         try {
             const response = await AuthService.login(obj)
-            console.log('response', response)
+            console.log('response-login', response.data)
             if (response.data.two_step_status !== 1) {
                 if (response.data.fullAccess) {
+                    localStorage.setItem('token', response.data.accessToken)
                     this.setFullAccess(true)
+                    this.setAuth(true)
                 } else {
                     if (response.data.user.isBanned === 1) {
                         this.setIsBanned(true)
@@ -150,29 +152,36 @@ export default class Store {
     }
 
     async checkAuth() {
-        this.setIsLoading(true)
         try {
+            this.setIsLoading(true)
             const response = await axios.get(`${BASE_URL}/refresh`, {withCredentials: true})
+            console.log('response-refresh', response.data)
             if (response.data.user.isBanned === 1) {
                 this.setIsBanned(true)
             }
-            if (!this.isBanned) {
-                console.log('refresh', response)
-                this.setUserId(response.data.user.ID)
-                this.setUserEmail(response.data.user.email)
+            if (response.data.fullAccess) {
                 localStorage.setItem('token', response.data.accessToken)
-                if (response.data.user.isActivated === 1) {
-                    this.setIsActivated(true)
-                }
-                if (response.data.user.isStaff === 1) {
-                    this.setIsStaff(true)
-                }
-                if (response.data.user.isAdmin === 1) {
-                    this.setIsAdmin(true)
-                }
+                this.setFullAccess(true)
                 this.setAuth(true)
-                this.setUser(response.data.user)
+            }else {
+                if (!this.isBanned) {
+                    this.setUserId(response.data.user.ID)
+                    this.setUserEmail(response.data.user.email)
+                    localStorage.setItem('token', response.data.accessToken)
+                    if (response.data.user.isActivated === 1) {
+                        this.setIsActivated(true)
+                    }
+                    if (response.data.user.isStaff === 1) {
+                        this.setIsStaff(true)
+                    }
+                    if (response.data.user.isAdmin === 1) {
+                        this.setIsAdmin(true)
+                    }
+                    this.setAuth(true)
+                    this.setUser(response.data.user)
+                }
             }
+
         } catch(e) {
             console.log('error---', e)
             localStorage.removeItem('token')
@@ -195,12 +204,10 @@ export default class Store {
                 this.setPromocode(localStorage.getItem('promocode'))
             }
             if (response.data.premium_status === 1) {
-                localStorage.setItem('prem', 'Y')
-                this.setPremiumStatus(localStorage.getItem('prem'))
+                this.setPremiumStatus(true)
             }
             if (response.data.two_step_status === 1) {
-                localStorage.setItem('2fa', 'Y')
-                this.setTwoFactor(localStorage.getItem('2fa'))
+                this.setTwoFactor(true)
             }
             this.setShowConfirmation(false)
             this.setIsActivated(true)

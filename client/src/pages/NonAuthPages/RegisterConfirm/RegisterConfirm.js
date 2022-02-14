@@ -25,7 +25,7 @@ const RegisterConfirm = () => {
                 <form onSubmit={handleSubmit(toSignin)}>
                     <Row className='justify-content-center'>
                         <Col className='col-lg-8'>
-                            <Input {...register('activationLink')} type='text' name='activationLink' placeholder='Enter confirmation code here'/>
+                            <Input {...register('activationLink')} type='text' classname='text-center' name='activationLink' placeholder='Enter confirmation code here'/>
                         </Col>
                     </Row>
                     <Row className='m-auto mt-4'>

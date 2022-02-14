@@ -1,19 +1,20 @@
 import React, {useContext, useState} from 'react'
-import {Button, Col, Container, Nav, Navbar, Row} from "react-bootstrap";
+import {Col, Container, Nav, Navbar, Row} from "react-bootstrap";
 import {AuthContext} from "../../index";
-import { NavLink } from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 import cls from './NavBar.module.scss'
 import {observer} from "mobx-react-lite";
 import Dropdown from "../UI/Dropdown/Dropdown";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faBell} from "@fortawesome/free-solid-svg-icons";
 import Notification from "../UI/Notification/Notification";
+import Button from "../UI/Button/Button";
 
 const NavBar = () => {
+    const navigate = useNavigate()
     const {store} = useContext(AuthContext)
     console.log('store.isAdmin', store.isAdmin)
     const onLogOut = () => {
         store.logout()
+        navigate('/')
     }
 
 
@@ -23,7 +24,6 @@ const NavBar = () => {
                 <Navbar>
                     <Nav>
                         <Dropdown />
-
                     </Nav>
                     {
                         store.isStaff || store.fullAccess || store.isAdmin ? <NavLink className={cls.link} to='/admin'>Staff</NavLink> : null
@@ -44,7 +44,7 @@ const NavBar = () => {
                                 <NavLink to={'/contact-us'}>Contact us</NavLink>
                             </Col>
                             <Col>
-                                <Button onClick={onLogOut}>Logout</Button>
+                                <Button classname='small' onClick={onLogOut}>Logout</Button>
                             </Col>
                         </Row>
                     </Nav>

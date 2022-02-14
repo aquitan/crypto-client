@@ -12,26 +12,26 @@ import MyAccountLogsItem from "../MyAccount/components/MyAccountLogsItem/MyAccou
 import {patchData, postData} from "../../../services/StaffServices";
 import {twoFaElems} from "../../../utils/staffConstants";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
+import {observer} from "mobx-react-lite";
 
 const AccountSecurity = (props) => {
     
     const {register, handleSubmit} = useForm()
     const {register: twoFaReg, handleSubmit: twoFaHandle} = useForm()
-    const [type2FA, setType2FA] = useState()
-    const [twoFaStatus, setTwoFaStatus] = useState()
-    const [fieldShow, setFieldShow] = useState(false)
-    const [modalChangePass, setModalChangePass] = useState({
+    const [state, setState] = useState({
         isModal: false,
         isStatus: '',
-
+        type2FA: '',
+        twoFaCode: '',
+        fieldShow: false,
+        modal2FA: false
     })
-    const [modal2FA, setModal2FA] = useState(false)
 
     const showChangePass = () => {
-        setModalChangePass({...modalChangePass, isModal: true})
+        setState({...state, isModal: true})
     }
     const show2FA = () => {
-        setModal2FA(true)
+        setState({...state, modal2FA: true})
     }
 
     const onChangePassword = async (data) => {
@@ -46,12 +46,8 @@ const AccountSecurity = (props) => {
 
         const datares = await res
         if (datares.data.status === 'complete') {
-            setModalChangePass({...modalChangePass, isStatus: 'complete'})
+            setState({...state, isStatus: 'complete'})
         }
-    }
-
-    const on2FAChange = (e) => {
-        setType2FA(type2FA)
     }
 
     const disable2FA = async () => {
@@ -75,33 +71,54 @@ const AccountSecurity = (props) => {
         }
         e.preventDefault()
         const res = await patchData('/personal_area/security/', obj)
-        const data = res.data
-        setTwoFaStatus(res.data.userCode)
-
-        setFieldShow(true)
+        const data = await res.data
+        setState({
+            ...state,
+            twoFaCode: data.userCode,
+            fieldShow: true
+        })
+        console.log('code-res', data.userCode)
     }
+
+    console.log('state 3123123', state)
 
     const onSubmit = async (data) => {
-        console.log(data)
-        const date = new Date()
-        const obj = {
-            userId: store.userId,
-            userEmail: store.userEmail,
-            domainName: window.location.host,
-            twoFaStatus: true,
-            twoFaType: 'email',
-            enableDate: getCurrentDate()
-        }
-        if (data.code === twoFaStatus) {
+        console.log('code compare', data.code === state.twoFaCode)
+        console.log('code', state.twoFaCode)
+        if (data.code === state.twoFaCode) {
+            const obj = {
+                userId: store.userId,
+                userEmail: store.userEmail,
+                domainName: window.location.host,
+                twoFaStatus: true,
+                twoFaType: 'email',
+                enableDate: getCurrentDate()
+            }
             const res = await postData('/personal_area/security/two_step_enable/', obj)
+            handleModalClose()
+        } else {
+            alert('lol')
         }
     }
+
+    const handleModalClose = () => {
+        setState({
+            isModal: false,
+            isStatus: '',
+            type2FA: '',
+            twoFaCode: '',
+            fieldShow: false,
+            modal2FA: false
+        })
+    }
+
+    console.log('security---', store)
 
     return (
         <Container>
-            <Modal active={modalChangePass.isModal} title='Change password' setActive={setModalChangePass}>
+            <Modal active={state.isModal} title='Change password' setActive={handleModalClose}>
                 {
-                    !modalChangePass.isStatus ?
+                    !state.isStatus ?
                         <Form onSubmit={handleSubmit(onChangePassword)}>
                             <Row>
                                 <Input name='oldPassword' placeholder='old password'/>
@@ -111,32 +128,26 @@ const AccountSecurity = (props) => {
                                 <Button>Confirm</Button>
                             </Row>
                         </Form>
-                        : modalChangePass.isStatus === 'complete' ?
+                        : state.isStatus === 'complete' ?
                             <Row>
                                 <p>Password is changed</p>
-                                <Button onClick={() => setModalChangePass({
-                                    isModal: false,
-                                    isStatus: ''
-                                })}>Ok</Button>
+                                <Button onClick={handleModalClose}>Ok</Button>
                             </Row>
                             :
                             <Row>
                                 <p>Ooops! Something went wrong</p>
-                                <Button onClick={() => setModalChangePass({
-                                    isModal: false,
-                                    isStatus: ''
-                                })}>Ok</Button>
+                                <Button onClick={handleModalClose}>Ok</Button>
                             </Row>
                 }
             </Modal>
-            <Modal active={modal2FA} setActive={setModal2FA}>
+            <Modal active={state.modal2FA} setActive={handleModalClose}>
                 <Form>
                     <h3>Enable 2FA</h3>
                     <Row>
                         <Col>
                             <Select {...twoFaReg('twoFaType')} name='select2FA' options={twoFaElems} classname='light' />
                             {
-                                fieldShow ?  <Input {...twoFaReg('code')} placeholder='code'/> : null
+                                state.fieldShow ?  <Input {...twoFaReg('code')} placeholder='code'/> : null
                             }
                         </Col>
 
@@ -177,4 +188,4 @@ const AccountSecurity = (props) => {
     )
 }
 
-export default AccountSecurity
+export default observer(AccountSecurity)

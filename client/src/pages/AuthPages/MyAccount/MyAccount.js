@@ -7,6 +7,7 @@ import {store} from "../../../index";
 import {getGeoData} from "../../../queries/getSendGeoData";
 import Modal from "../../../components/UI/Modal/Modal";
 import {observer} from "mobx-react-lite";
+import Input from "../../../components/UI/Input/Input";
 
 const MyAccount = (props) => {
 
@@ -52,15 +53,19 @@ const MyAccount = (props) => {
                 </Row>
             </Modal>
             <Row className='mb-3 mt-3'>
-                <h5>Upgrade your account to unlock full features and increase your limit of transaction amount.<span onClick={() => setLearnMore(true)}>Learn more</span> <button>Upgrade</button></h5>
+                <div className='d-flex'>
+                    <div>Upgrade your account to unlock full features and increase your limit of transaction amount.&nbsp;</div>
+                    <b onClick={() => setLearnMore(true)}> Learn more &nbsp;</b>
+                    <Button classname='small'>Upgrade</Button>
+                </div>
             </Row>
             <Row className={cls.account_row}>
                 <Col>
                     <div>Name</div>
                 </Col>
-                <Col>
-                    {!changeName ? <div>{name === '' ? '-' : name}</div> : <input onChange={onChangeName} />}
-                    <button onClick={setNewName}>{changeName ? 'Change' : 'Change name'}</button>
+                <Col className='d-flex align-items-center'>
+                    <span>{!changeName ? <div>{name === '' ? '-' : name} &nbsp;</div> : <Input classname='input_small' onChange={onChangeName} />}</span>
+                    <Button classname='small' onClick={setNewName}>{changeName ? 'Change' : 'Change name'}</Button>
                 </Col>
             </Row>
             <Row className={cls.account_row}>
