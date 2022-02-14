@@ -156,6 +156,19 @@ class Database {
       })
   }
 
+  async GetTwoStepParams(user_id: number) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM user_two_fa_params
+        WHERE user_id = ${user_id}`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
   async EnableTwoStepVerificationStatus(user_id: number) {
     mysql.query(`
       UPDATE user_params

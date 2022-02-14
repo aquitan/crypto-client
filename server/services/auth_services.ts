@@ -84,12 +84,23 @@ class AuthService {
     console.log('full info: ', getFullUser);
     if (getFullUser[0].two_step_status === 0) return false
 
-    const code_to_2fa: string = await passwordGenerator(8)
-    const userDto: any = new AuthUserDto(getFullUser[0])
-    userDto.two_step_verification_code = code_to_2fa
-    console.log('user with code: ', userDto);
-    await mailService.SendTwoStepVerificationMessage(userDto.email, userDto.domain_name, code_to_2fa)
-    return userDto
+    const two_step_params: any = await database.GetTwoStepParams(getFullUser[0].ID)
+    if (two_step_params[0].two_step_type === 'email') {
+      const code_to_2fa: string = await passwordGenerator(8)
+      const userDto: any = new AuthUserDto(getFullUser[0])
+      userDto.two_step_verification_code = code_to_2fa
+      console.log('user with code: ', userDto);
+      await mailService.SendTwoStepVerificationMessage(userDto.email, userDto.domain_name, code_to_2fa)
+      return userDto
+    }
+    if (two_step_params[0].two_step_type === 'telegram') {
+
+    }
+
+    if (two_step_params[0].two_step_type === 'google') {
+
+    }
+
   }
 
   async login(email: string, password: string, user_domain: string) {
