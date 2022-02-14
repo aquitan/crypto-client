@@ -575,6 +575,9 @@ class StaffController {
         message: 'internal server error.',
         status: 'rejected'
       })
+      const baseTermsText: any = await staffService.GetBaseTerms()
+      if (baseTermsText === false) return res.status(400).json({ message: 'some terms error', status: 'rejected' })
+      await staffService.addTerms(object_to_send.fullDomainName, baseTermsText)
 
       await telegram.sendMessageByStaffActions(req.body.staffEmail, ` создал новый домен ${req.body.fullDomainName}} `, req.body.domainName)
       await staffService.saveStaffLogs(req.body.staffEmail, ` создал новый домен ${req.body.fullDomainName}} `, '', req.body.staffId)
@@ -922,9 +925,13 @@ class StaffController {
   }
 
 
-  async addTerms(req: express.Request, res: express.Response, next: express.NextFunction) {
+  async updateTerms(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      //  add how to block in frontend !
+      const { domainName, termsBody } = req.body
+      console.log('req body is: ', req.body);
+      const result: any = await staffService.UpdateTerms(domainName, termsBody)
+      if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+      res.status(202).json({ message: 'terms was updated', status: 'complete' })
     } catch (e) {
       next(e)
     }

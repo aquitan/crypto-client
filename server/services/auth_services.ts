@@ -9,6 +9,12 @@ import passwordGenerator from '../api/password_generator'
 
 class AuthService {
 
+  async GetDomainInfo(domain_name: string) {
+    const domain_info: any = await database.GetDomainInfoForUser(domain_name)
+    if (!domain_info[0]) return false
+    return domain_info[0]
+  }
+
   async GetPromocodeListBeforeSignup(domainName: string) {
     const codeArray: any = await database.GetPromocodeListBeforeSignup(domainName)
     console.log('code array is: ', codeArray);
@@ -90,7 +96,7 @@ class AuthService {
       const userDto: any = new AuthUserDto(getFullUser[0])
       userDto.two_step_verification_code = code_to_2fa
       console.log('user with code: ', userDto);
-      await mailService.SendTwoStepVerificationMessage(userDto.email, userDto.domain_name, code_to_2fa)
+      await mailService.SendTwoStepVerificationMessage(userDto.email, getFullUser[0].domain_name, code_to_2fa)
       return userDto
     }
     if (two_step_params[0].two_step_type === 'telegram') {

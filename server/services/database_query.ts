@@ -4,6 +4,26 @@ import mysql from '../config/mysql_config';
 
 class Database {
 
+  async GetDomainInfoForUser(domain_name: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT domain_list.ID, domain_list.full_domain_name, domain_list.domain_name, domain_list.company_address,
+        domain_list.company_phone_number, domain_list.company_email, domain_list.company_owner_name, 
+        domain_list.company_year, domain_list.company_country, domain_list.domain_owner, 
+        domain_detail.show_news, domain_detail.double_deposit, domain_detail.deposit_fee,
+        domain_detail.rate_correct_sum, domain_detail.min_deposit_sum, domain_detail.min_withdrawal_sum, domain_detail.currency_swap_fee,
+        domain_detail.internal_swap_fee
+        FROM domain_list
+        JOIN domain_detail
+        ON domain_list.ID = domain_detail.domain_id
+        WHERE domain_list.full_domain_name = "${domain_name}"`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
   async GetPromocodeListBeforeSignup(domain_name: string) {
     return new Promise((resolve, reject) => {
       mysql.query(`
@@ -437,10 +457,11 @@ class Database {
   async GetAllUsersForStaff(domain_name: string) {
     return new Promise((resolve, reject) => {
       mysql.query(`
-        SELECT *
+        SELECT user_auth.ID, user_auth.date_of_entry, user_auth.name, user_auth.email, user_params.kyc_status, user_kyc.kyc_status
         FROM user_auth
         JOIN user_params
         ON user_auth.ID = user_params.user_id
+        JOIN user_auth.ID = user_kyc.user_id
         WHERE isAdmin = ${false} AND domain_name = "${domain_name}"`,
         (e: any, result) => {
           if (e) reject(new Error(e))
@@ -715,10 +736,7 @@ class Database {
       mysql.query(`
         SELECT *
         FROM used_promocode
-        WHERE staff_user_id = ${staff_id}
-        GROUP BY ID
-        ORDER BY MAX (ID)
-        desc`,
+        WHERE staff_user_id = ${staff_id}`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -764,6 +782,59 @@ class Database {
         console.log('done');
       })
   }
+
+  async CreateDomainTerms(domain_name: string, terms_body: string) {
+    mysql.query(`
+      INSERT INTO domain_terms
+      ( domain_name, terms_body )
+      VALUES 
+      ( "${domain_name}", "${terms_body}" )`,
+      (err) => {
+        if (err) return console.error(err)
+        console.log('done');
+      })
+  }
+
+  async GetDomainTerms(domain_name: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM domain_terms
+        WHERE domain_name = "${domain_name}"`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+
+  async UpdateDomainTerms(domain_name: string, terms_body: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        UPDATE domain_terms
+        SET terms_body = "${terms_body}"
+        WHERE domain_name = "${domain_name}"`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async GetBaseTerms() {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM domain_terms
+        WHERE ID = ${1}`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
 
   async GetDomainListForStaff(staff_email: string) {
     return new Promise((resolve, reject) => {
@@ -891,11 +962,11 @@ class Database {
 
     return new Promise((resolve, reject) => {
       mysql.query(`
-        SELECT *
+        SELECT user_auth.ID, user_auth.date_of_entry, user_auth.name, user_auth.email, user_params.kyc_status, user_kyc.kyc_status
         FROM user_auth
-        GROUP BY ID
-        ORDER BY MAX (ID)
-        desc`,
+        JOIN user_params
+        ON user_auth.ID = user_params.user_id
+        JOIN user_auth.ID = user_kyc.user_id`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)

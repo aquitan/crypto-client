@@ -16,7 +16,9 @@ class UserServices {
     if (!userKyc[0]) {
       const dashboardUserDto: any = new DashboardUserDto(user[0])
       console.log('user dto is: ', dashboardUserDto)
-
+      if (user[0].isStaff || user[0].isAdmin) {
+        dashboardUserDto.withoutLogs = true
+      }
       return dashboardUserDto
     }
 
@@ -33,15 +35,21 @@ class UserServices {
     console.log('kyc of current user: ', userKyc[0])
     console.log('info of current user: ', user[0])
 
+
+
     const userLogs: any = await database.GetLogsForUser(user_id)
     console.log('user logs is:', userLogs[0]);
 
     if (userKyc[0]) {
+
       let profileUserDto: any = new ProfileUserDto(userKyc[0])
       profileUserDto.ip_address = userLogs[0].ip_address
       profileUserDto.login_date = userLogs[0].action_date
       profileUserDto.name = user[0].name
       profileUserDto.two_step_status = user[0].two_step_status
+      if (user[0].isStaff || user[0].isAdmin) {
+        profileUserDto.withoutLogs = true
+      }
       console.log('user dto is: ', profileUserDto)
 
       return profileUserDto
@@ -50,6 +58,9 @@ class UserServices {
     let profileUserDto: any = new ProfileUserDto(user[0])
     profileUserDto.ip_address = userLogs[0].ip_address
     profileUserDto.login_date = userLogs[0].action_date
+    if (user[0].isStaff || user[0].isAdmin) {
+      profileUserDto.withoutLogs = true
+    }
     console.log('user dto is: ', profileUserDto)
 
     return profileUserDto

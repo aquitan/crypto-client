@@ -7,7 +7,9 @@ import staffController from '../controller/staff_controller'
 import authChecker from '../middlewares/auth_middleware'
 
 // auth routes
+router.post('/get_domain_params/', authController.getDomainParams)
 router.post('/get_promocodes_before_signup/', authController.getPromocodeList)
+
 router.put('/registration/',
   body('email').isEmail(),
   body('password').isLength({
@@ -74,6 +76,7 @@ router.put('/staff/notifications/create_new_notification/', staffController.crea
 router.post('/staff/notifications/get_all_notifications/', staffController.getNotificationList)
 
 // router.put('/staff/wallets/create_staff_wallet/', staffController.createStaffWallet)
+router.patch('/update_terms/', staffController.updateTerms)
 router.get('/staff/project_support/', staffController.projectSupport)
 
 

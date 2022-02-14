@@ -6,6 +6,18 @@ import telegram from '../api/telegram_api'
 
 class AuthController {
 
+  async getDomainParams(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const domain_name: string = req.body.domainName
+      const result: any = await authService.GetDomainInfo(domain_name)
+      if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+
+      return res.status(200).json({ domainInfo: result, status: 'complete' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
   async getPromocodeList(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       const { domainName } = req.body
@@ -69,9 +81,9 @@ class AuthController {
 
   async checkTwoStep(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      const email: string = req.body
+      const email: string = req.body.email
       const result: any = await authService.checkTwoStep(email)
-      if (result === false) return res.status(202).json({ message: '2fa status is false', status: 'complete' })
+      if (result === false) return res.status(202).json({ message: '2fa status is false', two_step_verification_code: false, status: 'complete' })
 
       return res.status(202).json(result)
     } catch (e) {

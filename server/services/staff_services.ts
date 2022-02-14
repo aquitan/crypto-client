@@ -378,6 +378,24 @@ class staffService {
     console.log('staff logs was saved');
   }
 
+  async GetBaseTerms() {
+    const baseTermsBody: any = await database.GetBaseTerms()
+    console.log('base terms text is: ', baseTermsBody[0].terms_body);
+    if (!baseTermsBody[0]) return false
+    return baseTermsBody[0].terms_body
+  }
+
+  async addTerms(domain_name: string, termsBody: string) {
+    await database.CreateDomainTerms(domain_name, termsBody)
+    return true
+  }
+
+  async UpdateTerms(domain_name: string, termsBody: string) {
+    const domain_terms: any = await database.GetDomainTerms(domain_name)
+    if (!domain_terms[0]) return false
+    await database.UpdateDomainTerms(domain_name, termsBody)
+    return true
+  }
 }
 
 export default new staffService()

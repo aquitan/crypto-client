@@ -27,11 +27,14 @@ class UserController {
       const user: any = await UserServices.dashboard(id)
       console.log('found user is: ', user)
 
+      if (user.hasOwnProperty('withoutLogs')) {
+        return res.status(200).json(user)
+      }
+
       await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, 'перешел на dashboard', domainName)
       await telegram.sendMessageByUserActions(email, ' перешел на dashboard ', domainName)
 
-      return res.json(user)
-
+      return res.status(200).json(user)
     } catch (e) {
       next(e)
     }
@@ -45,17 +48,18 @@ class UserController {
 
       const user: any = await UserServices.personalAreaProfile(id)
       console.log('found user is: ', user)
-      if (user) {
-        await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, `перешел на ${userAction} `, domainName)
-        await telegram.sendMessageByUserActions(email, ` перешел на ${userAction}`, domainName)
-        return res.json({
-          user: user,
-          status: 'complete'
-        })
+
+      if (!user) return res.status(400).json({ user: 'not found', status: 'rejected' })
+
+      if (user.hasOwnProperty('withoutLogs')) {
+        return res.status(200).json({ "found user": user, status: 'complete' })
       }
+
+      await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, `перешел на ${userAction} `, domainName)
+      await telegram.sendMessageByUserActions(email, ` перешел на ${userAction}`, domainName)
       return res.json({
-        user: 'not found',
-        status: 'rejected'
+        user: user,
+        status: 'complete'
       })
 
     } catch (e) {
