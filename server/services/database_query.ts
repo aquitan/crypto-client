@@ -1,3 +1,4 @@
+import { RowDataPacket } from 'mysql2';
 import mysql from '../config/mysql_config';
 
 
@@ -951,7 +952,7 @@ class Database {
         FROM domain_list
         JOIN domain_detail
         ON domain_list.ID = domain_detail.domain_id`,
-        (e: any, result) => {
+        (e: any, result: RowDataPacket[][]) => {
           if (e) reject(new Error(e))
           resolve(result)
         })

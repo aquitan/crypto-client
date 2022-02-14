@@ -81,8 +81,8 @@ class UserController {
           status: 'rejected'
         })
       }
-      await saveUserLogs(userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, `поменял имя на ${userName} `, domainName)
-      await telegram.sendMessageByUserActions(userEmail, `поменял имя на ${userName} `, domainName)
+      await saveUserLogs(userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, ` поменял имя на ${userName} `, domainName)
+      await telegram.sendMessageByUserActions(userEmail, ` поменял имя на ${userName} `, domainName)
       return res.json({
         message: 'name was changed',
         status: 'complete'
@@ -169,7 +169,7 @@ class UserController {
         })
       }
 
-      await saveUserLogs(userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, `выключил 2фа аутентификацию на`, domainName)
+      await saveUserLogs(userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, ` выключил 2фа аутентификацию на`, domainName)
       await telegram.sendMessageByUserActions(userEmail, ` выключил 2фа аутентификацию `, domainName)
       return res.json({
         message: '2fa turned off',

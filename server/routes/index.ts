@@ -15,6 +15,7 @@ router.put('/registration/',
     max: 32
   }),
   authController.registration)
+router.post('/check_two_step/', authController.checkTwoStep)
 router.post('/login/', authController.login)
 router.post('/logout/', authController.logout)
 router.post('/activate/', authController.activate)

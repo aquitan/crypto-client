@@ -669,7 +669,7 @@ class StaffController {
         const result: any = await adminService.GetDomainListForAdmin()
         if (result !== false) {
           return res.status(200).json({
-            usersKycList: result,
+            domainsList: result,
             status: 'complete'
           })
         }
@@ -678,7 +678,7 @@ class StaffController {
         const result: any = await staffService.GetDomainListForStaff(staffEmail)
         if (result !== false) {
           return res.status(200).json({
-            usersKycList: result,
+            domainsList: result,
             status: 'complete'
           })
         }

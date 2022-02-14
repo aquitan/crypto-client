@@ -67,6 +67,18 @@ class AuthController {
     }
   }
 
+  async checkTwoStep(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const email: string = req.body
+      const result: any = await authService.checkTwoStep(email)
+      if (result === false) return res.status(202).json({ message: '2fa status is false', status: 'complete' })
+
+      return res.status(202).json(result)
+    } catch (e) {
+      next(e)
+    }
+  }
+
   async login(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       const { email, password, domainName, ipAddress, city, countryName, coordinates, currentDate, browser } = req.body
@@ -96,12 +108,8 @@ class AuthController {
         await authService.SaveIpMatchLogs(email, ipAddress, currentDate, browser)
       }
 
-
-
       console.log('req.body: ', req.body);
       const userData: any = await authService.login(email, password, domainName)
-      // console.log(req.useragent);
-
       if (userData === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
 
       res.cookie('refreshToken', userData.refreshToken, {
@@ -156,7 +164,6 @@ class AuthController {
   async refresh(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       const { refreshToken } = req.cookies
-      const userData = await authService.refresh(refreshToken)
 
       if (refreshToken === process.env.ROOT_REFRESH_TOKEN) {
 
@@ -177,6 +184,7 @@ class AuthController {
         })
       }
 
+      const userData: any = await authService.refresh(refreshToken)
       res.cookie('refreshToken', userData.refreshToken, {
         maxAge: 30 * 4 * 60 * 60 * 1000,
         httpOnly: true
