@@ -19,15 +19,15 @@ import moment from 'moment'
 import {Link, useLocation} from "react-router-dom";
 import InputRadio from "../../../components/UI/InputRadio/InputRadio";
 import {store} from "../../../index";
+import {splitLocation} from "../../../utils/regExpSlash";
 
 
 const KYC = ({status}) => {
     const [startDate, setStartDate] = useState()
-    const locatioan = useLocation()
+    const location = useLocation()
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
     })
-    let userLocation = locatioan.pathname.split(/[\\\/]/)
 
     const onSubmit = async (data) => {
         let geodata =  await getGeoData()
@@ -36,7 +36,7 @@ const KYC = ({status}) => {
         data.ipAddress = geodata.ipAddress
         data.countryName = geodata.countryName
         data.coordinates = geodata.coordinates
-        data.userAction = userLocation[userLocation.length - 1]
+        data.userAction = splitLocation(location)
         data.dateOfBirth = moment(startDate).format('yyyy/MM/DD')
         data.currentDate = geodata.currentDate
         data.id = geodata.id

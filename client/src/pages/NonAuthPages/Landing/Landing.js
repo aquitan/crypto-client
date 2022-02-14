@@ -1,29 +1,29 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import LandingHeader from '../../../components/LandingHeader/LandingHeader'
-import Section from '../../../layouts/Section/Section'
-import cls from './Landing.modules.scss'
 import './landing.scss'
-import AnchorLink from 'react-anchor-link-smooth-scroll'
-import {Container} from "react-bootstrap";
+import {getData} from "../../../services/StaffServices";
+import Preloader from "../../../components/UI/Preloader/Preloader";
 
 
 const Landing = () => {
+    const [state, setState] = useState()
 
-    const [active, setActive] = useState('')
-
-    const handleClick = event => {
-        console.log(!event.target.classList.contains('active'))
-        if (!event.target.classList.contains('active')) {
-            setActive('active')
-        } else {
-            setActive('active')
+    useEffect(async () => {
+        const abortController = new AbortController();
+        const res = await getData(`/staff/domains/domain_detail/1`)
+        setState(res.data)
+        console.log('set data landing');
+        return function cleanup(){
+            console.log('I am in cleanup function');
+            abortController.abort();
         }
-    }
-
+    }, [])
 
     return (
         <article >
-            <LandingHeader/>
+            {
+                state ? <LandingHeader data={state}/> : <Preloader />
+            }
         </article>
     )
 }

@@ -12,12 +12,17 @@
     line-height: 11px;
     font-weight: 700;
     position: relative;
-    transition: opacity .2s linear 0s;
+    transition: all .2s linear;
     border: 2px solid $colorDarkBlue;
     cursor: pointer;
     font-family: 'Assistant', sans-serif;
     box-sizing: border-box;
     width: 100%;
+    &:hover {
+        transition: all .2s linear;
+        background-color: #fff;
+        color: $colorDarkBlue;
+    }
 }
 
 .small {

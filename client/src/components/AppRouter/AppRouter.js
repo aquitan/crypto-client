@@ -9,12 +9,11 @@ import {detectBrowser} from "../../utils/detectBrowser";
 const AppRouter = () => {
     const {store} = useContext(AuthContext)
 
-    console.log('browser', detectBrowser())
-
     useEffect(() => {
-        if (localStorage.getItem('token')) {
-            store.checkAuth()
-        }
+        store.checkAuth()
+        // if (localStorage.getItem('token')) {
+        //     store.checkAuth()
+        // }
     }, [])
 
     if (store.isLoading) {

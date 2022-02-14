@@ -17,8 +17,7 @@ const NonAuthWrap = () => {
     return (
         <>
             <Routes>
-                {publicRoutes.map(route => <Route key={uuid()} exact path={route.path} element={route.component}/>)}
-                {/* <Route path='*' element={<Navigate to='/'/>} /> */}
+                {publicRoutes.map(route => <Route key={uuid()} path={route.path} element={route.component}/>)}
             </Routes>
             <Footer>
                 <Link to='/'>Somwhere</Link>
