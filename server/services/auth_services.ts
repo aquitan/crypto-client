@@ -5,14 +5,19 @@ import ApiError from '../exeptions/api_error'
 import mailService from '../services/mail_services'
 import passwordGenerator from '../api/password_generator'
 
-
-
 class AuthService {
 
   async GetDomainInfo(domain_name: string) {
     const domain_info: any = await database.GetDomainInfoForUser(domain_name)
+    const domain_terms: any = await database.GetDomainTerms(domain_name)
     if (!domain_info[0]) return false
-    return domain_info[0]
+    if (!domain_terms[0]) return false
+
+    const dataObject = {
+      domain_info: domain_info[0],
+      domain_terms: domain_terms[0]
+    }
+    return dataObject
   }
 
   async GetPromocodeListBeforeSignup(domainName: string) {

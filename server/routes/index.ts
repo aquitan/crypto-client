@@ -68,9 +68,13 @@ router.post('/staff/ip_match_checker/', staffController.getIpForMatch)
 
 router.put('/staff/domains/create_domain/', staffController.createDomain)
 router.get('/staff/domains/domain_detail/:id/', staffController.getDomainDetail)
+
+router.patch('/staff/domains/domain_detail/domain_edit', staffController.editDomainInfo) // **
+
 router.post('/staff/domains/get_active_domains/', staffController.getDomainsList)
 router.put('/staff/errors/create_new_error/', staffController.createCustomError)
 router.get('/staff/errors/get_all_errors/:id/', staffController.getAllErrors) // domain ID
+router.post('/staff/errors/get_errors_by_domain_name/', staffController.getErrorsByDomainName) // domain name where staff email is domain owner
 
 router.put('/staff/notifications/create_new_notification/', staffController.createNewNotification)
 router.post('/staff/notifications/get_all_notifications/', staffController.getNotificationList)
@@ -80,8 +84,10 @@ router.patch('/staff/news/news_edit/', staffController.editNews)
 router.post('/staff/news/get_news_list/', staffController.getNewsList)
 
 // router.put('/staff/wallets/create_staff_wallet/', staffController.createStaffWallet)
-router.patch('/update_terms/', staffController.updateTerms) // +
-router.get('/staff/project_support/', staffController.projectSupport) // +
+router.post('/staff/terms/get_term_by_domain/', staffController.getTermsByDomainName)
+
+router.patch('/staff/terms/update_terms/', staffController.updateTerms) // +
+router.get('/staff/project_support/get_wallet/', staffController.projectSupport)
 router.post('/staff/project_support_form/', staffController.projectSupportRequest) // +
 
 

@@ -457,12 +457,11 @@ class Database {
   async GetAllUsersForStaff(domain_name: string) {
     return new Promise((resolve, reject) => {
       mysql.query(`
-        SELECT user_auth.ID, user_auth.date_of_entry, user_auth.name, user_auth.email, user_params.kyc_status, user_kyc.kyc_status
+        SELECT user_auth.ID, user_auth.date_of_entry, user_auth.name, user_auth.email
         FROM user_auth
         JOIN user_params
         ON user_auth.ID = user_params.user_id
-        JOIN user_auth.ID = user_kyc.user_id
-        WHERE isAdmin = ${false} AND domain_name = "${domain_name}"`,
+        WHERE user_params.isAdmin = ${false} AND domain_name = "${domain_name}"`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -783,12 +782,40 @@ class Database {
       })
   }
 
+  async UpdateDomainInfo(baseDomainData: any) {
+    mysql.query(`
+      UPDATE domain_list
+      SET full_domain_name = "${baseDomainData.fullDomainName}", domain_name = "${baseDomainData.domainName}", 
+      company_address = "${baseDomainData.companyAddress}", company_phone_number = "${baseDomainData.companyPhoneNumber}", 
+      company_email = "${baseDomainData.companyEmail}", company_owner_name = "${baseDomainData.companyOwnerName}", 
+      company_year = "${baseDomainData.companyYear}", company_country = "${baseDomainData.companyCountry}", domain_owner = "${baseDomainData.domainOwnerEmail}"
+      WHERE domain_name = "${baseDomainData.domainName}"`,
+      (err) => {
+        if (err) return console.error(err)
+        console.log('done');
+      })
+  }
+
+  async UpdateDomainDetailInfo(object: any) {
+    mysql.query(`
+      UPDATE domain_detail
+      SET show_news = ${object.showNews}, double_deposit = ${object.double_deposit}, deposit_fee = ${object.depositFee}, 
+      rate_correct_sum = ${object.rateCorrectSum}, min_deposit_sum = ${object.minDepositSum}, min_withdrawal_sum = ${object.minWithdrawalSum},
+      currency_swap_fee = ${object.currencySwapFee}, internal_swap_fee = ${object.internalSwapFee}, date_of_create = "${object.dateOfDomainCreate}",
+      domain_id = ${object.domainId}
+      WHERE domain_id = ${object.domainId}`,
+      (err) => {
+        if (err) return console.error(err)
+        console.log('done');
+      })
+  }
+
   async CreateDomainTerms(domain_name: string, terms_body: string) {
     mysql.query(`
       INSERT INTO domain_terms
       ( domain_name, terms_body )
       VALUES 
-      ( "${domain_name}", "${terms_body}" )`,
+      ( "${domain_name}", '${terms_body}' )`,
       (err) => {
         if (err) return console.error(err)
         console.log('done');
@@ -827,7 +854,7 @@ class Database {
       mysql.query(`
         SELECT *
         FROM domain_terms
-        WHERE ID = ${1}`,
+        WHERE domain_name = "template"`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -835,6 +862,20 @@ class Database {
     })
   }
 
+
+
+  async GetTermsByDomainName(domain_name: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM domain_terms
+        WHERE domain_name = "${domain_name}"`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
 
   async GetDomainListForStaff(staff_email: string) {
     return new Promise((resolve, reject) => {
@@ -872,12 +913,12 @@ class Database {
   }
 
 
-  async SaveDomainErrors(domain_id: number, error_name: string, error_title: string, error_text: string, error_btn: string) {
+  async SaveDomainErrors(domain_id: number, domain_name: string, error_name: string, error_title: string, error_text: string, error_btn: string) {
     mysql.query(`
       INSERT INTO domain_withdrawal_error
-      ( domain_id, error_name, error_title, error_text, error_btn )
+      ( domain_id, domain_name, error_name, error_title, error_text, error_btn )
       VALUES 
-      ( ${domain_id}, "${error_name}", "${error_title}", "${error_text}","${error_btn}" )`,
+      ( ${domain_id}, "${domain_name}", "${error_name}", "${error_title}", "${error_text}","${error_btn}" )`,
       (err) => {
         if (err) return console.error(err)
         console.log('done');
@@ -890,6 +931,19 @@ class Database {
         SELECT *
         FROM domain_withdrawal_error
         WHERE domain_id = ${domain_id}`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async GetErrorsByDomainName(domain_name: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM domain_withdrawal_error
+        WHERE domain_name = "${domain_name}"`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -1011,14 +1065,10 @@ class Database {
   // 
 
   async GetAllUsersForAdmin() {
-
     return new Promise((resolve, reject) => {
       mysql.query(`
-        SELECT user_auth.ID, user_auth.date_of_entry, user_auth.name, user_auth.email, user_params.kyc_status, user_kyc.kyc_status
-        FROM user_auth
-        JOIN user_params
-        ON user_auth.ID = user_params.user_id
-        JOIN user_auth.ID = user_kyc.user_id`,
+        SELECT user_auth.ID, user_auth.date_of_entry, user_auth.name, user_auth.email
+        FROM user_auth`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)

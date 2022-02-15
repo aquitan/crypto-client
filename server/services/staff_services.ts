@@ -235,7 +235,7 @@ class staffService {
     ]
 
     for (let i = 0; i < domainErrors.length; i++) {
-      await database.SaveDomainErrors(domainDetailInfo.domainId, domainErrors[i].errorName, domainErrors[i].title, domainErrors[i].text, domainErrors[i].button,)
+      await database.SaveDomainErrors(baseDomainData.fullDomainName, domainDetailInfo.domainId, domainErrors[i].errorName, domainErrors[i].title, domainErrors[i].text, domainErrors[i].button,)
       console.log('error item is: ', '\n', domainErrors[i], '\n', ' was waved');
     }
 
@@ -257,9 +257,59 @@ class staffService {
     return recieved_domain
   }
 
+  async EditDomainInfo(data_object: any) {
+
+    console.log('recieved object: ', data_object);
+    const baseDomainData: any = {
+      fullDomainName: data_object.fullDomainName,
+      domainName: data_object.domainName,
+      companyAddress: data_object.companyAddress,
+      companyPhoneNumber: data_object.companyPhoneNumber,
+      companyEmail: data_object.companyEmail,
+      companyOwnerName: data_object.companyOwnerName,
+      companyYear: data_object.companyYear,
+      companyCountry: data_object.companyCountry,
+      domainOwnerEmail: data_object.staffEmail
+    }
+
+    if (data_object.staffEmail !== 'root') {
+      const domains: any = await database.GetDomainListForStaff(data_object.staffEmail)
+      console.log('recieved domains list is: ', domains);
+
+      console.log(`staff ${data_object.staffEmail} domains list: `);
+      for (let i = 0; i <= domains.length - 1; i++) {
+        console.log(domains[i].fullDomainName);
+
+        if (domains[i].fullDomainName === data_object.fullDomainName) {
+          console.log('domain already in use');
+          return false
+        }
+      }
+    }
+    await database.UpdateDomainInfo(baseDomainData)
+    const curDomain: any = await database.GetBaseDomainInfo(baseDomainData.fullDomainName)
+    console.log('base info from db: ', curDomain[0]);
+
+    const domainDetailInfo: any = {
+      showNews: data_object.showNews,
+      double_deposit: data_object.doubleDeposit,
+      depositFee: data_object.depositFee,
+      rateCorrectSum: data_object.rateCorrectSum,
+      minDepositSum: data_object.minDepositSum,
+      minWithdrawalSum: data_object.minWithdrawalSum,
+      internalSwapFee: data_object.internalSwapFee,
+      currencySwapFee: data_object.currencySwapFee,
+      dateOfDomainCreate: data_object.dateOfDomainCreate,
+      domainId: curDomain[0].ID
+    }
+    await database.UpdateDomainDetailInfo(domainDetailInfo)
+
+    return true
+  }
+
   async CreateCustomError(data_object: any) {
 
-    await database.SaveDomainErrors(data_object.domain_id, data_object.errorName, data_object.errorTitle, data_object.errorText, data_object.errorButton)
+    await database.SaveDomainErrors(data_object.domain_name, data_object.domain_id, data_object.errorName, data_object.errorTitle, data_object.errorText, data_object.errorButton)
 
     const savedErrors: any = await database.GetDomainErrorsList(data_object.domain_id)
     console.log('saved domain error: ', savedErrors);
@@ -272,6 +322,14 @@ class staffService {
   async GetDomainErrors(domain_id: number) {
     const domain_errors: any = await database.GetDomainErrorsList(domain_id)
     console.log('domain is: ', domain_errors);
+    if (!domain_errors[0]) return false
+    return domain_errors
+  }
+
+
+  async GetErrorsByDomainName(domain_name: string) {
+    const domain_errors: any = await database.GetErrorsByDomainName(domain_name)
+    console.log('domain errors list is: ', domain_errors);
     if (!domain_errors[0]) return false
     return domain_errors
   }
@@ -387,6 +445,13 @@ class staffService {
 
   async addTerms(domain_name: string, termsBody: string) {
     await database.CreateDomainTerms(domain_name, termsBody)
+    return true
+  }
+
+
+  async GetTermsByDomainName(domain_name: string) {
+    const domain_terms: any = await database.GetTermsByDomainName(domain_name)
+    if (!domain_terms[0]) return false
     return true
   }
 
