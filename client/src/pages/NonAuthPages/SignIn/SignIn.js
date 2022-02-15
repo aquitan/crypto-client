@@ -13,9 +13,10 @@ import cls from './SignIn.module.scss'
 import '../../../styles/index.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons'
-import {getGeoData, sendDate} from "../../../queries/getSendGeoData";
+import {getGeoData} from "../../../queries/getSendGeoData";
 import Modal from "../../../components/UI/Modal/Modal";
-import PasswordStrength from "../../../components/UI/PasswordStrength/PasswordStrength";
+import {postData} from "../../../services/StaffServices";
+import Preloader from "../../../components/UI/Preloader/Preloader";
 
 
 
@@ -29,10 +30,25 @@ const SignIn = () => {
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onChange'
     })
+    const [stateTwoFa, setStateTwoFa] = useState({
+        twoFaCode: '',
+        twoFaLoading: false
+    })
+    console.log(stateTwoFa.twoFaCode)
 
     const navigate = useNavigate()
 
-    const onSubmit = async (data, e) => {
+    const onSubmit = async (data) => {
+        if (stateTwoFa.twoFaCode === '') {
+            setStateTwoFa({...stateTwoFa, twoFaLoading: true})
+            const res = await postData('/check_two_step/', {email: data.email})
+            setStateTwoFa({twoFaLoading: false, twoFaCode: res.data.two_step_verification_code})
+        }
+        if (stateTwoFa.twoFaCode === false) await sendLoginData(data)
+        if (data.twoFaCode === stateTwoFa.twoFaCode) await sendLoginData(data)
+    }
+
+    const sendLoginData = async (data) => {
         const geoData = await getGeoData()
         geoData.email = data.email
         geoData.password = data.password
@@ -40,15 +56,10 @@ const SignIn = () => {
         delete geoData.id
         delete geoData.userAction
 
-        if (!store.isAuth && store.isActivated && !store.isBanned) {
-            store.login(geoData)
-        } else if (!store.isAuth && !store.isActivated && !store.isBanned) {
-            store.login(geoData)
-        } else if (store.isBanned) {
-            setModalBan(true)
-        } else {
-            setModal(true)
-        }
+        if (!store.isAuth && store.isActivated && !store.isBanned) store.login(geoData)
+        if (!store.isAuth && !store.isActivated && !store.isBanned) store.login(geoData)
+        if (store.isBanned) setModalBan(true)
+        setModal(true)
         setModalError(store.isError)
     }
 
@@ -56,9 +67,7 @@ const SignIn = () => {
         setIsShowPassword(!isShowPassword)
     }
     const hideModalBan = () => {
-        if (store.isBanned) {
-            setModalBan(false)
-        }
+        if (store.isBanned) setModalBan(false)
     }
 
 
@@ -89,8 +98,6 @@ const SignIn = () => {
                             message: 'Email is not valid'
                         })} name='email' placeholder='Email' id='login' />
                         <ErrorMessage  name='email' errors={errors} render={() => <p className={cls.error}>email is invalid</p>} />
-
-                       
                     </Col>
                 </Row>
                 <Row>
@@ -105,13 +112,32 @@ const SignIn = () => {
                                     value: 32,
                                     message: 'Your password must be less than 32 characters'
                                 },
-
                             }
                         )} type={isShowPassword ? 'text' : 'password'} name='password' placeholder='password' id='password' />
                         {/* <ErrorMessage name='password' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} /> */}
                         <FontAwesomeIcon onClick={showPassword} className={cls.eye_icon} icon={isShowPassword ? faEye : faEyeSlash} />
                     </Col>
                 </Row>
+                {
+                    stateTwoFa.twoFaLoading ? <Preloader /> : null
+                }
+                {
+                    stateTwoFa.twoFaCode ?
+                    <Row>
+                        <Col className={cls.relative}>
+                            <Input {...register('twoFaCode', {
+                                required: true,
+                                message: 'Field is required',
+                                maxLength: {
+                                    value: 8,
+                                    message: 'Maximum length is 8 symbols'
+                                }
+                            })} />
+                            <ErrorMessage  name='twoFaCode' errors={errors} render={() => <p className={cls.error}>Field is required</p>} />
+                        </Col>
+                    </Row>
+                        : null
+                }
                 <Row className='mt-3 justify-content-center'>
                     <Col>
                         <Link className={cls.link} to='/signup/'>Create an account</Link>

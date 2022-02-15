@@ -22,6 +22,7 @@ export default class Store {
     isError = false
     geoData = {}
     notifications = []
+    domain = {}
 
 
     constructor() {
@@ -77,6 +78,9 @@ export default class Store {
     }
     setNotification(obj) {
         this.notifications.push(obj)
+    }
+    setDomain(obj) {
+        this.domain = obj
     }
 
     async login(obj) {

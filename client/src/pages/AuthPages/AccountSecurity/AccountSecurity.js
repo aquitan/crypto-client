@@ -169,7 +169,7 @@ const AccountSecurity = (props) => {
                 </Col>
                 <Col>
                     <h5>2FA</h5>
-                    {store.twoFactor ? <Button onClick={show2FA}>enable</Button> : <Button onClick={disable2FA}>Disable</Button>}
+                    {!store.twoFactor ? <Button onClick={show2FA}>enable</Button> : <Button onClick={disable2FA}>Disable</Button>}
                 </Col>
             </Row>
 

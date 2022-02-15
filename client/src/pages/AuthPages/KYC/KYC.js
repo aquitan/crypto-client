@@ -151,23 +151,23 @@ const KYC = ({status}) => {
                                 </Col>
                                 <ErrorMessage  name='zipCode' errors={errors} render={() => <p className={error.error}>you have to accept terms and conditions</p>} />
                             </Row>
-                            {/*<Row className='mt-4'>*/}
-                            {/*    <Col>*/}
-                            {/*        <FileUpload {...register('file1', {*/}
-                            {/*            required: 'This field is required'*/}
-                            {/*        })} name='file1'/>*/}
-                            {/*    </Col>*/}
-                            {/*    <Col>*/}
-                            {/*        <FileUpload {...register('file2', {*/}
-                            {/*            required: 'This field is required'*/}
-                            {/*        })} name='file2'/>*/}
-                            {/*    </Col>*/}
-                            {/*    <Col>*/}
-                            {/*        <FileUpload {...register('file3', {*/}
-                            {/*            required: 'This field is required'*/}
-                            {/*        })} name='file3'/>*/}
-                            {/*    </Col>*/}
-                            {/*</Row>*/}
+                            <Row className='mt-4'>
+                                <Col>
+                                    <FileUpload {...register('file1', {
+                                        required: 'This field is required'
+                                    })} name='file1'/>
+                                </Col>
+                                <Col>
+                                    <FileUpload {...register('file2', {
+                                        required: 'This field is required'
+                                    })} name='file2'/>
+                                </Col>
+                                <Col>
+                                    <FileUpload {...register('file3', {
+                                        required: 'This field is required'
+                                    })} name='file3'/>
+                                </Col>
+                            </Row>
                             <Row className='mt-4'>
                                 <Col>
                                     <input {...register('terms', {

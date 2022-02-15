@@ -25,7 +25,7 @@ import {
     TERMS_ROUTE,
     MAKETRANSACTION_ROUTE,
     CREATENEWS_ROUTE,
-    GROUPLIST_ROUTE, DOMAINSDETAIL_ROUTE
+    GROUPLIST_ROUTE, DOMAINSDETAIL_ROUTE, COOKIE_POLICY, PRIVACY_POLICY, SECURITY_POLICY, TERMS_CONDITIONS
 } from "../utils/constants"
 import SignUp from '../pages/NonAuthPages/SignUp/SignUp'
 import SignIn from '../pages/NonAuthPages/SignIn/SignIn'
@@ -54,6 +54,10 @@ import MakeTransaction from "../pages/AdminPages/MakeTransaction/MakeTransaction
 import CreateNews from "../pages/AdminPages/CreateNews/CreateNews";
 import GroupList from "../pages/AdminPages/GroupList/GroupList";
 import DomainsDetail from "../pages/AdminPages/DomainsDetail/DomainsDetail";
+import CookiePolicy from "../pages/NonAuthPages/NonAuthArticle/CookiePolicy";
+import PrivacyPolicy from "../pages/NonAuthPages/NonAuthArticle/PrivacyPolicy";
+import SecurityPolicy from "../pages/NonAuthPages/NonAuthArticle/SecurityPolicy";
+import TermsConditions from "../pages/NonAuthPages/NonAuthArticle/TermsConditions";
 
 export const authRoutes = [
     {
@@ -162,6 +166,22 @@ export const publicRoutes = [
     {
         path: FORGOT_PASSWORD_ROUTE,
         component: <ForgotPassword/>
+    },
+    {
+        path: PRIVACY_POLICY,
+        component: <PrivacyPolicy/>
+    },
+    {
+        path: COOKIE_POLICY,
+        component: <CookiePolicy/>
+    },
+    {
+        path: SECURITY_POLICY,
+        component: <SecurityPolicy/>
+    },
+    {
+        path: TERMS_CONDITIONS,
+        component: <TermsConditions/>
     },
     {
         path: ERROR,
