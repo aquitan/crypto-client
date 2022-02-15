@@ -396,6 +396,35 @@ class staffService {
     await database.UpdateDomainTerms(domain_name, termsBody)
     return true
   }
+
+  async CreateNews(transfer_object: any) {
+    await database.CreateNews(transfer_object)
+    const getNews: any = await database.GetNews(transfer_object.newsTitle, transfer_object.newsDomain)
+    console.log('found news: ', getNews);
+    if (!getNews[0]) return false
+    return getNews[0]
+  }
+
+  async EditNews(transfer_object: any) {
+    const getNews: any = await database.GetNews(transfer_object.newsTitle, transfer_object.newsDomain)
+    console.log('found news: ', getNews);
+    if (!getNews[0]) return false
+
+    await database.EditNews(transfer_object)
+    const updatedNews: any = await database.GetNews(transfer_object.newsTitle, transfer_object.newsDomain)
+    console.log('found news: ', updatedNews);
+    if (!updatedNews[0]) return false
+
+    return true
+  }
+
+  async GetNewsList(staffId: number) {
+    const newsList: any = await database.GetNewsByStaffId(staffId)
+    console.log('found news: ', newsList);
+    if (!newsList[0]) return false
+    return newsList[0]
+  }
+
 }
 
 export default new staffService()

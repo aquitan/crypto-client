@@ -107,6 +107,30 @@ LOCK TABLES `domain_list` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `domain_terms`
+--
+
+DROP TABLE IF EXISTS `domain_terms`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `domain_terms` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `domain_name` varchar(100) NOT NULL,
+  `terms_body` longtext NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `domain_terms`
+--
+
+LOCK TABLES `domain_terms` WRITE;
+/*!40000 ALTER TABLE `domain_terms` DISABLE KEYS */;
+/*!40000 ALTER TABLE `domain_terms` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `domain_withdrawal_error`
 --
 
@@ -241,7 +265,7 @@ CREATE TABLE `user_auth` (
   `domain_name` varchar(255) NOT NULL,
   `date_of_entry` datetime NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -250,6 +274,7 @@ CREATE TABLE `user_auth` (
 
 LOCK TABLES `user_auth` WRITE;
 /*!40000 ALTER TABLE `user_auth` DISABLE KEYS */;
+INSERT INTO `user_auth` VALUES (1,'onegin343@ukr.net','11111111','','oKhVJC3F8PP5rEV3vM','self registred',1,'empty','localhost:3000','2022-02-14 00:00:00');
 /*!40000 ALTER TABLE `user_auth` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -371,7 +396,7 @@ CREATE TABLE `user_logs` (
   PRIMARY KEY (`ID`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `user_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user_auth` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -380,6 +405,7 @@ CREATE TABLE `user_logs` (
 
 LOCK TABLES `user_logs` WRITE;
 /*!40000 ALTER TABLE `user_logs` DISABLE KEYS */;
+INSERT INTO `user_logs` VALUES (1,'onegin343@ukr.net','undefined','undefined','undefined','undefined','some browsr','2022-02-12 00:00:00','зашел на ','localhost:3000',1);
 /*!40000 ALTER TABLE `user_logs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -431,7 +457,7 @@ CREATE TABLE `user_params` (
   PRIMARY KEY (`ID`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `user_params_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user_auth` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -440,6 +466,7 @@ CREATE TABLE `user_params` (
 
 LOCK TABLES `user_params` WRITE;
 /*!40000 ALTER TABLE `user_params` DISABLE KEYS */;
+INSERT INTO `user_params` VALUES (1,0,0,0,1,0,0,0,1,0,0,1,1);
 /*!40000 ALTER TABLE `user_params` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -510,4 +537,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-02-11 11:43:12
+-- Dump completed on 2022-02-15 14:27:47

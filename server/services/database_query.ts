@@ -922,6 +922,31 @@ class Database {
     })
   }
 
+  async CreateNews(obj: any) {
+    mysql.query(`
+      INSERT INTO news_list
+      ( news_title, news_date, news_body, news_image, news_domain, news_youtube_link, staff_email, staff_id)
+      VALUES 
+      ( "${obj.newsTitle}", "${obj.newsDate}", "${obj.newsBody}", "${obj.newsImage || ''}", "${obj.newsDomain}", "${obj.youtubeLink}", "${obj.staffEmail}", ${obj.staffId} )`,
+      (err) => {
+        if (err) return console.error(err)
+        console.log('done');
+      })
+  }
+
+  async EditNews(object: any) {
+    mysql.query(`
+      UPDATE news_list
+      SET news_title = "${object.newsTitle}", news_date = "${object.newsDate}", news_body = "${object.newsBody}", 
+      news_image = "${object.newsImage || ''}", news_domain = "${object.newsDomain}", news_youtube_link = "${object.youtubeLink}"
+      WHERE staff_id = ${object.staffId}`,
+      (err) => {
+        if (err) return console.error(err)
+        console.log('done');
+      })
+  }
+
+
   async SaveStaffLogs(staff_email: string, staff_action: string, staff_domain: string, staff_id: number) {
     mysql.query(`
       INSERT INTO staff_logs
@@ -934,6 +959,33 @@ class Database {
       })
   }
 
+
+  async GetNews(title: string, domain: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM news_list
+        WHERE news_title = "${title}"
+        AND news_domain = "${domain}"`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async GetNewsByStaffId(staff_id: number) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM news_list
+        WHERE staff_id = ${staff_id}`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
 
   // async GetAllUserInfo(user_id: number) { 
   //   return new Promise((resolve, reject) => {
@@ -1042,6 +1094,19 @@ class Database {
         })
     })
   }
+
+  async GetNewsForAdmin() {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM news_list`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
 
 }
 

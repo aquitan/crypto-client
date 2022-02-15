@@ -53,6 +53,12 @@ class Telegram {
     console.log(userRequest)
     await SendActionMessage(userRequest)
   }
+
+  async sendProjectSupportMessage(staffEmail: string, title: string, message: string) {
+    const userRequest: string = `Стафф  ` + `${staffEmail}` + ' оставил сообщение: ' + '\n' + `${title}` + `\n` + `${message}`
+    console.log(userRequest)
+    await SendActionMessage(userRequest)
+  }
 }
 
 export default new Telegram()

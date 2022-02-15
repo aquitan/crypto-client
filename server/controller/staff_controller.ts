@@ -745,6 +745,102 @@ class StaffController {
     }
   }
 
+  async newsCreate(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      interface request_object {
+        staffEmail: string
+        staffId: number
+        newsTitle: string
+        newsDate: string
+        newsBody: string
+        // newsImage: any
+        youtubeLink: string
+        newsDomain: string
+      }
+      const transfer_object: request_object = {
+        staffEmail: req.body.staffEmail,
+        staffId: req.body.staffId,
+        newsTitle: req.body.newsTitle,
+        newsDate: req.body.newsDate,
+        newsBody: req.body.newsBody,
+        // newsImage: req.body.newsImage,
+        youtubeLink: req.body.youtubeLink,
+        newsDomain: req.body.newsDomain
+      }
+
+      const result: any = await staffService.CreateNews(transfer_object)
+      if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+
+      return res.status(201).json({
+        message: 'news was create',
+        status: 'complete',
+        content: result
+      })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async editNews(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      interface request_object {
+        newsTitle: string
+        newsDate: string
+        newsBody: string
+        // newsImage: any
+        youtubeLink: string
+        newsDomain: string
+      }
+      const transfer_object: request_object = {
+        newsTitle: req.body.newsTitle,
+        newsDate: req.body.newsDate,
+        newsBody: req.body.newsBody,
+        // newsImage: req.body.newsImage,
+        youtubeLink: req.body.youtubeLink,
+        newsDomain: req.body.newsDomain
+      }
+
+      const result: boolean = await staffService.EditNews(transfer_object)
+      if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+
+      return res.status(202).json({ message: 'news was update', status: 'complete' })
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async getNewsList(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const isAdmin: boolean = req.body.isAdmin
+      const isStaff: boolean = req.body.isStaff
+      const staffId: number = req.body.staffId
+
+      if (isStaff === true) {
+        const result: any = await staffService.GetNewsList(staffId)
+        if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+        return res.status(200).json({
+          message: 'news was found',
+          status: 'complete',
+          content: result
+        })
+      }
+      if (isAdmin === true) {
+        const result: any = await adminService.GetNewsListForAdmin()
+        if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+        return res.status(200).json({
+          message: 'news was found',
+          status: 'complete',
+          content: result
+        })
+      }
+
+      return res.status(500).json({ message: 'some server error', status: 'rejected' })
+
+    } catch (e) {
+      next(e)
+    }
+  }
 
   async staffList(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
@@ -948,6 +1044,22 @@ class StaffController {
         wallet: wallet,
         status: 'complete'
       })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async projectSupportRequest(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const staffEmail: string = req.body.staffEmail
+      const title: string = req.body.title
+      const message: string = req.body.message
+
+      console.log('req body is: ', req.body);
+      if (!staffEmail && !title && !message) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+
+      await telegram.sendProjectSupportMessage(staffEmail, title, message)
+      res.status(200).json({ message: 'done' })
     } catch (e) {
       next(e)
     }

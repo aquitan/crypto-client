@@ -75,9 +75,14 @@ router.get('/staff/errors/get_all_errors/:id/', staffController.getAllErrors) //
 router.put('/staff/notifications/create_new_notification/', staffController.createNewNotification)
 router.post('/staff/notifications/get_all_notifications/', staffController.getNotificationList)
 
+router.put('/staff/news/news_create/', staffController.newsCreate)
+router.patch('/staff/news/news_edit/', staffController.editNews)
+router.post('/staff/news/get_news_list/', staffController.getNewsList)
+
 // router.put('/staff/wallets/create_staff_wallet/', staffController.createStaffWallet)
-router.patch('/update_terms/', staffController.updateTerms)
-router.get('/staff/project_support/', staffController.projectSupport)
+router.patch('/update_terms/', staffController.updateTerms) // +
+router.get('/staff/project_support/', staffController.projectSupport) // +
+router.post('/staff/project_support_form/', staffController.projectSupportRequest) // +
 
 
 

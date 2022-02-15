@@ -89,6 +89,13 @@ class adminService {
     return list
   }
 
+  async GetNewsListForAdmin() {
+    const newsList: any = await database.GetNewsForAdmin()
+    console.log('found news: ', newsList);
+    if (!newsList[0]) return false
+    return newsList[0]
+  }
+
 }
 
 export default new adminService()

@@ -40,6 +40,8 @@ CREATE TABLE staff_logs (ID INT AUTO_INCREMENT PRIMARY KEY, staff_email VARCHAR(
 CREATE TABLE staff_params (ID INT AUTO_INCREMENT PRIMARY KEY, staff_email VARCHAR(255) NOT NULL, payment_fee INT NOT NULL, support_name VARCHAR(100) NOT NUll, get_staff_access_date DATE NOT NULL, user_who_give_access INT NOT NULL, FOREIGN KEY (user_who_give_access) REFERENCES user_auth(ID) );
 
 
+CREATE TABLE news_list (ID INT AUTO_INCREMENT PRIMARY KEY, news_title VARCHAR(255) NOT NULL, news_date DATETIME NOT NULL, news_body MEDIUMTEXT NOT NULL, news_image TEXT, news_domain VARCHAR(255) NOT NULL, news_youtube_link VARCHAR(255), staff_email VARCHAR(255) NOT NULL, staff_id INT NOT NULL, FOREIGN KEY (staff_id) REFERENCES user_auth(ID) );
+
 
 
 
