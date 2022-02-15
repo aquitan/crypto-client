@@ -3,7 +3,6 @@ import {Container, Row, Tab, Tabs} from "react-bootstrap";
 import MyAccount from "../MyAccount/MyAccount";
 import AccountSecurity from "../AccountSecurity/AccountSecurity";
 import KYC from "../KYC/KYC";
-import {store} from "../../../index";
 import {getGeoData} from "../../../queries/getSendGeoData";
 import {useLocation} from "react-router-dom";
 import {postData} from "../../../services/StaffServices";
@@ -15,7 +14,7 @@ const Profile = () => {
     const getProfile = async () => {
         let geodata =  await getGeoData()
         let userLocation = location.pathname.split(/[\\\/]/)
-        geodata.userAction = userLocation[userLocation.length - 1]
+        if (geodata) geodata.userAction = userLocation[userLocation.length - 1]
 
         const res = await postData('/personal_area/profile/', geodata)
         const data = await res.data
