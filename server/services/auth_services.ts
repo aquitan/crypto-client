@@ -57,6 +57,13 @@ class AuthService {
 
   }
 
+  async GetVerifiedPromocode(code: string) {
+    const usedPromocode: any = await database.GetPromocodeToDelete(code)
+    console.log('recieved code is: ', usedPromocode[0]);
+    if (!usedPromocode[0]) return false
+    return true
+  }
+
   async rebasePromocodeToUsed(promocode: string, user_email: string) {
     const usedPromocode: any = await database.GetPromocodeToDelete(promocode)
     console.log('recieved code is: ', usedPromocode[0]);
@@ -98,9 +105,8 @@ class AuthService {
     const two_step_params: any = await database.GetTwoStepParams(getFullUser[0].ID)
     if (two_step_params[0].two_step_type === 'email') {
       const code_to_2fa: string = await passwordGenerator(8)
+      await database.SaveTwoStepCode(code_to_2fa, email)
       const userDto: any = new AuthUserDto(getFullUser[0])
-      userDto.two_step_verification_code = code_to_2fa
-      console.log('user with code: ', userDto);
       await mailService.SendTwoStepVerificationMessage(userDto.email, getFullUser[0].domain_name, code_to_2fa)
       return userDto
     }
@@ -114,7 +120,13 @@ class AuthService {
 
   }
 
-  async login(email: string, password: string, user_domain: string) {
+  async GetVerifiedTwoStepCode(code: string) {
+    const get_verified: any = await database.GetTwoStepCode(code)
+    if (!get_verified[0]) return false
+    return true
+  }
+
+  async login(email: string, password: string, user_domain: string, twoStepCode: string) {
 
     const user: any = await database.GetUserByEmail(email)
     console.log('found user: ', user[0]);
@@ -125,9 +137,13 @@ class AuthService {
       console.log('wrong user data');
       return false
     }
+
+
     const getFullUser: any = await database.GetBaseUserParamsByEmail(email)
     console.log('full info: ', getFullUser);
-
+    if (twoStepCode !== null) {
+      await database.DeleteTwoStepCode(twoStepCode)
+    }
     const userDto: any = new AuthUserDto(getFullUser[0])
     const tokens: any = tokenService.generateTokens({ ...userDto })
     await tokenService.saveToken(userDto.ID, tokens.refreshToken)

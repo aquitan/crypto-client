@@ -14,7 +14,7 @@ class UserServices {
     console.log('info of current user: ', user[0])
 
     if (!userKyc[0]) {
-      const dashboardUserDto: any = new DashboardUserDto(user[0])
+      let dashboardUserDto: any = new DashboardUserDto(user[0])
       console.log('user dto is: ', dashboardUserDto)
       if (user[0].isStaff || user[0].isAdmin) {
         dashboardUserDto.withoutLogs = true
@@ -22,7 +22,10 @@ class UserServices {
       return dashboardUserDto
     }
 
-    const dashboardUserDto: any = new DashboardUserDto(userKyc[0])
+    let dashboardUserDto: any = new DashboardUserDto(userKyc[0])
+    if (user[0].isStaff || user[0].isAdmin) {
+      dashboardUserDto.withoutLogs = true
+    }
     console.log('user dto is: ', dashboardUserDto)
 
     return dashboardUserDto
@@ -34,8 +37,6 @@ class UserServices {
     const user: any = await database.GetBaseUserParamsById(user_id)
     console.log('kyc of current user: ', userKyc[0])
     console.log('info of current user: ', user[0])
-
-
 
     const userLogs: any = await database.GetLogsForUser(user_id)
     console.log('user logs is:', userLogs[0]);
@@ -65,6 +66,15 @@ class UserServices {
 
     return profileUserDto
   }
+
+
+  async UsePromocodeInProfile(code: string) {
+    const usedPromocode: any = await database.GetPromocodeToDelete(code)
+    console.log('recieved code is: ', usedPromocode[0]);
+    if (!usedPromocode[0]) return false
+    return true
+  }
+
 
   async changeNameInProfile(user_id: number, userName: string) {
     const user: any = await database.GetBaseUserParamsById(user_id)

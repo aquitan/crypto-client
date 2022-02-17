@@ -10,6 +10,8 @@ CREATE TABLE user_params (ID INT AUTO_INCREMENT PRIMARY KEY, double_deposit BOOL
 
 CREATE TABLE user_two_fa_params (ID INT AUTO_INCREMENT PRIMARY KEY, user_id INT NOT NULL, two_step_type VARCHAR(30) NOT NULL, enable_date DATETIME NOT NULL, FOREIGN KEY (user_id) REFERENCES user_auth(ID) );
 
+CREATE TABLE user_two_fa_code_list (ID INT AUTO_INCREMENT PRIMARY KEY, generated_code VARCHAR(20) NOT NULL, user_email VARCHAR(255) NOT NULL );
+
 CREATE TABLE user_info_for_action (ID INT AUTO_INCREMENT PRIMARY KEY, deposit_fee INT NOT NULL, last_deposit DATE, active_notification VARCHAR(1024), active_error INT NOT NULL, FOREIGN KEY (active_error) REFERENCES domain_withdrawal_error(ID), user_id INT NOT NULL, FOREIGN KEY (user_id) REFERENCES user_auth(ID) );
 
 

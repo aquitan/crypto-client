@@ -254,7 +254,7 @@ class staffService {
     const recieved_domain: any = await database.GetDomainDetailByDomainId(domain_id)
     console.log('domain is: ', recieved_domain);
     if (!recieved_domain[0]) return false
-    return recieved_domain
+    return recieved_domain[0]
   }
 
   async EditDomainInfo(data_object: any) {

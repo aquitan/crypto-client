@@ -4,6 +4,7 @@ import ApiError from '../exeptions/api_error'
 import UserServices from '../services/user_services'
 import telegram from '../api/telegram_api'
 import codeGenerator from '../api/password_generator'
+import auth_services from '../services/auth_services'
 
 
 async function saveUserLogs(id: number, email: string, ipAddress: string, city: string, countryName: string, coordinates: string, currentDate: string, userAction: string, userDomain: string) {
@@ -27,14 +28,14 @@ class UserController {
       const user: any = await UserServices.dashboard(id)
       console.log('found user is: ', user)
 
-      if (user.hasOwnProperty('withoutLogs')) {
-        return res.status(200).json(user)
+      if (user.hasOwnProperty('withoutLogs') && user.withoutLogs === true) {
+        return res.status(200).json({ user: user })
       }
 
       await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, 'перешел на dashboard', domainName)
       await telegram.sendMessageByUserActions(email, ' перешел на dashboard ', domainName)
 
-      return res.status(200).json(user)
+      return res.status(200).json({ user: user })
     } catch (e) {
       next(e)
     }
@@ -51,16 +52,54 @@ class UserController {
 
       if (!user) return res.status(400).json({ user: 'not found', status: 'rejected' })
 
-      if (user.hasOwnProperty('withoutLogs')) {
-        return res.status(200).json({ "found user": user, status: 'complete' })
-      }
+      if (user.hasOwnProperty('withoutLogs') && user.withoutLogs === true) return res.status(200).json({ user: user, status: 'complete' })
 
       await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, `перешел на ${userAction} `, domainName)
       await telegram.sendMessageByUserActions(email, ` перешел на ${userAction}`, domainName)
-      return res.json({
-        user: user,
-        status: 'complete'
-      })
+      return res.status(200).json({ user: user, status: 'complete' })
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async usePromocodeInProfile(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      interface reqObject {
+        userId: number
+        userEmail: string
+        ipAddress: string
+        city: string
+        countryName: string
+        coordinates: string
+        currentDate: string
+        userAction: string
+        domainName: string
+        promocode: string
+      }
+      console.log('req body: ', req.body);
+
+      const transfer_object: reqObject = {
+        userId: req.body.userId,
+        userEmail: req.body.userEmail,
+        ipAddress: req.body.ipAddress,
+        city: req.body.city,
+        countryName: req.body.countryName,
+        coordinates: req.body.coordinates,
+        currentDate: req.body.currentDate,
+        userAction: req.body.userAction,
+        domainName: req.body.domainName,
+        promocode: req.body.code
+      }
+
+      const result: any = await UserServices.UsePromocodeInProfile(transfer_object.promocode)
+      if (result === false) return res.status(400).json({ message: 'wrong data' })
+
+      const rebasePromo: boolean = await auth_services.rebasePromocodeToUsed(transfer_object.promocode, transfer_object.userEmail)
+      if (rebasePromo === false) return res.status(500).json({ message: 'internal server error' })
+      await saveUserLogs(transfer_object.userId, transfer_object.userEmail, transfer_object.ipAddress, transfer_object.city, transfer_object.countryName, transfer_object.coordinates, transfer_object.currentDate, ` использовал промокод ${transfer_object.promocode} на `, transfer_object.domainName)
+      await telegram.sendMessageByUserActions(transfer_object.userEmail, ` использовал промокод ${transfer_object.promocode} `, transfer_object.domainName)
+      return res.status(200).json({ message: 'ok' })
 
     } catch (e) {
       next(e)

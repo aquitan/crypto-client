@@ -212,6 +212,43 @@ class Database {
       })
   }
 
+  async SaveTwoStepCode(code: string, user_email: string) {
+    mysql.query(`
+      INSERT INTO user_two_fa_code_list
+      (generated_code, user_email)
+      VALUES
+      ( "${code}", "${user_email}") `,
+      (e: any, result) => {
+        if (e) return console.error(new Error(e))
+        console.log('2fa params was saved ');
+      })
+  }
+
+
+  async GetTwoStepCode(code: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM user_two_fa_code_list
+        WHERE generated_code = "${code}"`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+
+  async DeleteTwoStepCode(code: string) {
+    mysql.query(`
+      DELETE FROM user_two_fa_code_list
+      WHERE generated_code = "${code}"`,
+      (e: any, result) => {
+        if (e) return console.error(new Error(e))
+        console.log('2fa was enabled ');
+      })
+  }
+
   async UpdatePremiumStatus(user_id: number, status: boolean) {
     mysql.query(`
       UPDATE user_params
@@ -913,12 +950,12 @@ class Database {
   }
 
 
-  async SaveDomainErrors(domain_id: number, domain_name: string, error_name: string, error_title: string, error_text: string, error_btn: string) {
+  async SaveDomainErrors(domain_name: string, domain_id: number, error_name: string, error_title: string, error_text: string, error_btn: string) {
     mysql.query(`
       INSERT INTO domain_withdrawal_error
-      ( domain_id, domain_name, error_name, error_title, error_text, error_btn )
+      ( domain_name, domain_id, error_name, error_title, error_text, error_btn )
       VALUES 
-      ( ${domain_id}, "${domain_name}", "${error_name}", "${error_title}", "${error_text}","${error_btn}" )`,
+      ("${domain_name}", ${domain_id}, "${error_name}", "${error_title}", "${error_text}","${error_btn}" )`,
       (err) => {
         if (err) return console.error(err)
         console.log('done');

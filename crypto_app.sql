@@ -139,6 +139,7 @@ DROP TABLE IF EXISTS `domain_withdrawal_error`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `domain_withdrawal_error` (
   `ID` int NOT NULL AUTO_INCREMENT,
+  `domain_name` varchar(255) NOT NULL,
   `domain_id` int NOT NULL,
   `error_name` varchar(100) NOT NULL,
   `error_title` varchar(50) NOT NULL,
@@ -157,6 +158,38 @@ CREATE TABLE `domain_withdrawal_error` (
 LOCK TABLES `domain_withdrawal_error` WRITE;
 /*!40000 ALTER TABLE `domain_withdrawal_error` DISABLE KEYS */;
 /*!40000 ALTER TABLE `domain_withdrawal_error` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `news_list`
+--
+
+DROP TABLE IF EXISTS `news_list`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `news_list` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `news_title` varchar(255) NOT NULL,
+  `news_date` datetime NOT NULL,
+  `news_body` mediumtext NOT NULL,
+  `news_image` text,
+  `news_domain` varchar(255) NOT NULL,
+  `news_youtube_link` varchar(255) DEFAULT NULL,
+  `staff_email` varchar(255) NOT NULL,
+  `staff_id` int NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `staff_id` (`staff_id`),
+  CONSTRAINT `news_list_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `user_auth` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `news_list`
+--
+
+LOCK TABLES `news_list` WRITE;
+/*!40000 ALTER TABLE `news_list` DISABLE KEYS */;
+/*!40000 ALTER TABLE `news_list` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -502,6 +535,30 @@ LOCK TABLES `user_promocode` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `user_two_fa_code_list`
+--
+
+DROP TABLE IF EXISTS `user_two_fa_code_list`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_two_fa_code_list` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `generated_code` varchar(20) NOT NULL,
+  `user_email` varchar(255) NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_two_fa_code_list`
+--
+
+LOCK TABLES `user_two_fa_code_list` WRITE;
+/*!40000 ALTER TABLE `user_two_fa_code_list` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_two_fa_code_list` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `user_two_fa_params`
 --
 
@@ -537,4 +594,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-02-15 14:27:47
+-- Dump completed on 2022-02-17 18:54:35

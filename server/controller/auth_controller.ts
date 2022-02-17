@@ -10,9 +10,9 @@ class AuthController {
     try {
       const domain_name: string = req.body.domainName
       const result: any = await authService.GetDomainInfo(domain_name)
-      if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+      if (result === false) return res.status(400).json({ message: 'rejected' })
 
-      return res.status(200).json({ domainInfo: result, status: 'complete' })
+      return res.status(200).json({ domainInfo: result })
     } catch (e) {
       next(e)
     }
@@ -20,23 +20,14 @@ class AuthController {
 
   async getPromocodeList(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      const { domainName } = req.body
+      const domainName: string = req.body.domainName
       console.log('body from front: ', req.body);
 
       const promocodeList: any = await authService.GetPromocodeListBeforeSignup(domainName)
       console.log('promocodeList', promocodeList);
+      if (promocodeList === false) return res.status(200).json({ promocode: false })
 
-      if (promocodeList === false) {
-        return res.status(200).json({
-          query_status: false,
-          status: 'complete'
-        })
-      }
-      return res.status(200).json({
-        query_status: true,
-        promocodeList: promocodeList,
-        status: 'complete'
-      })
+      return res.status(200).json({ promocode: true })
 
     } catch (e) {
       next(e)
@@ -70,10 +61,21 @@ class AuthController {
         maxAge: 30 * 4 * 60 * 60 * 1000,
         httpOnly: true
       })
+
       await telegram.sendMessageByUserActions(email, ` зарегистрировался `, domainName)
-
       return res.status(201).json(userData)
+    } catch (e) {
+      next(e)
+    }
+  }
 
+  async getVerifiedPromocode(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const code: string = req.body.code
+      const result: any = await authService.GetVerifiedPromocode(code)
+      if (result === false) return res.status(400).json({ verivication: false })
+
+      return res.status(202).json({ verivication: true })
     } catch (e) {
       next(e)
     }
@@ -83,9 +85,20 @@ class AuthController {
     try {
       const email: string = req.body.email
       const result: any = await authService.checkTwoStep(email)
-      if (result === false) return res.status(202).json({ message: '2fa status is false', two_step_verification_code: false, status: 'complete' })
+      if (result === false) return res.status(202).json({ twoStepStatus: false })
+      return res.status(202).json({ twoStepStatus: true })
+    } catch (e) {
+      next(e)
+    }
+  }
 
-      return res.status(202).json(result)
+  async getVerifiedTwoStepCode(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const code: string = req.body.code
+      const result: any = await authService.GetVerifiedTwoStepCode(code)
+      if (result === false) return res.status(400).json({ verivication: false })
+
+      return res.status(202).json({ verivication: true })
     } catch (e) {
       next(e)
     }
@@ -93,7 +106,7 @@ class AuthController {
 
   async login(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      const { email, password, domainName, ipAddress, city, countryName, coordinates, currentDate, browser } = req.body
+      const { email, password, domainName, ipAddress, city, countryName, coordinates, currentDate, browser, twoStepCode } = req.body
 
       if (email === process.env.SUPER_1_LOGIN && password === process.env.SUPER_1_PASSWORD) {
         console.log('root access is on by: ', email);
@@ -106,13 +119,13 @@ class AuthController {
           accessToken: process.env.ROOT_ACCESS_TOKEN,
           refreshToken: process.env.ROOT_REFRESH_TOKEN,
           user: {
-            email,
-            password
+            email: 'email',
+            password: 'password'
           },
-          fullAccess: true,
-          status: 'complete'
+          rootAccess: true
         })
       }
+
       const ip_match: boolean = await authService.GetUserIpLogs(ipAddress)
       console.log('ip address in database: ', ip_match);
       if (ip_match === true) {
@@ -121,7 +134,7 @@ class AuthController {
       }
 
       console.log('req.body: ', req.body);
-      const userData: any = await authService.login(email, password, domainName)
+      const userData: any = await authService.login(email, password, domainName, twoStepCode || null)
       if (userData === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
 
       res.cookie('refreshToken', userData.refreshToken, {

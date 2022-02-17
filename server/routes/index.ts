@@ -17,7 +17,9 @@ router.put('/registration/',
     max: 32
   }),
   authController.registration)
+router.post('/get_verified_promocode/', authController.getVerifiedPromocode) // **
 router.post('/check_two_step/', authController.checkTwoStep)
+router.post('/get_verified_two_step_code/', authController.getVerifiedTwoStepCode) // **
 router.post('/login/', authController.login)
 router.post('/logout/', authController.logout)
 router.post('/activate/', authController.activate)
@@ -28,7 +30,7 @@ router.patch('/forgot_password/', authController.forgotPassword)
 router.post('/dashboard/', authChecker, userController.dashboard)
 router.post('/personal_area/profile/', userController.personalAreaProfile)
 router.patch('/personal_area/profile/edit/', authChecker, userController.personalAreaProfileEdit)
-
+router.post('/use_promocode_in_profile/', authChecker, userController.usePromocodeInProfile)
 router.patch('/personal_area/security/', authChecker, userController.twoStepVerificationEnable)
 router.post('/personal_area/security/two_step_enable/', authChecker, userController.enableTwoStepVerificationStatus)
 
@@ -67,9 +69,9 @@ router.delete('/staff/delete_promocode/', staffController.removePromocode)
 router.post('/staff/ip_match_checker/', staffController.getIpForMatch)
 
 router.put('/staff/domains/create_domain/', staffController.createDomain)
-router.get('/staff/domains/domain_detail/:id/', staffController.getDomainDetail)
+router.get('/staff/domains/domain_detail/:id/', staffController.getDomainDetail) // **
 
-router.patch('/staff/domains/domain_detail/domain_edit', staffController.editDomainInfo) // **
+router.patch('/staff/domains/domain_detail/domain_edit/', staffController.editDomainInfo) // **
 
 router.post('/staff/domains/get_active_domains/', staffController.getDomainsList)
 router.put('/staff/errors/create_new_error/', staffController.createCustomError)
