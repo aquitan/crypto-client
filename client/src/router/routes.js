@@ -25,7 +25,20 @@ import {
     TERMS_ROUTE,
     MAKETRANSACTION_ROUTE,
     CREATENEWS_ROUTE,
-    GROUPLIST_ROUTE, DOMAINSDETAIL_ROUTE, COOKIE_POLICY, PRIVACY_POLICY, SECURITY_POLICY, TERMS_CONDITIONS
+    GROUPLIST_ROUTE,
+    DOMAINSDETAIL_ROUTE,
+    COOKIE_POLICY,
+    PRIVACY_POLICY,
+    SECURITY_POLICY,
+    TERMS_CONDITIONS,
+    ABOUT_US,
+    CONTACT_US,
+    PRIVACY_AUTH,
+    COOKIE_POLICY_AUTH,
+    BEFORE_START_AUTH,
+    SECURITY_POLICY_AUTH,
+    TERMS_CONDITIONS_AUTH,
+    GENERAL_BASICS_AUTH, ABOUTUS_AUTH, CONTACTUS_AUTH, CRYPTOCURRENCIES_AUTH, ERROR_DETAIL, SECUREDEAL_ROUTE
 } from "../utils/constants"
 import SignUp from '../pages/NonAuthPages/SignUp/SignUp'
 import SignIn from '../pages/NonAuthPages/SignIn/SignIn'
@@ -43,8 +56,7 @@ import ForgotPassword from "../pages/NonAuthPages/ForgotPassword/ForgotPassword"
 import Promocodes from "../pages/AdminPages/Promocodes/Promocodes";
 import CreateUser from "../pages/AdminPages/CreateUser/CreateUser";
 import StaffWallets from "../pages/AdminPages/StaffWallets/StaffWallets";
-import TestPage from "../pages/AuthPages/TestPage/TestPage";
-import StaffErrors from "../pages/AdminPages/StafErrors/StaffErrors";
+import StaffErrors from "../pages/AdminPages/StaffErrors/StaffErrors";
 import Domains from "../pages/AdminPages/Domains/Domains";
 import Withdraw from "../pages/AuthPages/Withdraw/Withdraw";
 import Deposit from "../pages/AuthPages/Deposit/Deposit";
@@ -53,11 +65,24 @@ import Terms from "../pages/AdminPages/Terms/Terms";
 import MakeTransaction from "../pages/AdminPages/MakeTransaction/MakeTransaction";
 import CreateNews from "../pages/AdminPages/CreateNews/CreateNews";
 import GroupList from "../pages/AdminPages/GroupList/GroupList";
-import DomainsDetail from "../pages/AdminPages/DomainsDetail/DomainsDetail";
 import CookiePolicy from "../pages/NonAuthPages/NonAuthArticle/CookiePolicy";
 import PrivacyPolicy from "../pages/NonAuthPages/NonAuthArticle/PrivacyPolicy";
 import SecurityPolicy from "../pages/NonAuthPages/NonAuthArticle/SecurityPolicy";
 import TermsConditions from "../pages/NonAuthPages/NonAuthArticle/TermsConditions";
+import AboutUS from "../pages/NonAuthPages/NonAuthArticle/AboutUs";
+import ContactUS from "../pages/NonAuthPages/NonAuthArticle/ContactUS";
+import PrivacyPolicyAuth from "../pages/AuthPages/AuthArticles/PrivacyPolicyAuth";
+import CookiePolicyAuth from "../pages/AuthPages/AuthArticles/CookiePolicyAuth";
+import BeforeYouStart from "../pages/AuthPages/AuthArticles/BeforeYouStart";
+import SecurityPolicyAuth from "../pages/AuthPages/AuthArticles/SecurityPolicyAuth";
+import TermsConditionsAuth from "../pages/AuthPages/AuthArticles/TermsConditionsAuth";
+import GeneralBasics from "../pages/AuthPages/AuthArticles/GeneralBasics";
+import AboutUs from "../pages/AuthPages/AuthArticles/AboutUs";
+import ContactUsAuth from "../pages/AuthPages/AuthArticles/ContactUsAuth";
+import Cryptocurrencies from "../pages/AuthPages/AuthArticles/Cryptocurrencies";
+import DomainsDetail from "../pages/AdminPages/Domains/components/DomainsDetail/DomainsDetail";
+import StaffErrorDetail from "../pages/AdminPages/StaffErrors/components/StaffErrorDetail/StaffErrorDetail";
+import SecureDeal from "../pages/AuthPages/SecureDeal/SecureDeal";
 
 export const authRoutes = [
     {
@@ -69,16 +94,52 @@ export const authRoutes = [
         component: <MyAccount/>
     },
     {
-        path: CONTACTUS_ROUTE,
-        component: <ContactUs/>
-    },
-    {
         path: WITHDRAW_ROUTE,
         component: <Withdraw/>
     },
     {
         path: DEPOSIT_ROUTE,
         component: <Deposit/>
+    },
+    {
+        path: PRIVACY_AUTH,
+        component: <PrivacyPolicyAuth/>
+    },
+    {
+        path: COOKIE_POLICY_AUTH,
+        component: <CookiePolicyAuth/>
+    },
+    {
+        path: BEFORE_START_AUTH,
+        component: <BeforeYouStart/>
+    },
+    {
+        path: SECURITY_POLICY_AUTH,
+        component: <SecurityPolicyAuth/>
+    },
+    {
+        path: TERMS_CONDITIONS_AUTH,
+        component: <TermsConditionsAuth/>
+    },
+    {
+        path: GENERAL_BASICS_AUTH,
+        component: <GeneralBasics/>
+    },
+    {
+        path: ABOUTUS_AUTH,
+        component: <AboutUs/>
+    },
+    {
+        path: CONTACTUS_AUTH,
+        component: <ContactUsAuth/>
+    },
+    {
+        path: CRYPTOCURRENCIES_AUTH,
+        component: <Cryptocurrencies/>
+    },
+    {
+        path: SECUREDEAL_ROUTE,
+        component: <SecureDeal/>
     },
 ]
 
@@ -144,6 +205,10 @@ export const adminRoutes = [
         path: GROUPLIST_ROUTE,
         component: <GroupList/>
     },
+    {
+        path: ERROR_DETAIL,
+        component: <StaffErrorDetail/>
+    },
 ]
 
 export const publicRoutes = [
@@ -182,6 +247,14 @@ export const publicRoutes = [
     {
         path: TERMS_CONDITIONS,
         component: <TermsConditions/>
+    },
+    {
+        path: ABOUT_US,
+        component: <AboutUS/>
+    },
+    {
+        path: CONTACT_US,
+        component: <ContactUS/>
     },
     {
         path: ERROR,

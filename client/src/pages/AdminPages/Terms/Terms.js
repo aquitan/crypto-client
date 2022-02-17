@@ -8,6 +8,7 @@ import AdminButton from "../../../components/UI/AdminButton/AdminButton";
 import {useForm} from "react-hook-form";
 import {textareaTerms} from "../../../utils/staffConstants";
 import ModalDark from "../../../components/UI/ModalDark/ModalDark";
+import {store} from "../../../index";
 
 const Terms = () => {
     const {register, handleSubmit} = useForm()
@@ -15,7 +16,8 @@ const Terms = () => {
         openModal: false,
         termsData: ''
     })
-    const [state, setState] = useState(textareaTerms('bitnex', 'BITNEX', 'Support'))
+    const term = JSON.parse(JSON.stringify(store.terms.terms_body))
+    const [state, setState] = useState(term)
 
     const onSubmit = () => {
         console.log('data', modal.termsData)
@@ -33,6 +35,11 @@ const Terms = () => {
         setModal({
             ...modal, openModal: false
         })
+    }
+
+
+    const onTextAreaChange = (e) => {
+        setState(e.target.value)
     }
 
     return (
@@ -55,7 +62,7 @@ const Terms = () => {
             <AdminButtonCard>
                 <AdminForm onSubmit={handleSubmit(showModal)}>
                     <Row>
-                        <TextArea {...register('terms')} rows='50' classnames='dark' value={state} />
+                        <TextArea onChange={onTextAreaChange} rows='50' classnames='dark' value={state} />
                     </Row>
                     <AdminButton classname='green'>Оправить</AdminButton>
                 </AdminForm>

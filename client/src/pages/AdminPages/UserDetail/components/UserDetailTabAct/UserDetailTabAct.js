@@ -382,7 +382,6 @@ const UserDetailTabAct = (props) => {
                             </Row>
                             : <h5>Email not found</h5>
                         }
-                        <AdminButton onClick={() => handleOpenModal('email-clear')} classname={'green'}>Очистить Почту</AdminButton>
                     </Col>
                 </Row>
                 

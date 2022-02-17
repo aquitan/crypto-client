@@ -1,20 +1,23 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Container} from "react-bootstrap";
+import {store} from "../../../index";
 
-const PrivacyPolicy = (props) => {
+const PrivacyPolicy = () => {
+    let domain = store.domain.domain_name.toUpperCase()
+    let domainFull = store.domain.full_domain_name
     return (
         <Container>
             <div className="article footer_links_page">
                 <h1 className="article-title">Private Policy</h1>
                 <h4 className="article-subtitle">1. INTRODUCTION</h4>
-                <p className="article-text">Thank you for visiting BITLUCK, a digital asset trading website,
+                <p className="article-text">Thank you for visiting {domain}, a digital asset trading website,
                     which is provided
-                    by BITLUCK. By visiting, accessing, or using BITLUCK and associated application
+                    by {domain}. By visiting, accessing, or using {domain} and associated application
                     program
                     interface (“Site”), you consent to the policies and practices of our privacy policy (the
                     “Privacy Policy”), so
-                    please read them carefully. This Privacy Policy explains how BITLUCK uses your Personal
+                    please read them carefully. This Privacy Policy explains how {domain} uses your Personal
                     Data (defined
                     below) as we provide you with access and utility through our digital asset Trading Platform via
                     software, API
@@ -49,7 +52,7 @@ const PrivacyPolicy = (props) => {
                     natural person.
                 </p>
                 <h4 className="article-subtitle">3. WHAT PERSONAL DATA WE COLLECT</h4>
-                <p className="article-text">BITLUCK collects, processes, and stores Personal Data collected from
+                <p className="article-text">{domain} collects, processes, and stores Personal Data collected from
                     you via your
                     use of the Service or where you have given your consent. This Personal Data may include contact
                     details, copies
@@ -58,7 +61,7 @@ const PrivacyPolicy = (props) => {
                     identification number as well as information relating to your device or internet service (such
                     as an IP address
                     and a MAC number).</p>
-                <p className="article-text">We collect information you provide during the BITLUCK onboarding
+                <p className="article-text">We collect information you provide during the {domain} onboarding
                     process, which may
                     be a completed, incomplete, or abandoned process. Operating within the European Economic Area
                     (“EEA”), we
@@ -153,22 +156,22 @@ const PrivacyPolicy = (props) => {
                     for the transfer
                     of Personal Data from the EEA to outside of the area. If you are an individual located in the
                     EEA and you
-                    decline to consent to such transfer, you will no longer be able to use BITLUCK and our
+                    decline to consent to such transfer, you will no longer be able to use {domain} and our
                     services. You
                     will have the ability to withdraw your digital assets; however, all other functionalities will
                     be disabled.</p>
 
 
                 <h4 className="article-subtitle">5. HOW WE USE YOUR PERSONAL DATA</h4>
-                <p className="article-text">BITLUCK uses Personal Data to communicate with you and to
+                <p className="article-text">{domain} uses Personal Data to communicate with you and to
                     administer, deliver,
-                    improve, and personalize the Service. BITLUCK might also generate generic data out of
+                    improve, and personalize the Service. {domain} might also generate generic data out of
                     any Personal Data
                     we collect and use it for our own purposes. We may also use such data to communicate with you in
                     relation to
-                    other products or services offered by BITLUCK and/or its partners. We do not share your
+                    other products or services offered by {domain} and/or its partners. We do not share your
                     Personal Data
-                    with third parties (other than partners in connection with their services to BITLUCK)
+                    with third parties (other than partners in connection with their services to {domain})
                     except where you
                     have given your consent and further detailed below.</p>
 
@@ -178,7 +181,7 @@ const PrivacyPolicy = (props) => {
                 <p className="article-text">To comply with government agencies, including regulators, law enforcement
                     and/or justice
                     departments;</p>
-                <p className="article-text">To third parties who provide services to BITLUCK (such as
+                <p className="article-text">To third parties who provide services to {domain} (such as
                     administration or
                     technical services);</p>
                 <p className="article-text">In connection with the sale or transfer of our business or any part thereof.
@@ -215,7 +218,7 @@ const PrivacyPolicy = (props) => {
                     exception that
                     we may refuse your deletion request in certain circumstances, such as compliance with law or
                     legal purposes. For
-                    data access, correction, or deletion requests, please contact support@bitluck.club with the subject
+                    data access, correction, or deletion requests, please contact support@{domain}.club with the subject
                     “DATA INQUIRY”.
                 </p>
                 <p className="article-text">In response to data access, correction, or deletion request, we will verify
@@ -229,24 +232,24 @@ const PrivacyPolicy = (props) => {
                 <h4 className="article-subtitle">8. MARKETING</h4>
                 <p className="article-text">We may communicate company news, promotions, and information relating to our
                     products and
-                    services provided by BITLUCK. We may share Personal Data with third parties to help us
+                    services provided by {domain}. We may share Personal Data with third parties to help us
                     with our
                     marketing and promotional projects, or sending marketing communications. By using
-                    BITLUCK, you accept
+                    {domain}, you accept
                     this Privacy Policy and you agree to receive such marketing communications.</p>
                 <p className="article-text">Customers can opt out of these marketing communications at any moment. If
                     you do not want to
-                    receive these communications, please send an email to support@bitluck.club</p>
+                    receive these communications, please send an email to support@{domain}.club</p>
                 <p className="article-text">For product related communications, such as policy/terms updates and
                     operational
                     notifications, you will not be able to opt out of receiving such information.</p>
 
                 <h4 className="article-subtitle">9. INFORMATION SECURITY</h4>
-                <p className="article-text">We endeavor to protect BITLUCK and you from unauthorized access,
+                <p className="article-text">We endeavor to protect {domain} and you from unauthorized access,
                     alteration,
                     disclosure, or destruction of Personal Data we collect and store. We take various measures to
                     ensure information
-                    security, including encryption of the BITLUCK communications with SSL; required
+                    security, including encryption of the {domain} communications with SSL; required
                     two-factor
                     authentication for all sessions; periodic review of our Personal Data collection, storage, and
                     processing
@@ -254,10 +257,10 @@ const PrivacyPolicy = (props) => {
                     and vendors who
                     are subject to strict contractual confidentiality obligations.</p>
 
-                <h4 className="article-subtitle">10. CONTACTING BITLUCK ABOUT PRIVACY QUESTIONS OR CONCERNS</h4>
+                <h4 className="article-subtitle">10. CONTACTING {domain} ABOUT PRIVACY QUESTIONS OR CONCERNS</h4>
                 <p className="article-text">If you have any questions about this Privacy Policy or the use of your
                     Personal Data, please
-                    contact us by sending an email to the following address support@bitluck.club with the subject
+                    contact us by sending an email to the following address support@{domainFull} with the subject
                     “PRIVACY REQUEST”.
                 </p>
 

@@ -55,9 +55,9 @@ export const optionsAction = [
     {value: 'Кастомная ошибка'}
 ]
 export const optionsButton = [
-    {value: 'ОК', text: 'ОК'},
-    {value: 'Закрыть', text: 'Закрыть'},
-    {value: 'Связаться', text: 'Связаться'},
+    {value: 'OK', text: 'OK'},
+    {value: 'Close', text: 'Close'},
+    {value: 'Support', text: 'Support'},
     {value: 'Без кнопки', text: 'Без кнопки'},
 ]
 export const optionsCurrency = [
@@ -120,6 +120,8 @@ export const twoFaElems = [
         text: 'Telegram'
     }
 ]
+
+
 
 export const textareaTerms = (domainSmall, domainBig, domainSupport) => {
     let term = `<h2>PLEASE READ THESE TERMS AND CONDITIONS CAREFULLY. BY CLICKING THE "CREATE ACCOUNT" BUTTON OR BY ACCESSING OR USING THE SERVICES, YOU AGREE TO BE LEGALLY BOUND hBY THESE TERMS AND CONDITIONS AND ALL TERMS INCORPORATED BY REFERENCE.</h2>

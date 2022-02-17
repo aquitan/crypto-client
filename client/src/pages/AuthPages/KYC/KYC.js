@@ -124,6 +124,14 @@ const KYC = ({status}) => {
                             </Row>
                             <Row>
                                 <Col>
+                                    <Input {...register('city', {
+                                        required: true,
+                                    })} name='city' placeholder='city'/>
+                                    <ErrorMessage  name='mainAddress' errors={errors} render={() => <p className={error.error}>this field is required</p>} />
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
                                     <Input {...register('zipCode', {
                                         required: true,
                                     })} name='zipCode' placeholder='zip code'/>

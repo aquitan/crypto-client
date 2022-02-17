@@ -11,6 +11,7 @@ const Profile = () => {
     const [profileData, setProfileData] = useState('')
     const location = useLocation()
 
+    console.log('state profile', profileData)
     const getProfile = async () => {
         let geodata =  await getGeoData()
         let userLocation = location.pathname.split(/[\\\/]/)
@@ -37,13 +38,13 @@ const Profile = () => {
             <Row>
                 <Tabs>
                     <Tab eventKey='profile' title='My Account'>
-                        <MyAccount data={profileData.user}/>
+                        <MyAccount data={profileData?.user}/>
                     </Tab>
                     <Tab eventKey='security' title='Security'>
-                        <AccountSecurity data={profileData.user}/>
+                        <AccountSecurity data={profileData?.user}/>
                     </Tab>
                     <Tab eventKey='kyc' title='Verification'>
-                        <KYC status={profileData.user}/>
+                        <KYC status={profileData?.user}/>
                     </Tab>
                 </Tabs>
 

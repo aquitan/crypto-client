@@ -2,18 +2,21 @@ import React from 'react'
 import Logo from '../UI/Logo/Logo'
 import NavBtn from '../UI/NavBtn/NavBtn'
 import cls from './LandingHeader.module.scss'
+import Preloader from "../UI/Preloader/Preloader";
 
 
 const LandingHeader = ({data}) => {
 
-    const {domain_detail} = data
-    console.log('data land', domain_detail)
+    console.log('domain')
     return (
         <header className={cls.landing_header}>
             <div className={cls.row}>
                 <div className={cls.col}>
                     <Logo/>
-                    <h4 className={cls.domain_header}>{domain_detail[0].domain_name}</h4>
+                    {
+                        data ?
+                        <h4 className={cls.domain_header}>{data.domain_info.domain_name}</h4> : <Preloader />
+                    }
 
                 </div>
                 

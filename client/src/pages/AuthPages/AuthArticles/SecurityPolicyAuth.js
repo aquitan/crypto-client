@@ -3,8 +3,9 @@ import PropTypes from 'prop-types'
 import {Container} from "react-bootstrap";
 import {store} from "../../../index";
 
-const SecurityPolicy = () => {
+const SecurityPolicyAuth = () => {
     let domain = store.domain.domain_name.toUpperCase()
+    let domainFull = store.domain.full_domain_name
     return (
         <Container>
             <div className="article footer_links_page">
@@ -64,11 +65,11 @@ const SecurityPolicy = () => {
     )
 }
 
-SecurityPolicy.propTypes = {
-
+SecurityPolicyAuth.propTypes = {
+    
 }
-SecurityPolicy.defaultProps = {
-
+SecurityPolicyAuth.defaultProps = {
+    
 }
 
-export default SecurityPolicy
+export default SecurityPolicyAuth

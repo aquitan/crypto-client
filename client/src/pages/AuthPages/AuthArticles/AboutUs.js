@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Container} from "react-bootstrap";
 import {store} from "../../../index";
+import {Container} from "react-bootstrap";
 
-const AboutUS = () => {
+const AboutUs = () => {
     let domain = store.domain.domain_name.toUpperCase()
     return (
         <Container>
@@ -104,16 +104,15 @@ const AboutUS = () => {
                     Shultz David is Co-Founder and CEO of {domain}.
                 </p>
             </div>
-
         </Container>
     )
 }
 
-AboutUS.propTypes = {
+AboutUs.propTypes = {
     
 }
-AboutUS.defaultProps = {
+AboutUs.defaultProps = {
     
 }
 
-export default AboutUS
+export default AboutUs

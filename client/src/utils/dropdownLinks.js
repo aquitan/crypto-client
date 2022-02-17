@@ -21,7 +21,7 @@ export const dropdownLinks = [
         name: 'Support', to: '/', id: 7
     },
     {
-        name: 'Secure Deal', to: '/', id: 8
+        name: 'Secure Deal', to: '/secure-deal', id: 8
     },
     {
         name: 'Project support', to: '/project-support', id: 9
