@@ -5,7 +5,7 @@ import AuthWrap from "../../layouts/AuthWrap/AuthWrap";
 import NonAuthWrap from "../../layouts/NonAuthWrap/NonAuthWrap";
 import RegisterConfirm from "../../pages/NonAuthPages/RegisterConfirm/RegisterConfirm";
 import {detectBrowser} from "../../utils/detectBrowser";
-import {getData} from "../../services/StaffServices";
+import {getData, postData} from "../../services/StaffServices";
 
 const AppRouter = () => {
     const {store} = useContext(AuthContext)
@@ -13,11 +13,18 @@ const AppRouter = () => {
     useEffect(async () => {
         if (localStorage.getItem('token')) {
             store.checkAuth()
-            const res = await getData(`/staff/domains/domain_detail/1`)
-            store.setDomain(res.data)
-            console.log('store--', store)
         }
+        sendDomainName()
     }, [])
+
+    const sendDomainName = async () => {
+        const res = await postData('/get_domain_params/', {domainName: window.location.host})
+        store.setDomain(res.data.domainInfo.domain_info)
+        store.setTerms(res.data.domainInfo.domain_terms)
+    }
+
+    console.log('store-wrap', store)
+
 
     if (store.isLoading) {
         return <h1>Loading...</h1>

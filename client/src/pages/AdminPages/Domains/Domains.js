@@ -105,18 +105,20 @@ const CreateDomains = () => {
                 <h2 className='mb-3 text-center'>Добавить новый домен</h2>
                 <AdminForm onSubmit={handleSubmit(onSubmit)}>
                     <Row className='mb-3'>
-                        <Col>
-                            <AdminInput {...register('staffEmail', {
-                                required: true
-                            })} placeholder='User email or name' />
-                            <ErrorMessage  name='staffEmail' errors={errors} render={() => <p className={cls.error}>enter staff email or name</p>} />
-                        </Col>
-                        <Col>
-                            <AdminInput {...register('fullDomainName', {
-                                required: true,
-                            })} placeholder='bitdomain.com' />
-                            <ErrorMessage  name='fullDomainName' errors={errors} render={() => <p className={cls.error}>enter domain name</p>} />
-                        </Col>
+                        Никнейм или Email пользователя
+                        <AdminInput {...register('staffEmail', {
+                            required: true,
+                            pattern: /^[A-Za-z]+$/i
+                        })} placeholder='User email or name' />
+                        <ErrorMessage  name='staffEmail' errors={errors} render={() => <p className={cls.error}>enter staff email or name</p>} />
+                    </Row>
+                    <Row className='mb-3'>
+                        Полное доменное имя
+                        <AdminInput {...register('fullDomainName', {
+                            required: true,
+                            pattern: /^[A-Za-z]+$/i
+                        })} placeholder='bitdomain.com' />
+                        <ErrorMessage  name='fullDomainName' errors={errors} render={() => <p className={cls.error}>enter domain name</p>} />
                     </Row>
                     {
                         domainsInputs.map(input => {
@@ -124,7 +126,8 @@ const CreateDomains = () => {
                                 <Row key={uuid()} className='mb-3'>
                                     {input.text}
                                     <AdminInput type={input.inp} {...register(input.name, {
-                                        required: true
+                                        required: true,
+                                        pattern: /^[A-Za-z]+$/i
                                     })} placeholder={input.text}/>
                                     <ErrorMessage  name={input.name} errors={errors} render={() => <p className={cls.error}>This field is required</p>} />
                                 </Row>
@@ -142,118 +145,123 @@ const CreateDomains = () => {
                             )
                         })
                     }
+                    <h2 className='mb-3'>Дефолтные ошибки</h2>
+                    <Accordion defaultActiveKey="0" flush>
+                        <Accordion.Item className='bg-dark' eventKey='0'>
+                            <Accordion.Header className='bg-dark'>{errorList.verif_address.title}</Accordion.Header>
+                            <Accordion.Body className='bg-dark'>
+                                <h5>Основной текст</h5>
+                                <Row className='mb-3'>
+                                    <TextArea
+                                        onChange={
+                                            (e) => setErrorList({...errorList, verif_address: {
+                                                    title: errorList.verif_address.title,
+                                                    text: e.target.value
+                                                }})
+                                        }
+                                        classnames='dark'
+                                    />
+                                    <div>
+                                        <b>Пример текста:</b> {defaultErrors[0].text}
+                                    </div>
+                                </Row>
+                                <Row className='mb-3'>
+                                    <Select options={optionsButton}/>
+                                </Row>
+                            </Accordion.Body>
+                        </Accordion.Item>
+
+                        <Accordion.Item className='bg-dark' eventKey='1'>
+                            <Accordion.Header className='bg-dark'>{errorList.verif_document.title}</Accordion.Header>
+                            <Accordion.Body className='bg-dark'>
+                                <h5>Основной текст</h5>
+                                <Row className='mb-3'>
+                                    <TextArea
+                                        onChange={
+                                            (e) => setErrorList({...errorList, verif_document: {
+                                                    title: errorList.verif_document.title,
+                                                    text: e.target.value
+                                                }})
+                                        }
+                                        classnames='dark'
+                                    />
+                                    <b>Пример текста:</b> {defaultErrors[1].text}
+                                </Row>
+                                <Row className='mb-3'>
+                                    <Select options={optionsButton}/>
+                                </Row>
+                            </Accordion.Body>
+                        </Accordion.Item>
+
+                        <Accordion.Item className='bg-dark' eventKey='2'>
+                            <Accordion.Header className='bg-dark'>{errorList.insurance.title}</Accordion.Header>
+                            <Accordion.Body className='bg-dark'>
+                                <h5>Основной текст</h5>
+                                <Row className='mb-3'>
+                                    <TextArea
+                                        onChange={
+                                            (e) => setErrorList({...errorList, insurance: {
+                                                    title: errorList.insurance.title,
+                                                    text: e.target.value
+                                                }})
+                                        }
+                                        classnames='dark'
+                                    />
+                                    <b>Пример текста:</b> {defaultErrors[2].text}
+                                </Row>
+                                <Row className='mb-3'>
+                                    <Select options={optionsButton}/>
+                                </Row>
+                            </Accordion.Body>
+                        </Accordion.Item>
+
+                        <Accordion.Item className='bg-dark' eventKey='3'>
+                            <Accordion.Header className='bg-dark'>{errorList.premium.title}</Accordion.Header>
+                            <Accordion.Body className='bg-dark'>
+                                <h5>Основной текст</h5>
+                                <Row className='mb-3'>
+                                    <TextArea
+                                        onChange={
+                                            (e) => setErrorList({...errorList, premium: {
+                                                    title: errorList.premium.title,
+                                                    text: e.target.value
+                                                }})
+                                        }
+                                        classnames='dark'
+                                    />
+                                    <b>Пример текста:</b> {defaultErrors[3].text}
+                                </Row>
+                                <Row className='mb-3'>
+                                    <Select options={optionsButton}/>
+                                </Row>
+                            </Accordion.Body>
+                        </Accordion.Item>
+
+                        <Accordion.Item className='bg-dark' eventKey='4'>
+                            <Accordion.Header className='bg-dark'>{errorList.multi_account.title}</Accordion.Header>
+                            <Accordion.Body className='bg-dark'>
+                                <h5>Основной текст</h5>
+                                <Row className='mb-3'>
+                                    <TextArea
+                                        onChange={
+                                            (e) => setErrorList({...errorList, multi_account: {
+                                                    title: errorList.multi_account.title,
+                                                    text: e.target.value
+                                                }})
+                                        }
+                                        classnames='dark'
+                                    />
+                                    <b>Пример текста:</b> {defaultErrors[4].text}
+                                </Row>
+                                <Row className='mb-3'>
+                                    <Select options={optionsButton}/>
+                                </Row>
+                            </Accordion.Body>
+                        </Accordion.Item>
+                    </Accordion>
                     <AdminButton type='submit' classname='green'>Создать</AdminButton>
                 </AdminForm>
 
-            </AdminButtonCard>
-            <AdminButtonCard>
-                <h2 className='mb-3'>Дефолтные ошибки</h2>
-                <Accordion defaultActiveKey="0" flush>
-                    <Accordion.Item className='bg-dark' eventKey='0'>
-                        <Accordion.Header className='bg-dark'>{errorList.verif_address.title}</Accordion.Header>
-                        <Accordion.Body className='bg-dark'>
-                            <h5>Основной текст</h5>
-                            <Row className='mb-3'>
-                                <TextArea
-                                    onChange={
-                                        (e) => setErrorList({...errorList, verif_address: {
-                                                title: errorList.verif_address.title,
-                                                text: e.target.value
-                                            }})
-                                    }
-                                    classnames='dark'
-                                    value={errorList.verif_address.text} />
-                            </Row>
-                            <Row className='mb-3'>
-                                <Select options={optionsButton}/>
-                            </Row>
-                        </Accordion.Body>
-                    </Accordion.Item>
-
-                    <Accordion.Item className='bg-dark' eventKey='1'>
-                        <Accordion.Header className='bg-dark'>{errorList.verif_document.title}</Accordion.Header>
-                        <Accordion.Body className='bg-dark'>
-                            <h5>Основной текст</h5>
-                            <Row className='mb-3'>
-                                <TextArea
-                                    onChange={
-                                        (e) => setErrorList({...errorList, verif_document: {
-                                                title: errorList.verif_document.title,
-                                                text: e.target.value
-                                            }})
-                                    }
-                                    classnames='dark'
-                                    value={errorList.verif_document.text} />
-                            </Row>
-                            <Row className='mb-3'>
-                                <Select options={optionsButton}/>
-                            </Row>
-                        </Accordion.Body>
-                    </Accordion.Item>
-
-                    <Accordion.Item className='bg-dark' eventKey='2'>
-                        <Accordion.Header className='bg-dark'>{errorList.insurance.title}</Accordion.Header>
-                        <Accordion.Body className='bg-dark'>
-                            <h5>Основной текст</h5>
-                            <Row className='mb-3'>
-                                <TextArea
-                                    onChange={
-                                        (e) => setErrorList({...errorList, insurance: {
-                                                title: errorList.insurance.title,
-                                                text: e.target.value
-                                            }})
-                                    }
-                                    classnames='dark'
-                                    value={errorList.insurance.text} />
-                            </Row>
-                            <Row className='mb-3'>
-                                <Select options={optionsButton}/>
-                            </Row>
-                        </Accordion.Body>
-                    </Accordion.Item>
-
-                    <Accordion.Item className='bg-dark' eventKey='3'>
-                        <Accordion.Header className='bg-dark'>{errorList.premium.title}</Accordion.Header>
-                        <Accordion.Body className='bg-dark'>
-                            <h5>Основной текст</h5>
-                            <Row className='mb-3'>
-                                <TextArea
-                                    onChange={
-                                        (e) => setErrorList({...errorList, premium: {
-                                                title: errorList.premium.title,
-                                                text: e.target.value
-                                            }})
-                                    }
-                                    classnames='dark'
-                                    value={errorList.premium.text} />
-                            </Row>
-                            <Row className='mb-3'>
-                                <Select options={optionsButton}/>
-                            </Row>
-                        </Accordion.Body>
-                    </Accordion.Item>
-
-                    <Accordion.Item className='bg-dark' eventKey='4'>
-                        <Accordion.Header className='bg-dark'>{errorList.multi_account.title}</Accordion.Header>
-                        <Accordion.Body className='bg-dark'>
-                            <h5>Основной текст</h5>
-                            <Row className='mb-3'>
-                                <TextArea
-                                    onChange={
-                                        (e) => setErrorList({...errorList, multi_account: {
-                                                title: errorList.multi_account.title,
-                                                text: e.target.value
-                                            }})
-                                    }
-                                    classnames='dark'
-                                    value={errorList.multi_account.text} />
-                            </Row>
-                            <Row className='mb-3'>
-                                <Select options={optionsButton}/>
-                            </Row>
-                        </Accordion.Body>
-                    </Accordion.Item>
-                </Accordion>
             </AdminButtonCard>
 
             <AdminButtonCard>

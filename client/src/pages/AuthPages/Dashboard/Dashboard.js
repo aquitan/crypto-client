@@ -6,7 +6,7 @@ const Dashboard = () => {
     const getDashboard = async () => {
         const res = await getData('/dashboard/')
         const data = await res.data
-        console.log('data', data)
+        console.log('data dashboard', data)
     }
     useEffect(() => {
         getDashboard()

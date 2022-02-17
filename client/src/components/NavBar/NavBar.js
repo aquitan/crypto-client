@@ -17,6 +17,7 @@ const NavBar = () => {
         navigate('/')
     }
 
+    console.log('store nav', store)
 
     return (
         <Navbar className={cls.navbar} bg='dark'>

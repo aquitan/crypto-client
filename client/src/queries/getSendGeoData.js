@@ -23,7 +23,8 @@ export const getGeoData = async () => {
             id: store.userId,
             email: store.userEmail,
             domainName: domain_name,
-            browser: detectBrowser()
+            browser: detectBrowser(),
+            rootAccess: store.fullAccess
         }
         return geoDatas
     } catch (e) {

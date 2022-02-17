@@ -15,6 +15,7 @@ const AuthWrap = () => {
     const location = useLocation()
     let userLocation = location.pathname.split(/[\\\/]/)
     console.log(store)
+
     const renderAdminRoutes = () => {
         if (store.isStaff || store.fullAccess || store.isAdmin) {
             return (
@@ -50,12 +51,15 @@ const AuthWrap = () => {
                 </Routes>
             </div>
             <Footer>
-                <Link to='/'>Nowhere</Link>
-                <Link to='/'>Nowhere</Link>
-                <Link to='/'>Nowhere</Link>
-                <Link to='/'>Nowhere</Link>
-                <Link to='/'>Nowhere</Link>
-                <Link to='/'>Nowhere</Link>
+                <Link to='/privacy-policy'>Privacy Policy</Link>
+                <Link to='/cookie-policy'>Cookie Policy</Link>
+                <Link to='/before-start'>Before you start</Link>
+                <Link to='/security-policy'>Security policy</Link>
+                <Link to='/terms-and-conditions'>Terms & Conditions</Link>
+                <Link to='/general-basics'>General Basics</Link>
+                <Link to='/about-us'>About Us</Link>
+                <Link to='/contact-us'>Contact Us</Link>
+                <Link to='/cryptocurrencies'>Cryptocurrencies</Link>
             </Footer>
         </>
     )

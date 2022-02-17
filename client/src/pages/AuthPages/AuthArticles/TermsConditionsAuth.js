@@ -1,12 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {store} from "../../../index";
-import {Container} from "react-bootstrap";
 import Preloader from "../../../components/UI/Preloader/Preloader";
+import {Container} from "react-bootstrap";
 
-const TermsConditions = () => {
+const TermsConditionsAuth = () => {
     const term = JSON.parse(JSON.stringify(store.terms.terms_body))
-    const domainStore = JSON.parse(JSON.stringify(store.domain))
     let domain = store.domain.domain_name
     let domainBig = store.domain.full_domain_name
     let percent = store.domain.deposit_fee
@@ -15,9 +14,6 @@ const TermsConditions = () => {
     function createMarkup() {
         return {__html: `${str}`};
     }
-
-    console.log('createMarkup()', createMarkup().__html)
-
     return (
         <Container>
             {
@@ -29,11 +25,11 @@ const TermsConditions = () => {
     )
 }
 
-TermsConditions.propTypes = {
-
+TermsConditionsAuth.propTypes = {
+    
 }
-TermsConditions.defaultProps = {
-
+TermsConditionsAuth.defaultProps = {
+    
 }
 
-export default TermsConditions
+export default TermsConditionsAuth

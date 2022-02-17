@@ -1,11 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Container} from "react-bootstrap";
+import {store} from "../../../index";
 
 const CookiePolicy = () => {
+    let domain = store.domain.domain_name.toUpperCase()
     return (
         <Container>
-
             <div className="article footer_links_page">
                 <h1 className="article-title">Cookie Policy</h1>
                 <h4 className="article-subtitle">WHAT ARE COOKIES?</h4>
@@ -83,7 +84,7 @@ const CookiePolicy = () => {
                     one of the features you use on our site. However, if you are still looking for more information,
                     then
                     you can
-                    contact us at BITLUCK support.
+                    contact us at {domain} support.
                 </p>
             </div>
 

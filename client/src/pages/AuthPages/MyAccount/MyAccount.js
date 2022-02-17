@@ -10,11 +10,10 @@ import {observer} from "mobx-react-lite";
 import Input from "../../../components/UI/Input/Input";
 
 const MyAccount = (props) => {
-
-    const [name, setName] = useState(props.data.name)
+    console.log('my acc', props)
+    const [name, setName] = useState(props.name)
     const [changeName, setChangeName] = useState(false)
     const [learnMore, setLearnMore] = useState(false)
-    console.log('my acc', props)
 
     const onChangeName = (e) => {
         setName(e.target.value)

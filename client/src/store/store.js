@@ -23,6 +23,7 @@ export default class Store {
     geoData = {}
     notifications = []
     domain = {}
+    terms = {}
 
 
     constructor() {
@@ -81,6 +82,9 @@ export default class Store {
     }
     setDomain(obj) {
         this.domain = obj
+    }
+    setTerms(obj) {
+        this.terms = obj
     }
 
     async login(obj) {

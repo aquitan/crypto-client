@@ -44,6 +44,9 @@ const MakeTransaction = () => {
                             <Select {...register('type')} options={trsType} classname='small'/>
                         </Col>
                         <Col>
+                            <Select {...register('transaction')} options={trsType} classname='small'/>
+                        </Col>
+                        <Col>
                             <DatePickert required
                                          customInput={<DatePickerCustom/>}
                                          placeholderText='Дата'
