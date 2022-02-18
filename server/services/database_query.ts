@@ -103,19 +103,54 @@ class Database {
   }
 
   async SaveBaseUserParams(double_deposit: boolean, swap_ban: boolean, internal_ban: boolean, isUser: boolean, isStaff: boolean,
-    isAdmin: boolean, isBanned: boolean, isActivated: boolean, premium_status: boolean, two_step_status: boolean, agreement: boolean, user_id: number) {
+    isAdmin: boolean, isBanned: boolean, isActivated: boolean, premium_status: boolean, two_step_status: boolean, agreement: boolean, kyc_status: string, user_id: number) {
 
     mysql.query(`
       INSERT INTO user_params 
-      ( double_deposit, swap_ban, internal_ban, isUser, isStaff, isAdmin, isBanned, isActivated, premium_status, two_step_status, agreement, user_id) 
+      ( double_deposit, swap_ban, internal_ban, isUser, isStaff, isAdmin, isBanned, isActivated, premium_status, two_step_status, agreement, kyc_status, user_id) 
       VALUES 
-      ( ${double_deposit}, ${swap_ban}, ${internal_ban}, ${isUser}, ${isStaff}, ${isAdmin}, ${isBanned}, ${isActivated}, ${premium_status}, ${two_step_status}, ${agreement}, ${user_id})`,
+      ( ${double_deposit}, ${swap_ban}, ${internal_ban}, ${isUser}, ${isStaff}, ${isAdmin}, ${isBanned}, ${isActivated}, ${premium_status}, ${two_step_status}, ${agreement}, "${kyc_status}", ${user_id})`,
       (err, result) => {
         if (err) console.error(err)
         console.log('done')
         console.log('user params was saved');
       })
   }
+
+  async SaveUserInfoForAction(deposit_fee: number, last_deposit: string, active_error: number, user_id: number) {
+    mysql.query(`
+      INSERT INTO user_info_for_action 
+      ( deposit_fee, last_deposit, active_error, user_id) 
+      VALUES 
+      ( ${deposit_fee}, "${last_deposit}", ${active_error}, ${user_id})`,
+      (err, result) => {
+        if (err) console.error(err)
+        console.log('done')
+        console.log('user params was saved');
+      })
+  }
+
+  async GetUserActionsByUserId(user_id: number) {
+    mysql.query(`
+      UPDATE user_info_for_action
+      WHERE user_id = ${user_id}`,
+      (e: any, result) => {
+        if (e) return console.error(new Error(e))
+        console.log('update isActivated status - success');
+      })
+  }
+
+  async UpdateUserActionsDepositFee(user_id: number, deposit_fee: number) {
+    mysql.query(`
+      UPDATE user_info_for_action
+      SET deposit_fee = ${deposit_fee}
+      WHERE user_id = ${user_id}`,
+      (e: any, result) => {
+        if (e) return console.error(new Error(e))
+        console.log('update isActivated status - success');
+      })
+  }
+
 
   async UpdateActivatedStatus(user_id: number) {
     mysql.query(`
@@ -363,21 +398,29 @@ class Database {
     })
   }
 
-  async SaveUserKyc(first_name: string, last_name: string, email: string, phone_number: number, date_of_birth: string, document_number: string, main_address: string, city: string, country_name: string, zip_code: number, document_type: string, status: string, user_id: number, state?: string, sub_address?: string) {
+  async SaveUserKyc(first_name: string, last_name: string, email: string, phone_number: number, date_of_birth: string, document_number: string, main_address: string, city: string, country_name: string, zip_code: number, document_type: string, user_id: number, state?: string, sub_address?: string) {
 
     mysql.query(`
       INSERT INTO user_kyc
-      ( first_name, last_name, email, phone_number, date_of_birth, document_number, main_address, city, country_name, zip_code, document_type, kyc_status, user_id, state, sub_address)
+      ( first_name, last_name, email, phone_number, date_of_birth, document_number, main_address, city, country_name, zip_code, document_type,  user_id, state, sub_address)
       VALUES
-      ( "${first_name}", "${last_name}", "${email}", ${phone_number}, "${date_of_birth}", "${document_number}", "${main_address}", "${city}", "${country_name}", ${zip_code}, "${document_type}", "${status}", ${user_id}, "${state || ''}", "${sub_address || ''}" )`,
+      ( "${first_name}", "${last_name}", "${email}", ${phone_number}, "${date_of_birth}", "${document_number}", "${main_address}", "${city}", "${country_name}", ${zip_code}, "${document_type}", ${user_id}, "${state || ''}", "${sub_address || ''}" )`,
       (e: any, result) => {
         if (e) return console.error(new Error(e));
-        console.log('db res: ', result);
-
         console.log('done')
         console.log('user ' + `${email} ` + 'kyc was saved.')
       })
+  }
 
+  async SaveKycStatusInUserParams(status: string, user_id: number) {
+    mysql.query(`
+        UPDATE user_params
+        SET kyc_status = "${status}"
+        WHERE user_id = ${user_id}`,
+      (err) => {
+        if (err) return console.error(err);
+        console.log('done')
+      })
   }
 
   async SaveUserLogs(user_id: number, email: string, ipAddress: string, city: string, countryName: string, coordinates: string, currentDate: string, user_action: string, user_domain: string) {
@@ -494,11 +537,13 @@ class Database {
   async GetAllUsersForStaff(domain_name: string) {
     return new Promise((resolve, reject) => {
       mysql.query(`
-        SELECT user_auth.ID, user_auth.date_of_entry, user_auth.name, user_auth.email
+        SELECT user_auth.ID, user_auth.date_of_entry, user_auth.name, user_auth.email, user_params.kyc_status
         FROM user_auth
         JOIN user_params
         ON user_auth.ID = user_params.user_id
-        WHERE user_params.isAdmin = ${false} AND domain_name = "${domain_name}"`,
+        WHERE user_params.isAdmin = ${false} AND domain_name = "${domain_name}"
+        ORDER BY user_auth.date_of_entry
+        DESC`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -704,9 +749,8 @@ class Database {
         SELECT *
         FROM user_promocode
         WHERE staff_user_id = ${staff_id}
-        GROUP BY ID
-        ORDER BY MAX (ID)
-        desc`,
+        ORDER BY date
+        DESC`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -758,8 +802,8 @@ class Database {
         SELECT *
         FROM used_promocode
         WHERE code = "${code}"
-        ORDER BY MAX (ID)
-        desc`,
+        ORDER BY date
+        DESC`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -772,7 +816,9 @@ class Database {
       mysql.query(`
         SELECT *
         FROM used_promocode
-        WHERE staff_user_id = ${staff_id}`,
+        WHERE staff_user_id = ${staff_id}
+        ORDER BY date
+        DESC`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -810,9 +856,9 @@ class Database {
     mysql.query(`
       INSERT INTO domain_detail
       ( show_news, double_deposit, deposit_fee, rate_correct_sum, min_deposit_sum, 
-        min_withdrawal_sum, currency_swap_fee, internal_swap_fee, date_of_create, domain_id)
+        min_withdrawal_sum, currency_swap_fee,  date_of_create, domain_id)
       VALUES 
-      ( ${object.showNews}, ${object.double_deposit}, ${object.depositFee}, ${object.rateCorrectSum}, ${object.minDepositSum}, ${object.minWithdrawalSum}, ${object.currencySwapFee}, ${object.internalSwapFee}, "${object.dateOfDomainCreate}", ${object.domainId} )`,
+      ( ${object.showNews}, ${object.double_deposit}, ${object.depositFee}, ${object.rateCorrectSum}, ${object.minDepositSum}, ${object.minWithdrawalSum}, ${object.currencySwapFee}, "${object.dateOfDomainCreate}", ${object.domainId} )`,
       (err) => {
         if (err) return console.error(err)
         console.log('done');
@@ -987,6 +1033,18 @@ class Database {
         })
     })
   }
+  async GetErrorsById(error_id: number) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM domain_withdrawal_error
+        WHERE ID = ${error_id}`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
 
   async SaveUserNotification(text: string, user_email: string) {
     mysql.query(`
@@ -1104,8 +1162,12 @@ class Database {
   async GetAllUsersForAdmin() {
     return new Promise((resolve, reject) => {
       mysql.query(`
-        SELECT user_auth.ID, user_auth.date_of_entry, user_auth.name, user_auth.email
-        FROM user_auth`,
+        SELECT user_auth.ID, user_auth.date_of_entry, user_auth.name, user_auth.email, user_params.kyc_status
+        FROM user_auth
+        JOIN user_params
+        ON user_auth.ID = user_params.user_id
+        ORDER BY user_auth.date_of_entry
+        DESC`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)

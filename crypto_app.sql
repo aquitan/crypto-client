@@ -57,12 +57,11 @@ CREATE TABLE `domain_detail` (
   `min_deposit_sum` int NOT NULL,
   `min_withdrawal_sum` int NOT NULL,
   `currency_swap_fee` int NOT NULL,
-  `internal_swap_fee` int NOT NULL,
-  `date_of_create` datetime NOT NULL,
+  `date_of_create` timestamp NOT NULL,
   `domain_id` int NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `domain_id` (`domain_id`),
-  CONSTRAINT `domain_detail_ibfk_1` FOREIGN KEY (`domain_id`) REFERENCES `domain_detail` (`ID`)
+  CONSTRAINT `domain_detail_ibfk_1` FOREIGN KEY (`domain_id`) REFERENCES `domain_list` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -170,7 +169,7 @@ DROP TABLE IF EXISTS `news_list`;
 CREATE TABLE `news_list` (
   `ID` int NOT NULL AUTO_INCREMENT,
   `news_title` varchar(255) NOT NULL,
-  `news_date` datetime NOT NULL,
+  `news_date` timestamp NOT NULL,
   `news_body` mediumtext NOT NULL,
   `news_image` text,
   `news_domain` varchar(255) NOT NULL,
@@ -232,7 +231,7 @@ CREATE TABLE `staff_params` (
   `staff_email` varchar(255) NOT NULL,
   `payment_fee` int NOT NULL,
   `support_name` varchar(100) NOT NULL,
-  `get_staff_access_date` date NOT NULL,
+  `get_staff_access_date` timestamp NOT NULL,
   `user_who_give_access` int NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `user_who_give_access` (`user_who_give_access`),
@@ -259,7 +258,7 @@ DROP TABLE IF EXISTS `used_promocode`;
 CREATE TABLE `used_promocode` (
   `ID` int NOT NULL AUTO_INCREMENT,
   `code` varchar(30) NOT NULL,
-  `date` date NOT NULL,
+  `date` timestamp NOT NULL,
   `value` float NOT NULL,
   `currency` varchar(30) NOT NULL,
   `notification_text` varchar(1024) NOT NULL,
@@ -296,9 +295,9 @@ CREATE TABLE `user_auth` (
   `agreement` tinyint(1) NOT NULL,
   `promocode` varchar(50) NOT NULL,
   `domain_name` varchar(255) NOT NULL,
-  `date_of_entry` datetime NOT NULL,
+  `date_of_entry` timestamp NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -307,7 +306,6 @@ CREATE TABLE `user_auth` (
 
 LOCK TABLES `user_auth` WRITE;
 /*!40000 ALTER TABLE `user_auth` DISABLE KEYS */;
-INSERT INTO `user_auth` VALUES (1,'onegin343@ukr.net','11111111','','oKhVJC3F8PP5rEV3vM','self registred',1,'empty','localhost:3000','2022-02-14 00:00:00');
 /*!40000 ALTER TABLE `user_auth` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -321,15 +319,12 @@ DROP TABLE IF EXISTS `user_info_for_action`;
 CREATE TABLE `user_info_for_action` (
   `ID` int NOT NULL AUTO_INCREMENT,
   `deposit_fee` int NOT NULL,
-  `last_deposit` date DEFAULT NULL,
-  `active_notification` varchar(1024) DEFAULT NULL,
+  `last_deposit` timestamp NULL DEFAULT NULL,
   `active_error` int NOT NULL,
   `user_id` int NOT NULL,
   PRIMARY KEY (`ID`),
-  KEY `active_error` (`active_error`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `user_info_for_action_ibfk_1` FOREIGN KEY (`active_error`) REFERENCES `domain_withdrawal_error` (`ID`),
-  CONSTRAINT `user_info_for_action_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user_auth` (`ID`)
+  CONSTRAINT `user_info_for_action_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user_auth` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -353,7 +348,7 @@ CREATE TABLE `user_ip_match` (
   `ID` int NOT NULL AUTO_INCREMENT,
   `user_email` varchar(255) NOT NULL,
   `user_ip_address` varchar(150) NOT NULL,
-  `login_date` datetime NOT NULL,
+  `login_date` timestamp NOT NULL,
   `browser` varchar(50) NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -381,7 +376,7 @@ CREATE TABLE `user_kyc` (
   `last_name` varchar(255) NOT NULL,
   `email` varchar(150) NOT NULL,
   `phone_number` varchar(50) NOT NULL,
-  `date_of_birth` date NOT NULL,
+  `date_of_birth` timestamp NOT NULL,
   `document_number` varchar(100) NOT NULL,
   `main_address` varchar(255) NOT NULL,
   `sub_address` varchar(255) DEFAULT NULL,
@@ -422,14 +417,14 @@ CREATE TABLE `user_logs` (
   `country_name` varchar(50) NOT NULL,
   `location` varchar(150) NOT NULL,
   `browser` varchar(50) NOT NULL,
-  `action_date` datetime NOT NULL,
+  `action_date` timestamp NOT NULL,
   `user_action` varchar(255) NOT NULL,
   `user_domain` varchar(255) NOT NULL,
   `user_id` int NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `user_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user_auth` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -438,7 +433,6 @@ CREATE TABLE `user_logs` (
 
 LOCK TABLES `user_logs` WRITE;
 /*!40000 ALTER TABLE `user_logs` DISABLE KEYS */;
-INSERT INTO `user_logs` VALUES (1,'onegin343@ukr.net','undefined','undefined','undefined','undefined','some browsr','2022-02-12 00:00:00','зашел на ','localhost:3000',1);
 /*!40000 ALTER TABLE `user_logs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -477,7 +471,6 @@ CREATE TABLE `user_params` (
   `ID` int NOT NULL AUTO_INCREMENT,
   `double_deposit` tinyint(1) NOT NULL,
   `swap_ban` tinyint(1) NOT NULL,
-  `internal_ban` tinyint(1) NOT NULL,
   `isUser` tinyint(1) NOT NULL,
   `isStaff` tinyint(1) NOT NULL,
   `isAdmin` tinyint(1) NOT NULL,
@@ -485,12 +478,12 @@ CREATE TABLE `user_params` (
   `isActivated` tinyint(1) NOT NULL,
   `premium_status` tinyint(1) NOT NULL,
   `two_step_status` tinyint(1) NOT NULL,
-  `agreement` tinyint(1) NOT NULL,
+  `kyc_status` varchar(50) NOT NULL,
   `user_id` int NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `user_params_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user_auth` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -499,7 +492,6 @@ CREATE TABLE `user_params` (
 
 LOCK TABLES `user_params` WRITE;
 /*!40000 ALTER TABLE `user_params` DISABLE KEYS */;
-INSERT INTO `user_params` VALUES (1,0,0,0,1,0,0,0,1,0,0,1,1);
 /*!40000 ALTER TABLE `user_params` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -513,7 +505,7 @@ DROP TABLE IF EXISTS `user_promocode`;
 CREATE TABLE `user_promocode` (
   `ID` int NOT NULL AUTO_INCREMENT,
   `code` varchar(30) NOT NULL,
-  `date` date NOT NULL,
+  `date` timestamp NOT NULL,
   `value` float NOT NULL,
   `currency` varchar(30) NOT NULL,
   `notification_text` varchar(1024) NOT NULL,
@@ -569,7 +561,7 @@ CREATE TABLE `user_two_fa_params` (
   `ID` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
   `two_step_type` varchar(30) NOT NULL,
-  `enable_date` datetime NOT NULL,
+  `enable_date` timestamp NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `user_two_fa_params_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user_auth` (`ID`)
@@ -594,4 +586,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-02-17 18:54:35
+-- Dump completed on 2022-02-18 13:46:12

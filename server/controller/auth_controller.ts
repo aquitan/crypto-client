@@ -41,28 +41,64 @@ class AuthController {
         return next(ApiError.BadRequest('validation error', errors.array()))
       }
 
-      const { email, password, name, promocode, domainName, ipAddress, city, countryName, coordinates, currentDate } = req.body
+      interface userData {
+        email: string
+        password: string
+        name?: string
+        promocode: string
+        domainName: string
+        ipAddress: string
+        city: string
+        countryName: string
+        coordinates: string
+        currentDate: string
+        doubleDeposit: boolean
+        depositFee: number
+        rateCorrectSum: number
+        minDepositSum: number
+        minWithdrawalSum: number
+        currencySwapFee: number
+      }
 
-      if (promocode !== 'empty') {
-        const result: boolean = await authService.rebasePromocodeToUsed(promocode, email)
+      const transfer_object: userData = {
+        email: req.body.email,
+        password: req.body.password,
+        name: req.body.name,
+        promocode: req.body.promocode,
+        domainName: req.body.domainName,
+        ipAddress: req.body.ipAddress,
+        city: req.body.city,
+        countryName: req.body.countryName,
+        coordinates: req.body.coordinates,
+        currentDate: req.body.currentDate,
+        doubleDeposit: req.body.doubleDeposit,
+        depositFee: req.body.depositFee,
+        rateCorrectSum: req.body.rateCorrectSum,
+        minDepositSum: req.body.minDepositSum,
+        minWithdrawalSum: req.body.minWithdrawalSum,
+        currencySwapFee: req.body.currencySwapFee
+      }
+
+      if (transfer_object.promocode !== 'empty') {
+        const result: boolean = await authService.rebasePromocodeToUsed(transfer_object.promocode, transfer_object.email)
         if (result === true) {
-          const userData = await authService.registration(email, password, promocode, true, domainName, currentDate, name)
+          const userData = await authService.registration(transfer_object)
           res.cookie('refreshToken', userData.refreshToken, {
             maxAge: 30 * 4 * 60 * 60 * 1000,
             httpOnly: true
           })
-          await telegram.sendMessageByUserActions(email, ` зарегистрировался по  промокоду ${promocode}`, domainName)
-          await authService.SaveAuthLogs(userData[0].ID, email, ipAddress, city, countryName, coordinates, currentDate, 'арегистрировался на ', domainName)
+          await telegram.sendMessageByUserActions(transfer_object.email, ` зарегистрировался по  промокоду ${transfer_object.promocode}`, transfer_object.domainName)
+          await authService.SaveAuthLogs(userData[0].ID, transfer_object.email, transfer_object.ipAddress, transfer_object.city, transfer_object.countryName, transfer_object.coordinates, transfer_object.currentDate, ' зарегистрировался на ', transfer_object.domainName)
           return res.status(201).json(userData)
         }
       }
-      const userData = await authService.registration(email, password, promocode, true, domainName, currentDate, name)
+      const userData = await authService.registration(transfer_object)
       res.cookie('refreshToken', userData.refreshToken, {
         maxAge: 30 * 4 * 60 * 60 * 1000,
         httpOnly: true
       })
 
-      await telegram.sendMessageByUserActions(email, ` зарегистрировался `, domainName)
+      await telegram.sendMessageByUserActions(transfer_object.email, ` зарегистрировался `, transfer_object.domainName)
       return res.status(201).json(userData)
     } catch (e) {
       next(e)
@@ -156,11 +192,13 @@ class AuthController {
 
   async activate(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      const { activationLink, user_id } = req.body
-      const result: any = await authService.activate(user_id, activationLink)
-      if (result === false) return res.status(401).json({ message: 'wrong data', status: 'rejected' })
+      const activationLink: string = req.body.activationLink
+      const user_id: number = req.body.user_id
 
-      return res.status(202).json(result)
+      const result: any = await authService.activate(user_id, activationLink)
+      if (result === false) return res.status(401).json({ message: 'wrong data' })
+
+      return res.status(202).json({ message: 'ok' })
     } catch (e) {
       next(e)
     }

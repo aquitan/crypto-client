@@ -7,8 +7,8 @@ import staffController from '../controller/staff_controller'
 import authChecker from '../middlewares/auth_middleware'
 
 // auth routes
-router.post('/get_domain_params/', authController.getDomainParams)
-router.post('/get_promocodes_before_signup/', authController.getPromocodeList)
+router.post('/get_domain_params/', authController.getDomainParams) // base domain params 
+router.post('/get_promocodes_before_signup/', authController.getPromocodeList)  // get promo list
 
 router.put('/registration/',
   body('email').isEmail(),
@@ -17,26 +17,26 @@ router.put('/registration/',
     max: 32
   }),
   authController.registration)
-router.post('/get_verified_promocode/', authController.getVerifiedPromocode) // **
-router.post('/check_two_step/', authController.checkTwoStep)
-router.post('/get_verified_two_step_code/', authController.getVerifiedTwoStepCode) // **
+router.post('/promocode_validate/', authController.getVerifiedPromocode) // verify code befoge signup
+router.post('/check_two_step/', authController.checkTwoStep) // check user 2factor status => if true => send code & wait request to next endpoint 
+router.post('/get_verified_two_step_code/', authController.getVerifiedTwoStepCode) // validate promocode at singup
 router.post('/login/', authController.login)
 router.post('/logout/', authController.logout)
-router.post('/activate/', authController.activate)
+router.post('/activate/', authController.activate) // activate user by link in email
 router.get('/refresh/', authController.refresh)
 router.patch('/forgot_password/', authController.forgotPassword)
 
 // user area routes
-router.post('/dashboard/', authChecker, userController.dashboard)
-router.post('/personal_area/profile/', userController.personalAreaProfile)
-router.patch('/personal_area/profile/edit/', authChecker, userController.personalAreaProfileEdit)
-router.post('/use_promocode_in_profile/', authChecker, userController.usePromocodeInProfile)
-router.patch('/personal_area/security/', authChecker, userController.twoStepVerificationEnable)
-router.post('/personal_area/security/two_step_enable/', authChecker, userController.enableTwoStepVerificationStatus)
-
+router.post('/dashboard/', authChecker, userController.dashboard) // get base user data for dashboard (total balance, currencies, etc)
+router.post('/personal_area/profile/', userController.personalAreaProfile) // get base user profile data
+router.patch('/personal_area/profile/edit/', authChecker, userController.personalAreaProfileEdit) // edit display name in user profile
+router.post('/use_promocode_in_profile/', authChecker, userController.usePromocodeInProfile) // use promocode in user area, if promo don't use at signup
+router.patch('/personal_area/security/', authChecker, userController.twoStepVerificationEnable) // change 2fa type & send code 
 router.patch('/personal_area/security/change_password/', authChecker, userController.personalAreaSecurityChangePassword)
-router.post('/personal_area/verification/', authChecker, userController.personalAreaKyc)
-router.patch('/personal_area/security/disable_two_step_status/', authChecker, userController.disableTwoStepVerificationStatus)
+router.post('/personal_area/security/two_step_enable/', authChecker, userController.enableTwoStepVerificationStatus) // update and enable 2fa status 
+router.patch('/personal_area/security/disable_two_step_status/', authChecker, userController.disableTwoStepVerificationStatus) // disable 2fa status
+
+router.post('/personal_area/verification/', authChecker, userController.personalAreaKyc) // send kyc data
 
 // router.put('/wallets/create_user_wallet/', authChecker, userController.createUserWallet)
 // router.get('/internal_wallets/get_user_internal_wallet/', authChecker, userController.getInternalWallet)
@@ -44,53 +44,59 @@ router.patch('/personal_area/security/disable_two_step_status/', authChecker, us
 // router.post('/deposit/make_deposit', authChecker, userController.makeDeposit)
 // router.post('/withdraw/get_withdraw', authChecker, userController.getWithdraw)
 
-// admin - staff routes
+// admin + staff routes
 router.get('/staff/:id/', staffController.staffDashboard)
-router.post('/staff/users/', staffController.usersList)
-router.get('/staff/users/user_detail/:id/', staffController.userDetail)
-router.post('/staff/users/kyc/', staffController.kycList)
-router.patch('/staff/users/user_detail/update_premium_status/', staffController.updatePremiumStatus)
-router.patch('/staff/users/user_detail/update_swap_ban_status/', staffController.updateSwapBan)
-router.patch('/staff/users/user_detail/update_internal_ban_status/', staffController.updateInternalBan)
-router.patch('/staff/users/user_detail/update_full_ban_status/', staffController.updateFullBan)
-router.patch('/staff/users/user_detail/update_double_deposit/', staffController.updateDoubleDeposit)
-router.patch('/staff/users/user_detail/clear_match_ip_list/', staffController.clearMatchIpList)
-router.patch('/staff/users/user_detail/update_staff_status/', staffController.updateStaffStatus)
-router.patch('/staff/users/user_detail/update_staff_support_name/', staffController.updateStaffSupportName)
+router.post('/staff/users/', staffController.usersList) // get all users (if staff => when staff is domain owner) (if admin & other => all users )
+router.get('/staff/users/user_detail/:id/', staffController.userDetail) // selected user detail info
+router.post('/staff/users/kyc/', staffController.kycList) // get kyc list (if staff => when staff is domain owner) (if admin & other => all kyc )
+router.patch('/staff/users/user_detail/update_user_deposit_fee/', staffController.updateDepositFee) // update deposit fee for user by staff
+router.patch('/staff/users/user_detail/update_premium_status/', staffController.updatePremiumStatus) // update primium status for user
+router.patch('/staff/users/user_detail/update_swap_ban_status/', staffController.updateSwapBan) // update swap ban for user
+router.patch('/staff/users/user_detail/update_internal_ban_status/', staffController.updateInternalBan) // update internal swap ban for user
+router.patch('/staff/users/user_detail/update_full_ban_status/', staffController.updateFullBan) // update full ban for user
+router.patch('/staff/users/user_detail/update_double_deposit/', staffController.updateDoubleDeposit) // update double deposit status for user
+router.patch('/staff/users/user_detail/clear_match_ip_list/', staffController.clearMatchIpList) // ip match list checker (if someone has the same ip => send user ip & user email)
+router.patch('/staff/users/user_detail/update_staff_status/', staffController.updateStaffStatus) // get staff permission to regular user 
+router.patch('/staff/users/user_detail/update_staff_support_name/', staffController.updateStaffSupportName) // change name for staff in support chat
 
-router.patch('/staff/kyc/update_kyc_status/', staffController.changeKycStatus)
-router.delete('/staff/kyc/delete_kyc/', staffController.deleteKyc)
-router.post('/staff/create_user/', staffController.createNewUser)
-router.put('/staff/create_promocode/', staffController.promocodeCreate)
-router.post('/staff/get_promocode_list/', staffController.getPromocodeListForStaff)
-router.post('/staff/get_used_promocode_list/', staffController.getUsedPromocodeListForStaff)
-router.delete('/staff/delete_promocode/', staffController.removePromocode)
+router.patch('/staff/kyc/update_kyc_status/', staffController.changeKycStatus) // change kyc status for user (in user verification page)
+router.delete('/staff/kyc/delete_kyc/', staffController.deleteKyc) // delete full kyc data for current user
+router.post('/staff/create_user/', staffController.createNewUser) // create user as staff in staff panel
+router.put('/staff/create_promocode/', staffController.promocodeCreate) // create promocode (one or several codes)
+router.post('/staff/get_promocode_list/', staffController.getPromocodeListForStaff) // get active (not used) promocodes by staff domain (if admin => get all promocode list from all domains)
+router.post('/staff/get_used_promocode_list/', staffController.getUsedPromocodeListForStaff) // get used promocodes by staff domain (if admin => get all promocode list from all domains)
+router.delete('/staff/delete_promocode/', staffController.removePromocode) // delete one promocode 
+// router.delete('/staff/delete_all_used_promocode/', staffController.deleteUsedPromocodes) // delete all promocodes
 
-router.post('/staff/ip_match_checker/', staffController.getIpForMatch)
+router.post('/staff/ip_match_checker/', staffController.getIpForMatch) // check user ip for match
 
-router.put('/staff/domains/create_domain/', staffController.createDomain)
-router.get('/staff/domains/domain_detail/:id/', staffController.getDomainDetail) // **
+router.put('/staff/domains/create_domain/', staffController.createDomain) // create base domain settings & detail settings & base withdrawal errors
+router.get('/staff/domains/domain_detail/:id/', staffController.getDomainDetail) // get detail domain page by domain id
 
-router.patch('/staff/domains/domain_detail/domain_edit/', staffController.editDomainInfo) // **
+router.patch('/staff/domains/domain_detail/domain_edit/', staffController.editDomainInfo) // edit base domain settings & detail settings & base withdrawal errors
 
-router.post('/staff/domains/get_active_domains/', staffController.getDomainsList)
-router.put('/staff/errors/create_new_error/', staffController.createCustomError)
-router.get('/staff/errors/get_all_errors/:id/', staffController.getAllErrors) // domain ID
+router.post('/staff/domains/get_active_domains/', staffController.getDomainsList) // get domain list (if staff => when domain owner is staff ) ( if admin and other => all domains )
+router.put('/staff/errors/create_new_error/', staffController.createCustomError) // create new error for selected domain
+router.get('/staff/errors/get_all_errors/:id/', staffController.getAllErrors) // get domain errors by domain ID
 router.post('/staff/errors/get_errors_by_domain_name/', staffController.getErrorsByDomainName) // domain name where staff email is domain owner
 
-router.put('/staff/notifications/create_new_notification/', staffController.createNewNotification)
-router.post('/staff/notifications/get_all_notifications/', staffController.getNotificationList)
+router.put('/staff/notifications/create_new_notification/', staffController.createNewNotification) // create new notification for user
+router.post('/staff/notifications/get_all_notifications/', staffController.getNotificationList) // get notification request by user_id
 
-router.put('/staff/news/news_create/', staffController.newsCreate)
-router.patch('/staff/news/news_edit/', staffController.editNews)
-router.post('/staff/news/get_news_list/', staffController.getNewsList)
+router.put('/staff/news/news_create/', staffController.newsCreate) // create news for user 
+router.patch('/staff/news/news_edit/', staffController.editNews) // edit news 
+router.post('/staff/news/get_news_list/', staffController.getNewsList) // get news list (if staff => only on onw domain) (if admin or other => find news by any domain)
 
 // router.put('/staff/wallets/create_staff_wallet/', staffController.createStaffWallet)
-router.post('/staff/terms/get_term_by_domain/', staffController.getTermsByDomainName)
+// router.post('/staff/staff_wallets/get_wallets/', staffController.getStaffWallet) // if staff => get support wallet for current staff, (if admin) => select with staff emails to choose wallet by current staff user 
+// router.patch('/staff/staff_wallets/edit_staff_wallets/', staffController.editStaffWallets) // edit wallets for current staff
 
-router.patch('/staff/terms/update_terms/', staffController.updateTerms) // +
-router.get('/staff/project_support/get_wallet/', staffController.projectSupport)
-router.post('/staff/project_support_form/', staffController.projectSupportRequest) // +
+router.post('/staff/terms/get_term_by_domain/', staffController.getTermsByDomainName) // get terms by selected domain
+router.patch('/staff/terms/update_terms/', staffController.updateTerms) // update terms at at selected domain
+router.get('/staff/project_support/get_wallet/', staffController.projectSupport) // if staff => get support wallet for current staff, (if admin) => select with staff emails to choose wallet by current staff user 
+
+
+router.post('/staff/project_support_form/', staffController.projectSupportRequest) // send question to platform developers
 
 
 

@@ -27,21 +27,24 @@ class AuthService {
     return codeArray
   }
 
-  async registration(email: string, password: string, promocode: string, agreement: boolean, domain_name: string, datetime: any, name?: string) {
+  async registration(transfer_object: any) {
 
-    const candidate: any = await database.GetUserByEmail(email)
+    const candidate: any = await database.GetUserByEmail(transfer_object.email)
 
-    if (candidate[0]) throw ApiError.BadRequest(`email ${email} already in use.`)
+    if (candidate[0]) throw ApiError.BadRequest(`email ${transfer_object.email} already in use.`)
     const activationLink: string = await passwordGenerator(18)
-    await database.CreateUser(email, password, activationLink, 'self registred', promocode, agreement, domain_name, datetime, name || '',)
+    const domainOwner: any = await database.GetBaseDomainInfo(transfer_object.domainName)
+    console.log('domain owner is: ', domainOwner[0].domain_owner);
+    if (!domainOwner[0]) await database.CreateUser(transfer_object.email, transfer_object.password, activationLink, 'self registred', transfer_object.promocode, transfer_object.agreement, transfer_object.domain_name, transfer_object.datetime, transfer_object.name || '')
 
+    await database.CreateUser(transfer_object.email, transfer_object.password, transfer_object.activationLink, domainOwner[0].domain_owner, transfer_object.promocode, transfer_object.agreement, transfer_object.domain_name, transfer_object.datetime, transfer_object.name || '')
 
-    const curUser: any = await database.GetUserByEmail(email)
-    await database.SaveBaseUserParams(false, false, false, true, false, false, false, false, false, false, true, curUser[0].ID)
-
-    const user: any = await database.GetBaseUserParamsByEmail(email)
+    const curUser: any = await database.GetUserByEmail(transfer_object.email)
+    await database.SaveBaseUserParams(transfer_object.doubleDeposit, false, false, true, false, false, false, false, false, false, true, transfer_object.kycStatus, curUser[0].ID)
+    await database.SaveUserInfoForAction(transfer_object.depositFee, '', 1, curUser[0].ID)
+    const user: any = await database.GetBaseUserParamsByEmail(transfer_object.email)
     console.log(user);
-    await mailService.sendActivationMail(email, `${domain_name}`, `${activationLink}`)
+    await mailService.sendActivationMail(transfer_object.email, `${transfer_object.domainName}`, `${activationLink}`)
 
     const userDto: any = new AuthUserDto(user[0])
     const tokens: any = tokenService.generateTokens({ ...userDto })
@@ -50,8 +53,7 @@ class AuthService {
 
     return {
       ...tokens,
-      user: userDto,
-      activationLink: user[0].activationLink
+      user: userDto
     }
 
 

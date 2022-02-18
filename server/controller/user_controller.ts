@@ -44,18 +44,40 @@ class UserController {
   async personalAreaProfile(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       // get accoutn personal info
-      const { id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName } = req.body
+      interface userData {
+        userId: number
+        userEmail: string
+        ipAddress: string
+        city: string
+        countryName: string
+        coordinates: string
+        currentDate: string
+        userAction: string
+        domainName: string
+      }
+
+      const transfer_object: userData = {
+        userId: req.body.userId,
+        userEmail: req.body.userEmail,
+        ipAddress: req.body.ipAddress,
+        city: req.body.city,
+        countryName: req.body.countryName,
+        coordinates: req.body.coordinates,
+        currentDate: req.body.currentDate,
+        userAction: req.body.userAction,
+        domainName: req.body.domainName
+      }
       console.log('req body: ', req.body);
 
-      const user: any = await UserServices.personalAreaProfile(id)
+      const user: any = await UserServices.personalAreaProfile(transfer_object.userId)
       console.log('found user is: ', user)
 
       if (!user) return res.status(400).json({ user: 'not found', status: 'rejected' })
 
       if (user.hasOwnProperty('withoutLogs') && user.withoutLogs === true) return res.status(200).json({ user: user, status: 'complete' })
 
-      await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, `перешел на ${userAction} `, domainName)
-      await telegram.sendMessageByUserActions(email, ` перешел на ${userAction}`, domainName)
+      await saveUserLogs(transfer_object.userId, transfer_object.userEmail, transfer_object.ipAddress, transfer_object.city, transfer_object.countryName, transfer_object.coordinates, transfer_object.currentDate, `перешел на ${transfer_object.userAction} `, transfer_object.domainName)
+      await telegram.sendMessageByUserActions(transfer_object.userEmail, ` перешел на ${transfer_object.userAction}`, transfer_object.domainName)
       return res.status(200).json({ user: user, status: 'complete' })
 
     } catch (e) {
@@ -161,7 +183,7 @@ class UserController {
       const result: boolean = await UserServices.enableTwoStepVerification(transferObject)
       if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
 
-      return res.status(200).json({ message: '2fa was enabled', status: 'complete', userCode: code })
+      return res.status(202).json({ message: '2fa was enabled', status: 'complete', userCode: code })
 
 
     } catch (e) {
@@ -253,65 +275,68 @@ class UserController {
 
   async personalAreaKyc(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      const {
-        id,
-        email,
-        firstName,
-        lastName,
-        phoneNumber,
-        dateOfBirth,
-        documentNumber,
-        mainAddress,
-        zipCode,
-        documentType,
-        ipAddress,
-        state,
-        city,
-        subAddress,
-        countryName,
-        coordinates,
-        currentDate,
-        userAction,
-        domainName
-      } = req.body
+      interface userData {
+        userId: number
+        userEmail: string
+        firstName: string
+        lastName: string
+        phoneNumber: string
+        dateOfBirth: string
+        documentNumber: string
+        mainAddress: string
+        zipCode: number
+        documentType: string
+        ipAddress: string
+        state: string
+        city: string
+        subAddress?: string
+        countryName: string
+        coordinates: string
+        currentDate: string
+        userAction: string
+        domainName: string
+        kycStatus: string
+      }
+      const transfer_object: userData = {
+        userId: req.body.id,
+        userEmail: req.body.email,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        phoneNumber: req.body.phoneNumber,
+        dateOfBirth: req.body.dateOfBirth,
+        documentNumber: req.body.documentNumber,
+        mainAddress: req.body.mainAddress,
+        zipCode: req.body.zipCode,
+        documentType: req.body.documentType,
+        ipAddress: req.body.ipAddress,
+        state: req.body.state,
+        city: req.body.city,
+        subAddress: req.body.subAddress,
+        countryName: req.body.countryName,
+        coordinates: req.body.coordinates,
+        currentDate: req.body.currentDate,
+        userAction: req.body.userAction,
+        domainName: req.body.domainName,
+        kycStatus: 'pending'
+      }
+
 
       console.log('req body kyc: ', req.body);
 
 
-      const result: boolean = await UserServices.personalAreaSendKyc(id, firstName, lastName, email, phoneNumber, dateOfBirth, documentNumber, mainAddress, city, countryName, zipCode, documentType, 'pending', state, subAddress)
+      const result: boolean = await UserServices.personalAreaSendKyc(transfer_object)
       console.log('operation result is: ', result)
 
-      if (result === false) {
-        return res.json({
-          kyc: false,
-          message: 'already added',
-          stasus: 'rejected'
-        })
-      }
-      await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, ' отправил KYC', domainName)
-      await telegram.sendMessageByUserActions(email, ' отправил KYC', domainName)
-      return res.json({
-        kyc: true,
-        stasus: 'complete'
-      })
+      if (result === false) return res.status(400).json({ message: 'kyc already added' })
+
+      await saveUserLogs(transfer_object.userId, transfer_object.userEmail, transfer_object.ipAddress, transfer_object.city, transfer_object.countryName, transfer_object.coordinates, transfer_object.currentDate, ' отправил KYC ', transfer_object.domainName)
+      await telegram.sendMessageByUserActions(transfer_object.userEmail, ' отправил KYC ', transfer_object.domainName)
+      return res.status(201).json({ message: 'ok' })
 
     } catch (e) {
       next(e)
     }
   }
-
-  // async saveUserLogs(req: express.Request, res: express.Response, next: express.NextFunction) {
-  //   try {
-  //     const { id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, userDomain } = req.body
-
-  //     await saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, userDomain)
-  //     await telegram.sendMessageByUserActions(email, userAction, userDomain)
-
-  //   } catch (e) {
-  //     next(e)
-  //   }
-  // }
-
 
   async getUserLogsToProfile() {
     try {

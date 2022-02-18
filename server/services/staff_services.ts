@@ -17,6 +17,12 @@ class staffService {
     const userBaseData: any = await database.GetBaseUserParamsById(user_id)
     console.log('userBaseData info is: ', userBaseData)
 
+    const userActionData: any = await database.GetUserActionsByUserId(user_id)
+    console.log('actions params is: ', userActionData);
+
+    const userActiveError: any = await database.GetErrorsByDomainName(userActionData[0].active_error)
+    console.log('active error is: ', userActiveError);
+
     const userKycData: any = await database.GetUserKycByUserId(user_id)
     console.log('userKycData info is: ', userKycData)
 
@@ -35,6 +41,8 @@ class staffService {
 
     const UserData: any = {
       base_data: userBaseData[0],
+      action_data: userActionData[0],
+      active_error: userActiveError[0],
       user_kyc: userKycData[0],
       user_logs: userLogsData
     }
@@ -84,6 +92,18 @@ class staffService {
     return true
   }
 
+
+  async UpdateDepositFee(user_id: number, deposit_fee: number) {
+    const user: any = await database.GetUserActionsByUserId(user_id)
+    console.log('found user is: ', user[0]);
+
+    if (!user[0]) return false
+
+    await database.UpdateUserActionsDepositFee(user_id, deposit_fee)
+    const updatedData: any = await database.GetUserActionsByUserId(user_id)
+    console.log('new deposit fee is:', updatedData[0].deposit_fee);
+    return true
+  }
 
   async UpdatePremiumStatus(user_id: number, status: boolean) {
     const user: any = await database.GetBaseUserParamsById(user_id)
@@ -161,20 +181,20 @@ class staffService {
     return true
   }
 
-  async CreateUserAsStaff(staff_id: number, email: string, password: string, promocode: string, domain_name: string, datetime: string, name?: string) {
-
-    const owner: any = await database.GetBaseUserParamsById(staff_id)
-    console.log('current staff: ', owner[0].email);
+  async CreateUserAsStaff(transfer_object: any) {
 
     const activationLink: string = await codeGenerator(8)
-    await database.CreateUser(email, password, activationLink, owner[0].email, promocode, true, domain_name, datetime, name || '',)
-    const user: any = await database.GetBaseUserParamsByEmail(email)
-    await database.SaveBaseUserParams(false, false, false, true, false, false, false, false, false, false, true, user[0].ID)
+    const domainOwner: any = await database.GetBaseDomainInfo(transfer_object.domainName)
+    console.log('domain owner is: ', domainOwner[0].domain_owner)
+    const curUser: any = await database.GetUserByEmail(transfer_object.userEmail)
 
-    if (user[0]) return true
+    await database.CreateUser(transfer_object.userEmail, transfer_object.password, activationLink, domainOwner[0].domain_owner, 'empty', true, transfer_object.domainName, transfer_object.datetime, transfer_object.name || '')
+    const user: any = await database.GetBaseUserParamsByEmail(transfer_object.userEmail)
+    if (!user[0]) return false
+    await database.SaveBaseUserParams(transfer_object.doubleDeposit, false, false, true, false, false, false, true, false, false, true, 'empty', user[0].ID)
+    await database.SaveUserInfoForAction(transfer_object.depositFee, '', 1, curUser[0].ID)
 
-    console.log('something went wrong');
-    return false
+    return true
   }
 
   async CreateNewDomain(data_object: any) {
@@ -219,7 +239,6 @@ class staffService {
       rateCorrectSum: data_object.rateCorrectSum,
       minDepositSum: data_object.minDepositSum,
       minWithdrawalSum: data_object.minWithdrawalSum,
-      internalSwapFee: data_object.internalSwapFee,
       currencySwapFee: data_object.currencySwapFee,
       dateOfDomainCreate: data_object.dateOfDomainCreate,
       domainId: curDomain[0].ID

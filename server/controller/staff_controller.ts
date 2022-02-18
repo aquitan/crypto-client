@@ -72,19 +72,9 @@ class StaffController {
 
       const user: any = await staffService.GetUserDetail(current_id)
       console.log('found user: ', user)
+      if (!user) return res.status(400).json({ message: 'wrong data' })
 
-      if (!user)
-        return res.status(400).json({
-          message: 'some querry error',
-          status: 'rejected'
-        })
-
-      return res.status(200).json({
-        user: user,
-        status: 'complete'
-      })
-
-
+      return res.status(200).json({ user: user, message: 'ok' })
     } catch (e) {
       next(e)
     }
@@ -241,6 +231,34 @@ class StaffController {
 
     }
   }
+  async updateDepositFee(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const { userId, staffId, depositFee, staffEmail, userEmail, domainName } = req.body
+      console.log('req body: ', req.body);
+      const rootAccess: boolean = req.body.rootAccess
+
+      if (rootAccess === true) {
+        const result: boolean = await staffService.UpdateDepositFee(userId, depositFee)
+        if (result === false) {
+          console.log('error');
+          return res.status(400).json({ message: 'rejected' })
+        }
+        return res.status(202).json({ message: 'ok' })
+      }
+      const result: boolean = await staffService.UpdateDepositFee(userId, depositFee)
+      if (result === false) {
+        console.log('error');
+        return res.status(400).json({ message: 'wrong data' })
+      }
+      await staffService.saveStaffLogs(staffEmail, ` изменил комиссию ${userEmail} при пополнении на ${depositFee} `, domainName, staffId)
+      await telegram.sendMessageByStaffActions(staffEmail, ` изменил комиссию ${userEmail} при пополнении на ${depositFee} `, domainName)
+      return res.status(202).json({ message: 'ok' })
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
 
   async updatePremiumStatus(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
@@ -578,36 +596,45 @@ class StaffController {
   async createNewUser(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
 
-      const { rootAccess, staffEmail, staffId, email, password, promocode, domainName, datetime, name } = req.body
+      interface userData {
+        staffEmail: string
+        staffId: number
+        userEmail: string
+        password: string
+        depositFee: number
+        promocode: string
+        domainName: string
+        datetime: string
+        name?: string
+      }
+      let transfer_object: userData = {
+        staffEmail: req.body.staffEmail,
+        staffId: req.body.staffId,
+        userEmail: req.body.userEmail,
+        password: req.body.password,
+        depositFee: req.body.depositFee,
+        promocode: req.body.promocode,
+        domainName: req.body.domainName,
+        datetime: req.body.datetime,
+        name: req.body.name
+      }
+      const rootAccess: boolean = req.body.rootAccess
 
       if (rootAccess === true) {
-        const result: boolean = await staffService.CreateUserAsStaff(99999, email, password, promocode, domainName, datetime, name || '')
-        if (result === false) {
-          return res.status(400).json({
-            message: 'wrong data',
-            status: 'rejected'
-          })
-        }
-        return res.status(201).json({
-          message: 'user was created',
-          status: 'complete'
-        })
+        transfer_object.staffId = 999999
+        const result: boolean = await staffService.CreateUserAsStaff(transfer_object)
+        if (result === false) return res.status(400).json({ message: 'wrong data' })
+
+        return res.status(201).json({ message: 'ok' })
       }
 
-      const result: boolean = await staffService.CreateUserAsStaff(staffId, email, password, promocode, domainName, datetime, name || '')
-      if (result === false) {
-        return res.status(400).json({
-          message: 'wrong data',
-          status: 'rejected'
-        })
-      }
+      const result: boolean = await staffService.CreateUserAsStaff(transfer_object)
+      if (result === false) return res.status(400).json({ message: 'wrong data' })
 
-      await telegram.sendMessageByStaffActions(staffEmail, ` создал пользователя ${email} `, domainName)
-      await staffService.saveStaffLogs(staffEmail, ` создал пользователя ${email}} `, domainName, staffId)
-      return res.status(201).json({
-        message: 'user was created',
-        status: 'complete'
-      })
+      await telegram.sendMessageByStaffActions(transfer_object.staffEmail, ` создал пользователя ${transfer_object.userEmail} `, transfer_object.domainName)
+      await staffService.saveStaffLogs(transfer_object.staffEmail, ` создал пользователя ${transfer_object.userEmail} `, transfer_object.domainName, transfer_object.staffId)
+
+      return res.status(201).json({ message: 'ok' })
     } catch (e) {
       next(e)
     }
@@ -631,7 +658,6 @@ class StaffController {
         rateCorrectSum: number
         minDepositSum: number
         minWithdrawalSum: number
-        internalSwapFee: number
         currencySwapFee: number
         errorList: {
           verif_document: {
@@ -692,7 +718,6 @@ class StaffController {
         rateCorrectSum: req.body.rateCorrectSum,
         minDepositSum: req.body.minDepositSum,
         minWithdrawalSum: req.body.minWithdrawalSum,
-        internalSwapFee: req.body.internalSwapFee,
         currencySwapFee: req.body.currencySwapFee,
         errorList: {
           verif_document: {
@@ -1100,15 +1125,9 @@ class StaffController {
       console.log('req body is: ', req.body);
       const result: any = await staffService.GetNotificationForUser(userId)
 
-      if (result === false) return res.status(200).json({
-        message: 'empty list',
-        status: 'complete'
-      })
+      if (result === false) return res.status(200).json({ message: 'empty list' })
 
-      return res.status(200).json({
-        listForUser: result,
-        status: 'complete'
-      })
+      return res.status(200).json({ listForUser: result })
 
     } catch (e) {
       next(e)

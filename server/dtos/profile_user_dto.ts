@@ -11,6 +11,7 @@ export default class ProfileUserDto {
   swap_ban
   internal_ban
   isBanned
+  deposit_fee
 
   constructor(model: any) {
     this.name = model.name
@@ -24,5 +25,6 @@ export default class ProfileUserDto {
     this.swap_ban = model.swap_ban
     this.internal_ban = model.internal_ban
     this.isBanned = model.isBanned
+    this.deposit_fee = model.deposit_fee
   }
 }

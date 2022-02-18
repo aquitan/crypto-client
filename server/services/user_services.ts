@@ -41,6 +41,10 @@ class UserServices {
     const userLogs: any = await database.GetLogsForUser(user_id)
     console.log('user logs is:', userLogs[0]);
 
+    const userActionData: any = await database.GetUserActionsByUserId(user_id)
+    console.log('actions params is: ', userActionData);
+
+
     if (userKyc[0]) {
 
       let profileUserDto: any = new ProfileUserDto(userKyc[0])
@@ -48,6 +52,7 @@ class UserServices {
       profileUserDto.login_date = userLogs[0].action_date
       profileUserDto.name = user[0].name
       profileUserDto.two_step_status = user[0].two_step_status
+      profileUserDto.deposit_fee = userActionData[0].deposit_fee
       if (user[0].isStaff || user[0].isAdmin) {
         profileUserDto.withoutLogs = true
       }
@@ -59,6 +64,7 @@ class UserServices {
     let profileUserDto: any = new ProfileUserDto(user[0])
     profileUserDto.ip_address = userLogs[0].ip_address
     profileUserDto.login_date = userLogs[0].action_date
+    profileUserDto.deposit_fee = userActionData[0].deposit_fee
     if (user[0].isStaff || user[0].isAdmin) {
       profileUserDto.withoutLogs = true
     }
@@ -151,14 +157,13 @@ class UserServices {
     return true
   }
 
-  async personalAreaSendKyc(user_id: number, first_name: string, last_name: string, email: string, phone_number: number, date_of_birth: string, document_number: string, main_address: string, city: string, country_name: string, zip_code: number, document_type: string, status: string, state: string, sub_address: string) {
-
-    const candidate: any = await database.GetUserKycByUserId(user_id)
+  async personalAreaSendKyc(transfer_object: any) {
+    const candidate: any = await database.GetUserKycByUserId(transfer_object.userId)
     console.log('candid: ', candidate);
+    if (candidate[0]) return false
 
-    if (candidate[0]) return candidate[0]
-
-    await database.SaveUserKyc(first_name, last_name, email, phone_number, date_of_birth, document_number, main_address, city, country_name, zip_code, document_type, status, user_id, state, sub_address)
+    await database.SaveUserKyc(transfer_object.firstName, transfer_object.lastName, transfer_object.userEmail, transfer_object.phoneNumber, transfer_object.dateOfBirth, transfer_object.documentNumber, transfer_object.mainAddress, transfer_object.city, transfer_object.countryName, transfer_object.zipCode, transfer_object.documentType, transfer_object.userId, transfer_object.state, transfer_object.subAddress || '')
+    await database.SaveKycStatusInUserParams(transfer_object.kycStatus, transfer_object.userId)
     return true
   }
 
