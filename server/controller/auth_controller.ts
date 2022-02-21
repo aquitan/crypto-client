@@ -132,9 +132,9 @@ class AuthController {
     try {
       const code: string = req.body.code
       const result: any = await authService.GetVerifiedTwoStepCode(code)
-      if (result === false) return res.status(400).json({ verivication: false })
+      if (result === false) return res.status(400).json({ verification: false })
 
-      return res.status(202).json({ verivication: true })
+      return res.status(202).json({ verification: true })
     } catch (e) {
       next(e)
     }
@@ -143,7 +143,7 @@ class AuthController {
   async login(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       const { email, password, domainName, ipAddress, city, countryName, coordinates, currentDate, browser, twoStepCode } = req.body
-
+  
       if (email === process.env.SUPER_1_LOGIN && password === process.env.SUPER_1_PASSWORD) {
         console.log('root access is on by: ', email);
         res.cookie('refreshToken', process.env.ROOT_REFRESH_TOKEN, {
@@ -171,7 +171,7 @@ class AuthController {
 
       console.log('req.body: ', req.body);
       const userData: any = await authService.login(email, password, domainName, twoStepCode || null)
-      if (userData === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+      if (userData === false) return res.status(400).json({ message: 'wrong data' })
 
       res.cookie('refreshToken', userData.refreshToken, {
         maxAge: 30 * 4 * 60 * 60 * 1000,
@@ -179,7 +179,6 @@ class AuthController {
       })
 
       console.log('auth log: ', userData);
-
       await authService.SaveAuthLogs(userData.user.ID, email, ipAddress, city, countryName, coordinates, currentDate, 'зашел на ', domainName)
 
       await telegram.sendMessageByUserActions(email, ' зашел', domainName)

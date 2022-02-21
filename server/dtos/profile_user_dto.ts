@@ -10,7 +10,6 @@ export default class ProfileUserDto {
   double_deposit
   swap_ban
   internal_ban
-  isBanned
   deposit_fee
 
   constructor(model: any) {
@@ -24,7 +23,6 @@ export default class ProfileUserDto {
     this.double_deposit = model.double_deposit
     this.swap_ban = model.swap_ban
     this.internal_ban = model.internal_ban
-    this.isBanned = model.isBanned
     this.deposit_fee = model.deposit_fee
   }
 }

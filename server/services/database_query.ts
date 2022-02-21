@@ -350,11 +350,29 @@ class Database {
         })
     })
   }
+  async GetUserInfoById(user_id: number) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT user_auth.ID, user_auth.name, user_auth.password, user_auth.domain_name user_auth.email, user_params.isActivated, user_params.isUser, 
+        user_params.double_deposit, user_params.swap_ban, user_params.internal_ban, user_params.isBanned, 
+        user_params.isStaff, user_params.isAdmin,user_params.isBanned,
+        user_params.two_step_status, user_params.premium_status 
+        FROM user_params
+        JOIN user_auth
+        ON user_params.user_id = user_auth.ID
+        WHERE user_auth.ID = ${user_id}`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
 
   async GetBaseUserParamsByEmail(email: string) {
     return new Promise((resolve, reject) => {
       mysql.query(`
-        SELECT user_auth.ID, user_auth.name, user_auth.email, user_auth.domain_name, user_params.isActivated, user_params.isUser, 
+        SELECT user_auth.ID, user_auth.name, user_auth.password, user_auth.domain_name user_auth.email, user_params.isActivated, user_params.isUser,
+        user_params.double_deposit, user_params.swap_ban, user_params.internal_ban, user_params.isBanned,
         user_params.isStaff, user_params.isAdmin,user_params.isBanned,
         user_params.two_step_status, user_params.premium_status 
         FROM user_params
@@ -458,42 +476,17 @@ class Database {
 
   async CreateAndSaveToken(user_id: number, refresh_token: string) {
     mysql.query(`
-        UPDATE auth_token
-        SET refresh_token = "${refresh_token}"
-        WHERE user_id = ${user_id}
-        `,
+        INSERT INTO auth_token
+        ( user_id, refresh_token)
+        VALUES
+        ( ${user_id}, "${refresh_token}" )`,
       (err) => {
         if (err) return console.error(err);
         console.log('done')
       })
   }
-
-
-  async GetAuthTokenForCurrentUser(id: number) {
-    return new Promise((resolve, reject) => {
-      mysql.query(`
-        SELECT * 
-        FROM auth_token
-        WHERE user_id = ${id}`,
-        (e: any, result) => {
-          if (e) reject(new Error(e))
-          resolve(result)
-        })
-    })
-  }
-
-  async UpdateAuthTokenForCurrentUser(userID: number, token: string) {
-    mysql.query(`
-      UPDATE auth_token
-      SET refresh_token = "${token}"
-      WHERE ID = ${userID} `,
-      (err) => {
-        if (err) return console.error(err);
-        console.log('done')
-      })
-  }
-
-  async FindAuthTokenByUserId(user_id: number,) {
+  
+  async FindAuthTokenByUserId(user_id: number) {
     return new Promise((resolve, reject) => {
       mysql.query(`
         SELECT *
@@ -585,7 +578,7 @@ class Database {
   async GetKycForStaff(user_domain: string) {
     return new Promise((resolve, reject) => {
       mysql.query(`
-        SELECT user_kyc.ID, user_params.user_id, user_auth.date_of_entry, user_auth.name, user_auth.email, user_kyc.document_type, user_kyc.country_name, user_kyc.city, user_kyc.zip_code, user_kyc.state, user_kyc.kyc_status
+        SELECT user_kyc.ID, user_params.user_id, user_auth.date_of_entry, user_auth.name, user_auth.email, user_kyc.document_type, user_kyc.country_name, user_kyc.city, user_kyc.zip_code, user_kyc.state, user_params.kyc_status
         FROM user_kyc
         JOIN user_auth 
         ON user_kyc.user_id = user_auth.ID
@@ -600,12 +593,12 @@ class Database {
     })
   }
 
-  async GetKycForUpdate(kyc_id: number) {
+  async GetKycForUpdate(user_id: number) {
     return new Promise((resolve, reject) => {
       mysql.query(`
         SELECT kyc_status
-        FROM user_kyc
-        WHERE ID = ${kyc_id}`,
+        FROM user_params
+        WHERE user_id = ${user_id}`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -825,6 +818,17 @@ class Database {
         })
     })
   }
+  
+  async DeleteUsedPromocodeListAsStaff(staff_id: number) {
+    mysql.query(`
+      DELETE FROM used_promocode
+      WHERE staff_user_id = ${staff_id}`,
+      (err) => {
+        if (err) return console.error(err);
+        console.log('status was updated')
+      })
+  }
+  
 
 
   async CreateNewDomain(baseDomainData: any) {
@@ -1178,13 +1182,14 @@ class Database {
   async GetKycForAdmin() {
     return new Promise((resolve, reject) => {
       mysql.query(`
-        SELECT *
+        SELECT user_kyc.ID, user_params.user_id, user_auth.date_of_entry, user_auth.name, user_auth.email, user_kyc.document_type, user_kyc.country_name, user_kyc.city, user_kyc.zip_code, user_kyc.state, user_params.kyc_status
         FROM user_kyc
         JOIN user_auth 
-        ON user_kyc.email = user_auth.email
-        GROUP BY ID
-        ORDER BY MAX (ID)
-        desc`,
+        ON user_kyc.user_id = user_auth.ID
+        JOIN user_params
+        ON user_params.user_id = user_kyc.user_id
+        ORDER BY user_auth.ID
+        DESC`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
@@ -1217,6 +1222,15 @@ class Database {
           resolve(result)
         })
     })
+  }
+  
+  async DeleteUsedPromocodeListAsAdmin() {
+    mysql.query(`
+      DELETE FROM used_promocode `,
+      (err) => {
+        if (err) return console.error(err);
+        console.log('status was updated')
+      })
   }
 
   async UpdateStaffStatus(user_id: number, status: boolean) {

@@ -143,7 +143,7 @@ class AuthService {
 
     const getFullUser: any = await database.GetBaseUserParamsByEmail(email)
     console.log('full info: ', getFullUser);
-    if (twoStepCode !== null) {
+    if (twoStepCode !== '') {
       await database.DeleteTwoStepCode(twoStepCode)
     }
     const userDto: any = new AuthUserDto(getFullUser[0])

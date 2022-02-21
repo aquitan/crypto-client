@@ -38,13 +38,10 @@ class TokenService {
     }
   }
 
-  async saveToken(user_id: any, refreshToken: any) {
+  async saveToken(user_id: number, refreshToken: string) {
     const tokenData: any = await database.FindAuthTokenByUserId(user_id)
     let token: any
-    if (tokenData) {
-      // return tokenData
-      token = await database.CreateAndSaveToken(user_id, refreshToken)
-    }
+    if (tokenData[0]) token = await database.CreateAndSaveToken(user_id, refreshToken)
     return token
   }
 

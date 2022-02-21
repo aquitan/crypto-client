@@ -1,4 +1,3 @@
-import { response } from 'express'
 import database from "../services/database_query"
 
 class adminService {
@@ -11,40 +10,40 @@ class adminService {
     if (!usersList[0]) return false
     return usersList
   }
-
-  async GetUserDetail(user_id: number) {
-
-    const userBaseData: any = database.GetUserById(user_id)
-    console.log('userBaseData info is: ', userBaseData)
-
-    const userKycData: any = database.GetUserKycByUserId(user_id)
-    console.log('userKycData info is: ', userKycData)
-
-    const userLogsData: any = database.GetLogsByUserId(user_id)
-    console.log('userLogsData info is: ', userLogsData)
-
-    if (!userKycData[0]) {
-      const UserData: any = {
-        base_data: userBaseData[0],
-        user_kyc: false,
-        user_logs: userLogsData
-      }
-      console.log('data from service: ', UserData);
-      return UserData
-    }
-
-    const UserData: any = {
-      base_data: userBaseData[0],
-      user_kyc: userKycData[0],
-      user_logs: userLogsData
-    }
-
-    // get user balances + last deposit date 
-    // get user owner name + get recruiter  
-
-    console.log('data from service: ', UserData);
-    return UserData
-  }
+  //
+  // async GetUserDetail(user_id: number) {
+  //
+  //   const userBaseData: any = database.GetUserInfoById(user_id)
+  //   console.log('userBaseData info is: ', userBaseData)
+  //
+  //   const userKycData: any = database.GetUserKycByUserId(user_id)
+  //   console.log('userKycData info is: ', userKycData)
+  //
+  //   const userLogsData: any = database.GetLogsByUserId(user_id)
+  //   console.log('userLogsData info is: ', userLogsData)
+  //
+  //   if (!userKycData[0]) {
+  //     const UserData: any = {
+  //       base_data: userBaseData[0],
+  //       user_kyc: false,
+  //       user_logs: userLogsData
+  //     }
+  //     console.log('data from service: ', UserData);
+  //     return UserData
+  //   }
+  //
+  //   const UserData: any = {
+  //     base_data: userBaseData[0],
+  //     user_kyc: userKycData[0],
+  //     user_logs: userLogsData
+  //   }
+  //
+  //   // get user balances + last deposit date
+  //   // get user owner name + get recruiter
+  //
+  //   console.log('data from service: ', UserData);
+  //   return UserData
+  // }
 
   async UpdateStaffStatus(staff_email: string, currentDate: string, user_id: number, status: boolean) {
     const user: any = await database.GetBaseUserParamsById(user_id)
@@ -79,11 +78,18 @@ class adminService {
     if (!promocodeList[0]) return false
     return promocodeList
   }
+  
+  async DeleteUsedPromocodesAsAdmin() {
+    await database.DeleteUsedPromocodeListAsAdmin()
+    const codeList: any = await database.GetUsedPromocodeListForAdmin()
+    if (codeList[0]) return false
+    return true
+  }
 
 
   async GetDomainListForAdmin() {
     const list: any = await database.GetDomainListForAdmin()
-    console.log('recieved list is: ', list);
+    console.log('received list is: ', list);
 
     if (!list) return false
     return list

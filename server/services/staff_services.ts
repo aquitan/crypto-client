@@ -14,7 +14,7 @@ class staffService {
   }
 
   async GetUserDetail(user_id: number) {
-    const userBaseData: any = await database.GetBaseUserParamsById(user_id)
+    const userBaseData: any = await database.GetUserInfoById(user_id)
     console.log('userBaseData info is: ', userBaseData)
 
     const userActionData: any = await database.GetUserActionsByUserId(user_id)
@@ -61,20 +61,19 @@ class staffService {
   }
 
   async GetKycForStaff(userDomain: string) {
-
     const kycList: any = await database.GetKycForStaff(userDomain)
     console.log('list is: ', kycList);
     if (!kycList[0]) return false
     return kycList
   }
 
-  async changeKycStatusAsStaff(status: string, kyc_id: number) {
+  async changeKycStatusAsStaff(status: string, user_id: number) {
 
-    const old_status: any = await database.GetKycForUpdate(kyc_id)
+    const old_status: any = await database.GetKycForUpdate(user_id)
     console.log('old kyc status: ', old_status);
 
     if (old_status[0] !== status) {
-      await database.ChangeKycStatus(status, kyc_id)
+      await database.ChangeKycStatus(status, user_id)
       return true
     }
 
@@ -82,13 +81,14 @@ class staffService {
     return false
   }
 
-  async DeleteKyc(kyc_id: number) {
+  async DeleteKyc(kyc_id: number, user_id: number) {
     const user_kyc: any = await database.GetKycBeforeDelete(kyc_id)
     console.log('current kyc is: ', user_kyc[0]);
 
     if (!user_kyc[0]) return false
 
     await database.DeleteKyc(kyc_id)
+    await database.ChangeKycStatus('empty', user_id)
     return true
   }
 
@@ -199,13 +199,13 @@ class staffService {
 
   async CreateNewDomain(data_object: any) {
 
-    console.log('recieved object: ', data_object);
+    console.log('received object: ', data_object);
 
 
     const domains: any = await database.GetDomainListForStaff(data_object.staffEmail)
-    console.log('recieved domains list is: ', domains);
+    console.log('received domains list is: ', domains);
 
-    console.log(`staff ${data_object.staffEmail} domains list: `);
+    console.log(`staff ${data_object.staffEmail} domains list: `)
     for (let i = 0; i <= domains.length - 1; i++) {
       console.log(domains[i].fullDomainName);
 
@@ -270,15 +270,15 @@ class staffService {
   }
 
   async GetDomainDetail(domain_id: number) {
-    const recieved_domain: any = await database.GetDomainDetailByDomainId(domain_id)
-    console.log('domain is: ', recieved_domain);
-    if (!recieved_domain[0]) return false
-    return recieved_domain[0]
+    const received_domain: any = await database.GetDomainDetailByDomainId(domain_id)
+    console.log('domain is: ', received_domain);
+    if (!received_domain[0]) return false
+    return received_domain[0]
   }
 
   async EditDomainInfo(data_object: any) {
 
-    console.log('recieved object: ', data_object);
+    console.log('received object: ', data_object);
     const baseDomainData: any = {
       fullDomainName: data_object.fullDomainName,
       domainName: data_object.domainName,
@@ -293,9 +293,9 @@ class staffService {
 
     if (data_object.staffEmail !== 'root') {
       const domains: any = await database.GetDomainListForStaff(data_object.staffEmail)
-      console.log('recieved domains list is: ', domains);
+      console.log('received domains list is: ', domains);
 
-      console.log(`staff ${data_object.staffEmail} domains list: `);
+      console.log(`staff ${data_object.staffEmail} domains list: `, domains);
       for (let i = 0; i <= domains.length - 1; i++) {
         console.log(domains[i].fullDomainName);
 
@@ -437,7 +437,7 @@ class staffService {
   async RemovePromocode(code: string) {
     await database.DeletePromocodeFromUserPromocode(code)
     const getCode: any = await database.GetPromocodeToDelete(code)
-    console.log('recieved code is: ', getCode);
+    console.log('received code is: ', getCode);
     if (getCode[0]) return false
     return true
 
@@ -449,7 +449,15 @@ class staffService {
     if (!codeList[0]) return false
     return codeList
   }
-
+  
+  
+  async DeleteUsedPromocodesAsStaff(staff_id: number) {
+    await database.DeleteUsedPromocodeListAsStaff(staff_id)
+    const codeList: any = await database.GetUsedPromocodeListForStaff(staff_id)
+    if (codeList[0]) return false
+    return true
+  }
+  
   async saveStaffLogs(staff_email: string, staff_action: string, staff_domain: string, staff_id: number) {
     await database.SaveStaffLogs(staff_email, staff_action, staff_domain, staff_id)
     console.log('staff logs was saved');

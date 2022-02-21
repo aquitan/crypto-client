@@ -1,6 +1,4 @@
 import * as express from 'express'
-import { validationResult } from 'express-validator'
-import ApiError from '../exeptions/api_error'
 import staffService from '../services/staff_services'
 import adminService from '../services/admin_services'
 import telegram from '../api/telegram_api'
@@ -29,7 +27,7 @@ class StaffController {
     try {
 
       const adminPermission: boolean = req.body.isAdmin
-      const staffPremission: boolean = req.body.isStaff
+      const staffPermission: boolean = req.body.isStaff
       const userDomain: string = req.body.domainName
       console.log('req body is: ', req.body)
 
@@ -42,7 +40,7 @@ class StaffController {
           })
         }
       }
-      if (staffPremission === true) {
+      if (staffPermission === true) {
         const usersList: any = await staffService.GetUsersList(userDomain)
         if (usersList !== false) {
           return res.status(200).json({
@@ -111,9 +109,8 @@ class StaffController {
 
   async kycList(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-
       const adminPermission: boolean = req.body.isAdmin
-      const staffPremisstion: boolean = req.body.isStaff
+      const staffPermission: boolean = req.body.isStaff
       const domainName: string = req.body.domainName
       console.log('req body is: ', req.body)
 
@@ -126,7 +123,7 @@ class StaffController {
           })
         }
       }
-      if (staffPremisstion === true) {
+      if (staffPermission === true) {
         const usersKycList: any = await staffService.GetKycForStaff(domainName)
         if (usersKycList !== false) {
           return res.status(200).json({
@@ -149,13 +146,13 @@ class StaffController {
   async changeKycStatus(req: express.Request, res: express.Response, next: express.NextFunction) {
 
     try {
-      const { status, staffId, staffEmail, userEmail, kycId, domainName } = req.body
+      const { status, staffId, staffEmail, userEmail, userId, domainName } = req.body
       console.log('req body: ', req.body);
 
       const rootAccess: boolean = req.body.rootAccess
 
       if (rootAccess === true) {
-        const result: boolean = await staffService.changeKycStatusAsStaff(status, kycId)
+        const result: boolean = await staffService.changeKycStatusAsStaff(status, userId)
         console.log('operation result is: ', result);
         if (result === false) {
           return res.status(400).json({
@@ -168,7 +165,7 @@ class StaffController {
           status: 'complete'
         })
       }
-      const result: boolean = await staffService.changeKycStatusAsStaff(status, kycId)
+      const result: boolean = await staffService.changeKycStatusAsStaff(status, userId)
       console.log('operation result is: ', result);
       if (result === false) {
         return res.status(400).json({
@@ -190,35 +187,23 @@ class StaffController {
 
   async deleteKyc(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      const { kycId, staffId, staffEmail, userEmail, domainName } = req.body
+      const { kycId, staffId, staffEmail, userId, userEmail, domainName } = req.body
       console.log('req body: ', req.body);
       const rootAccess: boolean = req.body.rootAccess
 
       if (rootAccess === true) {
-        const result: boolean = await staffService.DeleteKyc(kycId)
+        const result: boolean = await staffService.DeleteKyc(kycId, userId)
         console.log('operation result is: ', result);
 
-        if (result === false) {
-          return res.status(400).json({
-            message: 'error',
-            status: 'rejected'
-          })
-        }
-        return res.status(202).json({
-          message: 'kyc was delete',
-          status: 'complete'
-        })
+        if (result === false) return res.status(400).json({message: 'rejected'})
+
+        return res.status(202).json({message: 'kyc was delete'})
       }
 
-      const result: boolean = await staffService.DeleteKyc(kycId)
+      const result: boolean = await staffService.DeleteKyc(kycId, userId)
       console.log('operation result is: ', result);
 
-      if (result === false) {
-        return res.status(400).json({
-          message: 'error',
-          status: 'rejected'
-        })
-      }
+      if (result === false) return res.status(400).json({ message: 'rejected'})
 
       await telegram.sendMessageByStaffActions(staffEmail, ` удалил KYC юзера ${userEmail} на `, domainName)
       await staffService.saveStaffLogs(staffEmail, ` удалил KYC юзера ${userEmail} `, domainName, staffId)
@@ -228,7 +213,7 @@ class StaffController {
         status: 'complete'
       })
     } catch (e) {
-
+      next(e)
     }
   }
   async updateDepositFee(req: express.Request, res: express.Response, next: express.NextFunction) {
@@ -1059,16 +1044,10 @@ class StaffController {
         object_to_send.staffEmail = 'root'
       }
 
-      const result: string | boolean = await staffService.CreateNewDomain(object_to_send)
+      const result: boolean = await staffService.EditDomainInfo(object_to_send)
 
-      if (result === false) return res.status(400).json({
-        message: 'wrong data. please try one more time.',
-        status: 'rejected'
-      })
-      if (result === 'error') return res.status(500).json({
-        message: 'internal server error.',
-        status: 'rejected'
-      })
+      if (result === false) return res.status(400).json({message: 'wrong data'})
+
       const baseTermsText: any = await staffService.GetBaseTerms()
       if (baseTermsText === false) return res.status(400).json({ message: 'some terms error', status: 'rejected' })
       await staffService.addTerms(object_to_send.fullDomainName, baseTermsText)
@@ -1082,10 +1061,7 @@ class StaffController {
         })
       }
 
-      return res.status(201).json({
-        message: 'domain was created with all settings.',
-        status: 'complete'
-      })
+      return res.status(201).json({message: 'domain was created.'})
     } catch (e) {
       next(e)
     }
@@ -1234,7 +1210,7 @@ class StaffController {
   async staffList(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
 
-      // get all users who has staff permissions 
+      // get all users who have staff permissions
     } catch (e) {
       next(e)
     }
@@ -1243,7 +1219,7 @@ class StaffController {
   async statistics(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
 
-      // get staff users statictics (dep, withdrw, total staff users, staff domains, total 30d, chats)
+      // get staff users statistics (dep, withdraw, total staff users, staff domains, total 30d, chats)
     } catch (e) {
       next(e)
     }
@@ -1267,7 +1243,7 @@ class StaffController {
 
   async addStaffWallets(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      // post staff wirhdraw wallets and save
+      // post staff withdraw wallets and save
     } catch (e) {
       next(e)
     }
@@ -1362,11 +1338,11 @@ class StaffController {
       console.log('req body is: ', req.body)
 
       const adminPermission: boolean = req.body.isAdmin
-      const staffPremisstion: boolean = req.body.isStaff
+      const staffPermission: boolean = req.body.isStaff
       // const domainName: string = req.body.domainName
       const staff_id: number = req.body.id
 
-      if (adminPermission === true) {
+      if (adminPermission) {
         const codesList: any = await adminService.GetUsedPromocodeListForAdmin()
         if (codesList !== false) {
           return res.status(200).json({
@@ -1375,7 +1351,7 @@ class StaffController {
           })
         }
       }
-      if (staffPremisstion === true) {
+      if (staffPermission && !adminPermission) {
         const codesList: any = await staffService.GetUsedPromocodeList(staff_id)
         if (codesList !== false) {
           return res.status(200).json({
@@ -1389,6 +1365,31 @@ class StaffController {
         status: 'rejected'
       })
     } catch (e) {
+      next(e)
+    }
+  }
+  
+  async deleteUsedPromocodes (req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const adminPermission: boolean = req.body.isAdmin
+      const staffPermission: boolean = req.body.isStaff
+      const staff_id: number = req.body.id
+      
+      if (adminPermission) {
+        const result: boolean = await adminService.DeleteUsedPromocodesAsAdmin()
+        if(!result) return res.status(500).json({message: 'internal server error.'})
+  
+        res.status(200).json({message: 'OK'})
+      }
+      if (staffPermission && !adminPermission) {
+        const result: boolean = await staffService.DeleteUsedPromocodesAsStaff(staff_id)
+        if(!result) return res.status(500).json({message: 'internal server error.'})
+        res.status(200).json({message: 'OK'})
+      }
+      
+      return res.status(403).json({ message: 'permission denied' })
+    }
+    catch (e) {
       next(e)
     }
   }

@@ -17,9 +17,9 @@ router.put('/registration/',
     max: 32
   }),
   authController.registration)
-router.post('/promocode_validate/', authController.getVerifiedPromocode) // verify code befoge signup
+router.post('/promocode_validate/', authController.getVerifiedPromocode) // verify code before signup
 router.post('/check_two_step/', authController.checkTwoStep) // check user 2factor status => if true => send code & wait request to next endpoint 
-router.post('/get_verified_two_step_code/', authController.getVerifiedTwoStepCode) // validate promocode at singup
+router.post('/get_verified_two_step_code/', authController.getVerifiedTwoStepCode) // validate promocode at sign up
 router.post('/login/', authController.login)
 router.post('/logout/', authController.logout)
 router.post('/activate/', authController.activate) // activate user by link in email
@@ -48,9 +48,8 @@ router.post('/personal_area/verification/', authChecker, userController.personal
 router.get('/staff/:id/', staffController.staffDashboard)
 router.post('/staff/users/', staffController.usersList) // get all users (if staff => when staff is domain owner) (if admin & other => all users )
 router.get('/staff/users/user_detail/:id/', staffController.userDetail) // selected user detail info
-router.post('/staff/users/kyc/', staffController.kycList) // get kyc list (if staff => when staff is domain owner) (if admin & other => all kyc )
 router.patch('/staff/users/user_detail/update_user_deposit_fee/', staffController.updateDepositFee) // update deposit fee for user by staff
-router.patch('/staff/users/user_detail/update_premium_status/', staffController.updatePremiumStatus) // update primium status for user
+router.patch('/staff/users/user_detail/update_premium_status/', staffController.updatePremiumStatus) // update premium status for user
 router.patch('/staff/users/user_detail/update_swap_ban_status/', staffController.updateSwapBan) // update swap ban for user
 router.patch('/staff/users/user_detail/update_internal_ban_status/', staffController.updateInternalBan) // update internal swap ban for user
 router.patch('/staff/users/user_detail/update_full_ban_status/', staffController.updateFullBan) // update full ban for user
@@ -59,14 +58,16 @@ router.patch('/staff/users/user_detail/clear_match_ip_list/', staffController.cl
 router.patch('/staff/users/user_detail/update_staff_status/', staffController.updateStaffStatus) // get staff permission to regular user 
 router.patch('/staff/users/user_detail/update_staff_support_name/', staffController.updateStaffSupportName) // change name for staff in support chat
 
+router.post('/staff/users/kyc/', staffController.kycList) // get kyc list (if staff => when staff is domain owner) (if admin & other => all kyc )
 router.patch('/staff/kyc/update_kyc_status/', staffController.changeKycStatus) // change kyc status for user (in user verification page)
 router.delete('/staff/kyc/delete_kyc/', staffController.deleteKyc) // delete full kyc data for current user
+
 router.post('/staff/create_user/', staffController.createNewUser) // create user as staff in staff panel
 router.put('/staff/create_promocode/', staffController.promocodeCreate) // create promocode (one or several codes)
 router.post('/staff/get_promocode_list/', staffController.getPromocodeListForStaff) // get active (not used) promocodes by staff domain (if admin => get all promocode list from all domains)
 router.post('/staff/get_used_promocode_list/', staffController.getUsedPromocodeListForStaff) // get used promocodes by staff domain (if admin => get all promocode list from all domains)
 router.delete('/staff/delete_promocode/', staffController.removePromocode) // delete one promocode 
-// router.delete('/staff/delete_all_used_promocode/', staffController.deleteUsedPromocodes) // delete all promocodes
+router.delete('/staff/delete_all_used_promocode/', staffController.deleteUsedPromocodes) // delete all promocodes
 
 router.post('/staff/ip_match_checker/', staffController.getIpForMatch) // check user ip for match
 
