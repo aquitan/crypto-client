@@ -28,7 +28,7 @@ async function Connection() {
   // connect to mongo
   // await mongo
   // connect to mysql
-  mysql
+  await mysql
   console.log('process..')
 }
 

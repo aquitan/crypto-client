@@ -81,7 +81,7 @@ class AuthController {
 
       if (transfer_object.promocode !== 'empty') {
         const result: boolean = await authService.rebasePromocodeToUsed(transfer_object.promocode, transfer_object.email)
-        if (result === true) {
+        if (result) {
           const userData = await authService.registration(transfer_object)
           res.cookie('refreshToken', userData.refreshToken, {
             maxAge: 30 * 4 * 60 * 60 * 1000,
@@ -109,9 +109,9 @@ class AuthController {
     try {
       const code: string = req.body.code
       const result: any = await authService.GetVerifiedPromocode(code)
-      if (result === false) return res.status(400).json({ verivication: false })
+      if (result === false) return res.status(400).json({ verification: false })
 
-      return res.status(202).json({ verivication: true })
+      return res.status(202).json({ verification: true })
     } catch (e) {
       next(e)
     }

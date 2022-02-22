@@ -3,6 +3,19 @@ import ProfileUserDto from '../dtos/profile_user_dto'
 import DashboardUserDto from '../dtos/dashboard_user_dto'
 import mailService from '../services/mail_services'
 import telegram from '../api/telegram_api'
+import qrCode from 'qrcode'
+import speakeasy from 'speakeasy'
+
+async function generateCodeForGoogle2fa(domain_name: string) {
+  const secretCode = speakeasy.generateSecret({
+    name: domain_name,
+  })
+  return {
+    otpauthUrl: secretCode.otpauth_url,
+    base32: secretCode.base32,
+  }
+}
+
 
 class UserServices {
 
@@ -76,7 +89,7 @@ class UserServices {
 
   async UsePromocodeInProfile(code: string) {
     const usedPromocode: any = await database.GetPromocodeToDelete(code)
-    console.log('recieved code is: ', usedPromocode[0]);
+    console.log('received code is: ', usedPromocode[0]);
     if (!usedPromocode[0]) return false
     return true
   }
@@ -84,12 +97,9 @@ class UserServices {
 
   async changeNameInProfile(user_id: number, userName: string) {
     const user: any = await database.GetBaseUserParamsById(user_id)
-    console.log('recieved user is: ', user);
-
-    if (!user[0]) {
-      console.log('can`t find any user');
-      return false
-    }
+    console.log('received user is: ', user);
+    if (!user[0]) return false
+    
     await database.ChangeUserName(user_id, userName)
     return true
   }
@@ -111,22 +121,30 @@ class UserServices {
   }
 
   async enableTwoStepVerification(transferObject: any) {
-
+    
+    if (transferObject.twoFaType !== 'email' && transferObject.twoFaType !== 'telegram' && transferObject.twoFaType !== 'google') return false
     if (transferObject.twoFaType === 'email') {
+      
       await mailService.sendActivationMail(transferObject.userEmail, `${transferObject.domainName}`, `${transferObject.code}`)
+      await database.SaveTwoStepCode(transferObject.currentTime, transferObject.code, transferObject.userEmail)
       return true
     }
 
     if (transferObject.twoFaType === 'telegram') {
-      await telegram.send2faMessage(transferObject.userEmail, `${transferObject.domainName}`, `${transferObject.code}`)
+      await telegram.send2faMessage(`${transferObject.domainName}`, `${transferObject.code}`)
+      await database.SaveTwoStepCode(transferObject.currentTime, transferObject.code, transferObject.userEmail)
       return true
     }
 
     if (transferObject.twoFaType === 'google') {
-      // google auth logic here
-      return true
+      await generateCodeForGoogle2fa(transferObject.domainName)
+      
+      // await qrCode.toFileStream()
+      
+      
+      // await telegram.send2faMessage(transferObject.userEmail, `${transferObject.domainName}`, `${transferObject.code}`)
+      // return true
     }
-    return false
   }
 
   async enableTwoStepVerificationStatus(transferObject: any) {
@@ -137,10 +155,19 @@ class UserServices {
     await database.SaveTwoStepParams(transferObject.userId, transferObject.twoFaType, transferObject.enableDate)
     await database.EnableTwoStepVerificationStatus(transferObject.userId)
     const updatedStatus: any = await database.GetBaseUserParamsById(transferObject.userId)
-    console.log('recieved user params is: ', updatedStatus);
+    console.log('received user params is: ', updatedStatus);
     if (updatedStatus[0].two_step_status === 0) return false
     return true
 
+  }
+  
+  async deleteExpiredCode(code: string) {
+    let codeToDelete: any = await database.GetTwoStepCode(code)
+    console.log('found code is: ', codeToDelete[0]);
+    if (!codeToDelete[0]) return false
+    
+    await database.DeleteTwoStepCode(code)
+    return true
   }
 
   async disableUserTwoStep(user_id: number) {

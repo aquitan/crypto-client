@@ -7,17 +7,34 @@ class StaffController {
 
   async staffDashboard(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      // get main info 
-
-      const user_id: any = req.params.id
-      console.log('params is: ', req.params.id);
-      const current_id: number = parseInt(user_id)
-      console.log('int id is: ', current_id);
-
-      return res.status(200).json({
-        message: 'data will be here',
-        status: 'complete'
-      })
+      const user_id: any = req.body.userId
+      const adminPermission: boolean = req.body.isAdmin
+      const staffPermission: boolean = req.body.isStaff
+      
+      console.log('req body: ', req.body);
+  
+      const rootAccess: boolean = req.body.rootAccess
+  
+      if (rootAccess) {
+        const result: boolean = await adminService.DashboardInfo()
+        console.log('result is: ', result);
+        if (!result) return res.status(400).json({message: 'rejected'})
+        return res.status(200).json({message: 'OK'})
+      }
+      if (adminPermission) {
+        const result: boolean = await adminService.DashboardInfo()
+        console.log('result is: ', result);
+        if (!result) return res.status(400).json({message: 'wrong data\''})
+        return res.status(202).json({message: 'OK'})
+      }
+      if (staffPermission) {
+        const result: any = await staffService.staffDashboardInfo(user_id)
+        console.log('result is: ', result);
+        if(!result) return res.status(400).json({message: 'wrong data'})
+        return res.status(200).json({message: 'OK', data: result})
+      }
+      return res.status(500).json({message: 'internal server error'})
+      
     } catch (e) {
       next(e)
     }
@@ -1183,7 +1200,7 @@ class StaffController {
 
       if (isStaff === true) {
         const result: any = await staffService.GetNewsList(staffId)
-        if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+        if (!result) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
         return res.status(200).json({
           message: 'news was found',
           status: 'complete',

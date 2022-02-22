@@ -1,10 +1,63 @@
 import database from "../services/database_query"
 import codeGenerator from '../api/password_generator'
-import fs from 'fs'
+// import fs from 'fs'
 
 
 class staffService {
+  
+  
+  async staffDashboardInfo(staff_id: number) {
+    interface INFO {
+      telegrams:{
+        logsBot: string
+        twoStepBot: string
+        newsTgChanel: string
+      }
+      baseInfo: {
+        totalUsers: number
+        unreadMessages: number
+        depositAmount: number
+        onlineUsers: number
+      }
+    }
+   
+    const staff_email: any = await database.GetUserById(staff_id)
+    console.log ('received staff email is: ', staff_email)
+    const usersList: any = await database.GetUsersCounterForStaff(staff_email[0].email)
+    const userOnline: any = await database.GetOnlineUsersForStaff(staff_email[0].email)
+    
+    console.log('user list: ', usersList.length);
+    console.log('user online list: ', userOnline.length);
+    
+    if (!usersList[0]) return false
+    
+    const logsBotName: any = process.env.TELEGRAM_USER_LOGS_BOT
+    const twoStepBotName: any = process.env.TELEGRAM_2FA_CODE_SENDER
+    const newsTgChanelName: any = process.env.TELEGRAM_PROJECT_NEWS_BOT
 
+    
+    let dataLIst: INFO = {
+      telegrams:{
+        logsBot: logsBotName,
+        twoStepBot: twoStepBotName,
+        newsTgChanel: newsTgChanelName,
+      },
+      baseInfo: {
+        totalUsers: usersList.length,
+        unreadMessages: 31,
+        depositAmount: 13,
+        onlineUsers: userOnline.length
+      }
+    }
+    
+    if(!userOnline.length) dataLIst.onlineUsers = 0
+    
+    console.log ('received data list is: ',dataLIst)
+    return usersList
+  }
+  
+  
+  
   async GetUsersList(domainName: string) {
 
     const usersList: any = await database.GetAllUsersForStaff(domainName)

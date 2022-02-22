@@ -4,47 +4,56 @@ class adminService {
 
 
   async GetUsersList() {
-
     const usersList: any = await database.GetAllUsersForAdmin()
     console.log("list is: ", usersList)
     if (!usersList[0]) return false
     return usersList
   }
-  //
-  // async GetUserDetail(user_id: number) {
-  //
-  //   const userBaseData: any = database.GetUserInfoById(user_id)
-  //   console.log('userBaseData info is: ', userBaseData)
-  //
-  //   const userKycData: any = database.GetUserKycByUserId(user_id)
-  //   console.log('userKycData info is: ', userKycData)
-  //
-  //   const userLogsData: any = database.GetLogsByUserId(user_id)
-  //   console.log('userLogsData info is: ', userLogsData)
-  //
-  //   if (!userKycData[0]) {
-  //     const UserData: any = {
-  //       base_data: userBaseData[0],
-  //       user_kyc: false,
-  //       user_logs: userLogsData
-  //     }
-  //     console.log('data from service: ', UserData);
-  //     return UserData
-  //   }
-  //
-  //   const UserData: any = {
-  //     base_data: userBaseData[0],
-  //     user_kyc: userKycData[0],
-  //     user_logs: userLogsData
-  //   }
-  //
-  //   // get user balances + last deposit date
-  //   // get user owner name + get recruiter
-  //
-  //   console.log('data from service: ', UserData);
-  //   return UserData
-  // }
-
+  async DashboardInfo() {
+    interface INFO {
+      telegrams:{
+        logsBot: string
+        twoStepBot: string
+        newsTgChanel: string
+      }
+      baseInfo: {
+        totalUsers: number
+        unreadMessages: number
+        depositAmount: number
+        onlineUsers: number
+      }
+    }
+    
+    const usersList: any = await database.GetAllUsersForAdmin()
+    const userOnline: any = await database.GetOnlineUsersForAdmin()
+    
+    console.log('user list: ', usersList.length);
+    console.log('user online list: ', userOnline.length);
+    
+    if (!usersList[0]) return false
+    
+    const logsBotName: any = process.env.TELEGRAM_USER_LOGS_BOT
+    const twoStepBotName: any = process.env.TELEGRAM_2FA_CODE_SENDER
+    const newsTgChanelName: any = process.env.TELEGRAM_PROJECT_NEWS_BOT
+    
+    let dataLIst: INFO = {
+      telegrams:{
+        logsBot: logsBotName,
+        twoStepBot: twoStepBotName,
+        newsTgChanel: newsTgChanelName,
+      },
+      baseInfo: {
+        totalUsers: usersList.length,
+        unreadMessages: 31,
+        depositAmount: 13,
+        onlineUsers: userOnline.length
+      }
+    }
+    if(!userOnline.length) dataLIst.onlineUsers = 0
+    console.log ('received data list is: ',dataLIst)
+    return usersList
+  }
+  
   async UpdateStaffStatus(staff_email: string, currentDate: string, user_id: number, status: boolean) {
     const user: any = await database.GetBaseUserParamsById(user_id)
     console.log('found user: ', user[0])

@@ -1,11 +1,11 @@
 import SendActionMessage from '../config/telegram_action_message'
-import SendMessageTwoStepVerification from '../config/telegram_two_step_verification'
+import SendTwoStepCode from '../config/telegram_two_step_verification'
 
 class Telegram {
 
   async sendMessageByUserActions(userEmail: string, page_or_action: string, domain_name: string) {
     // user actions bot 
-
+    if(!userEmail && !domain_name && !page_or_action) return console.log('wrong request data')
     const userRequest: string = `Пользователь ` + `${userEmail}` + `${page_or_action}` + ' на ' + `${domain_name}`
     console.log(userRequest)
     await SendActionMessage(userRequest)
@@ -13,18 +13,23 @@ class Telegram {
 
   async sendMessageByStaffActions(userEmail: string, action: string, domain_name: string) {
     // user actions bot 
-
+    if(!userEmail && !domain_name && !action) return console.log('wrong request data')
     const userRequest: string = `Стафф ` + `${userEmail}` + `${action}` + ' на ' + `${domain_name}`
     console.log(userRequest)
     await SendActionMessage(userRequest)
   }
-
-  async send2faMessage(userEmail: string, domain_name: string, code: string) {
-
-
-    // 
-
-    // await SendMessageTwoStepVerification("To turn on two step verification on ", domain_name, " copy this code to ")
+  // async enable2fa( domain_name: string, code: string) {
+  //   // 2fa code sender & get chat ID command
+  //   if(!domain_name && !code) return console.log('wrong request data')
+  //   console.log('send => ',domain_name, code)
+  //   await SendMessageTwoStepVerification(domain_name, code)
+  // }
+  
+  async send2faMessage( domain_name: string, code: string) {
+    // 2fa code sender & get chat ID command
+    if(!domain_name && !code) return console.log('wrong request data')
+    console.log('send => ',domain_name, code)
+    await SendTwoStepCode(domain_name, code)
   }
 
   async getMessageFromSupportChat() {
@@ -40,14 +45,15 @@ class Telegram {
   }
 
   async sendMessageToSecureDealChatAsGuarantor() {
-    // secure deal guarant message
+    // secure deal guarantor message
   }
 
   async sendMessageToSecureDealChatAsStaff() {
-    // secure deal guarant message
+    // secure deal guarantor message
   }
 
   async sendMessageFromContactUs(email: string, text: string, phone: number) {
+    if(!email && !text && !phone) return console.log('wrong request data')
     // const userRequest: string = `Request to contact from user : ` + '\n' + `${email}` + `\n` + `${phone}` + `\n` + `${text}`
     const userRequest: string = `Новый запрос в contact us от пользователя ` + '\n' + `${email}` + `\n` + `${phone}` + `\n` + `${text}`
     console.log(userRequest)
@@ -55,6 +61,8 @@ class Telegram {
   }
 
   async sendProjectSupportMessage(staffEmail: string, title: string, message: string) {
+    if ( !staffEmail && !title && !message ) return console.log( 'wrong request data' )
+    
     const userRequest: string = `Стафф  ` + `${staffEmail}` + ' оставил сообщение: ' + '\n' + `${title}` + `\n` + `${message}`
     console.log(userRequest)
     await SendActionMessage(userRequest)

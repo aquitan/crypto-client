@@ -19,7 +19,7 @@ router.put('/registration/',
   authController.registration)
 router.post('/promocode_validate/', authController.getVerifiedPromocode) // verify code before signup
 router.post('/check_two_step/', authController.checkTwoStep) // check user 2factor status => if true => send code & wait request to next endpoint 
-router.post('/get_verified_two_step_code/', authController.getVerifiedTwoStepCode) // validate promocode at sign up
+router.post('/get_verified_two_step_code/', authController.getVerifiedTwoStepCode) // validate promo code at sign up
 router.post('/login/', authController.login)
 router.post('/logout/', authController.logout)
 router.post('/activate/', authController.activate) // activate user by link in email
@@ -30,13 +30,20 @@ router.patch('/forgot_password/', authController.forgotPassword)
 router.post('/dashboard/', authChecker, userController.dashboard) // get base user data for dashboard (total balance, currencies, etc)
 router.post('/personal_area/profile/', userController.personalAreaProfile) // get base user profile data
 router.patch('/personal_area/profile/edit/', authChecker, userController.personalAreaProfileEdit) // edit display name in user profile
-router.post('/use_promocode_in_profile/', authChecker, userController.usePromocodeInProfile) // use promocode in user area, if promo don't use at signup
+router.post('/use_promocode_in_profile/', authChecker, userController.usePromocodeInProfile) // use promo code in user area, if promo don't use at signup
 router.patch('/personal_area/security/', authChecker, userController.twoStepVerificationEnable) // change 2fa type & send code 
 router.patch('/personal_area/security/change_password/', authChecker, userController.personalAreaSecurityChangePassword)
 router.post('/personal_area/security/two_step_enable/', authChecker, userController.enableTwoStepVerificationStatus) // update and enable 2fa status 
 router.patch('/personal_area/security/disable_two_step_status/', authChecker, userController.disableTwoStepVerificationStatus) // disable 2fa status
 
-router.post('/personal_area/verification/', authChecker, userController.personalAreaKyc) // send kyc data
+router.delete('/user_two_step_code_list/delete_code/', userController.deleteExpiredCode) // request to delete 2fa code if it's not used
+
+router.put('/personal_area/verification/', authChecker, userController.personalAreaKyc) // send kyc data
+
+// router.put('/personal_area/create_secure_deal/', authChecker, userController.secureDealCreate) // create secure deal
+// router.get('/personal_area/secure_deal_detail/:id'/, authChecker, userController.getSecureDealDetail) // get detail deal ingo by id
+// router.patch('/personal_area/secure_deal/accept_deal/', authChecker, userController.acceptDeal) // accept deal
+
 
 // router.put('/wallets/create_user_wallet/', authChecker, userController.createUserWallet)
 // router.get('/internal_wallets/get_user_internal_wallet/', authChecker, userController.getInternalWallet)
@@ -45,7 +52,7 @@ router.post('/personal_area/verification/', authChecker, userController.personal
 // router.post('/withdraw/get_withdraw', authChecker, userController.getWithdraw)
 
 // admin + staff routes
-router.get('/staff/:id/', staffController.staffDashboard)
+router.post('/staff/dashboard', staffController.staffDashboard)
 router.post('/staff/users/', staffController.usersList) // get all users (if staff => when staff is domain owner) (if admin & other => all users )
 router.get('/staff/users/user_detail/:id/', staffController.userDetail) // selected user detail info
 router.patch('/staff/users/user_detail/update_user_deposit_fee/', staffController.updateDepositFee) // update deposit fee for user by staff
@@ -93,7 +100,7 @@ router.post('/staff/news/get_news_list/', staffController.getNewsList) // get ne
 // router.patch('/staff/staff_wallets/edit_staff_wallets/', staffController.editStaffWallets) // edit wallets for current staff
 
 router.post('/staff/terms/get_term_by_domain/', staffController.getTermsByDomainName) // get terms by selected domain
-router.patch('/staff/terms/update_terms/', staffController.updateTerms) // update terms at at selected domain
+router.patch('/staff/terms/update_terms/', staffController.updateTerms) // update terms at selected domain
 router.get('/staff/project_support/get_wallet/', staffController.projectSupport) // if staff => get support wallet for current staff, (if admin) => select with staff emails to choose wallet by current staff user 
 
 

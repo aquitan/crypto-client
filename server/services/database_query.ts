@@ -247,12 +247,12 @@ class Database {
       })
   }
 
-  async SaveTwoStepCode(code: string, user_email: string) {
+  async SaveTwoStepCode(time: string, code: string, user_email: string) {
     mysql.query(`
       INSERT INTO user_two_fa_code_list
-      (generated_code, user_email)
+      ( generated_code, time, user_email )
       VALUES
-      ( "${code}", "${user_email}") `,
+      ( "${code}", "${time}", "${user_email}") `,
       (e: any, result) => {
         if (e) return console.error(new Error(e))
         console.log('2fa params was saved ');
@@ -543,8 +543,43 @@ class Database {
         })
     })
   }
-
-
+  
+  async GetUsersCounterForStaff( staff_email: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT user_auth.ID, user_auth.email, user_auth.self_registration
+        FROM user_auth
+        JOIN user_params.user_id
+        ON user_auth.ID = user_params.user_id
+        WHERE user_params.isAdmin = ${false} AND user_auth.self_registration = "${staff_email}"
+        ORDER BY user_auth.date_of_entry
+        DESC`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+  
+  async GetOnlineUsersForStaff(staff_email: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT auth_token.user_id, user_auth.ID, user_auth.self_registration
+        FROM auth_token
+        JOIN user_auth
+        ON user_auth.ID = auth_token.user_id
+        JOIN user_params.user_id
+        ON user_auth.ID = user_params.user_id
+        WHERE user_params.isAdmin = ${false} AND user_auth.self_registration = "${staff_email}"
+        ORDER BY user_auth.date_of_entry
+        DESC`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+  
   async GetLogsByUserId(user_id: number) {
     return new Promise((resolve, reject) => {
       mysql.query(`
@@ -1172,6 +1207,18 @@ class Database {
         ON user_auth.ID = user_params.user_id
         ORDER BY user_auth.date_of_entry
         DESC`,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+  
+  async GetOnlineUsersForAdmin() {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT user_id
+        FROM auth_token`,
         (e: any, result) => {
           if (e) reject(new Error(e))
           resolve(result)
