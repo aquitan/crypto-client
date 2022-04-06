@@ -9,10 +9,14 @@ import {useForm} from "react-hook-form";
 import AdminForm from "../../../components/UI/AdminForm/AdminForm";
 import AdminButton from "../../../components/UI/AdminButton/AdminButton";
 import {store} from "../../../index";
+import error from "../../../styles/Error.module.scss";
+import {ErrorMessage} from "@hookform/error-message";
 
 const ProjectSupport = () => {
     const [state, setState] = useState('')
-    const {register, handleSubmit} = useForm()
+    const {register, handleSubmit, formState: {errors}} = useForm({
+        mode: "onBlur"
+    })
 
     useEffect( () => {
         getSupportData()
@@ -42,10 +46,18 @@ const ProjectSupport = () => {
                 <AdminForm onSubmit={handleSubmit(onSubmit)}>
                     <h2 className='mb-3'>Сообщить о проблеме</h2>
                     <Row className='mb-3'>
-                        <AdminInput {...register('title')} placeholder='Заголовок'/>
+                        <AdminInput {...register('title', {
+                            required: true,
+                            pattern: /^[^а-яё]+$/iu
+                        })} placeholder='Заголовок'/>
+                        <ErrorMessage  name='title' errors={errors} render={() => <p className={error.error}>Только английские буквы</p>} />
                     </Row>
                     <Row className='mb-3'>
-                        <TextArea {...register('message')} classnames='dark' placeholder='Текст'/>
+                        <TextArea {...register('message', {
+                            required: true,
+                            pattern: /^[^а-яё]+$/iu
+                        })} classnames='dark' placeholder='Текст'/>
+                        <ErrorMessage  name='message' errors={errors} render={() => <p className={error.error}>Только английские буквы</p>} />
                     </Row>
                     <AdminButton classname='green'>Отправить</AdminButton>
                 </AdminForm>

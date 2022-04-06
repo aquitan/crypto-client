@@ -5,6 +5,8 @@ import {Container} from "react-bootstrap";
 
 const AboutUs = () => {
     let domain = store.domain.domain_name.toUpperCase()
+    let domainName = store.domain.company_owner_name
+    console.log(store.domain)
     return (
         <Container>
             <div className="article footer_links_page">
@@ -101,7 +103,7 @@ const AboutUs = () => {
 
                 <h4 className="article-subtitle">Our Founder: </h4>
                 <p className="article-text">
-                    Shultz David is Co-Founder and CEO of {domain}.
+                    {domainName} is Co-Founder and CEO of {domain}.
                 </p>
             </div>
         </Container>

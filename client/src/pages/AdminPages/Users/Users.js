@@ -11,10 +11,14 @@ import AdminForm from "../../../components/UI/AdminForm/AdminForm";
 import {useForm} from "react-hook-form";
 import {postData} from "../../../services/StaffServices";
 import {v4 as uuid} from 'uuid'
+import Preloader from "../../../components/UI/Preloader/Preloader";
+import {getSearchItems} from "../../../utils/searchFn";
 
 const Users = () => {
-    const [users, setUsers] = useState('')
-    const {register, handleSubmit} = useForm()
+    const [state, setState] = useState({
+        users: '',
+        search: ''
+    })
     const getProfile = async () => {
         const userData = {
             isAdmin: store.isAdmin,
@@ -24,15 +28,15 @@ const Users = () => {
         const res = await postData('/staff/users/', userData)
         const data = await res.data
         const usersReversed = data.usersList.slice(0).reverse()
-        setUsers(usersReversed)
-        console.log('dataProfile', data)
+        setState({...state, users: usersReversed})
     }
     useEffect(() => {
         getProfile()
     }, [])
 
-    const onSubmit = (data) => {
-        console.log(data)
+    const onSearch = (e) => {
+        setState({...state, search: e.target.value})
+        console.log('search', getSearchItems(state.users, state.search))
     }
 
 
@@ -46,19 +50,17 @@ const Users = () => {
                 <UsersInfoCard color={'orange'} type={'Not active 7 days'} amount={0} />
             </Row>
             <AdminButtonCard>
-                <AdminForm onSubmit={handleSubmit(onSubmit)}>
-                    <Row className='mt-4'>
-                        <h4 className='mb-3'>Поиск пользователей</h4>
-                        <Row>
-                            <Col className='col-lg-3'>
-                                <AdminInput {...register('searchQuery')} type='search' placeholder='find user' />
-                            </Col>
-                            <Col>
-                                <AdminButton classname='small green'>Найти</AdminButton>
-                            </Col>
-                        </Row>
+                <Row className='mt-4'>
+                    <h4 className='mb-3'>Поиск пользователей</h4>
+                    <Row>
+                        <Col className='p-0 col-12 col-sm-6 mb-3'>
+                            <AdminInput onChange={onSearch} value={state.search}  type='search' placeholder='find user' />
+                        </Col>
+                        <Col className='col-12 col-sm-6'>
+                            <AdminButton classname={['small', 'green', 'marginless']}>Найти</AdminButton>
+                        </Col>
                     </Row>
-                </AdminForm>
+                </Row>
             </AdminButtonCard>
 
             <AdminButtonCard>
@@ -66,17 +68,17 @@ const Users = () => {
                     <div className="users_table">
                         <div className={cls.users_table_inner}>
                             <Row className={cls.table_header}>
-                                <Col>#</Col>
-                                <Col>Date of registration</Col>
-                                <Col>Name</Col>
-                                <Col>Email</Col>
-                                <Col>KYC</Col>
-                                <Col>Action</Col>
+                                <Col className='d-none d-md-block col-2'>#</Col>
+                                <Col className='d-none d-md-block col-2'>Date of registration</Col>
+                                <Col className='d-none d-sm-block col-2'>Name</Col>
+                                <Col className='col-8 col-sm-2'>Email</Col>
+                                <Col className='col-4 col-sm-2'>KYC</Col>
+                                <Col className='d-none d-sm-block col-2'>Action</Col>
                             </Row>
                             {
-                                users
+                                state.users.length > 0
                                     ?
-                                    users.map(user => {
+                                    getSearchItems(state.users, state.search).map(user => {
                                         return(
                                             <UsersTableItem
                                                 key={uuid()}
@@ -88,7 +90,7 @@ const Users = () => {
                                                 staff={true}/>
                                         )
                                     })
-                                    : <h1>Loading</h1>
+                                    : <Preloader />
                             }
 
                         </div>

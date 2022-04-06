@@ -5,11 +5,11 @@ import './AdminButtonCard.scss'
 
 const AdminButtonCard = ({children, title}) => {
     return (
-        <Card className='bg_black mt-3 mb-3'>
+        <Card className='bg_black admin-black-card mt-3 mb-3'>
             <Row className='pt-3 pb-3 align-items-center'>
                 <Row className='mb-1'>
-                    <Col className='col-4'>
-                        <h3>{title}</h3>
+                    <Col className='col-12'>
+                        <h2>{title}</h2>
                     </Col>
                 </Row>
                 <Row className='p-3 mt-1'>

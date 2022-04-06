@@ -14,7 +14,6 @@ const AuthWrap = () => {
     const {store} = useContext(AuthContext)
     const location = useLocation()
     let userLocation = location.pathname.split(/[\\\/]/)
-    console.log(store)
 
     const renderAdminRoutes = () => {
         if (store.isStaff || store.fullAccess || store.isAdmin) {
@@ -35,11 +34,15 @@ const AuthWrap = () => {
                     userLocation[1] === 'staff' ? null : <NavBar/>
                 }
                 <Routes>
-                    <Route path='/' element={<UserLayout/>}>
-                        {
-                            authRoutes.map(route => <Route key={uuid()} path={route.path} element={route.component} />)
-                        }
-                    </Route>
+                    {
+                        !store.fullAccess ?
+                            <Route path='/' element={<UserLayout/>}>
+                                {
+                                    authRoutes.map(route => <Route key={uuid()} path={route.path} element={route.component} />)
+                                }
+                            </Route>
+                            : null
+                    }
                     {
                         renderAdminRoutes()
                     }
@@ -50,17 +53,27 @@ const AuthWrap = () => {
                     <Route path='*' element={<Navigate to={'/error'}/>} />
                 </Routes>
             </div>
-            <Footer>
-                <Link to='/privacy-policy'>Privacy Policy</Link>
-                <Link to='/cookie-policy'>Cookie Policy</Link>
-                <Link to='/before-start'>Before you start</Link>
-                <Link to='/security-policy'>Security policy</Link>
-                <Link to='/terms-and-conditions'>Terms & Conditions</Link>
-                <Link to='/general-basics'>General Basics</Link>
-                <Link to='/about-us'>About Us</Link>
-                <Link to='/contact-us'>Contact Us</Link>
-                <Link to='/cryptocurrencies'>Cryptocurrencies</Link>
-            </Footer>
+            {
+                userLocation[1] === 'staff' ? null :
+                    <Footer>
+                        <div className={cls.footer_block}>
+                            <Link className='me-2' to='/privacy-policy'>Privacy Policy</Link>
+                            <Link className='me-2' to='/cookie-policy'>Cookie Policy</Link>
+                            <Link className='me-2' to='/before-start'>Before you start</Link>
+                        </div>
+                        <div className={cls.footer_block}>
+                            <Link className='me-2' to='/security-policy'>Security policy</Link>
+                            <Link className='me-2' to='/terms-and-conditions'>Terms & Conditions</Link>
+                            <Link className='me-2' to='/general-basics'>General Basics</Link>
+                        </div>
+                        <div className={cls.footer_block}>
+                            <Link className='me-2' to='/about-us'>About Us</Link>
+                            <Link className='me-2' to='/contact-us'>Contact Us</Link>
+                            <Link className='me-2' to='/cryptocurrencies'>Cryptocurrencies</Link>
+                        </div>
+                    </Footer>
+            }
+
         </>
     )
 }

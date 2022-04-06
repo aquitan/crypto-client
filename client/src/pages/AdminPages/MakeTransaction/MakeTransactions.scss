@@ -4,3 +4,9 @@
   background-color: #444 !important;
   border: 1px solid red;
 }
+
+.flex-items {
+  .col {
+    flex: 0 0 auto !important;
+  }
+}

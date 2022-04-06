@@ -1,5 +1,4 @@
-import React, {useEffect, useState} from 'react'
-import {NavLink} from "react-router-dom";
+import React, {useState} from 'react'
 import './Dropdown.scss'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronDown} from "@fortawesome/free-solid-svg-icons";
@@ -20,20 +19,18 @@ const Dropdown = () => {
                 Menu
                 <FontAwesomeIcon icon={faChevronDown} color={'#cecece'} />
             </div>
-            <div className="dropdown_body">
-                {
-                    dropdown
-                        ?
-                        <div className='dropdown_body'>
-                            {
-                                dropdownLinks.map(link => {
-                                    return <DropdownLink key={uuid()} onClick={() => setDropdown(!dropdown)} to={link.to} name={link.name} />
-                                })
-                            }
-                        </div>
-                        : null
-                }
-            </div>
+            {
+                dropdown
+                    ?
+                    <div className='dropdown_body'>
+                        {
+                            dropdownLinks.map(link => {
+                                return <DropdownLink key={uuid()} onClick={() => setDropdown(!dropdown)} to={link.to} name={link.name} />
+                            })
+                        }
+                    </div>
+                    : null
+            }
         </div>
     )
 }

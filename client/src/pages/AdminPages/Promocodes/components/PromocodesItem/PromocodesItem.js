@@ -3,16 +3,16 @@ import {Col, Row} from "react-bootstrap";
 import AdminButton from "../../../../../components/UI/AdminButton/AdminButton";
 import cls from '../../Promocodes.module.scss'
 
-const PromocodesItem = (props) => {
+const PromocodesItem = ({id, code, reward, currency, onClick}) => {
     return (
         <div>
             <Row className={cls.promocode_item}>
-                <Col>{props.id}</Col>
-                <Col>{props.code}</Col>
-                <Col>{props.reward}</Col>
-                <Col>{props.cuurrency}</Col>
-                <Col>
-                    <AdminButton classname='red xs' onClick={() => props.onClick(props.id)}>Удалить</AdminButton>
+                <Col className='col-2 d-none d-md-block'>{id}</Col>
+                <Col className='col-4 col-sm-2'>{code}</Col>
+                <Col className='col-4 col-sm-2'>{reward}</Col>
+                <Col className='col-2 d-none d-md-block'>{currency}</Col>
+                <Col className='col-4 col-sm-4'>
+                    <AdminButton classname={['red', 'xs']} onClick={() => onClick(id)}>Удалить</AdminButton>
                 </Col>
             </Row>
         </div>

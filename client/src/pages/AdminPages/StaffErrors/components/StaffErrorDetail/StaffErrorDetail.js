@@ -4,21 +4,27 @@ import {getData} from "../../../../../services/StaffServices";
 import {Container, Row} from "react-bootstrap";
 import AdminButtonCard from "../../../../../components/AdminButtonCard/AdminButtonCard";
 import AdminInput from "../../../../../components/UI/AdminInput/AdminInput";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import TextArea from "../../../../../components/UI/TextArea/TextArea";
 import Select from "../../../../../components/UI/Select/Select";
 import {optionsButton} from "../../../../../utils/staffConstants";
 import {useForm} from "react-hook-form";
 import AdminForm from "../../../../../components/UI/AdminForm/AdminForm";
 import AdminButton from "../../../../../components/UI/AdminButton/AdminButton";
+import ModalDark from "../../../../../components/UI/ModalDark/ModalDark";
 
 const StaffErrorDetail = () => {
     const params = useParams()
+    const navigate = useNavigate()
     const [state, setState] = useState({
-        error: ''
+        error: '',
+        modal: false
     })
     const {register, handleSubmit, formState: {errors}} = useForm({
-        mode: 'onBlur'
+        mode: 'onBlur',
+        defaultValues: {
+            button: state.error?.error_button,
+        }
     })
 
     useEffect(() => {
@@ -31,40 +37,39 @@ const StaffErrorDetail = () => {
     }
     const onSubmit = (data) => {
         console.log(data)
+        setState({...state, modal: true})
+    }
+
+    const onHandleCloseModal = () => {
+        setState({error: '', modal: false})
+        navigate('/staff/staff-errors')
     }
 
     return (
         <Container>
+
+            <ModalDark singleBtn={true} active={state.modal} setActive={onHandleCloseModal}>
+                <h2>Ошибка изменена!</h2>
+            </ModalDark>
+
             <h1 className='mt-4 mb-4'>Детальная ошибки</h1>
             <AdminButtonCard>
                 <AdminForm onSubmit={handleSubmit(onSubmit)}>
-                    <Row>
-                        <AdminInput {...register('name')} placeholder='Название ошибки' />
-                        <div>
-                            <p>Текущее название</p>
-                            <p>{state.error?.error_name}</p>
-                        </div>
+                    <Row className='mb-3'>
+                        <p>Текущее название</p>
+                        <AdminInput defaultValue={state.error?.error_name} {...register('name')} placeholder='Название ошибки' />
                     </Row>
-                    <Row>
-                        <AdminInput {...register('title')} placeholder='Заголовок ошибки' />
-                        <div>
-                            <p>Текущее Тайтл</p>
-                            <p>{state.error?.error_title}</p>
-                        </div>
+                    <Row className='mb-3'>
+                        <p>Текущее Тайтл</p>
+                        <AdminInput defaultValue={state.error?.error_title} {...register('title')} placeholder='Заголовок ошибки'/>
                     </Row>
-                    <Row>
-                        <TextArea {...register('text')} classnames='dark' placeholder='Текст ошибки' />
-                        <div>
-                            <p>Текущий Текст</p>
-                            <p>{state.error?.error_text}</p>
-                        </div>
+                    <Row className='mb-3'>
+                        <p>Текущий Текст</p>
+                        <TextArea defaultValue={state.error?.error_text} {...register('text')} classnames='dark' placeholder='Текст ошибки' />
                     </Row>
-                    <Row>
-                        <Select {...register('button')} options={optionsButton} classnames='dark'/>
-                        <div>
-                            <p>Текущий Текст кнопки</p>
-                            <p>{state.error?.error_btn}</p>
-                        </div>
+                    <Row className='mb-3'>
+                        <p>Текущий Текст кнопки</p>
+                        <Select defaultValue={state.error?.error_button} {...register('button')} options={optionsButton} classnames='dark'/>
                     </Row>
                     <AdminButton classname='green'>Применить</AdminButton>
                 </AdminForm>

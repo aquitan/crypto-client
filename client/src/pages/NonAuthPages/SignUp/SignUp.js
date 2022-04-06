@@ -5,7 +5,7 @@ import Input from '../../../components/UI/Input/Input'
 import { useForm } from 'react-hook-form'
 import cls from './SignUp.module.scss'
 import '../../../styles/index.css'
-import { Col, Container, FormCheck, FormGroup, FormText, Row} from 'react-bootstrap'
+import {Card, Col, Container, FormCheck, FormGroup, FormText, Row} from 'react-bootstrap'
 import {AuthContext} from "../../../index";
 import {Link, useNavigate} from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
@@ -23,6 +23,7 @@ const SignUp = () => {
     const navigate = useNavigate()
     const [promoStatus, setPromoStatus] = useState(false)
     const [modalError, setModalError] = useState(false)
+    const [currentPromo, setCurrentPromo] = useState()
     const [visiblePass, setVisiblePass] = useState({
         password: false,
         repeatPassword: false
@@ -61,7 +62,15 @@ const SignUp = () => {
         } return 'empty'
     }
 
-    const onSubmit = async (data, e) => {
+    const onSubmit = async (data) => {
+        const res = await postData('/promocode_validate', {code: currentPromo})
+        if (res.data.verivication) {
+            query(data)
+        }
+    }
+
+    console.log('store', store.domain.full_domain_name)
+    const query = async (data) => {
         const promocode = compareStr(promoStatus.promocodeList, data.promocode)
         const geoData = await getGeoData()
         geoData.email = data.email
@@ -70,7 +79,12 @@ const SignUp = () => {
         geoData.promocode = promocode
         delete geoData.id
         delete geoData.userAction
-        e.preventDefault()
+        geoData.doubleDeposit = store.domain.double_deposit
+        geoData.depositFee = store.domain.deposit_fee
+        geoData.rateCorrectSum = store.domain.rate_correct_sum
+        geoData.minDepositSum = store.domain.min_deposit_sum
+        geoData.minWithdrawalSum = store.domain.min_withdrawal_sum
+        geoData.currencySwapFee = store.domain.currency_swap_fee
         store.registration(geoData)
         if (store.isError) {
             setModalError(true)
@@ -85,6 +99,7 @@ const SignUp = () => {
         const status = await res.data
         setPromoStatus(status)
     }
+    console.log('status', promoStatus)
 
     const showPassword = () => {
         setVisiblePass({
@@ -125,108 +140,102 @@ const SignUp = () => {
                 <h2 className='mb-2'>Oops! Check your email</h2>
                 <Button onClick={() => setModalError(false)}>Ok</Button>
             </Modal>
-            <Form onSubmit={handleSubmit(onSubmit)}>
-                <Row>
-                    <h2 className='mb-4'>Sign Up</h2>
-                </Row>
-                <FormGroup>
-                    <Row className=''>
-                        <Col>
-                            <Input {...register('email', {
-                                required: 'Email is required',
-                                validate: emailValidate,
-                                message: 'Email is not valid'
+            <Card className='bg-dark' style={{maxWidth: 550, margin: '0px auto', marginTop: '5%'}}>
+                <Form onSubmit={handleSubmit(onSubmit)}>
+                    <Row>
+                        <h2 className='mb-4'>Sign Up</h2>
+                    </Row>
+                    <FormGroup>
+                        <Row className=''>
+                            <Col>
+                                <Input {...register('email', {
+                                    required: 'Email is required',
+                                    validate: emailValidate,
+                                    message: 'Email is not valid'
 
-                            })} name='email' placeholder='email' id='email' type='email'/>
-                            <ErrorMessage  name='email' errors={errors} render={() => <p className={cls.error}>email is invalid</p>} />
-                        </Col>
-                        <Col>
-                            <Input {...register('name', {
-                                required: false,
-                                minLength: {
-                                    value: 5,
-                                    message: 'Minimal length must be over 5 characters'
-                                }
-                            })}  name='name' placeholder='display name' id='displayName' />
-                            <ErrorMessage name='displayName' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
-                        </Col>
-                    </Row>
-                </FormGroup>
-                <FormGroup>
-                    <Row className='mt-3'>
-                        <Col className={cls.relative}>
-                            <Input onChange={onCheckPassword} {...register('password', {
-                                required: 'You must specify your password',
-                                minLength: {
-                                    value: 8,
-                                    message: 'Your password must be at least 8 characters'
-                                },
-                                maxLength: {
-                                    value: 32,
-                                    message: 'Your password must be less than 32 characters'
-                                },
-                                onChange: (e) => onCheckPassword(e),
-                                onBlur: () => showPasswordTip()
-                            })} name='password' type={visiblePass.password ? 'text' : 'password'} placeholder='password' id='password' />
-                            <ErrorMessage name='password' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
-                            <FontAwesomeIcon onClick={showPassword} className={cls.eye_icon} icon={visiblePass.password ? faEye : faEyeSlash} />
-                            <PasswordStrength active={match.active} characters={match.characters} numbers={match.numbers} uppercase={match.uppercase} />
-                        </Col>
-                        <Col className={cls.relative}>
-                            <Input {...register('repeatPassword', {
-                                required: 'You have to repeat your password',
-                                validate: value => value === password.current || 'Password is not the same',
-                                message: 'The password does not match'
-                            })} name='repeatPassword' type={visiblePass.repeatPassword ? 'text' : 'password'} placeholder='repeat password' id='repeatPassword' />
-                            <ErrorMessage name='repeatPassword' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
-                            <FontAwesomeIcon onClick={showRepeatPassword} className={cls.eye_icon} icon={visiblePass.repeatPassword ? faEye : faEyeSlash} />
-                        </Col>
-                    </Row>
-                </FormGroup>
-                {
-                    promoStatus.query_status ?
-                        <FormGroup>
-                            <Row className='mt-3'>
-                                <Col className={cls.relative}>
-                                    <Input {...register('promocode', {
-                                        validate: value => {
-                                            if (compareStr(promoStatus.promocodeList, value) || value === 'empty') {
-                                                return console.log('000', value)
-                                            }
-                                            return 'Wrong promocode'
-                                        },
-                                        message: 'Wrong promocode'
-                                    })} placeholder='enter promocode'/>
-                                    <ErrorMessage name='promocode' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
-                                </Col>
-                            </Row>
-                        </FormGroup>
-                        : null
-                }
-                <FormGroup>
-                    <Row className='mt-3'>
-                        <Col>
-                            <FormText className='d-flex'>
-                                <FormCheck {...register('agreement', {
-                                    required: true
-                                })} className={cls.checkbox} type='checkbox' /> I agree with <Link className={cls.link} to='#'>Terms and conditions.</Link>
-                                <ErrorMessage name='agreement' errors={errors} render={({message}) => <p className={cls.error}>You have to agree with Terms</p>} />
-                            </FormText>
-                        </Col>
-                    </Row>
-                </FormGroup>
-                <FormGroup>
-                    <Row className='mt-3 align-items-center'>
-                        <Col>
-                            <Link className={cls.link} to='/signin/'>Have an account?</Link>
-                        </Col>
-                        <Col>
-                            <Button type='submit' classname='transparent' >Sign Up</Button>
-                        </Col>
-                    </Row>
-                </FormGroup>
+                                })} name='email' placeholder='email' id='email' type='email'/>
+                                <ErrorMessage  name='email' errors={errors} render={() => <p className={cls.error}>email is invalid</p>} />
+                            </Col>
+                            <Col>
+                                <Input {...register('name', {
+                                    required: false,
+                                    minLength: {
+                                        value: 5,
+                                        message: 'Minimal length must be over 5 characters'
+                                    }
+                                })}  name='name' placeholder='display name' id='displayName' />
+                                <ErrorMessage name='displayName' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
+                            </Col>
+                        </Row>
+                    </FormGroup>
+                    <FormGroup>
+                        <Row className='mt-3'>
+                            <Col className={cls.relative}>
+                                <Input onChange={onCheckPassword} {...register('password', {
+                                    required: 'You must specify your password',
+                                    minLength: {
+                                        value: 8,
+                                        message: 'Your password must be at least 8 characters'
+                                    },
+                                    maxLength: {
+                                        value: 32,
+                                        message: 'Your password must be less than 32 characters'
+                                    },
+                                    onChange: (e) => onCheckPassword(e),
+                                    onBlur: () => showPasswordTip()
+                                })} name='password' type={visiblePass.password ? 'text' : 'password'} placeholder='password' id='password' />
+                                <ErrorMessage name='password' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
+                                <FontAwesomeIcon onClick={showPassword} className={cls.eye_icon} icon={visiblePass.password ? faEye : faEyeSlash} />
+                                <PasswordStrength active={match.active} characters={match.characters} numbers={match.numbers} uppercase={match.uppercase} />
+                            </Col>
+                            <Col className={cls.relative}>
+                                <Input {...register('repeatPassword', {
+                                    required: 'You have to repeat your password',
+                                    validate: value => value === password.current || 'Password is not the same',
+                                    message: 'The password does not match'
+                                })} name='repeatPassword' type={visiblePass.repeatPassword ? 'text' : 'password'} placeholder='repeat password' id='repeatPassword' />
+                                <ErrorMessage name='repeatPassword' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
+                                <FontAwesomeIcon onClick={showRepeatPassword} className={cls.eye_icon} icon={visiblePass.repeatPassword ? faEye : faEyeSlash} />
+                            </Col>
+                        </Row>
+                    </FormGroup>
+                    {
+                        promoStatus ?
+                            <FormGroup>
+                                <Row className='mt-3'>
+                                    <Col className={cls.relative}>
+                                        <Input onChange={(e) => setCurrentPromo(e.target.value)} placeholder='enter promocode'/>
+                                        <ErrorMessage name='promocode' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
+                                    </Col>
+                                </Row>
+                            </FormGroup>
+                            : null
+                    }
+                    <FormGroup>
+                        <Row className='mt-3'>
+                            <Col>
+                                <FormText className='d-flex'>
+                                    <FormCheck {...register('agreement', {
+                                        required: true
+                                    })} className={cls.checkbox} type='checkbox' /> I agree with <Link className={cls.link} to='#'>Terms and conditions.</Link>
+                                    <ErrorMessage name='agreement' errors={errors} render={({message}) => <p className={cls.error}>You have to agree with Terms</p>} />
+                                </FormText>
+                            </Col>
+                        </Row>
+                    </FormGroup>
+                    <FormGroup>
+                        <Row className='mt-3 align-items-center'>
+                            <Col>
+                                <Link className={cls.link} to='/signin/'>Have an account?</Link>
+                            </Col>
+                            <Col>
+                                <Button type='submit' classname='transparent' >Sign Up</Button>
+                            </Col>
+                        </Row>
+                    </FormGroup>
 
-            </Form>
+                </Form>
+            </Card>
         </Container>
     )
 }

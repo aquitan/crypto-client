@@ -9,6 +9,8 @@
   width: 100%;
   font-size: 14px;
   min-height: 46px;
+  margin: 0 10px;
+  min-width: 100px;
   &:hover {
     transition: all .2s linear;
     filter: opacity(80%)
@@ -26,6 +28,9 @@
 .orange {
   background-color: orange;
   color: #fff;
+}
+.marginless {
+  margin: 0;
 }
 .xs {
   padding: 5px 10px;

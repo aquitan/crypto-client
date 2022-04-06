@@ -14,10 +14,14 @@ import {store} from "../../../index";
 import moment from "moment";
 import Select from "../../../components/UI/Select/Select";
 import AllNews from "./components/AllNews/AllNews";
+import error from "../../../styles/Error.module.scss";
+import {ErrorMessage} from "@hookform/error-message";
 
 const CreateNews = () => {
     const [state, setState] = useState()
-    const {register, handleSubmit} = useForm()
+    const {register, handleSubmit, formState: {errors}} = useForm({
+        mode: 'onBlur'
+    })
     const [startDate, setStartDate] = useState()
 
     useEffect(() => {
@@ -56,18 +60,27 @@ const CreateNews = () => {
                 <AdminForm onSubmit={handleSubmit(onSubmit)}>
                     <Row className='mb-3'>
                         <Col>
-                            <AdminInput classname='narrow_input' {...register('newsTitle')} placeholder='Заголовок' />
+                            <AdminInput classname='narrow_input' {...register('newsTitle', {
+                                required: true,
+                                pattern: /^[^а-яё]+$/iu
+                            })} placeholder='Заголовок' />
+                            <ErrorMessage  name='newsTitle' errors={errors} render={() => <p className={error.error}>Только английские буквы</p>} />
                         </Col>
                         <Col>
-                            <DatePickert required
-                                         customInput={<DatePickerCustom/>}
-                                         placeholderText='Дата'
-                                         selected={startDate}
-                                         dateFormat='yyyy/MM/dd'
-                                         onChange={(date) => setStartDate(date)} />
+                            <DatePickert
+                                required
+                                customInput={<DatePickerCustom/>}
+                                placeholderText='Дата'
+                                selected={startDate}
+                                dateFormat='yyyy/MM/dd'
+                                onChange={(date) => setStartDate(date)} />
                         </Col>
                         <Col>
-                            <Select classname='small narrow_select' {...register('domainNews')} options={domains} />
+                            <Select classname='small narrow_select' {...register('domainNews', {
+                                required: true,
+                                pattern: /^[^а-яё]+$/iu
+                            })} options={domains} />
+                            <ErrorMessage  name='domainNews' errors={errors} render={() => <p className={error.error}>Только английские буквы</p>} />
                         </Col>
                     </Row>
                     <Row className='mb-3'>

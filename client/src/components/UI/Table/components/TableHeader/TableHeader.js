@@ -3,10 +3,15 @@ import PropTypes from 'prop-types'
 import {Col, Row} from "react-bootstrap";
 import '../../Table.scss'
 import {v4 as uuid} from 'uuid'
+import classNames from "classnames";
 
-const TableHeader = ({elems}) => {
+const TableHeader = ({elems, classname}) => {
+    let classes = classNames(
+        'table_header',
+        classname
+    )
     return (
-        <Row className='table_header'>
+        <Row className={classes}>
             {elems.map(element => {
                 return(
                     <Col className='table_header_item' key={uuid()}>{element}</Col>
@@ -17,7 +22,8 @@ const TableHeader = ({elems}) => {
 }
 
 TableHeader.propTypes = {
-    
+    elems: PropTypes.array,
+    classname: PropTypes.string
 }
 TableHeader.defaultProps = {
     

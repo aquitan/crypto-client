@@ -24,6 +24,8 @@ export default class Store {
     notifications = []
     domain = {}
     terms = {}
+    asUser = {}
+    rates = {}
 
 
     constructor() {
@@ -86,37 +88,41 @@ export default class Store {
     setTerms(obj) {
         this.terms = obj
     }
+    setAsUser(obj) {
+        this.asUser = obj
+    }
+    setRates(obj) {
+        this.rates = obj
+    }
 
     async login(obj) {
         try {
             const response = await AuthService.login(obj)
             console.log('response-login', response.data)
-            if (response.data.two_step_status !== 1) {
-                if (response.data.fullAccess) {
+            if (response.data.rootAccess) {
+                localStorage.setItem('token', response.data.accessToken)
+                this.setFullAccess(true)
+                this.setAuth(true)
+            } else {
+                if (response.data.user.isBanned === 1) {
+                    this.setIsBanned(true)
+                }
+                this.setIsLoading(true)
+                if (!this.isBanned) {
                     localStorage.setItem('token', response.data.accessToken)
-                    this.setFullAccess(true)
+                    this.setUserId(response.data.user.ID)
+                    this.setUserEmail(response.data.user.email)
+                    if (response.data.user.isAdmin === 1) {
+                        this.setIsAdmin(true)
+                    }
+                    if (response.data.user.isStaff === 1) {
+                        this.setIsStaff(true)
+                    }
+                    if (response.data.user.isActivated === 1) {
+                        this.setIsActivated(true)
+                    }
                     this.setAuth(true)
-                } else {
-                    if (response.data.user.isBanned === 1) {
-                        this.setIsBanned(true)
-                    }
-                    this.setIsLoading(true)
-                    if (!this.isBanned) {
-                        localStorage.setItem('token', response.data.accessToken)
-                        this.setUserId(response.data.user.ID)
-                        this.setUserEmail(response.data.user.email)
-                        if (response.data.user.isAdmin === 1) {
-                            this.setIsAdmin(true)
-                        }
-                        if (response.data.user.isStaff === 1) {
-                            this.setIsStaff(true)
-                        }
-                        if (response.data.user.isActivated === 1) {
-                            this.setIsActivated(true)
-                        }
-                        this.setAuth(true)
-                        this.setUser(response.data.user)
-                    }
+                    this.setUser(response.data.user)
                 }
             }
 

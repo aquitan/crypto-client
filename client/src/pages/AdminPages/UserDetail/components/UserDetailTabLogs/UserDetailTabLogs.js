@@ -13,7 +13,7 @@ const UserDetailTabLogs = ({data}) => {
 
     return (
         <div>
-            <Col className='col-2'>
+            <Col className='col-12 col-md-3 mb-3 mt-3'>
                 <Form.Select aria-label="Default select example">
                     <option value="1">Сортировка по имени</option>
                     <option value="2">Сортировка по id</option>
@@ -31,7 +31,11 @@ const UserDetailTabLogs = ({data}) => {
                         return (
                             <Row key={log.ID} className={cls.users_detail_table_row}>
                                 <Col>{log.action_date}</Col>
-                                <Col>Пользователь <b>{log.email}</b> перешел на <b>{log.user_action}</b> на <b>{log.user_domain}</b></Col>
+                                <Col className={cls.break_word}>
+                                    <span>
+                                        Пользователь <b>{log.email}</b> перешел на <b>{log.user_action}</b> на <b>{log.user_domain}</b>
+                                    </span>
+                                </Col>
                                 <Col>{log.country_name} {log.request_city},
                                     <a href={`https://google.com.ua/maps/place/${log.request_city}/@${log.location}`}
                                        target="_blank" rel="noopener noreferrer">

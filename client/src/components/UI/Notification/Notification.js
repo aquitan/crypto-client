@@ -6,6 +6,7 @@ import NotificationItem from "./components/NotificationItem/NotificationItem";
 import cls from './Notification.module.scss'
 import {store} from "../../../index";
 import {observer} from "mobx-react-lite";
+import {postData} from "../../../services/StaffServices";
 
 const Notification = () => {
     const [notification, setNotification] = useState(store.notifications)
@@ -14,7 +15,12 @@ const Notification = () => {
 
     useEffect(() => {
         setNotification(notif)
+        getNotification()
     }, [])
+
+    const getNotification = async () => {
+        const res = await postData('/staff/notifications/get_all_notifications/', {userId: store.userId})
+    }
 
     return (
         <div className={cls.notification}>

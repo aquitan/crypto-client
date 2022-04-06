@@ -9,6 +9,7 @@ import {useNavigate} from "react-router-dom";
 const StaffErrorItem = ({data}) => {
     const navigate = useNavigate()
 
+    console.log('data', data)
     const onEditClick = () => {
         navigate(`/staff/staff-errors/${data.ID}`)
     }
@@ -36,9 +37,7 @@ const StaffErrorItem = ({data}) => {
 
                 <Col>
                     <p>{`"${data.error_btn}"`}</p>
-                    {
-                        !store.isAdmin ? <AdminButton onClick={onEditClick} classname='orange small'>Edit</AdminButton> : null
-                    }
+                    <AdminButton onClick={onEditClick} classname={['orange', 'small']}>Edit</AdminButton>
                 </Col>
             </Row>
         </Row>

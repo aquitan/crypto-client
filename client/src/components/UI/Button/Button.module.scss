@@ -18,15 +18,25 @@
     font-family: 'Assistant', sans-serif;
     box-sizing: border-box;
     width: 100%;
+    min-width: 80px;
     &:hover {
         transition: all .2s linear;
         background-color: #fff;
         color: $colorDarkBlue;
     }
+    &:disabled {
+        opacity: .8;
+        &:hover {
+            background-color: $colorDarkBlue;
+            color: #fff;
+            cursor: auto;
+        }
+    }
 }
 
 .small {
-    max-width: 150px;
+    max-width: 200px;
+    padding: 10px 20px;
 }
 
 .transparent {
@@ -38,4 +48,18 @@
         color: #fff;
         transition: all .2s linear;
     }
+}
+
+.green_btn {
+    background-color: lightgreen;
+    color: #fff;
+    border: lightgreen;
+}
+.red_btn {
+    background-color: tomato;
+    color: #fff;
+    border: tomato;
+}
+.small_btn {
+    max-width: 200px;
 }

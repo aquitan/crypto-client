@@ -38,7 +38,13 @@ import {
     BEFORE_START_AUTH,
     SECURITY_POLICY_AUTH,
     TERMS_CONDITIONS_AUTH,
-    GENERAL_BASICS_AUTH, ABOUTUS_AUTH, CONTACTUS_AUTH, CRYPTOCURRENCIES_AUTH, ERROR_DETAIL, SECUREDEAL_ROUTE
+    GENERAL_BASICS_AUTH,
+    ABOUTUS_AUTH,
+    CONTACTUS_AUTH,
+    CRYPTOCURRENCIES_AUTH,
+    ERROR_DETAIL,
+    SECUREDEAL_ROUTE,
+    INTERNAL_SWAP, INTERNAL_ADDRESSES, DASHBOARD_ROUTE, SUPPORT_ROUTE, PREMIUM_BENEFITS, GROUP_DETAILS, SECURE_DEAL
 } from "../utils/constants"
 import SignUp from '../pages/NonAuthPages/SignUp/SignUp'
 import SignIn from '../pages/NonAuthPages/SignIn/SignIn'
@@ -83,8 +89,18 @@ import Cryptocurrencies from "../pages/AuthPages/AuthArticles/Cryptocurrencies";
 import DomainsDetail from "../pages/AdminPages/Domains/components/DomainsDetail/DomainsDetail";
 import StaffErrorDetail from "../pages/AdminPages/StaffErrors/components/StaffErrorDetail/StaffErrorDetail";
 import SecureDeal from "../pages/AuthPages/SecureDeal/SecureDeal";
+import InternalSwap from "../pages/AuthPages/InternalSwap/InternalSwap";
+import InternalAddresses from "../pages/AuthPages/InternalAddresses/InetrnalAddresses";
+import Support from "../pages/AuthPages/Support/Support";
+import PremiumBenefits from "../pages/AuthPages/PremiumBenefits/PremiumBenefits";
+import GroupDetails from "../pages/AdminPages/GroupList/GroupDetails/GroupDetails";
+import SecureDealDetail from "../pages/AuthPages/SecureDeal/components/SecureDealDetail/SecureDealDetail";
 
 export const authRoutes = [
+    {
+        path: DASHBOARD_ROUTE,
+        component: <Dashboard/>
+    },
     {
         path: PROFILE_ROUTE,
         component: <Profile/>
@@ -141,6 +157,27 @@ export const authRoutes = [
         path: SECUREDEAL_ROUTE,
         component: <SecureDeal/>
     },
+    {
+        path: INTERNAL_SWAP,
+        component: <InternalSwap/>
+    },
+    {
+        path: INTERNAL_ADDRESSES,
+        component: <InternalAddresses/>
+    },
+    {
+        path: PREMIUM_BENEFITS,
+        component: <PremiumBenefits/>
+    },
+    {
+        path: SUPPORT_ROUTE,
+        component: <Support/>
+    },
+    {
+        path: SECURE_DEAL,
+        component: <SecureDealDetail/>
+    },
+
 ]
 
 export const adminRoutes = [
@@ -208,6 +245,10 @@ export const adminRoutes = [
     {
         path: ERROR_DETAIL,
         component: <StaffErrorDetail/>
+    },
+    {
+        path: GROUP_DETAILS,
+        component: <GroupDetails/>
     },
 ]
 

@@ -1,23 +1,25 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import Logo from '../UI/Logo/Logo'
 import NavBtn from '../UI/NavBtn/NavBtn'
 import cls from './LandingHeader.module.scss'
 import Preloader from "../UI/Preloader/Preloader";
+import {store} from "../../index";
+import {observer} from "mobx-react-lite";
 
 
-const LandingHeader = ({data}) => {
+const LandingHeader = () => {
+    const [state, setState] = useState()
 
-    console.log('domain')
+    useEffect(() => {
+        setState(store.domain.domain_name)
+    }, [store.domain])
+
     return (
         <header className={cls.landing_header}>
             <div className={cls.row}>
                 <div className={cls.col}>
                     <Logo/>
-                    {
-                        data ?
-                        <h4 className={cls.domain_header}>{data.domain_info.domain_name}</h4> : <Preloader />
-                    }
-
+                    <h4 className={cls.domain_header}>{state}</h4>
                 </div>
                 
                 <div className={cls.col}>
@@ -33,4 +35,4 @@ const LandingHeader = ({data}) => {
     )
 }
 
-export default LandingHeader
+export default observer(LandingHeader)
