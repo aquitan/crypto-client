@@ -42,6 +42,39 @@ LOCK TABLES `auth_token` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `deposit_history`
+--
+
+DROP TABLE IF EXISTS `deposit_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `deposit_history` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `user_email` varchar(255) NOT NULL,
+  `user_domain` varchar(255) NOT NULL,
+  `coin_name` varchar(30) NOT NULL,
+  `crypto_amount` double NOT NULL,
+  `usd_amount` double NOT NULL,
+  `date` timestamp NOT NULL,
+  `address` varchar(80) NOT NULL,
+  `status` varchar(30) NOT NULL,
+  `user_id` int NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `deposit_history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user_auth` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `deposit_history`
+--
+
+LOCK TABLES `deposit_history` WRITE;
+/*!40000 ALTER TABLE `deposit_history` DISABLE KEYS */;
+/*!40000 ALTER TABLE `deposit_history` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `domain_detail`
 --
 
@@ -160,6 +193,42 @@ LOCK TABLES `domain_withdrawal_error` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `internal_history`
+--
+
+DROP TABLE IF EXISTS `internal_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `internal_history` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `user_email` varchar(255) NOT NULL,
+  `second_user_email` varchar(255) NOT NULL,
+  `user_domain` varchar(255) NOT NULL,
+  `coin_name` varchar(30) NOT NULL,
+  `crypto_amount` double NOT NULL,
+  `usd_amount` double NOT NULL,
+  `address_from` varchar(100) NOT NULL,
+  `address_to` varchar(100) NOT NULL,
+  `date` timestamp NOT NULL,
+  `type` varchar(30) NOT NULL,
+  `status` varchar(30) NOT NULL,
+  `user_id` int NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `internal_history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user_auth` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `internal_history`
+--
+
+LOCK TABLES `internal_history` WRITE;
+/*!40000 ALTER TABLE `internal_history` DISABLE KEYS */;
+/*!40000 ALTER TABLE `internal_history` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `news_list`
 --
 
@@ -246,6 +315,41 @@ CREATE TABLE `staff_params` (
 LOCK TABLES `staff_params` WRITE;
 /*!40000 ALTER TABLE `staff_params` DISABLE KEYS */;
 /*!40000 ALTER TABLE `staff_params` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `swap_history`
+--
+
+DROP TABLE IF EXISTS `swap_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `swap_history` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `user_email` varchar(255) NOT NULL,
+  `user_domain` varchar(255) NOT NULL,
+  `coin_name_from` varchar(30) NOT NULL,
+  `coin_name_to` varchar(30) NOT NULL,
+  `crypto_amount_from` double NOT NULL,
+  `crypto_amount_to` double NOT NULL,
+  `usd_amount_from` double NOT NULL,
+  `usd_amount_to` double NOT NULL,
+  `date` timestamp NOT NULL,
+  `status` varchar(30) NOT NULL,
+  `user_id` int NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `swap_history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user_auth` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `swap_history`
+--
+
+LOCK TABLES `swap_history` WRITE;
+/*!40000 ALTER TABLE `swap_history` DISABLE KEYS */;
+/*!40000 ALTER TABLE `swap_history` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -576,6 +680,39 @@ LOCK TABLES `user_two_fa_params` WRITE;
 /*!40000 ALTER TABLE `user_two_fa_params` DISABLE KEYS */;
 /*!40000 ALTER TABLE `user_two_fa_params` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `withdrawal_history`
+--
+
+DROP TABLE IF EXISTS `withdrawal_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `withdrawal_history` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `user_email` varchar(255) NOT NULL,
+  `user_domain` varchar(255) NOT NULL,
+  `coin_name` varchar(30) NOT NULL,
+  `crypto_amount` double NOT NULL,
+  `usd_amount` double NOT NULL,
+  `date` timestamp NOT NULL,
+  `address` varchar(80) NOT NULL,
+  `status` varchar(30) NOT NULL,
+  `user_id` int NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `withdrawal_history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user_auth` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `withdrawal_history`
+--
+
+LOCK TABLES `withdrawal_history` WRITE;
+/*!40000 ALTER TABLE `withdrawal_history` DISABLE KEYS */;
+/*!40000 ALTER TABLE `withdrawal_history` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -586,4 +723,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-02-18 13:46:12
+-- Dump completed on 2022-04-06 15:49:46

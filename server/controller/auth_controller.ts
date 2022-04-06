@@ -120,7 +120,8 @@ class AuthController {
   async checkTwoStep(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       const email: string = req.body.email
-      const result: any = await authService.checkTwoStep(email)
+      const time: string = req.body.time
+      const result: any = await authService.checkTwoStep(time, email)
       if (result === false) return res.status(202).json({ twoStepStatus: false })
       return res.status(202).json({ twoStepStatus: true })
     } catch (e) {

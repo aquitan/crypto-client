@@ -1,5 +1,6 @@
 import { RowDataPacket } from 'mysql2';
-import mysql from '../config/mysql_config';
+import { mysql } from '../config/mysql_config';
+
 
 
 class Database {
@@ -8,8 +9,8 @@ class Database {
     return new Promise((resolve, reject) => {
       mysql.query(`
         SELECT domain_list.ID, domain_list.full_domain_name, domain_list.domain_name, domain_list.company_address,
-        domain_list.company_phone_number, domain_list.company_email, domain_list.company_owner_name, 
-        domain_list.company_year, domain_list.company_country, domain_list.domain_owner, 
+        domain_list.company_phone_number, domain_list.company_email, domain_list.company_owner_name,
+        domain_list.company_year, domain_list.company_country, domain_list.domain_owner,
         domain_detail.show_news, domain_detail.double_deposit, domain_detail.deposit_fee,
         domain_detail.rate_correct_sum, domain_detail.min_deposit_sum, domain_detail.min_withdrawal_sum, domain_detail.currency_swap_fee,
         domain_detail.internal_swap_fee
@@ -25,9 +26,11 @@ class Database {
   }
 
   async GetPromocodeListBeforeSignup(domain_name: string) {
+
+
     return new Promise((resolve, reject) => {
       mysql.query(`
-        SELECT code 
+        SELECT code
         FROM user_promocode
         WHERE domain_name = "${domain_name}"
         GROUP BY ID
@@ -40,12 +43,15 @@ class Database {
     })
   }
 
-  async CreateUser(email: string, password: string, activationLink: string, self_registration: string, promocode: string, agreement: boolean, domainName: string, dateOfEntry: string, name?: string) {
+  async CreateUser(email: string, password: string, activationLink: string, self_registration: string,
+    promocode: string, agreement: boolean, domainName: string, dateOfEntry: string, name?: string) {
+
     mysql.query(`
       INSERT INTO user_auth 
       ( email, password, activationLink, self_registration, promocode, agreement, domain_name, date_of_entry, name) 
       VALUES 
-      ( "${email}", "${password}", "${activationLink}", "${self_registration}", "${promocode}", ${agreement},"${domainName}", "${dateOfEntry}", "${name || ''}" )`,
+      ( "${email}", "${password}", "${activationLink}", "${self_registration}", "${promocode}", ${agreement},
+      "${domainName}", "${dateOfEntry}", "${name || ''}" )`,
       (err, result) => {
         if (err) console.error(err)
         console.log('done')
@@ -103,13 +109,16 @@ class Database {
   }
 
   async SaveBaseUserParams(double_deposit: boolean, swap_ban: boolean, internal_ban: boolean, isUser: boolean, isStaff: boolean,
-    isAdmin: boolean, isBanned: boolean, isActivated: boolean, premium_status: boolean, two_step_status: boolean, agreement: boolean, kyc_status: string, user_id: number) {
+    isAdmin: boolean, isBanned: boolean, isActivated: boolean, premium_status: boolean,
+    two_step_status: boolean, agreement: boolean, kyc_status: string, user_id: number) {
 
     mysql.query(`
       INSERT INTO user_params 
-      ( double_deposit, swap_ban, internal_ban, isUser, isStaff, isAdmin, isBanned, isActivated, premium_status, two_step_status, agreement, kyc_status, user_id) 
+      ( double_deposit, swap_ban, internal_ban, isUser, isStaff, isAdmin, isBanned,
+      isActivated, premium_status, two_step_status, agreement, kyc_status, user_id)
       VALUES 
-      ( ${double_deposit}, ${swap_ban}, ${internal_ban}, ${isUser}, ${isStaff}, ${isAdmin}, ${isBanned}, ${isActivated}, ${premium_status}, ${two_step_status}, ${agreement}, "${kyc_status}", ${user_id})`,
+      ( ${double_deposit}, ${swap_ban}, ${internal_ban}, ${isUser}, ${isStaff},
+      ${isAdmin}, ${isBanned}, ${isActivated}, ${premium_status}, ${two_step_status}, ${agreement}, "${kyc_status}", ${user_id})`,
       (err, result) => {
         if (err) console.error(err)
         console.log('done')
@@ -353,8 +362,9 @@ class Database {
   async GetUserInfoById(user_id: number) {
     return new Promise((resolve, reject) => {
       mysql.query(`
-        SELECT user_auth.ID, user_auth.name, user_auth.password, user_auth.domain_name user_auth.email, user_params.isActivated, user_params.isUser, 
-        user_params.double_deposit, user_params.swap_ban, user_params.internal_ban, user_params.isBanned, 
+        SELECT user_auth.ID, user_auth.name, user_auth.password, user_auth.domain_name user_auth.email,
+        user_params.isActivated, user_params.isUser, user_params.double_deposit, user_params.swap_ban,
+        user_params.internal_ban, user_params.isBanned,
         user_params.isStaff, user_params.isAdmin,user_params.isBanned,
         user_params.two_step_status, user_params.premium_status 
         FROM user_params
@@ -371,8 +381,9 @@ class Database {
   async GetBaseUserParamsByEmail(email: string) {
     return new Promise((resolve, reject) => {
       mysql.query(`
-        SELECT user_auth.ID, user_auth.name, user_auth.password, user_auth.domain_name user_auth.email, user_params.isActivated, user_params.isUser,
-        user_params.double_deposit, user_params.swap_ban, user_params.internal_ban, user_params.isBanned,
+        SELECT user_auth.ID, user_auth.name, user_auth.password, user_auth.domain_name user_auth.email,
+        user_params.isActivated, user_params.isUser, user_params.double_deposit,
+        user_params.swap_ban, user_params.internal_ban, user_params.isBanned,
         user_params.isStaff, user_params.isAdmin,user_params.isBanned,
         user_params.two_step_status, user_params.premium_status 
         FROM user_params
@@ -416,13 +427,18 @@ class Database {
     })
   }
 
-  async SaveUserKyc(first_name: string, last_name: string, email: string, phone_number: number, date_of_birth: string, document_number: string, main_address: string, city: string, country_name: string, zip_code: number, document_type: string, user_id: number, state?: string, sub_address?: string) {
+  async SaveUserKyc(first_name: string, last_name: string, email: string, phone_number: number,
+    date_of_birth: string, document_number: string, main_address: string, city: string, country_name: string,
+    zip_code: number, document_type: string, user_id: number, state?: string, sub_address?: string) {
 
     mysql.query(`
       INSERT INTO user_kyc
-      ( first_name, last_name, email, phone_number, date_of_birth, document_number, main_address, city, country_name, zip_code, document_type,  user_id, state, sub_address)
+      ( first_name, last_name, email, phone_number, date_of_birth, document_number, main_address, city,
+      country_name, zip_code, document_type,  user_id, state, sub_address)
       VALUES
-      ( "${first_name}", "${last_name}", "${email}", ${phone_number}, "${date_of_birth}", "${document_number}", "${main_address}", "${city}", "${country_name}", ${zip_code}, "${document_type}", ${user_id}, "${state || ''}", "${sub_address || ''}" )`,
+      ( "${first_name}", "${last_name}", "${email}", ${phone_number}, "${date_of_birth}",
+      "${document_number}", "${main_address}", "${city}", "${country_name}", ${zip_code}, "${document_type}",
+      ${user_id}, "${state || ''}", "${sub_address || ''}" )`,
       (e: any, result) => {
         if (e) return console.error(new Error(e));
         console.log('done')
@@ -441,13 +457,15 @@ class Database {
       })
   }
 
-  async SaveUserLogs(user_id: number, email: string, ipAddress: string, city: string, countryName: string, coordinates: string, currentDate: string, user_action: string, user_domain: string) {
+  async SaveUserLogs(user_id: number, email: string, ipAddress: string, city: string,
+    countryName: string, coordinates: string, currentDate: string, user_action: string, user_domain: string) {
 
     mysql.query(`
       INSERT INTO user_logs
       ( email, ip_address, request_city, country_name, location, browser, action_date, user_action, user_domain, user_id )
       VALUES
-      ( "${email}", "${ipAddress}", "${city}", "${countryName}", "${coordinates}", "some browsr", "${currentDate}", "${user_action}", "${user_domain}", ${user_id} )`,
+      ( "${email}", "${ipAddress}", "${city}", "${countryName}", "${coordinates}", "some browsr",
+      "${currentDate}", "${user_action}", "${user_domain}", ${user_id} )`,
       (e: any, result) => {
         if (e) return console.error(new Error(e));
         console.log('done')
@@ -485,7 +503,7 @@ class Database {
         console.log('done')
       })
   }
-  
+
   async FindAuthTokenByUserId(user_id: number) {
     return new Promise((resolve, reject) => {
       mysql.query(`
@@ -543,8 +561,8 @@ class Database {
         })
     })
   }
-  
-  async GetUsersCounterForStaff( staff_email: string) {
+
+  async GetUsersCounterForStaff(staff_email: string) {
     return new Promise((resolve, reject) => {
       mysql.query(`
         SELECT user_auth.ID, user_auth.email, user_auth.self_registration
@@ -560,7 +578,7 @@ class Database {
         })
     })
   }
-  
+
   async GetOnlineUsersForStaff(staff_email: string) {
     return new Promise((resolve, reject) => {
       mysql.query(`
@@ -579,7 +597,7 @@ class Database {
         })
     })
   }
-  
+
   async GetLogsByUserId(user_id: number) {
     return new Promise((resolve, reject) => {
       mysql.query(`
@@ -613,7 +631,8 @@ class Database {
   async GetKycForStaff(user_domain: string) {
     return new Promise((resolve, reject) => {
       mysql.query(`
-        SELECT user_kyc.ID, user_params.user_id, user_auth.date_of_entry, user_auth.name, user_auth.email, user_kyc.document_type, user_kyc.country_name, user_kyc.city, user_kyc.zip_code, user_kyc.state, user_params.kyc_status
+        SELECT user_kyc.ID, user_params.user_id, user_auth.date_of_entry, user_auth.name, user_auth.email,
+        user_kyc.document_type, user_kyc.country_name, user_kyc.city, user_kyc.zip_code, user_kyc.state, user_params.kyc_status
         FROM user_kyc
         JOIN user_auth 
         ON user_kyc.user_id = user_auth.ID
@@ -698,7 +717,9 @@ class Database {
     })
   }
 
-  async SaveStaffParams(staff_email: string, payment_fee: number, support_name: string, get_staff_access_date: string, user_who_give_access: number) {
+  async SaveStaffParams(staff_email: string, payment_fee: number, support_name: string,
+    get_staff_access_date: string, user_who_give_access: number) {
+
     mysql.query(`
       INSERT INTO staff_params
       (staff_email, payment_fee, support_name, get_staff_access_date, user_who_give_access )
@@ -759,7 +780,9 @@ class Database {
   }
 
 
-  async SavePromocode(newCode: string, date: string, value: number, currency: string, notif: string, staff_user_id: number, domain: string) {
+  async SavePromocode(newCode: string, date: string, value: number, currency: string,
+    notif: string, staff_user_id: number, domain: string) {
+
     mysql.query(`
       INSERT INTO user_promocode
       ( code, date, value, currency, notification_text, staff_user_id, domain_name)
@@ -812,7 +835,9 @@ class Database {
   }
 
 
-  async SaveUsedPromocode(code: string, date: string, value: number, currency: string, notification_text: string, staff_id: number, domain_name: string, user_email: string) {
+  async SaveUsedPromocode(code: string, date: string, value: number, currency: string,
+    notification_text: string, staff_id: number, domain_name: string, user_email: string) {
+
     mysql.query(`
       INSERT INTO used_promocode
       ( code, date, value, currency, notification_text, staff_user_id, domain_name, used_by_user)
@@ -853,7 +878,7 @@ class Database {
         })
     })
   }
-  
+
   async DeleteUsedPromocodeListAsStaff(staff_id: number) {
     mysql.query(`
       DELETE FROM used_promocode
@@ -863,15 +888,18 @@ class Database {
         console.log('status was updated')
       })
   }
-  
+
 
 
   async CreateNewDomain(baseDomainData: any) {
     mysql.query(`
       INSERT INTO domain_list
-      ( full_domain_name, domain_name, company_address, company_phone_number, company_email, company_owner_name, company_year, company_country, domain_owner)
+      ( full_domain_name, domain_name, company_address, company_phone_number, company_email,
+      company_owner_name, company_year, company_country, domain_owner)
       VALUES 
-      ( "${baseDomainData.fullDomainName}", "${baseDomainData.domainName}", "${baseDomainData.companyAddress}", ${baseDomainData.companyPhoneNumber}, "${baseDomainData.companyEmail}", "${baseDomainData.companyOwnerName}", "${baseDomainData.companyYear}", "${baseDomainData.companyCountry}", "${baseDomainData.domainOwnerEmail}" )`,
+      ( "${baseDomainData.fullDomainName}", "${baseDomainData.domainName}", "${baseDomainData.companyAddress}",
+       ${baseDomainData.companyPhoneNumber}, "${baseDomainData.companyEmail}", "${baseDomainData.companyOwnerName}",
+       "${baseDomainData.companyYear}", "${baseDomainData.companyCountry}", "${baseDomainData.domainOwnerEmail}" )`,
       (err) => {
         if (err) return console.error(err)
         console.log('done');
@@ -897,7 +925,8 @@ class Database {
       ( show_news, double_deposit, deposit_fee, rate_correct_sum, min_deposit_sum, 
         min_withdrawal_sum, currency_swap_fee,  date_of_create, domain_id)
       VALUES 
-      ( ${object.showNews}, ${object.double_deposit}, ${object.depositFee}, ${object.rateCorrectSum}, ${object.minDepositSum}, ${object.minWithdrawalSum}, ${object.currencySwapFee}, "${object.dateOfDomainCreate}", ${object.domainId} )`,
+      ( ${object.showNews}, ${object.double_deposit}, ${object.depositFee}, ${object.rateCorrectSum},
+      ${object.minDepositSum}, ${object.minWithdrawalSum}, ${object.currencySwapFee}, "${object.dateOfDomainCreate}", ${object.domainId} )`,
       (err) => {
         if (err) return console.error(err)
         console.log('done');
@@ -910,7 +939,8 @@ class Database {
       SET full_domain_name = "${baseDomainData.fullDomainName}", domain_name = "${baseDomainData.domainName}", 
       company_address = "${baseDomainData.companyAddress}", company_phone_number = "${baseDomainData.companyPhoneNumber}", 
       company_email = "${baseDomainData.companyEmail}", company_owner_name = "${baseDomainData.companyOwnerName}", 
-      company_year = "${baseDomainData.companyYear}", company_country = "${baseDomainData.companyCountry}", domain_owner = "${baseDomainData.domainOwnerEmail}"
+      company_year = "${baseDomainData.companyYear}", company_country = "${baseDomainData.companyCountry}",
+      domain_owner = "${baseDomainData.domainOwnerEmail}"
       WHERE domain_name = "${baseDomainData.domainName}"`,
       (err) => {
         if (err) return console.error(err)
@@ -1035,7 +1065,9 @@ class Database {
   }
 
 
-  async SaveDomainErrors(domain_name: string, domain_id: number, error_name: string, error_title: string, error_text: string, error_btn: string) {
+  async SaveDomainErrors(domain_name: string, domain_id: number, error_name: string,
+    error_title: string, error_text: string, error_btn: string) {
+
     mysql.query(`
       INSERT INTO domain_withdrawal_error
       ( domain_name, domain_id, error_name, error_title, error_text, error_btn )
@@ -1115,7 +1147,8 @@ class Database {
       INSERT INTO news_list
       ( news_title, news_date, news_body, news_image, news_domain, news_youtube_link, staff_email, staff_id)
       VALUES 
-      ( "${obj.newsTitle}", "${obj.newsDate}", "${obj.newsBody}", "${obj.newsImage || ''}", "${obj.newsDomain}", "${obj.youtubeLink}", "${obj.staffEmail}", ${obj.staffId} )`,
+      ( "${obj.newsTitle}", "${obj.newsDate}", "${obj.newsBody}", "${obj.newsImage || ''}",
+      "${obj.newsDomain}", "${obj.youtubeLink}", "${obj.staffEmail}", ${obj.staffId} )`,
       (err) => {
         if (err) return console.error(err)
         console.log('done');
@@ -1213,7 +1246,7 @@ class Database {
         })
     })
   }
-  
+
   async GetOnlineUsersForAdmin() {
     return new Promise((resolve, reject) => {
       mysql.query(`
@@ -1229,7 +1262,8 @@ class Database {
   async GetKycForAdmin() {
     return new Promise((resolve, reject) => {
       mysql.query(`
-        SELECT user_kyc.ID, user_params.user_id, user_auth.date_of_entry, user_auth.name, user_auth.email, user_kyc.document_type, user_kyc.country_name, user_kyc.city, user_kyc.zip_code, user_kyc.state, user_params.kyc_status
+        SELECT user_kyc.ID, user_params.user_id, user_auth.date_of_entry, user_auth.name, user_auth.email,
+        user_kyc.document_type, user_kyc.country_name, user_kyc.city, user_kyc.zip_code, user_kyc.state, user_params.kyc_status
         FROM user_kyc
         JOIN user_auth 
         ON user_kyc.user_id = user_auth.ID
@@ -1270,7 +1304,7 @@ class Database {
         })
     })
   }
-  
+
   async DeleteUsedPromocodeListAsAdmin() {
     mysql.query(`
       DELETE FROM used_promocode `,
@@ -1316,6 +1350,203 @@ class Database {
         })
     })
   }
+
+
+  // transaction logic => 
+
+
+  async MakeDeposit(obj: any) {
+    mysql.query(`
+      INSERT INTO deposit_history
+      ( user_email, user_domain, coin_name, crypto_amount, 
+        usd_amount, date, address, status, user_id )
+      VALUES 
+      ( "${obj.userEmail}", "${obj.domainName}", "${obj.coinName}", ${obj.amountInCrypto}, 
+        ${obj.amountInUsd}, "${obj.currentDate}", "${obj.depositAddress}", "${obj.depositStatus}",
+        ${obj.userId} )`,
+      (err) => {
+        if (err) return console.error(err)
+        console.log('done');
+      })
+  }
+
+
+  async GetUserDepositInfoByDate(date: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM deposit_history
+        WHERE date = "${date}"
+        ORDER BY date
+        desc
+        `,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async GetDepositHistoryByUserId(user_id: number) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM deposit_history
+        WHERE user_id = ${user_id}
+        ORDER BY date
+        desc
+        `,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async MakeWithdrawal(obj: any) {
+    mysql.query(`
+      INSERT INTO withdrawal_history
+      ( user_email, user_domain, coin_name, crypto_amount, 
+        usd_amount, date, address, status, user_id )
+      VALUES 
+      ( "${obj.userEmail}", "${obj.domainName}", "${obj.coinName}", ${obj.amountInCrypto}, 
+        ${obj.amountInUsd}, "${obj.currentDate}", "${obj.depositAddress}", "${obj.depositStatus}",
+        ${obj.userId} )`,
+      (err) => {
+        if (err) return console.error(err)
+        console.log('done');
+      })
+  }
+
+  async GetUserWithdrawalInfoByDate(date: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM withdrawal_history
+        WHERE date = "${date}"
+        ORDER BY date
+        desc
+        `,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async GetWithdrawalHistoryByUserId(user_id: number) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM withdrawal_history
+        WHERE user_id = ${user_id}
+        ORDER BY date
+        desc
+        `,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+
+  async MakeSwap(obj: any) {
+    mysql.query(`
+      INSERT INTO swap_history
+      ( user_email, user_domain, coin_name_from, coin_name_to, 
+        crypto_amount_from, crypto_amount_to, usd_amount_from, 
+        usd_amount_to, date, status, user_id )
+      VALUES 
+      ( "${obj.userEmail}", "${obj.domainName}", "${obj.coinNameFrom}", "${obj.coinNameTo}", 
+        ${obj.amountInCryptoFrom}, ${obj.amountInCryptoTo}, ${obj.amountInUsdFrom}, 
+        ${obj.amountInUsdTo}, "${obj.currentDate}", "${obj.swapStatus}", ${obj.userId} )`,
+      (err) => {
+        if (err) return console.error(err)
+        console.log('done');
+      })
+  }
+
+  async GetUserSwapInfoByDate(date: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT * 
+        FROM swap_history
+        WHERE date = "${date}"
+        ORDER BY date
+        desc
+        `,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async GetSwapHistoryByUserId(user_id: number) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM swap_history
+        WHERE user_id = ${user_id}
+        ORDER BY date
+        desc
+        `,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async MakeInternalTransfer(obj: any) {
+    mysql.query(`
+      INSERT INTO internal_history
+      ( user_email, second_user_email, user_domain, coin_name, 
+        crypto_amount, usd_amount, address_from, 
+        address_to, date, type, status, user_id )
+      VALUES 
+      ( "${obj.userEmail}", "${obj.secondPartyEmail}", "${obj.domainName}", "${obj.coinName}",
+        ${obj.amountInCrypto}, ${obj.amountInUsd}, "${obj.fromAddress}", "${obj.toAddress}", 
+        "${obj.currentDate}", "${obj.transferType}", "${obj.transferStatus}", ${obj.userId} )`,
+      (err) => {
+        if (err) return console.error(err)
+        console.log('done');
+      })
+  }
+
+  async GetUserInternalTransferInfoByDate(date: string) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT * 
+        FROM internal_history
+        WHERE date = "${date}"
+        ORDER BY date
+        desc
+        `,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
+  async GetInternalTransferHistoryByUserId(user_id: number) {
+    return new Promise((resolve, reject) => {
+      mysql.query(`
+        SELECT *
+        FROM internal_history
+        WHERE user_id = ${user_id}
+        ORDER BY date
+        desc
+        `,
+        (e: any, result) => {
+          if (e) reject(new Error(e))
+          resolve(result)
+        })
+    })
+  }
+
 
 
 }

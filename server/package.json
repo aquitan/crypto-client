@@ -3,10 +3,6 @@
   "version": "1.0.0",
   "description": "crypto platform api",
   "main": "App.js",
-  "scripts": {
-    "dev": "nodemon dist/App.js",
-    "build": "npm i && tsc && node dist/App.js"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",

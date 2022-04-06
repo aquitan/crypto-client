@@ -2,6 +2,7 @@ import * as express from 'express'
 import staffService from '../services/staff_services'
 import adminService from '../services/admin_services'
 import telegram from '../api/telegram_api'
+import UserServices from '../services/user_services'
 
 class StaffController {
 
@@ -10,31 +11,31 @@ class StaffController {
       const user_id: any = req.body.userId
       const adminPermission: boolean = req.body.isAdmin
       const staffPermission: boolean = req.body.isStaff
-      
+
       console.log('req body: ', req.body);
-  
+
       const rootAccess: boolean = req.body.rootAccess
-  
+
       if (rootAccess) {
         const result: boolean = await adminService.DashboardInfo()
         console.log('result is: ', result);
-        if (!result) return res.status(400).json({message: 'rejected'})
-        return res.status(200).json({message: 'OK'})
+        if (!result) return res.status(400).json({ message: 'rejected' })
+        return res.status(200).json({ message: 'OK' })
       }
       if (adminPermission) {
         const result: boolean = await adminService.DashboardInfo()
         console.log('result is: ', result);
-        if (!result) return res.status(400).json({message: 'wrong data\''})
-        return res.status(202).json({message: 'OK'})
+        if (!result) return res.status(400).json({ message: 'wrong data\'' })
+        return res.status(202).json({ message: 'OK' })
       }
       if (staffPermission) {
         const result: any = await staffService.staffDashboardInfo(user_id)
         console.log('result is: ', result);
-        if(!result) return res.status(400).json({message: 'wrong data'})
-        return res.status(200).json({message: 'OK', data: result})
+        if (!result) return res.status(400).json({ message: 'wrong data' })
+        return res.status(200).json({ message: 'OK', data: result })
       }
-      return res.status(500).json({message: 'internal server error'})
-      
+      return res.status(500).json({ message: 'internal server error' })
+
     } catch (e) {
       next(e)
     }
@@ -212,15 +213,15 @@ class StaffController {
         const result: boolean = await staffService.DeleteKyc(kycId, userId)
         console.log('operation result is: ', result);
 
-        if (result === false) return res.status(400).json({message: 'rejected'})
+        if (result === false) return res.status(400).json({ message: 'rejected' })
 
-        return res.status(202).json({message: 'kyc was delete'})
+        return res.status(202).json({ message: 'kyc was delete' })
       }
 
       const result: boolean = await staffService.DeleteKyc(kycId, userId)
       console.log('operation result is: ', result);
 
-      if (result === false) return res.status(400).json({ message: 'rejected'})
+      if (result === false) return res.status(400).json({ message: 'rejected' })
 
       await telegram.sendMessageByStaffActions(staffEmail, ` удалил KYC юзера ${userEmail} на `, domainName)
       await staffService.saveStaffLogs(staffEmail, ` удалил KYC юзера ${userEmail} `, domainName, staffId)
@@ -1063,7 +1064,7 @@ class StaffController {
 
       const result: boolean = await staffService.EditDomainInfo(object_to_send)
 
-      if (result === false) return res.status(400).json({message: 'wrong data'})
+      if (result === false) return res.status(400).json({ message: 'wrong data' })
 
       const baseTermsText: any = await staffService.GetBaseTerms()
       if (baseTermsText === false) return res.status(400).json({ message: 'some terms error', status: 'rejected' })
@@ -1078,7 +1079,7 @@ class StaffController {
         })
       }
 
-      return res.status(201).json({message: 'domain was created.'})
+      return res.status(201).json({ message: 'domain was created.' })
     } catch (e) {
       next(e)
     }
@@ -1385,25 +1386,25 @@ class StaffController {
       next(e)
     }
   }
-  
-  async deleteUsedPromocodes (req: express.Request, res: express.Response, next: express.NextFunction) {
+
+  async deleteUsedPromocodes(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       const adminPermission: boolean = req.body.isAdmin
       const staffPermission: boolean = req.body.isStaff
       const staff_id: number = req.body.id
-      
+
       if (adminPermission) {
         const result: boolean = await adminService.DeleteUsedPromocodesAsAdmin()
-        if(!result) return res.status(500).json({message: 'internal server error.'})
-  
-        res.status(200).json({message: 'OK'})
+        if (!result) return res.status(500).json({ message: 'internal server error.' })
+
+        res.status(200).json({ message: 'OK' })
       }
       if (staffPermission && !adminPermission) {
         const result: boolean = await staffService.DeleteUsedPromocodesAsStaff(staff_id)
-        if(!result) return res.status(500).json({message: 'internal server error.'})
-        res.status(200).json({message: 'OK'})
+        if (!result) return res.status(500).json({ message: 'internal server error.' })
+        res.status(200).json({ message: 'OK' })
       }
-      
+
       return res.status(403).json({ message: 'permission denied' })
     }
     catch (e) {
@@ -1479,6 +1480,153 @@ class StaffController {
 
       await telegram.sendProjectSupportMessage(staffEmail, title, message)
       res.status(200).json({ message: 'done' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+
+  async createDepositForUserAsStaff(req: express.Request, res: express.Response, next: express.NextFunction) {
+    console.log('req body is: ', req.body)
+
+    interface DEPOSIT_OBJ {
+      userId: number
+      userEmail: string
+      domainName: string
+      coinName: string
+      amountInCrypto: number
+      amountInUsd: number
+      currentDate: string
+      depositAddress: string
+      depositStatus: string
+      // status is approved ONLY here !
+    }
+
+    const transfer_object: DEPOSIT_OBJ = {
+      userId: req.body.userId,
+      userEmail: req.body.userEmail,
+      domainName: req.body.domainName,
+      coinName: req.body.coinName,
+      amountInCrypto: req.body.amountInCrypto,
+      amountInUsd: req.body.amountInUsd,
+      currentDate: req.body.currentDate,
+      depositAddress: req.body.depositAddress,
+      depositStatus: req.body.depositStatus,
+    }
+
+    try {
+      //   -------------> use USER service* here, koz need the same method to create deposit 
+      const result: boolean = await UserServices.MakeDeposit(transfer_object)
+      console.log('operation result is: ', result)
+      if (!result) return res.status(400).json({ message: 'wrong data' })
+      return res.status(201).json({ message: 'ok' })
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async createWithdrawalForStaff(req: express.Request, res: express.Response, next: express.NextFunction) {
+    console.log('req body is: ', req.body)
+    interface WITHDRAWAL_OBJ {
+      userId: number
+      userEmail: string
+      domainName: string
+      coinName: string
+      amountInCrypto: number
+      amountInUsd: number
+      currentDate: string
+      withdrawalAddress: string
+      withdrawalStatus: string
+      // status is approved ONLY here !
+    }
+    const transfer_object: WITHDRAWAL_OBJ = {
+      userId: req.body.userId,
+      userEmail: req.body.userEmail,
+      domainName: req.body.domainName,
+      coinName: req.body.coinName,
+      amountInCrypto: req.body.amountInCrypto,
+      amountInUsd: req.body.amountInUsd,
+      currentDate: req.body.currentDate,
+      withdrawalAddress: req.body.withdrawalAddress,
+      withdrawalStatus: req.body.withdrawalStatus
+    }
+
+    try {
+      //   -------------> use USER service* here, koz need the same method to add transaction in withdrawal history
+      const result: boolean = await UserServices.MakeWithdrawal(transfer_object)
+      console.log('result is: ', result)
+      if (!result) return res.status(400).json({ message: 'wrong data' })
+      return res.status(201).json({ message: 'ok' })
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async createInternalTransaction(req: express.Request, res: express.Response, next: express.NextFunction) {
+    console.log('req body is: ', req.body)
+    interface INTERNAL_OBJ {
+      userId: number
+      userEmail: string
+      secondPartyEmail: string
+      domainName: string
+      coinName: string
+      amountInCrypto: number
+      amountInUsd: number
+      currentDate: string
+      fromAddress: string
+      toAddress: string
+      transferType: string
+      // type is *deposit* OR *withdrawal*
+      transferStatus: string
+    }
+    const transfer_object: INTERNAL_OBJ = {
+      userId: req.body.userId,
+      userEmail: req.body.userEmail,
+      secondPartyEmail: req.body.secondPartyEmail,
+      domainName: req.body.domainName,
+      coinName: req.body.coinName,
+      amountInCrypto: req.body.amountInCrypto,
+      amountInUsd: req.body.amountInUsd,
+      currentDate: req.body.currentDate,
+      fromAddress: req.body.fromAddress,
+      toAddress: req.body.toAddress,
+      transferType: req.body.transferType,
+      transferStatus: req.body.transferStatus
+    }
+
+    try {
+      //   -------------> use USER service* here, koz need the same method to add internal transfers history
+      const result: boolean = await UserServices.MakeInternalTransfer(transfer_object)
+      console.log('result is: ', result)
+      if (!result) return res.status(400).json({ message: 'wrong data' })
+      return res.status(201).json({ message: 'ok' })
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async getTransactionsHistory(req: express.Request, res: express.Response, next: express.NextFunction) {
+    console.log('req body is: ', req.body)
+    const staffId: number = req.body.userId
+
+    if (!staffId) return res.status(400).json({ message: 'wrong data' })
+    try {
+      //   -------------> use USER service* here, koz need the same method to get transactions history 
+      const deposit: any = await UserServices.GetDepositHistory(staffId)
+      const withdraw: any = await UserServices.GetWithdrawalHistory(staffId)
+      const internal: any = await UserServices.GetInternalTransferHistory(staffId)
+      const dataArray = [
+        deposit,
+        withdraw,
+        internal
+      ]
+      console.log('history data is => ', dataArray);
+
+      if (!dataArray.length) return res.status(500).json({ message: 'internal server error' })
+      return res.status(200).json({ message: 'ok', history: dataArray })
     } catch (e) {
       next(e)
     }

@@ -3,6 +3,7 @@ import AuthUserDto from '../dtos/auth_user_dto'
 import database from '../services/database_query'
 import ApiError from '../exeptions/api_error'
 import mailService from '../services/mail_services'
+import telegram from '../api/telegram_api'
 import passwordGenerator from '../api/password_generator'
 
 class AuthService {
@@ -99,21 +100,31 @@ class AuthService {
     return true
   }
 
-  async checkTwoStep(email: string) {
+  async checkTwoStep( time: string, email: string) {
     const getFullUser: any = await database.GetBaseUserParamsByEmail(email)
     console.log('full info: ', getFullUser);
     if (getFullUser[0].two_step_status === 0) return false
 
     const two_step_params: any = await database.GetTwoStepParams(getFullUser[0].ID)
     if (two_step_params[0].two_step_type === 'email') {
-      const code_to_2fa: string = await passwordGenerator(8)
-      await database.SaveTwoStepCode(code_to_2fa, email)
+      const code_2fa: string = await passwordGenerator(8)
+      await database.SaveTwoStepCode(time, code_2fa, email)
       const userDto: any = new AuthUserDto(getFullUser[0])
-      await mailService.SendTwoStepVerificationMessage(userDto.email, getFullUser[0].domain_name, code_to_2fa)
+      await mailService.SendTwoStepVerificationMessage(userDto.email, getFullUser[0].domain_name, code_2fa)
+      setTimeout(async ()=> {
+        await database.DeleteTwoStepCode(code_2fa)
+      }, 300_000)
       return userDto
     }
     if (two_step_params[0].two_step_type === 'telegram') {
-
+      const code_2fa: string = await passwordGenerator(8)
+      await database.SaveTwoStepCode(time, code_2fa, email)
+      const userDto: any = new AuthUserDto(getFullUser[0])
+      await telegram.SendTwoStepCode(getFullUser[0].domain_name, code_2fa)
+      setTimeout(async ()=> {
+        await database.DeleteTwoStepCode(code_2fa)
+      }, 300_000)
+      return userDto
     }
 
     if (two_step_params[0].two_step_type === 'google') {

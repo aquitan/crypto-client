@@ -6,7 +6,8 @@ dotenv.config()
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import compression from 'compression'
-import mysql from './config/mysql_config'
+import Telegram from './api/telegram_api'
+import { mysqlConnect } from './config/mysql_config'
 import router from './routes/index'
 
 import CORS_OPTIONS from './config/cors_config'
@@ -24,11 +25,14 @@ app.disable('x-powered-by')
 // routers
 app.use('/api', router)
 
+
 async function Connection() {
   // connect to mongo
   // await mongo
+  // start tg bots
+  await Telegram.TwoFactorBotGreeting()
   // connect to mysql
-  await mysql
+  await mysqlConnect()
   console.log('process..')
 }
 
@@ -41,11 +45,15 @@ server.listen(PORT, async () => {
   }
 })
 
+// https://tproger.ru/translations/guide-to-threads-in-node-js/   clone threads
+
 // 2fa google 
 // https://medium.com/@allistair.vilakazi/2fa-with-node-js-and-google-authenticator-7ddd44881493
 
 
 // autopayment + wallet generator + seed phrase generator
+
+// https://www.quicknode.com/guides/web3-sdks/how-to-send-a-transaction-on-solana-using-javascript
 // https://www.npmjs.com/package/node-ethereum-wallet
 
 // https://github.com/sagivo/accept-bitcoin

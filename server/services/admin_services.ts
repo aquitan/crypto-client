@@ -49,7 +49,7 @@ class adminService {
         onlineUsers: userOnline.length
       }
     }
-    if(!userOnline.length) dataLIst.onlineUsers = 0
+    if(!userOnline.length) dataLIst.baseInfo.onlineUsers = 0
     console.log ('received data list is: ',dataLIst)
     return usersList
   }
