@@ -13,6 +13,7 @@ import {patchData, postData} from "../../../services/StaffServices";
 import {twoFaElems} from "../../../utils/staffConstants";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
 import {observer} from "mobx-react-lite";
+import cls from './AccountSecurity.module.scss'
 
 const AccountSecurity = (props) => {
     
@@ -115,7 +116,7 @@ const AccountSecurity = (props) => {
     console.log('security---', store)
 
     return (
-        <Container>
+        <>
             <Modal active={state.isModal} title='Change password' setActive={handleModalClose}>
                 {
                     !state.isStatus ?
@@ -161,20 +162,28 @@ const AccountSecurity = (props) => {
                 </Form>
             </Modal>
 
-            <h1>Account security</h1>
+            <h2 className='mt-3 mb-3'>Account security</h2>
             <Row className='mb-4'>
-                <Col>
+                <Col className='text-center p-1'>
                     <h5>Change password</h5>
-                    <Button onClick={showChangePass} type='filled'>change password</Button>
+                    <Row className='justify-content-center'>
+                        <Col className='col-12 col-md-6'>
+                            <Button onClick={showChangePass} type='filled'>change password</Button>
+                        </Col>
+                    </Row>
                 </Col>
-                <Col>
+                <Col className='text-center p-1'>
                     <h5>2FA</h5>
-                    {!store.twoFactor ? <Button onClick={show2FA}>enable</Button> : <Button onClick={disable2FA}>Disable</Button>}
+                    <Row className='justify-content-center'>
+                        <Col className='col-12 col-md-6'>
+                            {!store.twoFactor ? <Button onClick={show2FA}>enable</Button> : <Button onClick={disable2FA}>Disable</Button>}
+                        </Col>
+                    </Row>
                 </Col>
             </Row>
 
-            <Card>
-                <Row style={{borderBottom: '1px solid #cecece'}}>
+            <Card className='bg-dark p-3'>
+                <Row className={cls.security_table_row}>
                     <Col>
                         IP
                     </Col>
@@ -184,7 +193,7 @@ const AccountSecurity = (props) => {
                 </Row>
                 <MyAccountLogsItem ip={props.data.ip_address} time={props.data.login_date} />
             </Card>
-        </Container>
+        </>
     )
 }
 

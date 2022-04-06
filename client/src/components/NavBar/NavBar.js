@@ -7,6 +7,7 @@ import {observer} from "mobx-react-lite";
 import Dropdown from "../UI/Dropdown/Dropdown";
 import Notification from "../UI/Notification/Notification";
 import Button from "../UI/Button/Button";
+import CurrencyRates from "../CurrencyRates/CurrencyRates";
 
 const NavBar = () => {
     const navigate = useNavigate()
@@ -23,21 +24,22 @@ const NavBar = () => {
         <Navbar className={cls.navbar} bg='dark'>
             <Container>
                 <Navbar>
-                    <Nav>
-                        <Dropdown />
-                    </Nav>
-                    {
-                        store.isStaff || store.fullAccess || store.isAdmin ? <NavLink className={cls.link} to='/admin'>Staff</NavLink> : null
-                    }
-                    <div style={{color: '#fff'}} className={cls.top}>
-                        {window.location.host}
+                    <div style={{color: 'green', fontWeight: 'bold', fontSize: 22}} className={cls.top}>
+                        {store.domain.domain_name}
                     </div>
                 </Navbar>
 
                 <Navbar.Collapse className={`${cls.right_nav} justify-content-end`}>
-
                     <Nav style={{width: '100%'}}>
                         <Row style={{width: '100%'}}>
+                            <Col>
+                                <Dropdown />
+                            </Col>
+                            <Col>
+                                {
+                                    store.isStaff || store.fullAccess || store.isAdmin ? <NavLink className={cls.link} to='/admin'>Staff</NavLink> : null
+                                }
+                            </Col>
                             <Col>
                                 <Notification />
                             </Col>

@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react'
 import {Container} from "react-bootstrap";
 import {getData} from "../../../services/StaffServices";
+import {store} from "../../../index";
 
 const Dashboard = () => {
     const getDashboard = async () => {
@@ -15,6 +16,8 @@ const Dashboard = () => {
     return (
         <Container>
             <h2>Dashboard</h2>
+            <span>Welcome!</span>
+            <h5>{store.user.name ? store.user.name : store.userEmail}</h5>
         </Container>
     )
 }

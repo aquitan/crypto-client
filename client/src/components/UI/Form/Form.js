@@ -1,12 +1,10 @@
 import React from 'react'
-import './Form.scss'
-import classNames from "classnames";
+import cls from './Form.module.scss'
+import classNames from "classnames/bind";
 
 const Form = ({children, classnames, ...props}) => {
-    let classes = classNames(
-        'form',
-        classnames
-    )
+    let cx = classNames.bind(cls)
+   let classes = cx ('form', classnames)
 
     return (
         <form className={classes} {...props}>

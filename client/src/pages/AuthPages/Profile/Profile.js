@@ -9,6 +9,7 @@ import {postData} from "../../../services/StaffServices";
 
 const Profile = () => {
     const [profileData, setProfileData] = useState('')
+    const [state, setState] = useState(false)
     const location = useLocation()
 
     console.log('state profile', profileData)
@@ -23,8 +24,18 @@ const Profile = () => {
         setProfileData(data)
         console.log('dataProfile', data)
     }
+
+    const checkPromocodeProfile = async () => {
+        const obj = {
+            domainName: window.location.host
+        }
+        const res = await postData('/get_promocodes_before_signup/', obj)
+        setState(res.data.promocode)
+    }
+
     useEffect(() => {
         getProfile()
+        checkPromocodeProfile()
     }, [])
 
     if (!profileData) {
@@ -38,7 +49,7 @@ const Profile = () => {
             <Row>
                 <Tabs>
                     <Tab eventKey='profile' title='My Account'>
-                        <MyAccount data={profileData?.user}/>
+                        <MyAccount promocode={state} data={profileData?.user}/>
                     </Tab>
                     <Tab eventKey='security' title='Security'>
                         <AccountSecurity data={profileData?.user}/>

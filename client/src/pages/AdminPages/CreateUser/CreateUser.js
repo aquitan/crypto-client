@@ -15,9 +15,13 @@ import TableBody from "../../../components/UI/Table/components/TableBody/TableBo
 import TableItem from "../../../components/UI/Table/components/TableItem/TableItem";
 import {postData} from "../../../services/StaffServices";
 import TableItemCreateUser from "../../../components/UI/Table/components/TableItemCreateUser/TableItemCreateUser";
+import {optionsCompiler} from "../../../utils/optionsCompiler";
+import Select from "../../../components/UI/Select/Select";
+import Preloader from "../../../components/UI/Preloader/Preloader";
 
 const CreateUser = () => {
     const [users, setUsers] = useState([])
+    const [domains, setDomains] = useState()
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: "onBlur"
     })
@@ -46,7 +50,28 @@ const CreateUser = () => {
     }
     useEffect(() => {
         getProfile()
+        getAllUsers()
     }, [])
+
+   const getAllUsers = async () => {
+       const obj = {
+           isAdmin: store.isAdmin,
+           isStaff: store.isStaff,
+           staffEmail: store.userEmail,
+           domainName: store.domain.full_domain_name,
+           doubleDeposit: store.domain.double_deposit,
+           depositFee: store.domain.deposit_fee,
+           rateCorrectSum: store.domain.rate_correct_sum,
+           minDepositSum: store.domain.min_deposit_sum,
+           minWithdrawalSum: store.domain.min_withdrawal_sum,
+           currencySwapFee: store.domain.currency_swap_fee
+       }
+       const res = await postData('/staff/domains/get_active_domains/', obj)
+       setDomains(optionsCompiler(res.data.domainsList))
+       console.log('res.data.domainsList', res.data.domainsList)
+       console.log('optionsCompiler(res.data.domainsList)', optionsCompiler(res.data.domainsList))
+   }
+
 
     const onSubmit = async (data, e) => {
         e.preventDefault()
@@ -61,7 +86,6 @@ const CreateUser = () => {
 
         const res = await postData('/staff/create_user', data)
         const dates = await res
-        console.log('create-user', dates)
     }
 
     return (
@@ -73,7 +97,7 @@ const CreateUser = () => {
                     <Row className='mb-3'>
                         <AdminInput {...register('name', {
                             required: true,
-                            pattern: /^[A-Za-z]+$/i
+                            pattern: /^[^а-яё]+$/iu
                         })} placeholder='Имя'/>
                         <ErrorMessage  name='name' errors={errors} render={() => <p className={error.error}>Только английские буквы</p>} />
                     </Row>
@@ -90,9 +114,12 @@ const CreateUser = () => {
                         })} placeholder='Пароль'/>
                         <ErrorMessage  name='password' errors={errors} render={() => <p className={error.error}>Необходимо ввести пароль</p>} />
                     </Row>
-                    {/*<Row className='mb-3'>*/}
-                    {/*    <AdminInput {...register('domain')} placeholder='Домен'/>*/}
-                    {/*</Row>*/}
+                    {
+                        domains ? <Row className='mb-3'>
+                            <Select {...register('domain')} options={domains} />
+                        </Row>
+                            : <Preloader />
+                    }
                     <Row className='mb-3'>
                         <AdminButton classname='green'>Создать пользователя</AdminButton>
                     </Row>

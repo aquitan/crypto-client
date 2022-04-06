@@ -1,0 +1,11 @@
+.chat {
+  border: 1px solid #cecece;
+  &_message_area {
+    background-color: #cecece;
+    min-height: 300px;
+    max-width: 100%;
+  }
+  &_btns_block {
+    display: flex;
+  }
+}

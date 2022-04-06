@@ -8,6 +8,7 @@ import AdminButton from "../../../components/UI/AdminButton/AdminButton";
 import TableHeader from "../../../components/UI/Table/components/TableHeader/TableHeader";
 import TableBody from "../../../components/UI/Table/components/TableBody/TableBody";
 import TableItem from "../../../components/UI/Table/components/TableItem/TableItem";
+import ActiveGroups from "./ActiveGroups/ActiveGroups";
 
 const GroupList = () => {
     const groupsOptions = [
@@ -38,12 +39,9 @@ const GroupList = () => {
 
             <AdminButtonCard>
                 <h2>Список групп</h2>
-                <Table>
-                    <TableHeader elems={headerData} />
-                    <TableBody>
-                        <TableItem />
-                    </TableBody>
-                </Table>
+                <ActiveGroups />
+                <ActiveGroups />
+                <ActiveGroups />
             </AdminButtonCard>
 
         </Container>

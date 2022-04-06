@@ -6,8 +6,11 @@
   border-bottom: 1px solid #cecece;
 }
 .promocode_item {
-  padding: 10px 0;
+  padding: 20px 0;
   border-bottom: 1px solid #cecece;
+  @media (max-width: 360px) {
+    flex-direction: column;
+  }
 }
 .current_promocodes {
   max-height: 200px;

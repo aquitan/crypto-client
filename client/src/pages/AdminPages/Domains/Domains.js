@@ -27,11 +27,14 @@ import {store} from "../../../index";
 import cls from "../../NonAuthPages/SignIn/SignIn.module.scss";
 import {ErrorMessage} from "@hookform/error-message";
 import {useNavigate} from "react-router-dom";
+import ModalDark from "../../../components/UI/ModalDark/ModalDark";
 
 const CreateDomains = () => {
-    const {register, handleSubmit, formState: {errors}} = useForm({
+    const [modal, setModal] = useState(false)
+    const {register, handleSubmit, formState: {errors}, reset} = useForm({
         mode: "onBlur"
     })
+    const [activeDomains, setActiveDomains] = useState()
     const navigate = useNavigate()
     const [errorList, setErrorList] = useState({
         verif_document: {
@@ -80,26 +83,37 @@ const CreateDomains = () => {
         console.log(data)
         const res = await putData('/staff/domains/create_domain/', data)
         const response = await res.data
-        console.log('res', response)
+        if (res.status === 201) {
+            setModal(true)
+            reset({data: ''})
+        }
     }
 
 
     useEffect(async () => {
-        const obj = {
-            isAdmin: store.isAdmin,
-            isStaff: store.isStaff,
-            staffEmail: store.userEmail
-        }
-        const res = await postData('/staff/domains/get_active_domains/', obj)
-        console.log('get domains', res.data)
+        getActiveDomains()
     }, [])
 
     const onDetail = (id) => {
         navigate(`/staff/domains/${id}`)
     }
 
+    const getActiveDomains = async () => {
+        const obj = {
+            isAdmin: store.isAdmin,
+            isStaff: store.isStaff,
+            staffEmail: store.userEmail
+        }
+        const res = await postData('/staff/domains/get_active_domains/', obj)
+        setActiveDomains(res.data.domainsList)
+        console.log('get domains', res.data)
+    }
+
     return (
         <Container>
+            <ModalDark active={modal} setActive={setModal} singleBtn={true}>
+                <h2>Домен создан успешно!</h2>
+            </ModalDark>
             <h1 className='mt-4'>Домены</h1>
             <AdminButtonCard>
                 <h2 className='mb-3 text-center'>Добавить новый домен</h2>
@@ -108,7 +122,7 @@ const CreateDomains = () => {
                         Никнейм или Email пользователя
                         <AdminInput {...register('staffEmail', {
                             required: true,
-                            pattern: /^[A-Za-z]+$/i
+                            pattern: /^[^а-яё]+$/iu
                         })} placeholder='User email or name' />
                         <ErrorMessage  name='staffEmail' errors={errors} render={() => <p className={cls.error}>enter staff email or name</p>} />
                     </Row>
@@ -116,7 +130,7 @@ const CreateDomains = () => {
                         Полное доменное имя
                         <AdminInput {...register('fullDomainName', {
                             required: true,
-                            pattern: /^[A-Za-z]+$/i
+                            pattern: /^[^а-яё]+$/iu
                         })} placeholder='bitdomain.com' />
                         <ErrorMessage  name='fullDomainName' errors={errors} render={() => <p className={cls.error}>enter domain name</p>} />
                     </Row>
@@ -127,7 +141,7 @@ const CreateDomains = () => {
                                     {input.text}
                                     <AdminInput type={input.inp} {...register(input.name, {
                                         required: true,
-                                        pattern: /^[A-Za-z]+$/i
+                                        pattern: /^[^а-яё]+$/iu
                                     })} placeholder={input.text}/>
                                     <ErrorMessage  name={input.name} errors={errors} render={() => <p className={cls.error}>This field is required</p>} />
                                 </Row>
@@ -146,7 +160,7 @@ const CreateDomains = () => {
                         })
                     }
                     <h2 className='mb-3'>Дефолтные ошибки</h2>
-                    <Accordion defaultActiveKey="0" flush>
+                    <Accordion className='mb-3' defaultActiveKey="0" flush>
                         <Accordion.Item className='bg-dark' eventKey='0'>
                             <Accordion.Header className='bg-dark'>{errorList.verif_address.title}</Accordion.Header>
                             <Accordion.Body className='bg-dark'>
@@ -266,10 +280,34 @@ const CreateDomains = () => {
 
             <AdminButtonCard>
                 <Table>
-                    <TableHeader elems={tableHeaderDomains} />
+                    <TableHeader classname='d-none col-md-block' elems={tableHeaderDomains} />
                     <TableBody>
-                        <TableItem elems={tableHeader} btn={'детальная'} onClick={onDetail} id={1} />
-                        <TableItem elems={tableHeader} btn={'детальная'} onClick={onDetail} id={2} />
+                        {
+                            activeDomains
+                                ? activeDomains.map(domain => {
+                                    return(
+                                        <Row className='mb-3 mt-3 domains-list-row'>
+                                            <Col className='d-none d-md-block'>
+                                                {domain.ID}
+                                            </Col>
+                                            <Col onClick={() => navigate(`/staff/domains/${domain.ID}`)}>
+                                                {domain.full_domain_name}
+                                            </Col>
+                                            <Col>
+                                                {domain.domain_owner}
+                                            </Col>
+                                            <Col className='d-none d-md-block'>
+                                                {domain.date_of_create}
+                                            </Col>
+                                            <Col className='d-none d-md-block'>
+                                                <AdminButton classname='orange' onClick={() => navigate(`/staff/domains/${domain.ID}`)}>Детальная</AdminButton>
+                                            </Col>
+                                        </Row>
+                                    )
+                                })
+                                : <h5>No data!</h5>
+                        }
+
                     </TableBody>
                 </Table>
             </AdminButtonCard>

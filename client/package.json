@@ -28,9 +28,16 @@
     "react-hook-form": "^7.22.1",
     "react-input-mask": "^2.0.4",
     "react-moment": "^1.1.1",
+    "react-query": "^3.34.16",
     "react-router-dom": "^6.1.1",
     "react-scripts": "4.0.3",
-    "web-vitals": "^1.1.2"
+    "wallet-address-validator": "^0.2.4",
+    "web-vitals": "^1.1.2",
+    "workbox-core": "^6.4.2",
+    "workbox-expiration": "^6.4.2",
+    "workbox-precaching": "^6.4.2",
+    "workbox-routing": "^6.4.2",
+    "workbox-strategies": "^6.4.2"
   },
   "proxy": "http://localhost:8888",
   "scripts": {

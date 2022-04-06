@@ -5,19 +5,25 @@ import {Row} from "react-bootstrap";
 import {store} from "../../index";
 import {useNavigate} from "react-router-dom";
 import AdminButton from "../UI/AdminButton/AdminButton";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faTimesCircle} from "@fortawesome/free-solid-svg-icons";
 
-const AdminSidebar = ({children}) => {
+const AdminSidebar = ({children, active, setInactive}) => {
     const navigate = useNavigate()
-    const onLogout = () => {
-        store.logout()
-        navigate('/')
+    const onLogout = async () => {
+       await store.logout()
+        if (!store.isAuth) {
+            navigate('/')
+        }
     }
     return (
-        <div className={`${cls.admin_sidebar} bg-dark`}>
-            <Row className='mb-3'>
+        <div className={`${cls.admin_sidebar} bg-dark ${active ? cls.active_sidebar : ''}`}>
+            <div className={cls.sidebar_close}>
+                <FontAwesomeIcon onClick={setInactive} icon={faTimesCircle} />
+            </div>
+            <Row>
                 <AdminButton classname='green' onClick={onLogout}>Выйти</AdminButton>
             </Row>
-            <Notification />
             {children}
         </div>
     )

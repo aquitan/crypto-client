@@ -51,10 +51,10 @@ const Terms = () => {
 
             <AdminButtonCard>
                 <Row>
-                    <Col className='col-2'>
+                    <Col className='col-12 col-md-2'>
                         {'${domain} = Domain'}
                     </Col>
-                    <Col className='col-2'>
+                    <Col className='col-12 col-md-2'>
                         {'${DOMAIN} = DOMAIN'}
                     </Col>
                 </Row>

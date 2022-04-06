@@ -1,20 +1,10 @@
 import React, {useState} from 'react'
 import PropTypes from 'prop-types'
-import {Col, Container, Row} from "react-bootstrap";
-import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
-import AdminInput from "../../../components/UI/AdminInput/AdminInput";
-import Select from "../../../components/UI/Select/Select";
-import {optionsCurrency, transTableHeader} from "../../../utils/staffConstants";
-import DatePickert from "react-datepicker";
-import AdminButton from "../../../components/UI/AdminButton/AdminButton";
+import {Col, Container, Row, Tab, Tabs} from "react-bootstrap";
 import {useForm} from "react-hook-form";
-import AdminForm from "../../../components/UI/AdminForm/AdminForm";
 import moment from "moment";
-import Table from "../../../components/UI/Table/Table";
-import TableHeader from "../../../components/UI/Table/components/TableHeader/TableHeader";
-import TableBody from "../../../components/UI/Table/components/TableBody/TableBody";
-import TableItem from "../../../components/UI/Table/components/TableItem/TableItem";
-import DatePickerCustom from "../../../components/UI/DatePickerCustom/DatePickerCustom";
+import MakeTransactionOuter from "./componets/MakeTransactionOuter/MakeTransactionOuter";
+import MakeTransactionInner from "./componets/MakeTransactionInner/MakeTransactionInner";
 
 const MakeTransaction = () => {
     const [startDate, setStartDate] = useState()
@@ -23,6 +13,10 @@ const MakeTransaction = () => {
     const trsType = [
         {value: 'Deposit', text: 'Депозит'},
         {value: 'Withdraw', text: 'Вывод'}
+    ]
+    const actionType = [
+        {value: 'Пополнение', text: 'Пополнение'},
+        {value: 'Внутренний перевод', text: 'Внутренний перевод'},
     ]
 
     const onSubmit = (data) => {
@@ -34,63 +28,16 @@ const MakeTransaction = () => {
     return (
         <Container>
             <h1 className='mt-4'>Создать транзакцию</h1>
-            <AdminButtonCard>
-                <AdminForm onSubmit={handleSubmit(onSubmit)}>
-                    <Row className='mb-3'>
-                        <Col>
-                            <Select {...register('currency')} options={optionsCurrency} classname='small'/>
-                        </Col>
-                        <Col>
-                            <Select {...register('type')} options={trsType} classname='small'/>
-                        </Col>
-                        <Col>
-                            <Select {...register('transaction')} options={trsType} classname='small'/>
-                        </Col>
-                        <Col>
-                            <DatePickert required
-                                         customInput={<DatePickerCustom/>}
-                                         placeholderText='Дата'
-                                         selected={startDate}
-                                         dateFormat='yyyy/MM/dd'
-                                         onChange={(date) => setStartDate(date)} />
-                        </Col>
-                        <Col>
-                            <DatePickert required
-                                         customInput={<DatePickerCustom/>}
-                                         placeholderText='Время'
-                                         selected={timeDate}
-                                         showTimeSelect
-                                         showTimeSelectOnly
-                                         timeIntervals={1}
-                                         timeCaption="Время"
-                                         timeFormat="HH:mm "
-                                         onChange={(time) => setTimeDate(time)} />
-                        </Col>
-                        <Col>
-                            <AdminInput {...register('sum')} classname='small_input' placeholder='Сумма' />
-                        </Col>
-                    </Row>
-                    <Row className='mb-3'>
-                        <Col>
-                            <AdminInput {...register('address')} classname='small_input' placeholder='Адрес'/>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <AdminButton classname='green'>Создать</AdminButton>
-                        </Col>
-                    </Row>
-                </AdminForm>
-            </AdminButtonCard>
 
-            <AdminButtonCard>
-                <Table>
-                    <TableHeader elems={transTableHeader} />
-                    <TableBody>
-                        <TableItem  />
-                    </TableBody>
-                </Table>
-            </AdminButtonCard>
+            <Tabs defaultActiveKey="outer" id="uncontrolled-tab-example" className="mb-3 mt-3">
+                <Tab eventKey='outer' title='Внешние транзацкии'>
+                    <MakeTransactionOuter />
+                </Tab>
+                <Tab eventKey='inner' title='Внутренние транзацкии'>
+                    <MakeTransactionInner />
+                </Tab>
+            </Tabs>
+
         </Container>
     )
 }

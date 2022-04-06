@@ -1,13 +1,12 @@
 import React from 'react'
-import './Button.scss'
+import cls from './Button.module.scss'
 import PropTypes, {bool} from "prop-types";
-import classNames from "classnames";
+import classNames from "classnames/bind";
 
 const Button = ({children, onClick, classname, disabled, active, ...attrs}) => {
-    let classes = classNames(
-        'button',
-        classname,
-        {active})
+    let cx = classNames.bind(cls)
+    let classes = cx('button', classname, {active})
+
 
     const onClickAction = (e) => {
         if (disabled) {

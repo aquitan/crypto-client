@@ -1,29 +1,26 @@
 export const dropdownLinks = [
     {
-        name: 'Dashboard', to: '/', id: 1
+        name: 'Dashboard', to: '/'
     },
     {
-        name: 'Profile', to: '/profile', id: 2
+        name: 'Profile', to: '/profile'
     },
     {
-        name: 'Withdraw', to: '/withdraw', id: 3
+        name: 'Withdraw', to: '/withdraw'
     },
     {
-        name: 'Deposit', to: '/deposit', id: 4
+        name: 'Deposit', to: '/deposit'
     },
     {
-        name: 'Internal Addresses', to: '/', id: 5
+        name: 'Internal Swap', to: '/internal-swap'
     },
     {
-        name: 'Swap', to: '/', id: 6
+        name: 'Internal Addresses', to: '/internal-addresses'
     },
     {
-        name: 'Support', to: '/', id: 7
+        name: 'Support', to: '/support'
     },
     {
-        name: 'Secure Deal', to: '/secure-deal', id: 8
-    },
-    {
-        name: 'Project support', to: '/project-support', id: 9
-    },
+        name: 'Secure Deal', to: '/secure-deal'
+    }
 ]

@@ -10,3 +10,16 @@
     color: #fff;
   }
 }
+.thick_datepicker {
+  height: 46px;
+}
+.light-datepicker {
+  background-color: #fff;
+  border: 1px solid #cecece;
+  height: auto;
+  padding: 10px 15px;
+  color: #000;
+  &::placeholder {
+    color: #000;
+  }
+}

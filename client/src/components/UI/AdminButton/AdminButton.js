@@ -1,16 +1,15 @@
 import React from 'react'
-import './AdminButton.scss'
 import PropTypes from "prop-types";
-import classNames from "classnames";
+import classNames from "classnames/bind";
+import cls from './AdminButton.module.scss'
 
 const AdminButton = ({children, classname, onClick, disabled, active, ...attr}) => {
-    let classes = classNames(
-        'default',
-        classname
-    )
+    let cx = classNames.bind(cls)
+    let classes = cx('default', classname)
+
+    console.log('classname', classes)
 
     const onClickAction = (e) => {
-        console.log(e.target)
         if (disabled) {
             e.preventDefault()
         } else {

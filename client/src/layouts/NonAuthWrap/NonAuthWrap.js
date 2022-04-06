@@ -4,6 +4,7 @@ import {publicRoutes} from "../../router/routes";
 import Footer from "../../components/Footer/Footer";
 import {AuthContext} from "../../index";
 import {v4 as uuid} from 'uuid'
+import {observer} from "mobx-react-lite";
 
 const NonAuthWrap = () => {
     const navigate = useNavigate()
@@ -31,4 +32,4 @@ const NonAuthWrap = () => {
     )
 }
 
-export default NonAuthWrap
+export default observer(NonAuthWrap)

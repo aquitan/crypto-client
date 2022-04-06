@@ -1,22 +1,23 @@
 import React, {useEffect, useState} from 'react'
-import {Card, Col, Form, Row} from "react-bootstrap";
+import {Col, Form, Row} from "react-bootstrap";
 import AdminButton from "../../../../../components/UI/AdminButton/AdminButton";
 import cls from '../../UserDetail.module.scss'
 import AdminInput from "../../../../../components/UI/AdminInput/AdminInput";
 import {useForm} from "react-hook-form";
-import UserService from "../../../../../services/UserService";
-import AdminForm from "../../../../../components/UI/AdminForm/AdminForm";
 import {v4 as uuid} from 'uuid'
 import ModalDark from "../../../../../components/UI/ModalDark/ModalDark";
 import {store} from "../../../../../index";
 import AdminButtonCard from "../../../../../components/AdminButtonCard/AdminButtonCard";
 import error from "../../../../../styles/Error.module.scss";
 import {ErrorMessage} from "@hookform/error-message";
-import {patchData, postData} from "../../../../../services/StaffServices";
+import {patchData} from "../../../../../services/StaffServices";
 import {getCurrentDate} from "../../../../../utils/getCurrentDate";
+import CustomCheckboxBtn from "../../../../../components/UI/CustomCheckboxBtn/CustomCheckboxBtn";
+import {useNavigate} from "react-router-dom";
+import {onLogin} from "../../../../../utils/onLogin";
 
 const UserDetailTabAct = (props) => {
-    const [isModal, setIsModal] = useState(false)
+    const navigate = useNavigate()
     const [state, setState] = useState({
         isOpen: false,
         onClickConfirm: null,
@@ -27,7 +28,7 @@ const UserDetailTabAct = (props) => {
         fullBan: props.data.base_data.isBanned,
         double: props.data.base_data.double_deposit,
         transactionBan: false,
-        isStaff: false,
+        isStaff: props.data.base_data.isStaff,
         swapBan: props.data.base_data.swap_ban
     })
     const dataObj = {
@@ -57,18 +58,22 @@ const UserDetailTabAct = (props) => {
 
     const changeBalance = async (data) => {
         console.log('balance',  data)
+        handleCloseModal()
     }
     const changeNotif = async (data) => {
         // const response = await UserService.postUserDetailData('/123', data)
         console.log('notif', data)
+        handleCloseModal()
     }
     const changePercent = async (data) => {
         console.log(data)
         // const response = await UserService.postUserDetailData('/123', data)
+        handleCloseModal()
     }
     const changeReqruiterName = async (data) => {
         // const response = await UserService.postUserDetailData('/123', data)
         console.log('chage', data)
+        handleCloseModal()
     }
     const changeSupportName = async (data) => {
         delete dataObj.userId
@@ -77,6 +82,7 @@ const UserDetailTabAct = (props) => {
         const response = await patchData('/staff/users/user_detail/update_staff_support_name/', {
             ...dataObj, updatedName: data.supportName
         })
+        handleCloseModal()
         console.log('reqruiter')
     }
     const makeStaff = async () => {
@@ -115,6 +121,7 @@ const UserDetailTabAct = (props) => {
             ...dataObj, status: !btns.fullBan
         })
         setBtns({...btns, swapBan: !btns.swapBan})
+        handleCloseModal()
         console.log('swap ban')
     }
 
@@ -135,6 +142,8 @@ const UserDetailTabAct = (props) => {
     const makeEmailClear = async () => {
         const response = await patchData('/123', dataObj)
     }
+
+    console.log('props on actions', props)
 
     const handleCloseModal = () => {
         setState({
@@ -186,6 +195,15 @@ const UserDetailTabAct = (props) => {
             onClickConfirm
         })
     }
+    const onUserEnter = () => {
+        store.logout()
+        store.setAsUser({
+            email: props.data.base_data.email,
+            password: '11111111'
+        })
+        onLogin()
+        navigate('/')
+    }
 
     if (!props) {
         return <h1>Loading...</h1>
@@ -203,164 +221,159 @@ const UserDetailTabAct = (props) => {
             {
                 store.isAdmin ?
                     <AdminButtonCard title='Сделать Работником'>
-                        {
-                            !btns.isStaff
-                                ? <AdminButton onClick={() => handleOpenModal('make-staff')} classname={'green'}>Сделать</AdminButton>
-                                : <AdminButton onClick={() => handleOpenModal('make-staff')} classname={'red'}>Убрать</AdminButton>
-                        }
+                        <CustomCheckboxBtn id='make-staff' onChange={() => handleOpenModal('make-staff')} checked={!btns.isStaff ? false : true}/>
                     </AdminButtonCard>
                     : null
             }
 
+            <AdminButtonCard title='Войти как пользователь'>
+                <AdminButton onClick={onUserEnter} classname='green'>Войти</AdminButton>
+            </AdminButtonCard>
+
             <AdminButtonCard title='Изменение баланса'>
-                <Row>
-                    <Col className='col-lg-2'>
+                <Row className='mb-3'>
+                    <Col className='col-12 col-md-2 col-lg-2'>
                         Счёт пользователя:
                     </Col>
-                    <Col className='col-lg-6'>
-                        <Form.Select className='mb-3' {...balanceRegister('wallet')} aria-label="Default select example">
+                    <Col className='col-12 col-md-6 col-lg-6'>
+                        <Form.Select {...balanceRegister('wallet')} aria-label="Default select example">
                             <option value="BTC">BTC</option>
                             <option value="ETH">ETH</option>
                         </Form.Select>
                     </Col>
                 </Row>
-                <Row>
-                    <Col className='col-lg-2'>
+                <Row className='mb-3'>
+                    <Col className='col-12 col-md-2 col-lg-2'>
                         Баланс кошелька:
                     </Col>
-                    <Col className='col-lg-6'>
-                        <AdminInput className='mb-3' {...balanceRegister('balance')} name='balance' placeholder='balance' value='2.0'/>
+                    <Col className='col-12 col-md-6 col-lg-6'>
+                        <AdminInput {...balanceRegister('balance')} name='balance' placeholder='balance' value='2.0'/>
                     </Col>
                 </Row>
-                <Row>
-                    <Col className='col-lg-2'>
+                <Row className='mb-3'>
+                    <Col className='col-12 col-md-2 col-lg-2'>
                         Нотификация:
                     </Col>
-                    <Col className='col-lg-6'>
-                        <AdminInput className='mb-3' {...balanceRegister('notification')} name='notification' placeholder='This your notif text'/>
+                    <Col className='col-12 col-md-6 col-lg-6'>
+                        <AdminInput {...balanceRegister('notification', {
+                            required: true,
+                            pattern: /^[^а-яё]+$/iu
+                        })} name='notification' placeholder='This your notif text'/>
                     </Col>
                 </Row>
                 <Row>
-                    <Col className='col-lg-2'>
+                    <Col className='col-12 col-md-2 col-lg-2'>
                         Направление:
                     </Col>
-                    <Col className='col-lg-6'>
+                    <Col className='col-12 col-md-6 col-lg-6'>
                         <Form.Select className='mb-3' {...balanceRegister('type')} aria-label="Default select example">
                             <option value="deposit">Пополнение</option>
                             <option value="withdraw">Снятие</option>
                         </Form.Select>
                     </Col>
                 </Row>
-                <Row>
-                    <Col className='col-lg-2'>
+                <Row className='mb-3'>
+                    <Col className='col-12 col-md-2 col-lg-2'>
                         Сумма:
                     </Col>
-                    <Col className='col-lg-6'>
-                        <AdminInput className='mb-3' {...balanceRegister('sum')} name='sum' placeholder='0' />
+                    <Col className='col-12 col-md-6 col-lg-6'>
+                        <AdminInput {...balanceRegister('sum')} name='sum' placeholder='0' />
                     </Col>
                 </Row>
-                <AdminButton onClick={() => handleOpenModal('balance')} classname={'green mb-3'} >Изменить</AdminButton>
+                <Row>
+                    <AdminButton onClick={() => handleOpenModal('balance')} classname={['green', 'marginless']} >Изменить</AdminButton>
+                </Row>
 
             </AdminButtonCard>
 
             <AdminButtonCard title='Нотификации'>
                 <Row>
-                    <Col>
-                        <AdminInput {...registerNotif('notification', {
-                            pattern: /^[A-Za-z]+$/
-                        })} className='mb-3' name='recruiterName' placeholder='Текст нотификации' />
-                        <ErrorMessage  name='notification' errors={errors2} render={() => <p className={error.error}>Только английские буквы</p>} />
+                    <Col className='col-12 col-sm-6 mb-2'>
+                        <AdminInput {...registerNotif('registerNotif', {
+                            pattern: /^[^а-яё]+$/iu
+                        })} name='registerNotif' placeholder='Текст нотификации' />
+                        <ErrorMessage  name='registerNotif' errors={errors2} render={() => <p className={error.error}>Только английские буквы</p>} />
                     </Col>
-                    <Col>
-                        <AdminButton onClick={() => handleOpenModal('notification')} classname={'green'}>Изменить</AdminButton>
+                    <Col className='col-12 col-sm-6 mb-2'>
+                        <AdminButton onClick={() => handleOpenModal('notification')} classname={['green', 'marginless']}>Изменить</AdminButton>
                     </Col>
                 </Row>
             </AdminButtonCard>
 
             <AdminButtonCard title='Комиссия депозита'>
                 <Row className='mb-1'>Текущий процент: 80%</Row>
-                <Row>
-                    <Col>
-                        <AdminInput {...registerPercent('newPercent')} className='mb-3' name='newPercent' placeholder='Изменить процент' />
+                <Row className='mb-3'>
+                    <Col className='col-12 col-sm-6 mb-2'>
+                        <AdminInput {...registerPercent('newPercent')}  name='newPercent' placeholder='Изменить процент' />
                     </Col>
-                    <Col>
-                        <AdminButton onClick={() => handleOpenModal('new-percent')} classname={'green'}>Изменить</AdminButton>
+                    <Col className='col-12 col-sm-6 mb-2'>
+                        <AdminButton onClick={() => handleOpenModal('new-percent')} classname={['green', 'marginless']}>Изменить</AdminButton>
                     </Col>
                 </Row>
             </AdminButtonCard>
 
             <AdminButtonCard title='Новый стафф рекрутер'>
-                <Row>
-                    <Col>
+                <Row className='mb-3'>
+                    <Col className='col-12 col-sm-6 mb-2'>
                         <AdminInput {...registerRecruiter('recruiterName', {
-                            pattern: /^[A-Za-z]+$/
-                        })} className='mb-3' name='recruiterName' placeholder='Изменить рекрутера' />
-                        <ErrorMessage  name='recruiterName' errors={errors2} render={() => <p className={error.error}>Только английские буквы</p>} />
+                            required: true,
+                            pattern: /^[^а-яё]+$/iu
+                        })} name='recruiterName' placeholder='Изменить рекрутера' />
+                        <ErrorMessage  name='recruiterName' errors={errors3} render={() => <p className={error.error}>Только английские буквы</p>} />
                     </Col>
-                    <Col>
-                        <AdminButton onClick={() => handleOpenModal('staff-reqruiter')} classname={'green'}>Изменить</AdminButton>
+                    <Col className='col-12 col-sm-6'>
+                        <AdminButton onClick={() => handleOpenModal('staff-reqruiter')} classname={['green', 'marginless']}>Изменить</AdminButton>
                     </Col>
                 </Row>
             </AdminButtonCard>
 
             <AdminButtonCard title='Изменить имя в саппорте'>
-                <Row>
-                    <Col>
+                <Row className='mb-3'>
+                    <Col className='col-12 col-sm-6 mb-2'>
                         <AdminInput {...registerSupport('supportName',{
-                            pattern: /^[A-Za-z]+$/i
-                        })} name='supportName' className='mb-3' placeholder='Изменить имя'/>
-                        <ErrorMessage  name='supportName' errors={errors3} render={() => <p className={error.error}>Только английские буквы</p>} />
+                            pattern: /^[^а-яё]+$/iu
+                        })} name='supportName' placeholder='Изменить имя'/>
+                        <ErrorMessage  name='supportName' errors={errors4} render={() => <p className={error.error}>Только английские буквы</p>} />
                     </Col>
-                    <Col>
-                        <AdminButton onClick={() => handleOpenModal('support')} classname={'green'} >Изменить</AdminButton>
+                    <Col className='col-12 col-sm-6'>
+                        <AdminButton onClick={() => handleOpenModal('support')} classname={['green', 'marginless']} >Изменить</AdminButton>
                     </Col>
                 </Row>
             </AdminButtonCard>
 
             <AdminButtonCard title='Премиум статус'>
-                {
-                    !btns.currentPrem ?
-                        <AdminButton onClick={() => handleOpenModal('premium')} classname={'green'}>Вкл</AdminButton>
-                        :
-                        <AdminButton onClick={() => handleOpenModal('premium')} classname={'red'}>выкл</AdminButton>
-                }
+                <Row>
+                    <CustomCheckboxBtn id='premium' onChange={() => handleOpenModal('premium')} checked={!btns.currentPrem ? false : true}/>
+                </Row>
             </AdminButtonCard>
 
             <AdminButtonCard title='Дабл депов'>
-                {
-                   !btns.double
-                       ? <AdminButton onClick={() => handleOpenModal('double')} classname={'green'}>Вкл</AdminButton>
-                       : <AdminButton onClick={() => handleOpenModal('double')} classname={'red'}>Выкл</AdminButton>
-                }
+                <Row>
+                    <CustomCheckboxBtn id='double' onChange={() => handleOpenModal('double')} checked={!btns.double ? false : true}/>
+                </Row>
             </AdminButtonCard>
 
             <AdminButtonCard title='Полный бан'>
-                {
-                    !btns.fullBan ?
-                        <AdminButton onClick={() => handleOpenModal('full-ban')} classname={'green'}>Вкл</AdminButton>
-                        : <AdminButton onClick={() => handleOpenModal('full-ban')} classname={'red'}>Выкл</AdminButton>
-                }
+                <Row>
+                    <CustomCheckboxBtn id='full-ban' onChange={() => handleOpenModal('full-ban')} checked={!btns.fullBan ? false : true}/>
+                </Row>
             </AdminButtonCard>
 
             <AdminButtonCard title='Бан внутренних транзакций'>
-                {
-                    !btns.transactionBan ?
-                        <AdminButton onClick={() => handleOpenModal('internal-ban')} classname={'green'}>Вкл</AdminButton>
-                        : <AdminButton onClick={() => handleOpenModal('internal-ban')} classname={'red'}>Выкл</AdminButton>
-                }
+                <Row>
+                    <CustomCheckboxBtn id='internal-ban' onChange={() => handleOpenModal('internal-ban')} checked={!btns.swapBan ? false : true}/>
+                </Row>
             </AdminButtonCard>
 
             <AdminButtonCard title='Бан свапов'>
-                {
-                    !btns.swapBan ?
-                        <AdminButton onClick={() => handleOpenModal('swap-ban')} classname={'green'}>Вкл</AdminButton>
-                        : <AdminButton onClick={() => handleOpenModal('swap-ban')} classname={'red'}>Выкл</AdminButton>
-                }
+                <Row>
+                    <CustomCheckboxBtn id='swap-ban' onChange={() => handleOpenModal('swap-ban')} checked={!btns.swapBan ? false : true}/>
+                </Row>
             </AdminButtonCard>
 
             <AdminButtonCard title='IP адреса и почта'>
                 <Row className={cls.ip_list}>
-                    <Col className='col-4'>
+                    <Col className='col-6'>
                         {
                             props.ipData.length ?
                                 props.ipData.map(ip => {
@@ -373,9 +386,9 @@ const UserDetailTabAct = (props) => {
                                 })
                                 : <h5>User is unique</h5>
                         }
-                        <AdminButton onClick={() => handleOpenModal('ip-clear')} classname={'green'}>Очистить IP</AdminButton>
+                        <AdminButton onClick={() => handleOpenModal('ip-clear')} classname={['green', 'marginless']}>Очистить IP</AdminButton>
                     </Col>
-                    <Col className='col-4'>
+                    <Col className='col-6'>
                         { props.data ?
                             <Row>
                                 <Col>{props.data.base_data.email}</Col>

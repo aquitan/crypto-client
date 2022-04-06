@@ -12,10 +12,16 @@ const UserDetailTabInfo = ({data}) => {
         return <h1>Loading</h1>
     }
 
+    const renderUserType = () => {
+        if (data.user.base_data.isAdmin) return  'Админ'
+        if (data.user.base_data.isStaff) return 'Стафф'
+        return 'Пользователь'
+    }
+
     return (
         <div>
             <Row>
-                <Col>
+                <Col className='col-12 col-xl-6'>
                     <Row className={cls.users_detail_table_row}>
                         <Col className={cls.users_detail_table_col}>
                             ID
@@ -29,7 +35,7 @@ const UserDetailTabInfo = ({data}) => {
                             Тип пользователя
                         </Col>
                         <Col className={cls.users_detail_table_col}>
-                            {data.user.base_data.isAdmin ? 'Админ' : 'Стафф'}
+                            {renderUserType()}
                         </Col>
                     </Row>
                     <Row className={cls.users_detail_table_row}>
@@ -140,7 +146,7 @@ const UserDetailTabInfo = ({data}) => {
                 </Col>
 
 
-                <Col>
+                <Col className='col-12 col-xl-6'>
                     <Row className={cls.users_detail_table_row}>
                         <Col className={cls.users_detail_table_col}>
                             Привёл
@@ -154,7 +160,9 @@ const UserDetailTabInfo = ({data}) => {
                             2FA
                         </Col>
                         <Col className={cls.users_detail_table_col}>
-                            <FontAwesomeIcon color={'tomato'} icon={faTimesCircle} />
+                            {
+                                data.user.base_data.two_step_status === 1 ? <FontAwesomeIcon color={'green'} icon={faCheckCircle} />  : <FontAwesomeIcon color={'tomato'} icon={faTimesCircle} />
+                            }
                         </Col>
                     </Row>
                     <Row className={cls.users_detail_table_row}>

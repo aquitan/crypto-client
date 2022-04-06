@@ -5,6 +5,7 @@ import {getGeoData} from "../../queries/getSendGeoData";
 import UserService from "../../services/UserService";
 import moment from 'moment'
 import timezone from 'moment-timezone'
+import CurrencyRates from "../../components/CurrencyRates/CurrencyRates";
 
 const UserLayout = () => {
     const [dashboardInfo, setDashboardInfo] = useState('')
@@ -25,16 +26,8 @@ const UserLayout = () => {
 
     return (
         <div className={'layout'}>
-            <Container>
-                <Row className='mb-5'>
-                    <div>
-                        <h3>Hello</h3>
-                        {
-                            dashboardInfo.name ?  <span>{dashboardInfo.name}</span> : <span>{dashboardInfo.email}</span>
-                        }
-                    </div>
-
-                </Row>
+            <Container className='pt-5'>
+                <CurrencyRates/>
                 <Outlet/>
             </Container>
         </div>

@@ -34,14 +34,14 @@ export const domainsInputs = [
 export const domainSelect = [
     {
         name: 'showNews', text: 'Показывать новости?', type: 'Select', options: [
+            {value: false, text: 'Нет'},
             {value: true, text: 'Да'},
-            {value: false, text: 'Нет'}
         ]
     },
     {
         name: 'doubleDeposit', text: 'Удваивать депозит?', type: 'Select', options: [
+            {value: false, text: 'Нет'},
             {value: true, text: 'Да'},
-            {value: false, text: 'Нет'}
         ]
     },
 ]
@@ -286,4 +286,7 @@ export const textareaTerms = (domainSmall, domainBig, domainSupport) => {
 
 export const transTableHeader = [
     '#', 'Currency', 'Type', 'Date & time', 'Amount'
+]
+export const transInnerTableHeader = [
+    '#', 'Currency', 'from-to', 'Date & time', 'Amount'
 ]

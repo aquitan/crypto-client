@@ -1,9 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@400;700&display=swap');
+/*@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&display=swap');*/
+/*@import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@400;700&display=swap');*/
+/*@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');*/
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
 body {
   margin: 0;
   height: 100%;
-  font-family: 'Assistant', sans-serif;
+  font-family: 'Poppins', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -14,6 +18,30 @@ body {
   /*overflow-y: auto;*/
   position: relative;
   max-width: 1540px;
+}
+
+body *::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 680px) {
+  .admin-black-card {
+    padding: 5px;
+  }
+  .row {
+    padding: 0;
+  }
+  .col {
+    padding: 0;
+  }
+}
+
+a {
+  color: #fff;
+  text-decoration: none;
+}
+a:hover {
+  color: #cecece;
 }
 
 html {
@@ -28,6 +56,11 @@ html {
 h1, h2, h3, h4 {
   margin: 0;
   font-family: 'Merriweather Sans', sans-serif;
+}
+@media (max-width: 1200px) {
+  h1 {
+    margin: 0 40px;
+  }
 }
 
 .row {
@@ -44,4 +77,21 @@ code {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  background-color: #242634;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  border: none;
+  -webkit-text-fill-color: #fff;
+  background-color: rgb(33,37,41);
+  -webkit-box-shadow: 0 0 0px 1000px #000 inset;
+  transition: background-color 5000s ease-in-out 0s;
 }
