@@ -12,8 +12,7 @@ class Database {
         domain_list.company_phone_number, domain_list.company_email, domain_list.company_owner_name,
         domain_list.company_year, domain_list.company_country, domain_list.domain_owner,
         domain_detail.show_news, domain_detail.double_deposit, domain_detail.deposit_fee,
-        domain_detail.rate_correct_sum, domain_detail.min_deposit_sum, domain_detail.min_withdrawal_sum, domain_detail.currency_swap_fee,
-        domain_detail.internal_swap_fee
+        domain_detail.rate_correct_sum, domain_detail.min_deposit_sum, domain_detail.min_withdrawal_sum, domain_detail.currency_swap_fee
         FROM domain_list
         JOIN domain_detail
         ON domain_list.ID = domain_detail.domain_id
@@ -26,8 +25,6 @@ class Database {
   }
 
   async GetPromocodeListBeforeSignup(domain_name: string) {
-
-
     return new Promise((resolve, reject) => {
       mysql.query(`
         SELECT code
@@ -51,7 +48,7 @@ class Database {
       ( email, password, activationLink, self_registration, promocode, agreement, domain_name, date_of_entry, name) 
       VALUES 
       ( "${email}", "${password}", "${activationLink}", "${self_registration}", "${promocode}", ${agreement},
-      "${domainName}", "${dateOfEntry}", "${name || ''}" )`,
+      "${domainName}", NOW(), "${name || ''}" )`,
       (err, result) => {
         if (err) console.error(err)
         console.log('done')
@@ -120,7 +117,7 @@ class Database {
       ( ${double_deposit}, ${swap_ban}, ${internal_ban}, ${isUser}, ${isStaff},
       ${isAdmin}, ${isBanned}, ${isActivated}, ${premium_status}, ${two_step_status}, ${agreement}, "${kyc_status}", ${user_id})`,
       (err, result) => {
-        if (err) console.error(err)
+        if (err) return console.error(err)
         console.log('done')
         console.log('user params was saved');
       })
@@ -342,7 +339,7 @@ class Database {
     })
   }
 
-  async GetBaseUserParamsById(user_id: number | false,) {
+  async GetBaseUserParamsById(user_id: number) {
     return new Promise((resolve, reject) => {
       mysql.query(`
         SELECT user_auth.ID, user_auth.name, user_auth.email, user_params.isActivated, user_params.isUser, 
@@ -381,7 +378,7 @@ class Database {
   async GetBaseUserParamsByEmail(email: string) {
     return new Promise((resolve, reject) => {
       mysql.query(`
-        SELECT user_auth.ID, user_auth.name, user_auth.password, user_auth.domain_name user_auth.email,
+        SELECT user_auth.ID, user_auth.name, user_auth.password, user_auth.domain_name, user_auth.email,
         user_params.isActivated, user_params.isUser, user_params.double_deposit,
         user_params.swap_ban, user_params.internal_ban, user_params.isBanned,
         user_params.isStaff, user_params.isAdmin,user_params.isBanned,
@@ -397,7 +394,7 @@ class Database {
     })
   }
 
-  // SELECT user_auth.ID, user_auth.name, user_auth.email, user_params.isActivated, user_params.isUser, user_params.isStaff, user_params.isAdmin, user_params.isBanned, user_params.two_step_status, user_params.premium_status FROM user_params JOIN user_auth ON user_params.user_id = user_auth.ID  WHERE user_auth.ID = 9;
+  // SELECT user_auth.ID, user_auth.name, user_auth.email, user_params.isActivated, user_params.isUser, user_params.isStaff, user_params.isAdmin, user_params.isBanned, user_params.two_step_status, user_params.premium_status FROM user_params JOIN user_auth ON user_params.user_id = user_auth.ID  WHERE user_auth.email = "";
 
 
   async GetUserByEmailAndPassword(email: string, password: string) {

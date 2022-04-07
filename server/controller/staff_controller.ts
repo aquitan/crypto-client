@@ -625,6 +625,7 @@ class StaffController {
 
       if (rootAccess === true) {
         transfer_object.staffId = 999999
+        transfer_object.staffEmail = 'root'
         const result: boolean = await staffService.CreateUserAsStaff(transfer_object)
         if (result === false) return res.status(400).json({ message: 'wrong data' })
 

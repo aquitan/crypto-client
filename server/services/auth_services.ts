@@ -36,12 +36,12 @@ class AuthService {
     const activationLink: string = await passwordGenerator(18)
     const domainOwner: any = await database.GetBaseDomainInfo(transfer_object.domainName)
     console.log('domain owner is: ', domainOwner[0].domain_owner);
-    if (!domainOwner[0]) await database.CreateUser(transfer_object.email, transfer_object.password, activationLink, 'self registred', transfer_object.promocode, transfer_object.agreement, transfer_object.domain_name, transfer_object.datetime, transfer_object.name || '')
+    if (!domainOwner[0]) await database.CreateUser(transfer_object.email, transfer_object.password, activationLink, 'self registred', transfer_object.promocode, true, transfer_object.domain_name, transfer_object.datetime, transfer_object.name || '')
 
-    await database.CreateUser(transfer_object.email, transfer_object.password, transfer_object.activationLink, domainOwner[0].domain_owner, transfer_object.promocode, transfer_object.agreement, transfer_object.domain_name, transfer_object.datetime, transfer_object.name || '')
+    await database.CreateUser(transfer_object.email, transfer_object.password, transfer_object.activationLink, domainOwner[0].domain_owner, transfer_object.promocode, true, transfer_object.domain_name, transfer_object.datetime, transfer_object.name || '')
 
     const curUser: any = await database.GetUserByEmail(transfer_object.email)
-    await database.SaveBaseUserParams(transfer_object.doubleDeposit, false, false, true, false, false, false, false, false, false, true, transfer_object.kycStatus, curUser[0].ID)
+    await database.SaveBaseUserParams(transfer_object.doubleDeposit, false, false, true, false, false, false, false, false, false, true, 'empty', curUser[0].ID)
     await database.SaveUserInfoForAction(transfer_object.depositFee, '', 1, curUser[0].ID)
     const user: any = await database.GetBaseUserParamsByEmail(transfer_object.email)
     console.log(user);
@@ -100,7 +100,7 @@ class AuthService {
     return true
   }
 
-  async checkTwoStep( time: string, email: string) {
+  async checkTwoStep(time: string, email: string) {
     const getFullUser: any = await database.GetBaseUserParamsByEmail(email)
     console.log('full info: ', getFullUser);
     if (getFullUser[0].two_step_status === 0) return false
@@ -111,20 +111,20 @@ class AuthService {
       await database.SaveTwoStepCode(time, code_2fa, email)
       const userDto: any = new AuthUserDto(getFullUser[0])
       await mailService.SendTwoStepVerificationMessage(userDto.email, getFullUser[0].domain_name, code_2fa)
-      setTimeout(async ()=> {
+      setTimeout(async () => {
         await database.DeleteTwoStepCode(code_2fa)
       }, 300_000)
-      return userDto
+      return true
     }
     if (two_step_params[0].two_step_type === 'telegram') {
       const code_2fa: string = await passwordGenerator(8)
       await database.SaveTwoStepCode(time, code_2fa, email)
-      const userDto: any = new AuthUserDto(getFullUser[0])
+      // const userDto: any = new AuthUserDto(getFullUser[0])
       await telegram.SendTwoStepCode(getFullUser[0].domain_name, code_2fa)
-      setTimeout(async ()=> {
+      setTimeout(async () => {
         await database.DeleteTwoStepCode(code_2fa)
       }, 300_000)
-      return userDto
+      return true
     }
 
     if (two_step_params[0].two_step_type === 'google') {

@@ -235,17 +235,23 @@ class staffService {
 	}
 
 	async CreateUserAsStaff(transfer_object: any) {
-
+		const candidate: any = await database.GetUserByEmail(transfer_object.userEmail)
+		if (candidate[0]) {
+			console.log('user already registered ')
+			return false
+		}
 		const activationLink: string = await codeGenerator(8)
 		const domainOwner: any = await database.GetBaseDomainInfo(transfer_object.domainName)
 		console.log('domain owner is: ', domainOwner[0].domain_owner)
-		const curUser: any = await database.GetUserByEmail(transfer_object.userEmail)
-
 		await database.CreateUser(transfer_object.userEmail, transfer_object.password, activationLink, domainOwner[0].domain_owner, 'empty', true, transfer_object.domainName, transfer_object.datetime, transfer_object.name || '')
-		const user: any = await database.GetBaseUserParamsByEmail(transfer_object.userEmail)
-		if (!user[0]) return false
-		await database.SaveBaseUserParams(transfer_object.doubleDeposit, false, false, true, false, false, false, true, false, false, true, 'empty', user[0].ID)
+
+		const curUser: any = await database.GetUserByEmail(transfer_object.userEmail)
+		if (!curUser[0]) return false
+		await database.SaveBaseUserParams(transfer_object.doubleDeposit, false, false, true, false, false, false, true, false, false, true, 'empty', curUser[0].ID)
 		await database.SaveUserInfoForAction(transfer_object.depositFee, '', 1, curUser[0].ID)
+		const user: any = await database.GetBaseUserParamsById(curUser[0].ID)
+		console.log ('user is: ', user)
+		
 
 		return true
 	}
