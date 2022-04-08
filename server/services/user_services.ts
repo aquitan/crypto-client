@@ -5,8 +5,8 @@ import mailService from '../services/mail_services'
 import telegram from '../api/telegram_api'
 import qrCode from 'qrcode'
 import speakeasy from 'speakeasy'
-import kycModel from 'models/KYC.model'
-import userParams from 'models/User_params.model'
+import kycModel from '../models/KYC.model'
+import userParams from '../models/User_params.model'
 
 
 
