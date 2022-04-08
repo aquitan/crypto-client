@@ -28,10 +28,10 @@ export default class AuthUserDto {
     this.isBanned = model.isBanned
     this.kycStatus = model.kycStatus
     this.twoStepStatus = model.twoStepStatus
-    this.premium_status = model.premium_status
-    this.double_deposit = model.double_deposit
-    this.swap_ban = model.swap_ban
-    this.internal_ban = model.internal_ban
-    this.deposit_fee = model.deposit_fee
+    this.premiumStatus = model.premiumStatus
+    this.doubleDeposit = model.doubleDeposit
+    this.swapBan = model.swapBan
+    this.internalBan = model.internal_ban
+    this.depositFee = model.premiumStatus
   }
 }
