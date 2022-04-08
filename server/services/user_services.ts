@@ -5,6 +5,10 @@ import mailService from '../services/mail_services'
 import telegram from '../api/telegram_api'
 import qrCode from 'qrcode'
 import speakeasy from 'speakeasy'
+import kycModel from 'models/KYC.model'
+import userParams from 'models/User_params.model'
+
+
 
 async function generateCodeForGoogle2fa(domain_name: string) {
 	const secretCode = speakeasy.generateSecret({
@@ -21,21 +25,22 @@ class UserServices {
 
 	async dashboard(user_id: string) {
 
-		const userKyc: any = await database.GetUserKycByUserId(user_id)
-		const user: any = await database.GetBaseUserParamsById(user_id)
-		console.log('kyc of current user: ', userKyc[0])
-		console.log('info of current user: ', user[0])
+		const userKyc: any = await kycModel.findOne({ userId: user_id })
+		const user: any = await userParams.findById({ userId: user_id })
 
-		if (!userKyc[0]) {
+		console.log('kyc of current user: ', userKyc)
+		console.log('info of current user: ', user)
+
+		if (!userKyc) {
 			let dashboardUserDto: any = new DashboardUserDto(user[0])
 			console.log('user dto is: ', dashboardUserDto)
-			if (user[0].isStaff || user[0].isAdmin) {
+			if (user.isStaff || user.isAdmin) {
 				dashboardUserDto.withoutLogs = true
 			}
 			return dashboardUserDto
 		}
 
-		let dashboardUserDto: any = new DashboardUserDto(userKyc[0])
+		let dashboardUserDto: any = new DashboardUserDto(userKyc)
 		if (user[0].isStaff || user[0].isAdmin) {
 			dashboardUserDto.withoutLogs = true
 		}
