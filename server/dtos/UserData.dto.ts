@@ -1,5 +1,5 @@
-import baseUserData from 'models/User_base_data.model'
-import userParams from 'models/User_params.model'
+import baseUserData from '../models/User_base_data.model'
+import userParams from '../models/User_params.model'
 
 export async function getUserData(email: string, userId?: string) {
   let curUser: any;

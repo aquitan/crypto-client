@@ -31,7 +31,7 @@ export default class AuthUserDto {
     this.premiumStatus = model.premiumStatus
     this.doubleDeposit = model.doubleDeposit
     this.swapBan = model.swapBan
-    this.internalBan = model.internal_ban
+    this.internalBan = model.internalBan
     this.depositFee = model.premiumStatus
   }
 }

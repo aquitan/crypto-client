@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken'
-import database from './database_query'
-import authToken from 'models/Token.model'
+import authToken from '../models/Token.model'
 
 // token secret here 
 const accessSecret: string | any = process.env.JWT_ACCESS_SECRET
