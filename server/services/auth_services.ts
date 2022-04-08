@@ -1,169 +1,243 @@
 import tokenService from './token_services'
-import AuthUserDto from '../dtos/auth_user_dto'
+import baseUserData from 'models/User_base_data.model'
+import userParams from 'models/User_params.model'
+import userActionInfo from 'models/User_info_for_action.model'
+import user2faParams from 'models/User_2fa_params.model'
+import domainDetail from 'models/Domain_detail.model'
+import domainList from 'models/Domain_list.mode'
+import domainTerms from 'models/Domain_terms.model'
+import codeList from 'models/Promocodes.model'
+import usedPromo from 'models/Used_promocodes.model'
+import twoStepList from 'models/User_2fa_code_list.model'
+import userNotif from 'models/User_notifications.model'
+import userLogs from 'models/User_logs.model'
+import ipMatch from 'models/User_ip_match.model'
 import database from '../services/database_query'
 import ApiError from '../exeptions/api_error'
 import mailService from '../services/mail_services'
 import telegram from '../api/telegram_api'
 import passwordGenerator from '../api/password_generator'
+import { getUserData } from 'dtos/UserData.dto'
+// import mongoose from 'mongoose'
 
 class AuthService {
 
   async GetDomainInfo(domain_name: string) {
-    const domain_info: any = await database.GetDomainInfoForUser(domain_name)
-    const domain_terms: any = await database.GetDomainTerms(domain_name)
-    if (!domain_info[0]) return false
-    if (!domain_terms[0]) return false
-
-    const dataObject = {
-      domain_info: domain_info[0],
-      domain_terms: domain_terms[0]
+    const domain_info: any = await domainList.findOne({ domainName: domain_name })
+    const domain_detail: any = await domainDetail.findById({ _id: domain_info._id })
+    const domain_terms: any = await domainTerms.findOne({ domainName: domain_name })
+    if (!domain_info || !domain_detail || !domain_terms) return false
+    const domainInfo = {
+      domainId: domain_info._id,
+      fullDomainName: domain_info.fullDomainName,
+      domainName: domain_info.domainName,
+      companyAddress: domain_info.companyAddress,
+      companyPhoneNumber: domain_info.companyPhoneNumber,
+      companyEmail: domain_info.companyEmail,
+      companyOwnerName: domain_info.companyOwnerName,
+      companyYear: domain_info.companyYear,
+      companyCountry: domain_info.companyCountry,
+      domainOwner: domain_info.domainOwner,
+      domainParams: {
+        showNews: domain_detail.showNews,
+        doubleDeposit: domain_detail.doubleDeposit,
+        depositFee: domain_detail.depositFee,
+        rateCorrectSum: domain_detail.rateCorrectSum,
+        minDepositSum: domain_detail.minDepositSum,
+        minWithdrawalSum: domain_detail.minWithdrawalSum,
+        coinSwapFee: domain_detail.coinSwapFee
+      },
+      domain_terms: domain_terms.termsBody
     }
-    return dataObject
+    return domainInfo
   }
 
   async GetPromocodeListBeforeSignup(domainName: string) {
-    const codeArray: any = await database.GetPromocodeListBeforeSignup(domainName)
+
+    const codeArray: any = await codeList.find({ domainName: domainName })
     console.log('code array is: ', codeArray);
-    if (!codeArray[0]) return false
+    if (!codeArray) return false
     return codeArray
   }
 
   async registration(transfer_object: any) {
+    const candidate: any = await baseUserData.findOne({ email: transfer_object.email })
 
-    const candidate: any = await database.GetUserByEmail(transfer_object.email)
-
-    if (candidate[0]) throw ApiError.BadRequest(`email ${transfer_object.email} already in use.`)
+    if (candidate) throw ApiError.BadRequest(`email ${transfer_object.email} already in use.`)
     const activationLink: string = await passwordGenerator(18)
-    const domainOwner: any = await database.GetBaseDomainInfo(transfer_object.domainName)
+
+    const domainOwner: any = await domainList.findOne({ domainFullName: transfer_object.domainName })
     console.log('domain owner is: ', domainOwner[0].domain_owner);
-    if (!domainOwner[0]) await database.CreateUser(transfer_object.email, transfer_object.password, activationLink, 'self registred', transfer_object.promocode, transfer_object.agreement, transfer_object.domain_name, transfer_object.datetime, transfer_object.name || '')
+    if (!domainOwner) throw ApiError.ServerError()
 
-    await database.CreateUser(transfer_object.email, transfer_object.password, transfer_object.activationLink, domainOwner[0].domain_owner, transfer_object.promocode, transfer_object.agreement, transfer_object.domain_name, transfer_object.datetime, transfer_object.name || '')
+    const currentDate = new Date().getTime()
+    await database.CreateUser(transfer_object.email, transfer_object.password, activationLink, domainOwner, transfer_object.promocode, true, transfer_object.domain_name, transfer_object.datetime, transfer_object.name || '')
+    await baseUserData.create({
+      name: transfer_object.name || '',
+      email: transfer_object.email,
+      password: transfer_object.password,
+      activationLink: transfer_object.activationLink,
+      registrationType: domainOwner,
+      promocode: transfer_object.promocode,
+      domainName: transfer_object.domainName,
+      dateOfEntry: currentDate
+    })
 
-    const curUser: any = await database.GetUserByEmail(transfer_object.email)
-    await database.SaveBaseUserParams(transfer_object.doubleDeposit, false, false, true, false, false, false, false, false, false, true, transfer_object.kycStatus, curUser[0].ID)
-    await database.SaveUserInfoForAction(transfer_object.depositFee, '', 1, curUser[0].ID)
-    const user: any = await database.GetBaseUserParamsByEmail(transfer_object.email)
-    console.log(user);
+    const curUser: any = await baseUserData.findOne({ email: transfer_object.email })
+    await userParams.create({
+      doubleDeposit: transfer_object.doubleDeposit,
+      isUser: true,
+      isStaff: false,
+      isAdmin: false,
+      isBanned: false,
+      swapBan: false,
+      internalBan: false,
+      isActivated: false,
+      premiumStatus: false,
+      twoStepStatus: false,
+      kycStatus: 'empty',
+      userId: curUser._id
+    })
+    await userActionInfo.create({
+      depositFee: transfer_object.depositFee,
+      doubleDeposit: transfer_object.doubleDeposit,
+      lastDeposit: '',
+      activeError: 1,
+      userId: curUser._id
+    })
+    const userParamsInfo: any = await userParams.findOne({ userId: curUser._id })
+    console.log(userParamsInfo);
     await mailService.sendActivationMail(transfer_object.email, `${transfer_object.domainName}`, `${activationLink}`)
+    // use 'e' in getUserData args for disable finding by email and use ID
+    const userDto = await getUserData('e', curUser._id)
 
-    const userDto: any = new AuthUserDto(user[0])
     const tokens: any = tokenService.generateTokens({ ...userDto })
-
-    await tokenService.saveToken(userDto.ID, tokens.refreshToken)
+    await tokenService.saveToken(userDto.id, tokens.refreshToken)
 
     return {
       ...tokens,
       user: userDto
     }
-
-
   }
 
   async GetVerifiedPromocode(code: string) {
-    const usedPromocode: any = await database.GetPromocodeToDelete(code)
-    console.log('recieved code is: ', usedPromocode[0]);
-    if (!usedPromocode[0]) return false
+    const usedPromocode: any = await codeList.findOne({ code: code })
+    console.log('recieved code is: ', usedPromocode.code);
+    if (!usedPromocode) return false
     return true
   }
 
   async rebasePromocodeToUsed(promocode: string, user_email: string) {
-    const usedPromocode: any = await database.GetPromocodeToDelete(promocode)
-    console.log('recieved code is: ', usedPromocode[0]);
+    const curUser: any = await baseUserData.findOne({ email: user_email })
+    console.log('found user is: ', curUser);
 
-    if (!usedPromocode[0]) return false
-    await database.SaveUsedPromocode(usedPromocode[0].code, usedPromocode[0].date, usedPromocode[0].value, usedPromocode[0].currency, usedPromocode[0].notification_text, usedPromocode[0].staff_user_id, usedPromocode[0].domain_name, user_email)
-    await database.SaveUserNotification(usedPromocode[0].notification_text, user_email)
-    await database.DeletePromocodeFromUserPromocode(promocode)
-    const getUsedPromocode: any = await database.GetUsedPromocode(usedPromocode[0].code)
+    const usedPromocode: any = await codeList.findOne({ code: promocode })
+    console.log('recieved code is: ', usedPromocode);
 
-    if (getUsedPromocode[0]) {
-      return true
+    if (!usedPromocode) return false
+    await usedPromo.create({
+      code: promocode,
+      date: usedPromocode.code,
+      value: usedPromocode.value,
+      coinName: usedPromocode.coinName,
+      notificationText: usedPromocode.notificationText,
+      domainName: usedPromocode.domainName,
+      usedByUser: user_email,
+      staffUserId: usedPromocode.staffUserId
+    })
+    await userNotif.create({
+      notifText: usedPromocode.notificationText,
+      userDomain: usedPromocode.domainName,
+      email: user_email,
+      userId: curUser._id
+    })
+    await codeList.findByIdAndDelete({ _id: usedPromocode._id })
+    const getUsedPromocode: any = await usedPromo.findOne({ _id: usedPromocode._id })
+    if (!getUsedPromocode) {
+      console.log('some error in promocode saving');
+      return false
     }
-    console.log('some error');
-    return false
-  }
-
-  async activate(user_id: number, activationLink: string) {
-
-    const db_result: any = await database.FindActivationLink(activationLink)
-    // console.log('get link from db: ', db_result[0]);
-    if (!db_result[0]) throw ApiError.BadRequest('incorrect link =/')
-
-    const user: any = await database.GetUserById(user_id)
-    // console.log('user log: ', user);
-    await database.UpdateActivatedStatus(user_id)
-    const activated_status: any = await database.GetBaseUserParamsById(user_id)
-    // console.log('activation status', activated_status[0].isActivated);
-    if (!activated_status) return false
-
     return true
   }
 
-  async checkTwoStep( time: string, email: string) {
-    const getFullUser: any = await database.GetBaseUserParamsByEmail(email)
-    console.log('full info: ', getFullUser);
-    if (getFullUser[0].two_step_status === 0) return false
+  async activate(activationLink: string) {
+    const link: any = await baseUserData.findOne({ activationLink: activationLink })
+    if (!link) throw ApiError.BadRequest('incorrect link =/')
+    await userParams.updateOne({
+      userId: link._id,
+      isActivated: true
+    })
 
-    const two_step_params: any = await database.GetTwoStepParams(getFullUser[0].ID)
-    if (two_step_params[0].two_step_type === 'email') {
+    const activatedStatus: any = await baseUserData.findOne({ activationLink: link })
+    if (!activatedStatus) throw ApiError.ServerError()
+    return true
+  }
+
+  async checkTwoStep(email: string) {
+    const curUser: any = await baseUserData.findOne({ email: email })
+    const userParamsInfo: any = await userParams.findOne({ userId: curUser._id })
+    if (!curUser.twoStepStatus) return false
+
+    const twoStepParams: any = await user2faParams.findOne({ userId: curUser._id })
+    // const two_step_params: any = await database.GetTwoStepParams(getFullUser[0].ID)
+
+    if (twoStepParams.twoStepType === 'email') {
       const code_2fa: string = await passwordGenerator(8)
-      await database.SaveTwoStepCode(time, code_2fa, email)
-      const userDto: any = new AuthUserDto(getFullUser[0])
-      await mailService.SendTwoStepVerificationMessage(userDto.email, getFullUser[0].domain_name, code_2fa)
-      setTimeout(async ()=> {
-        await database.DeleteTwoStepCode(code_2fa)
+      await twoStepList.create({
+        code: code_2fa,
+        userEmail: email
+      })
+      // use 'e' in getUserData args for disable finding by email and use ID
+      const userDto = await getUserData('e', curUser._id)
+      await mailService.SendTwoStepVerificationMessage(userDto.email, curUser.domainName, code_2fa)
+      setTimeout(async () => {
+        await twoStepList.deleteOne({ code: code_2fa })
       }, 300_000)
-      return userDto
+      return true
     }
-    if (two_step_params[0].two_step_type === 'telegram') {
+    if (twoStepParams.twoStepType === 'telegram') {
       const code_2fa: string = await passwordGenerator(8)
-      await database.SaveTwoStepCode(time, code_2fa, email)
-      const userDto: any = new AuthUserDto(getFullUser[0])
-      await telegram.SendTwoStepCode(getFullUser[0].domain_name, code_2fa)
-      setTimeout(async ()=> {
-        await database.DeleteTwoStepCode(code_2fa)
+      await twoStepList.create({
+        code: code_2fa,
+        userEmail: email
+      })
+      await telegram.SendTwoStepCode(curUser.domainName, code_2fa)
+      setTimeout(async () => {
+        await twoStepList.deleteOne({ code: code_2fa })
       }, 300_000)
-      return userDto
+      return true
     }
 
-    if (two_step_params[0].two_step_type === 'google') {
+    if (twoStepParams.twoStepTypee === 'google') {
 
     }
 
   }
 
   async GetVerifiedTwoStepCode(code: string) {
-    const get_verified: any = await database.GetTwoStepCode(code)
-    if (!get_verified[0]) return false
+    const getVerified: any = await twoStepList.findOne({ code: code })
+    if (!getVerified) return false
     return true
   }
 
   async login(email: string, password: string, user_domain: string, twoStepCode: string) {
+    const user: any = await baseUserData.findOne({ email: email })
+    console.log('found user: ', user);
 
-    const user: any = await database.GetUserByEmail(email)
-    console.log('found user: ', user[0]);
+    if (user === undefined || user.password !== password) return false
 
-    if (user[0] === undefined || user[0].password !== password) return false
-
-    if (user[0].email !== email || user[0].domain_name !== user_domain) {
+    if (user.email !== email || user.domainName !== user_domain) {
       console.log('wrong user data');
       return false
     }
 
-
-    const getFullUser: any = await database.GetBaseUserParamsByEmail(email)
-    console.log('full info: ', getFullUser);
-    if (twoStepCode !== '') {
-      await database.DeleteTwoStepCode(twoStepCode)
-    }
-    const userDto: any = new AuthUserDto(getFullUser[0])
+    const userDto: any = await getUserData(email)
     const tokens: any = tokenService.generateTokens({ ...userDto })
     await tokenService.saveToken(userDto.ID, tokens.refreshToken)
 
     return {
       ...tokens,
-      user: getFullUser[0]
+      user: userDto
     }
   }
 
@@ -182,11 +256,8 @@ class AuthService {
     console.log('token from db: ', tokenFromDatabase)
 
     if (!userData || !tokenFromDatabase) throw ApiError.UnauthorizedError()
-
-    const getFullUser: any = await database.GetBaseUserParamsById(userData.ID)
-    console.log(getFullUser, 'found user');
-
-    const userDto: any = new AuthUserDto(getFullUser[0])
+    // use 'e' in getUserData args for disable finding by email and use ID
+    const userDto: any = await getUserData('e', userData._id)
     const tokens = tokenService.generateTokens({ ...userDto })
     await tokenService.saveToken(userDto.ID, tokens.refreshToken)
 
@@ -197,48 +268,57 @@ class AuthService {
   }
 
   async forgotPassword(email: string, domain_name: string) {
-    const candidate: any = await database.GetBaseUserParamsByEmail(email)
+    const candidate: any = await baseUserData.findOne({ email: email })
     console.log('found user is: ', candidate);
 
-    if (!candidate[0]) return false
-    if (candidate[0].domain_name !== domain_name) return false
+    if (!candidate) return false
+    if (candidate.domainName !== domain_name) return false
 
     const new_password: string = await passwordGenerator(12)
     console.log('new password is: ', new_password);
-
-    await database.UpdateUserPassword(email, new_password)
-    await mailService.sendNewPassword(email, `${candidate[0].domain_name}`, `${new_password}`)
+    await baseUserData.findOneAndUpdate({
+      email: email,
+      password: new_password
+    })
+    await mailService.sendNewPassword(email, `${candidate.domainName}`, `${new_password}`)
     return true
   }
 
 
-  async SaveAuthLogs(user_id: number, email: string, ipAddress: string, city: string, countryName: string, coordinates: string, currentDate: string, user_action: string, user_domain: string) {
+  async SaveAuthLogs(email: string, ipAddress: string, city: string, countryName: string, coordinates: string, browser: string, currentDate: number, user_action: string, user_domain: string) {
 
-    const userLogs: any = {
-      user_id: user_id,
-      email: email,
-      ip_address: ipAddress,
-      user_city: city,
-      country_name: countryName,
-      location_on_map: coordinates,
-      date_time: currentDate,
-      user_action: user_action
-    }
-    console.log('recieved logs is: ', userLogs)
-    await database.SaveUserLogs(user_id, email, ipAddress, city, countryName, coordinates, currentDate, user_action, user_domain)
-    return userLogs
+    const logs: any = await userLogs.create({
+      userEmail: email,
+      ipAddress: ipAddress,
+      requestCity: city,
+      countryName: countryName,
+      location: coordinates,
+      browser: browser,
+      actionDate: currentDate,
+      userAction: user_action,
+      userDomain: user_domain,
+    })
+    console.log('recieved logs is: ', logs)
+    return logs
 
   }
 
   async GetUserIpLogs(ipAddress: string) {
-    const is_match: any = await database.GetUserLogs(ipAddress)
-    if (!is_match[0]) return false
+    const isMatch: any = await ipMatch.findOne({
+      ipAddress: ipAddress
+    })
+    if (!isMatch) return false
     return true
   }
 
-  async SaveIpMatchLogs(email: string, ipAddress: string, currentDate: string, browser: string) {
-    await database.SaveIpMatch(email, ipAddress, currentDate, browser)
-    return true
+  async SaveIpMatchLogs(email: string, ipAddress: string, currentDate: number, browser: string) {
+
+    await ipMatch.create({
+      userEmail: email,
+      ipAddress: ipAddress,
+      loginDate: currentDate,
+      browser: browser
+    })
   }
 }
 

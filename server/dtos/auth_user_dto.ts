@@ -1,5 +1,5 @@
 export default class AuthUserDto {
-  ID
+  id
   name
   email
   isActivated
@@ -7,18 +7,18 @@ export default class AuthUserDto {
   isStaff
   isAdmin
   isBanned
-  kyc_status
-  two_step_status
-  premium_status
-  double_deposit
-  swap_ban
-  internal_ban
-  deposit_fee
-  
+  kycStatus
+  twoStepStatus
+  premiumStatus
+  doubleDeposit
+  swapBan
+  internalBan
+  depositFee
+
 
 
   constructor(model: any) {
-    this.ID = model.ID
+    this.id = model._id
     this.name = model.name || null
     this.email = model.email
     this.isActivated = model.isActivated
@@ -26,8 +26,8 @@ export default class AuthUserDto {
     this.isStaff = model.isStaff
     this.isAdmin = model.isAdmin
     this.isBanned = model.isBanned
-    this.kyc_status = model.kyc_status
-    this.two_step_status = model.two_step_status
+    this.kycStatus = model.kycStatus
+    this.twoStepStatus = model.twoStepStatus
     this.premium_status = model.premium_status
     this.double_deposit = model.double_deposit
     this.swap_ban = model.swap_ban

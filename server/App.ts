@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser'
 import compression from 'compression'
 import Telegram from './api/telegram_api'
 import { mysqlConnect } from './config/mysql_config'
+import { mongo } from './config/mongo_DB_config'
 import router from './routes/index'
 
 import CORS_OPTIONS from './config/cors_config'
@@ -28,9 +29,9 @@ app.use('/api', router)
 
 async function Connection() {
   // connect to mongo
-  // await mongo
+  await mongo
   // start tg bots
-  await Telegram.TwoFactorBotGreeting()
+  // await Telegram.TwoFactorBotGreeting()
   // connect to mysql
   await mysqlConnect()
   console.log('process..')
