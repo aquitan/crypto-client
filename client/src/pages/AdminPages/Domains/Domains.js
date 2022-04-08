@@ -77,7 +77,7 @@ const CreateDomains = () => {
         data.rateCorrectSum = parseInt(data.rateCorrectSum)
         data.minDepositSum = parseInt(data.minDepositSum)
         data.minWithdrawalSum = parseInt(data.minWithdrawalSum)
-        data.internalSwapFee = parseInt(data.internalSwapFee)
+        // data.internalSwapFee = parseInt(data.internalSwapFee)
         data.currencySwapFee = parseInt(data.currencySwapFee)
         data.staffId = 1
         console.log(data)

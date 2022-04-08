@@ -20,14 +20,6 @@ const NonAuthWrap = () => {
             <Routes>
                 {publicRoutes.map(route => <Route key={uuid()} path={route.path} element={route.component}/>)}
             </Routes>
-            <Footer>
-                <Link to='/privacy-policy'>Privacy Policy</Link>
-                <Link to='/cookie-policy'>Cookie Policy</Link>
-                <Link to='/security-policy'>Security Policy</Link>
-                <Link to='/terms-conditions'>Terms & Conditions</Link>
-                <Link to='/about-us'>About us</Link>
-                <Link to='/contact-us'>Contact us</Link>
-            </Footer>
         </>
     )
 }

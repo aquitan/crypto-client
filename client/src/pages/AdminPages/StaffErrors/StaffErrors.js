@@ -97,7 +97,7 @@ const StaffErrors = () => {
                   </Row>
                   <Row className='mb-3'>
                       Основной текст
-                      <TextArea classnames='dark' {...register('errorText', {
+                      <TextArea classnames='dark textarea_square' {...register('errorText', {
                           required: true,
                           pattern: /^[^а-яё]+$/iu
                       })} />

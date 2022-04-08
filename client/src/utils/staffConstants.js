@@ -27,7 +27,7 @@ export const domainsInputs = [
     {name: 'rateCorrectSum', text: 'Корректировка курса', type: 'AdminInput', inp: 'number'},
     {name: 'minDepositSum', text: 'Минимальный депозит', type: 'AdminInput', inp: 'number'},
     {name: 'minWithdrawalSum', text: 'Минимальный вывод', type: 'AdminInput', inp: 'number'},
-    {name: 'internalSwapFee', text: 'Коммиссия на интернал свапе', type: 'AdminInput', inp: 'number'},
+    // {name: 'internalSwapFee', text: 'Коммиссия на интернал свапе', type: 'AdminInput', inp: 'number'},
     {name: 'currencySwapFee', text: 'Коммиссия на свапе', type: 'AdminInput', inp: 'number'},
 ]
 

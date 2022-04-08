@@ -46,6 +46,8 @@ const SignUp = () => {
         checkPromocodes()
     }, [])
 
+    console.log('promoStatus', promoStatus)
+
     const compareStr = (promo, inpVal) => {
         if (promoStatus.query_status) {
             console.log('promoStatus.query_status', promoStatus.query_status)
@@ -63,13 +65,17 @@ const SignUp = () => {
     }
 
     const onSubmit = async (data) => {
-        const res = await postData('/promocode_validate', {code: currentPromo})
-        if (res.data.verivication) {
-            query(data)
+        if (promoStatus) {
+            const res = await postData('/promocode_validate', {code: currentPromo})
+            if (res.data.verivication) {
+                query(data)
+            }
         }
+        query(data)
     }
 
     console.log('store', store.domain.full_domain_name)
+
     const query = async (data) => {
         const promocode = compareStr(promoStatus.promocodeList, data.promocode)
         const geoData = await getGeoData()
@@ -96,7 +102,7 @@ const SignUp = () => {
             domainName: window.location.host
         }
         const res = await postData('/get_promocodes_before_signup/', obj)
-        const status = await res.data
+        const status = await res.data.promocode
         setPromoStatus(status)
     }
     console.log('status', promoStatus)
@@ -229,7 +235,7 @@ const SignUp = () => {
                                 <Link className={cls.link} to='/signin/'>Have an account?</Link>
                             </Col>
                             <Col>
-                                <Button type='submit' classname='transparent' >Sign Up</Button>
+                                <Button type='submit' classname={['small']} >Sign Up</Button>
                             </Col>
                         </Row>
                     </FormGroup>

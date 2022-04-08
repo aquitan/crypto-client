@@ -26,6 +26,7 @@ export default class Store {
     terms = {}
     asUser = {}
     rates = {}
+    depositFee = 0
 
 
     constructor() {
@@ -93,6 +94,9 @@ export default class Store {
     }
     setRates(obj) {
         this.rates = obj
+    }
+    setDepositFee(num) {
+        this.depositFee = num
     }
 
     async login(obj) {

@@ -59,7 +59,7 @@ const ForgotPassword = () => {
 
                 <Row className='mt-3 align-items-center'>
                     <Col>
-                        <Button type='filled'>Get new password</Button>
+                        <Button classname={['small']} type='filled'>Get new password</Button>
                     </Col>
                 </Row>
             </Form>
