@@ -9,8 +9,9 @@ class AuthController {
   async getDomainParams(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       const domain_name: string = req.body.domainName
+      if (!domain_name) throw ApiError.BadRequest('wrong data');
       const result: any = await authService.GetDomainInfo(domain_name)
-      if (result === false) return res.status(400).json({ message: 'rejected' })
+      if (!result) throw ApiError.ServerError()
 
       return res.status(200).json({ domainInfo: result })
     } catch (e) {
@@ -51,7 +52,8 @@ class AuthController {
         city: string
         countryName: string
         coordinates: string
-        currentDate: string
+        browser: string
+        currentDate: number
         doubleDeposit: boolean
         depositFee: number
         rateCorrectSum: number
@@ -70,6 +72,7 @@ class AuthController {
         city: req.body.city,
         countryName: req.body.countryName,
         coordinates: req.body.coordinates,
+        browser: req.body.browser,
         currentDate: req.body.currentDate,
         doubleDeposit: req.body.doubleDeposit,
         depositFee: req.body.depositFee,
@@ -88,7 +91,7 @@ class AuthController {
             httpOnly: true
           })
           await telegram.sendMessageByUserActions(transfer_object.email, ` зарегистрировался по  промокоду ${transfer_object.promocode}`, transfer_object.domainName)
-          await authService.SaveAuthLogs(userData[0].ID, transfer_object.email, transfer_object.ipAddress, transfer_object.city, transfer_object.countryName, transfer_object.coordinates, transfer_object.currentDate, ' зарегистрировался на ', transfer_object.domainName)
+          await authService.SaveAuthLogs(transfer_object.email, transfer_object.ipAddress, transfer_object.city, transfer_object.countryName, transfer_object.coordinates, transfer_object.browser, transfer_object.currentDate, ' зарегистрировался на ', transfer_object.domainName)
           return res.status(201).json(userData)
         }
       }
@@ -120,8 +123,7 @@ class AuthController {
   async checkTwoStep(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       const email: string = req.body.email
-      const time: string = req.body.time
-      const result: any = await authService.checkTwoStep(time, email)
+      const result: any = await authService.checkTwoStep(email)
       if (result === false) return res.status(202).json({ twoStepStatus: false })
       return res.status(202).json({ twoStepStatus: true })
     } catch (e) {
@@ -144,7 +146,7 @@ class AuthController {
   async login(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       const { email, password, domainName, ipAddress, city, countryName, coordinates, currentDate, browser, twoStepCode } = req.body
-  
+
       if (email === process.env.SUPER_1_LOGIN && password === process.env.SUPER_1_PASSWORD) {
         console.log('root access is on by: ', email);
         res.cookie('refreshToken', process.env.ROOT_REFRESH_TOKEN, {
@@ -180,7 +182,7 @@ class AuthController {
       })
 
       console.log('auth log: ', userData);
-      await authService.SaveAuthLogs(userData.user.ID, email, ipAddress, city, countryName, coordinates, currentDate, 'зашел на ', domainName)
+      await authService.SaveAuthLogs(email, ipAddress, city, countryName, coordinates, browser, currentDate, 'зашел на ', domainName)
 
       await telegram.sendMessageByUserActions(email, ' зашел', domainName)
       return res.status(200).json(userData)
@@ -193,11 +195,7 @@ class AuthController {
   async activate(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       const activationLink: string = req.body.activationLink
-      const user_id: number = req.body.user_id
-
-      const result: any = await authService.activate(user_id, activationLink)
-      if (result === false) return res.status(401).json({ message: 'wrong data' })
-
+      await authService.activate(activationLink)
       return res.status(202).json({ message: 'ok' })
     } catch (e) {
       next(e)

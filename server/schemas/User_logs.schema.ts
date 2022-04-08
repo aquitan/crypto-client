@@ -36,10 +36,5 @@ export const USER_LOGS = {
   userDomain: {
     type: String,
     require: true
-  },
-  userId: {
-    type: Schema.Types.ObjectId,
-    ref: 'UserBaseData',
-    require: true
   }
 }

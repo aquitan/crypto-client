@@ -14,8 +14,7 @@ export const USER_INFO_FOR_ACTION = {
     require: true
   },
   activeError: {
-    type: Schema.Types.ObjectId,
-    ref: 'DomainErrors',
+    type: Number,
     require: true
   },
   userId: {

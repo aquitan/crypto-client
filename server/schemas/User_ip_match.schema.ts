@@ -1,5 +1,3 @@
-import { Schema } from 'mongoose'
-
 export const USER_IP_MATCH = {
   userEmail: {
     type: String,
@@ -10,16 +8,11 @@ export const USER_IP_MATCH = {
     require: true
   },
   loginDate: {
-    type: String,
+    type: Number,
     require: true
   },
   browser: {
     type: String,
-    require: true
-  },
-  userId: {
-    type: Schema.Types.ObjectId,
-    ref: 'UserBaseData',
     require: true
   }
 }

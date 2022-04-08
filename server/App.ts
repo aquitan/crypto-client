@@ -31,7 +31,7 @@ async function Connection() {
   // connect to mongo
   await mongo
   // start tg bots
-  await Telegram.TwoFactorBotGreeting()
+  // await Telegram.TwoFactorBotGreeting()
   // connect to mysql
   await mysqlConnect()
   console.log('process..')

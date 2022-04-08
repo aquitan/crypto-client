@@ -5,7 +5,7 @@ interface InfoParams {
   depositFee: number
   doubleDeposit: boolean
   lastDeposit: number
-  activeError: Schema.Types.ObjectId
+  activeError: number
   userId: Schema.Types.ObjectId
 }
 

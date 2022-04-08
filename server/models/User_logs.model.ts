@@ -11,7 +11,6 @@ interface UserLogs {
   actionDate: number
   userAction: string
   userDomain: string
-  userId: Schema.Types.ObjectId
 }
 const UserLogs = new Schema<UserLogs>(USER_LOGS)
 

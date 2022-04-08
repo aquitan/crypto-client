@@ -5,7 +5,7 @@ import { connect } from 'mongoose'
 
 const URI: any = process.env.MONGO_URL
 
-export const mongo = connect(URI, MONGO_OPTIONS)
+export const mongo = connect(URI)
   .then(() => {
     console.log('Successfully connected to mondoDB database')
   })

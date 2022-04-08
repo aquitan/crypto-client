@@ -19,7 +19,7 @@ async function generateCodeForGoogle2fa(domain_name: string) {
 
 class UserServices {
 
-	async dashboard(user_id: number) {
+	async dashboard(user_id: string) {
 
 		const userKyc: any = await database.GetUserKycByUserId(user_id)
 		const user: any = await database.GetBaseUserParamsById(user_id)
