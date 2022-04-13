@@ -9,4 +9,4 @@ interface BalanceParams {
 }
 const UserBalance = new Schema<BalanceParams>(USER_WALLET_SCHEMA)
 
-export default model('UserBalance', UserBalance)
+export default model('User_Balance', UserBalance)

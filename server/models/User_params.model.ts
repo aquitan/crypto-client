@@ -18,4 +18,4 @@ interface UserParams {
 }
 const UserParams = new Schema<UserParams>(USER_PARAMS)
 
-export default model('UserParams', UserParams)
+export default model('User_Params', UserParams)

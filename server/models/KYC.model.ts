@@ -22,5 +22,5 @@ interface User_KYC {
 
 const UserKyc = new Schema<User_KYC>(USER_KYC)
 
-export default model('UserKyc', UserKyc)
+export default model('User_Kyc', UserKyc)
 

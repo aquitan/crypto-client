@@ -7,4 +7,4 @@ interface authToken {
 }
 const AuthToken = new Schema<authToken>(AUTH_TOKEN)
 
-export default model('AuthToken', AuthToken)
+export default model('Auth_Token', AuthToken)

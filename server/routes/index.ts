@@ -10,7 +10,7 @@ import authChecker from '../middlewares/auth_middleware'
 router.post('/get_domain_params/', authController.getDomainParams) // base domain params 
 router.post('/get_promocodes_before_signup/', authController.getPromocodeList)  // get promo list
 
-router.put('/registration/',
+router.post('/registration/',
   body('email').isEmail(),
   body('password').isLength({
     min: 8,
@@ -84,7 +84,7 @@ router.delete('/staff/delete_all_used_promocode/', staffController.deleteUsedPro
 
 router.post('/staff/ip_match_checker/', staffController.getIpForMatch) // check user ip for match
 
-router.put('/staff/domains/create_domain/', staffController.createDomain) // create base domain settings & detail settings & base withdrawal errors
+router.post('/staff/domains/create_domain/', staffController.createDomain) // create base domain settings & detail settings & base withdrawal errors
 router.get('/staff/domains/domain_detail/:id/', staffController.getDomainDetail) // get detail domain page by domain id
 // router.delete('/staff/domains/base_domain_delete/', staffController.baseDomainDelete) // only info about domain, errors, domain settings, terms for current domain
 // router.delete('/staff/domains/full_domain_delete/', staffController.fullDomainDelete) // all users & all relationship by domain ID in project

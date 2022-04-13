@@ -701,7 +701,7 @@ class StaffController {
           }
         }
         dateOfDomainCreate: string
-        staffId: number
+        staffId: string
       }
 
       console.log('req body is: ', req.body);
@@ -764,28 +764,22 @@ class StaffController {
         staffId: req.body.staffId
       }
 
-
-      console.log('add domain req body: ', req.body);
       const rootAccess: boolean = req.body.rootAccess
 
       if (rootAccess === true) {
-        object_to_send.staffId = 999999
+        object_to_send.staffId = 'xx999xx--001'
         object_to_send.staffEmail = 'root'
       }
 
       const result: string | boolean = await staffService.CreateNewDomain(object_to_send)
 
       if (result === false) return res.status(400).json({
-        message: 'wrong data. please try one more time.',
-        status: 'rejected'
+        message: 'wrong data. please try one more time.'
       })
       if (result === 'error') return res.status(500).json({
-        message: 'internal server error.',
-        status: 'rejected'
+        message: 'internal server error.'
       })
-      const baseTermsText: any = await staffService.GetBaseTerms()
-      if (baseTermsText === false) return res.status(400).json({ message: 'some terms error', status: 'rejected' })
-      await staffService.addTerms(object_to_send.fullDomainName, baseTermsText)
+      await staffService.addTerms(object_to_send.fullDomainName)
 
       if (rootAccess === false) {
         await telegram.sendMessageByStaffActions(req.body.staffEmail, ` создал новый домен ${req.body.fullDomainName}} `, req.body.domainName)
@@ -803,8 +797,7 @@ class StaffController {
 
   async getDomainDetail(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      const id: string = req.params.id
-      const domain_id: number = parseInt(id)
+      const domain_id: string = req.params.id
       console.log('current domain id is: ', domain_id);
       const result: any = await staffService.GetDomainDetail(domain_id)
       if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
@@ -822,7 +815,7 @@ class StaffController {
   async createCustomError(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       interface request_object {
-        domain_id: number
+        domain_id: string
         domain_name: string
         staffEmail: string
         errorName: string
@@ -866,8 +859,7 @@ class StaffController {
 
   async getAllErrors(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      const id: string = req.params.id
-      const domain_id: number = parseInt(id)
+      const domain_id: string = req.params.id
       console.log('current domain id is: ', domain_id);
       const result: any = await staffService.GetDomainErrors(domain_id)
       if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
@@ -903,7 +895,7 @@ class StaffController {
     try {
       const adminPermission: boolean = req.body.isAdmin
       const staffPremisstion: boolean = req.body.isStaff
-      const staffEmail: string = req.body.staffEmail
+      const staffId: string = req.body.staffId
       console.log('req body is: ', req.body)
 
       if (adminPermission === true) {
@@ -916,7 +908,7 @@ class StaffController {
         }
       }
       if (staffPremisstion === true) {
-        const result: any = await staffService.GetDomainListForStaff(staffEmail)
+        const result: any = await staffService.GetDomainListForStaff(staffId)
         if (result !== false) {
           return res.status(200).json({
             domainsList: result,
@@ -1066,17 +1058,12 @@ class StaffController {
       const result: boolean = await staffService.EditDomainInfo(object_to_send)
 
       if (result === false) return res.status(400).json({ message: 'wrong data' })
-
-      const baseTermsText: any = await staffService.GetBaseTerms()
-      if (baseTermsText === false) return res.status(400).json({ message: 'some terms error', status: 'rejected' })
-      await staffService.addTerms(object_to_send.fullDomainName, baseTermsText)
-
       if (rootAccess === false) {
         await telegram.sendMessageByStaffActions(req.body.staffEmail, ` создал новый домен ${req.body.fullDomainName}} `, req.body.domainName)
         await staffService.saveStaffLogs(req.body.staffEmail, ` создал новый домен ${req.body.fullDomainName}} `, '', req.body.staffId)
         return res.status(201).json({
           message: 'domain was created with all settings.',
-          status: 'complete'
+          status: 'OK'
         })
       }
 

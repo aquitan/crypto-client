@@ -17,4 +17,4 @@ interface HistotyParams {
 }
 const InternalHistory = new Schema<HistotyParams>(INTERNAL_HISTORY_SCHEMA)
 
-export default model('InternalHistory', InternalHistory)
+export default model('Internal_History', InternalHistory)

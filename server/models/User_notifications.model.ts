@@ -9,4 +9,4 @@ interface Notif {
 }
 const UserNotifications = new Schema<Notif>(USER_NOTIF)
 
-export default model('UserNotifications', UserNotifications)
+export default model('User_Notifications', UserNotifications)

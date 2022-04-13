@@ -9,4 +9,4 @@ interface BalanceParams {
 }
 const UserInternalWallet = new Schema<BalanceParams>(INTERNAL_WALLET_SCHEMA)
 
-export default model('UserInternalWallet', UserInternalWallet)
+export default model('User_Internal_Wallet', UserInternalWallet)

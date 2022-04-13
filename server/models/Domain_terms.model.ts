@@ -7,4 +7,4 @@ interface Terms {
 }
 const DomainTerms = new Schema<Terms>(TERMS)
 
-export default model('DomainTerms', DomainTerms)
+export default model('Domain_Terms', DomainTerms)

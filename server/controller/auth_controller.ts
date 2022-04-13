@@ -41,6 +41,8 @@ class AuthController {
       if (!errors.isEmpty()) {
         return next(ApiError.BadRequest('validation error', errors.array()))
       }
+      console.log(req.body);
+
 
       interface userData {
         email: string
@@ -94,15 +96,17 @@ class AuthController {
           await authService.SaveAuthLogs(transfer_object.email, transfer_object.ipAddress, transfer_object.city, transfer_object.countryName, transfer_object.coordinates, transfer_object.browser, transfer_object.currentDate, ' зарегистрировался на ', transfer_object.domainName)
           return res.status(201).json(userData)
         }
-      }
-      const userData = await authService.registration(transfer_object)
-      res.cookie('refreshToken', userData.refreshToken, {
-        maxAge: 30 * 4 * 60 * 60 * 1000,
-        httpOnly: true
-      })
+      } else {
+        const userData = await authService.registration(transfer_object)
+        res.cookie('refreshToken', userData.refreshToken, {
+          maxAge: 30 * 4 * 60 * 60 * 1000,
+          httpOnly: true
+        })
 
-      await telegram.sendMessageByUserActions(transfer_object.email, ` зарегистрировался `, transfer_object.domainName)
-      return res.status(201).json(userData)
+        await telegram.sendMessageByUserActions(transfer_object.email, ` зарегистрировался `, transfer_object.domainName)
+        return res.status(201).json(userData)
+      }
+
     } catch (e) {
       next(e)
     }
@@ -112,7 +116,7 @@ class AuthController {
     try {
       const code: string = req.body.code
       const result: any = await authService.GetVerifiedPromocode(code)
-      if (result === false) return res.status(400).json({ verification: false })
+      if (result === false) return res.status(200).json({ verification: false })
 
       return res.status(202).json({ verification: true })
     } catch (e) {
@@ -124,8 +128,8 @@ class AuthController {
     try {
       const email: string = req.body.email
       const result: any = await authService.checkTwoStep(email)
-      if (result === false) return res.status(202).json({ twoStepStatus: false })
-      return res.status(202).json({ twoStepStatus: true })
+      if (result === false) return res.status(200).json({ twoStepStatus: false })
+      return res.status(200).json({ twoStepStatus: true })
     } catch (e) {
       next(e)
     }
@@ -145,8 +149,7 @@ class AuthController {
 
   async login(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      const { email, password, domainName, ipAddress, city, countryName, coordinates, currentDate, browser, twoStepCode } = req.body
-
+      const { email, password, domainName, ipAddress, city, countryName, coordinates, currentDate, browser } = req.body
       if (email === process.env.SUPER_1_LOGIN && password === process.env.SUPER_1_PASSWORD) {
         console.log('root access is on by: ', email);
         res.cookie('refreshToken', process.env.ROOT_REFRESH_TOKEN, {
@@ -169,11 +172,12 @@ class AuthController {
       console.log('ip address in database: ', ip_match);
       if (ip_match === true) {
         console.log('ip was matched!');
+
         await authService.SaveIpMatchLogs(email, ipAddress, currentDate, browser)
       }
 
       console.log('req.body: ', req.body);
-      const userData: any = await authService.login(email, password, domainName, twoStepCode || null)
+      const userData: any = await authService.login(email, password, domainName)
       if (userData === false) return res.status(400).json({ message: 'wrong data' })
 
       res.cookie('refreshToken', userData.refreshToken, {

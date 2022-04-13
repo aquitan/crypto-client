@@ -1,4 +1,5 @@
 import database from "../services/database_query"
+import domainList from '../models/Domain_list.model'
 
 class adminService {
 
@@ -11,7 +12,7 @@ class adminService {
   }
   async DashboardInfo() {
     interface INFO {
-      telegrams:{
+      telegrams: {
         logsBot: string
         twoStepBot: string
         newsTgChanel: string
@@ -23,21 +24,21 @@ class adminService {
         onlineUsers: number
       }
     }
-    
+
     const usersList: any = await database.GetAllUsersForAdmin()
     const userOnline: any = await database.GetOnlineUsersForAdmin()
-    
+
     console.log('user list: ', usersList.length);
     console.log('user online list: ', userOnline.length);
-    
+
     if (!usersList[0]) return false
-    
+
     const logsBotName: any = process.env.TELEGRAM_USER_LOGS_BOT
     const twoStepBotName: any = process.env.TELEGRAM_2FA_CODE_SENDER
     const newsTgChanelName: any = process.env.TELEGRAM_PROJECT_NEWS_BOT
-    
+
     let dataLIst: INFO = {
-      telegrams:{
+      telegrams: {
         logsBot: logsBotName,
         twoStepBot: twoStepBotName,
         newsTgChanel: newsTgChanelName,
@@ -49,11 +50,11 @@ class adminService {
         onlineUsers: userOnline.length
       }
     }
-    if(!userOnline.length) dataLIst.baseInfo.onlineUsers = 0
-    console.log ('received data list is: ',dataLIst)
+    if (!userOnline.length) dataLIst.baseInfo.onlineUsers = 0
+    console.log('received data list is: ', dataLIst)
     return usersList
   }
-  
+
   async UpdateStaffStatus(staff_email: string, currentDate: string, user_id: number, status: boolean) {
     const user: any = await database.GetBaseUserParamsById(user_id)
     console.log('found user: ', user[0])
@@ -87,7 +88,7 @@ class adminService {
     if (!promocodeList[0]) return false
     return promocodeList
   }
-  
+
   async DeleteUsedPromocodesAsAdmin() {
     await database.DeleteUsedPromocodeListAsAdmin()
     const codeList: any = await database.GetUsedPromocodeListForAdmin()
@@ -97,10 +98,9 @@ class adminService {
 
 
   async GetDomainListForAdmin() {
-    const list: any = await database.GetDomainListForAdmin()
-    console.log('received list is: ', list);
-
-    if (!list) return false
+    const list: any = await domainList.find()
+    console.log('domainList is: ', list);
+    if (!list.length) return false
     return list
   }
 

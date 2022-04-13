@@ -9,4 +9,4 @@ interface LogParams {
 }
 const StaffLogs = new Schema<LogParams>(STAFF_LOGS_SCHEMA)
 
-export default model('StaffLogs', StaffLogs)
+export default model('Staff_Logs', StaffLogs)

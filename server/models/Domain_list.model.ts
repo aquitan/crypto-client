@@ -14,4 +14,4 @@ interface Domain {
 }
 const DomainList = new Schema<Domain>(DOMAIN_SCHEMA)
 
-export default model('DomainList', DomainList)
+export default model('Domain_List', DomainList)

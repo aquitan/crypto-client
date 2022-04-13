@@ -14,4 +14,4 @@ interface HistotyParams {
 }
 const DepositHistory = new Schema<HistotyParams>(DEPOSIT_HISTORY_SCHEMA)
 
-export default model('DepositHistory', DepositHistory)
+export default model('Deposit_History', DepositHistory)

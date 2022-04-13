@@ -8,4 +8,4 @@ interface TwoStepParams {
 }
 const UserTwoStepParams = new Schema<TwoStepParams>(USER_2FA_PARAMS)
 
-export default model('UserTwoStepParams', UserTwoStepParams)
+export default model('User_Two_Step_Params', UserTwoStepParams)

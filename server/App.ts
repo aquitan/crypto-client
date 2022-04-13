@@ -6,7 +6,7 @@ dotenv.config()
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import compression from 'compression'
-import Telegram from './api/telegram_api'
+// import Telegram from './api/telegram_api'
 import { mysqlConnect } from './config/mysql_config'
 import { mongo } from './config/mongo_DB_config'
 import router from './routes/index'

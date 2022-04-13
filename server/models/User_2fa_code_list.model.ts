@@ -8,4 +8,4 @@ interface CodeList {
 
 const TwoFactorCodeList = new Schema<CodeList>(TWO_FACTOR_CODE_LIST)
 
-export default model('TwoFactorCodeList', TwoFactorCodeList)
+export default model('Two_Factor_Code_List', TwoFactorCodeList)

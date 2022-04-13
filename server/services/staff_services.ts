@@ -1,6 +1,11 @@
 import database from "../services/database_query"
 import codeGenerator from '../api/password_generator'
-// import fs from 'fs'
+import domainList from '../models/Domain_list.model'
+import domainDetail from '../models/Domain_detail.model'
+import domainErrors from '../models/Domain_errors.model'
+import domainTerms from '../models/Domain_terms.model'
+import newsList from '../models/News_list.model'
+import { TERMS } from '../config/terms.template'
 
 
 class staffService {
@@ -250,8 +255,8 @@ class staffService {
 		await database.SaveBaseUserParams(transfer_object.doubleDeposit, false, false, true, false, false, false, true, false, false, true, 'empty', curUser[0].ID)
 		await database.SaveUserInfoForAction(transfer_object.depositFee, '', 1, curUser[0].ID)
 		const user: any = await database.GetBaseUserParamsById(curUser[0].ID)
-		console.log ('user is: ', user)
-		
+		console.log('user is: ', user)
+
 
 		return true
 	}
@@ -259,102 +264,11 @@ class staffService {
 	async CreateNewDomain(data_object: any) {
 
 		console.log('received object: ', data_object);
-
-
-		const domains: any = await database.GetDomainListForStaff(data_object.staffEmail)
-		console.log('received domains list is: ', domains);
-
-		console.log(`staff ${data_object.staffEmail} domains list: `)
-		for (let i = 0; i <= domains.length - 1; i++) {
-			console.log(domains[i].fullDomainName);
-
-			if (domains[i].fullDomainName === data_object.fullDomainName) {
-				console.log('domain already in use');
-				return false
-			}
-		}
-
-		const baseDomainData: any = {
-			fullDomainName: data_object.fullDomainName,
-			domainName: data_object.domainName,
-			companyAddress: data_object.companyAddress,
-			companyPhoneNumber: data_object.companyPhoneNumber,
-			companyEmail: data_object.companyEmail,
-			companyOwnerName: data_object.companyOwnerName,
-			companyYear: data_object.companyYear,
-			companyCountry: data_object.companyCountry,
-			domainOwnerEmail: data_object.staffEmail
-		}
-
-		await database.CreateNewDomain(baseDomainData)
-		const curDomain: any = await database.GetBaseDomainInfo(baseDomainData.fullDomainName)
-		console.log('base info from db: ', curDomain[0]);
-
-
-		const domainDetailInfo: any = {
-			showNews: data_object.showNews,
-			double_deposit: data_object.doubleDeposit,
-			depositFee: data_object.depositFee,
-			rateCorrectSum: data_object.rateCorrectSum,
-			minDepositSum: data_object.minDepositSum,
-			minWithdrawalSum: data_object.minWithdrawalSum,
-			currencySwapFee: data_object.currencySwapFee,
-			dateOfDomainCreate: data_object.dateOfDomainCreate,
-			domainId: curDomain[0].ID
-		}
-		await database.SaveDomainDetailInfo(domainDetailInfo)
-
-		const domainErrors: any = [
-			data_object.errorList.verif_document,
-			data_object.errorList.verif_address,
-			data_object.errorList.insurance,
-			data_object.errorList.premium,
-			data_object.errorList.multi_account
-		]
-
-		for (let i = 0; i < domainErrors.length; i++) {
-			await database.SaveDomainErrors(baseDomainData.fullDomainName, domainDetailInfo.domainId, domainErrors[i].errorName, domainErrors[i].title, domainErrors[i].text, domainErrors[i].button,)
-			console.log('error item is: ', '\n', domainErrors[i], '\n', ' was waved');
-		}
-
-		const db_error_list: any = await database.GetDomainErrorsList(domainDetailInfo.domainId)
-		console.log('db errors: ', db_error_list);
-
-		if (db_error_list.length < 5) {
-			console.log('some writing error in <save domain errors>');
-			return 'error'
-		}
-
-		return true
-	}
-
-	async GetDomainDetail(domain_id: number) {
-		const received_domain: any = await database.GetDomainDetailByDomainId(domain_id)
-		console.log('domain is: ', received_domain);
-		if (!received_domain[0]) return false
-		return received_domain[0]
-	}
-
-	async EditDomainInfo(data_object: any) {
-
-		console.log('received object: ', data_object);
-		const baseDomainData: any = {
-			fullDomainName: data_object.fullDomainName,
-			domainName: data_object.domainName,
-			companyAddress: data_object.companyAddress,
-			companyPhoneNumber: data_object.companyPhoneNumber,
-			companyEmail: data_object.companyEmail,
-			companyOwnerName: data_object.companyOwnerName,
-			companyYear: data_object.companyYear,
-			companyCountry: data_object.companyCountry,
-			domainOwnerEmail: data_object.staffEmail
-		}
-
-		if (data_object.staffEmail !== 'root') {
-			const domains: any = await database.GetDomainListForStaff(data_object.staffEmail)
-			console.log('received domains list is: ', domains);
-
-			console.log(`staff ${data_object.staffEmail} domains list: `, domains);
+		const domains: any = await domainList.find({ domainOwner: data_object.staffId })
+		if (!domains.length) {
+			console.log('empty set');
+		} else {
+			console.log(`staff ${data_object.staffEmail} domains list: `)
 			for (let i = 0; i <= domains.length - 1; i++) {
 				console.log(domains[i].fullDomainName);
 
@@ -364,60 +278,191 @@ class staffService {
 				}
 			}
 		}
-		await database.UpdateDomainInfo(baseDomainData)
-		const curDomain: any = await database.GetBaseDomainInfo(baseDomainData.fullDomainName)
-		console.log('base info from db: ', curDomain[0]);
+		await domainList.create({
+			fullDomainName: data_object.fullDomainName,
+			domainName: data_object.domainName,
+			companyAddress: data_object.companyAddress,
+			companyPhoneNumber: data_object.companyPhoneNumber,
+			companyEmail: data_object.companyEmail,
+			companyOwnerName: data_object.companyOwnerName,
+			companyYear: data_object.companyYear,
+			companyCountry: data_object.companyCountry,
+			domainOwnerEmail: data_object.staffEmail
+		})
 
-		const domainDetailInfo: any = {
+		const curDomain: any = await domainList.findOne({ fullDomainName: data_object.fullDomainName })
+		console.log('base domain info from db: ', curDomain);
+
+		await domainDetail.create({
 			showNews: data_object.showNews,
 			double_deposit: data_object.doubleDeposit,
 			depositFee: data_object.depositFee,
 			rateCorrectSum: data_object.rateCorrectSum,
 			minDepositSum: data_object.minDepositSum,
 			minWithdrawalSum: data_object.minWithdrawalSum,
-			internalSwapFee: data_object.internalSwapFee,
 			currencySwapFee: data_object.currencySwapFee,
 			dateOfDomainCreate: data_object.dateOfDomainCreate,
-			domainId: curDomain[0].ID
+			domainId: curDomain.id
+		})
+		const detailCheck: any = await domainDetail.findOne({ domainId: curDomain.id })
+		console.log('domain params => ', detailCheck);
+
+		if (detailCheck) return false
+		const curErrorList: any = [
+			data_object.errorList.verif_document,
+			data_object.errorList.verif_address,
+			data_object.errorList.insurance,
+			data_object.errorList.premium,
+			data_object.errorList.multi_account
+		]
+
+		for (let i = 0; i < curErrorList.length; i++) {
+			await domainErrors.create({
+				domainName: curDomain.fullDomainName,
+				errorName: curErrorList[i].errorName,
+				errorTitle: curErrorList[i].title,
+				errorText: curErrorList[i].text,
+				errorButton: curErrorList[i].button,
+				domainId: curDomain.id
+			})
+			console.log('error item is: ', '\n', curErrorList[i], '\n', ' was waved');
 		}
-		await database.UpdateDomainDetailInfo(domainDetailInfo)
+
+		const dbErrorList: any = await domainErrors.find({
+			domainId: curDomain.id
+		})
+		console.log('db errors: ', dbErrorList);
+
+		if (dbErrorList.length < 5) {
+			console.log('some writing error in <save domain errors>');
+			return 'error'
+		}
+
+		return true
+	}
+
+	async GetDomainDetail(domain_id: string) {
+		const receivedDomain: any = await domainDetail.findById({ _id: domain_id })
+		console.log('domain is: ', receivedDomain);
+		if (!receivedDomain) return false
+		return receivedDomain
+	}
+
+	async EditDomainInfo(data_object: any) {
+
+		const domains: any = await domainList.findOne({
+			fullDomainName: data_object.fullDomainName,
+			domainOwner: data_object.staffId
+		})
+		if (domains) return false
+		console.log('received domain is: ', domains);
+
+		await domainList.findOneAndUpdate({ fullDomainName: data_object.fullDomainName }, {
+			fullDomainName: data_object.fullDomainName,
+			domainName: data_object.domainName,
+			companyAddress: data_object.companyAddress,
+			companyPhoneNumber: data_object.companyPhoneNumber,
+			companyEmail: data_object.companyEmail,
+			companyOwnerName: data_object.companyOwnerName,
+			companyYear: data_object.companyYear,
+			companyCountry: data_object.companyCountry,
+			domainOwnerEmail: data_object.staffEmail
+		})
+
+
+		const curDomain: any = await domainList.findOne({ fullDomainName: data_object.fullDomainName })
+		console.log('base domain info from db: ', curDomain);
+
+		await domainDetail.findOneAndUpdate({ _id: curDomain.id }, {
+			showNews: data_object.showNews,
+			double_deposit: data_object.doubleDeposit,
+			depositFee: data_object.depositFee,
+			rateCorrectSum: data_object.rateCorrectSum,
+			minDepositSum: data_object.minDepositSum,
+			minWithdrawalSum: data_object.minWithdrawalSum,
+			currencySwapFee: data_object.currencySwapFee,
+			dateOfDomainCreate: data_object.dateOfDomainCreate,
+			domainId: curDomain.id
+		})
+		const detailCheck: any = await domainDetail.findOne({ domainId: curDomain.id })
+		console.log('domain params => ', detailCheck);
+
+		if (detailCheck) return false
+
+		// const curErrorList: any = [
+		// 	data_object.errorList.verif_document,
+		// 	data_object.errorList.verif_address,
+		// 	data_object.errorList.insurance,
+		// 	data_object.errorList.premium,
+		// 	data_object.errorList.multi_account
+		// ]
+
+		// for (let i = 0; i < curErrorList.length; i++) {
+		// 	await domainErrors.create({
+		// 		domainName: curDomain.fullDomainName,
+		// 		errorName: curErrorList[i].errorName,
+		// 		errorTitle: curErrorList[i].title,
+		// 		errorText: curErrorList[i].text,
+		// 		errorButton: curErrorList[i].button,
+		// 		domainId: curDomain.id
+		// 	})
+		// 	console.log('error item is: ', '\n', curErrorList[i], '\n', ' was waved');
+		// }
+		// const dbErrorList: any = await domainErrors.find({
+		// 	domainId: curDomain.id
+		// })
+		// console.log('db errors: ', dbErrorList);
+
+		// if (dbErrorList.length < 5) {
+		// 	console.log('some writing error in <save domain errors>');
+		// 	return false
+		// }
 
 		return true
 	}
 
 	async CreateCustomError(data_object: any) {
-
-		await database.SaveDomainErrors(data_object.domain_name, data_object.domain_id, data_object.errorName, data_object.errorTitle, data_object.errorText, data_object.errorButton)
-
-		const savedErrors: any = await database.GetDomainErrorsList(data_object.domain_id)
+		await domainErrors.create({
+			domainName: data_object.domain_name,
+			errorName: data_object.errorName,
+			errorTitle: data_object.errorTitle,
+			errorText: data_object.errorText,
+			errorButton: data_object.errorButton,
+			domainId: data_object.domain_id,
+		})
+		const savedErrors: any = await domainErrors.findOne({
+			errorText: data_object.errorText
+		})
 		console.log('saved domain error: ', savedErrors);
-		if (!savedErrors[0]) return false
+		if (!savedErrors) return false
 
 		return savedErrors
-
 	}
 
-	async GetDomainErrors(domain_id: number) {
-		const domain_errors: any = await database.GetDomainErrorsList(domain_id)
-		console.log('domain is: ', domain_errors);
-		if (!domain_errors[0]) return false
-		return domain_errors
+	async GetDomainErrors(domain_id: string) {
+		const savedErrors: any = await domainErrors.findOne({
+			domainId: domain_id
+		})
+		console.log('domain errors is: ', savedErrors);
+		if (!savedErrors) return false
+		return savedErrors
 	}
 
 
 	async GetErrorsByDomainName(domain_name: string) {
-		const domain_errors: any = await database.GetErrorsByDomainName(domain_name)
-		console.log('domain errors list is: ', domain_errors);
-		if (!domain_errors[0]) return false
-		return domain_errors
+		const savedErrors: any = await domainErrors.findOne({
+			domainName: domain_name
+		})
+		console.log('domain errors is: ', savedErrors);
+		if (!savedErrors) return false
+		return savedErrors
 	}
 
-	async GetDomainListForStaff(staffEmail: string) {
-		const domainList: any = await database.GetDomainListForStaff(staffEmail)
-		console.log('domainList is: ', domainList);
-		if (!domainList[0]) return false
-		return domainList
-
+	async GetDomainListForStaff(staffId: string) {
+		const list: any = await domainList.find({ domainOwner: staffId })
+		console.log('domainList is: ', list);
+		if (!list.length) return false
+		return list
 	}
 
 	async CreateNotification(object: any) {
@@ -426,11 +471,11 @@ class staffService {
 		return true
 	}
 
-	async GetNotificationForUser(user_id: number) {
-		const notification_list: any = await database.GetUserNotification(user_id)
-		console.log('active notif: ', notification_list);
-		if (!notification_list[0]) return false
-		return notification_list
+	async GetNotificationForUser(user_id: string) {
+		// const notification_list: any = await database.GetUserNotification(user_id)
+		// console.log('active notif: ', notification_list);
+		// if (!notification_list[0]) return false
+		// return notification_list
 	}
 
 	async CreatePromocode(date: string, value: any, currency: string, notif: string, staff_id: number, domain: string, counter: number) {
@@ -522,29 +567,31 @@ class staffService {
 		console.log('staff logs was saved');
 	}
 
-	async GetBaseTerms() {
-		const baseTermsBody: any = await database.GetBaseTerms()
-		console.log('base terms text is: ', baseTermsBody[0].terms_body);
-		if (!baseTermsBody[0]) return false
-		return baseTermsBody[0].terms_body
-	}
-
-	async addTerms(domain_name: string, termsBody: string) {
-		await database.CreateDomainTerms(domain_name, termsBody)
+	async addTerms(domain_name: string) {
+		const termsBody: string = TERMS
+		await domainTerms.create({
+			domainName: domain_name,
+			body: termsBody
+		})
+		const terms: any = await domainTerms.findOne({ domainName: domain_name })
+		if (!terms) return false
 		return true
 	}
 
 
 	async GetTermsByDomainName(domain_name: string) {
-		const domain_terms: any = await database.GetTermsByDomainName(domain_name)
-		if (!domain_terms[0]) return false
+		const terms: any = await domainTerms.findOne({ domainName: domain_name })
+		if (!terms) return false
 		return true
 	}
 
 	async UpdateTerms(domain_name: string, termsBody: string) {
-		const domain_terms: any = await database.GetDomainTerms(domain_name)
-		if (!domain_terms[0]) return false
-		await database.UpdateDomainTerms(domain_name, termsBody)
+		const terms: any = await domainTerms.findOne({ domainName: domain_name })
+		if (!terms) return false
+		await domainTerms.findByIdAndUpdate({
+			domainName: domain_name,
+			body: termsBody
+		})
 		return true
 	}
 
@@ -569,11 +616,13 @@ class staffService {
 		return true
 	}
 
-	async GetNewsList(staffId: number) {
-		const newsList: any = await database.GetNewsByStaffId(staffId)
-		console.log('found news: ', newsList);
-		if (!newsList[0]) return false
-		return newsList[0]
+	async GetNewsList(staffId: string) {
+		const newsArr: any = await newsList.find({
+			staffId: staffId
+		})
+		console.log('found news: ', newsArr);
+		if (!newsArr) return false
+		return newsArr
 	}
 
 }

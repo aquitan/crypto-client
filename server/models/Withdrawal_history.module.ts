@@ -14,4 +14,4 @@ interface HistotyParams {
 }
 const WithdrawalHistory = new Schema<HistotyParams>(WITHDRAWAL_HISTORY_SCHEMA)
 
-export default model('WithdrawalHistory', WithdrawalHistory)
+export default model('Withdrawal_History', WithdrawalHistory)

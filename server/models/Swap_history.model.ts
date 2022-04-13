@@ -17,4 +17,4 @@ interface HistotyParams {
 }
 const SwapHistory = new Schema<HistotyParams>(SWAP_HISTORY_SCHEMA)
 
-export default model('SwapHistory', SwapHistory)
+export default model('Swap_History', SwapHistory)

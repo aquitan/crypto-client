@@ -10,4 +10,4 @@ interface Params {
 }
 const StaffParams = new Schema<Params>(STAFF_PARAMS_SCHEMA)
 
-export default model('StaffParams', StaffParams)
+export default model('Staff_Params', StaffParams)
