@@ -1,17 +1,28 @@
-import database from "../services/database_query"
 import codeGenerator from '../api/password_generator'
+import baseUserData from '../models/User_base_data.model'
+import userParams from '../models/User_params.model'
+import userActionInfo from '../models/User_info_for_action.model'
+import userKyc from '../models/KYC.model'
+import userLogs from '../models/User_logs.model'
+import staffParams from '../models/Staff_params.model'
+import userIpMatch from '../models/User_ip_match.model'
 import domainList from '../models/Domain_list.model'
 import domainDetail from '../models/Domain_detail.model'
 import domainErrors from '../models/Domain_errors.model'
 import domainTerms from '../models/Domain_terms.model'
 import newsList from '../models/News_list.model'
+import userNotif from '../models/User_notifications.model'
+import userPromocode from '../models/Promocodes.model'
+import usedPromoList from '../models/Used_promocodes.model'
+import staffLogs from '../models/Staff_logs.model'
+import TokenModel from 'models/Token.model'
 import { TERMS } from '../config/terms.template'
 
 
 class staffService {
 
 
-	async staffDashboardInfo(staff_id: number) {
+	async staffDashboardInfo(staff_id: string) {
 		interface INFO {
 			telegrams: {
 				logsBot: string
@@ -26,20 +37,21 @@ class staffService {
 			}
 		}
 
-		const staff_email: any = await database.GetUserById(staff_id)
-		console.log('received staff email is: ', staff_email)
-		const usersList: any = await database.GetUsersCounterForStaff(staff_email[0].email)
-		const userOnline: any = await database.GetOnlineUsersForStaff(staff_email[0].email)
+		const staff_email: any = await userParams.findOne({ userId: staff_id })
+		console.log('received staff email is: ', staff_email.email)
+		if (!staff_email) return false
+		const usersList: any = await baseUserData.find({ registrationType: staff_email.email })
+
+		const userOnline: any = await TokenModel.find()
 
 		console.log('user list: ', usersList.length);
 		console.log('user online list: ', userOnline.length);
 
-		if (!usersList[0]) return false
+		if (!usersList.length) return false
 
 		const logsBotName: any = process.env.TELEGRAM_USER_LOGS_BOT
 		const twoStepBotName: any = process.env.TELEGRAM_2FA_CODE_SENDER
 		const newsTgChanelName: any = process.env.TELEGRAM_PROJECT_NEWS_BOT
-
 
 		let dataLIst: INFO = {
 			telegrams: {
@@ -65,198 +77,214 @@ class staffService {
 
 	async GetUsersList(domainName: string) {
 
-		const usersList: any = await database.GetAllUsersForStaff(domainName)
+		const usersList: any = await baseUserData.find({ domainName: domainName })
 		console.log('user list: ', usersList);
-		if (!usersList[0]) return false
+		if (!usersList.length) return false
 		return usersList
 	}
 
-	async GetUserDetail(user_id: number) {
-		const userBaseData: any = await database.GetUserInfoById(user_id)
+	async GetUserDetail(user_id: string) {
+		const userBaseData: any = await baseUserData.findById({ _id: user_id })
 		console.log('userBaseData info is: ', userBaseData)
+		if (!userBaseData) return false
 
-		const userActionData: any = await database.GetUserActionsByUserId(user_id)
-		console.log('actions params is: ', userActionData);
+		const userParamsData: any = await userParams.findOne({ userId: user_id })
+		console.log('user params is: ', userParamsData);
 
-		const userActiveError: any = await database.GetErrorsByDomainName(userActionData[0].active_error)
-		console.log('active error is: ', userActiveError);
+		const userActionData: any = await userActionInfo.findOne({ userId: user_id })
+		console.log('user action info is: ', userActionData);
 
-		const userKycData: any = await database.GetUserKycByUserId(user_id)
+		const userKycData: any = await userKyc.findOne({ userId: user_id })
 		console.log('userKycData info is: ', userKycData)
 
-		const userLogsData: any = await database.GetLogsByUserId(user_id)
+		const userLogsData: any = await userLogs.find({ userEmail: userBaseData.email })
 		console.log('userLogsData info is: ', userLogsData)
 
-		if (!userKycData[0]) {
+		if (!userKycData) {
 			const UserData: any = {
-				base_data: userBaseData[0],
-				user_kyc: false,
+				base_data: userBaseData,
+				user_params_data: userParamsData,
+				user_action_data: userActionData,
+				user_kyc: null,
 				user_logs: userLogsData
 			}
 			console.log('data from service: ', UserData);
 			return UserData
+		} else {
+			const UserData: any = {
+				base_data: userBaseData,
+				user_params_data: userParamsData,
+				user_action_data: userActionData,
+				user_kyc: userKycData,
+				user_logs: userLogsData
+			}
+
+			// get user balances + last deposit date 
+			// get user owner name + get recruiter  
+			console.log('data from service: ', UserData);
+			return UserData
 		}
 
-		const UserData: any = {
-			base_data: userBaseData[0],
-			action_data: userActionData[0],
-			active_error: userActiveError[0],
-			user_kyc: userKycData[0],
-			user_logs: userLogsData
-		}
 
-		// get user balances + last deposit date 
-		// get user owner name + get recruiter  
-		console.log('data from service: ', UserData);
-		return UserData
 	}
 
 	async getUserForIpMatch(ip_address: string) {
-		const usersList: any = await database.GetUsersByIp(ip_address)
+		const usersList: any = await userIpMatch.find({ ipAddress: ip_address })
 		console.log('list is: ', usersList);
 		if (!usersList[0]) return usersList
 		return false
 	}
 
 	async GetKycForStaff(userDomain: string) {
-		const kycList: any = await database.GetKycForStaff(userDomain)
+		const kycList: any = await userKyc.find({ userDomain: userDomain })
 		console.log('list is: ', kycList);
-		if (!kycList[0]) return false
+		if (!kycList.length) return false
 		return kycList
 	}
 
-	async changeKycStatusAsStaff(status: string, user_id: number) {
+	async changeKycStatusAsStaff(status: string, user_id: string) {
 
-		const old_status: any = await database.GetKycForUpdate(user_id)
+		const old_status: any = await userParams.findById({ userId: user_id })
 		console.log('old kyc status: ', old_status);
 
-		if (old_status[0] !== status) {
-			await database.ChangeKycStatus(status, user_id)
+		if (old_status.kycStatus !== status) {
+			await userParams.findByIdAndUpdate(
+				{ userId: user_id },
+				{ kycStatus: status }
+			)
 			return true
 		}
 
-		console.log('some error');
+		console.log('status already set');
 		return false
 	}
 
-	async DeleteKyc(kyc_id: number, user_id: number) {
-		const user_kyc: any = await database.GetKycBeforeDelete(kyc_id)
-		console.log('current kyc is: ', user_kyc[0]);
+	async DeleteKyc(user_id: string) {
 
-		if (!user_kyc[0]) return false
+		const user_kyc: any = await userKyc.findByIdAndDelete({ userId: user_id })
+		console.log('current kyc is: ', user_kyc);
 
-		await database.DeleteKyc(kyc_id)
-		await database.ChangeKycStatus('empty', user_id)
+		if (!user_kyc) return false
+		await userParams.findByIdAndUpdate(
+			{ userId: user_id },
+			{ kycStatus: 'empty' }
+		)
 		return true
 	}
 
 
-	async UpdateDepositFee(user_id: number, deposit_fee: number) {
-		const user: any = await database.GetUserActionsByUserId(user_id)
-		console.log('found user is: ', user[0]);
+	async UpdateDepositFee(user_id: string, deposit_fee: number) {
 
-		if (!user[0]) return false
-
-		await database.UpdateUserActionsDepositFee(user_id, deposit_fee)
-		const updatedData: any = await database.GetUserActionsByUserId(user_id)
-		console.log('new deposit fee is:', updatedData[0].deposit_fee);
+		const user: any = await userActionInfo.findOne({ userId: user_id })
+		console.log('found user is: ', user);
+		if (!user) return false
+		await userActionInfo.findOneAndUpdate({ userId: user_id }, { depositFee: deposit_fee })
 		return true
 	}
 
-	async UpdatePremiumStatus(user_id: number, status: boolean) {
-		const user: any = await database.GetBaseUserParamsById(user_id)
-		console.log('found user is: ', user[0]);
-
-		if (!user[0]) return false
-
-		await database.UpdatePremiumStatus(user_id, status)
-		const updatedData: any = await database.GetBaseUserParamsById(user_id)
-		console.log('status is:', updatedData[0].premium_status);
+	async UpdatePremiumStatus(user_id: string, status: boolean) {
+		const user: any = await userParams.findOne({ userId: user_id })
+		console.log('found user status is: ', user.premiumStatus);
+		if (!user) return false
+		await userParams.findOneAndUpdate({ userId: user_id }, { premiumStatus: status })
 		return true
 	}
 
-	async UpdateSwapBan(user_id: number, status: boolean) {
-		const user: any = await database.GetBaseUserParamsById(user_id)
-		console.log('found user is: ', user[0]);
-
-		if (!user[0]) return false
-
-		await database.UpdateSwapBanStatus(user_id, status)
-		const updatedData: any = await database.GetBaseUserParamsById(user_id)
-		console.log('status is:', updatedData[0].swap_ban);
+	async UpdateSwapBan(user_id: string, status: boolean) {
+		const user: any = await userParams.findOne({ userId: user_id })
+		console.log('found user is: ', user);
+		if (!user) return false
+		await userParams.findOneAndUpdate({ userId: user_id }, { swapBan: status })
 		return true
 	}
 
-	async UpdateInternalBan(user_id: number, status: boolean) {
-		const user: any = await database.GetBaseUserParamsById(user_id)
-		console.log('found user is: ', user[0]);
-
-		if (!user[0]) return false
-
-		await database.UpdateInternalBanStatus(user_id, status)
-		const updatedData: any = await database.GetBaseUserParamsById(user_id)
-		console.log('status is:', updatedData[0].internal_ban);
+	async UpdateInternalBan(user_id: string, status: boolean) {
+		const user: any = await userParams.findOne({ userId: user_id })
+		console.log('found user is: ', user);
+		if (!user) return false
+		await userParams.findOneAndUpdate({ userId: user_id }, { internalBan: status })
 		return true
 	}
 
-	async UpdateFullBan(user_id: number, status: boolean) {
-		const user: any = await database.GetBaseUserParamsById(user_id)
-		console.log('found user is: ', user[0]);
-
-		if (!user[0]) return false
-
-		await database.UpdateFullBanStatus(user_id, status)
-		const updatedData: any = await database.GetBaseUserParamsById(user_id)
-		console.log('status is:', updatedData[0].isBanned);
+	async UpdateFullBan(user_id: string, status: boolean) {
+		const user: any = await userParams.findOne({ userId: user_id })
+		console.log('found user is: ', user);
+		if (!user) return false
+		await userParams.findOneAndUpdate({ userId: user_id }, { isBanned: status })
 		return true
 	}
 
 	async UpdateStaffSupportName(staff_email: string, updatedName: string) {
 
-		const user_to_update: any = await database.GetStaffParamsById(staff_email)
-		console.log('user to update: ', user_to_update);
-
-		if (!user_to_update[0]) return false
-		await database.UpdateStaffSupportName(staff_email, updatedName)
+		const user_to_update: any = await staffParams.findOne({ staffEmail: staff_email })
+		console.log('staff to update: ', user_to_update);
+		if (!user_to_update) return false
+		await staffParams.findOneAndUpdate({ staffEmail: staff_email }, { supportName: updatedName })
 		return true
 	}
 
-	async UpdateDoubleDepositStatus(userId: number, status: boolean) {
-		const user_to_update: any = await database.GetBaseUserParamsById(userId)
-		console.log('user to update: ', user_to_update);
-
-		if (!user_to_update[0]) return false
-		await database.UpdateDoubleDepositStatus(userId, status)
+	async UpdateDoubleDepositStatus(userId: string, status: boolean) {
+		const user: any = await userActionInfo.findOne({ userId: userId })
+		console.log('found user is: ', user);
+		if (!user) return false
+		await userActionInfo.findOneAndUpdate({ userId: userId }, { doubleDeposit: status })
+		await userParams.findOneAndUpdate({ userId: userId }, { doubleDeposit: status })
 		return true
 	}
 
 	async ClearMatchIpUsers(user_email: string, ipAddress: string) {
-		const user_to_update: any = await database.GetIpMatch(user_email)
-		console.log('user to update: ', user_to_update);
-
-		if (!user_to_update[0]) return false
-		await database.DeleteIpMatchLogs(ipAddress)
+		const list: any = await userIpMatch.find({ userEmail: user_email })
+		console.log('user to update: ', list);
+		if (!list) return false
+		await userIpMatch.deleteMany({ ipAddress: ipAddress })
 		return true
 	}
 
 	async CreateUserAsStaff(transfer_object: any) {
-		const candidate: any = await database.GetUserByEmail(transfer_object.userEmail)
-		if (candidate[0]) {
+
+		const candidate: any = await baseUserData.findOne({ email: transfer_object.email })
+		if (candidate) {
 			console.log('user already registered ')
 			return false
 		}
+
 		const activationLink: string = await codeGenerator(8)
-		const domainOwner: any = await database.GetBaseDomainInfo(transfer_object.domainName)
-		console.log('domain owner is: ', domainOwner[0].domain_owner)
-		await database.CreateUser(transfer_object.userEmail, transfer_object.password, activationLink, domainOwner[0].domain_owner, 'empty', true, transfer_object.domainName, transfer_object.datetime, transfer_object.name || '')
+		const domainOwner: any = await domainList.findOne({ fullDomainName: transfer_object.fullDomainName })
+		console.log('domain owner is: ', domainOwner.domainOwner)
+		await baseUserData.create({
+			name: transfer_object.name || '',
+			email: transfer_object.userEmail,
+			password: transfer_object.password,
+			activationLink: activationLink,
+			registrationType: domainOwner.domainOwner,
+			promocode: 'empty',
+			domainName: transfer_object.fullDomainName,
+			dateOfEntry: transfer_object.currentDate
+		})
+		const curUser: any = await baseUserData.findOne({ email: transfer_object.userEmail })
+		if (!curUser) return false
 
-		const curUser: any = await database.GetUserByEmail(transfer_object.userEmail)
-		if (!curUser[0]) return false
-		await database.SaveBaseUserParams(transfer_object.doubleDeposit, false, false, true, false, false, false, true, false, false, true, 'empty', curUser[0].ID)
-		await database.SaveUserInfoForAction(transfer_object.depositFee, '', 1, curUser[0].ID)
-		const user: any = await database.GetBaseUserParamsById(curUser[0].ID)
-		console.log('user is: ', user)
-
+		await userParams.create({
+			doubleDeposit: false,
+			isUser: true,
+			isStaff: false,
+			isAdmin: false,
+			isBanned: false,
+			swapBan: false,
+			internalBan: false,
+			isActivated: true,
+			premiumStatus: false,
+			twoStepStatus: false,
+			kycStatus: 'empty',
+			userId: curUser.id
+		})
+		await userActionInfo.create({
+			depositFee: transfer_object.depositFee,
+			doubleDeposit: false,
+			lastDeposit: '',
+			activeError: 1,
+			userId: curUser.id
+		})
 
 		return true
 	}
@@ -466,22 +494,29 @@ class staffService {
 	}
 
 	async CreateNotification(object: any) {
-		if (!object) return false
-		await database.SaveUserNotification(object.notification_text, object.user_email)
+		const user: any = await baseUserData.findOne({ email: object.user_email })
+		if (!user) return false
+		await userNotif.create({
+			text: object.notification_text,
+			domain: object.domain_name,
+			email: object.user_email,
+			userId: user.id
+		})
 		return true
 	}
 
 	async GetNotificationForUser(user_id: string) {
-		// const notification_list: any = await database.GetUserNotification(user_id)
-		// console.log('active notif: ', notification_list);
-		// if (!notification_list[0]) return false
-		// return notification_list
+		const notification_list: any = await userNotif.find({ userId: user_id })
+		console.log('active notif: ', notification_list);
+		if (!notification_list) return false
+		return notification_list
 	}
 
-	async CreatePromocode(date: string, value: any, currency: string, notif: string, staff_id: number, domain: string, counter: number) {
+	async CreatePromocode(date: string, value: any, currency: string, notif: string, staff_id: string, domain: string, counter: number) {
 		console.log('counter is: ', counter);
 
-		const currentPromocodes: any = await database.GetPromocodeListForStaff(staff_id)
+		const currentPromocodes: any = await userPromocode.find({ staffUserId: staff_id })
+
 		// console.log('codes array: ', currentPromocodes);
 
 		if (counter > 1 && counter <= 10) {
@@ -506,7 +541,15 @@ class staffService {
 					}
 					for (let x = 0; x <= codeArray.length - 1; x++) {
 						console.log('array sort: ', codeArray[x].code, codeArray[x].value);
-						await database.SavePromocode(codeArray[x].code, date, codeArray[x].value, currency, notif, staff_id, domain)
+						await userPromocode.create({
+							code: codeArray[x].code,
+							date: date,
+							value: codeArray[x].value,
+							coinName: currency,
+							notificationText: notif,
+							domainName: domain,
+							staffUserId: staff_id
+						})
 					}
 					return codeArray
 				}
@@ -515,56 +558,55 @@ class staffService {
 
 		const newCode: string = await codeGenerator(8)
 		console.log('generated code is: ', newCode);
-		await database.SavePromocode(newCode, date, value, currency, notif, staff_id, domain)
+		await userPromocode.create({
+			code: newCode,
+			date: date,
+			value: value,
+			coinName: currency,
+			notificationText: notif,
+			domainName: domain,
+			staffUserId: staff_id
+		})
 		return newCode
 	}
 
-	async GetPromocodeList(staff_id: number) {
-
-		const codeList: any = await database.GetPromocodeListForStaff(staff_id)
+	async GetPromocodeListForStaff(staff_id: string) {
+		const codeList: any = await userPromocode.find({ staffUserId: staff_id })
 		console.log('service code list is: ', codeList);
-
-		if (!codeList[0]) return false
+		if (!codeList.length) return false
 		return codeList
-
-	}
-
-	async GetPromocodeListForStaff(staff_id: number) {
-
-		const codeList: any = await database.GetPromocodeListForStaff(staff_id)
-		console.log('service code list is: ', codeList);
-		if (!codeList[0]) return false
-		return codeList
-
 	}
 
 	async RemovePromocode(code: string) {
-		await database.DeletePromocodeFromUserPromocode(code)
-		const getCode: any = await database.GetPromocodeToDelete(code)
-		console.log('received code is: ', getCode);
-		if (getCode[0]) return false
+		const curCode: any = await userPromocode.findOne({ code: code })
+		if (!curCode) return false
+		await userPromocode.findOneAndDelete({ code: code })
 		return true
-
 	}
 
-	async GetUsedPromocodeList(staff_id: number) {
-		const codeList: any = await database.GetUsedPromocodeListForStaff(staff_id)
+	async GetUsedPromocodeList(staff_id: string) {
+		const codeList: any = await usedPromoList.find({ staffUserId: staff_id })
 		console.log('service code list is: ', codeList);
-		if (!codeList[0]) return false
+		if (!codeList.length) return false
 		return codeList
 	}
 
 
-	async DeleteUsedPromocodesAsStaff(staff_id: number) {
-		await database.DeleteUsedPromocodeListAsStaff(staff_id)
-		const codeList: any = await database.GetUsedPromocodeListForStaff(staff_id)
-		if (codeList[0]) return false
+	async DeleteUsedPromocodesAsStaff(staff_id: string) {
+		const codeList: any = await usedPromoList.find({ staffUserId: staff_id })
+		console.log('service code list is: ', codeList);
+		if (!codeList.length) return false
+		await usedPromoList.deleteMany({ staffUserId: staff_id })
 		return true
 	}
 
-	async saveStaffLogs(staff_email: string, staff_action: string, staff_domain: string, staff_id: number) {
-		await database.SaveStaffLogs(staff_email, staff_action, staff_domain, staff_id)
-		console.log('staff logs was saved');
+	async saveStaffLogs(staff_email: string, staff_action: string, staff_domain: string, staff_id: string) {
+		await staffLogs.create({
+			staffEmail: staff_email,
+			staffAction: staff_action,
+			staffDomain: staff_domain,
+			staffId: staff_id
+		})
 	}
 
 	async addTerms(domain_name: string) {
@@ -588,30 +630,37 @@ class staffService {
 	async UpdateTerms(domain_name: string, termsBody: string) {
 		const terms: any = await domainTerms.findOne({ domainName: domain_name })
 		if (!terms) return false
-		await domainTerms.findByIdAndUpdate({
-			domainName: domain_name,
-			body: termsBody
-		})
+		await domainTerms.findOneAndUpdate({ domainName: domain_name }, { body: termsBody })
 		return true
 	}
 
 	async CreateNews(transfer_object: any) {
-		await database.CreateNews(transfer_object)
-		const getNews: any = await database.GetNews(transfer_object.newsTitle, transfer_object.newsDomain)
+		await newsList.create({
+			newsTitle: transfer_object.newsTitle,
+			newsDate: transfer_object.newsDate,
+			newsBody: transfer_object.newsBody,
+			newsImage: transfer_object.newsImage,
+			newsDomain: transfer_object.newsDomain,
+			staffEmail: transfer_object.staffEmail
+		})
+		const getNews: any = await newsList.findOne({ newsDate: transfer_object.newsDate })
 		console.log('found news: ', getNews);
-		if (!getNews[0]) return false
+		if (!getNews) return false
 		return getNews[0]
 	}
 
 	async EditNews(transfer_object: any) {
-		const getNews: any = await database.GetNews(transfer_object.newsTitle, transfer_object.newsDomain)
+		await newsList.findOneAndUpdate({ newsTitle: transfer_object.newsTitle }, {
+			newsTitle: transfer_object.newsTitle,
+			newsDate: transfer_object.newsDate,
+			newsBody: transfer_object.newsBody,
+			newsImage: transfer_object.newsImage,
+			newsDomain: transfer_object.newsDomain,
+			staffEmail: transfer_object.staffEmail
+		})
+		const getNews: any = await newsList.findOne({ newsDate: transfer_object.newsDate })
 		console.log('found news: ', getNews);
-		if (!getNews[0]) return false
-
-		await database.EditNews(transfer_object)
-		const updatedNews: any = await database.GetNews(transfer_object.newsTitle, transfer_object.newsDomain)
-		console.log('found news: ', updatedNews);
-		if (!updatedNews[0]) return false
+		if (!getNews) return false
 
 		return true
 	}

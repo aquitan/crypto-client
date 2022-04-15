@@ -17,6 +17,7 @@ interface User_KYC {
   frontDocumentPhoto: string
   backDocumentPhoto: string
   selfieDocumentPhoto: string
+  userDomain: string
   userId: Schema.Types.ObjectId
 }
 

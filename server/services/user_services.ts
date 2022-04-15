@@ -1,10 +1,11 @@
 import database from "../services/database_query"
 import ProfileUserDto from '../dtos/profile_user_dto'
-import DashboardUserDto from '../dtos/dashboard_user_dto'
 import mailService from '../services/mail_services'
 import telegram from '../api/telegram_api'
-import qrCode from 'qrcode'
+// import qrCode from 'qrcode'
+import userPromocode from '../models/Promocodes.model'
 import speakeasy from 'speakeasy'
+import baseUserData from '../models/User_base_data.model'
 import kycModel from '../models/KYC.model'
 import userParams from '../models/User_params.model'
 
@@ -24,15 +25,18 @@ async function generateCodeForGoogle2fa(domain_name: string) {
 class UserServices {
 
 	async dashboard(user_id: string) {
-
-		const userKyc: any = await kycModel.findOne({ userId: user_id })
 		const user: any = await userParams.findById({ userId: user_id })
-
-		console.log('kyc of current user: ', userKyc)
 		console.log('info of current user: ', user)
+		if (!user) return false
+		const kycData: any = await kycModel.findOne({ userId: user_id })
+		if (!kycData) return false
 
-		if (!userKyc) {
-			let dashboardUserDto: any = new DashboardUserDto(user[0])
+		let dashboardUserDto: any = {
+			name: user.name,
+			email: user.email,
+			phone: kycData.phoneNumber || null
+		}
+		if (user.kycStatus === 'empty') {
 			console.log('user dto is: ', dashboardUserDto)
 			if (user.isStaff || user.isAdmin) {
 				dashboardUserDto.withoutLogs = true
@@ -40,10 +44,6 @@ class UserServices {
 			return dashboardUserDto
 		}
 
-		let dashboardUserDto: any = new DashboardUserDto(userKyc)
-		if (user[0].isStaff || user[0].isAdmin) {
-			dashboardUserDto.withoutLogs = true
-		}
 		console.log('user dto is: ', dashboardUserDto)
 
 		return dashboardUserDto
@@ -93,35 +93,32 @@ class UserServices {
 
 
 	async UsePromocodeInProfile(code: string) {
-		const usedPromocode: any = await database.GetPromocodeToDelete(code)
-		console.log('received code is: ', usedPromocode[0]);
-		if (!usedPromocode[0]) return false
+		const usedPromocode: any = await userPromocode.findOne({ code: code })
+		console.log('received code is: ', usedPromocode);
+		if (!usedPromocode) return false
 		return true
 	}
 
 
-	async changeNameInProfile(user_id: number, userName: string) {
-		const user: any = await database.GetBaseUserParamsById(user_id)
-		console.log('received user is: ', user);
-		if (!user[0]) return false
+	// async changeNameInProfile(user_id: number, userName: string) {
+	// 	const user: any = await database.GetBaseUserParamsById(user_id)
+	// 	console.log('received user is: ', user);
+	// 	if (!user[0]) return false
 
-		await database.ChangeUserName(user_id, userName)
-		return true
-	}
+	// 	await database.ChangeUserName(user_id, userName)
+	// 	return true
+	// }
 
 	async personalAreaChangePassword(userEmail: string, newPassword: string) {
 
-		let user: any = await database.GetBaseUserParamsByEmail(userEmail)
-		console.log('found user is: ', user[0]);
+		let user: any = await baseUserData.findOne({ email: userEmail })
+		console.log('found user is: ', user);
 
-		if (!user[0]) {
-			console.log('can`t find any user');
-			return false
-		}
-
-		await database.UpdateUserPassword(userEmail, newPassword)
-		const updatedUser: any = await database.GetBaseUserParamsByEmail(userEmail)
-		console.log('updated pass is: ', updatedUser[0].password);
+		if (!user) return false
+		await baseUserData.findOneAndUpdate({ email: userEmail }, { password: newPassword })
+		let curUser: any = await baseUserData.findOne({ email: userEmail })
+		console.log('updated pass is: ', curUser.password);
+		if (curUser.password !== newPassword) return false
 		return true
 	}
 

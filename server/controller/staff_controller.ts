@@ -81,12 +81,9 @@ class StaffController {
   async userDetail(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
 
-      const user_id: any = req.params.id
-      console.log('params is: ', req.params.id);
-      const current_id: number = parseInt(user_id)
-      console.log('int id is: ', current_id);
+      const user_id: string = req.params.id
 
-      const user: any = await staffService.GetUserDetail(current_id)
+      const user: any = await staffService.GetUserDetail(user_id)
       console.log('found user: ', user)
       if (!user) return res.status(400).json({ message: 'wrong data' })
 
@@ -210,7 +207,7 @@ class StaffController {
       const rootAccess: boolean = req.body.rootAccess
 
       if (rootAccess === true) {
-        const result: boolean = await staffService.DeleteKyc(kycId, userId)
+        const result: boolean = await staffService.DeleteKyc(userId)
         console.log('operation result is: ', result);
 
         if (result === false) return res.status(400).json({ message: 'rejected' })
@@ -218,7 +215,7 @@ class StaffController {
         return res.status(202).json({ message: 'kyc was delete' })
       }
 
-      const result: boolean = await staffService.DeleteKyc(kycId, userId)
+      const result: boolean = await staffService.DeleteKyc(userId)
       console.log('operation result is: ', result);
 
       if (result === false) return res.status(400).json({ message: 'rejected' })
@@ -431,13 +428,15 @@ class StaffController {
 
   async updateStaffStatus(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      const { userId, staffId, status, staffEmail, userEmail, domainName, currentDate } = req.body
+      const { userId, status, staffEmail, userEmail, domainName, currentDate } = req.body
       console.log('req body: ', req.body);
 
       const rootAccess: boolean = req.body.rootAccess
+      let adminId: string = req.body.adminId
 
       if (rootAccess === true) {
-        const result: boolean = await adminService.UpdateStaffStatus('root', currentDate, userId, status)
+        adminId = 'xxOOOxx--001'
+        const result: boolean = await adminService.UpdateStaffStatus('root', currentDate, adminId, userId, status)
         if (result === false) {
           console.log('error');
           return res.status(401).json({
@@ -450,7 +449,7 @@ class StaffController {
           status: 'complete'
         })
       }
-      const result: boolean = await adminService.UpdateStaffStatus(staffEmail, currentDate, userId, status)
+      const result: boolean = await adminService.UpdateStaffStatus(staffEmail, currentDate, adminId, userId, status)
       if (result === false) {
         console.log('error');
         return res.status(401).json({
@@ -459,7 +458,7 @@ class StaffController {
         })
       }
 
-      await staffService.saveStaffLogs(staffEmail, ` изменил стафф права пользователя ${userEmail} на  ${status} `, domainName, staffId)
+      await staffService.saveStaffLogs(staffEmail, ` изменил стафф права пользователя ${userEmail} на  ${status} `, domainName, adminId)
       await telegram.sendMessageByStaffActions(staffEmail, ` изменил стафф права пользователя  ${userEmail} на  ${status} `, domainName)
       return res.status(202).json({
         message: 'user staff status was updated',
@@ -601,13 +600,13 @@ class StaffController {
 
       interface userData {
         staffEmail: string
-        staffId: number
+        staffId: string
         userEmail: string
         password: string
         depositFee: number
-        promocode: string
         domainName: string
-        datetime: string
+        fullDomainName: string
+        currentDate: string
         name?: string
       }
       let transfer_object: userData = {
@@ -616,15 +615,15 @@ class StaffController {
         userEmail: req.body.userEmail,
         password: req.body.password,
         depositFee: req.body.depositFee,
-        promocode: req.body.promocode,
         domainName: req.body.domainName,
-        datetime: req.body.datetime,
-        name: req.body.name
+        fullDomainName: req.body.fullDomainName,
+        currentDate: req.body.currentDate,
+        name: req.body.name || ''
       }
       const rootAccess: boolean = req.body.rootAccess
 
       if (rootAccess === true) {
-        transfer_object.staffId = 999999
+        transfer_object.staffId = 'xx999xx--001'
         transfer_object.staffEmail = 'root'
         const result: boolean = await staffService.CreateUserAsStaff(transfer_object)
         if (result === false) return res.status(400).json({ message: 'wrong data' })
@@ -634,7 +633,6 @@ class StaffController {
 
       const result: boolean = await staffService.CreateUserAsStaff(transfer_object)
       if (result === false) return res.status(400).json({ message: 'wrong data' })
-
       await telegram.sendMessageByStaffActions(transfer_object.staffEmail, ` создал пользователя ${transfer_object.userEmail} `, transfer_object.domainName)
       await staffService.saveStaffLogs(transfer_object.staffEmail, ` создал пользователя ${transfer_object.userEmail} `, transfer_object.domainName, transfer_object.staffId)
 
@@ -823,7 +821,7 @@ class StaffController {
         errorText: string
         errorButton: string
       }
-      const staffId: number = req.body.staffId
+      const staffId: string = req.body.staffId
 
       let obj_to_send: request_object = {
         domain_id: req.body.domainId,
@@ -1103,7 +1101,7 @@ class StaffController {
 
   async getNotificationList(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      const userId: number = req.body.userId
+      const userId: string = req.body.userId
       console.log('req body is: ', req.body);
       const result: any = await staffService.GetNotificationForUser(userId)
 
@@ -1122,10 +1120,9 @@ class StaffController {
         staffEmail: string
         staffId: number
         newsTitle: string
-        newsDate: string
+        newsDate: number
         newsBody: string
-        // newsImage: any
-        youtubeLink: string
+        newsImage: any
         newsDomain: string
       }
       const transfer_object: request_object = {
@@ -1134,8 +1131,7 @@ class StaffController {
         newsTitle: req.body.newsTitle,
         newsDate: req.body.newsDate,
         newsBody: req.body.newsBody,
-        // newsImage: req.body.newsImage,
-        youtubeLink: req.body.youtubeLink,
+        newsImage: req.body.newsImage,
         newsDomain: req.body.newsDomain
       }
 
@@ -1158,16 +1154,14 @@ class StaffController {
         newsTitle: string
         newsDate: string
         newsBody: string
-        // newsImage: any
-        youtubeLink: string
+        newsImage: any
         newsDomain: string
       }
       const transfer_object: request_object = {
         newsTitle: req.body.newsTitle,
         newsDate: req.body.newsDate,
         newsBody: req.body.newsBody,
-        // newsImage: req.body.newsImage,
-        youtubeLink: req.body.youtubeLink,
+        newsImage: req.body.newsImage,
         newsDomain: req.body.newsDomain
       }
 
@@ -1185,7 +1179,7 @@ class StaffController {
     try {
       const isAdmin: boolean = req.body.isAdmin
       const isStaff: boolean = req.body.isStaff
-      const staffId: number = req.body.staffId
+      const staffId: string = req.body.staffId
 
       if (isStaff === true) {
         const result: any = await staffService.GetNewsList(staffId)
@@ -1267,10 +1261,10 @@ class StaffController {
     try {
       // add promocode & add before sign up
 
-      const { date, value, currency, notification, staff, domainName, counter } = req.body
+      const { date, value, currency, notification, staff_id, domainName, counter } = req.body
       console.log('body is: ', req.body);
 
-      const codesArray: any = await staffService.CreatePromocode(date, value, currency, notification, staff, domainName, counter)
+      const codesArray: any = await staffService.CreatePromocode(date, value, currency, notification, staff_id, domainName, counter)
       console.log('operation result is: ', codesArray);
 
       if (!codesArray[0]) {
@@ -1297,7 +1291,7 @@ class StaffController {
       const adminPermission: boolean = req.body.isAdmin
       const staffPremisstion: boolean = req.body.isStaff
       // const domainName: string = req.body.domainName
-      const staff_id: number = req.body.id
+      const staff_id: string = req.body.id
 
       if (adminPermission === true) {
         const codesList: any = await adminService.GetPromocodeListForAdmin()
@@ -1309,7 +1303,7 @@ class StaffController {
         }
       }
       if (staffPremisstion === true) {
-        const codesList: any = await staffService.GetPromocodeList(staff_id)
+        const codesList: any = await staffService.GetPromocodeListForStaff(staff_id)
         if (codesList !== false) {
           return res.status(200).json({
             promocodeList: codesList,
@@ -1346,7 +1340,7 @@ class StaffController {
       const adminPermission: boolean = req.body.isAdmin
       const staffPermission: boolean = req.body.isStaff
       // const domainName: string = req.body.domainName
-      const staff_id: number = req.body.id
+      const staff_id: string = req.body.id
 
       if (adminPermission) {
         const codesList: any = await adminService.GetUsedPromocodeListForAdmin()
@@ -1379,7 +1373,7 @@ class StaffController {
     try {
       const adminPermission: boolean = req.body.isAdmin
       const staffPermission: boolean = req.body.isStaff
-      const staff_id: number = req.body.id
+      const staff_id: string = req.body.id
 
       if (adminPermission) {
         const result: boolean = await adminService.DeleteUsedPromocodesAsAdmin()

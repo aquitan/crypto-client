@@ -31,7 +31,8 @@ export const USER_KYC = {
   },
   subAddress: {
     type: String,
-    require: true
+    require: false,
+    default: ''
   },
   city: {
     type: String,
@@ -62,6 +63,10 @@ export const USER_KYC = {
     require: true
   },
   selfieDocumentPhoto: {
+    type: String,
+    require: true
+  },
+  userDomain: {
     type: String,
     require: true
   },

@@ -1,13 +1,19 @@
-import database from "../services/database_query"
 import domainList from '../models/Domain_list.model'
+import userPromocode from '../models/Promocodes.model'
+import usedPromoList from '../models/Used_promocodes.model'
+import newsList from '../models/News_list.model'
+import userKyc from '../models/KYC.model'
+import baseUserData from '../models/User_base_data.model'
+import userParams from '../models/User_params.model'
+import staffParams from '../models/Staff_params.model'
+import TokenModel from 'models/Token.model'
 
 class adminService {
 
-
   async GetUsersList() {
-    const usersList: any = await database.GetAllUsersForAdmin()
+    const usersList: any = await baseUserData.find()
     console.log("list is: ", usersList)
-    if (!usersList[0]) return false
+    if (!usersList.length) return false
     return usersList
   }
   async DashboardInfo() {
@@ -25,13 +31,13 @@ class adminService {
       }
     }
 
-    const usersList: any = await database.GetAllUsersForAdmin()
-    const userOnline: any = await database.GetOnlineUsersForAdmin()
+    const usersList: any = await baseUserData.find()
+    const userOnline: any = await TokenModel.find()
 
     console.log('user list: ', usersList.length);
     console.log('user online list: ', userOnline.length);
 
-    if (!usersList[0]) return false
+    if (!usersList.length) return false
 
     const logsBotName: any = process.env.TELEGRAM_USER_LOGS_BOT
     const twoStepBotName: any = process.env.TELEGRAM_2FA_CODE_SENDER
@@ -55,44 +61,50 @@ class adminService {
     return usersList
   }
 
-  async UpdateStaffStatus(staff_email: string, currentDate: string, user_id: number, status: boolean) {
-    const user: any = await database.GetBaseUserParamsById(user_id)
-    console.log('found user: ', user[0])
+  async UpdateStaffStatus(staff_email: string, currentDate: number, adminId: string, user_id: string, status: boolean) {
+    const user: any = await userParams.findOne({ userId: user_id })
+    console.log('found user: ', user)
+    if (!user) return false
 
-    if (!user[0]) return false
-    await database.SaveStaffParams(staff_email, 80, 'support team', currentDate, user_id)
-
-    await database.UpdateStaffStatus(user_id, status)
+    await staffParams.create({
+      staffEmail: staff_email,
+      paymentFee: 80,
+      supportName: 'support team',
+      staffAccessDate: currentDate,
+      whoGiveAccess: adminId
+    })
+    await userParams.findByIdAndUpdate({ userId: user_id }, { isStaff: true })
     return true
   }
 
   async GetKycForAdmin() {
-    const kycList: any = await database.GetKycForAdmin()
+    const kycList: any = await userKyc.find()
     console.log("list is: ", kycList)
-    if (!kycList[0]) return false
+    if (!kycList.length) return false
     return kycList
 
   }
 
   async GetPromocodeListForAdmin() {
-    const promocodeList: any = await database.GetPromocodeListForAdmin()
-    console.log('promo list is: ', promocodeList);
-    if (!promocodeList[0]) return false
+    const promocodeList: any = await userPromocode.find()
+    console.log('service code list is: ', promocodeList);
+    if (!promocodeList.length) return false
     return promocodeList
   }
 
 
   async GetUsedPromocodeListForAdmin() {
-    const promocodeList: any = await database.GetUsedPromocodeListForAdmin()
-    console.log('promo list is: ', promocodeList);
-    if (!promocodeList[0]) return false
-    return promocodeList
+    const list: any = await usedPromoList.find()
+    console.log('service code list is: ', list);
+    if (!list.length) return false
+    return list
   }
 
   async DeleteUsedPromocodesAsAdmin() {
-    await database.DeleteUsedPromocodeListAsAdmin()
-    const codeList: any = await database.GetUsedPromocodeListForAdmin()
-    if (codeList[0]) return false
+    const codeList: any = await usedPromoList.find()
+    console.log('service code list is: ', codeList);
+    if (!codeList.length) return false
+    await usedPromoList.deleteMany()
     return true
   }
 
@@ -105,10 +117,10 @@ class adminService {
   }
 
   async GetNewsListForAdmin() {
-    const newsList: any = await database.GetNewsForAdmin()
+    const list: any = await newsList.find()
     console.log('found news: ', newsList);
-    if (!newsList[0]) return false
-    return newsList[0]
+    if (!list.length) return false
+    return list
   }
 
 }

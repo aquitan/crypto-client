@@ -12,7 +12,6 @@ import twoStepList from '../models/User_2fa_code_list.model'
 import userNotif from '../models/User_notifications.model'
 import userLogs from '../models/User_logs.model'
 import ipMatch from '../models/User_ip_match.model'
-import database from '../services/database_query'
 import ApiError from '../exeptions/api_error'
 import mailService from '../services/mail_services'
 import telegram from '../api/telegram_api'
@@ -76,8 +75,7 @@ class AuthService {
       email: transfer_object.email,
       password: transfer_object.password,
       activationLink: activationLink,
-      registrationType: domainOwner,
-      // registrationType: 'testOwner',
+      registrationType: domainOwner.domainOwner,
       promocode: transfer_object.promocode,
       domainName: transfer_object.domainName,
       dateOfEntry: currentDate
