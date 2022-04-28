@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose'
-import { USER_WALLET_SCHEMA } from '../schemas/User_balacne.schema'
+import { USER_WALLET_SCHEMA } from '../schemas/User_balance.schema'
 
 interface BalanceParams {
   coinName: string

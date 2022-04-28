@@ -46,9 +46,8 @@ export const INTERNAL_HISTORY_SCHEMA = {
     require: true,
     default: 'pending'
   },
-  userId: {
-    type: Schema.Types.ObjectId,
-    ref: 'UserBaseData',
+  staffId: {
+    type: String,
     require: true
   }
 }

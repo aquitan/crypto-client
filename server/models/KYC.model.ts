@@ -8,12 +8,13 @@ interface User_KYC {
   phoneNumber: string
   dateOfBirth: string
   documentNumber: string
+  documentType: string
   mainAddress: string
   subAddress?: string
   city: string
+  countryName: string
   state?: string
   zipCode: number
-  documentType: string
   frontDocumentPhoto: string
   backDocumentPhoto: string
   selfieDocumentPhoto: string

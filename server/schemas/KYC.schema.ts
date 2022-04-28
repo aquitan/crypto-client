@@ -25,6 +25,10 @@ export const USER_KYC = {
     type: String,
     require: true
   },
+  doumentType: {
+    type: String,
+    require: true
+  },
   mainAddress: {
     type: String,
     require: true
@@ -44,14 +48,11 @@ export const USER_KYC = {
   },
   state: {
     type: String,
-    require: true
+    require: false,
+    default: ''
   },
   zipCode: {
     type: Number,
-    require: true
-  },
-  doumentType: {
-    type: String,
     require: true
   },
   frontDocumentPhoto: {

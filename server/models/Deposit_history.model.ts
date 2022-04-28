@@ -10,7 +10,8 @@ interface HistotyParams {
   date: number
   address: string
   status: string
-  staffId: Schema.Types.ObjectId
+  userId: Schema.Types.ObjectId
+  staffId: string
 }
 const DepositHistory = new Schema<HistotyParams>(DEPOSIT_HISTORY_SCHEMA)
 

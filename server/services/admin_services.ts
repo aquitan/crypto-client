@@ -6,7 +6,7 @@ import userKyc from '../models/KYC.model'
 import baseUserData from '../models/User_base_data.model'
 import userParams from '../models/User_params.model'
 import staffParams from '../models/Staff_params.model'
-import TokenModel from 'models/Token.model'
+import TokenModel from '../models/Token.model'
 
 class adminService {
 

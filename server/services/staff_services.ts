@@ -15,7 +15,7 @@ import userNotif from '../models/User_notifications.model'
 import userPromocode from '../models/Promocodes.model'
 import usedPromoList from '../models/Used_promocodes.model'
 import staffLogs from '../models/Staff_logs.model'
-import TokenModel from 'models/Token.model'
+import TokenModel from '../models/Token.model'
 import { TERMS } from '../config/terms.template'
 
 

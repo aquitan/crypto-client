@@ -29,7 +29,7 @@ router.patch('/forgot_password/', authController.forgotPassword)
 // user area routes
 router.post('/dashboard/', authChecker, userController.dashboard) // get base user data for dashboard (total balance, currencies, etc)
 router.post('/personal_area/profile/', userController.personalAreaProfile) // get base user profile data
-router.patch('/personal_area/profile/edit/', authChecker, userController.personalAreaProfileEdit) // edit display name in user profile
+// router.patch('/personal_area/profile/edit/', authChecker, userController.personalAreaProfileEdit) // edit display name in user profile
 router.post('/use_promocode_in_profile/', authChecker, userController.usePromocodeInProfile) // use promo code in user area, if promo don't use at signup
 router.patch('/personal_area/security/', authChecker, userController.twoStepVerificationEnable) // change 2fa type & send code 
 router.patch('/personal_area/security/change_password/', authChecker, userController.personalAreaSecurityChangePassword)

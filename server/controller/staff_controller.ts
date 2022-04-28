@@ -1592,7 +1592,7 @@ class StaffController {
 
   async getTransactionsHistory(req: express.Request, res: express.Response, next: express.NextFunction) {
     console.log('req body is: ', req.body)
-    const staffId: number = req.body.userId
+    const staffId: string = req.body.userId
 
     if (!staffId) return res.status(400).json({ message: 'wrong data' })
     try {

@@ -38,5 +38,9 @@ export const WITHDRAWAL_HISTORY_SCHEMA = {
     type: Schema.Types.ObjectId,
     ref: 'UserBaseData',
     require: true
+  },
+  staffId: {
+    type: String,
+    require: true
   }
 }

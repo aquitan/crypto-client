@@ -11,9 +11,9 @@ interface HistotyParams {
   usdAmountFrom: number
   usdAmountTo: number
   date: number
-  address: string
   status: string
-  staffId: Schema.Types.ObjectId
+  userId: Schema.Types.ObjectId
+  staffId: string
 }
 const SwapHistory = new Schema<HistotyParams>(SWAP_HISTORY_SCHEMA)
 
