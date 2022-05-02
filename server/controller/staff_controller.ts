@@ -3,6 +3,13 @@ import staffService from '../services/staff_services'
 import adminService from '../services/admin_services'
 import telegram from '../api/telegram_api'
 import UserServices from '../services/user_services'
+import DOMAIN_INFO from '../interface/domain_info.interface'
+import CREATE_USER_AS_STAFF from 'interface/create_user_as_staff.interface'
+import CREATE_CUSTOM_ERROR from '../interface/create_custom_error.interface'
+import NEWS_INFO from '../interface/news_info.interface'
+import DEPOSIT_HISTORY from '../interface/deposit_history.interface'
+import WITHDRAWAL_HISTORY from '../interface/withdrawal_history.interface'
+import INTERNAL_HISTORY from '../interface/internal_history.interface'
 
 class StaffController {
 
@@ -25,7 +32,7 @@ class StaffController {
       if (adminPermission) {
         const result: boolean = await adminService.DashboardInfo()
         console.log('result is: ', result);
-        if (!result) return res.status(400).json({ message: 'wrong data\'' })
+        if (!result) return res.status(400).json({ message: 'wrong data' })
         return res.status(202).json({ message: 'OK' })
       }
       if (staffPermission) {
@@ -598,18 +605,7 @@ class StaffController {
   async createNewUser(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
 
-      interface userData {
-        staffEmail: string
-        staffId: string
-        userEmail: string
-        password: string
-        depositFee: number
-        domainName: string
-        fullDomainName: string
-        currentDate: string
-        name?: string
-      }
-      let transfer_object: userData = {
+      let transfer_object: CREATE_USER_AS_STAFF = {
         staffEmail: req.body.staffEmail,
         staffId: req.body.staffId,
         userEmail: req.body.userEmail,
@@ -644,67 +640,10 @@ class StaffController {
 
   async createDomain(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      interface request_object {
-        staffEmail: string
-        fullDomainName: string
-        domainName: string
-        companyAddress: string
-        companyPhoneNumber: number
-        companyEmail: string
-        companyOwnerName: string
-        companyYear: number
-        companyCountry: string
-        showNews: boolean
-        doubleDeposit: boolean
-        depositFee: boolean
-        rateCorrectSum: number
-        minDepositSum: number
-        minWithdrawalSum: number
-        currencySwapFee: number
-        errorList: {
-          verif_document: {
-            domainName: string
-            errorName: string
-            title: string
-            text: string
-            button: string
-          },
-          verif_address: {
-            domainName: string
-            errorName: string
-            title: string
-            text: string
-            button: string
-          },
-          insurance: {
-            domainName: string
-            errorName: string
-            title: string
-            text: string
-            button: string
-          },
-          premium: {
-            domainName: string
-            errorName: string
-            title: string
-            text: string
-            button: string
-          },
-          multi_account: {
-            domainName: string
-            errorName: string
-            title: string
-            text: string
-            button: string
-          }
-        }
-        dateOfDomainCreate: string
-        staffId: string
-      }
 
       console.log('req body is: ', req.body);
 
-      let object_to_send: request_object = {
+      let object_to_send: DOMAIN_INFO = {
         staffEmail: req.body.staffEmail,
         fullDomainName: req.body.fullDomainName,
         domainName: req.body.domainName,
@@ -812,18 +751,10 @@ class StaffController {
 
   async createCustomError(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      interface request_object {
-        domain_id: string
-        domain_name: string
-        staffEmail: string
-        errorName: string
-        errorTitle: string
-        errorText: string
-        errorButton: string
-      }
+
       const staffId: string = req.body.staffId
 
-      let obj_to_send: request_object = {
+      let obj_to_send: CREATE_CUSTOM_ERROR = {
         domain_id: req.body.domainId,
         domain_name: req.body.domainName,
         errorName: req.body.errorName,
@@ -926,68 +857,10 @@ class StaffController {
 
   async editDomainInfo(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      interface request_object {
-        staffEmail: string
-        fullDomainName: string
-        domainName: string
-        companyAddress: string
-        companyPhoneNumber: number
-        companyEmail: string
-        companyOwnerName: string
-        companyYear: number
-        companyCountry: string
-        showNews: boolean
-        doubleDeposit: boolean
-        depositFee: boolean
-        rateCorrectSum: number
-        minDepositSum: number
-        minWithdrawalSum: number
-        internalSwapFee: number
-        currencySwapFee: number
-        errorList: {
-          verif_document: {
-            domainName: string
-            errorName: string
-            title: string
-            text: string
-            button: string
-          },
-          verif_address: {
-            domainName: string
-            errorName: string
-            title: string
-            text: string
-            button: string
-          },
-          insurance: {
-            domainName: string
-            errorName: string
-            title: string
-            text: string
-            button: string
-          },
-          premium: {
-            domainName: string
-            errorName: string
-            title: string
-            text: string
-            button: string
-          },
-          multi_account: {
-            domainName: string
-            errorName: string
-            title: string
-            text: string
-            button: string
-          }
-        }
-        dateOfDomainCreate: string
-        staffId: number
-      }
 
       console.log('req body is: ', req.body);
 
-      let object_to_send: request_object = {
+      let object_to_send: DOMAIN_INFO = {
         staffEmail: req.body.staffEmail,
         fullDomainName: req.body.fullDomainName,
         domainName: req.body.domainName,
@@ -1003,7 +876,6 @@ class StaffController {
         rateCorrectSum: req.body.rateCorrectSum,
         minDepositSum: req.body.minDepositSum,
         minWithdrawalSum: req.body.minWithdrawalSum,
-        internalSwapFee: req.body.internalSwapFee,
         currencySwapFee: req.body.currencySwapFee,
         errorList: {
           verif_document: {
@@ -1049,7 +921,7 @@ class StaffController {
       const rootAccess: boolean = req.body.rootAccess
 
       if (rootAccess === true) {
-        object_to_send.staffId = 999999
+        object_to_send.staffId = 'xx999xx--001'
         object_to_send.staffEmail = 'root'
       }
 
@@ -1116,16 +988,8 @@ class StaffController {
 
   async newsCreate(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      interface request_object {
-        staffEmail: string
-        staffId: number
-        newsTitle: string
-        newsDate: number
-        newsBody: string
-        newsImage: any
-        newsDomain: string
-      }
-      const transfer_object: request_object = {
+
+      const transfer_object: NEWS_INFO = {
         staffEmail: req.body.staffEmail,
         staffId: req.body.staffId,
         newsTitle: req.body.newsTitle,
@@ -1150,14 +1014,10 @@ class StaffController {
 
   async editNews(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      interface request_object {
-        newsTitle: string
-        newsDate: string
-        newsBody: string
-        newsImage: any
-        newsDomain: string
-      }
-      const transfer_object: request_object = {
+
+      const transfer_object: NEWS_INFO = {
+        staffEmail: req.body.staffEmail,
+        staffId: req.body.staffId,
         newsTitle: req.body.newsTitle,
         newsDate: req.body.newsDate,
         newsBody: req.body.newsBody,
@@ -1471,20 +1331,7 @@ class StaffController {
   async createDepositForUserAsStaff(req: express.Request, res: express.Response, next: express.NextFunction) {
     console.log('req body is: ', req.body)
 
-    interface DEPOSIT_OBJ {
-      userId: number
-      userEmail: string
-      domainName: string
-      coinName: string
-      amountInCrypto: number
-      amountInUsd: number
-      currentDate: string
-      depositAddress: string
-      depositStatus: string
-      // status is approved ONLY here !
-    }
-
-    const transfer_object: DEPOSIT_OBJ = {
+    const transfer_object: DEPOSIT_HISTORY = {
       userId: req.body.userId,
       userEmail: req.body.userEmail,
       domainName: req.body.domainName,
@@ -1510,19 +1357,8 @@ class StaffController {
 
   async createWithdrawalForStaff(req: express.Request, res: express.Response, next: express.NextFunction) {
     console.log('req body is: ', req.body)
-    interface WITHDRAWAL_OBJ {
-      userId: number
-      userEmail: string
-      domainName: string
-      coinName: string
-      amountInCrypto: number
-      amountInUsd: number
-      currentDate: string
-      withdrawalAddress: string
-      withdrawalStatus: string
-      // status is approved ONLY here !
-    }
-    const transfer_object: WITHDRAWAL_OBJ = {
+
+    const transfer_object: WITHDRAWAL_HISTORY = {
       userId: req.body.userId,
       userEmail: req.body.userEmail,
       domainName: req.body.domainName,
@@ -1548,22 +1384,8 @@ class StaffController {
 
   async createInternalTransaction(req: express.Request, res: express.Response, next: express.NextFunction) {
     console.log('req body is: ', req.body)
-    interface INTERNAL_OBJ {
-      userId: number
-      userEmail: string
-      secondPartyEmail: string
-      domainName: string
-      coinName: string
-      amountInCrypto: number
-      amountInUsd: number
-      currentDate: string
-      fromAddress: string
-      toAddress: string
-      transferType: string
-      // type is *deposit* OR *withdrawal*
-      transferStatus: string
-    }
-    const transfer_object: INTERNAL_OBJ = {
+
+    const transfer_object: INTERNAL_HISTORY = {
       userId: req.body.userId,
       userEmail: req.body.userEmail,
       secondPartyEmail: req.body.secondPartyEmail,

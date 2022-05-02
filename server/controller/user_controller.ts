@@ -5,6 +5,15 @@ import UserServices from '../services/user_services'
 import telegram from '../api/telegram_api'
 import codeGenerator from '../api/password_generator'
 import auth_services from '../services/auth_services'
+import PROFILE_DATA from 'interface/profile_user.interface'
+import USE_PROMO_IN_PROFILE from 'interface/profile_promo_usage.interface'
+import TWO_STEP_ENABLE from 'interface/two_step_enable.interface'
+import UPDATE_2FA_STATUS from 'interface/update_2fa_status.interface'
+import KYC_DATA from 'interface/kyc.interface'
+import DEPOSIT_HISTORY from 'interface/deposit_history.interface'
+import WITHDRAWAL_HISTORY from 'interface/withdrawal_history.interface'
+import SWAP_HISTORY from 'interface/swap_history.interface'
+import INTERNAL_HISTORY from 'interface/internal_history.interface'
 
 async function saveUserLogs(email: string, ipAddress: string, city: string, countryName: string, coordinates: string, browser: string, currentDate: string, userAction: string, userDomain: string) {
 
@@ -42,20 +51,7 @@ class UserController {
 
   async personalAreaProfile(req: express.Request, res: express.Response, next: express.NextFunction) {
 
-    interface userData {
-      userId: string
-      userEmail: string
-      ipAddress: string
-      city: string
-      browser: string
-      countryName: string
-      coordinates: string
-      currentDate: string
-      userAction: string
-      domainName: string
-    }
-
-    const transfer_object: userData = {
+    const transfer_object: PROFILE_DATA = {
       userId: req.body.userId,
       userEmail: req.body.userEmail,
       ipAddress: req.body.ipAddress,
@@ -88,22 +84,9 @@ class UserController {
 
   async usePromocodeInProfile(req: express.Request, res: express.Response, next: express.NextFunction) {
 
-    interface reqObject {
-      userId: string
-      userEmail: string
-      ipAddress: string
-      city: string
-      browser: string
-      countryName: string
-      coordinates: string
-      currentDate: string
-      userAction: string
-      domainName: string
-      promocode: string
-    }
     console.log('req body: ', req.body);
 
-    const transfer_object: reqObject = {
+    const transfer_object: USE_PROMO_IN_PROFILE = {
       userId: req.body.userId,
       userEmail: req.body.userEmail,
       ipAddress: req.body.ipAddress,
@@ -152,20 +135,10 @@ class UserController {
   async twoStepVerificationEnable(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
 
-      interface dataObject {
-        twoFaType: string
-        twoFaStatus: boolean
-        domainName: string
-        userId: number
-        userEmail: string
-        currentTime: string
-        code: string
-      }
-
       const code: string = await codeGenerator(8)
       console.log('generated code is: ', code);
 
-      const transferObject: dataObject = {
+      const transferObject: TWO_STEP_ENABLE = {
         twoFaType: req.body.twoFaType,
         twoFaStatus: req.body.twoFaStatus,
         domainName: req.body.domainName,
@@ -185,16 +158,8 @@ class UserController {
 
   async enableTwoStepVerificationStatus(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      interface UserParams {
-        twoFaType: string
-        userId: string
-        userEmail: string
-        domainName: string
-        twoFaStatus: boolean
-        enableDate: string
-      }
 
-      const transferObject: UserParams = {
+      const transferObject: UPDATE_2FA_STATUS = {
         twoFaType: req.body.twoFaType,
         userId: req.body.userId,
         userEmail: req.body.userEmail,
@@ -265,30 +230,8 @@ class UserController {
   async personalAreaKyc(req: express.Request, res: express.Response, next: express.NextFunction) {
 
     console.log('req body kyc: ', req.body);
-    interface userData {
-      userId: string
-      userEmail: string
-      firstName: string
-      lastName: string
-      phoneNumber: string
-      dateOfBirth: string
-      documentNumber: string
-      mainAddress: string
-      zipCode: number
-      documentType: string
-      ipAddress: string
-      state: string
-      city: string
-      browser: string
-      subAddress?: string
-      countryName: string
-      coordinates: string
-      currentDate: string
-      userAction: string
-      domainName: string
-      kycStatus: string
-    }
-    const transfer_object: userData = {
+
+    const transfer_object: KYC_DATA = {
       userId: req.body.id,
       userEmail: req.body.email,
       firstName: req.body.firstName,
@@ -330,25 +273,8 @@ class UserController {
 
   async makeDeposit(req: express.Request, res: express.Response, next: express.NextFunction) {
     console.log('req body is: ', req.body)
-    interface DEPOSIT_OBJ {
-      userId: string
-      userEmail: string
-      domainName: string
-      coinName: string
-      amountInCrypto: number
-      amountInUsd: number
-      currentDate: string
-      depositAddress: string
-      // deposit was created by staff ${staffId}
-      depositStatus: string
-      // status is pending ONLY here !
-      ipAddress: string
-      city: string
-      browser: string
-      countryName: string
-      coordinates: string
-    }
-    const transfer_object: DEPOSIT_OBJ = {
+
+    const transfer_object: DEPOSIT_HISTORY = {
       userId: req.body.userId,
       userEmail: req.body.userEmail,
       domainName: req.body.domainName,
@@ -357,13 +283,14 @@ class UserController {
       amountInUsd: req.body.amountInUsd,
       currentDate: req.body.currentDate,
       depositAddress: req.body.depositAddress,
-      depositStatus: req.body.depositStatus,
-      ipAddress: req.body.ipAddress,
-      city: req.body.city,
-      browser: req.body.browser,
-      countryName: req.body.countryName,
-      coordinates: req.body.coordinates,
+      depositStatus: req.body.depositStatus
     }
+
+    const ipAddress: string = req.body.ipAddress
+    const city: string = req.body.city
+    const browser: string = req.body.browser
+    const countryName: string = req.body.countryName
+    const coordinates: string = req.body.coordinates
 
     try {
       const result: boolean = await UserServices.MakeDeposit(transfer_object)
@@ -371,7 +298,7 @@ class UserController {
 
       if (!result) return res.status(400).json({ message: 'wrong data' })
 
-      await saveUserLogs(transfer_object.userEmail, transfer_object.ipAddress, transfer_object.city, transfer_object.countryName, transfer_object.coordinates, transfer_object.browser, transfer_object.currentDate, ` создал заявку на депозит на сумму ${transfer_object.amountInCrypto} ( ${transfer_object.amountInUsd} ) ${transfer_object.coinName} `, transfer_object.domainName)
+      await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, transfer_object.currentDate, ` создал заявку на депозит на сумму ${transfer_object.amountInCrypto} ( ${transfer_object.amountInUsd} ) ${transfer_object.coinName} `, transfer_object.domainName)
       await telegram.sendMessageByUserActions(transfer_object.userEmail, ` создал заявку на депозит на сумму ${transfer_object.amountInCrypto} ( ${transfer_object.amountInUsd} ) ${transfer_object.coinName} `, transfer_object.domainName)
       return res.status(201).json({ message: 'ok' })
 
@@ -399,24 +326,8 @@ class UserController {
 
   async makeWithdrawal(req: express.Request, res: express.Response, next: express.NextFunction) {
     console.log('req body is: ', req.body)
-    interface WITHDRAWAL_OBJ {
-      userId: string
-      userEmail: string
-      domainName: string
-      coinName: string
-      amountInCrypto: number
-      amountInUsd: number
-      currentDate: string
-      withdrawalAddress: string
-      withdrawalStatus: string
-      // status is pinding ONLY here !
-      ipAddress: string
-      city: string
-      browser: string
-      countryName: string
-      coordinates: string
-    }
-    const transfer_object: WITHDRAWAL_OBJ = {
+
+    const transfer_object: WITHDRAWAL_HISTORY = {
       userId: req.body.userId,
       userEmail: req.body.userEmail,
       domainName: req.body.domainName,
@@ -425,20 +336,20 @@ class UserController {
       amountInUsd: req.body.amountInUsd,
       currentDate: req.body.currentDate,
       withdrawalAddress: req.body.withdrawalAddress,
-      withdrawalStatus: req.body.withdrawalStatus,
-      ipAddress: req.body.ipAddress,
-      city: req.body.city,
-      browser: req.body.browser,
-      countryName: req.body.countryName,
-      coordinates: req.body.coordinates,
+      withdrawalStatus: req.body.withdrawalStatus
     }
+    const ipAddress: string = req.body.ipAddress
+    const city: string = req.body.city
+    const browser: string = req.body.browser
+    const countryName: string = req.body.countryName
+    const coordinates: string = req.body.coordinates
 
     try {
       const result: boolean = await UserServices.MakeWithdrawal(transfer_object)
       console.log('result is: ', result)
       if (!result) return res.status(400).json({ message: 'wrong data' })
 
-      await saveUserLogs(transfer_object.userEmail, transfer_object.ipAddress, transfer_object.city, transfer_object.countryName, transfer_object.coordinates, transfer_object.browser, transfer_object.currentDate, ` создал заявку на вывод на сумму ${transfer_object.amountInCrypto} ( ${transfer_object.amountInUsd} ) ${transfer_object.coinName} `, transfer_object.domainName)
+      await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, transfer_object.currentDate, ` создал заявку на вывод на сумму ${transfer_object.amountInCrypto} ( ${transfer_object.amountInUsd} ) ${transfer_object.coinName} `, transfer_object.domainName)
       await telegram.sendMessageByUserActions(transfer_object.userEmail, ` создал заявку на вывод на сумму ${transfer_object.amountInCrypto} ( ${transfer_object.amountInUsd} ) ${transfer_object.coinName} `, transfer_object.domainName)
       return res.status(201).json({ message: 'ok' })
 
@@ -465,26 +376,8 @@ class UserController {
 
   async makeSwap(req: express.Request, res: express.Response, next: express.NextFunction) {
     console.log('req body is: ', req.body)
-    interface SWAP_OBJ {
-      userId: string
-      userEmail: string
-      domainName: string
-      coinNameFrom: string
-      coinNameTo: string
-      amountInCryptoFrom: number
-      amountInCryptoTo: number
-      amountInUsdFrom: number
-      amountInUsdTo: number
-      currentDate: string
-      swapStatus: string
-      // status is approved ONLY here  ???
-      ipAddress: string
-      city: string
-      browser: string
-      countryName: string
-      coordinates: string
-    }
-    const transfer_object: SWAP_OBJ = {
+
+    const transfer_object: SWAP_HISTORY = {
       userId: req.body.userId,
       userEmail: req.body.userEmail,
       domainName: req.body.domainName,
@@ -495,13 +388,14 @@ class UserController {
       amountInUsdFrom: req.body.amountInUsdFrom,
       amountInUsdTo: req.body.amountInUsdTo,
       currentDate: req.body.currentDate,
-      swapStatus: req.body.swapStatus,
-      ipAddress: req.body.ipAddress,
-      city: req.body.city,
-      browser: req.body.browser,
-      countryName: req.body.countryName,
-      coordinates: req.body.coordinates,
+      swapStatus: req.body.swapStatus
     }
+
+    const ipAddress: string = req.body.ipAddress
+    const city: string = req.body.city
+    const browser: string = req.body.browser
+    const countryName: string = req.body.countryName
+    const coordinates: string = req.body.coordinates
 
     try {
       const result: boolean = await UserServices.MakeSwap(transfer_object)
@@ -509,7 +403,7 @@ class UserController {
 
       if (!result) return res.status(400).json({ message: 'wrong data' })
 
-      await saveUserLogs(transfer_object.userEmail, transfer_object.ipAddress, transfer_object.city, transfer_object.countryName, transfer_object.coordinates, transfer_object.browser, transfer_object.currentDate, ` сделал свап c ${transfer_object.amountInCryptoFrom} ${transfer_object.coinNameFrom} на ${transfer_object.amountInCryptoTo}  ${transfer_object.coinNameTo} на `, transfer_object.domainName)
+      await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, transfer_object.currentDate, ` сделал свап c ${transfer_object.amountInCryptoFrom} ${transfer_object.coinNameFrom} на ${transfer_object.amountInCryptoTo}  ${transfer_object.coinNameTo} на `, transfer_object.domainName)
       await telegram.sendMessageByUserActions(transfer_object.userEmail, ` сделал свап c ${transfer_object.amountInCryptoFrom} ${transfer_object.coinNameFrom} на ${transfer_object.amountInCryptoTo}  ${transfer_object.coinNameTo} `, transfer_object.domainName)
       return res.status(201).json({ message: 'ok' })
 
@@ -537,27 +431,8 @@ class UserController {
 
   async makeInternalTransfer(req: express.Request, res: express.Response, next: express.NextFunction) {
     console.log('req body is: ', req.body)
-    interface INTERNAL_OBJ {
-      userId: string
-      userEmail: string
-      secondPartyEmail: string
-      domainName: string
-      coinName: string
-      amountInCrypto: number
-      amountInUsd: number
-      currentDate: string
-      fromAddress: string
-      toAddress: string
-      transferType: boolean
-      // type is *send OR *received*
-      transferStatus: string
-      ipAddress: string
-      city: string
-      browser: string
-      countryName: string
-      coordinates: string
-    }
-    const transfer_object: INTERNAL_OBJ = {
+
+    const transfer_object: INTERNAL_HISTORY = {
       userId: req.body.userId,
       userEmail: req.body.userEmail,
       secondPartyEmail: req.body.secondPartyEmail,
@@ -570,12 +445,13 @@ class UserController {
       toAddress: req.body.toAddress,
       transferType: req.body.transferType,
       transferStatus: req.body.transferStatus,
-      ipAddress: req.body.ipAddress,
-      city: req.body.city,
-      browser: req.body.browser,
-      countryName: req.body.countryName,
-      coordinates: req.body.coordinates,
     }
+
+    const ipAddress: string = req.body.ipAddress
+    const city: string = req.body.city
+    const browser: string = req.body.browser
+    const countryName: string = req.body.countryName
+    const coordinates: string = req.body.coordinates
 
     try {
       const result: boolean = await UserServices.MakeInternalTransfer(transfer_object)
@@ -583,7 +459,7 @@ class UserController {
 
       if (!result) return res.status(400).json({ message: 'wrong data' })
 
-      await saveUserLogs(transfer_object.userEmail, transfer_object.ipAddress, transfer_object.city, transfer_object.countryName, transfer_object.coordinates, transfer_object.browser, transfer_object.currentDate, ` совершил внутренний перевод пользователю ${transfer_object.secondPartyEmail} на сумму  ${transfer_object.amountInCrypto}  ${transfer_object.coinName} на `, transfer_object.domainName)
+      await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, transfer_object.currentDate, ` совершил внутренний перевод пользователю ${transfer_object.secondPartyEmail} на сумму  ${transfer_object.amountInCrypto}  ${transfer_object.coinName} на `, transfer_object.domainName)
       await telegram.sendMessageByUserActions(transfer_object.userEmail, ` совершил внутренний перевод пользователю ${transfer_object.secondPartyEmail} на сумму  ${transfer_object.amountInCrypto}  ${transfer_object.coinName} `, transfer_object.domainName)
       return res.status(201).json({ message: 'ok' })
 

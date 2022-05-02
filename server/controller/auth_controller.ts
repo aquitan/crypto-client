@@ -3,6 +3,7 @@ import { validationResult } from 'express-validator'
 import ApiError from '../exeptions/api_error'
 import authService from '../services/auth_services'
 import telegram from '../api/telegram_api'
+import REGISTRATION_DATA from 'interface/registration.interface'
 
 class AuthController {
 
@@ -43,28 +44,7 @@ class AuthController {
       }
       console.log(req.body);
 
-
-      interface userData {
-        email: string
-        password: string
-        name?: string
-        promocode: string
-        domainName: string
-        ipAddress: string
-        city: string
-        countryName: string
-        coordinates: string
-        browser: string
-        currentDate: number
-        doubleDeposit: boolean
-        depositFee: number
-        rateCorrectSum: number
-        minDepositSum: number
-        minWithdrawalSum: number
-        currencySwapFee: number
-      }
-
-      const transfer_object: userData = {
+      const transfer_object: REGISTRATION_DATA = {
         email: req.body.email,
         password: req.body.password,
         name: req.body.name,
