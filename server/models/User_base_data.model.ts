@@ -13,4 +13,4 @@ interface UserAuth {
 }
 const UserBaseData = new Schema<UserAuth>(USER_BASE)
 
-export default model('UserBaseData', UserBaseData)
+export default model('User_Base_Data', UserBaseData)

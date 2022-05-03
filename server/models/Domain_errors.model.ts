@@ -11,4 +11,4 @@ interface ErrorParams {
 }
 const DomainWithdrawalErrors = new Schema<ErrorParams>(DOMAIN_ERRORS_SCHEMA)
 
-export default model('DomainWithdrawalErrors', DomainWithdrawalErrors)
+export default model('Domain_Withdrawal_Errors', DomainWithdrawalErrors)

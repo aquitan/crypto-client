@@ -10,8 +10,9 @@ interface HistotyParams {
   date: number
   address: string
   status: string
-  staffId: Schema.Types.ObjectId
+  userId: Schema.Types.ObjectId
+  staffId: string
 }
 const WithdrawalHistory = new Schema<HistotyParams>(WITHDRAWAL_HISTORY_SCHEMA)
 
-export default model('WithdrawalHistory', WithdrawalHistory)
+export default model('Withdrawal_History', WithdrawalHistory)

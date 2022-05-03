@@ -8,19 +8,21 @@ interface User_KYC {
   phoneNumber: string
   dateOfBirth: string
   documentNumber: string
+  documentType: string
   mainAddress: string
   subAddress?: string
   city: string
+  countryName: string
   state?: string
   zipCode: number
-  documentType: string
   frontDocumentPhoto: string
   backDocumentPhoto: string
   selfieDocumentPhoto: string
+  userDomain: string
   userId: Schema.Types.ObjectId
 }
 
 const UserKyc = new Schema<User_KYC>(USER_KYC)
 
-export default model('UserKyc', UserKyc)
+export default model('User_Kyc', UserKyc)
 

@@ -25,13 +25,18 @@ export const USER_KYC = {
     type: String,
     require: true
   },
+  doumentType: {
+    type: String,
+    require: true
+  },
   mainAddress: {
     type: String,
     require: true
   },
   subAddress: {
     type: String,
-    require: true
+    require: false,
+    default: ''
   },
   city: {
     type: String,
@@ -43,14 +48,11 @@ export const USER_KYC = {
   },
   state: {
     type: String,
-    require: true
+    require: false,
+    default: ''
   },
   zipCode: {
     type: Number,
-    require: true
-  },
-  doumentType: {
-    type: String,
     require: true
   },
   frontDocumentPhoto: {
@@ -62,6 +64,10 @@ export const USER_KYC = {
     require: true
   },
   selfieDocumentPhoto: {
+    type: String,
+    require: true
+  },
+  userDomain: {
     type: String,
     require: true
   },

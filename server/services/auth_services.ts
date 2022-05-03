@@ -4,7 +4,7 @@ import userParams from '../models/User_params.model'
 import userActionInfo from '../models/User_info_for_action.model'
 import user2faParams from '../models/User_2fa_params.model'
 import domainDetail from '../models/Domain_detail.model'
-import domainList from '../models/Domain_list.mode'
+import domainList from '../models/Domain_list.model'
 import domainTerms from '../models/Domain_terms.model'
 import codeList from '../models/Promocodes.model'
 import usedPromo from '../models/Used_promocodes.model'
@@ -12,7 +12,6 @@ import twoStepList from '../models/User_2fa_code_list.model'
 import userNotif from '../models/User_notifications.model'
 import userLogs from '../models/User_logs.model'
 import ipMatch from '../models/User_ip_match.model'
-import database from '../services/database_query'
 import ApiError from '../exeptions/api_error'
 import mailService from '../services/mail_services'
 import telegram from '../api/telegram_api'
@@ -67,17 +66,16 @@ class AuthService {
     const activationLink: string = await passwordGenerator(18)
 
     const domainOwner: any = await domainList.findOne({ domainFullName: transfer_object.domainName })
-    console.log('domain owner is: ', domainOwner[0].domain_owner);
+    console.log('domain owner is: ', domainOwner.domainOwner);
     if (!domainOwner) throw ApiError.ServerError()
 
     const currentDate = new Date().getTime()
-    await database.CreateUser(transfer_object.email, transfer_object.password, activationLink, domainOwner, transfer_object.promocode, true, transfer_object.domain_name, transfer_object.datetime, transfer_object.name || '')
     await baseUserData.create({
       name: transfer_object.name || '',
       email: transfer_object.email,
       password: transfer_object.password,
-      activationLink: transfer_object.activationLink,
-      registrationType: domainOwner,
+      activationLink: activationLink,
+      registrationType: domainOwner.domainOwner,
       promocode: transfer_object.promocode,
       domainName: transfer_object.domainName,
       dateOfEntry: currentDate
@@ -96,20 +94,21 @@ class AuthService {
       premiumStatus: false,
       twoStepStatus: false,
       kycStatus: 'empty',
-      userId: curUser._id
+      userId: curUser.id
     })
     await userActionInfo.create({
       depositFee: transfer_object.depositFee,
       doubleDeposit: transfer_object.doubleDeposit,
       lastDeposit: '',
       activeError: 1,
-      userId: curUser._id
+      userId: curUser.id
     })
-    const userParamsInfo: any = await userParams.findOne({ userId: curUser._id })
+    const userParamsInfo: any = await userParams.findOne({ userId: curUser.id })
     console.log(userParamsInfo);
     await mailService.sendActivationMail(transfer_object.email, `${transfer_object.domainName}`, `${activationLink}`)
+
     // use 'e' in getUserData args for disable finding by email and use ID
-    const userDto = await getUserData('e', curUser._id)
+    const userDto = await getUserData('e', curUser.id)
 
     const tokens: any = tokenService.generateTokens({ ...userDto })
     await tokenService.saveToken(userDto.id, tokens.refreshToken)
@@ -149,10 +148,10 @@ class AuthService {
       notifText: usedPromocode.notificationText,
       userDomain: usedPromocode.domainName,
       email: user_email,
-      userId: curUser._id
+      userId: curUser.id
     })
-    await codeList.findByIdAndDelete({ _id: usedPromocode._id })
-    const getUsedPromocode: any = await usedPromo.findOne({ _id: usedPromocode._id })
+    await codeList.findByIdAndDelete({ _id: usedPromocode.id })
+    const getUsedPromocode: any = await usedPromo.findById({ _id: usedPromocode.id })
     if (!getUsedPromocode) {
       console.log('some error in promocode saving');
       return false
@@ -163,23 +162,21 @@ class AuthService {
   async activate(activationLink: string) {
     const link: any = await baseUserData.findOne({ activationLink: activationLink })
     if (!link) throw ApiError.BadRequest('incorrect link =/')
-    await userParams.updateOne({
-      userId: link._id,
+    await userParams.findOneAndUpdate({ userId: link.id }, {
       isActivated: true
     })
 
-    const activatedStatus: any = await baseUserData.findOne({ activationLink: link })
-    if (!activatedStatus) throw ApiError.ServerError()
+    const activatedStatus: any = await baseUserData.findOne({ activationLink: link.activationLink })
+    if (!activatedStatus.isActivated) throw ApiError.ServerError()
     return true
   }
 
   async checkTwoStep(email: string) {
     const curUser: any = await baseUserData.findOne({ email: email })
-    const userParamsInfo: any = await userParams.findOne({ userId: curUser._id })
-    if (!curUser.twoStepStatus) return false
+    const userParamsInfo: any = await userParams.findOne({ userId: curUser.id })
+    if (!userParamsInfo.twoStepStatus) return false
 
-    const twoStepParams: any = await user2faParams.findOne({ userId: curUser._id })
-    // const two_step_params: any = await database.GetTwoStepParams(getFullUser[0].ID)
+    const twoStepParams: any = await user2faParams.findOne({ userId: curUser.id })
 
     if (twoStepParams.twoStepType === 'email') {
       const code_2fa: string = await passwordGenerator(8)
@@ -188,7 +185,7 @@ class AuthService {
         userEmail: email
       })
       // use 'e' in getUserData args for disable finding by email and use ID
-      const userDto = await getUserData('e', curUser._id)
+      const userDto = await getUserData('e', curUser.id)
       await mailService.SendTwoStepVerificationMessage(userDto.email, curUser.domainName, code_2fa)
       setTimeout(async () => {
         await twoStepList.deleteOne({ code: code_2fa })
@@ -220,7 +217,7 @@ class AuthService {
     return true
   }
 
-  async login(email: string, password: string, user_domain: string, twoStepCode: string) {
+  async login(email: string, password: string, user_domain: string) {
     const user: any = await baseUserData.findOne({ email: email })
     console.log('found user: ', user);
 
@@ -233,7 +230,7 @@ class AuthService {
 
     const userDto: any = await getUserData(email)
     const tokens: any = tokenService.generateTokens({ ...userDto })
-    await tokenService.saveToken(userDto.ID, tokens.refreshToken)
+    await tokenService.saveToken(userDto.id, tokens.refreshToken)
 
     return {
       ...tokens,
@@ -256,10 +253,11 @@ class AuthService {
     console.log('token from db: ', tokenFromDatabase)
 
     if (!userData || !tokenFromDatabase) throw ApiError.UnauthorizedError()
+
     // use 'e' in getUserData args for disable finding by email and use ID
-    const userDto: any = await getUserData('e', userData._id)
+    const userDto: any = await getUserData('e', userData.id)
     const tokens = tokenService.generateTokens({ ...userDto })
-    await tokenService.saveToken(userDto.ID, tokens.refreshToken)
+    await tokenService.saveToken(userDto.id, tokens.refreshToken)
 
     return {
       ...tokens,
@@ -276,8 +274,7 @@ class AuthService {
 
     const new_password: string = await passwordGenerator(12)
     console.log('new password is: ', new_password);
-    await baseUserData.findOneAndUpdate({
-      email: email,
+    await baseUserData.findOneAndUpdate({ email: email }, {
       password: new_password
     })
     await mailService.sendNewPassword(email, `${candidate.domainName}`, `${new_password}`)

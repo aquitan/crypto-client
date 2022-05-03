@@ -10,8 +10,8 @@ interface Domain {
   companyOwnerName: string
   companyYear: number
   companyCountry: string
-  domainOwner: Schema.Types.ObjectId
+  domainOwner: string
 }
 const DomainList = new Schema<Domain>(DOMAIN_SCHEMA)
 
-export default model('DomainList', DomainList)
+export default model('Domain_List', DomainList)

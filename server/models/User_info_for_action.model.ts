@@ -11,4 +11,4 @@ interface InfoParams {
 
 const UserInfoForAction = new Schema<InfoParams>(USER_INFO_FOR_ACTION)
 
-export default model('UserInfoForAction', UserInfoForAction)
+export default model('User_Info_For_Action', UserInfoForAction)

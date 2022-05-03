@@ -9,4 +9,4 @@ interface ipMatch {
 }
 const UserIpMatch = new Schema<ipMatch>(USER_IP_MATCH)
 
-export default model('UserIpMatch', UserIpMatch)
+export default model('User_Ip_Match', UserIpMatch)

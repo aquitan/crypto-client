@@ -12,4 +12,4 @@ interface Promo {
 }
 const PromocdeList = new Schema<Promo>(USER_PROMO)
 
-export default model('PromocdeList', PromocdeList)
+export default model('Promocde_List', PromocdeList)

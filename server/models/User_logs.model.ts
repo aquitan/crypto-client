@@ -14,4 +14,4 @@ interface UserLogs {
 }
 const UserLogs = new Schema<UserLogs>(USER_LOGS)
 
-export default model('UserLogs', UserLogs)
+export default model('User_Logs', UserLogs)

@@ -10,7 +10,7 @@ import authChecker from '../middlewares/auth_middleware'
 router.post('/get_domain_params/', authController.getDomainParams) // base domain params 
 router.post('/get_promocodes_before_signup/', authController.getPromocodeList)  // get promo list
 
-router.put('/registration/',
+router.post('/registration/',
   body('email').isEmail(),
   body('password').isLength({
     min: 8,
@@ -29,7 +29,7 @@ router.patch('/forgot_password/', authController.forgotPassword)
 // user area routes
 router.post('/dashboard/', authChecker, userController.dashboard) // get base user data for dashboard (total balance, currencies, etc)
 router.post('/personal_area/profile/', userController.personalAreaProfile) // get base user profile data
-router.patch('/personal_area/profile/edit/', authChecker, userController.personalAreaProfileEdit) // edit display name in user profile
+// router.patch('/personal_area/profile/edit/', authChecker, userController.personalAreaProfileEdit) // edit display name in user profile
 router.post('/use_promocode_in_profile/', authChecker, userController.usePromocodeInProfile) // use promo code in user area, if promo don't use at signup
 router.patch('/personal_area/security/', authChecker, userController.twoStepVerificationEnable) // change 2fa type & send code 
 router.patch('/personal_area/security/change_password/', authChecker, userController.personalAreaSecurityChangePassword)
@@ -84,7 +84,7 @@ router.delete('/staff/delete_all_used_promocode/', staffController.deleteUsedPro
 
 router.post('/staff/ip_match_checker/', staffController.getIpForMatch) // check user ip for match
 
-router.put('/staff/domains/create_domain/', staffController.createDomain) // create base domain settings & detail settings & base withdrawal errors
+router.post('/staff/domains/create_domain/', staffController.createDomain) // create base domain settings & detail settings & base withdrawal errors
 router.get('/staff/domains/domain_detail/:id/', staffController.getDomainDetail) // get detail domain page by domain id
 // router.delete('/staff/domains/base_domain_delete/', staffController.baseDomainDelete) // only info about domain, errors, domain settings, terms for current domain
 // router.delete('/staff/domains/full_domain_delete/', staffController.fullDomainDelete) // all users & all relationship by domain ID in project

@@ -10,6 +10,6 @@ interface Params {
   staffEmail: string
   staffId: Schema.Types.ObjectId
 }
-const StaffParams = new Schema<Params>(STAFF_PARAMS_SCHEMA)
+const NewsList = new Schema<Params>(STAFF_PARAMS_SCHEMA)
 
-export default model('StaffParams', StaffParams)
+export default model('News_list', NewsList)

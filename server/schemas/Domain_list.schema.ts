@@ -34,8 +34,7 @@ export const DOMAIN_SCHEMA = {
     require: true
   },
   domainOwner: {
-    type: Schema.Types.ObjectId,
-    ref: 'UserBaseData',
+    type: String,
     require: true
   }
 }

@@ -37,10 +37,6 @@ export const SWAP_HISTORY_SCHEMA = {
     type: Number,
     require: true
   },
-  address: {
-    type: String,
-    require: true
-  },
   status: {
     type: String,
     require: true,
@@ -49,6 +45,10 @@ export const SWAP_HISTORY_SCHEMA = {
   userId: {
     type: Schema.Types.ObjectId,
     ref: 'UserBaseData',
+    require: true
+  },
+  staffId: {
+    type: String,
     require: true
   }
 }

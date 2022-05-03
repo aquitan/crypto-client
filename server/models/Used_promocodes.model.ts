@@ -13,4 +13,4 @@ interface UsedPromo {
 }
 const UsedPromocde = new Schema<UsedPromo>(ALREADY_USED_PROMO)
 
-export default model('UsedPromocde', UsedPromocde)
+export default model('Used_Promocde', UsedPromocde)

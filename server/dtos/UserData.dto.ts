@@ -7,15 +7,15 @@ export async function getUserData(email: string, userId?: string) {
     curUser = await baseUserData.findOne({ email: email })
   }
   if (userId && email === 'e') {
-    curUser = await baseUserData.findOne({
-      userId: curUser._id
+    curUser = await baseUserData.findById({
+      _id: userId
     })
   }
 
-  const userParamsInfo: any = await userParams.findOne({ userId: curUser._id })
+  const userParamsInfo: any = await userParams.findOne({ userId: curUser.id })
 
   const userDto = {
-    id: curUser._id,
+    id: curUser.id,
     name: curUser.name,
     email: curUser.email,
     isActivated: userParamsInfo.isActivated,

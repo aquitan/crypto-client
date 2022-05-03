@@ -14,4 +14,4 @@ interface DomainParams {
 }
 const DomainDetail = new Schema<DomainParams>(DOMAIN_DETAIL_SCHEMA)
 
-export default model('DomainDetail', DomainDetail)
+export default model('Domain_Detail', DomainDetail)
