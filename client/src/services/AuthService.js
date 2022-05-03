@@ -6,14 +6,14 @@ export default class AuthService {
     }
 
     static async registration(obj) {
-        return $api.put('/registration', obj)
+        return $api.post('/registration', obj)
     }
 
     static async logout() {
         return $api.post('/logout')
     }
 
-    static async activation(activationLink, user_id) {
-        return $api.post('/activate', {activationLink, user_id})
+    static async activation(activationLink) {
+        return $api.post('/activate', {activationLink})
     }
 }

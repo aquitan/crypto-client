@@ -33,7 +33,6 @@ const SignIn = () => {
     const [stateTwoFa, setStateTwoFa] = useState({
         twoFaCode: '',
     })
-    console.log(stateTwoFa.twoFaCode)
 
     const navigate = useNavigate()
 
@@ -69,15 +68,24 @@ const SignIn = () => {
     }
 
     const sendLoginData = async (data) => {
+
         const geoData = await getGeoData()
         geoData.email = data.email
         geoData.password = data.password
         geoData.name = data.name
         delete geoData.id
         delete geoData.userAction
+        geoData.domainName = store.domain.domainName
+        geoData.doubleDeposit = store.domain.domainParams.doubleDeposit
+        geoData.depositFee = store.domain.domainParams.depositFee
+        geoData.rateCorrectSum = store.domain.domainParams.rateCorrectSum
+        geoData.minDepositSum = store.domain.domainParams.minDepositSum
+        geoData.minWithdrawalSum = store.domain.domainParams.minWithdrawalSum
+        geoData.currencySwapFee = store.domain.domainParams.currencySwapFee
 
         if (!store.isAuth && store.isActivated && !store.isBanned) store.login(geoData)
-        if (!store.isAuth && !store.isActivated && !store.isBanned) store.login(geoData)
+        // if (!store.isAuth && !store.isActivated && !store.isBanned) store.login(geoData)
+        if (!store.isAuth && !store.isActivated) setModal(true)
         if (store.isBanned) setModalBan(true)
         if (store.isError) setModalError(store.isError)
     }

@@ -4,6 +4,7 @@ import SendLocationService from "../services/SendLocationService";
 import {store} from "../index";
 import {detectBrowser} from "../utils/detectBrowser";
 import {getCurrentDate} from '../utils/getCurrentDate'
+import {dateToTimestamp} from "../utils/dateToTimestamp";
 
 
 export const getGeoData = async () => {
@@ -18,13 +19,12 @@ export const getGeoData = async () => {
             city: response.data.city,
             countryName: response.data.country_name,
             coordinates: location,
-            currentDate: getCurrentDate(),
+            currentDate: dateToTimestamp(),
             userAction: userLocation[userLocation.length - 1],
             id: store.userId,
             email: store.userEmail,
-            domainName: store.domain.full_domain_name,
             browser: detectBrowser(),
-            rootAccess: store.fullAccess
+            // rootAccess: store.fullAccess
         }
         return geoDatas
     } catch (e) {

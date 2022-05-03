@@ -71,6 +71,18 @@ const CreateDomains = () => {
     const tableHeader = ['#001', '127.0.0.1:8000', 'super', 'Jan. 11, 2022, 10:21 a.m.']
 
     const onSubmit = async (data) => {
+        if (data.showNews === 'true') {
+            data.showNews = true
+        }
+        if (data.showNews === 'false') {
+            data.showNews = false
+        }
+        if (data.doubleDeposit === 'true') {
+            data.doubleDeposit = true
+        }
+        if (data.doubleDeposit === 'false') {
+            data.doubleDeposit = false
+        }
         data.errorList = errorList
         data.dateOfDomainCreate = dateToTimestamp()
         data.depositFee = parseInt(data.depositFee)
@@ -79,9 +91,16 @@ const CreateDomains = () => {
         data.minWithdrawalSum = parseInt(data.minWithdrawalSum)
         // data.internalSwapFee = parseInt(data.internalSwapFee)
         data.currencySwapFee = parseInt(data.currencySwapFee)
-        data.staffId = 1
+        data.companyPhoneNumber = parseInt(data.companyPhoneNumber)
+        data.companyYear = parseInt(data.companyYear)
+        if (store.fullAccess) {
+            data.staffId = 'dsfsdf'
+        } else {
+            data.staffId = store.userId
+        }
+        data.rootAccess = store.fullAccess
         console.log(data)
-        const res = await putData('/staff/domains/create_domain/', data)
+        const res = await postData('/staff/domains/create_domain/', data)
         const response = await res.data
         if (res.status === 201) {
             setModal(true)
@@ -91,23 +110,23 @@ const CreateDomains = () => {
 
 
     useEffect(async () => {
-        getActiveDomains()
+        // getActiveDomains()
     }, [])
 
     const onDetail = (id) => {
         navigate(`/staff/domains/${id}`)
     }
 
-    const getActiveDomains = async () => {
-        const obj = {
-            isAdmin: store.isAdmin,
-            isStaff: store.isStaff,
-            staffEmail: store.userEmail
-        }
-        const res = await postData('/staff/domains/get_active_domains/', obj)
-        setActiveDomains(res.data.domainsList)
-        console.log('get domains', res.data)
-    }
+    // const getActiveDomains = async () => {
+    //     const obj = {
+    //         isAdmin: store.isAdmin,
+    //         isStaff: store.isStaff,
+    //         staffId: store.userId
+    //     }
+    //     const res = await postData('/staff/domains/get_active_domains/', obj)
+    //     setActiveDomains(res.data.domainsList)
+    //     console.log('get domains', res.data)
+    // }
 
     return (
         <Container>
@@ -184,13 +203,16 @@ const CreateDomains = () => {
                                         onChange={
                                             (e) => setErrorList({...errorList, verif_address: {
                                                     title: errorList.verif_address.title,
-                                                    text: e.target.value
+                                                    text: e.target.value,
+                                                    domainName: store.domain.domainName,
+                                                    errorName: errorList.verif_address.errorName,
+                                                    button: errorList.verif_address.button
                                                 }})
                                         }
                                         classnames='dark'
                                     />
                                     <div>
-                                        <b>Пример текста:</b> {defaultErrors[0].text}
+                                        <b>Пример текста:</b><br/> {defaultErrors[0].text}
                                     </div>
                                 </Row>
                                 <Row className='mb-3'>
@@ -208,7 +230,10 @@ const CreateDomains = () => {
                                         onChange={
                                             (e) => setErrorList({...errorList, verif_document: {
                                                     title: errorList.verif_document.title,
-                                                    text: e.target.value
+                                                    text: e.target.value,
+                                                    domainName: store.domain.domainName,
+                                                    errorName: errorList.verif_document.errorName,
+                                                    button: errorList.verif_document.button
                                                 }})
                                         }
                                         classnames='dark'
@@ -230,7 +255,10 @@ const CreateDomains = () => {
                                         onChange={
                                             (e) => setErrorList({...errorList, insurance: {
                                                     title: errorList.insurance.title,
-                                                    text: e.target.value
+                                                    text: e.target.value,
+                                                    domainName: store.domain.domainName,
+                                                    errorName: errorList.insurance.errorName,
+                                                    button: errorList.insurance.button
                                                 }})
                                         }
                                         classnames='dark'
@@ -252,7 +280,10 @@ const CreateDomains = () => {
                                         onChange={
                                             (e) => setErrorList({...errorList, premium: {
                                                     title: errorList.premium.title,
-                                                    text: e.target.value
+                                                    text: e.target.value,
+                                                    domainName: store.domain.domainName,
+                                                    errorName: errorList.premium.errorName,
+                                                    button: errorList.premium.button
                                                 }})
                                         }
                                         classnames='dark'
@@ -274,7 +305,10 @@ const CreateDomains = () => {
                                         onChange={
                                             (e) => setErrorList({...errorList, multi_account: {
                                                     title: errorList.multi_account.title,
-                                                    text: e.target.value
+                                                    text: e.target.value,
+                                                    domainName: store.domain.domainName,
+                                                    errorName: errorList.multi_account.errorName,
+                                                    button: errorList.multi_account.button
                                                 }})
                                         }
                                         classnames='dark'

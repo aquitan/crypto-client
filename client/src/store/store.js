@@ -4,14 +4,14 @@ import axios from "axios";
 import {BASE_URL} from "../API";
 
 export default class Store {
-    userId = '1'
-    userEmail = 'aquitan@mail.ru'
+    userId = ''
+    userEmail = ''
     path = ''
-    isUser = true
-    isAuth = true
+    isUser = false
+    isAuth = false
     isLoading = false
-    isActivated = true
-    isAdmin = true
+    isActivated = false
+    isAdmin = false
     isStaff = false
     isBanned = false
     showConfirmation = false
@@ -159,7 +159,6 @@ export default class Store {
             const response = await AuthService.logout()
             localStorage.removeItem('token')
             this.setAuth(false)
-            this.setIsActivated(false)
             this.setIsAdmin(false)
             this.setUser({})
             this.setFullAccess(false)
@@ -181,7 +180,7 @@ export default class Store {
                 localStorage.setItem('token', response.data.accessToken)
                 this.setFullAccess(true)
                 this.setAuth(true)
-            }else {
+            } else {
                 if (!this.isBanned) {
                     this.setUserId(response.data.user.ID)
                     this.setUserEmail(response.data.user.email)
@@ -213,10 +212,10 @@ export default class Store {
         }
     }
 
-    async sendActivation(activationLink, user_id) {
+    async sendActivation(activationLink) {
         this.setIsLoading(true)
         try {
-            const response = await AuthService.activation(activationLink, user_id)
+            const response = await AuthService.activation(activationLink)
             if (response.data.promocode) {
                 localStorage.setItem('promocode', response.data.promocode)
                 this.setPromocode(localStorage.getItem('promocode'))

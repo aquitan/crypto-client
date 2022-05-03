@@ -23,7 +23,7 @@ const SignUp = () => {
     const navigate = useNavigate()
     const [promoStatus, setPromoStatus] = useState(false)
     const [modalError, setModalError] = useState(false)
-    const [currentPromo, setCurrentPromo] = useState()
+    const [currentPromo, setCurrentPromo] = useState('')
     const [visiblePass, setVisiblePass] = useState({
         password: false,
         repeatPassword: false
@@ -63,16 +63,24 @@ const SignUp = () => {
     }
 
     const onSubmit = async (data) => {
-        if (promoStatus) {
-            const res = await postData('/promocode_validate', {code: currentPromo})
-            if (res.data.verivication) {
-                query(data)
+        console.log('current', currentPromo)
+        if (currentPromo.length) {
+            if (promoStatus) {
+                const res = await postData('/promocode_validate', {code: currentPromo})
+                if (res.data.verivication) {
+                    query(data)
+                }
             }
+        } else {
+            data.promocode = 'empty'
+            query(data)
         }
-        query(data)
+
     }
 
+    console.log('store----', store)
     const query = async (data) => {
+        console.log('data', data)
         const promocode = compareStr(promoStatus.promocodeList, data.promocode)
         const geoData = await getGeoData()
         geoData.email = data.email
@@ -81,12 +89,15 @@ const SignUp = () => {
         geoData.promocode = promocode
         delete geoData.id
         delete geoData.userAction
-        geoData.doubleDeposit = store.domain.double_deposit
-        geoData.depositFee = store.domain.deposit_fee
-        geoData.rateCorrectSum = store.domain.rate_correct_sum
-        geoData.minDepositSum = store.domain.min_deposit_sum
-        geoData.minWithdrawalSum = store.domain.min_withdrawal_sum
-        geoData.currencySwapFee = store.domain.currency_swap_fee
+        geoData.domainName = store.domain.domainName
+        geoData.doubleDeposit = store.domain.domainParams.doubleDeposit
+        geoData.depositFee = store.domain.domainParams.depositFee
+        geoData.rateCorrectSum = store.domain.domainParams.rateCorrectSum
+        geoData.minDepositSum = store.domain.domainParams.minDepositSum
+        geoData.minWithdrawalSum = store.domain.domainParams.minWithdrawalSum
+        geoData.currencySwapFee = store.domain.domainParams.currencySwapFee
+
+        store.registration(geoData)
         navigate('/register-confirm')
 
         if (store.isError) {
