@@ -6,13 +6,14 @@ import cls from './RegisterConfirm.module.scss'
 import {useForm} from "react-hook-form";
 import Input from "../../../components/UI/Input/Input";
 import {store} from "../../../index";
+import {getGeoData} from "../../../queries/getSendGeoData";
 
 const RegisterConfirm = () => {
     const navigate = useNavigate()
     const {register, handleSubmit} = useForm()
 
-    const toSignin = (data) => {
-        console.log(data)
+    const toSignin = async (data) => {
+        const geoData = await getGeoData()
         store.sendActivation(data.activationLink, store.userId)
         navigate('/')
     }

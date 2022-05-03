@@ -1,0 +1,21 @@
+.button-card {
+  background-color: rgb(34, 35, 49);
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.scrollable-table {
+  overflow-x: auto;
+  .row {
+    min-width: 1200px;
+  }
+}
+
+.small_scroll {
+  @media (max-width: 500px) {
+    overflow-x: auto;
+    .row {
+      min-width: 500px;
+    }
+  }
+}

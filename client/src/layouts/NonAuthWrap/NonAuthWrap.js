@@ -9,9 +9,6 @@ import {observer} from "mobx-react-lite";
 const NonAuthWrap = () => {
     const navigate = useNavigate()
     const {store} = useContext(AuthContext)
-    if (store.showConfirmation) {
-        navigate('/register-confirm')
-    }
     if (store.isLoading) {
         return <h1>Loading...</h1>
     }

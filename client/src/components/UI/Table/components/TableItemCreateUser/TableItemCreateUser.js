@@ -14,7 +14,6 @@ const TableItemCreateUser = ({users}) => {
                 users.map(user => {
                     return(
                         <Row className='table_item'>
-                            <Col>{user.user_id}</Col>
                             <Col>{user.name}</Col>
                             <Col>{user.name}</Col>
                             <Col>0</Col>

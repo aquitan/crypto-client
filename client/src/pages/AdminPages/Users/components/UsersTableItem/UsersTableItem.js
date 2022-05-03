@@ -11,7 +11,6 @@ const UsersTableItem = (props) => {
     return (
         <div className={cls.table_item}>
             <Row>
-                <Col className='d-none d-md-block col-2'>{props.id}</Col>
                 <Col className='d-none d-md-block col-2'>{props.registerDate}</Col>
                 <Col className='d-none d-sm-block col-2'>{props.name}</Col>
                 <Col className='col-8 col-sm-2'><span onClick={() => navigate(`/staff/users/${props.id}`)}>{props.email}</span></Col>

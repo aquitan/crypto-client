@@ -7,7 +7,9 @@ import {observer} from "mobx-react-lite";
 import Dropdown from "../UI/Dropdown/Dropdown";
 import Notification from "../UI/Notification/Notification";
 import Button from "../UI/Button/Button";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import CurrencyRates from "../CurrencyRates/CurrencyRates";
+import {faPhoneVolume} from "@fortawesome/free-solid-svg-icons";
 
 const NavBar = () => {
     const navigate = useNavigate()
@@ -18,38 +20,33 @@ const NavBar = () => {
         navigate('/')
     }
 
-    console.log('store nav', store)
-
     return (
         <Navbar className={cls.navbar} bg='dark'>
             <Container>
                 <Navbar>
-                    <div style={{color: 'green', fontWeight: 'bold', fontSize: 22}} className={cls.top}>
+                    <div style={{color: '#fff', fontWeight: 'bold', fontSize: 22}} className={cls.top}>
                         {store.domain.domain_name}
+                        domain-name
                     </div>
                 </Navbar>
 
                 <Navbar.Collapse className={`${cls.right_nav} justify-content-end`}>
                     <Nav style={{width: '100%'}}>
-                        <Row style={{width: '100%'}}>
-                            <Col>
-                                <Dropdown />
-                            </Col>
-                            <Col>
-                                {
-                                    store.isStaff || store.fullAccess || store.isAdmin ? <NavLink className={cls.link} to='/admin'>Staff</NavLink> : null
-                                }
-                            </Col>
-                            <Col>
+                        <div className={cls.navbar_links} style={{width: '100%'}}>
+                            <Dropdown />
+                            {
+                                store.isStaff || store.fullAccess || store.isAdmin ? <NavLink className={cls.link} to='/admin'>Staff</NavLink> : null
+                            }
+                            <div className='me-2'>
                                 <Notification />
-                            </Col>
-                            <Col>
-                                <NavLink to={'/contact-us'}>Contact us</NavLink>
-                            </Col>
-                            <Col>
-                                <Button classname='small' onClick={onLogOut}>Logout</Button>
-                            </Col>
-                        </Row>
+                            </div>
+                            <div className='d-none d-md-block m-2'>
+                                <NavLink to={'/contact-us'}>
+                                    <FontAwesomeIcon className={cls.navbar_icon} icon={faPhoneVolume} />
+                                </NavLink>
+                            </div>
+                            <Button classname='logout' onClick={onLogOut}>Logout</Button>
+                        </div>
                     </Nav>
                 </Navbar.Collapse>
 

@@ -15,7 +15,7 @@ body {
   outline: none;
 }
 .container {
-  /*overflow-y: auto;*/
+  overflow-y: auto;
   position: relative;
   max-width: 1540px;
 }
@@ -41,7 +41,7 @@ a {
   text-decoration: none;
 }
 a:hover {
-  color: #cecece;
+  color: #524ad0;
 }
 
 html {
@@ -77,7 +77,7 @@ code {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background-color: #242634;
+  background-color: #292b3c;
 }
 
 input:-webkit-autofill,

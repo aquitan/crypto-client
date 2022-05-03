@@ -15,6 +15,9 @@
     color: $colorBlue;
     text-decoration: none;
     padding: 0 5px;
+    @media (max-width: 400px) {
+        font-size: 12px;
+    }
 }
 .checkbox {
     margin-right: 10px;

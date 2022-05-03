@@ -17,6 +17,7 @@ import {getCurrentDate} from "../../../../../utils/getCurrentDate";
 import {v4 as uuid} from 'uuid'
 import StaffErrorItem from "../../../StaffErrors/components/StaffErrorItem/StaffErrorItem";
 import TextArea from "../../../../../components/UI/TextArea/TextArea";
+import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
 
 
 const DomainsDetail = () => {
@@ -42,7 +43,7 @@ const DomainsDetail = () => {
     console.log('state', state.domain)
 
     const onSubmit = async (data) => {
-        data.dateOfDomainCreate = getCurrentDate()
+        data.dateOfDomainCreate = dateToTimestamp()
         data.depositFee = parseInt(data.depositFee)
         data.rateCorrectSum = parseInt(data.rateCorrectSum)
         data.minDepositSum = parseInt(data.minDepositSum)

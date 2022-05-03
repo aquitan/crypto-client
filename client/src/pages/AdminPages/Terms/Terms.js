@@ -20,7 +20,6 @@ const Terms = () => {
     const [state, setState] = useState(term)
 
     const onSubmit = () => {
-        console.log('data', modal.termsData)
         setModal({
             ...modal, openModal: false
         })

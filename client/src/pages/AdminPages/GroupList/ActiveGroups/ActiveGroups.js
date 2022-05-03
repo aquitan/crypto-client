@@ -12,11 +12,11 @@ const ActiveGroups = () => {
             <Col>
                 10: NY, owner: Ozzy
             </Col>
-            <Col>
+            <Col className='d-none d-sm-block'>
                 Создана: Jan. 30, 2021, 12:27 a.m.; Видны ли все True
             </Col>
             <Col>
-                <AdminButton onClick={() => navigate('/staff/group-list/1')} classname='green xs'>Перейти</AdminButton>
+                <AdminButton onClick={() => navigate('/staff/group-list/1')} classname={['green', 'xs']}>Перейти</AdminButton>
             </Col>
             
         </Row>

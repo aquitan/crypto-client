@@ -107,15 +107,15 @@ class Database {
 
   async SaveBaseUserParams(double_deposit: boolean, swap_ban: boolean, internal_ban: boolean, isUser: boolean, isStaff: boolean,
     isAdmin: boolean, isBanned: boolean, isActivated: boolean, premium_status: boolean,
-    two_step_status: boolean, agreement: boolean, kyc_status: string, user_id: number) {
+    two_step_status: boolean, kyc_status: string, user_id: number) {
 
     mysql.query(`
       INSERT INTO user_params 
       ( double_deposit, swap_ban, internal_ban, isUser, isStaff, isAdmin, isBanned,
-      isActivated, premium_status, two_step_status, agreement, kyc_status, user_id)
+      isActivated, premium_status, two_step_status, kyc_status, user_id)
       VALUES 
       ( ${double_deposit}, ${swap_ban}, ${internal_ban}, ${isUser}, ${isStaff},
-      ${isAdmin}, ${isBanned}, ${isActivated}, ${premium_status}, ${two_step_status}, ${agreement}, "${kyc_status}", ${user_id})`,
+      ${isAdmin}, ${isBanned}, ${isActivated}, ${premium_status}, ${two_step_status}, "${kyc_status}", ${user_id})`,
       (err, result) => {
         if (err) return console.error(err)
         console.log('done')
@@ -128,7 +128,7 @@ class Database {
       INSERT INTO user_info_for_action 
       ( deposit_fee, last_deposit, active_error, user_id) 
       VALUES 
-      ( ${deposit_fee}, "${last_deposit}", ${active_error}, ${user_id})`,
+      ( ${deposit_fee}, NOW(), ${active_error}, ${user_id})`,
       (err, result) => {
         if (err) console.error(err)
         console.log('done')

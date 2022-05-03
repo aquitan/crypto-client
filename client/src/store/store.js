@@ -4,14 +4,14 @@ import axios from "axios";
 import {BASE_URL} from "../API";
 
 export default class Store {
-    userId = ''
-    userEmail = ''
+    userId = '1'
+    userEmail = 'aquitan@mail.ru'
     path = ''
-    isUser = false
-    isAuth = false
+    isUser = true
+    isAuth = true
     isLoading = false
     isActivated = true
-    isAdmin = false
+    isAdmin = true
     isStaff = false
     isBanned = false
     showConfirmation = false

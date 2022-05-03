@@ -16,6 +16,7 @@ import Select from "../../../components/UI/Select/Select";
 import AllNews from "./components/AllNews/AllNews";
 import error from "../../../styles/Error.module.scss";
 import {ErrorMessage} from "@hookform/error-message";
+import FileUpload from "../../../components/UI/FileUpload/FileUpload";
 
 const CreateNews = () => {
     const [state, setState] = useState()
@@ -58,24 +59,24 @@ const CreateNews = () => {
             <h1>Новости</h1>
             <AdminButtonCard>
                 <AdminForm onSubmit={handleSubmit(onSubmit)}>
-                    <Row className='mb-3'>
-                        <Col>
-                            <AdminInput classname='narrow_input' {...register('newsTitle', {
+                    <Row>
+                        <Col className='col-12 col-md-4 mb-3'>
+                            <AdminInput {...register('newsTitle', {
                                 required: true,
                                 pattern: /^[^а-яё]+$/iu
                             })} placeholder='Заголовок' />
                             <ErrorMessage  name='newsTitle' errors={errors} render={() => <p className={error.error}>Только английские буквы</p>} />
                         </Col>
-                        <Col>
+                        <Col className='col-12 col-md-4 mb-3'>
                             <DatePickert
                                 required
-                                customInput={<DatePickerCustom/>}
+                                customInput={<DatePickerCustom classname='thick_datepicker' />}
                                 placeholderText='Дата'
                                 selected={startDate}
                                 dateFormat='yyyy/MM/dd'
                                 onChange={(date) => setStartDate(date)} />
                         </Col>
-                        <Col>
+                        <Col className='col-12 col-md-4 mb-3'>
                             <Select classname='small narrow_select' {...register('domainNews', {
                                 required: true,
                                 pattern: /^[^а-яё]+$/iu
@@ -84,13 +85,15 @@ const CreateNews = () => {
                         </Col>
                     </Row>
                     <Row className='mb-3'>
-                        <TextArea {...register('newsBody')} classnames='dark' rows='10' placeholder='Основной текст'/>
+                        <Col>
+                            <TextArea {...register('newsBody')} classnames='dark textarea_square' rows='10' placeholder='Основной текст'/>
+                        </Col>
                     </Row>
                     <Row className='mb-3'>
-                        <Col>
-                            {/*<AdminInput {...register('newsImage')} type='file' placeholder='Добавить фото'/>*/}
+                        <Col className='col-12 col-md-6 mb-3'>
+                            <FileUpload {...register('newsImage')} id='newsImg' />
                         </Col>
-                        <Col>
+                        <Col className='col-12 col-md-6 mb-3'>
                             <AdminInput {...register('youtubeLink')} placeholder='Ссылка на Youtube' />
                         </Col>
                     </Row>

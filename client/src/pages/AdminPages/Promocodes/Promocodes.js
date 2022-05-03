@@ -27,7 +27,8 @@ const Promocodes = () => {
     })
     const [modal, setModal] = useState({
         isOpen: false,
-        onClickConfirm: null
+        onClickConfirm: null,
+        isDelete: false
     })
     const options = [
         {value: 'BTC', text: 'BTC'}, 
@@ -101,12 +102,15 @@ const Promocodes = () => {
     }, [])
 
     const onDeletePromo = async (id) => {
-        console.log('id', id)
         const res = await deleteData('/staff/delete_promocode', {id: id})
         setState({
             ...state, currentPromocodes: state.currentPromocodes.filter(el => el.ID !== id )
         })
         handleCloseModal()
+        setModal({...modal, isDelete: true})
+        if (res.status === 200) {
+            setModal({...modal, isDelete: true})
+        }
     }
     const deleteAllUsed = async () => {
         const res = await deleteData('/123')
@@ -124,10 +128,10 @@ const Promocodes = () => {
     }
 
     const handleCloseModal = () => {
-        setModal({isOpen: false, onClickConfirm: null})
+        setModal({isOpen: false, onClickConfirm: null, isDelete: false})
     }
 
-    const {isOpen, onClickConfirm} = modal
+    const {isOpen, onClickConfirm, isDelete} = modal
 
     return (
         <Container>
@@ -136,6 +140,9 @@ const Promocodes = () => {
                 <h2>Вы уверены?</h2>
             </ModalDark>
 
+            <ModalDark active={isDelete} setActive={handleCloseModal}>
+                <h2>Код удален!</h2>
+            </ModalDark>
 
             <h1 className='mt-4'>Промокоды</h1>
             <AdminButtonCard className={`${cls.bg_black} mb-3 p-3`}>
@@ -200,9 +207,11 @@ const Promocodes = () => {
                 </AdminForm>
             </AdminButtonCard>
 
-            <AdminButtonCard title='Текущие промокоды'>
+            <AdminButtonCard>
+                <Row className='mb-4'>
+                    <Col><h2>Текущие промокоды</h2></Col>
+                </Row>
                 <Row className={cls.table_header}>
-                    <Col className='d-none d-md-block col-2'>#</Col>
                     <Col className='d-none d-md-block col-2'>Код</Col>
                     <Col className='d-none d-md-block col-2'>Награждение</Col>
                     <Col className='d-none d-md-block col-2'>Валюта</Col>
@@ -224,15 +233,18 @@ const Promocodes = () => {
                     }
                 </div>
             </AdminButtonCard>
-            <AdminButtonCard title='Использованные промокоды'>
-                <div>
-                    <AdminButton
-                        onClick={deleteAllUsed}
-                        style={{position: 'absolute', right: 20, top: 10}}
-                        classname={['red', 'xs']}>Удалить все</AdminButton>
-                </div>
+            <AdminButtonCard>
+                <Row className='mb-4'>
+                    <Col className='col-12 col-sm-8 mb-3'>
+                        <h2>Использованные промокоды</h2>
+                    </Col>
+                    <Col className='col-12 col-sm-4'>
+                        <AdminButton
+                            onClick={deleteAllUsed}
+                            classname={['red', 'xs']}>Удалить все</AdminButton>
+                    </Col>
+                </Row>
                 <Row className={cls.table_header}>
-                    <Col className='d-none d-md-block'>#</Col>
                     <Col className='d-none d-md-block'>Код</Col>
                     <Col className='d-none d-md-block'>Награждение</Col>
                     <Col className='d-none d-md-block'>Валюта</Col>

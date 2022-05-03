@@ -1,14 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Card, Container} from "react-bootstrap";
+import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 
 const PremiumBenefits = () => {
     return (
         <Container>
             <h1>Premium benefits</h1>
-            <Card>
+            <ButtonCard>
                 Here we will tell you what premium accounts benefits do we have!
-            </Card>
+            </ButtonCard>
         </Container>
     )
 }

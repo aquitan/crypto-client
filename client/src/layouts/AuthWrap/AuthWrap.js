@@ -29,10 +29,11 @@ const AuthWrap = () => {
     }
     return (
         <>
+            {
+                userLocation[1] === 'staff' ? null : <NavBar/>
+            }
             <div className={cls.content}>
-                {
-                    userLocation[1] === 'staff' ? null : <NavBar/>
-                }
+
                 <Routes>
                     {
                         !store.fullAccess ?
@@ -52,27 +53,28 @@ const AuthWrap = () => {
                     }
                     <Route path='*' element={<Navigate to={'/error'}/>} />
                 </Routes>
+                {
+                    userLocation[1] === 'staff' ? null :
+                        <Footer>
+                            <div className={cls.footer_block}>
+                                <Link className='me-2' to='/privacy-policy'>Privacy Policy</Link>
+                                <Link className='me-2' to='/cookie-policy'>Cookie Policy</Link>
+                                <Link className='me-2' to='/before-start'>Before you start</Link>
+                            </div>
+                            <div className={cls.footer_block}>
+                                <Link className='me-2' to='/security-policy'>Security policy</Link>
+                                <Link className='me-2' to='/terms-and-conditions'>Terms & Conditions</Link>
+                                <Link className='me-2' to='/general-basics'>General Basics</Link>
+                            </div>
+                            <div className={cls.footer_block}>
+                                <Link className='me-2' to='/about-us'>About Us</Link>
+                                <Link className='me-2' to='/contact-us'>Contact Us</Link>
+                                <Link className='me-2' to='/cryptocurrencies'>Cryptocurrencies</Link>
+                            </div>
+                        </Footer>
+                }
             </div>
-            {
-                userLocation[1] === 'staff' ? null :
-                    <Footer>
-                        <div className={cls.footer_block}>
-                            <Link className='me-2' to='/privacy-policy'>Privacy Policy</Link>
-                            <Link className='me-2' to='/cookie-policy'>Cookie Policy</Link>
-                            <Link className='me-2' to='/before-start'>Before you start</Link>
-                        </div>
-                        <div className={cls.footer_block}>
-                            <Link className='me-2' to='/security-policy'>Security policy</Link>
-                            <Link className='me-2' to='/terms-and-conditions'>Terms & Conditions</Link>
-                            <Link className='me-2' to='/general-basics'>General Basics</Link>
-                        </div>
-                        <div className={cls.footer_block}>
-                            <Link className='me-2' to='/about-us'>About Us</Link>
-                            <Link className='me-2' to='/contact-us'>Contact Us</Link>
-                            <Link className='me-2' to='/cryptocurrencies'>Cryptocurrencies</Link>
-                        </div>
-                    </Footer>
-            }
+
 
         </>
     )

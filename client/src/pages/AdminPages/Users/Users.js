@@ -68,7 +68,6 @@ const Users = () => {
                     <div className="users_table">
                         <div className={cls.users_table_inner}>
                             <Row className={cls.table_header}>
-                                <Col className='d-none d-md-block col-2'>#</Col>
                                 <Col className='d-none d-md-block col-2'>Date of registration</Col>
                                 <Col className='d-none d-sm-block col-2'>Name</Col>
                                 <Col className='col-8 col-sm-2'>Email</Col>
@@ -82,7 +81,6 @@ const Users = () => {
                                         return(
                                             <UsersTableItem
                                                 key={uuid()}
-                                                id={user.ID}
                                                 registerDate={user.date_of_entry}
                                                 name={user.name}
                                                 email={user.email}

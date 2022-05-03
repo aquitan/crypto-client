@@ -9,9 +9,6 @@ const StaffWalletsItem = (props) => {
     return (
         <div>
             <Row className={`${cls.wallet_item} mb-3`}>
-                <Col className='d-none d-md-block'>
-                    {props.id}
-                </Col>
                 <Col>
                     {props.name}
                 </Col>

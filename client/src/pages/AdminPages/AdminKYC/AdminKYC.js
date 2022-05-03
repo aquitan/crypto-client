@@ -41,9 +41,8 @@ const AdminKYC = () => {
                 </Card>
             </Row>
             <Row>
-                <Card className={`${cls.bg_black} p-3`}>
+                <Card className={`${cls.bg_black} p-3 scrollable-table`}>
                     <Row className={cls.table_header}>
-                        <Col className={cls.id_col}>#</Col>
                         <Col className={cls.default_col}>Date of registration</Col>
                         <Col className={cls.default_col}>Name</Col>
                         <Col className={cls.default_col}>Email</Col>
@@ -59,7 +58,6 @@ const AdminKYC = () => {
                                 return(
                                     <AdminKycTableItem
                                         key={user.ID}
-                                        id={user.ID}
                                         registerDate={user.date_of_entry}
                                         city={user.city}
                                         zip={user.zip_code}

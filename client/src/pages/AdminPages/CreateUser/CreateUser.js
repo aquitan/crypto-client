@@ -26,7 +26,6 @@ const CreateUser = () => {
         mode: "onBlur"
     })
     const tableHeader = [
-        '#',
         'Username',
         'Recruter for',
         'Is can be recruter?',
@@ -129,7 +128,7 @@ const CreateUser = () => {
             </AdminButtonCard>
             {
                 !store.isAdmin ?
-                    <AdminButtonCard>
+                    <AdminButtonCard classname='scrollable-table'>
                         <h2>Редактировать пользователя</h2>
                         <Table>
                             <TableHeader elems={tableHeader} />

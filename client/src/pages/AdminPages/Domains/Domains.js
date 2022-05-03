@@ -6,7 +6,7 @@ import AdminInput from "../../../components/UI/AdminInput/AdminInput";
 import {
     defaultErrors,
     domainSelect,
-    domainsInputs,
+    domainsInputs, domainsInputsNums,
     optionsButton,
     tableHeaderDomains
 } from "../../../utils/staffConstants";
@@ -19,7 +19,6 @@ import {v4 as uuid} from 'uuid'
 import TableHeader from "../../../components/UI/Table/components/TableHeader/TableHeader";
 import Table from '../../../components/UI/Table/Table'
 import TableBody from "../../../components/UI/Table/components/TableBody/TableBody";
-import TableItem from "../../../components/UI/Table/components/TableItem/TableItem";
 import TextArea from "../../../components/UI/TextArea/TextArea";
 import {postData, putData} from "../../../services/StaffServices";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
@@ -28,6 +27,7 @@ import cls from "../../NonAuthPages/SignIn/SignIn.module.scss";
 import {ErrorMessage} from "@hookform/error-message";
 import {useNavigate} from "react-router-dom";
 import ModalDark from "../../../components/UI/ModalDark/ModalDark";
+import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 
 const CreateDomains = () => {
     const [modal, setModal] = useState(false)
@@ -72,7 +72,7 @@ const CreateDomains = () => {
 
     const onSubmit = async (data) => {
         data.errorList = errorList
-        data.dateOfDomainCreate = getCurrentDate()
+        data.dateOfDomainCreate = dateToTimestamp()
         data.depositFee = parseInt(data.depositFee)
         data.rateCorrectSum = parseInt(data.rateCorrectSum)
         data.minDepositSum = parseInt(data.minDepositSum)
@@ -144,6 +144,20 @@ const CreateDomains = () => {
                                         pattern: /^[^а-яё]+$/iu
                                     })} placeholder={input.text}/>
                                     <ErrorMessage  name={input.name} errors={errors} render={() => <p className={cls.error}>This field is required</p>} />
+                                </Row>
+                            )
+                        })
+                    }
+                    {
+                        domainsInputsNums.map(input => {
+                            return (
+                                <Row key={uuid()} className='mb-3'>
+                                    {input.text}
+                                    <AdminInput type={input.inp} {...register(input.name, {
+                                        required: true,
+                                        pattern: /^[0-9]+$/
+                                    })} placeholder={input.text}/>
+                                    <ErrorMessage  name={input.name} errors={errors} render={() => <p className={cls.error}>Check the value</p>} />
                                 </Row>
                             )
                         })

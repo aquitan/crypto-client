@@ -4,10 +4,11 @@ import './ChatWindow.scss'
 import {Col, Row} from "react-bootstrap";
 import Input from "../../../../../components/UI/Input/Input";
 import Button from "../../../../../components/UI/Button/Button";
+import FileUpload from "../../../../../components/UI/FileUpload/FileUpload";
 
 const ChatWindow = () => {
     return (
-        <div className='chat'>
+        <div className='chat mb-3'>
             <h5 className='ps-3 pe-3 pt-3'>Support 24/7</h5>
             <Row>
                 <Col>
@@ -16,13 +17,11 @@ const ChatWindow = () => {
                     </div>
                 </Col>
             </Row>
-            <div className="chat_btns_block">
-                <Row className='mt-3 mb-3'>
-                    <Col><input type="file"/></Col>
-                    <Col><Input classname='input_small' placeholder='type your message'/></Col>
-                    <Col><Button classname='small'>Send</Button></Col>
-                </Row>
-            </div>
+            <Row className='mt-3 mb-3 p-2 align-items-center'>
+                <Col className='col-12 col-md-3 mb-2'><FileUpload id='file' /></Col>
+                <Col className='col-12 col-md-6 mb-2'><Input placeholder='type your message'/></Col>
+                <Col className='col-12 col-md-3 mb-2'><Button classname='small'>Send</Button></Col>
+            </Row>
         </div>
     )
 }

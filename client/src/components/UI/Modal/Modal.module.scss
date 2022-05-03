@@ -12,6 +12,7 @@
   opacity: 0;
   pointer-events: none;
   transition: all .3s linear;
+  color: #fff;
   &_active {
     opacity: 1;
     pointer-events: all;

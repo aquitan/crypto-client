@@ -5,8 +5,7 @@ import AdminSidebar from "../../components/AdminSidebar/AdminSidebar";
 import NavigationLink from "../../components/UI/NavigationLink/NavigationLink";
 import {links} from "../../utils/staffConstants";
 import {v4 as uuid} from 'uuid'
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faBars} from "@fortawesome/free-solid-svg-icons";
+import BurgerMenu from "../../components/UI/BurgerMenu/BurgerMenu";
 
 
 const AuthLayout = () => {
@@ -16,12 +15,15 @@ const AuthLayout = () => {
         setState(false)
     }
 
+    const onHandleClick = () => {
+        setState(true)
+    }
+
+
     return (
         <div className={`${cls.layout} bg-dark`}>
             <div className={cls.layout_inner}>
-                <div onClick={() => setState(!state)} className={cls.burger_btn} >
-                    <FontAwesomeIcon icon={faBars} />
-                </div>
+                <BurgerMenu onHandleClick={onHandleClick} open={state} />
                 <AdminSidebar active={state} setInactive={setInactive}>
                     {
                         links.map(link => {

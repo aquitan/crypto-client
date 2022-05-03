@@ -38,3 +38,12 @@
   min-height: 30px;
   max-width: 150px;
 }
+
+.promo_absolute {
+  position: absolute;
+  right: 20px;
+  top: 10px;
+  @media (max-width: 590px) {
+    position: relative;
+  }
+}

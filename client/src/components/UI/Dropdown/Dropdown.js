@@ -16,21 +16,28 @@ const Dropdown = () => {
     return (
         <div className='dropdown'>
             <div className='dropdown_head' onClick={onDropdownHandler}>
-                Menu
+                <span className='me-2'>Menu</span>
                 <FontAwesomeIcon icon={faChevronDown} color={'#cecece'} />
             </div>
-            {
-                dropdown
-                    ?
-                    <div className='dropdown_body'>
-                        {
-                            dropdownLinks.map(link => {
-                                return <DropdownLink key={uuid()} onClick={() => setDropdown(!dropdown)} to={link.to} name={link.name} />
-                            })
-                        }
-                    </div>
-                    : null
-            }
+            <div className='dropdown_body'>
+                {
+                    dropdownLinks.map(link => {
+                        return <DropdownLink key={uuid()} onClick={() => setDropdown(!dropdown)} to={link.to} name={link.name} />
+                    })
+                }
+            </div>
+            {/*{*/}
+            {/*    dropdown*/}
+            {/*        ?*/}
+            {/*        <div className='dropdown_body'>*/}
+            {/*            {*/}
+            {/*                dropdownLinks.map(link => {*/}
+            {/*                    return <DropdownLink key={uuid()} onClick={() => setDropdown(!dropdown)} to={link.to} name={link.name} />*/}
+            {/*                })*/}
+            {/*            }*/}
+            {/*        </div>*/}
+            {/*        : null*/}
+            {/*}*/}
         </div>
     )
 }

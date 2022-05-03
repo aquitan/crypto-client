@@ -20,18 +20,18 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData}) => {
     return (
         <div>
             <Row className='mb-5'>
-                <Col className='col'>
+                <Col className='col mb-3'>
                     <Input {...register('wallet', {
                         required: 'Invalid wallet',
                         validate: value => checkAddress(value) || 'Invalid wallet'
-                    })} classname={['input_medium']} placeholder='address' />
+                    })} placeholder='address' />
                     <ErrorMessage  name='wallet' errors={errors} render={({message}) => <p className={error.error}>{message}</p>} />
                 </Col>
                 <Col className='col'>
                     <Input {...register('amount', {
                         required: true,
                         pattern: /(\d+(?:\.\d+)?)/
-                    })} classname={['input_medium']} placeholder='amount' />
+                    })} placeholder='amount' />
                     <ErrorMessage  name='amount' errors={errors} render={() => <p className={error.error}>Only numbers allowed</p>} />
                 </Col>
             </Row>

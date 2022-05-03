@@ -86,7 +86,7 @@ const SignIn = () => {
         setIsShowPassword(!isShowPassword)
     }
     const hideModalBan = () => {
-        if (store.isBanned) setModalBan(false)
+        if (!store.isBanned) setModalBan(false)
     }
 
     return (
@@ -106,7 +106,7 @@ const SignIn = () => {
                 <Button onClick={hideModalBan}>Ok</Button>
             </Modal>
 
-            <Card className='bg-dark' style={{maxWidth: 550, margin: '0px auto', marginTop: '5%'}}>
+            <Card className='bg-dark' style={{maxWidth: 800, margin: '0px auto', marginTop: '5%'}}>
                 <Form onSubmit={handleSubmit(onSubmit)}>
                     <Row className='mb-4'>
                         <h2>Sign In</h2>

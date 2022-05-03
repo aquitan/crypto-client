@@ -1,11 +1,30 @@
-import React, {forwardRef} from 'react'
+import React, {forwardRef, useState} from 'react'
+import PropTypes from 'prop-types'
+import classNames from "classnames/bind";
+import cls from './FileUpload.module.scss'
 
-const FileUpload = forwardRef((props, ref) => {
+const FileUpload = forwardRef(({id}, ref) => {
+    const [state, setState] = useState()
+    const cx = classNames.bind(cls)
+    const classes = cx('file-wrap')
+
+    const imgAmount = (e) => {
+        console.log('image', e.target.files.length)
+        setState(e.target.files.length)
+    }
     return (
-        <div>
-            <input ref={ref} type="file" {...props}/>
+        <div className={classes}>
+            <label htmlFor={id}>{!state ? 'Выберите файл' : 'Выбрано файлов: ' + state}</label>
+            <input onChange={imgAmount} className={cls.my} ref={ref} id={id} type="file"/>
         </div>
     )
 })
 
-export default FileUpload
+FileUpload.propTypes = {
+
+}
+FileUpload.defaultProps = {
+
+}
+
+export default FileUpload;

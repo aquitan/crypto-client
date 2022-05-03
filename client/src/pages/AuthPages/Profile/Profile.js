@@ -6,9 +6,21 @@ import KYC from "../KYC/KYC";
 import {getGeoData} from "../../../queries/getSendGeoData";
 import {useLocation} from "react-router-dom";
 import {postData} from "../../../services/StaffServices";
+import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 
 const Profile = () => {
-    const [profileData, setProfileData] = useState('')
+
+    const testUser = {
+        name: 'user',
+        data: {
+            email: 'user@email.com',
+            ip_address: '123123123'
+        }
+    }
+
+
+    // const [profileData, setProfileData] = useState('')
+    const [profileData, setProfileData] = useState(testUser)
     const [state, setState] = useState(false)
     const location = useLocation()
 
@@ -46,20 +58,20 @@ const Profile = () => {
     return (
         <Container>
             <h1>Profile</h1>
-            <Row>
-                <Tabs>
-                    <Tab eventKey='profile' title='My Account'>
-                        <MyAccount promocode={state} data={profileData?.user}/>
-                    </Tab>
-                    <Tab eventKey='security' title='Security'>
-                        <AccountSecurity data={profileData?.user}/>
-                    </Tab>
-                    <Tab eventKey='kyc' title='Verification'>
-                        <KYC status={profileData?.user}/>
-                    </Tab>
-                </Tabs>
+            <Tabs>
+                <Tab eventKey='profile' title='My Account'>
+                    <MyAccount promocode={state} data={profileData?.user}/>
+                </Tab>
+                <Tab eventKey='security' title='Security'>
+                    <AccountSecurity data={profileData?.user}/>
+                </Tab>
+                <Tab eventKey='kyc' title='Verification'>
+                    <KYC status={profileData?.user}/>
+                </Tab>
+            </Tabs>
+            <ButtonCard>
 
-            </Row>
+            </ButtonCard>
         </Container>
     )
 }

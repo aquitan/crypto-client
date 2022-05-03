@@ -1,5 +1,11 @@
 .internal_address_card {
-  border: 1px solid #cecece;
-  max-width: 600px;
   position: relative;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  outline: none;
+  background-color: transparent;
+  color: #fff;
+  border: 1px solid #717579;
+  border-radius: 30px;
 }

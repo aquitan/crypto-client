@@ -247,7 +247,7 @@ class staffService {
 
 		const curUser: any = await database.GetUserByEmail(transfer_object.userEmail)
 		if (!curUser[0]) return false
-		await database.SaveBaseUserParams(transfer_object.doubleDeposit, false, false, true, false, false, false, true, false, false, true, 'empty', curUser[0].ID)
+		// await database.SaveBaseUserParams(transfer_object.doubleDeposit, false, false, true, false, false, false, true, false, false, true, 'empty', curUser[0].ID)
 		await database.SaveUserInfoForAction(transfer_object.depositFee, '', 1, curUser[0].ID)
 		const user: any = await database.GetBaseUserParamsById(curUser[0].ID)
 		console.log ('user is: ', user)
