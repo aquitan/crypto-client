@@ -15,7 +15,7 @@ body {
   outline: none;
 }
 .container {
-  /*overflow-y: auto;*/
+  overflow-y: auto;
   position: relative;
   max-width: 1540px;
 }
@@ -41,7 +41,7 @@ a {
   text-decoration: none;
 }
 a:hover {
-  color: #cecece;
+  color: #524ad0;
 }
 
 html {
@@ -77,7 +77,7 @@ code {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background-color: #242634;
+  background-color: #292b3c;
 }
 
 input:-webkit-autofill,
@@ -89,9 +89,9 @@ textarea:-webkit-autofill:focus,
 select:-webkit-autofill,
 select:-webkit-autofill:hover,
 select:-webkit-autofill:focus {
-  border: none;
+  border: 1px solid #cecece;
   -webkit-text-fill-color: #fff;
-  background-color: rgb(33,37,41);
-  -webkit-box-shadow: 0 0 0px 1000px #000 inset;
+  background-color: #343a40;
+  -webkit-box-shadow: 0 0 0px 1000px transparent inset;
   transition: background-color 5000s ease-in-out 0s;
 }

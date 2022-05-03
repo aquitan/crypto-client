@@ -56,7 +56,7 @@ const ProjectSupport = () => {
                         <TextArea {...register('message', {
                             required: true,
                             pattern: /^[^а-яё]+$/iu
-                        })} classnames='dark' placeholder='Текст'/>
+                        })} classnames='dark textarea_square' placeholder='Текст'/>
                         <ErrorMessage  name='message' errors={errors} render={() => <p className={error.error}>Только английские буквы</p>} />
                     </Row>
                     <AdminButton classname='green'>Отправить</AdminButton>

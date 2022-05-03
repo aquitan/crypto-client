@@ -5,10 +5,17 @@
     padding: 20px;
     background-color: transparent;
     color: #fff;
+    @media (max-width: 1024px) {
+        padding: 0;
+    }
 }
 .form_big {
     max-width: 100%;
 }
 .form_user {
     margin: 0;
+}
+.wide-form {
+    max-width: 1000px;
+    width: 100%;
 }

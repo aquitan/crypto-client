@@ -1,7 +1,6 @@
 .navbar {
   position: sticky;
   top: 0;
-  border-bottom: 1px solid #cecece;
   z-index: 99;
 }
 .link {
@@ -9,10 +8,23 @@
   text-decoration: none;
   padding-right: 20px;
   &:hover {
-    color: #03C9A9;
+    color: #524ad0;
   }
 }
 .right_nav {
   max-width: 600px;
   width: 100%;
+}
+
+.navbar_links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  span {
+    width: fit-content;
+  }
+}
+
+.navbar_icon {
+  margin: 0 20px;
 }

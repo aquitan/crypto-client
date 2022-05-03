@@ -18,7 +18,8 @@
     font-family: 'Assistant', sans-serif;
     box-sizing: border-box;
     width: 100%;
-    min-width: 80px;
+    height: 46px;
+    min-width: 120px;
     &:hover {
         transition: all .2s linear;
         background-color: #fff;
@@ -35,7 +36,7 @@
 }
 
 .small {
-    max-width: 200px;
+    max-width: 300px;
     padding: 10px 20px;
 }
 
@@ -55,11 +56,47 @@
     color: #fff;
     border: lightgreen;
 }
+
+.user-green {
+    background-color: #13B440;
+    border-color: #13B440;
+    color: #fff;
+    &:hover {
+        background-color: #13B440;
+        color: #fff;
+        filter: brightness(80%);
+    }
+}
+
 .red_btn {
     background-color: tomato;
     color: #fff;
     border: tomato;
 }
+
+.user-red {
+    background-color: tomato;
+    border-color: tomato;
+    color: #fff;
+    &:hover {
+        background-color: tomato;
+        color: #fff;
+        filter: brightness(80%);
+    }
+}
+
 .small_btn {
     max-width: 200px;
+}
+
+.logout {
+    max-width: 120px;
+    height: 30px;
+    min-width: 80px;
+    padding: 0;
+}
+@media (max-width: 430px) {
+    .button {
+        max-width: 100%;
+    }
 }

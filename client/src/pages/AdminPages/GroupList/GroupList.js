@@ -18,15 +18,13 @@ const GroupList = () => {
     const headerData = ['Информация', 'Дата', 'Действие']
     return (
         <Container>
-            <h1 className='mt-4'>Создать группы</h1>
+            <h1 className='m-4'>Создать группы</h1>
             <AdminButtonCard>
                 <Row className='mb-3'>
-                    <Col className='col-6'>
+                    <Col className='col-12 col-md-6 mb-3'>
                         <AdminInput placeholder='input'/>
                     </Col>
-                </Row>
-                <Row className='mb-3'>
-                    <Col className='col-6'>
+                    <Col className='col-12 col-md-6 mb-3'>
                         <Select classname='' options={groupsOptions}/>
                     </Col>
                 </Row>

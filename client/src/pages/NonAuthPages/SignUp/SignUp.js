@@ -63,13 +63,15 @@ const SignUp = () => {
     }
 
     const onSubmit = async (data) => {
-        const res = await postData('/promocode_validate', {code: currentPromo})
-        if (res.data.verivication) {
-            query(data)
+        if (promoStatus) {
+            const res = await postData('/promocode_validate', {code: currentPromo})
+            if (res.data.verivication) {
+                query(data)
+            }
         }
+        query(data)
     }
 
-    console.log('store', store.domain.full_domain_name)
     const query = async (data) => {
         const promocode = compareStr(promoStatus.promocodeList, data.promocode)
         const geoData = await getGeoData()
@@ -85,7 +87,8 @@ const SignUp = () => {
         geoData.minDepositSum = store.domain.min_deposit_sum
         geoData.minWithdrawalSum = store.domain.min_withdrawal_sum
         geoData.currencySwapFee = store.domain.currency_swap_fee
-        store.registration(geoData)
+        navigate('/register-confirm')
+
         if (store.isError) {
             setModalError(true)
         }
@@ -96,10 +99,9 @@ const SignUp = () => {
             domainName: window.location.host
         }
         const res = await postData('/get_promocodes_before_signup/', obj)
-        const status = await res.data
+        const status = await res.data.promocode
         setPromoStatus(status)
     }
-    console.log('status', promoStatus)
 
     const showPassword = () => {
         setVisiblePass({
@@ -140,14 +142,14 @@ const SignUp = () => {
                 <h2 className='mb-2'>Oops! Check your email</h2>
                 <Button onClick={() => setModalError(false)}>Ok</Button>
             </Modal>
-            <Card className='bg-dark' style={{maxWidth: 550, margin: '0px auto', marginTop: '5%'}}>
+            <Card className='bg-dark' style={{maxWidth: 800, margin: '0px auto', marginTop: '5%'}}>
                 <Form onSubmit={handleSubmit(onSubmit)}>
                     <Row>
                         <h2 className='mb-4'>Sign Up</h2>
                     </Row>
                     <FormGroup>
                         <Row className=''>
-                            <Col>
+                            <Col className={'mb-3 col-12 col-md-6'}>
                                 <Input {...register('email', {
                                     required: 'Email is required',
                                     validate: emailValidate,
@@ -156,7 +158,7 @@ const SignUp = () => {
                                 })} name='email' placeholder='email' id='email' type='email'/>
                                 <ErrorMessage  name='email' errors={errors} render={() => <p className={cls.error}>email is invalid</p>} />
                             </Col>
-                            <Col>
+                            <Col className={'mb-3 col-12 col-md-6'}>
                                 <Input {...register('name', {
                                     required: false,
                                     minLength: {
@@ -169,8 +171,8 @@ const SignUp = () => {
                         </Row>
                     </FormGroup>
                     <FormGroup>
-                        <Row className='mt-3'>
-                            <Col className={cls.relative}>
+                        <Row className=''>
+                            <Col className={`${cls.relative} mb-3 col-12 col-md-6`}>
                                 <Input onChange={onCheckPassword} {...register('password', {
                                     required: 'You must specify your password',
                                     minLength: {
@@ -188,7 +190,7 @@ const SignUp = () => {
                                 <FontAwesomeIcon onClick={showPassword} className={cls.eye_icon} icon={visiblePass.password ? faEye : faEyeSlash} />
                                 <PasswordStrength active={match.active} characters={match.characters} numbers={match.numbers} uppercase={match.uppercase} />
                             </Col>
-                            <Col className={cls.relative}>
+                            <Col className={`${cls.relative} mb-3 col-12 col-md-6`}>
                                 <Input {...register('repeatPassword', {
                                     required: 'You have to repeat your password',
                                     validate: value => value === password.current || 'Password is not the same',
@@ -202,7 +204,7 @@ const SignUp = () => {
                     {
                         promoStatus ?
                             <FormGroup>
-                                <Row className='mt-3'>
+                                <Row className=''>
                                     <Col className={cls.relative}>
                                         <Input onChange={(e) => setCurrentPromo(e.target.value)} placeholder='enter promocode'/>
                                         <ErrorMessage name='promocode' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
@@ -212,7 +214,7 @@ const SignUp = () => {
                             : null
                     }
                     <FormGroup>
-                        <Row className='mt-3'>
+                        <Row className='mt-2'>
                             <Col>
                                 <FormText className='d-flex'>
                                     <FormCheck {...register('agreement', {
@@ -228,8 +230,8 @@ const SignUp = () => {
                             <Col>
                                 <Link className={cls.link} to='/signin/'>Have an account?</Link>
                             </Col>
-                            <Col>
-                                <Button type='submit' classname='transparent' >Sign Up</Button>
+                            <Col className='justify-content-end'>
+                                <Button type='submit' >Sign Up</Button>
                             </Col>
                         </Row>
                     </FormGroup>

@@ -45,18 +45,24 @@ const InternalAddressesCard = ({currency, sum, onCopy, wallet}) => {
                     icon={faTimesCircle} /> : null
             }
             <Row className='mb-3'>
-                <div>
-                    <h4 className='d-flex align-items-center'>
-                        <Image src={`/img/${currency}.svg`} height={20} width={20} alt={'crypto'} />
-                        {currency} Address
-                    </h4>
-                </div>
-                <div>Balance: {sum} {currency}</div>
-                <div onClick={() => onCopy(wallet)}>
-                    <FontAwesomeIcon
-                        icon={faCopy} />
-                    <span className='internal-address'>{wallet}</span>
-                </div>
+                <Col className='col-12 col-md-4'>
+                    <div>
+                        <h4 className='d-flex align-items-center'>
+                            <Image src={`/img/${currency}.svg`} height={20} width={20} alt={'crypto'} />
+                            {currency} Address
+                        </h4>
+                    </div>
+                </Col>
+                <Col className='col-12 col-md-4'>
+                    <div>Balance: {sum} {currency}</div>
+                </Col>
+                <Col className='col-12 col-md-4'>
+                    <div onClick={() => onCopy(wallet)}>
+                        <FontAwesomeIcon
+                            icon={faCopy} />
+                        <span className='internal-address'>{wallet}</span>
+                    </div>
+                </Col>
             </Row>
             {
                 state.isOpen ?
@@ -66,7 +72,7 @@ const InternalAddressesCard = ({currency, sum, onCopy, wallet}) => {
             {
                 state.isOpen ? null :
                     <Row>
-                        <Button onClick={makeOpen} classname={['small_btn']}>Send</Button>
+                        <Button onClick={makeOpen} classname='small_btn' >Send</Button>
                     </Row>
             }
         </div>

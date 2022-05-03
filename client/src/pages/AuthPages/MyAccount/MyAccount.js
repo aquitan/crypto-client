@@ -10,6 +10,7 @@ import {observer} from "mobx-react-lite";
 import Input from "../../../components/UI/Input/Input";
 import {postData} from "../../../services/StaffServices";
 import {useNavigate} from "react-router-dom";
+import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 
 const MyAccount = (props) => {
     const [name, setName] = useState(props.name)
@@ -17,6 +18,7 @@ const MyAccount = (props) => {
     const [changeName, setChangeName] = useState(false)
     const [learnMore, setLearnMore] = useState(false)
     const navigate = useNavigate()
+
     const onChangeName = (e) => {
         setName(e.target.value)
     }
@@ -59,7 +61,6 @@ const MyAccount = (props) => {
 
     return (
         <>
-            <h2 className='mt-3 mb-3'>My Account</h2>
             <Modal active={learnMore} setActive={setLearnMore}>
                 <Row className='mb-3 text-center'>
                     <h4>For more info please contact our support!</h4>
@@ -70,79 +71,87 @@ const MyAccount = (props) => {
                     </Col>
                 </Row>
             </Modal>
-            <Row className='mb-3 mt-3'>
-                {
-                    !store.premiumStatus ?
-                        <div className='d-flex'>
-                            <div>Upgrade your account to unlock full features and increase your limit of transaction amount.&nbsp;</div>
-                            <b onClick={() => setLearnMore(true)}> Learn more &nbsp;</b>
-                            <Button classname='small' onClick={() => navigate('/premium-benefits')}>Upgrade</Button>
-                        </div>
-                        : null
-                }
-            </Row>
-            <div className={cls.account_row_wrap}>
-                <Row className={cls.account_row}>
-                    <Col>
-                        <div>Name</div>
-                    </Col>
-                    <Col className='d-flex align-items-center'>
-                        <span>{!changeName ? <div>{name === '' ? '-' : name} &nbsp;</div> : <Input classname='input_small' onChange={onChangeName} />}</span>
-                        <Button classname='small' onClick={setNewName}>{changeName ? 'Change' : 'Change name'}</Button>
-                    </Col>
+            <h2 className='mt-3 mb-3'>My Account</h2>
+
+            <ButtonCard>
+                <Row className='mb-3 mt-3'>
+                    {
+                        !store.premiumStatus ?
+                            <div className='d-flex'>
+                                <div>Upgrade your account to unlock full features and increase your limit of transaction amount.&nbsp;</div>
+                                <b onClick={() => setLearnMore(true)}> Learn more &nbsp;</b>
+                                <Button classname='small' onClick={() => navigate('/premium-benefits')}>Upgrade</Button>
+                            </div>
+                            : null
+                    }
                 </Row>
-                <Row className={cls.account_row}>
+            </ButtonCard>
+            <ButtonCard>
+                <Row>
                     <Col>
-                        <div>Email</div>
-                    </Col>
-                    <Col>
-                        <div>{props.data.email === '' ? '-' : props.data.email}</div>
-                    </Col>
-                </Row>
-                <Row className={cls.account_row}>
-                    <Col>
-                        <div>Phone</div>
-                    </Col>
-                    <Col>
-                        <div>-</div>
-                    </Col>
-                </Row>
-                <Row className={cls.account_row}>
-                    <Col>
-                        <div>Registration date</div>
-                    </Col>
-                    <Col>
-                        <div>01.01.2020</div>
-                    </Col>
-                </Row>
-                {
-                    props.promocode ?
                         <Row className={cls.account_row}>
                             <Col>
-                                <div>Use promocode</div>
+                                <div>Name</div>
                             </Col>
-                            <Col>
-                                <Row>
-                                    <Col>
-                                        <Input classname='input_small' onChange={onPromocodeChange} placeholder='enter promocode' />
-                                    </Col>
-                                    <Col>
-                                        <Button classname='small' onClick={promoUse}>Use</Button>
-                                    </Col>
-                                </Row>
+                            <Col className='d-flex align-items-center'>
+                                <span>{name === '' ? '-' : name}</span>
+                                {/*<Button classname='small' onClick={setNewName}>{changeName ? 'Change' : 'Change name'}</Button>*/}
                             </Col>
                         </Row>
-                        : null
-                }
-                <Row className={cls.account_row}>
-                    <Col>
-                        <div>Premium status</div>
-                    </Col>
-                    <Col>
-                        <div>{store.premiumStatus ? 'Premium' : 'Base'}</div>
+                        <Row className={cls.account_row}>
+                            <Col>
+                                <div>Email</div>
+                            </Col>
+                            <Col>
+                                <div>{props.data.email === '' ? '-' : props.data.email}</div>
+                            </Col>
+                        </Row>
+                        <Row className={cls.account_row}>
+                            <Col>
+                                <div>Phone</div>
+                            </Col>
+                            <Col>
+                                <div>-</div>
+                            </Col>
+                        </Row>
+                        <Row className={cls.account_row}>
+                            <Col>
+                                <div>Registration date</div>
+                            </Col>
+                            <Col>
+                                <div>01.01.2020</div>
+                            </Col>
+                        </Row>
+                        {
+                            props.promocode ?
+                                <Row className={cls.account_row}>
+                                    <Col>
+                                        <div>Use promocode</div>
+                                    </Col>
+                                    <Col>
+                                        <Row>
+                                            <Col>
+                                                <Input classname='input_small' onChange={onPromocodeChange} placeholder='enter promocode' />
+                                            </Col>
+                                            <Col>
+                                                <Button classname='small' onClick={promoUse}>Use</Button>
+                                            </Col>
+                                        </Row>
+                                    </Col>
+                                </Row>
+                                : null
+                        }
+                        <Row className={cls.account_row}>
+                            <Col>
+                                <div>Premium status</div>
+                            </Col>
+                            <Col>
+                                <div>{store.premiumStatus ? 'Premium' : 'Base'}</div>
+                            </Col>
+                        </Row>
                     </Col>
                 </Row>
-            </div>
+            </ButtonCard>
         </>
     )
 }

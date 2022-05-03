@@ -54,7 +54,11 @@ const SignIn = () => {
     }
 
     const checkFaStatus = async (data) => {
-        const res = await postData('/check_two_step/', {email: data.email})
+        let date = new Date()
+        const res = await postData('/check_two_step/', {
+            email: data.email,
+            time: date.getTime()
+        })
         if (res.data.twoStepStatus) {
             console.log('OK status')
             setStateTwoFa({twoFaCode: true})
@@ -82,7 +86,7 @@ const SignIn = () => {
         setIsShowPassword(!isShowPassword)
     }
     const hideModalBan = () => {
-        if (store.isBanned) setModalBan(false)
+        if (!store.isBanned) setModalBan(false)
     }
 
     return (
@@ -102,12 +106,12 @@ const SignIn = () => {
                 <Button onClick={hideModalBan}>Ok</Button>
             </Modal>
 
-            <Card className='bg-dark' style={{maxWidth: 550, margin: '0px auto', marginTop: '5%'}}>
+            <Card className='bg-dark' style={{maxWidth: 800, margin: '0px auto', marginTop: '5%'}}>
                 <Form onSubmit={handleSubmit(onSubmit)}>
                     <Row className='mb-4'>
                         <h2>Sign In</h2>
                     </Row>
-                    <Row className='mt-3'>
+                    <Row className='mt-3 mb-3'>
                         <Col className={cls.relative}>
                             <Input defaultValue={store.asUser?.email} {...register('email', {
                                 required: 'You must specify email to SignIn',
@@ -164,7 +168,7 @@ const SignIn = () => {
                             <Link className={cls.link} to='/forgot-password'>Forgot password</Link>
                         </Col>
                         <Row className='mt-4'>
-                            <Button className='transparent' type='submit'>Sign In</Button>
+                            <Button classname={['small']} type='submit'>Sign In</Button>
                         </Row>
                     </Row>
                 </Form>

@@ -94,9 +94,8 @@ const AdminKycTableItem = (props) => {
             </ModalDark>
 
 
-            <div className={cls.table_item}>
+            <div className={`${cls.table_item} scrollable-table`}>
                 <Row>
-                    <Col className={cls.id_col}>{props.id}</Col>
                     <Col className={cls.default_col}>{props.registerDate}</Col>
                     <Col className={cls.default_col}>{props.name ? props.name : <FontAwesomeIcon icon={faTimesCircle} color='tomato' />}</Col>
                     <Col className={cls.default_col}>{props.email}</Col>

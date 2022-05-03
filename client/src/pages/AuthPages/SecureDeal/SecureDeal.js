@@ -19,6 +19,7 @@ import TableBody from "../../../components/UI/Table/components/TableBody/TableBo
 import SecureDealTableItem from "./components/SecureDealTableItem/SecureDealTableItem";
 import {useNavigate} from "react-router-dom";
 import Form from "../../../components/UI/Form/Form";
+import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 
 const SecureDeal = () => {
     const [startDate, setStartDate] = useState()
@@ -42,27 +43,27 @@ const SecureDeal = () => {
     return (
         <Container>
             <h1 className='mb-4 mt-4'>Create new secure deal</h1>
-            <Card className='p-4 bg-dark' >
-                <Form onSubmit={handleSubmit(onSubmit)}>
+            <ButtonCard>
+                <Form classnames='wide-form' onSubmit={handleSubmit(onSubmit)}>
                     <Row className='mb-3 pb-2 secure_deal_row'>
-                        <h4 className='mb-3'>Step 1: Choose your role</h4>
+                        <h4 className='mb-3'>
+                            <span className='step'>01</span>
+                            Step 1: Choose your role</h4>
                         <p>You can buy or sell anything securely via our platform.</p>
                         <Row className='mb-3 pb-2'>
                             <Col className='secure_deal_col'>
-                                <label htmlFor='seller'>Seller</label>
                                 <InputRadio {...register('role', {
                                     required: 'This field is required',
-                                })} value='seller' name='role' />
+                                })} classname='radio_btn' id='seller' label='Seller' value='seller' name='role' />
                                 <ErrorMessage
                                     name='role'
                                     errors={errors}
                                     render={({message}) => <p className={error.error}>{message}</p>} />
                             </Col>
                             <Col className='secure_deal_col'>
-                                <label htmlFor='buyer'>Buyer</label>
                                 <InputRadio {...register('role', {
                                     required: 'This field is required',
-                                })} value='buyer' name='role' />
+                                })} classname='radio_btn' label='Buyer' id='buyer' value='buyer' name='role' />
                                 <ErrorMessage
                                     name='role'
                                     errors={errors}
@@ -71,7 +72,9 @@ const SecureDeal = () => {
                         </Row>
                     </Row>
                     <Row className='mb-3 pb-2'>
-                        <h4 className='mb-3'>Step 2: Participant</h4>
+                        <h4 className='mb-3'>
+                            <span className='step'>02</span>
+                            Step 2: Participant</h4>
                         <p>Please enter username or email of another participant. User should have account at localhost</p>
                         <Col>
                             <Input {...register('secondPartyName', {
@@ -84,7 +87,9 @@ const SecureDeal = () => {
                         </Col>
                     </Row>
                     <Row className='mb-3 pb-2'>
-                        <h4 className='mb-3'>Step 3: Deal conditions</h4>
+                        <h4 className='mb-3'>
+                            <span className='step'>03</span>
+                            Step 3: Deal conditions</h4>
                         <p>Please describe all aspects of the deal as accurately as possible.
                             Do not use special professional vocabulary,
                             they must be clear to the third party, a Guarantor.
@@ -99,17 +104,17 @@ const SecureDeal = () => {
                                 render={({message}) => <p className={error.error}>{message}</p>} />
                         </Col>
                     </Row>
-                    <Row className='mb-3 pb-2'>
-                        <Col>
+                    <Row className='pb-2'>
+                        <Col className='col-12 col-md-6 mb-3'>
                             <DatePickert
                                 required
-                                customInput={<DatePickerCustom classname='thick_datepicker'/>}
+                                customInput={<DatePickerCustom classname='user-datepicker'/>}
                                 placeholderText='Date'
                                 selected={startDate}
                                 dateFormat='yyyy/MM/dd'
                                 onChange={(date) => setStartDate(date)} />
                         </Col>
-                        <Col>
+                        <Col className='col-12 col-md-6 mb-3'>
                             <Select {...register('currency', {
                                 required: 'This field is required',
                             })} options={options} classname='light select-bordered' />
@@ -137,9 +142,9 @@ const SecureDeal = () => {
                         </Col>
                     </Row>
                 </Form>
-            </Card>
+            </ButtonCard>
 
-            <Card className='mt-4 p-4 bg-dark'>
+            <ButtonCard>
                 <h2>Recent deals</h2>
                 <Row>
                     <Table>
@@ -149,7 +154,7 @@ const SecureDeal = () => {
                         </TableBody>
                     </Table>
                 </Row>
-            </Card>
+            </ButtonCard>
         </Container>
     )
 }

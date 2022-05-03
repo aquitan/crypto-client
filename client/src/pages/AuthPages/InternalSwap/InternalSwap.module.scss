@@ -1,8 +1,12 @@
 .value_box {
-  padding: 10px;
-  border: 1px solid #cecece;
-  height: 45px;
   cursor: pointer;
+  padding: 20px;
+  width: 100%;
+  outline: none;
+  background-color: transparent;
+  color: #fff;
+  border: 1px solid #717579;
+  border-radius: 30px;
 }
 .value_list {
   border: 1px solid #cecece;

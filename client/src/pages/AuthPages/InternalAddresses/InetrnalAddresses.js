@@ -11,6 +11,7 @@ import InternalAddressesTableItem from "./components/InternalAddressesTableItem/
 import Button from "../../../components/UI/Button/Button";
 import Modal from "../../../components/UI/Modal/Modal";
 import InternalAddressModal from "../../../components/UI/InternalAddressModal/InternalAddressModal";
+import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 
 const InternalAddresses = () => {
 
@@ -58,23 +59,23 @@ const InternalAddresses = () => {
 
             <h1>Internal Addresses</h1>
             <Row>
-                <Card className='p-3 mb-4 bg-dark'>
-                    <Row>
-                        {
-                            wallets.length ?
-                                wallets.map(wallet => {
-                                    return (
-                                        <Col className='col-6 mb-3'>
+                <ButtonCard>
+                    {
+                        wallets.length ?
+                            wallets.map(wallet => {
+                                return (
+                                    <Row>
+                                        <Col className='col-12 mb-3'>
                                             <InternalAddressesCard wallet={wallet.wallet} currency={wallet.currency} onCopy={onCopy} sum={wallet.sum} />
                                         </Col>
-                                    )
-                                })
-                                : <Preloader />
-                        }
-                    </Row>
-                </Card>
+                                    </Row>
+                                )
+                            })
+                            : <Preloader />
+                    }
+                </ButtonCard>
 
-                <Card className='mb-4 p-3 bg-dark'>
+                <ButtonCard>
                     <Row>
                         <Col>
                             <TableHeader classname='table_header-light' elems={['Date', 'Transaction Details', 'Amount', 'Status']} />
@@ -96,7 +97,7 @@ const InternalAddresses = () => {
                             </TableBody>
                         </Col>
                     </Row>
-                </Card>
+                </ButtonCard>
             </Row>
 
         </Container>

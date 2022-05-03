@@ -42,7 +42,7 @@ const StaffWallets = () => {
 
     return (
         <Container className='container-xxl'>
-            <h2 className='mt-4 mb-4'>Staff Wallets</h2>
+            <h1 className='mt-4 mb-4'>Staff Wallets</h1>
             <AdminButtonCard className={`${cls.bg_black} mb-3 p-3`}>
                 <AdminForm onSubmit={handleSubmit(onSubmit)}>
                     {
@@ -64,11 +64,11 @@ const StaffWallets = () => {
                             )
                         })
                     }
-                    <Row className='mb-3'>
-                        <Col className='col-3'>
+                    <Row className='justify-content-center'>
+                        <Col className='col-12 col-md-3 mb-3 text-center'>
                             <AdminButton classname='green'>Подтвердить</AdminButton>
                         </Col>
-                        <Col className='col-3'>
+                        <Col className='col-12 col-md-3 mb-3 text-center'>
                             <AdminButton classname='orange'>Подтвердить с 2FA</AdminButton>
                         </Col>
                     </Row>
@@ -97,14 +97,13 @@ const StaffWallets = () => {
                     </Col>
                 </Row>
                 <Row style={{borderBottom: '1px solid #cecece'}} className={'mb-3'}>
-                    <Col className='d-none d-md-block'>ID</Col>
                     <Col>Name</Col>
                     <Col className='d-none d-md-block'>Currency</Col>
                     <Col>Address</Col>
                     <Col className='d-none d-md-block'>Total</Col>
                     <Col className='d-none d-md-block'>last</Col>
                 </Row>
-                <StaffWalletsItem id={1} name={'sadas'} currency={'BTC'} address={'ljsdfjsdkjfskjdfsdfsdfsdf'} total={0.0} last={0.0}/>
+                <StaffWalletsItem name={'sadas'} currency={'BTC'} address={'ljsdfjsdkjfskjdfsdfsdfsdf'} total={0.0} last={0.0}/>
             </AdminButtonCard>
         </Container>
     )

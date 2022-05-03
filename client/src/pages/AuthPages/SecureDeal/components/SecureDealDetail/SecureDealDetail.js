@@ -13,6 +13,7 @@ import {getData, postData} from "../../../../../services/StaffServices";
 import SecureDealDetailConfirm from "../SecureDealDetailConfirm/SecureDealDetailConfirm";
 import {useForm} from "react-hook-form";
 import Modal from "../../../../../components/UI/Modal/Modal";
+import ButtonCard from "../../../../../components/ButtonCard/ButtonCard";
 
 const SecureDealDetail = () => {
     const cx = classNames.bind(cls)
@@ -73,9 +74,9 @@ const SecureDealDetail = () => {
             {
                 acception ? <SecureDealDetailConfirm onClick={onAccept} onDecline={() => setAcception(false)}/> : null
             }
-            <Card className='mt-4 p-3'>
+            <ButtonCard>
                 <h5 className={cls.card_header}>Base info</h5>
-                <Row className='mb-3'>
+                <Row className='mb-3 mt-3'>
                     <Col>Seller</Col>
                     <Col>aquitanfw</Col>
                 </Row>
@@ -104,7 +105,7 @@ const SecureDealDetail = () => {
                         <Row className='mb-3'>
                             <Col>Enter password</Col>
                             <Col>
-                                <Row>
+                                <Row className='align-items-center'>
                                     <Col className='col-4'><Input {...register('reward')} classname='input_small' placeholder='password' /></Col>
                                     <Col><Button onClick={handleSubmit(sendRewardData)} classname='small'>Get reward</Button></Col>
                                 </Row>
@@ -112,26 +113,26 @@ const SecureDealDetail = () => {
                         </Row>
                         : null
                 }
-            </Card>
+            </ButtonCard>
 
-            <Card className='mt-4 p-3'>
-                <h5 className={cls.card_header}>Detailed info</h5>
-                <Row>
-                    <TextArea placeholder='detailed info' value={'kjsdfkjskdjbfkjsdkjfbsdf'}/>
-                </Row>
-            </Card>
-
-            <Card className='mt-4 p-3 mb-4'>
+            <ButtonCard className='mt-4 p-3'>
                 <h5 className={cls.card_header}>Detailed info</h5>
                 <Row className='mt-3'>
-                    <Col>
+                    <TextArea classnames='textarea_bordered' value={'kjsdfkjskdjbfkjsdkjfbsdf'}/>
+                </Row>
+            </ButtonCard>
+
+            <ButtonCard className='mt-4 p-3 mb-4'>
+                <h5 className={cls.card_header}>Chat</h5>
+                <Row className='mt-3'>
+                    <Col className='col-12 col-lg-8 mb-3'>
                         <ChatWindow />
                     </Col>
-                    <Col>
+                    <Col className='col-12 col-lg-4 mb-3'>
                         <ChatRules rulesDisclamer={secureDealRulesText} />
                     </Col>
                 </Row>
-            </Card>
+            </ButtonCard>
         </Container>
     )
 }

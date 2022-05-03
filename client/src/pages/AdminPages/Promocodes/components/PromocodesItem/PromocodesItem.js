@@ -7,7 +7,6 @@ const PromocodesItem = ({id, code, reward, currency, onClick}) => {
     return (
         <div>
             <Row className={cls.promocode_item}>
-                <Col className='col-2 d-none d-md-block'>{id}</Col>
                 <Col className='col-4 col-sm-2'>{code}</Col>
                 <Col className='col-4 col-sm-2'>{reward}</Col>
                 <Col className='col-2 d-none d-md-block'>{currency}</Col>

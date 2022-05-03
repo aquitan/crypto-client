@@ -4,20 +4,21 @@ import {Card, Col, Container, Row} from "react-bootstrap";
 import ChatWindow from "./components/ChatWindow/ChatWindow";
 import ChatRules from "./components/ChatRules/ChatRules";
 import {supportRulesText} from "../../../utils/userConstants";
+import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 
 const Support = () => {
     return (
         <Container>
-            <Card className='p-3 bg-dark'>
+            <ButtonCard>
                 <Row>
-                    <Col>
+                    <Col className='col-12 col-lg-6'>
                         <ChatWindow />
                     </Col>
-                    <Col>
+                    <Col className='col-12 col-lg-6'>
                         <ChatRules rulesDisclamer={supportRulesText} />
                     </Col>
                 </Row>
-            </Card>
+            </ButtonCard>
         </Container>
     )
 }

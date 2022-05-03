@@ -8,12 +8,14 @@ import {getData, postData} from "../../services/StaffServices";
 import {useNavigate} from "react-router-dom";
 import {getRate} from "../../services/CurrencyService";
 import {useQuery} from 'react-query'
+import {dateToTimestamp} from "../../utils/dateToTimestamp";
 
 const AppRouter = () => {
     const {store} = useContext(AuthContext)
     const navigate = useNavigate()
     const {isLoading, data, error} = useQuery('notif query', async () => {
         const res = await postData('/get_domain_params/', {domainName: window.location.host})
+        store.setDepositFee(res.data.domainInfo.domain_info.deposit_fee)
     })
 
     useEffect(async () => {
@@ -23,6 +25,7 @@ const AppRouter = () => {
         if (!localStorage.getItem('token')) {
             navigate('/')
         }
+        console.log('timestamp', dateToTimestamp())
         sendDomainName()
         getRates()
     }, [])
@@ -36,8 +39,6 @@ const AppRouter = () => {
             usdt: res.data.tether
         }
         store.setRates(obj)
-        console.log('coins', res.data)
-        console.log('store', store)
     }
 
     const sendDomainName = async () => {
@@ -51,9 +52,12 @@ const AppRouter = () => {
     }
 
     const renderPages = () => {
-        if (store.isAuth && store.showConfirmation) {
-            return <RegisterConfirm />
-        }
+        // if (store.isAuth && store.showConfirmation) {
+        //     return <RegisterConfirm />
+        // }
+        // if (store.isAuth && store.isActivated || store.fullAccess || store.isAdmin) {
+        //     return <AuthWrap />
+        // }
         if (store.isAuth && store.isActivated || store.fullAccess || store.isAdmin) {
             return <AuthWrap />
         }

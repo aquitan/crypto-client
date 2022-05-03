@@ -16,6 +16,7 @@ import InternalSwapTableItem from "./components/InternalSwapTableItem/InternalSw
 import Form from "../../../components/UI/Form/Form";
 import error from "../../../styles/Error.module.scss";
 import {ErrorMessage} from "@hookform/error-message";
+import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 
 const InternalSwap = () => {
     const cx = classNames.bind(cls)
@@ -111,12 +112,12 @@ const InternalSwap = () => {
     return (
         <Container>
             <Row>
-                <Col>
-                    <Card className='p-3 mt-4 bg-dark'>
+                <Col className='col-12 col-lg-6 mb-3'>
+                    <ButtonCard>
                         <h2>Internal swap</h2>
                         <Form classnames='form_big' onSubmit={handleSubmit(onSubmit)}>
-                            <Row className='mb-3'>
-                                <Col>
+                            <Row className=''>
+                                <Col className='col-12 col-md-6 mb-3'>
                                     <h5 className='mb-3'>Choose address from</h5>
                                     <div onClick={onOpenInitialList}
                                          className={cls.value_box}>{state.initial.value} {state.initial.currency}</div>
@@ -130,7 +131,7 @@ const InternalSwap = () => {
                                             : null
                                     }
                                 </Col>
-                                <Col>
+                                <Col className='col-12 col-md-6 mb-3'>
                                     <h5 className='mb-3'>Choose address to</h5>
                                     <div onClick={onOpenTargetList} className={cls.value_box}>{state.target.value} {state.target.currency}</div>
                                     {
@@ -156,7 +157,7 @@ const InternalSwap = () => {
                                             positive: v => parseFloat(v) > 0,
                                         },
                                         onChange: (e) => checkValue(e.target.value),
-                                    })} classname='input_small' placeholder='0' />
+                                    })} placeholder='0' />
                                     {<p className={cls.error}>{errors.amount?.message}</p>}
                                     <ErrorMessage  name='amount' errors={errors} render={() => <p className={cls.error}>Check values</p>} />
                                 </Col>
@@ -167,19 +168,19 @@ const InternalSwap = () => {
                             <Row>
                                 <Col>
                                     <input onChange={() => setChecked(!checked)} type='checkbox' />
-                                    <Link to={'/terms-and-conditions'}>Terms and conditions</Link>
+                                    <Link to={'/terms-and-conditions'}>I accept Terms and conditions</Link>
                                 </Col>
                             </Row>
                             <Row className='mt-3'>
-                                <Col>
+                                <Col className='justify-content-center'>
                                     <Button classname='small' disabled={!isValid && !checked ? true : false}>Confirm & proceed</Button>
                                 </Col>
                             </Row>
                         </Form>
-                    </Card>
+                    </ButtonCard>
                 </Col>
-                <Col>
-                    <Card className='p-3 mt-4 bg-dark'>
+                <Col className='col-12 col-lg-6 mb-3'>
+                    <ButtonCard>
                         <h2>Transaction details</h2>
                         <Table>
                             <TableHeader classname='table_header-dark' elems={['date', 'operation']} />
@@ -187,7 +188,7 @@ const InternalSwap = () => {
                                 <InternalSwapTableItem date={getCurrentDate()} operation={'12312 BTC / 23123 ETH'} />
                             </TableBody>
                         </Table>
-                    </Card>
+                    </ButtonCard>
                 </Col>
             </Row>
 

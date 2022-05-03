@@ -26,7 +26,6 @@ const CreateUser = () => {
         mode: "onBlur"
     })
     const tableHeader = [
-        '#',
         'Username',
         'Recruter for',
         'Is can be recruter?',
@@ -40,13 +39,12 @@ const CreateUser = () => {
         const userData = {
             isAdmin: store.isAdmin,
             isStaff: store.isStaff,
-            domainName: window.location.host
+            domainName: window.location.host,
         }
         const res = await postData('/staff/users/', userData)
         const data = await res.data
         const usersReversed = data.usersList.slice(0).reverse()
         setUsers(usersReversed)
-        console.log('dataProfile', usersReversed)
     }
     useEffect(() => {
         getProfile()
@@ -77,12 +75,15 @@ const CreateUser = () => {
         e.preventDefault()
         const domain_name = window.location.host
         const timeDate = new Date()
-        const currentDate = timeDate.getFullYear() + '-' + timeDate.getMonth()+1 + '-' + timeDate.getDate() + ' ' + timeDate.getHours() + ':' + timeDate.getMinutes() + ':' + timeDate.getSeconds()
+        const currentDate = timeDate.getTime()
 
         data.domainName = domain_name
         data.staffId = store.userId
         data.datetime = currentDate
         data.staffEmail = store.userEmail
+        data.rootAccess = store.fullAccess
+        data.depositFee = store.depositFee
+        data.promocode = 'empty'
 
         const res = await postData('/staff/create_user', data)
         const dates = await res
@@ -102,11 +103,11 @@ const CreateUser = () => {
                         <ErrorMessage  name='name' errors={errors} render={() => <p className={error.error}>Только английские буквы</p>} />
                     </Row>
                     <Row className='mb-3'>
-                        <AdminInput {...register('email', {
+                        <AdminInput {...register('userEmail', {
                             required: true,
                             validate: emailValidate,
                         })} placeholder='Почта'/>
-                        <ErrorMessage  name='email' errors={errors} render={() => <p className={error.error}>Почта не верна</p>} />
+                        <ErrorMessage  name='userEmail' errors={errors} render={() => <p className={error.error}>Почта не верна</p>} />
                     </Row>
                     <Row className='mb-3'>
                         <AdminInput {...register('password', {
@@ -127,7 +128,7 @@ const CreateUser = () => {
             </AdminButtonCard>
             {
                 !store.isAdmin ?
-                    <AdminButtonCard>
+                    <AdminButtonCard classname='scrollable-table'>
                         <h2>Редактировать пользователя</h2>
                         <Table>
                             <TableHeader elems={tableHeader} />

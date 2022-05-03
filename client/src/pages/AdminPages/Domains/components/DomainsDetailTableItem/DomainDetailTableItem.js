@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import {Col, Row} from "react-bootstrap";
 
 const DomainsDetailTableItem = ({data}) => {
-    console.log('asfasfasfaf', data)
     return (
         <>
             <Row className='mb-3 domain_table_item'>

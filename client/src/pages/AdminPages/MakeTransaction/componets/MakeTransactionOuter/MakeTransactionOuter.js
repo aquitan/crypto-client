@@ -27,9 +27,12 @@ const MakeTransactionOuter = () => {
             position: 'absolute',
             backgroundColor: '#444',
             paddingLeft: 10,
-            top: 3,
+            top: 0,
             right: 20,
+            height: '100%',
             borderLeft: '1px solid #fff',
+            display: 'flex',
+            alignItems: 'center'
         }
     }
     const trsType = [
@@ -60,12 +63,12 @@ const MakeTransactionOuter = () => {
                 <AdminButtonCard title='Внешние транзакции'>
                     <AdminForm onSubmit={handleSubmit(onSubmit)}>
                         <Row className='mb-3 flex-items'>
-                            <Col className='col-12 col-lg-2'>
-                                <Select {...register('transaction')} options={trsType} classname='small'/>
+                            <Col className='col-12 col-lg-2 mb-3'>
+                                <Select {...register('transaction')} options={trsType}/>
                             </Col>
 
-                            <Col className='col-12 col-lg-2'>
-                                <Select {...register('currency')} options={optionsCurrency} classname='small'/>
+                            <Col className='col-12 col-lg-2 mb-3'>
+                                <Select {...register('currency')} options={optionsCurrency}/>
                             </Col>
 
 
@@ -93,12 +96,12 @@ const MakeTransactionOuter = () => {
                                 <span style={styles.todayBtn} onClick={onNowTime}>Now</span>
                             </Col>
                             <Col className='col-12 col-lg-2'>
-                                <AdminInput {...register('sum')} classname='small_input' placeholder='Сумма' />
+                                <AdminInput {...register('sum')} placeholder='Сумма' />
                             </Col>
                         </Row>
                         <Row className='mb-3'>
                             <Col>
-                                <AdminInput {...register('address')} classname='small_input' placeholder='Адрес'/>
+                                <AdminInput {...register('address')} placeholder='Адрес'/>
                             </Col>
                         </Row>
                         <Row>
@@ -109,11 +112,11 @@ const MakeTransactionOuter = () => {
                     </AdminForm>
                 </AdminButtonCard>
 
-                <AdminButtonCard>
+                <AdminButtonCard classname='small_scroll'>
                     <Table>
-                        <TableHeader elems={transTableHeader} />
+                        <TableHeader elems={transTableHeader}/>
                         <TableBody>
-                            <TableItem  />
+                            <TableItem/>
                         </TableBody>
                     </Table>
                 </AdminButtonCard>

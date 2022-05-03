@@ -2,7 +2,7 @@
   background-color: #444;
   width: 100%;
   box-sizing: border-box;
-  height: 30px;
+  height: 46px;
   border: none;
   color: #fff;
   padding: 0 15px;
@@ -22,4 +22,14 @@
   &::placeholder {
     color: #000;
   }
+}
+.user-datepicker {
+  padding: 20px;
+  box-sizing: border-box;
+  width: 100%;
+  outline: none;
+  background-color: transparent;
+  color: #fff;
+  border: 1px solid #717579;
+  border-radius: 30px;
 }

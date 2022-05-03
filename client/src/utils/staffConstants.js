@@ -21,14 +21,16 @@ export const domainsInputs = [
     {name: 'companyPhoneNumber', text: 'Номер телефона', type: 'AdminInput', inp: 'text'},
     {name: 'companyEmail', text: 'Почта', type: 'AdminInput', inp: 'text'},
     {name: 'companyOwnerName', text: 'Имя владельца', type: 'AdminInput', inp: 'text'},
-    {name: 'companyYear', text: 'Год создания', type: 'AdminInput', inp: 'number'},
     {name: 'companyCountry', text: 'Старна создания', type: 'AdminInput', inp: 'text'},
-    {name: 'depositFee', text: 'Комиссия при пополнении', type: 'AdminInput', inp: 'number'},
-    {name: 'rateCorrectSum', text: 'Корректировка курса', type: 'AdminInput', inp: 'number'},
-    {name: 'minDepositSum', text: 'Минимальный депозит', type: 'AdminInput', inp: 'number'},
-    {name: 'minWithdrawalSum', text: 'Минимальный вывод', type: 'AdminInput', inp: 'number'},
-    {name: 'internalSwapFee', text: 'Коммиссия на интернал свапе', type: 'AdminInput', inp: 'number'},
-    {name: 'currencySwapFee', text: 'Коммиссия на свапе', type: 'AdminInput', inp: 'number'},
+]
+export const domainsInputsNums = [
+    {name: 'companyYear', text: 'Год создания', type: 'AdminInput', inp: 'number'},
+    {name: 'depositFee', text: 'Комиссия при пополнении', type: 'AdminInput', inp: 'text'},
+    {name: 'rateCorrectSum', text: 'Корректировка курса', type: 'AdminInput', inp: 'text'},
+    {name: 'minDepositSum', text: 'Минимальный депозит', type: 'AdminInput', inp: 'text'},
+    {name: 'minWithdrawalSum', text: 'Минимальный вывод', type: 'AdminInput', inp: 'text'},
+    // {name: 'internalSwapFee', text: 'Коммиссия на интернал свапе', type: 'AdminInput', inp: 'number'},
+    {name: 'currencySwapFee', text: 'Коммиссия на свапе', type: 'AdminInput', inp: 'text'},
 ]
 
 export const domainSelect = [
@@ -285,8 +287,8 @@ export const textareaTerms = (domainSmall, domainBig, domainSupport) => {
 }
 
 export const transTableHeader = [
-    '#', 'Currency', 'Type', 'Date & time', 'Amount'
+    'Currency', 'Type', 'Date & time', 'Amount'
 ]
 export const transInnerTableHeader = [
-    '#', 'Currency', 'from-to', 'Date & time', 'Amount'
+    'Currency', 'from-to', 'Date & time', 'Amount'
 ]

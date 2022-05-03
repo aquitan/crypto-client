@@ -1,10 +1,8 @@
 .account {
   &_row {
     padding: 10px;
-    border-bottom: 1px solid #cecece;
-  }
-  &_row_wrap {
-    background-color: rgba(33, 37, 41);
-    padding: 20px;
+    border: 1px solid #717579;
+    border-radius: 30px;
+    margin-bottom: 30px;
   }
 }

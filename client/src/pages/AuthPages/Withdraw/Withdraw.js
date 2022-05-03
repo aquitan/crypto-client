@@ -13,13 +13,14 @@ import {ErrorMessage} from "@hookform/error-message";
 import error from "../../../styles/Error.module.scss";
 import {useForm} from "react-hook-form";
 import {store} from "../../../index";
+import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 const Withdraw = () => {
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
     })
 
     const [state, setState] = useState({
-        value: 0,
+        value: '',
         text: ''
     })
     const statusOptions = [
@@ -48,49 +49,53 @@ const Withdraw = () => {
     return (
         <Container>
             <Row>
-                <Col>
-                    <Card className='p-4 bg-dark'>
+                <Col className='col-12 col-md-6 mb-3'>
+                    <ButtonCard>
                         <h2 className='mb-3'>Withdraw</h2>
                         <Form classnames='form_big'>
                             <Row className='mb-3'>
-                                <Col>
+                                <Col className='col-12 col-lg-4'>
                                     <p>Chose currency</p>
                                     <Select {...register('currency')} classname='transparent' options={statusOptions} />
                                 </Col>
+                            </Row>
+                            <Row className='mb-3'>
                                 <Col>
-                                    <p>Amount in USD</p>
-                                    <Input placeholder={0} type='number' onChange={onChangeUsd} value={state.text} />
+                                    <Input placeholder='Amount in USD' type='number' onChange={onChangeUsd} value={state.text} />
                                     <span style={{fontSize: 10}}>Minimum withdraw amount is {store.domain.min_withdrawal_sum} USD</span>
-                                </Col>
-                                <Col>
-                                    <p>Amount in Crypto</p>
-                                    <Input placeholder={0} type='number' onChange={onChangeCrypto} value={state.value} />
                                 </Col>
                             </Row>
                             <Row className='mb-3'>
-                                <Input placeholder='enter the address' />
+                                <Col>
+                                    <Input placeholder='Amount in Crypto' type='number' onChange={onChangeCrypto} value={state.value} />
+                                </Col>
+                            </Row>
+                            <Row className='mb-3'>
+                                <Col>
+                                    <Input placeholder='enter the address' />
+                                </Col>
                             </Row>
                             <Row className='mb-3'>
                                 <Col>
                                     <input {...register('terms', {
                                         required: true
                                     })} type='checkbox' />
-                                    <Link to={'/'}>Terms and conditions</Link>
+                                    <Link to={'/'}> I accept Terms and Conditions</Link>
                                     <ErrorMessage  name='terms' errors={errors} render={() => <p className={error.error}>you have to accept terms and conditions</p>} />
                                 </Col>
                             </Row>
                             <Row className='justify-content-center'>
                                 <Col className='col-6'>
-                                    <Button>Withdraw</Button>
+                                    <Button classname='user-red'>Withdraw</Button>
                                 </Col>
                             </Row>
                         </Form>
-                    </Card>
+                    </ButtonCard>
                 </Col>
-                <Col>
-                    <Card className='p-4 bg-dark'>
+                <Col className='col-12 col-md-6 mb-3'>
+                    <ButtonCard>
                         <h2 className='mb-3'>Table</h2>
-                    </Card>
+                    </ButtonCard>
                 </Col>
             </Row>
         </Container>
