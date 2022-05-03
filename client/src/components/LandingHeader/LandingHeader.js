@@ -5,21 +5,29 @@ import cls from './LandingHeader.module.scss'
 import Preloader from "../UI/Preloader/Preloader";
 import {store} from "../../index";
 import {observer} from "mobx-react-lite";
+import {postData} from "../../services/StaffServices";
 
 
 const LandingHeader = () => {
-    const [state, setState] = useState()
+    const [state, setState] = useState('')
 
     useEffect(() => {
-        setState(store.domain.domain_name)
-    }, [store.domain])
+        getDomain()
+    }, [])
+
+    const getDomain = async () => {
+        const res = await postData('/get_domain_params/', {domainName: window.location.host})
+        setState(res.data.domainInfo)
+    }
 
     return (
         <header className={cls.landing_header}>
             <div className={cls.row}>
                 <div className={cls.col}>
                     <Logo/>
-                    <h4 className={cls.domain_header}>{state}</h4>
+                    <h4 className={cls.domain_header}>
+                        {state ? state.domainName : 'Loading...'}
+                    </h4>
                 </div>
                 
                 <div className={cls.col}>

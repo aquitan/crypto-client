@@ -28,10 +28,10 @@ const Dashboard = () => {
                     <h5>Welcome!</h5>
                 </Col>
                 <Col>
-                    <span>user</span>
+                    <span>{store.user.name ? store.user.name : store.userEmail}</span>
                 </Col>
             </Row>
-            <h5>{store.user.name ? store.user.name : store.userEmail}</h5>
+
             <ButtonCard>
                 <Row>
                     <Col className='col-12 col-md-4 mb-3'>

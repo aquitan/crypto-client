@@ -7,6 +7,7 @@ import {useForm} from "react-hook-form";
 import Input from "../../../components/UI/Input/Input";
 import {store} from "../../../index";
 import {getGeoData} from "../../../queries/getSendGeoData";
+import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 
 const RegisterConfirm = () => {
     const navigate = useNavigate()
@@ -14,13 +15,13 @@ const RegisterConfirm = () => {
 
     const toSignin = async (data) => {
         const geoData = await getGeoData()
-        store.sendActivation(data.activationLink, store.userId)
+        store.sendActivation(data.activationLink)
         navigate('/')
     }
 
     return (
         <Container>
-            <Card className='bg-dark'>
+            <ButtonCard>
                 <div className={`${cls.register_confirm_wrap} m-auto mt-5`}>
                     <h3>Congrats! You have been registered on our platform</h3>
                     <p>Check your Email to confirm registration</p>
@@ -35,7 +36,7 @@ const RegisterConfirm = () => {
                         </Row>
                     </form>
                 </div>
-            </Card>
+            </ButtonCard>
         </Container>
     )
 }

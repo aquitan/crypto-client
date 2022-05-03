@@ -15,7 +15,9 @@ const AppRouter = () => {
     const navigate = useNavigate()
     const {isLoading, data, error} = useQuery('notif query', async () => {
         const res = await postData('/get_domain_params/', {domainName: window.location.host})
-        store.setDepositFee(res.data.domainInfo.domain_info.deposit_fee)
+        store.setDepositFee(res.data.domainInfo.domainParams.depositFee)
+        store.setDomain(res.data.domainInfo)
+        console.log('res.data.domainInfo', store.domain.domainName)
     })
 
     useEffect(async () => {
