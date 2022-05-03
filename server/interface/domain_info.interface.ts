@@ -10,7 +10,7 @@ export default interface DOMAIN_INFO {
   companyCountry: string
   showNews: boolean
   doubleDeposit: boolean
-  depositFee: boolean
+  depositFee: number
   rateCorrectSum: number
   minDepositSum: number
   minWithdrawalSum: number

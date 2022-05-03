@@ -4,7 +4,7 @@ export const TERMS = {
     type: String,
     require: true
   },
-  termsBody: {
+  body: {
     type: String,
     require: true
   },

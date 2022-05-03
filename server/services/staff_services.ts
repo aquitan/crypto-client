@@ -16,7 +16,7 @@ import userPromocode from '../models/Promocodes.model'
 import usedPromoList from '../models/Used_promocodes.model'
 import staffLogs from '../models/Staff_logs.model'
 import TokenModel from '../models/Token.model'
-import { TERMS } from '../config/terms.template'
+import TERMS from '../config/terms.template'
 
 
 class staffService {
@@ -293,19 +293,18 @@ class staffService {
 
 		console.log('received object: ', data_object);
 		const domains: any = await domainList.find({ domainOwner: data_object.staffId })
-		if (!domains.length) {
-			console.log('empty set');
-		} else {
-			console.log(`staff ${data_object.staffEmail} domains list: `)
-			for (let i = 0; i <= domains.length - 1; i++) {
-				console.log(domains[i].fullDomainName);
+		if (!domains.length) console.log('empty set')
 
-				if (domains[i].fullDomainName === data_object.fullDomainName) {
-					console.log('domain already in use');
-					return false
-				}
+		console.log(`staff ${data_object.staffEmail} domains list: `)
+		for (let i = 0; i <= domains.length - 1; i++) {
+			console.log(domains[i].fullDomainName);
+
+			if (domains[i].fullDomainName === data_object.fullDomainName) {
+				console.log('domain already in use');
+				return false
 			}
 		}
+
 		await domainList.create({
 			fullDomainName: data_object.fullDomainName,
 			domainName: data_object.domainName,
@@ -315,7 +314,7 @@ class staffService {
 			companyOwnerName: data_object.companyOwnerName,
 			companyYear: data_object.companyYear,
 			companyCountry: data_object.companyCountry,
-			domainOwnerEmail: data_object.staffEmail
+			domainOwner: data_object.staffId
 		})
 
 		const curDomain: any = await domainList.findOne({ fullDomainName: data_object.fullDomainName })
@@ -335,7 +334,8 @@ class staffService {
 		const detailCheck: any = await domainDetail.findOne({ domainId: curDomain.id })
 		console.log('domain params => ', detailCheck);
 
-		if (detailCheck) return false
+		if (!detailCheck) return false
+
 		const curErrorList: any = [
 			data_object.errorList.verif_document,
 			data_object.errorList.verif_address,

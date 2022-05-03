@@ -716,7 +716,7 @@ class StaffController {
       if (result === 'error') return res.status(500).json({
         message: 'internal server error.'
       })
-      await staffService.addTerms(object_to_send.fullDomainName)
+      await staffService.addTerms(req.body.fullDomainName)
 
       if (rootAccess === false) {
         await telegram.sendMessageByStaffActions(req.body.staffEmail, ` создал новый домен ${req.body.fullDomainName}} `, req.body.domainName)

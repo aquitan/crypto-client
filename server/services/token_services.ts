@@ -40,13 +40,15 @@ class TokenService {
 
   async saveToken(user_id: string, refreshToken: string) {
     const tokenData: any = await authToken.findOne({ userId: user_id })
-    let token: any
-    if (tokenData) {
-      token = await authToken.create({
-        refreshToken: refreshToken,
-        userId: user_id
-      })
-    }
+    if (tokenData) return false
+
+    await authToken.create({
+      refreshToken: refreshToken,
+      userId: user_id
+    })
+
+    const token: any = await authToken.findOne({ userId: user_id })
+    if (!token) return false
     return token
   }
 

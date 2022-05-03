@@ -10,7 +10,7 @@ export const USER_LOGS = {
     require: true
   },
   requestCity: {
-    type: String,
+    type: String || null,
     require: true
   },
   countryName: {

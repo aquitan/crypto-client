@@ -22,12 +22,12 @@ import { getUserData } from '../dtos/UserData.dto'
 class AuthService {
 
   async GetDomainInfo(domain_name: string) {
-    const domain_info: any = await domainList.findOne({ domainName: domain_name })
-    const domain_detail: any = await domainDetail.findById({ _id: domain_info._id })
+    const domain_info: any = await domainList.findOne({ fullDomainName: domain_name })
+    const domain_detail: any = await domainDetail.findOne({ domainId: domain_info.id })
     const domain_terms: any = await domainTerms.findOne({ domainName: domain_name })
-    if (!domain_info || !domain_detail || !domain_terms) return false
+    if (!domain_info && !domain_detail && !domain_terms) return false
     const domainInfo = {
-      domainId: domain_info._id,
+      domainId: domain_info.id,
       fullDomainName: domain_info.fullDomainName,
       domainName: domain_info.domainName,
       companyAddress: domain_info.companyAddress,
@@ -69,7 +69,6 @@ class AuthService {
     console.log('domain owner is: ', domainOwner.domainOwner);
     if (!domainOwner) throw ApiError.ServerError()
 
-    const currentDate = new Date().getTime()
     await baseUserData.create({
       name: transfer_object.name || '',
       email: transfer_object.email,
@@ -78,7 +77,7 @@ class AuthService {
       registrationType: domainOwner.domainOwner,
       promocode: transfer_object.promocode,
       domainName: transfer_object.domainName,
-      dateOfEntry: currentDate
+      dateOfEntry: transfer_object.currentDate
     })
 
     const curUser: any = await baseUserData.findOne({ email: transfer_object.email })
@@ -166,7 +165,7 @@ class AuthService {
       isActivated: true
     })
 
-    const activatedStatus: any = await baseUserData.findOne({ activationLink: link.activationLink })
+    const activatedStatus: any = await userParams.findOne({ activationLink: link.activationLink })
     if (!activatedStatus.isActivated) throw ApiError.ServerError()
     return true
   }

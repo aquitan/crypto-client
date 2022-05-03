@@ -4,7 +4,7 @@ let domainBig: string;
 let domainSupport: string;
 
 
-export const TERMS = `<h2>PLEASE READ THESE TERMS AND CONDITIONS CAREFULLY. BY CLICKING THE "CREATE ACCOUNT" BUTTON OR BY ACCESSING OR USING THE SERVICES, YOU AGREE TO BE LEGALLY BOUND hBY THESE TERMS AND CONDITIONS AND ALL TERMS INCORPORATED BY REFERENCE.</h2>
+const TERMS = `<h2>PLEASE READ THESE TERMS AND CONDITIONS CAREFULLY. BY CLICKING THE "CREATE ACCOUNT" BUTTON OR BY ACCESSING OR USING THE SERVICES, YOU AGREE TO BE LEGALLY BOUND hBY THESE TERMS AND CONDITIONS AND ALL TERMS INCORPORATED BY REFERENCE.</h2>
     <p>This summary of our Terms and Conditions offers you an overview of the key terms that apply to your use of our website and trading services. While we hope this summary section is helpful, you should read the complete Terms and Conditions of Service below since they provide important information about how our services work. Please note that we refer to our online service where you can execute trades as "${domainSmall}".</p>
     <h3>Our Services</h3>
     <p>${domainSmall} provides you with a simple and convenient way to trade one type of digital asset for another type of digital asset. Our services do not provide users with the ability to trade one form of legal tender for another form of legal tender. Additionally, the range of services available to you will depend in part upon the countries from which you access ${domainSmall}.</p>
@@ -162,3 +162,5 @@ export const TERMS = `<h2>PLEASE READ THESE TERMS AND CONDITIONS CAREFULLY. BY C
     <p>23.5\tForce Majeure Events. ${domainSmall} shall not be liable for (1) any inaccuracy, error, delay in, or omission of (i) any information, or (ii) the transmission or delivery of information; (2) any loss or damage arising from any event beyond ${domainSmall}&lsquo;s reasonable control, including but not limited to flood, extraordinary weather conditions, earthquake, or other act of God, fire, war, insurrection, riot, labor dispute, accident, action of government, communications, power failure, or equipment or software malfunction or any other cause beyond ${domainSmall}&lsquo;s reasonable control (each, a "Force Majeure Event").</p>
     <p>23.6\tAssignment. You may not assign or transfer any of your rights or obligations under these Terms and Conditions without prior written consent from ${domainSmall}, including by operation of law or in connection with any change of control. ${domainSmall} may assign or transfer any or all of its rights under these Terms and Conditions, in whole or in part, without obtaining your consent or approval.</p>
     <p>23.7\tHeadings. Headings of sections are for convenience only and shall not be used to limit or construe such sections.</p>`
+
+export default TERMS

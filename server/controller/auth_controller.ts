@@ -230,6 +230,8 @@ class AuthController {
       }
 
       const userData: any = await authService.refresh(refreshToken)
+      if (!userData) throw ApiError.ServerError()
+
       res.cookie('refreshToken', userData.refreshToken, {
         maxAge: 30 * 4 * 60 * 60 * 1000,
         httpOnly: true

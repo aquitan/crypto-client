@@ -4,7 +4,7 @@ import { USER_LOGS } from '../schemas/User_logs.schema'
 interface UserLogs {
   userEmail: string
   ipAddress: string
-  requestCity: string
+  requestCity: string | null
   countryName: string
   location: string
   browser: string
