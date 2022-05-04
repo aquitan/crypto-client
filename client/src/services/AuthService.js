@@ -2,7 +2,7 @@ import $api from "../API";
 
 export default class AuthService {
     static async login(obj) {
-        return $api.post('/login', obj)
+        return await $api.post('/login', obj)
     }
 
     static async registration(obj) {

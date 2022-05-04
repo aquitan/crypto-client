@@ -13,6 +13,7 @@ import Select from '../../../components/UI/Select/Select';
 import {deleteData, postData, putData} from '../../../services/StaffServices';
 import AdminButtonCard from '../../../components/AdminButtonCard/AdminButtonCard';
 import ModalDark from "../../../components/UI/ModalDark/ModalDark";
+import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 
 const Promocodes = () => {
     const {register, handleSubmit, formState: {errors}} = useForm({
@@ -57,10 +58,9 @@ const Promocodes = () => {
         let dataPrep = prepareData(data.counter, data.min, data.max)
 
         let currentDate = new Date()
-        let fullDate = currentDate.getFullYear() + '-' + currentDate.getMonth() + '-' + currentDate.getDate()
         let promoData = {
             value: dataPrep,
-            date: fullDate,
+            date: dateToTimestamp(),
             staff: store.userId,
             domainName: window.location.host,
             counter: data.counter,
@@ -75,7 +75,8 @@ const Promocodes = () => {
         let promoData = {
             isStaff: store.isStaff,
             isAdmin: store.isAdmin,
-            id: store.userId
+            id: store.userId,
+            rootAccess: store.fullAccess
         }
         const res = await postData('/staff/get_promocode_list/', promoData)
         const data = await res.data
@@ -89,7 +90,8 @@ const Promocodes = () => {
         let promoData = {
             isStaff: store.isStaff,
             isAdmin: store.isAdmin,
-            id: store.userId
+            id: store.userId,
+            rootAccess: store.fullAccess
         }
         const res = await postData('/staff/get_used_promocode_list/', promoData)
         const data = await res.data
@@ -101,10 +103,14 @@ const Promocodes = () => {
         getUsedPromocodes()
     }, [])
 
-    const onDeletePromo = async (id) => {
-        const res = await deleteData('/staff/delete_promocode', {id: id})
+    const onDeletePromo = async (code) => {
+        const obj = {
+            promocode: code
+        }
+        console.log('code', obj)
+        const res = await deleteData('/staff/delete_promocode/', {data: obj})
         setState({
-            ...state, currentPromocodes: state.currentPromocodes.filter(el => el.ID !== id )
+            ...state, currentPromocodes: state.currentPromocodes.filter(el => el.code !== code )
         })
         handleCloseModal()
         setModal({...modal, isDelete: true})
@@ -118,8 +124,9 @@ const Promocodes = () => {
         handleCloseModal()
     }
 
-    const handleOpenModal = (id) => {
-        const onClickConfirm = () => onDeletePromo(id) // запихнул коллбэк потому что возвращался объект в onClick и все крашилось
+    const handleOpenModal = (code) => {
+        const onClickConfirm = () => onDeletePromo(code) // запихнул коллбэк потому что возвращался объект в onClick и все крашилось
+        console.log('this is', code)
         setModal(
             {
             isOpen: true,
@@ -140,7 +147,7 @@ const Promocodes = () => {
                 <h2>Вы уверены?</h2>
             </ModalDark>
 
-            <ModalDark active={isDelete} setActive={handleCloseModal}>
+            <ModalDark singleBtn={true} active={isDelete} setActive={handleCloseModal}>
                 <h2>Код удален!</h2>
             </ModalDark>
 
@@ -222,7 +229,7 @@ const Promocodes = () => {
                         state.currentPromocodes ?
                             state.currentPromocodes.map(promo => {
                                 return <PromocodesItem
-                                    onClick={() => handleOpenModal(promo.ID)}
+                                    onClick={() => handleOpenModal(promo.code)}
                                     key={promo.ID}
                                     id={promo.ID}
                                     code={promo.code}

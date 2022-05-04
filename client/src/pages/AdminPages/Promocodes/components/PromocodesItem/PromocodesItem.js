@@ -11,7 +11,7 @@ const PromocodesItem = ({id, code, reward, currency, onClick}) => {
                 <Col className='col-4 col-sm-2'>{reward}</Col>
                 <Col className='col-2 d-none d-md-block'>{currency}</Col>
                 <Col className='col-4 col-sm-4'>
-                    <AdminButton classname={['red', 'xs']} onClick={() => onClick(id)}>Удалить</AdminButton>
+                    <AdminButton classname={['red', 'xs']} onClick={() => onClick(code)}>Удалить</AdminButton>
                 </Col>
             </Row>
         </div>

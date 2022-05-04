@@ -16,76 +16,130 @@ import {optionsCompiler} from "../../../utils/optionsCompiler";
 import Preloader from "../../../components/UI/Preloader/Preloader";
 import error from "../../../styles/Error.module.scss";
 import {ErrorMessage} from "@hookform/error-message";
+import ModalDark from "../../../components/UI/ModalDark/ModalDark";
 
 const StaffErrors = () => {
-    const {register, handleSubmit, formState: {errors}} = useForm({
+    const [modal, setModal] = useState(false)
+    const {register, handleSubmit, formState: {errors}, reset} = useForm({
         mode: 'onBlur'
     })
     const [state, setState] = useState({
         domainDetail: '',
         domain: '',
-        domainOptions: ''
+        domainOptions: '',
+        allDomains: []
     })
+    const [curSelect, setCurSelect] = useState('')
+    const [custSelect, setCustSelect] = useState('')
+    const [optionId, setOptionId] = useState('')
     const options = [
         {value: 'Вывод', text: 'Вывод'},
         {value: 'Верификация', text: 'Верификация'},
         {value: 'Мульти-акк', text: 'Мульти-акк'},
     ]
     const optionsDomain = [
-        {value: 'Вывод', text: 'Вывод'},
-        {value: 'Верификация', text: 'Верификация'},
-        {value: 'Мульти-акк', text: 'Мульти-акк'},
+        {value: 'localhost:3000', text: 'localhost:3000'},
+        {value: 'localhost:3001', text: 'localhost:3001'},
+        {value: 'localhost:3002', text: 'localhost:3002'},
     ]
 
     useEffect(() => {
-        getAllErrors()
-        getAllUsers()
+        getDomainList()
     }, [])
 
     const getAllErrors = async () => {
-        const err = await getData('/staff/errors/get_all_errors/1/')
+        const obj = {
+            domainName: curSelect
+        }
+        const err = await postData(`/staff/errors/get_all_errors/`, obj)
+    }
+
+    const getDomainList = async () => {
         const obj = {
             isAdmin: store.isAdmin,
             isStaff: store.isStaff,
-            staffEmail: store.userEmail
+            staffEmail: store.userEmail,
+            rootAccess: store.fullAccess,
+            id: store.userId
         }
         const res = await postData('/staff/domains/get_active_domains/', obj)
+        console.log('getDomainList ========', res.data.domainsList)
+        let arr = []
+        if (typeof res.data.domainsList !== "string") {
+            for (let i = 0; i <= res.data.domainsList.length - 1; i++) {
+                let obj = {
+                    value: res.data.domainsList[i].domainName,
+                    text: res.data.domainsList[i].domainName,
+                    id: res.data.domainsList[i].domainId
+                }
+                arr.push(obj)
+                setState({...state, allDomains: arr})
+                setCurSelect(arr[0].value)
+                setCustSelect(arr[0].value)
+                setOptionId(arr[0].id)
+            }
 
-        setState({...state,
-            domainDetail: err.data.domain_detail,
-            domainOptions: optionsCompiler(res.data.domainsList)
-        })
-        console.log('errors', err.data)
-    }
-
-    const getAllUsers = async () => {
-
+        } else {
+            let obj = {
+                value: res.data.domainsList,
+                text: res.data.domainsList,
+                id: res.data.domainsList.domainId
+            }
+            arr.push(obj)
+            setState({...state, allDomains: arr})
+            setCurSelect(arr[0].value)
+            setCustSelect(arr[0].value)
+            setOptionId(arr[0].id)
+        }
     }
 
     const onSubmit = async (data) => {
-        data.domainName = window.location.host
-        data.domainId = 2
+        data.domainId = optionId
         data.staffEmail = store.userEmail
         data.staffId = store.userId
+        data.adminPermission = store.isAdmin
+        data.staffPermission = store.isStaff
+        data.rootAccess = store.fullAccess
+        data.domainName = custSelect
         const res = await putData('/staff/errors/create_new_error/', data)
+        if (res.status === 201) {
+            setModal(true)
+            reset({data: ''})
+        }
     }
 
-    const onChangeDomain = async () => {
-        const res = await getData('/staff/errors/get_all_errors/1/')
-        setState({...state, domain: res.data.domain_detail})
+    const onChangeDomain = async (e) => {
+        // const res = await getData('/staff/errors/get_all_errors/1/')
+        // setState({...state, domain: res.data.domain_detail})
+        setCurSelect(e.target.value)
+    }
+    const onChangeCustDomain = async (e) => {
+        const index = e.target.selectedIndex;
+        const el = e.target.childNodes[index]
+        const option =  el.getAttribute('id');
+        setOptionId(option)
+        setCustSelect(e.target.value)
     }
 
-    console.log('domain', state.domainDetail)
+    const chooseErrorsList = async () => {
+       await getAllErrors()
+    }
 
     return (
         <Container>
+            <ModalDark active={modal} setActive={setModal} singleBtn={true}>
+                <h2>Ошибка создана успешно!</h2>
+            </ModalDark>
             <h1 className='mt-4'>Ошибки</h1>
            <AdminButtonCard>
               <AdminForm onSubmit={handleSubmit(onSubmit)}>
                   <h2 className='text-center'>Создание новой ошибки</h2>
                   <Row className='mb-3'>
-                      Событие
-                      <Select {...register('errorName')} options={options} classname='' />
+                      Название ошибки
+                      <AdminInput {...register('errorName', {
+                          required: true
+                      })}/>
+                      <ErrorMessage  name='errorName' errors={errors} render={() => <p className={error.error}>Check the field</p>} />
                   </Row>
                   <Row className='mb-3'>
                       Заголовок
@@ -104,6 +158,10 @@ const StaffErrors = () => {
                       <ErrorMessage  name='errorText' errors={errors} render={() => <p className={error.error}>Check the field</p>} />
                   </Row>
                   <Row className='mb-3'>
+                      Выбери домен
+                      {state.allDomains ? <Select value={state.allDomains[0]} onChange={onChangeCustDomain} options={state.allDomains} /> : <Preloader/>}
+                  </Row>
+                  <Row className='mb-3'>
                       Кнопка
                       <Select {...register('errorButton')} options={optionsButton} classname='' />
                   </Row>
@@ -114,9 +172,14 @@ const StaffErrors = () => {
             <AdminButtonCard>
                 <h2 className='text-center'>Ошибки</h2>
                 <Row>
-                    {
-                        state.domainOptions ? <Select options={state.domainOptions} onChange={onChangeDomain} /> : <Preloader/>
-                    }
+                    <Col>
+                        {
+                            state.allDomains ? <Select options={state.allDomains} value={state.allDomains[0]} onChange={onChangeDomain} /> : <Preloader/>
+                        }
+                    </Col>
+                    <Col>
+                        <AdminButton onClick={chooseErrorsList} classname={'green'}>Выбрать</AdminButton>
+                    </Col>
                 </Row>
 
                 {

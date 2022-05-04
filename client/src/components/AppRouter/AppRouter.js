@@ -3,12 +3,10 @@ import {AuthContext, store} from "../../index";
 import {observer} from "mobx-react-lite";
 import AuthWrap from "../../layouts/AuthWrap/AuthWrap";
 import NonAuthWrap from "../../layouts/NonAuthWrap/NonAuthWrap";
-import RegisterConfirm from "../../pages/NonAuthPages/RegisterConfirm/RegisterConfirm";
 import {getData, postData} from "../../services/StaffServices";
 import {useNavigate} from "react-router-dom";
 import {getRate} from "../../services/CurrencyService";
 import {useQuery} from 'react-query'
-import {dateToTimestamp} from "../../utils/dateToTimestamp";
 
 const AppRouter = () => {
     const {store} = useContext(AuthContext)
@@ -17,7 +15,6 @@ const AppRouter = () => {
         const res = await postData('/get_domain_params/', {domainName: window.location.host})
         store.setDepositFee(res.data.domainInfo.domainParams.depositFee)
         store.setDomain(res.data.domainInfo)
-        console.log('res.data.domainInfo', store.domain.domainName)
     })
 
     useEffect(async () => {
@@ -27,7 +24,6 @@ const AppRouter = () => {
         if (!localStorage.getItem('token')) {
             navigate('/')
         }
-        console.log('timestamp', dateToTimestamp())
         sendDomainName()
         getRates()
     }, [])
@@ -45,11 +41,11 @@ const AppRouter = () => {
 
     const sendDomainName = async () => {
         const res = await postData('/get_domain_params/', {domainName: window.location.host})
-        store.setDomain(res.data.domainInfo.domain_info)
-        store.setTerms(res.data.domainInfo.domain_terms)
+        store.setDomain(res.data.domainInfo)
     }
 
     if (store.isLoading) {
+        console.log('store is loading...')
         return <h1>Loading...</h1>
     }
 

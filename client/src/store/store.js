@@ -2,6 +2,7 @@ import {makeAutoObservable} from "mobx";
 import AuthService from "../services/AuthService";
 import axios from "axios";
 import {BASE_URL} from "../API";
+import {log} from "util";
 
 export default class Store {
     userId = ''
@@ -101,28 +102,31 @@ export default class Store {
 
     async login(obj) {
         try {
+            this.setIsError(true)
             const response = await AuthService.login(obj)
-            console.log('response-login', response.data)
+            localStorage.setItem('token', response.data.accessToken)
+            console.log('storage-1', response.data.accessToken)
+            console.log('storage', localStorage.getItem('token'))
             if (response.data.rootAccess) {
-                localStorage.setItem('token', response.data.accessToken)
                 this.setFullAccess(true)
                 this.setAuth(true)
             } else {
-                if (response.data.user.isBanned === 1) {
+                if (response.data.user.isBanned) {
+                    console.log('is banned', response.data)
                     this.setIsBanned(true)
                 }
                 this.setIsLoading(true)
                 if (!this.isBanned) {
                     localStorage.setItem('token', response.data.accessToken)
-                    this.setUserId(response.data.user.ID)
+                    this.setUserId(response.data.user.id)
                     this.setUserEmail(response.data.user.email)
-                    if (response.data.user.isAdmin === 1) {
+                    if (response.data.user.isAdmin) {
                         this.setIsAdmin(true)
                     }
-                    if (response.data.user.isStaff === 1) {
+                    if (response.data.user.isStaff) {
                         this.setIsStaff(true)
                     }
-                    if (response.data.user.isActivated === 1) {
+                    if (response.data.user.isActivated) {
                         this.setIsActivated(true)
                     }
                     this.setAuth(true)
@@ -139,6 +143,7 @@ export default class Store {
     }
     async registration(obj) {
         try {
+            this.setIsError(true)
             const response = await AuthService.registration(obj)
             console.log('register', response)
             localStorage.setItem('token', response.data.accessToken)
@@ -180,18 +185,19 @@ export default class Store {
                 localStorage.setItem('token', response.data.accessToken)
                 this.setFullAccess(true)
                 this.setAuth(true)
+                this.setIsActivated(true)
             } else {
                 if (!this.isBanned) {
                     this.setUserId(response.data.user.ID)
                     this.setUserEmail(response.data.user.email)
                     localStorage.setItem('token', response.data.accessToken)
-                    if (response.data.user.isActivated === 1) {
+                    if (response.data.user.isActivated) {
                         this.setIsActivated(true)
                     }
-                    if (response.data.user.isStaff === 1) {
+                    if (response.data.user.isStaff) {
                         this.setIsStaff(true)
                     }
-                    if (response.data.user.isAdmin === 1) {
+                    if (response.data.user.isAdmin) {
                         this.setIsAdmin(true)
                     }
                     this.setAuth(true)

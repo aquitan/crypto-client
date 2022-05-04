@@ -4,6 +4,9 @@
   background-color: #292b3c;
   color: #fff;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .app_continer {
   overflow-y: auto;
