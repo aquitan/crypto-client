@@ -10,6 +10,7 @@ import NEWS_INFO from '../interface/news_info.interface'
 import DEPOSIT_HISTORY from '../interface/deposit_history.interface'
 import WITHDRAWAL_HISTORY from '../interface/withdrawal_history.interface'
 import INTERNAL_HISTORY from '../interface/internal_history.interface'
+import ApiError from 'exeptions/api_error'
 
 class StaffController {
 
@@ -752,7 +753,7 @@ class StaffController {
   async createCustomError(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
 
-      const staffId: string = req.body.staffId
+      console.log('req body is: ', req.body)
 
       let obj_to_send: CREATE_CUSTOM_ERROR = {
         domain_id: req.body.domainId,
@@ -760,27 +761,42 @@ class StaffController {
         errorName: req.body.errorName,
         errorTitle: req.body.errorTitle,
         errorText: req.body.errorText,
-        errorButton: req.body.errorButton,
-        staffEmail: req.body.staffEmail
+        errorButton: req.body.errorButton
       }
 
+      const adminPermission: boolean = req.body.isAdmin
+      const staffPremission: boolean = req.body.isStaff
+      let staffEmail: string = req.body.staffEmail
+      let staffId: string = req.body.stafId
       const rootAccess: boolean = req.body.rootAccess
 
-      if (rootAccess === true) {
-        obj_to_send.staffEmail = 'root'
+      if (rootAccess === true || adminPermission) {
+        staffId = 'xx999xx--001'
+        staffEmail = 'root'
+
+        const result: any = await staffService.CreateCustomError(obj_to_send)
+        console.log('result is: ', result);
+        if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+
+        return res.status(201).json({ message: 'Error was created', status: 'completed' })
+
       }
 
-      const result: any = await staffService.CreateCustomError(obj_to_send)
-      console.log('result is: ', result);
+      if (staffPremission) {
+        const result: any = await staffService.CreateCustomError(obj_to_send)
+        console.log('result is: ', result);
 
-      if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+        if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
 
-      if (rootAccess === false) {
-        await telegram.sendMessageByStaffActions(obj_to_send.staffEmail, ` создал кастомную ошибку `, obj_to_send.domain_name)
-        await staffService.saveStaffLogs(obj_to_send.staffEmail, ` создал новый домен ${req.body.fullDomainName}} `, obj_to_send.domain_name, staffId)
+        await telegram.sendMessageByStaffActions(staffEmail, ` создал кастомную ошибку `, obj_to_send.domain_name)
+        await staffService.saveStaffLogs(staffEmail, ` создал новый домен ${req.body.fullDomainName}} `, obj_to_send.domain_name, staffId)
+
+
+        return res.status(201).json({ message: 'Error was created', status: 'completed' })
       }
 
-      return res.status(201).json({ message: 'Error was created', status: 'completed' })
+      throw ApiError.ServerError()
+
     } catch (e) {
       next(e)
     }
@@ -788,15 +804,16 @@ class StaffController {
 
   async getAllErrors(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      const domain_id: string = req.params.id
-      console.log('current domain id is: ', domain_id);
-      const result: any = await staffService.GetDomainErrors(domain_id)
+      const domainName: string = req.body.domainName
+      console.log('current domain id is: ', domainName);
+      const result: any = await staffService.GetDomainErrors(domainName)
       if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
 
       return res.status(202).json({
-        domain_detail: result,
+        errorList: result,
         status: 'complete'
       })
+
     } catch (e) {
       next(e)
     }
@@ -822,28 +839,77 @@ class StaffController {
 
   async getDomainsList(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      const adminPermission: boolean = req.body.isAdmin
-      const staffPremisstion: boolean = req.body.isStaff
-      const staffId: string = req.body.staffId
       console.log('req body is: ', req.body)
 
-      if (adminPermission === true) {
+      const adminPermission: boolean = req.body.isAdmin
+      const staffPermission: boolean = req.body.isStaff
+      // const domainName: string = req.body.domainName
+      let staffId: string = req.body.id
+      let staffEmail: string = req.body.staffEmail
+      const rootAccess: boolean = req.body.rootAccess
+      let domainListArray: any = []
+
+      if (rootAccess === true || adminPermission === true) {
+        staffId = 'xx999xx--001'
+        staffEmail = 'root'
+
         const result: any = await adminService.GetDomainListForAdmin()
+
         if (result !== false) {
-          return res.status(200).json({
-            domainsList: result,
-            status: 'complete'
-          })
+          if (result.length > 1) {
+            for (let i = 0; i <= result.length - 1; i++) {
+              console.log('domain name is => ', result[i].fullDomainName);
+              let obj = {
+                domainName: result[i].fullDomainName,
+                domainId: result[i].id
+              }
+              domainListArray.push(obj)
+            }
+            console.log('current domain list is: ', domainListArray);
+
+            return res.status(200).json({
+              domainsList: domainListArray,
+              status: 'complete'
+            })
+          } else {
+
+            return res.status(200).json({
+              domainsList: {
+                domainName: result[0].fullDomainName,
+                domainId: result[0].id
+              },
+              status: 'complete'
+            })
+          }
         }
+        return res.status(200).json({ message: 'empty list' })
+
       }
-      if (staffPremisstion === true) {
+
+      if (staffPermission === true) {
+
         const result: any = await staffService.GetDomainListForStaff(staffId)
+
         if (result !== false) {
-          return res.status(200).json({
-            domainsList: result,
-            status: 'complete'
-          })
+          if (result.length > 1) {
+            for (let i = 0; i <= result.length - 1; i++) {
+              console.log('domain name is => ', result[i].fullDomainName);
+              domainListArray.push(result[i].fullDomainName)
+            }
+            console.log('current domain list is: ', domainListArray);
+
+            return res.status(200).json({
+              domainsList: domainListArray,
+              status: 'complete'
+            })
+          } else {
+            return res.status(200).json({
+              domainsList: result[0].fullDomainName,
+              status: 'complete'
+            })
+          }
         }
+        return res.status(200).json({ message: 'empty list' })
       }
 
       return res.status(403).json({
@@ -1149,9 +1215,26 @@ class StaffController {
       console.log('req body is: ', req.body)
 
       const adminPermission: boolean = req.body.isAdmin
-      const staffPremisstion: boolean = req.body.isStaff
+      const staffPremission: boolean = req.body.isStaff
       // const domainName: string = req.body.domainName
-      const staff_id: string = req.body.id
+      let staffId: string = req.body.id
+      let staffEmail: string = req.body.staffEmail
+      const rootAccess: boolean = req.body.rootAccess
+
+      if (rootAccess === true) {
+        staffId = 'xx999xx--001'
+        staffEmail = 'root'
+
+        const codesList: any = await adminService.GetPromocodeListForAdmin()
+        if (codesList !== false) {
+          return res.status(200).json({
+            promocodeList: codesList,
+            status: 'complete'
+          })
+        }
+        throw ApiError.ServerError()
+
+      }
 
       if (adminPermission === true) {
         const codesList: any = await adminService.GetPromocodeListForAdmin()
@@ -1161,15 +1244,18 @@ class StaffController {
             status: 'complete'
           })
         }
+        throw ApiError.ServerError()
       }
-      if (staffPremisstion === true) {
-        const codesList: any = await staffService.GetPromocodeListForStaff(staff_id)
+      if (staffPremission === true) {
+        const codesList: any = await staffService.GetPromocodeListForStaff(staffId)
         if (codesList !== false) {
           return res.status(200).json({
             promocodeList: codesList,
             status: 'complete'
           })
         }
+        throw ApiError.ServerError()
+
       }
       return res.status(403).json({
         message: 'permission denied',
@@ -1200,7 +1286,24 @@ class StaffController {
       const adminPermission: boolean = req.body.isAdmin
       const staffPermission: boolean = req.body.isStaff
       // const domainName: string = req.body.domainName
-      const staff_id: string = req.body.id
+      let staffId: string = req.body.id
+      let staffEmail: string = req.body.staffEmail
+      const rootAccess: boolean = req.body.rootAccess
+
+      if (rootAccess === true) {
+        staffId = 'xx999xx--001'
+        staffEmail = 'root'
+
+        const codesList: any = await adminService.GetPromocodeListForAdmin()
+        if (codesList !== false) {
+          return res.status(200).json({
+            promocodeList: codesList,
+            status: 'complete'
+          })
+        }
+        return res.status(200).json({ message: 'empty list' })
+
+      }
 
       if (adminPermission) {
         const codesList: any = await adminService.GetUsedPromocodeListForAdmin()
@@ -1210,15 +1313,17 @@ class StaffController {
             status: 'complete'
           })
         }
+        return res.status(200).json({ message: 'empty list' })
       }
-      if (staffPermission && !adminPermission) {
-        const codesList: any = await staffService.GetUsedPromocodeList(staff_id)
+      if (staffPermission) {
+        const codesList: any = await staffService.GetUsedPromocodeList(staffId)
         if (codesList !== false) {
           return res.status(200).json({
             promocodeList: codesList,
             status: 'complete'
           })
         }
+        return res.status(200).json({ message: 'empty list' })
       }
       return res.status(403).json({
         message: 'permission denied',

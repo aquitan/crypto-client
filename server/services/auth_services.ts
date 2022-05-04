@@ -135,22 +135,22 @@ class AuthService {
     if (!usedPromocode) return false
     await usedPromo.create({
       code: promocode,
-      date: usedPromocode.code,
+      date: usedPromocode.date,
       value: usedPromocode.value,
       coinName: usedPromocode.coinName,
       notificationText: usedPromocode.notificationText,
       domainName: usedPromocode.domainName,
-      usedByUser: user_email,
+      usedByUser: curUser.email,
       staffUserId: usedPromocode.staffUserId
     })
     await userNotif.create({
       notifText: usedPromocode.notificationText,
       userDomain: usedPromocode.domainName,
-      email: user_email,
+      email: curUser.email,
       userId: curUser.id
     })
-    await codeList.findByIdAndDelete({ _id: usedPromocode.id })
-    const getUsedPromocode: any = await usedPromo.findById({ _id: usedPromocode.id })
+    await codeList.findOneAndDelete({ code: promocode })
+    const getUsedPromocode: any = await usedPromo.findOne({ code: promocode })
     if (!getUsedPromocode) {
       console.log('some error in promocode saving');
       return false

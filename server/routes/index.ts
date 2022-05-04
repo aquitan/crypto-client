@@ -93,7 +93,7 @@ router.patch('/staff/domains/domain_detail/domain_edit/', staffController.editDo
 
 router.post('/staff/domains/get_active_domains/', staffController.getDomainsList) // get domain list (if staff => when domain owner is staff ) ( if admin and other => all domains )
 router.put('/staff/errors/create_new_error/', staffController.createCustomError) // create new error for selected domain
-router.get('/staff/errors/get_all_errors/:id/', staffController.getAllErrors) // get domain errors by domain ID
+router.post('/staff/errors/get_all_errors/', staffController.getAllErrors) // get domain errors by domain ID
 router.post('/staff/errors/get_errors_by_domain_name/', staffController.getErrorsByDomainName) // domain name where staff email is domain owner
 
 router.put('/staff/notifications/create_new_notification/', staffController.createNewNotification) // create new notification for user

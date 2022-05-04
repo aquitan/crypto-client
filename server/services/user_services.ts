@@ -33,27 +33,23 @@ async function generateCodeForGoogle2fa(domain_name: string) {
 class UserServices {
 
 	async dashboard(user_id: string) {
-		const user: any = await userParams.findById({ userId: user_id })
+		const user: any = await baseUserData.findOne({ _id: user_id })
 		console.log('info of current user: ', user)
 		if (!user) return false
-		const kycData: any = await userKyc.findOne({ userId: user_id })
+		const kycData: any = await userParams.findOne({ userId: user_id })
 		if (!kycData) return false
 
 		let dashboardUserDto: any = {
 			name: user.name,
 			email: user.email,
+			kycStatus: kycData.kycStatus,
 			phone: kycData.phoneNumber || null
 		}
-		if (user.kycStatus === 'empty') {
-			console.log('user dto is: ', dashboardUserDto)
-			if (user.isStaff || user.isAdmin) {
-				dashboardUserDto.withoutLogs = true
-			}
-			return dashboardUserDto
-		}
-
 		console.log('user dto is: ', dashboardUserDto)
 
+		if (user.isStaff || user.isAdmin) {
+			dashboardUserDto.withoutLogs = true
+		}
 		return dashboardUserDto
 	}
 

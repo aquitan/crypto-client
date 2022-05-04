@@ -26,7 +26,7 @@ export const USER_LOGS = {
     require: true
   },
   actionDate: {
-    type: Number,
+    type: String,
     require: true
   },
   userAction: {

@@ -16,7 +16,6 @@ export async function getUserData(email: string, userId?: string) {
 
   const userDto = {
     id: curUser.id,
-    _ID: curUser._id,
     name: curUser.name,
     email: curUser.email,
     isActivated: userParamsInfo.isActivated,

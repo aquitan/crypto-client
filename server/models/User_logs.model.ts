@@ -8,7 +8,7 @@ interface UserLogs {
   countryName: string
   location: string
   browser: string
-  actionDate: number
+  actionDate: string
   userAction: string
   userDomain: string
 }

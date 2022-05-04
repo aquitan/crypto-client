@@ -5,13 +5,13 @@ import userLogs from '../models/User_logs.model'
 
 export default async function ProfileUserDto(userId: string) {
 
-  const userBase: any = await baseUserData.findById({ id: userId })
+  const userBase: any = await baseUserData.findById({ _id: userId })
   const userDetails: any = await userParams.findOne({ userId: userId })
   const kycParams: any = await userKyc.findOne({ userId: userId })
   const loginInfo: any = await userLogs.find({ userId: userId })
 
   let UserDto: any = {
-    name: userBase.id,
+    name: userBase.name,
     email: userBase.email,
     dateOfBitrh: null,
     phoneNumber: null,

@@ -14,6 +14,7 @@ import DEPOSIT_HISTORY from 'interface/deposit_history.interface'
 import WITHDRAWAL_HISTORY from 'interface/withdrawal_history.interface'
 import SWAP_HISTORY from 'interface/swap_history.interface'
 import INTERNAL_HISTORY from 'interface/internal_history.interface'
+import ApiError from 'exeptions/api_error'
 
 async function saveUserLogs(email: string, ipAddress: string, city: string, countryName: string, coordinates: string, browser: string, currentDate: string, userAction: string, userDomain: string) {
 
@@ -35,6 +36,8 @@ class UserController {
       console.log(req.body)
       const user: any = await UserServices.dashboard(id)
       console.log('found user is: ', user)
+      if (!user) throw ApiError.ServerError()
+
 
       if (user.hasOwnProperty('withoutLogs') && user.withoutLogs === true) {
         return res.status(200).json({ user: user })

@@ -467,9 +467,9 @@ class staffService {
 		return savedErrors
 	}
 
-	async GetDomainErrors(domain_id: string) {
-		const savedErrors: any = await domainErrors.findOne({
-			domainId: domain_id
+	async GetDomainErrors(domainName: string) {
+		const savedErrors: any = await domainErrors.find({
+			domainName: domainName
 		})
 		console.log('domain errors is: ', savedErrors);
 		if (!savedErrors) return false
