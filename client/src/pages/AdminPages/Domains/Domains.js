@@ -101,6 +101,7 @@ const CreateDomains = () => {
         data.rootAccess = store.fullAccess
         console.log(data)
         const res = await postData('/staff/domains/create_domain/', data)
+        console.log('domains-data', data)
         const response = await res.data
         if (res.status === 201) {
             setModal(true)
@@ -204,7 +205,7 @@ const CreateDomains = () => {
                                             (e) => setErrorList({...errorList, verif_address: {
                                                     title: errorList.verif_address.title,
                                                     text: e.target.value,
-                                                    domainName: store.domain.domainName,
+                                                    domainName: window.location.host,
                                                     errorName: errorList.verif_address.errorName,
                                                     button: errorList.verif_address.button
                                                 }})
@@ -231,7 +232,7 @@ const CreateDomains = () => {
                                             (e) => setErrorList({...errorList, verif_document: {
                                                     title: errorList.verif_document.title,
                                                     text: e.target.value,
-                                                    domainName: store.domain.domainName,
+                                                    domainName: window.location.host,
                                                     errorName: errorList.verif_document.errorName,
                                                     button: errorList.verif_document.button
                                                 }})
@@ -256,7 +257,7 @@ const CreateDomains = () => {
                                             (e) => setErrorList({...errorList, insurance: {
                                                     title: errorList.insurance.title,
                                                     text: e.target.value,
-                                                    domainName: store.domain.domainName,
+                                                    domainName: window.location.host,
                                                     errorName: errorList.insurance.errorName,
                                                     button: errorList.insurance.button
                                                 }})
@@ -281,7 +282,7 @@ const CreateDomains = () => {
                                             (e) => setErrorList({...errorList, premium: {
                                                     title: errorList.premium.title,
                                                     text: e.target.value,
-                                                    domainName: store.domain.domainName,
+                                                    domainName: window.location.host,
                                                     errorName: errorList.premium.errorName,
                                                     button: errorList.premium.button
                                                 }})
@@ -306,7 +307,7 @@ const CreateDomains = () => {
                                             (e) => setErrorList({...errorList, multi_account: {
                                                     title: errorList.multi_account.title,
                                                     text: e.target.value,
-                                                    domainName: store.domain.domainName,
+                                                    domainName: window.location.host,
                                                     errorName: errorList.multi_account.errorName,
                                                     button: errorList.multi_account.button
                                                 }})

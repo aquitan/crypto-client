@@ -191,7 +191,7 @@ const AccountSecurity = (props) => {
                         Time
                     </Col>
                 </Row>
-                <MyAccountLogsItem ip={props.data.ip_address} time={props.data.login_date} />
+                {/*<MyAccountLogsItem ip={props.data.ipAddress} time={props.data.loginDate} />*/}
                 <MyAccountLogsItem ip='ip' time='time' />
             </Card>
         </>

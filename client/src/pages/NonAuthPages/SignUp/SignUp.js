@@ -46,28 +46,29 @@ const SignUp = () => {
         checkPromocodes()
     }, [])
 
-    const compareStr = (promo, inpVal) => {
-        if (promoStatus.query_status) {
-            console.log('promoStatus.query_status', promoStatus.query_status)
-            for (let i = 0; i < promo.length; i++) {
-                if (promo[i].code === inpVal) {
-                    console.log('promo[i].code', promo[i].code)
-                    return inpVal
-                } else if (inpVal === '') {
-                    return 'empty'
-                } else {
-                    return false
-                }
-            }
-        } return 'empty'
-    }
+    // const compareStr = (promo, inpVal) => {
+    //     if (promoStatus.query_status) {
+    //         console.log('promoStatus.query_status', promoStatus.query_status)
+    //         for (let i = 0; i < promo.length; i++) {
+    //             if (promo[i].code === inpVal) {
+    //                 console.log('promo[i].code', promo[i].code)
+    //                 return inpVal
+    //             } else if (inpVal === '') {
+    //                 return 'empty'
+    //             } else {
+    //                 return false
+    //             }
+    //         }
+    //     } return 'empty'
+    // }
 
     const onSubmit = async (data) => {
         console.log('current', currentPromo)
         if (currentPromo.length) {
             if (promoStatus) {
                 const res = await postData('/promocode_validate', {code: currentPromo})
-                if (res.data.verivication) {
+                if (res.data.verification) {
+                    data.promocode = currentPromo
                     query(data)
                 }
             }
@@ -78,17 +79,16 @@ const SignUp = () => {
 
     }
 
-    console.log('store----', store)
     const query = async (data) => {
         console.log('data', data)
-        const promocode = compareStr(promoStatus.promocodeList, data.promocode)
+        // const promocode = compareStr(promoStatus.promocodeList, data.promocode)
         const geoData = await getGeoData()
         geoData.email = data.email
         geoData.password = data.password
         geoData.name = data.name
-        geoData.promocode = promocode
         delete geoData.id
         delete geoData.userAction
+        geoData.promocode = data.promocode
         geoData.domainName = store.domain.domainName
         geoData.doubleDeposit = store.domain.domainParams.doubleDeposit
         geoData.depositFee = store.domain.domainParams.depositFee
@@ -97,6 +97,7 @@ const SignUp = () => {
         geoData.minWithdrawalSum = store.domain.domainParams.minWithdrawalSum
         geoData.currencySwapFee = store.domain.domainParams.currencySwapFee
 
+        console.log('asdasd', geoData)
         store.registration(geoData)
         navigate('/register-confirm')
 

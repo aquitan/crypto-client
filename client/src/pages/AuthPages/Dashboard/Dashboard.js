@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react'
 import {Col, Container, Row} from "react-bootstrap";
-import {getData} from "../../../services/StaffServices";
+import {getData, postData} from "../../../services/StaffServices";
 import {store} from "../../../index";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
@@ -9,12 +9,14 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEnvelope} from "@fortawesome/free-solid-svg-icons";
 import Button from "../../../components/UI/Button/Button";
 import {useNavigate} from "react-router-dom";
+import {getGeoData} from "../../../queries/getSendGeoData";
 
 const Dashboard = () => {
     const getDashboard = async () => {
-        const res = await getData('/dashboard/')
-        const data = await res.data
-        console.log('data dashboard', data)
+        let geodata = await getGeoData()
+        geodata.domainName = window.location.host
+        console.log('----geodata', geodata)
+        const res = await postData('/dashboard/', geodata)
     }
     const navigate = useNavigate()
     useEffect(() => {

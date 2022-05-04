@@ -52,12 +52,16 @@ const MyAccount = (props) => {
         geodata.code = promo
         geodata.userId = store.userId
         geodata.userEmail = store.userEmail
+        geodata.domainName = window.location.host
         delete geodata.id
         delete geodata.email
-
+        geodata.userId = store.userId
+        geodata.userEmail = store.userEmail
 
         const res = await postData('/use_promocode_in_profile/', geodata)
     }
+
+    console.log('props.data', props.data)
 
     return (
         <>
@@ -94,7 +98,7 @@ const MyAccount = (props) => {
                                 <div>Name</div>
                             </Col>
                             <Col className='d-flex align-items-center'>
-                                <span>{name === '' ? '-' : name}</span>
+                                <span>{props.data.name === '' ? '-' : props.data.name}</span>
                                 {/*<Button classname='small' onClick={setNewName}>{changeName ? 'Change' : 'Change name'}</Button>*/}
                             </Col>
                         </Row>
@@ -111,7 +115,7 @@ const MyAccount = (props) => {
                                 <div>Phone</div>
                             </Col>
                             <Col>
-                                <div>-</div>
+                                <div>{props.data.phoneNumber === null ? '-' : props.data.phoneNumber}</div>
                             </Col>
                         </Row>
                         <Row className={cls.account_row}>
