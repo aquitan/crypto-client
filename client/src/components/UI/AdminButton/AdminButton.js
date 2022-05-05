@@ -7,8 +7,6 @@ const AdminButton = ({children, classname, onClick, disabled, active, ...attr}) 
     let cx = classNames.bind(cls)
     let classes = cx('default', classname)
 
-    console.log('classname', classes)
-
     const onClickAction = (e) => {
         if (disabled) {
             e.preventDefault()

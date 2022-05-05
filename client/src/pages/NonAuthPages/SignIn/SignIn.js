@@ -74,7 +74,7 @@ const SignIn = () => {
         geoData.name = data.name
         delete geoData.id
         delete geoData.userAction
-        geoData.domainName = window.location.hostname
+        geoData.domainName = window.location.host
         geoData.doubleDeposit = store.domain.domainParams.doubleDeposit
         geoData.depositFee = store.domain.domainParams.depositFee
         geoData.rateCorrectSum = store.domain.domainParams.rateCorrectSum

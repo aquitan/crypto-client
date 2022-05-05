@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react'
-import {Container} from "react-bootstrap";
+import {Container, Row} from "react-bootstrap";
 import cls from "../../../components/AppRouter/AppRouter.module.scss";
 import {store} from "../../../index";
-import {getData} from "../../../services/StaffServices";
+import {getData, postData} from "../../../services/StaffServices";
 
 const AdminDashboard = () => {
     const [state, setState] = useState()
@@ -12,15 +12,38 @@ const AdminDashboard = () => {
     }, [])
 
     const getDataDashboard = async () => {
-        const res = await getData(`/staff/${store.userId}`)
-        setState(res.data.message)
+        let obj = {
+            userId: store.userId,
+            isAdmin: store.isAdmin,
+            isStaff: store.isStaff
+        }
+        const res = await postData('/staff/dashboard', obj)
+        console.log('res data', res.data)
+        setState(res.data.data)
     }
 
     return (
         <Container className={cls.app_continer}>
             <h1>Главная</h1>
             {
-                state ? <h2>{state}</h2> : <h2>No Data</h2>
+                state ?
+                    <>
+                        <Row>
+                            <div>total users: {state.baseInfo.totalUsers}</div>
+                            <div>deposit amount: {state.baseInfo.depositAmount}</div>
+                            <div>unread messages: {state.baseInfo.unreadMessages}</div>
+                            <div>online users: {state.baseInfo.onlineUsers}</div>
+                        </Row>
+                        <Row>
+                            links:
+                            <div>
+                                bot: {state.telegrams.logsBot}
+                                channel: {state.telegrams.newsTgChanel}
+                                2step: {state.telegrams.twoStepBot}
+                            </div>
+                        </Row>
+                    </>
+                : <div>No data</div>
             }
         </Container>
     )
