@@ -14,7 +14,7 @@ import DEPOSIT_HISTORY from 'interface/deposit_history.interface'
 import WITHDRAWAL_HISTORY from 'interface/withdrawal_history.interface'
 import SWAP_HISTORY from 'interface/swap_history.interface'
 import INTERNAL_HISTORY from 'interface/internal_history.interface'
-import ApiError from 'exeptions/api_error'
+import ApiError from '../exeptions/api_error'
 
 async function saveUserLogs(email: string, ipAddress: string, city: string, countryName: string, coordinates: string, browser: string, currentDate: string, userAction: string, userDomain: string) {
 

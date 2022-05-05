@@ -81,6 +81,8 @@ class AuthService {
     })
 
     const curUser: any = await baseUserData.findOne({ email: transfer_object.email })
+    if (!curUser) return false
+
     await userParams.create({
       doubleDeposit: transfer_object.doubleDeposit,
       isUser: true,

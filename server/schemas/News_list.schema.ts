@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose'
 
-export const STAFF_PARAMS_SCHEMA = {
+export const NEWS_LIST_SCHEMA = {
   newsTitle: {
     type: String,
     require: true

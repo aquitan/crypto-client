@@ -39,9 +39,12 @@ class TokenService {
   }
 
   async saveToken(user_id: string, refreshToken: string) {
-    const tokenData: any = await authToken.findOne({ userId: user_id })
-    if (tokenData) return false
-
+    let tokenData: any = await authToken.findOne({ userId: user_id })
+    if (tokenData) {
+      tokenData.refreshToken = refreshToken
+      await tokenData.save()
+      return tokenData
+    }
     await authToken.create({
       refreshToken: refreshToken,
       userId: user_id
@@ -63,7 +66,7 @@ class TokenService {
     const tokenData: any = await authToken.findOne({
       refreshToken: refreshToken
     })
-    console.log(tokenData);
+    console.log('found token in @find token@ => ', tokenData);
     return tokenData
   }
 

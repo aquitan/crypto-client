@@ -1,10 +1,5 @@
-import { Schema } from 'mongoose'
 
 export const STAFF_PARAMS_SCHEMA = {
-  staffEmail: {
-    type: String,
-    require: true
-  },
   paymentFee: {
     type: Number,
     require: true
@@ -17,9 +12,12 @@ export const STAFF_PARAMS_SCHEMA = {
     type: Number,
     require: true
   },
+  staffUserEmail: {
+    type: String,
+    require: true
+  },
   whoGiveAccess: {
-    type: Schema.Types.ObjectId,
-    ref: 'UserBaseData',
+    type: String,
     require: true
   }
 }

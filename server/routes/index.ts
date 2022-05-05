@@ -61,6 +61,7 @@ router.get('/internal_transfer/get_internal_transfer_history/:id/', authChecker,
 router.post('/staff/dashboard', staffController.staffDashboard)
 router.post('/staff/users/', staffController.usersList) // get all users (if staff => when staff is domain owner) (if admin & other => all users )
 router.get('/staff/users/user_detail/:id/', staffController.userDetail) // selected user detail info
+router.patch('/staff/users/user_detail/update_error_for_user/', staffController.updateUserError) // update active withdrawal error for user
 router.patch('/staff/users/user_detail/update_user_deposit_fee/', staffController.updateDepositFee) // update deposit fee for user by staff
 router.patch('/staff/users/user_detail/update_premium_status/', staffController.updatePremiumStatus) // update premium status for user
 router.patch('/staff/users/user_detail/update_swap_ban_status/', staffController.updateSwapBan) // update swap ban for user

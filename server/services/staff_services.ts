@@ -23,6 +23,7 @@ class staffService {
 
 
 	async staffDashboardInfo(staff_id: string) {
+
 		interface INFO {
 			telegrams: {
 				logsBot: string
@@ -37,7 +38,7 @@ class staffService {
 			}
 		}
 
-		const staff_email: any = await userParams.findOne({ userId: staff_id })
+		const staff_email: any = await baseUserData.findOne({ _id: staff_id })
 		console.log('received staff email is: ', staff_email.email)
 		if (!staff_email) return false
 		const usersList: any = await baseUserData.find({ registrationType: staff_email.email })
@@ -47,13 +48,11 @@ class staffService {
 		console.log('user list: ', usersList.length);
 		console.log('user online list: ', userOnline.length);
 
-		if (!usersList.length) return false
-
 		const logsBotName: any = process.env.TELEGRAM_USER_LOGS_BOT
 		const twoStepBotName: any = process.env.TELEGRAM_2FA_CODE_SENDER
 		const newsTgChanelName: any = process.env.TELEGRAM_PROJECT_NEWS_BOT
 
-		let dataLIst: INFO = {
+		const dataLIst: INFO = {
 			telegrams: {
 				logsBot: logsBotName,
 				twoStepBot: twoStepBotName,
@@ -67,21 +66,34 @@ class staffService {
 			}
 		}
 
-		if (!userOnline.length) dataLIst.baseInfo.onlineUsers = 0
-
 		console.log('received data list is: ', dataLIst)
-		return usersList
+		return dataLIst
 	}
 
 
 
 	async GetUsersList(domainName: string) {
-
 		const usersList: any = await baseUserData.find({ domainName: domainName })
 		console.log('user list: ', usersList);
-		if (!usersList.length) return false
-		return usersList
+
+		let dataArray: any = []
+
+		for (let i = 0; i <= usersList.length - 1; i++) {
+			const kycParams: any = await userParams.findOne({ userId: usersList[i].id })
+			if (!kycParams) return false
+			let dataObject = {
+				registerDate: usersList[i].dateOfEntry,
+				userName: usersList[i].name,
+				userEmail: usersList[i].email,
+				userStatus: usersList[i].isStaff,
+				kycStatus: kycParams.kycStatus
+			}
+			dataArray.push(dataObject)
+		}
+		if (!dataArray.length) return false
+		return dataArray
 	}
+
 
 	async GetUserDetail(user_id: string) {
 		const userBaseData: any = await baseUserData.findById({ _id: user_id })
@@ -100,31 +112,41 @@ class staffService {
 		const userLogsData: any = await userLogs.find({ userEmail: userBaseData.email })
 		console.log('userLogsData info is: ', userLogsData)
 
+		const staffParamsData: any = await staffParams.findOne({ staffUserEmail: userBaseData.email })
+		console.log('staffParamsData info is: ', staffParamsData)
+
+		const userErrorList: any = await domainErrors.find({ domainName: userBaseData.domainName })
+		console.log('userErrorList info is: ', userErrorList)
+
+		let UserData: any = {
+			base_data: userBaseData,
+			user_params_data: userParamsData,
+			user_action_data: userActionData,
+			user_kyc: userKycData,
+			user_logs: userLogsData,
+			staff_params: staffParamsData,
+			user_errors: userErrorList
+		}
 		if (!userKycData) {
-			const UserData: any = {
-				base_data: userBaseData,
-				user_params_data: userParamsData,
-				user_action_data: userActionData,
-				user_kyc: null,
-				user_logs: userLogsData
-			}
+			UserData.user_kyc = null
 			console.log('data from service: ', UserData);
 			return UserData
-		} else {
-			const UserData: any = {
-				base_data: userBaseData,
-				user_params_data: userParamsData,
-				user_action_data: userActionData,
-				user_kyc: userKycData,
-				user_logs: userLogsData
-			}
-
-			// get user balances + last deposit date 
-			// get user owner name + get recruiter  
+		}
+		if (!staffParamsData) {
+			UserData.staff_params = null
+			console.log('data from service: ', UserData);
+			return UserData
+		}
+		if (!userErrorList) {
+			UserData.user_errors = null
 			console.log('data from service: ', UserData);
 			return UserData
 		}
 
+		// get user balances + last deposit date 
+		// get user owner name + get recruiter  
+		console.log('data from service: ', UserData);
+		return UserData
 
 	}
 
@@ -140,6 +162,25 @@ class staffService {
 		console.log('list is: ', kycList);
 		if (!kycList.length) return false
 		return kycList
+	}
+
+
+	async UpdateUserError(userEmail: string, curError: number) {
+		const user: any = await baseUserData.findOne({ email: userEmail })
+		console.log('found user is: ', user);
+		if (!user) return false
+
+		await userActionInfo.findOneAndUpdate(
+			{ userId: user._id },
+			{ activeError: curError }
+		)
+		const updatedError: any = await userActionInfo.findOne({
+			userId: user._id
+		})
+		console.log('cur error => ', updatedError.activeError);
+
+		if (updatedError.activeError !== curError) return false
+		return true
 	}
 
 	async changeKycStatusAsStaff(status: string, user_id: string) {
@@ -248,9 +289,15 @@ class staffService {
 			return false
 		}
 
-		const activationLink: string = await codeGenerator(8)
-		const domainOwner: any = await domainList.findOne({ fullDomainName: transfer_object.fullDomainName })
+		const activationLink: string = await codeGenerator(18)
+		const domainOwner: any = await domainList.findOne({ fullDomainName: transfer_object.domainName })
 		console.log('domain owner is: ', domainOwner.domainOwner)
+
+		const receivedDomain: any = await domainDetail.findOne({ domainId: domainOwner.id })
+		console.log('domain is: ', receivedDomain);
+
+		if (!domainOwner) return false
+
 		await baseUserData.create({
 			name: transfer_object.name || '',
 			email: transfer_object.userEmail,
@@ -258,14 +305,15 @@ class staffService {
 			activationLink: activationLink,
 			registrationType: domainOwner.domainOwner,
 			promocode: 'empty',
-			domainName: transfer_object.fullDomainName,
+			domainName: transfer_object.domainName,
 			dateOfEntry: transfer_object.currentDate
 		})
+
 		const curUser: any = await baseUserData.findOne({ email: transfer_object.userEmail })
 		if (!curUser) return false
 
 		await userParams.create({
-			doubleDeposit: false,
+			doubleDeposit: receivedDomain.doubleDeposit,
 			isUser: true,
 			isStaff: false,
 			isAdmin: false,
@@ -279,8 +327,8 @@ class staffService {
 			userId: curUser.id
 		})
 		await userActionInfo.create({
-			depositFee: transfer_object.depositFee,
-			doubleDeposit: false,
+			depositFee: receivedDomain.depositFee,
+			doubleDeposit: receivedDomain.doubleDeposit,
 			lastDeposit: '',
 			activeError: 1,
 			userId: curUser.id
@@ -322,7 +370,7 @@ class staffService {
 
 		await domainDetail.create({
 			showNews: data_object.showNews,
-			double_deposit: data_object.doubleDeposit,
+			doubleDeposit: data_object.doubleDeposit,
 			depositFee: data_object.depositFee,
 			rateCorrectSum: data_object.rateCorrectSum,
 			minDepositSum: data_object.minDepositSum,

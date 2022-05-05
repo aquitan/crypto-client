@@ -1,3 +1,4 @@
+import userAction from '../models/User_info_for_action.model';
 import baseUserData from '../models/User_base_data.model'
 import userParams from '../models/User_params.model'
 
@@ -13,6 +14,9 @@ export async function getUserData(email: string, userId?: string) {
   }
 
   const userParamsInfo: any = await userParams.findOne({ userId: curUser.id })
+  const actionInfo: any = await userAction.findOne({
+    userId: curUser.id
+  })
 
   const userDto = {
     id: curUser.id,
@@ -26,10 +30,10 @@ export async function getUserData(email: string, userId?: string) {
     kycStatus: userParamsInfo.kycStatus,
     twoStepStatus: userParamsInfo.twoStepStatus,
     premiumStatus: userParamsInfo.premiumStatus,
-    doubleDeposit: userParamsInfo.doubleDeposit,
+    doubleDeposit: actionInfo.doubleDeposit,
     swapBan: userParamsInfo.swapBan,
     internalBan: userParamsInfo.internalBan,
-    depositFee: userParamsInfo.depositFee
+    depositFee: actionInfo.depositFee
   }
   return userDto
 }

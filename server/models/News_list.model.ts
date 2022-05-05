@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose'
-import { STAFF_PARAMS_SCHEMA } from '../schemas/Staff_params.schema'
+import { NEWS_LIST_SCHEMA } from '../schemas/News_list.schema'
 
 interface Params {
   newsTitle: string
@@ -10,6 +10,6 @@ interface Params {
   staffEmail: string
   staffId: Schema.Types.ObjectId
 }
-const NewsList = new Schema<Params>(STAFF_PARAMS_SCHEMA)
+const NewsList = new Schema<Params>(NEWS_LIST_SCHEMA)
 
 export default model('News_list', NewsList)

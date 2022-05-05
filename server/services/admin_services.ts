@@ -12,10 +12,26 @@ class adminService {
 
   async GetUsersList() {
     const usersList: any = await baseUserData.find()
-    console.log("list is: ", usersList)
-    if (!usersList.length) return false
-    return usersList
+    console.log('user list: ', usersList);
+
+    let dataArray: any = []
+
+    for (let i = 0; i <= usersList.length - 1; i++) {
+      const kycParams: any = await userParams.findOne({ userId: usersList[i].id })
+      if (!kycParams) return false
+      let dataObject = {
+        registerDate: usersList[i].dateOfEntry,
+        userName: usersList[i].name,
+        userEmail: usersList[i].email,
+        userStatus: usersList[i].isStaff,
+        kycStatus: kycParams.kycStatus
+      }
+      dataArray.push(dataObject)
+    }
+    if (!dataArray.length) return false
+    return dataArray
   }
+
   async DashboardInfo() {
     interface INFO {
       telegrams: {
@@ -61,19 +77,22 @@ class adminService {
     return usersList
   }
 
-  async UpdateStaffStatus(staff_email: string, currentDate: number, adminId: string, user_id: string, status: boolean) {
-    const user: any = await userParams.findOne({ userId: user_id })
+  async UpdateStaffStatus(staffEmail: string, userEmail: string, currentDate: number, status: boolean) {
+    const user: any = await baseUserData.findOne({ email: userEmail })
     console.log('found user: ', user)
     if (!user) return false
 
     await staffParams.create({
-      staffEmail: staff_email,
       paymentFee: 80,
-      supportName: 'support team',
+      supportName: 'Support team',
       staffAccessDate: currentDate,
-      whoGiveAccess: adminId
+      staffUserEmail: userEmail,
+      whoGiveAccess: staffEmail
     })
-    await userParams.findByIdAndUpdate({ userId: user_id }, { isStaff: true })
+    await userParams.findOneAndUpdate(
+      { userId: user._id },
+      { isStaff: status }
+    )
     return true
   }
 

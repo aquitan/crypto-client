@@ -10,13 +10,13 @@ import NEWS_INFO from '../interface/news_info.interface'
 import DEPOSIT_HISTORY from '../interface/deposit_history.interface'
 import WITHDRAWAL_HISTORY from '../interface/withdrawal_history.interface'
 import INTERNAL_HISTORY from '../interface/internal_history.interface'
-import ApiError from 'exeptions/api_error'
+import ApiError from '../exeptions/api_error'
 
 class StaffController {
 
   async staffDashboard(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      const user_id: any = req.body.userId
+      const user_id: string = req.body.userId
       const adminPermission: boolean = req.body.isAdmin
       const staffPermission: boolean = req.body.isStaff
 
@@ -239,6 +239,49 @@ class StaffController {
       next(e)
     }
   }
+
+
+  async updateUserError(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const { staffId, staffEmail, curError, userEmail, domainName } = req.body
+      console.log('req body: ', req.body);
+      const rootAccess: boolean = req.body.rootAccess
+
+      if (rootAccess === true) {
+        const result: boolean = await staffService.UpdateUserError('root', curError)
+        if (result === false) {
+          console.log('error');
+          return res.status(401).json({
+            message: 'error',
+            status: 'rejected'
+          })
+        }
+        return res.status(202).json({
+          message: 'OK',
+          status: 'complete'
+        })
+
+      }
+      const result: boolean = await staffService.UpdateUserError(userEmail, curError)
+      if (result === false) {
+        console.log('error');
+        return res.status(401).json({
+          message: 'error',
+          status: 'rejected'
+        })
+      }
+
+      await staffService.saveStaffLogs(staffEmail, ` поменял ошибку пользователя ${userEmail} на ${curError}`, domainName, staffId)
+      await telegram.sendMessageByStaffActions(staffEmail, ` поменял ошибку пользователя ${userEmail} на ${curError}`, domainName)
+      return res.status(202).json({
+        message: 'OK',
+        status: 'complete'
+      })
+    } catch (e) {
+      next(e)
+    }
+  }
+
   async updateDepositFee(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       const { userId, staffId, depositFee, staffEmail, userEmail, domainName } = req.body
@@ -436,15 +479,17 @@ class StaffController {
 
   async updateStaffStatus(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      const { userId, status, staffEmail, userEmail, domainName, currentDate } = req.body
+      const { status, staffEmail, userEmail, domainName, currentDate } = req.body
       console.log('req body: ', req.body);
 
       const rootAccess: boolean = req.body.rootAccess
-      let adminId: string = req.body.adminId
+      const adminPermission: boolean = req.body.isAdmin
+      const staffPermission: boolean = req.body.isStaff
+      let staffId: string = req.body.staffId
 
       if (rootAccess === true) {
-        adminId = 'xxOOOxx--001'
-        const result: boolean = await adminService.UpdateStaffStatus('root', currentDate, adminId, userId, status)
+        staffId = 'xxOOOxx--001'
+        const result: boolean = await adminService.UpdateStaffStatus('root', userEmail, currentDate, status)
         if (result === false) {
           console.log('error');
           return res.status(401).json({
@@ -457,19 +502,27 @@ class StaffController {
           status: 'complete'
         })
       }
-      const result: boolean = await adminService.UpdateStaffStatus(staffEmail, currentDate, adminId, userId, status)
-      if (result === false) {
-        console.log('error');
-        return res.status(401).json({
-          message: 'error',
-          status: 'rejected'
+
+      if (adminPermission || staffPermission) {
+        const result: boolean = await adminService.UpdateStaffStatus(staffEmail, userEmail, currentDate, status)
+        if (result === false) {
+          console.log('error');
+          return res.status(401).json({
+            message: 'error',
+            status: 'rejected'
+          })
+        }
+
+        await staffService.saveStaffLogs(staffEmail, ` изменил стафф права пользователя ${userEmail} на  ${status} `, domainName, staffId)
+        await telegram.sendMessageByStaffActions(staffEmail, ` изменил стафф права пользователя  ${userEmail} на  ${status} `, domainName)
+        return res.status(202).json({
+          message: 'user staff status was updated',
+          status: 'complete'
         })
       }
 
-      await staffService.saveStaffLogs(staffEmail, ` изменил стафф права пользователя ${userEmail} на  ${status} `, domainName, adminId)
-      await telegram.sendMessageByStaffActions(staffEmail, ` изменил стафф права пользователя  ${userEmail} на  ${status} `, domainName)
-      return res.status(202).json({
-        message: 'user staff status was updated',
+      return res.status(400).json({
+        message: 'rejected',
         status: 'complete'
       })
 
@@ -611,11 +664,9 @@ class StaffController {
         staffId: req.body.staffId,
         userEmail: req.body.userEmail,
         password: req.body.password,
-        depositFee: req.body.depositFee,
         domainName: req.body.domainName,
-        fullDomainName: req.body.fullDomainName,
         currentDate: req.body.currentDate,
-        name: req.body.name || ''
+        name: req.body.name
       }
       const rootAccess: boolean = req.body.rootAccess
 
@@ -721,7 +772,7 @@ class StaffController {
 
       if (rootAccess === false) {
         await telegram.sendMessageByStaffActions(req.body.staffEmail, ` создал новый домен ${req.body.fullDomainName}} `, req.body.domainName)
-        await staffService.saveStaffLogs(req.body.staffEmail, ` создал новый домен ${req.body.fullDomainName}} `, '', req.body.staffId)
+        await staffService.saveStaffLogs(req.body.staffEmail, ` создал новый домен ${req.body.fullDomainName} `, '', req.body.staffId)
       }
 
       return res.status(201).json({
@@ -874,10 +925,12 @@ class StaffController {
           } else {
 
             return res.status(200).json({
-              domainsList: {
-                domainName: result[0].fullDomainName,
-                domainId: result[0].id
-              },
+              domainsList: [
+                {
+                  domainName: result[0].fullDomainName,
+                  domainId: result[0].id
+                }
+              ],
               status: 'complete'
             })
           }
@@ -894,7 +947,11 @@ class StaffController {
           if (result.length > 1) {
             for (let i = 0; i <= result.length - 1; i++) {
               console.log('domain name is => ', result[i].fullDomainName);
-              domainListArray.push(result[i].fullDomainName)
+              let obj = {
+                domainName: result[i].fullDomainName,
+                domainId: result[i].id
+              }
+              domainListArray.push(obj)
             }
             console.log('current domain list is: ', domainListArray);
 
@@ -903,8 +960,14 @@ class StaffController {
               status: 'complete'
             })
           } else {
+
             return res.status(200).json({
-              domainsList: result[0].fullDomainName,
+              domainsList: [
+                {
+                  domainName: result[0].fullDomainName,
+                  domainId: result[0].id
+                }
+              ],
               status: 'complete'
             })
           }
