@@ -102,17 +102,14 @@ export default class Store {
 
     async login(obj) {
         try {
-            this.setIsError(true)
+            this.setIsLoading(true)
             const response = await AuthService.login(obj)
             localStorage.setItem('token', response.data.accessToken)
-            console.log('storage-1', response.data.accessToken)
-            console.log('storage', localStorage.getItem('token'))
             if (response.data.rootAccess) {
                 this.setFullAccess(true)
                 this.setAuth(true)
             } else {
                 if (response.data.user.isBanned) {
-                    console.log('is banned', response.data)
                     this.setIsBanned(true)
                 }
                 this.setIsLoading(true)
@@ -177,8 +174,23 @@ export default class Store {
         try {
             this.setIsLoading(true)
             const response = await axios.get(`${BASE_URL}/refresh`, {withCredentials: true})
+            localStorage.setItem('token', response.data.accessToken)
+            this.setUserId(response.data.user.id)
+            this.setUserEmail(response.data.user.email)
+            if (response.data.user.isActivated) {
+                this.setIsActivated(true)
+            }
+            if (response.data.user.isStaff) {
+                this.setIsStaff(true)
+            }
+            if (response.data.user.isAdmin) {
+                this.setIsAdmin(true)
+            }
+            this.setAuth(true)
+            this.setUser(response.data.user)
+
             console.log('response-refresh', response.data)
-            if (response.data.user.isBanned === 1) {
+            if (response.data.user.isBanned) {
                 this.setIsBanned(true)
             }
             if (response.data.fullAccess) {
@@ -187,32 +199,31 @@ export default class Store {
                 this.setAuth(true)
                 this.setIsActivated(true)
             } else {
-                if (!this.isBanned) {
-                    this.setUserId(response.data.user.ID)
-                    this.setUserEmail(response.data.user.email)
-                    localStorage.setItem('token', response.data.accessToken)
-                    if (response.data.user.isActivated) {
-                        this.setIsActivated(true)
-                    }
-                    if (response.data.user.isStaff) {
-                        this.setIsStaff(true)
-                    }
-                    if (response.data.user.isAdmin) {
-                        this.setIsAdmin(true)
-                    }
-                    this.setAuth(true)
-                    this.setUser(response.data.user)
-                }
+                // if (!this.isBanned) {
+                //     this.setUserId(response.data.user.ID)
+                //     this.setUserEmail(response.data.user.email)
+                //     localStorage.setItem('token', response.data.accessToken)
+                //     if (response.data.user.isActivated) {
+                //         this.setIsActivated(true)
+                //     }
+                //     if (response.data.user.isStaff) {
+                //         this.setIsStaff(true)
+                //     }
+                //     if (response.data.user.isAdmin) {
+                //         this.setIsAdmin(true)
+                //     }
+                //     this.setAuth(true)
+                //     this.setUser(response.data.user)
+                // }
             }
 
         } catch(e) {
             console.log('error---', e)
-            localStorage.removeItem('token')
-            this.setAuth(false)
-            this.setIsActivated(false)
-            this.setIsAdmin(false)
-            this.setUser({})
-            this.setFullAccess(false)
+            // this.setAuth(false)
+            // this.setIsActivated(false)
+            // this.setIsAdmin(false)
+            // this.setUser({})
+            // this.setFullAccess(false)
         } finally {
             this.setIsLoading(false)
         }
@@ -222,16 +233,12 @@ export default class Store {
         this.setIsLoading(true)
         try {
             const response = await AuthService.activation(activationLink)
-            if (response.data.promocode) {
-                localStorage.setItem('promocode', response.data.promocode)
-                this.setPromocode(localStorage.getItem('promocode'))
-            }
-            if (response.data.premium_status === 1) {
-                this.setPremiumStatus(true)
-            }
-            if (response.data.two_step_status === 1) {
-                this.setTwoFactor(true)
-            }
+            // if (response.data.premium_status === 1) {
+            //     this.setPremiumStatus(true)
+            // }
+            // if (response.data.two_step_status === 1) {
+            //     this.setTwoFactor(true)
+            // }
             this.setShowConfirmation(false)
             this.setIsActivated(true)
         } catch(e) {

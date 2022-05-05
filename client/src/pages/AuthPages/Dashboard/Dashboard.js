@@ -15,6 +15,7 @@ const Dashboard = () => {
     const getDashboard = async () => {
         let geodata = await getGeoData()
         geodata.domainName = window.location.host
+        geodata.id = store.userId
         console.log('----geodata', geodata)
         const res = await postData('/dashboard/', geodata)
     }

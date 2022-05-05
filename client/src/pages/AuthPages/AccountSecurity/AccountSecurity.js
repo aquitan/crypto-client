@@ -38,11 +38,11 @@ const AccountSecurity = (props) => {
     const onChangePassword = async (data) => {
         data.id = store.userId
         let geodata =  await getGeoData()
-        delete geodata.id
+        geodata.id = store.userId
         delete geodata.email
-        geodata.userId = store.userId
         geodata.userEmail = store.userEmail
         geodata.newPassword = data.newPassword
+        geodata.domainName = window.location.host
         const res = await patchData('/personal_area/security/change_password', geodata)
 
         const datares = await res
@@ -88,7 +88,7 @@ const AccountSecurity = (props) => {
         console.log('code', state.twoFaCode)
         if (data.code === state.twoFaCode) {
             const obj = {
-                userId: store.userId,
+                id: store.userId,
                 userEmail: store.userEmail,
                 domainName: window.location.host,
                 twoFaStatus: true,
@@ -122,20 +122,24 @@ const AccountSecurity = (props) => {
                     !state.isStatus ?
                         <Form onSubmit={handleSubmit(onChangePassword)}>
                             <Row>
-                                <Input name='oldPassword' placeholder='old password'/>
-                                <Input {...register('newPassword')} name='newPassword' placeholder='new password'/>
+                                <Row className='mb-3'>
+                                    <Input name='oldPassword' placeholder='old password'/>
+                                </Row>
+                                <Row className='mb-3'>
+                                    <Input {...register('newPassword')} name='newPassword' placeholder='new password'/>
+                                </Row>
                             </Row>
-                            <Row className='mt-3'>
+                            <Row>
                                 <Button>Confirm</Button>
                             </Row>
                         </Form>
                         : state.isStatus === 'complete' ?
-                            <Row>
+                            <Row className='mb-2'>
                                 <p>Password is changed</p>
                                 <Button onClick={handleModalClose}>Ok</Button>
                             </Row>
                             :
-                            <Row>
+                            <Row className='mb-2'>
                                 <p>Ooops! Something went wrong</p>
                                 <Button onClick={handleModalClose}>Ok</Button>
                             </Row>

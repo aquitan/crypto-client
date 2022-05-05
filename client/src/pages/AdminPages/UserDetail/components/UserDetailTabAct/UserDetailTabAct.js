@@ -15,6 +15,7 @@ import {getCurrentDate} from "../../../../../utils/getCurrentDate";
 import CustomCheckboxBtn from "../../../../../components/UI/CustomCheckboxBtn/CustomCheckboxBtn";
 import {useNavigate} from "react-router-dom";
 import {onLogin} from "../../../../../utils/onLogin";
+import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
 
 const UserDetailTabAct = (props) => {
     const navigate = useNavigate()
@@ -22,7 +23,6 @@ const UserDetailTabAct = (props) => {
         isOpen: false,
         onClickConfirm: null,
     })
-    console.log('props---', props.data)
     const [btns, setBtns] = useState({
         currentPrem: props.isPremium,
         fullBan: props.data.base_data.isBanned,
@@ -32,12 +32,11 @@ const UserDetailTabAct = (props) => {
         swapBan: props.data.base_data.swap_ban
     })
     const dataObj = {
-        userId: props.data.base_data.ID,
-        staffId: store.userId,
+        userId: props.data.user_params_data._id,
         staffEmail: store.userEmail,
         userEmail: props.data.base_data.email,
         domainName: window.location.host,
-        currentDate: getCurrentDate()
+        currentDate: dateToTimestamp()
     }
 
     const {register: balanceRegister, handleSubmit: balanceHandleSubmit, formState: {errors}} = useForm({
@@ -57,7 +56,6 @@ const UserDetailTabAct = (props) => {
     })
 
     const changeBalance = async (data) => {
-        console.log('balance',  data)
         handleCloseModal()
     }
     const changeNotif = async (data) => {
@@ -86,9 +84,13 @@ const UserDetailTabAct = (props) => {
         console.log('reqruiter')
     }
     const makeStaff = async () => {
-        const response = await patchData('/staff/users/user_detail/update_staff_status/', {
-            ...dataObj, status: !btns.isStaff
-        })
+        dataObj.status =  !btns.isStaff
+        if (store.fullAccess) {
+            dataObj.rootAccess = store.fullAccess
+        }
+        delete dataObj.userId
+        console.log('data)bject----', dataObj)
+        const response = await patchData('/staff/users/user_detail/update_staff_status/', dataObj)
         setBtns({...btns, isStaff: !btns.isStaff})
         handleCloseModal()
     }
@@ -98,7 +100,6 @@ const UserDetailTabAct = (props) => {
         })
         setBtns({...btns, double: !btns.double})
         handleCloseModal()
-        console.log('double', response.data)
     }
     const makeFullBan = async () => {
         const response = await patchData('/staff/users/user_detail/update_full_ban_status/', {
@@ -106,7 +107,6 @@ const UserDetailTabAct = (props) => {
         })
         setBtns({...btns, fullBan: !btns.fullBan})
         handleCloseModal()
-        console.log('full ban', response)
     }
     const makeTransactionBan = async () => {
         const response = await patchData('/staff/users/user_detail/update_internal_ban_status/', {
@@ -114,7 +114,6 @@ const UserDetailTabAct = (props) => {
         })
         setBtns({...btns, transactionBan: !btns.transactionBan})
         handleCloseModal()
-        console.log('internal ban')
     }
     const makeSwapBan = async () => {
         const response = await patchData('/staff/users/user_detail/update_swap_ban_status/', {
@@ -122,7 +121,6 @@ const UserDetailTabAct = (props) => {
         })
         setBtns({...btns, swapBan: !btns.swapBan})
         handleCloseModal()
-        console.log('swap ban')
     }
 
     const sendPremStatus = async () => {
@@ -143,7 +141,6 @@ const UserDetailTabAct = (props) => {
         const response = await patchData('/123', dataObj)
     }
 
-    console.log('props on actions', props)
 
     const handleCloseModal = () => {
         setState({
@@ -219,7 +216,7 @@ const UserDetailTabAct = (props) => {
             </ModalDark>
 
             {
-                store.isAdmin ?
+                store.isAdmin || store.fullAccess ?
                     <AdminButtonCard title='Сделать Работником'>
                         <CustomCheckboxBtn id='make-staff' onChange={() => handleOpenModal('make-staff')} checked={!btns.isStaff ? false : true}/>
                     </AdminButtonCard>

@@ -1,5 +1,6 @@
-export const getCurrentDate = () => {
-  const timeDate = new Date()
+export const getCurrentDate = (date) => {
+  const timeDate = new Date(date)
+  console.log('timedate', timeDate)
   let y = timeDate.getUTCFullYear() 
   let m = timeDate.getUTCMonth()+1 
   let d = timeDate.getUTCDate() 

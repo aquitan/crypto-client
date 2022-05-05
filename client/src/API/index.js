@@ -31,15 +31,12 @@ export const $api = axios.create({
 
 $api.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`
-    console.log('config.headers.Authorization', config.headers.Authorization)
     return config
 })
 
 $api.interceptors.response.use((config) => {
-    console.log('response')
     return config
 }, async (error) => {
-
     const originalRequest = error.config
     if (error.response.status === 401 && error.config && !error.config._isRetry) {
         originalRequest._isRetry = true

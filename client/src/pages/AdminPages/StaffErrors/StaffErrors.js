@@ -170,7 +170,7 @@ const StaffErrors = () => {
            </AdminButtonCard>
 
             <AdminButtonCard>
-                <h2 className='text-center'>Ошибки</h2>
+                <h2 className='text-center mb-4'>Ошибки</h2>
                 <Row>
                     <Col>
                         {

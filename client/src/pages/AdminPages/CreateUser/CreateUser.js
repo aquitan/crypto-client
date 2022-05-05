@@ -18,6 +18,8 @@ import TableItemCreateUser from "../../../components/UI/Table/components/TableIt
 import {optionsCompiler} from "../../../utils/optionsCompiler";
 import Select from "../../../components/UI/Select/Select";
 import Preloader from "../../../components/UI/Preloader/Preloader";
+import {getCurrentDate} from "../../../utils/getCurrentDate";
+import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 
 const CreateUser = () => {
     const [users, setUsers] = useState([])
@@ -56,37 +58,24 @@ const CreateUser = () => {
            isAdmin: store.isAdmin,
            isStaff: store.isStaff,
            staffEmail: store.userEmail,
-           domainName: store.domain.full_domain_name,
-           doubleDeposit: store.domain.double_deposit,
-           depositFee: store.domain.deposit_fee,
-           rateCorrectSum: store.domain.rate_correct_sum,
-           minDepositSum: store.domain.min_deposit_sum,
-           minWithdrawalSum: store.domain.min_withdrawal_sum,
-           currencySwapFee: store.domain.currency_swap_fee
+           rootAccess: store.fullAccess,
+           id: store.userId
        }
        const res = await postData('/staff/domains/get_active_domains/', obj)
+       console.log('res-data-domainlist', res.data.domainsList[0])
        setDomains(optionsCompiler(res.data.domainsList))
-       console.log('res.data.domainsList', res.data.domainsList)
-       console.log('optionsCompiler(res.data.domainsList)', optionsCompiler(res.data.domainsList))
    }
 
 
     const onSubmit = async (data, e) => {
         e.preventDefault()
-        const domain_name = window.location.host
-        const timeDate = new Date()
-        const currentDate = timeDate.getTime()
-
-        data.domainName = domain_name
         data.staffId = store.userId
-        data.datetime = currentDate
+        data.currentDate = dateToTimestamp()
         data.staffEmail = store.userEmail
         data.rootAccess = store.fullAccess
-        data.depositFee = store.depositFee
-        data.promocode = 'empty'
 
+        console.log('create-user', data)
         const res = await postData('/staff/create_user', data)
-        const dates = await res
     }
 
     return (
@@ -117,7 +106,7 @@ const CreateUser = () => {
                     </Row>
                     {
                         domains ? <Row className='mb-3'>
-                            <Select {...register('domain')} options={domains} />
+                            <Select {...register('domainName')} options={domains} />
                         </Row>
                             : <Preloader />
                     }

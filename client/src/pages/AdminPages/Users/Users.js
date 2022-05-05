@@ -26,8 +26,8 @@ const Users = () => {
             domainName: window.location.host
         }
         const res = await postData('/staff/users/', userData)
-        const data = await res.data
-        const usersReversed = data.usersList.slice(0).reverse()
+        const usersReversed = res.data.usersList.slice(0).reverse()
+        console.log('usersReversed', usersReversed)
         setState({...state, users: usersReversed})
     }
     useEffect(() => {
@@ -36,9 +36,9 @@ const Users = () => {
 
     const onSearch = (e) => {
         setState({...state, search: e.target.value})
-        console.log('search', getSearchItems(state.users, state.search))
     }
 
+    console.log('user-data', state.users)
 
     return (
         <Container>
@@ -81,10 +81,11 @@ const Users = () => {
                                         return(
                                             <UsersTableItem
                                                 key={uuid()}
-                                                registerDate={user.date_of_entry}
-                                                name={user.name}
-                                                email={user.email}
-                                                kycStatus={true}
+                                                registerDate={user.registerDate}
+                                                name={user.userName}
+                                                email={user.userEmail}
+                                                id={user._id}
+                                                kycStatus={user.kycStatus}
                                                 staff={true}/>
                                         )
                                     })

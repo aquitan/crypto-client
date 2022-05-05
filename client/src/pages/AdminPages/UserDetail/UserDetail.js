@@ -17,16 +17,15 @@ const UserDetail = () => {
     const [isPremium, setIsPremium] = useState(false)
     const params = useParams()
 
+    console.log('user params', params)
     const getAdminUsersDetail = async () => {
         const res = await getData(`/staff/users/user_detail/${params.id}`)
         let geodata = await getGeoData()
         const data = await res.data
         const {ipAddress} = geodata
-        console.log('user data', data)
 
-        if (data.status === 'complete') {
+        if (data.message === 'ok') {
             const ipRes = await postData('/staff/ip_match_checker/', {ipAddress})
-            console.log('ipRes', ipRes.data)
             setIpData(ipRes.data.matchList)
         }
         setUserDetails(data)
