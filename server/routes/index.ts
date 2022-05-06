@@ -49,13 +49,13 @@ router.put('/personal_area/verification/', authChecker, userController.personalA
 
 // user money transfer logic
 router.put('/deposit/make_deposit/', authChecker, userController.makeDeposit) // create deposit as user
-router.get('/deposit/get_deposit_history/:id/', authChecker, userController.getDepositHistory) // get deposit history
+router.post('/deposit/get_deposit_history/', authChecker, userController.getDepositHistory) // get deposit history
 router.put('/withdraw/make_withdraw/', authChecker, userController.makeWithdrawal) // make withdrawal request as user
-router.get('/withdraw/get_withdrawal_history/:id/', authChecker, userController.getWithdrawalHistory) // get withdrawal history
+router.post('/withdraw/get_withdrawal_history/', authChecker, userController.getWithdrawalHistory) // get withdrawal history
 router.put('/swap/make_swap/', authChecker, userController.makeSwap) // swap currency to another currency with user fee*
-router.get('/swap/get_swap_history/:id/', authChecker, userController.getSwapHistory) // get swap history by user id
+router.post('/swap/get_swap_history/', authChecker, userController.getSwapHistory) // get swap history by user id
 router.put('/internal_transfer/make_internal_transfer/', authChecker, userController.makeInternalTransfer) // make internal domain transaction*
-router.get('/internal_transfer/get_internal_transfer_history/:id/', authChecker, userController.getInternalTransferHistory) // get internal transfer history bu user id
+router.post('/internal_transfer/get_internal_transfer_history/', authChecker, userController.getInternalTransferHistory) // get internal transfer history bu user id
 
 // admin + staff routes
 router.post('/staff/dashboard', staffController.staffDashboard)
@@ -71,10 +71,14 @@ router.patch('/staff/users/user_detail/update_double_deposit/', staffController.
 router.patch('/staff/users/user_detail/clear_match_ip_list/', staffController.clearMatchIpList) // ip match list checker (if someone has the same ip => send user ip & user email)
 router.patch('/staff/users/user_detail/update_staff_status/', staffController.updateStaffStatus) // get staff permission to regular user 
 router.patch('/staff/users/user_detail/update_staff_support_name/', staffController.updateStaffSupportName) // change name for staff in support chat
+router.put('/staff/notifications/create_new_notification/', staffController.createNewNotification) // create new notification for user
+router.post('/staff/notifications/get_all_notifications/', staffController.getNotificationList) // get notification request by user_id
+
 
 router.post('/staff/users/kyc/', staffController.kycList) // get kyc list (if staff => when staff is domain owner) (if admin & other => all kyc )
 router.patch('/staff/kyc/update_kyc_status/', staffController.changeKycStatus) // change kyc status for user (in user verification page)
 router.delete('/staff/kyc/delete_kyc/', staffController.deleteKyc) // delete full kyc data for current user
+
 
 router.post('/staff/create_user/', staffController.createNewUser) // create user as staff in staff panel
 router.put('/staff/create_promocode/', staffController.promocodeCreate) // create promocode (one or several codes)
@@ -87,18 +91,13 @@ router.post('/staff/ip_match_checker/', staffController.getIpForMatch) // check 
 
 router.post('/staff/domains/create_domain/', staffController.createDomain) // create base domain settings & detail settings & base withdrawal errors
 router.get('/staff/domains/domain_detail/:id/', staffController.getDomainDetail) // get detail domain page by domain id
-// router.delete('/staff/domains/base_domain_delete/', staffController.baseDomainDelete) // only info about domain, errors, domain settings, terms for current domain
-// router.delete('/staff/domains/full_domain_delete/', staffController.fullDomainDelete) // all users & all relationship by domain ID in project
-
 router.patch('/staff/domains/domain_detail/domain_edit/', staffController.editDomainInfo) // edit base domain settings & detail settings & base withdrawal errors
+// router.delete('/staff/domains/full_domain_delete/', staffController.fullDomainDelete) // all users & all relationship by domain ID in project
 
 router.post('/staff/domains/get_active_domains/', staffController.getDomainsList) // get domain list (if staff => when domain owner is staff ) ( if admin and other => all domains )
 router.put('/staff/errors/create_new_error/', staffController.createCustomError) // create new error for selected domain
 router.post('/staff/errors/get_all_errors/', staffController.getAllErrors) // get domain errors by domain ID
-router.post('/staff/errors/get_errors_by_domain_name/', staffController.getErrorsByDomainName) // domain name where staff email is domain owner
 
-router.put('/staff/notifications/create_new_notification/', staffController.createNewNotification) // create new notification for user
-router.post('/staff/notifications/get_all_notifications/', staffController.getNotificationList) // get notification request by user_id
 
 router.put('/staff/news/news_create/', staffController.newsCreate) // create news for user 
 router.patch('/staff/news/news_edit/', staffController.editNews) // edit news 
@@ -115,11 +114,9 @@ router.post('/staff/create_transaction/get_transaction_history/', staffControlle
 // router.post('/staff/staff_wallets/get_wallets/', staffController.getStaffWallet) // if staff => get support wallet for current staff, (if admin) => select with staff emails to choose wallet by current staff user
 // router.patch('/staff/staff_wallets/edit_staff_wallets/', staffController.editStaffWallets) // edit wallets for current staff ONLY by root
 
-router.post('/staff/terms/get_term_by_domain/', staffController.getTermsByDomainName) // get terms by selected domain
-router.patch('/staff/terms/update_terms/', staffController.updateTerms) // update terms at selected domain
+// router.post('/staff/terms/get_term_by_domain/', staffController.getTermsByDomainName) // get terms by selected domain
+// router.patch('/staff/terms/update_terms/', staffController.updateTerms) // update terms at selected domain
 router.get('/staff/project_support/get_wallet/', staffController.projectSupport) // if staff => get support wallet for current staff, (if admin) => select with staff emails to choose wallet by current staff user 
-
-
 router.post('/staff/project_support_form/', staffController.projectSupportRequest) // send question to platform developers
 
 

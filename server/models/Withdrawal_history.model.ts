@@ -8,7 +8,7 @@ interface HistotyParams {
   cryptoAmount: number
   usdAmount: number
   date: number
-  address: string
+  address: string | null
   status: string
   userId: Schema.Types.ObjectId
   staffId: string

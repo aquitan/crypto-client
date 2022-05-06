@@ -6,7 +6,7 @@ export default interface DEPOSIT_HISTORY {
   coinName: string
   amountInCrypto: number
   amountInUsd: number
-  currentDate: string
+  currentDate: number
   depositAddress: string
   depositStatus: string
   // status is approved ONLY here !

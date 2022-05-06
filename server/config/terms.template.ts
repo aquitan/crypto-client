@@ -2,6 +2,8 @@
 let domainSmall: string;
 let domainBig: string;
 let domainSupport: string;
+let generalBasics: string;
+let userFee: string;
 
 
 const TERMS = `<h2>PLEASE READ THESE TERMS AND CONDITIONS CAREFULLY. BY CLICKING THE "CREATE ACCOUNT" BUTTON OR BY ACCESSING OR USING THE SERVICES, YOU AGREE TO BE LEGALLY BOUND hBY THESE TERMS AND CONDITIONS AND ALL TERMS INCORPORATED BY REFERENCE.</h2>
@@ -54,7 +56,7 @@ const TERMS = `<h2>PLEASE READ THESE TERMS AND CONDITIONS CAREFULLY. BY CLICKING
     <p>7.1\tAuthorization. When you submit a new order via the Services, you authorize ${domainSmall} to execute a transaction in accordance with such order on a spot basis and charge you any applicable fees (as described in Section 10).</p>
     <p>7.2\tIndependent relationship. You acknowledge and agree that: (a) ${domainSmall} is not acting as your broker, intermediary, agent, or advisor or in any fiduciary capacity, and (b) no communication or information provided to you by ${domainSmall} shall be considered or construed as advice.</p>
     <p>7.3\tTrade confirmation. Once the Services execute your trade, a confirmation will be electronically made available via the Services detailing the particulars of the trade. You acknowledge and agree that the failure of the Services to provide such confirmation shall not prejudice or invalidate the terms of such trade.</p>
-    <p>7.4\tTrade options. Please refer to the %General_basics%, for information about the terminology used in connection with the trading options made available via the Services. If you do not understand the meaning of any trade option, we strongly encourage you not to utilize any of those options.</p>
+    <p>7.4\tTrade options. Please refer to the ${generalBasics}, for information about the terminology used in connection with the trading options made available via the Services. If you do not understand the meaning of any trade option, we strongly encourage you not to utilize any of those options.</p>
     <p>7.5\tMarket rates. If you select a market trade, ${domainSmall} will attempt, on a commercially reasonable basis, to execute the trade on or close to the prevailing market exchange rate, as defined via the Services. You acknowledge and agree that the exchange rate information made available via our Services may differ from prevailing exchange rates made available via other sources outside of the Services.</p>
     <p>7.6\tMarket volatility. Particularly during periods of high volume, illiquidity, fast movement or volatility in the marketplace for any Digital Assets or Legal Tender, the actual market rate at which a market order or trade is executed may be different from the prevailing rate indicated via the Services at the time of your order or trade. You understand that we are not liable for any such price fluctuations. In the event of a market disruption or Force Majeure event (as defined in Section 24), ${domainSmall} may do one or more of the following: (a) suspend access to the Services; or (b) prevent you from completing any actions via the Services, including closing any open positions. Following any such event, when trading resumes, you acknowledge that prevailing market rates may differ significantly from the rates available prior to such event.</p>
 
@@ -82,7 +84,7 @@ const TERMS = `<h2>PLEASE READ THESE TERMS AND CONDITIONS CAREFULLY. BY CLICKING
     <p>9.5\tNo Returns or Refunds. All sales and purchases of Digital Assets by ${domainSmall} via the Services are final. We do not accept any returns or provide refunds for your purchase of Digital Assets from ${domainSmall}, except as otherwise provided in these Terms.</p>
 
     <h3>10.\tFees</h3>
-    <p>10.1\tAmount of Fees. You agree to pay ${domainSmall} the fees for trades completed via our Services. You agree to pay %percent% fee from all incoming transactions. You agree to pay fee using Binary Options, which is determined by System.</p>
+    <p>10.1\tAmount of Fees. You agree to pay ${domainSmall} the fees for trades completed via our Services. You agree to pay ${userFee} fee from all incoming transactions. You agree to pay fee using Binary Options, which is determined by System.</p>
     <p>10.2\tThird-Party Fees. In addition to the Fees, your External Account may impose fees in connection with your use of your designated External Account via the Services. Any fees imposed by your External Account provider will not be reflected on the transaction screens containing information regarding applicable Fees. You are solely responsible for paying any fees imposed by an External Account provider.</p>
     <p>10.3\tPayment of Fees. You authorize us, or our designated payment processor, to charge or deduct your ${domainSmall} Account Funds for any applicable Fees owed in connection with trades you complete via the Services.</p>
     <p>10.4\tCollection-Related Costs. If you fail to pay Fees or any other amounts owed to ${domainSmall} under these Terms and ${domainSmall} refers your account(s) to a third party for collection, then ${domainSmall} will charge you the lesser of an 18% collection fee or the maximum percentage permitted by applicable law, to cover ${domainSmall}’s collection-related costs.</p>

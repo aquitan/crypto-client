@@ -17,6 +17,7 @@ import usedPromoList from '../models/Used_promocodes.model'
 import staffLogs from '../models/Staff_logs.model'
 import TokenModel from '../models/Token.model'
 import TERMS from '../config/terms.template'
+import * as mongoose from 'mongoose'
 
 
 class staffService {
@@ -82,10 +83,11 @@ class staffService {
 			const kycParams: any = await userParams.findOne({ userId: usersList[i].id })
 			if (!kycParams) return false
 			let dataObject = {
+				userId: usersList[i].id,
 				registerDate: usersList[i].dateOfEntry,
 				userName: usersList[i].name,
 				userEmail: usersList[i].email,
-				userStatus: usersList[i].isStaff,
+				userStatus: kycParams.isStaff,
 				kycStatus: kycParams.kycStatus
 			}
 			dataArray.push(dataObject)
@@ -224,9 +226,11 @@ class staffService {
 	}
 
 	async UpdatePremiumStatus(user_id: string, status: boolean) {
-		const user: any = await userParams.findOne({ userId: user_id })
-		console.log('found user status is: ', user.premiumStatus);
-		if (!user) return false
+
+		// const user: any = await baseUserData.findOne({ _id: user_id })
+		const curStatus: any = await userParams.findOne({ userId: user_id })
+		console.log('found user status is: ', curStatus);
+		if (!curStatus) return false
 		await userParams.findOneAndUpdate({ userId: user_id }, { premiumStatus: status })
 		return true
 	}
@@ -545,9 +549,9 @@ class staffService {
 		const user: any = await baseUserData.findOne({ email: object.user_email })
 		if (!user) return false
 		await userNotif.create({
-			text: object.notification_text,
-			domain: object.domain_name,
-			email: object.user_email,
+			notifText: object.notification_text,
+			userDomain: object.domain_name,
+			userEmail: object.user_email,
 			userId: user.id
 		})
 		return true
@@ -656,6 +660,13 @@ class staffService {
 			staffId: staff_id
 		})
 	}
+
+	// async CheckDomainTerms() {
+	// 	const terms: any = await domainTerms.find()
+	// 	console.log('terms -> ', terms[0]);
+	// 	if (!terms.lenght) return false
+	// 	return true
+	// }
 
 	async addTerms(domain_name: string) {
 		const termsBody: string = TERMS

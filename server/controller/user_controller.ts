@@ -294,6 +294,7 @@ class UserController {
     const browser: string = req.body.browser
     const countryName: string = req.body.countryName
     const coordinates: string = req.body.coordinates
+    const logTime: string = req.body.logTime
 
     try {
       const result: boolean = await UserServices.MakeDeposit(transfer_object)
@@ -301,7 +302,7 @@ class UserController {
 
       if (!result) return res.status(400).json({ message: 'wrong data' })
 
-      await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, transfer_object.currentDate, ` создал заявку на депозит на сумму ${transfer_object.amountInCrypto} ( ${transfer_object.amountInUsd} ) ${transfer_object.coinName} `, transfer_object.domainName)
+      await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, logTime, ` создал заявку на вывод на сумму ${transfer_object.amountInCrypto} ${transfer_object.coinName} ($ ${transfer_object.amountInUsd} )`, transfer_object.domainName)
       await telegram.sendMessageByUserActions(transfer_object.userEmail, ` создал заявку на депозит на сумму ${transfer_object.amountInCrypto} ( ${transfer_object.amountInUsd} ) ${transfer_object.coinName} `, transfer_object.domainName)
       return res.status(201).json({ message: 'ok' })
 
@@ -330,7 +331,7 @@ class UserController {
   async makeWithdrawal(req: express.Request, res: express.Response, next: express.NextFunction) {
     console.log('req body is: ', req.body)
 
-    const transfer_object: WITHDRAWAL_HISTORY = {
+    let transfer_object: WITHDRAWAL_HISTORY = {
       userId: req.body.userId,
       userEmail: req.body.userEmail,
       domainName: req.body.domainName,
@@ -341,18 +342,23 @@ class UserController {
       withdrawalAddress: req.body.withdrawalAddress,
       withdrawalStatus: req.body.withdrawalStatus
     }
+
     const ipAddress: string = req.body.ipAddress
     const city: string = req.body.city
     const browser: string = req.body.browser
     const countryName: string = req.body.countryName
     const coordinates: string = req.body.coordinates
+    const logTime: string = req.body.logTime
 
+    if (req.body.withdrawalStatus !== 'failed ') {
+      transfer_object.withdrawalStatus = 'failed'
+    }
     try {
       const result: boolean = await UserServices.MakeWithdrawal(transfer_object)
       console.log('result is: ', result)
       if (!result) return res.status(400).json({ message: 'wrong data' })
 
-      await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, transfer_object.currentDate, ` создал заявку на вывод на сумму ${transfer_object.amountInCrypto} ( ${transfer_object.amountInUsd} ) ${transfer_object.coinName} `, transfer_object.domainName)
+      await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, logTime, ` создал заявку на вывод на сумму ${transfer_object.amountInCrypto} ${transfer_object.coinName} ($ ${transfer_object.amountInUsd} )`, transfer_object.domainName)
       await telegram.sendMessageByUserActions(transfer_object.userEmail, ` создал заявку на вывод на сумму ${transfer_object.amountInCrypto} ( ${transfer_object.amountInUsd} ) ${transfer_object.coinName} `, transfer_object.domainName)
       return res.status(201).json({ message: 'ok' })
 
@@ -362,7 +368,7 @@ class UserController {
   }
 
   async getWithdrawalHistory(req: express.Request, res: express.Response, next: express.NextFunction) {
-    const userId: string = req.body.id
+    const userId: string = req.body.userId
     console.log('int id is: ', userId)
 
     if (!userId) return res.status(400).json({ message: 'wrong data' })
@@ -399,6 +405,7 @@ class UserController {
     const browser: string = req.body.browser
     const countryName: string = req.body.countryName
     const coordinates: string = req.body.coordinates
+    const logTime: string = req.body.logTime
 
     try {
       const result: boolean = await UserServices.MakeSwap(transfer_object)
@@ -406,8 +413,8 @@ class UserController {
 
       if (!result) return res.status(400).json({ message: 'wrong data' })
 
-      await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, transfer_object.currentDate, ` сделал свап c ${transfer_object.amountInCryptoFrom} ${transfer_object.coinNameFrom} на ${transfer_object.amountInCryptoTo}  ${transfer_object.coinNameTo} на `, transfer_object.domainName)
-      await telegram.sendMessageByUserActions(transfer_object.userEmail, ` сделал свап c ${transfer_object.amountInCryptoFrom} ${transfer_object.coinNameFrom} на ${transfer_object.amountInCryptoTo}  ${transfer_object.coinNameTo} `, transfer_object.domainName)
+      await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, logTime, ` совершил свап ( ${transfer_object.amountInCryptoFrom} ${transfer_object.coinNameFrom} на ${transfer_object.amountInCryptoTo} ${transfer_object.coinNameTo} ) на `, transfer_object.domainName)
+      await telegram.sendMessageByUserActions(transfer_object.userEmail, ` совершил свап ( ${transfer_object.amountInCryptoFrom} ${transfer_object.coinNameFrom} на ${transfer_object.amountInCryptoTo}  ${transfer_object.coinNameTo} `, transfer_object.domainName)
       return res.status(201).json({ message: 'ok' })
 
     } catch (e) {
@@ -455,6 +462,7 @@ class UserController {
     const browser: string = req.body.browser
     const countryName: string = req.body.countryName
     const coordinates: string = req.body.coordinates
+    const logTime: string = req.body.logTime
 
     try {
       const result: boolean = await UserServices.MakeInternalTransfer(transfer_object)
@@ -462,7 +470,7 @@ class UserController {
 
       if (!result) return res.status(400).json({ message: 'wrong data' })
 
-      await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, transfer_object.currentDate, ` совершил внутренний перевод пользователю ${transfer_object.secondPartyEmail} на сумму  ${transfer_object.amountInCrypto}  ${transfer_object.coinName} на `, transfer_object.domainName)
+      await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, logTime, ` совершил внутренний перевод пользователю ${transfer_object.secondPartyEmail} на сумму  ${transfer_object.amountInCrypto}  ${transfer_object.coinName} на `, transfer_object.domainName)
       await telegram.sendMessageByUserActions(transfer_object.userEmail, ` совершил внутренний перевод пользователю ${transfer_object.secondPartyEmail} на сумму  ${transfer_object.amountInCrypto}  ${transfer_object.coinName} `, transfer_object.domainName)
       return res.status(201).json({ message: 'ok' })
 

@@ -26,7 +26,7 @@ export const WITHDRAWAL_HISTORY_SCHEMA = {
     require: true
   },
   address: {
-    type: String,
+    type: String || null,
     require: true
   },
   status: {

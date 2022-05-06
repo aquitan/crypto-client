@@ -7,7 +7,7 @@ export default interface WITHDRAWAL_HISTORY {
   amountInCrypto: number
   amountInUsd: number
   currentDate: string
-  withdrawalAddress: string
+  withdrawalAddress: string | null
   withdrawalStatus: string
   // status is approved ONLY here !
 }

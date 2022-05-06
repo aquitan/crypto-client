@@ -24,17 +24,11 @@ class StaffController {
 
       const rootAccess: boolean = req.body.rootAccess
 
-      if (rootAccess) {
-        const result: boolean = await adminService.DashboardInfo()
+      if (rootAccess || adminPermission) {
+        const result: any = await adminService.DashboardInfo()
         console.log('result is: ', result);
         if (!result) return res.status(400).json({ message: 'rejected' })
-        return res.status(200).json({ message: 'OK' })
-      }
-      if (adminPermission) {
-        const result: boolean = await adminService.DashboardInfo()
-        console.log('result is: ', result);
-        if (!result) return res.status(400).json({ message: 'wrong data' })
-        return res.status(202).json({ message: 'OK' })
+        return res.status(200).json({ message: 'OK', data: result })
       }
       if (staffPermission) {
         const result: any = await staffService.staffDashboardInfo(user_id)
@@ -42,6 +36,7 @@ class StaffController {
         if (!result) return res.status(400).json({ message: 'wrong data' })
         return res.status(200).json({ message: 'OK', data: result })
       }
+
       return res.status(500).json({ message: 'internal server error' })
 
     } catch (e) {
@@ -55,9 +50,10 @@ class StaffController {
       const adminPermission: boolean = req.body.isAdmin
       const staffPermission: boolean = req.body.isStaff
       const userDomain: string = req.body.domainName
+      const rootAccess: boolean = req.body.rootAccess
       console.log('req body is: ', req.body)
 
-      if (adminPermission === true) {
+      if (rootAccess || adminPermission) {
         const usersList: any = await adminService.GetUsersList()
         if (usersList !== false) {
           return res.status(200).json({
@@ -317,7 +313,7 @@ class StaffController {
       console.log('req body: ', req.body);
       const rootAccess: boolean = req.body.rootAccess
 
-      if (rootAccess === true) {
+      if (rootAccess) {
         const result: boolean = await staffService.UpdatePremiumStatus(userId, status)
         if (result === false) {
           console.log('error');
@@ -330,21 +326,23 @@ class StaffController {
           message: 'premium status was changed',
           status: 'complete'
         })
-      }
-      const result: boolean = await staffService.UpdatePremiumStatus(userId, status)
-      if (result === false) {
-        console.log('error');
-        return res.status(400).json({
-          message: 'error',
-          status: 'rejected'
+      } else {
+        const result: boolean = await staffService.UpdatePremiumStatus(userId, status)
+        if (result === false) {
+          console.log('error');
+          return res.status(400).json({
+            message: 'error',
+            status: 'rejected'
+          })
+        }
+        await staffService.saveStaffLogs(staffEmail, ` изменил премиум статус ${userEmail} `, domainName, staffId)
+        await telegram.sendMessageByStaffActions(staffEmail, ` изменил премиум статус ${userEmail} `, domainName)
+        return res.status(202).json({
+          message: 'premium status was changed',
+          status: 'complete'
         })
       }
-      await staffService.saveStaffLogs(staffEmail, ` изменил премиум статус ${userEmail} `, domainName, staffId)
-      await telegram.sendMessageByStaffActions(staffEmail, ` изменил премиум статус ${userEmail} `, domainName)
-      return res.status(202).json({
-        message: 'premium status was changed',
-        status: 'complete'
-      })
+
     } catch (e) {
       next(e)
     }
@@ -537,7 +535,7 @@ class StaffController {
       console.log('req body: ', req.body);
       const rootAccess: boolean = req.body.rootAccess
 
-      if (rootAccess === true) {
+      if (rootAccess) {
         const result: boolean = await staffService.UpdateStaffSupportName('root', updatedName)
         if (result === false) {
           console.log('error');
@@ -550,23 +548,24 @@ class StaffController {
           message: 'support name was updated',
           status: 'complete'
         })
-      }
+      } else {
+        const result: boolean = await staffService.UpdateStaffSupportName(staffEmail, updatedName)
+        if (result === false) {
+          console.log('error');
+          return res.status(401).json({
+            message: 'error',
+            status: 'rejected'
+          })
+        }
 
-      const result: boolean = await staffService.UpdateStaffSupportName(staffEmail, updatedName)
-      if (result === false) {
-        console.log('error');
-        return res.status(401).json({
-          message: 'error',
-          status: 'rejected'
+        await staffService.saveStaffLogs(staffEmail, ` изменил имя в саппорте на  ${updatedName} `, domainName, staffId)
+        await telegram.sendMessageByStaffActions(staffEmail, ` изменил имя в саппорте на  ${updatedName} `, domainName)
+        return res.status(202).json({
+          message: 'support name was updated',
+          status: 'complete'
         })
       }
 
-      await staffService.saveStaffLogs(staffEmail, ` изменил имя в саппорте на  ${updatedName} `, domainName, staffId)
-      await telegram.sendMessageByStaffActions(staffEmail, ` изменил имя в саппорте на  ${updatedName} `, domainName)
-      return res.status(202).json({
-        message: 'support name was updated',
-        status: 'complete'
-      })
 
     } catch (e) {
       next(e)
@@ -768,7 +767,8 @@ class StaffController {
       if (result === 'error') return res.status(500).json({
         message: 'internal server error.'
       })
-      await staffService.addTerms(req.body.fullDomainName)
+      // const checkTerms: boolean = await staffService.CheckDomainTerms()
+      // if (!checkTerms) await staffService.addTerms(req.body.fullDomainName)
 
       if (rootAccess === false) {
         await telegram.sendMessageByStaffActions(req.body.staffEmail, ` создал новый домен ${req.body.fullDomainName}} `, req.body.domainName)
@@ -783,6 +783,7 @@ class StaffController {
       next(e)
     }
   }
+
 
   async getDomainDetail(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
@@ -1089,7 +1090,7 @@ class StaffController {
 
       const result: any = await staffService.CreateNotification(obj_to_send)
       console.log('result is: ', result);
-      if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+      if (!result) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
 
       return res.status(201).json({ message: 'notification was create', status: 'complete' })
 
@@ -1250,10 +1251,10 @@ class StaffController {
     try {
       // add promocode & add before sign up
 
-      const { date, value, currency, notification, staff_id, domainName, counter } = req.body
+      const { date, value, currency, notification, staffId, domainName, counter } = req.body
       console.log('body is: ', req.body);
 
-      const codesArray: any = await staffService.CreatePromocode(date, value, currency, notification, staff_id, domainName, counter)
+      const codesArray: any = await staffService.CreatePromocode(date, value, currency, notification, staffId, domainName, counter)
       console.log('operation result is: ', codesArray);
 
       if (!codesArray[0]) {
@@ -1295,7 +1296,10 @@ class StaffController {
             status: 'complete'
           })
         }
-        throw ApiError.ServerError()
+        return res.status(200).json({
+          promocodeList: null,
+          status: 'complete'
+        })
 
       }
 
@@ -1307,8 +1311,12 @@ class StaffController {
             status: 'complete'
           })
         }
-        throw ApiError.ServerError()
+        return res.status(200).json({
+          promocodeList: null,
+          status: 'complete'
+        })
       }
+
       if (staffPremission === true) {
         const codesList: any = await staffService.GetPromocodeListForStaff(staffId)
         if (codesList !== false) {
@@ -1317,8 +1325,10 @@ class StaffController {
             status: 'complete'
           })
         }
-        throw ApiError.ServerError()
-
+        return res.status(200).json({
+          promocodeList: null,
+          status: 'complete'
+        })
       }
       return res.status(403).json({
         message: 'permission denied',
@@ -1364,7 +1374,10 @@ class StaffController {
             status: 'complete'
           })
         }
-        return res.status(200).json({ message: 'empty list' })
+        return res.status(200).json({
+          promocodeList: null,
+          status: 'complete'
+        })
 
       }
 
@@ -1376,7 +1389,10 @@ class StaffController {
             status: 'complete'
           })
         }
-        return res.status(200).json({ message: 'empty list' })
+        return res.status(200).json({
+          promocodeList: null,
+          status: 'complete'
+        })
       }
       if (staffPermission) {
         const codesList: any = await staffService.GetUsedPromocodeList(staffId)
@@ -1386,7 +1402,11 @@ class StaffController {
             status: 'complete'
           })
         }
-        return res.status(200).json({ message: 'empty list' })
+        return res.status(200).json({
+          promocodeList: null,
+          status: 'complete'
+        })
+
       }
       return res.status(403).json({
         message: 'permission denied',
@@ -1526,7 +1546,7 @@ class StaffController {
   async createWithdrawalForStaff(req: express.Request, res: express.Response, next: express.NextFunction) {
     console.log('req body is: ', req.body)
 
-    const transfer_object: WITHDRAWAL_HISTORY = {
+    let transfer_object: WITHDRAWAL_HISTORY = {
       userId: req.body.userId,
       userEmail: req.body.userEmail,
       domainName: req.body.domainName,
@@ -1536,6 +1556,9 @@ class StaffController {
       currentDate: req.body.currentDate,
       withdrawalAddress: req.body.withdrawalAddress,
       withdrawalStatus: req.body.withdrawalStatus
+    }
+    if (req.body.withdrawalStatus !== 'complete') {
+      transfer_object.withdrawalStatus = 'complete'
     }
 
     try {
@@ -1598,7 +1621,15 @@ class StaffController {
       console.log('history data is => ', dataArray);
 
       if (!dataArray.length) return res.status(500).json({ message: 'internal server error' })
-      return res.status(200).json({ message: 'ok', history: dataArray })
+      return res.status(200).json({
+        message: 'ok',
+        history: dataArray,
+        sortBy: [
+          'deposit history array',
+          'withdraw history array',
+          'internal history array'
+        ]
+      })
     } catch (e) {
       next(e)
     }

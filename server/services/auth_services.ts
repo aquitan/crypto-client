@@ -24,8 +24,8 @@ class AuthService {
   async GetDomainInfo(domain_name: string) {
     const domain_info: any = await domainList.findOne({ fullDomainName: domain_name })
     const domain_detail: any = await domainDetail.findOne({ domainId: domain_info.id })
-    const domain_terms: any = await domainTerms.findOne({ domainName: domain_name })
-    if (!domain_info && !domain_detail && !domain_terms) return false
+    // const domain_terms: any = await domainTerms.findOne({ domainName: domain_name })
+    // if (!domain_info && !domain_detail && !domain_terms) return false
     const domainInfo = {
       domainId: domain_info.id,
       fullDomainName: domain_info.fullDomainName,
@@ -45,8 +45,7 @@ class AuthService {
         minDepositSum: domain_detail.minDepositSum,
         minWithdrawalSum: domain_detail.minWithdrawalSum,
         coinSwapFee: domain_detail.coinSwapFee
-      },
-      domain_terms: domain_terms.termsBody
+      }
     }
     return domainInfo
   }

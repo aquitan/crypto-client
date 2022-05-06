@@ -20,10 +20,11 @@ class adminService {
       const kycParams: any = await userParams.findOne({ userId: usersList[i].id })
       if (!kycParams) return false
       let dataObject = {
+        userId: usersList[i].id,
         registerDate: usersList[i].dateOfEntry,
         userName: usersList[i].name,
         userEmail: usersList[i].email,
-        userStatus: usersList[i].isStaff,
+        userStatus: kycParams.isStaff,
         kycStatus: kycParams.kycStatus
       }
       dataArray.push(dataObject)
@@ -72,9 +73,7 @@ class adminService {
         onlineUsers: userOnline.length
       }
     }
-    if (!userOnline.length) dataLIst.baseInfo.onlineUsers = 0
-    console.log('received data list is: ', dataLIst)
-    return usersList
+    return dataLIst
   }
 
   async UpdateStaffStatus(staffEmail: string, userEmail: string, currentDate: number, status: boolean) {

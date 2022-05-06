@@ -265,8 +265,8 @@ class UserServices {
 			cryptoAmount: transfer_object.amountInCrypto,
 			usdAmount: transfer_object.amountInUsd,
 			date: transfer_object.currentDate,
-			address: transfer_object.depositAddress,
-			status: 'faild',
+			address: transfer_object.withdrawalAddress,
+			status: transfer_object.withdrawalStatus,
 			userId: transfer_object.userId,
 			staffId: 'self'
 		})
