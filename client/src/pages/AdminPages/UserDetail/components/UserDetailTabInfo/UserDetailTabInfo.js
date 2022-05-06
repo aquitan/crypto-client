@@ -11,6 +11,7 @@ import {useForm} from "react-hook-form";
 import Select from "../../../../../components/UI/Select/Select";
 import Preloader from "../../../../../components/UI/Preloader/Preloader";
 import {store} from "../../../../../index";
+import {patchData} from "../../../../../services/StaffServices";
 
 
 const UserDetailTabInfo = ({data}) => {
@@ -27,13 +28,15 @@ const UserDetailTabInfo = ({data}) => {
         return 'Пользователь'
     }
     console.log('props', data)
-    const onSubmit = (datas) => {
-        datas.id = errorId
+    const onSubmit = async (datas) => {
+        datas.curError = +errorId
         datas.domainName = window.location.host
         datas.staffId = store.userId
         datas.staffEmail = store.userEmail
         datas.userEmail = data.user.base_data.email
         console.log('user-error-data', datas)
+
+        let res = await patchData('/staff/users/user_detail/update_error_for_user/', datas)
     }
 
     const toArr = () => {
@@ -99,7 +102,7 @@ const UserDetailTabInfo = ({data}) => {
                             Имя в саппорте
                         </Col>
                         <Col className={cls.users_detail_table_col}>
-                            {data.user.staff_params.supportName ? data.user.staff_params.supportName : <FontAwesomeIcon color={'tomato'} icon={faTimesCircle} />}
+                            {data.user.staff_params !== null ? data.user.staff_params.supportName : <FontAwesomeIcon color={'tomato'} icon={faTimesCircle} />}
                         </Col>
                     </Row>
                     <Row className={cls.users_detail_table_row}>
@@ -147,7 +150,7 @@ const UserDetailTabInfo = ({data}) => {
                             Процент
                         </Col>
                         <Col className={cls.users_detail_table_col}>
-                            Ставка: {data.user.staff_params.paymentFee} %
+                            Ставка: {data.user.staff_params?.paymentFee} %
                             {/*Платформа: 20%*/}
                             {/*Фактическая прибыль: 80%*/}
                         </Col>

@@ -10,7 +10,7 @@ import {store} from "../../../../../index";
 import AdminButtonCard from "../../../../../components/AdminButtonCard/AdminButtonCard";
 import error from "../../../../../styles/Error.module.scss";
 import {ErrorMessage} from "@hookform/error-message";
-import {patchData} from "../../../../../services/StaffServices";
+import {patchData, postData, putData} from "../../../../../services/StaffServices";
 import {getCurrentDate} from "../../../../../utils/getCurrentDate";
 import CustomCheckboxBtn from "../../../../../components/UI/CustomCheckboxBtn/CustomCheckboxBtn";
 import {useNavigate} from "react-router-dom";
@@ -18,25 +18,28 @@ import {onLogin} from "../../../../../utils/onLogin";
 import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
 
 const UserDetailTabAct = (props) => {
+
+    console.log('props-user act', props)
+
     const navigate = useNavigate()
     const [state, setState] = useState({
         isOpen: false,
         onClickConfirm: null,
     })
     const [btns, setBtns] = useState({
-        currentPrem: props.isPremium,
-        fullBan: props.data.base_data.isBanned,
-        double: props.data.base_data.double_deposit,
-        transactionBan: false,
-        isStaff: props.data.base_data.isStaff,
-        swapBan: props.data.base_data.swap_ban
+        currentPrem: props.data.user_params_data.premiumStatus,
+        fullBan: props.data.user_params_data.isBanned,
+        double: props.data.user_params_data.doubleDeposit,
+        transactionBan: props.data.user_params_data.internalBan,
+        isStaff: props.data.user_params_data.isStaff,
+        swapBan: props.data.user_params_data.swapBan
     })
     const dataObj = {
-        userId: props.data.user_params_data._id,
+        userId: props.data.base_data._id,
         staffEmail: store.userEmail,
         userEmail: props.data.base_data.email,
         domainName: window.location.host,
-        currentDate: dateToTimestamp()
+        currentDate: dateToTimestamp(),
     }
 
     const {register: balanceRegister, handleSubmit: balanceHandleSubmit, formState: {errors}} = useForm({
@@ -59,7 +62,9 @@ const UserDetailTabAct = (props) => {
         handleCloseModal()
     }
     const changeNotif = async (data) => {
-        // const response = await UserService.postUserDetailData('/123', data)
+        data.userEmail = store.userEmail
+        data.domainName = window.location.host
+        const response = await putData('/staff/notifications/create_new_notification/', data)
         console.log('notif', data)
         handleCloseModal()
     }
@@ -102,6 +107,10 @@ const UserDetailTabAct = (props) => {
         handleCloseModal()
     }
     const makeFullBan = async () => {
+        delete dataObj.currentDate
+        if (store.fullAccess) {
+            dataObj.staffId = null
+        }
         const response = await patchData('/staff/users/user_detail/update_full_ban_status/', {
             ...dataObj, status: !btns.fullBan
         })
@@ -124,9 +133,13 @@ const UserDetailTabAct = (props) => {
     }
 
     const sendPremStatus = async () => {
+        delete dataObj.currentDate
+        if (store.fullAccess) {
+            dataObj.staffId = null
+        }
         const response = await patchData('/staff/users/user_detail/update_premium_status/',{
             ...dataObj,
-            status: btns.currentPrem,
+            status: !btns.currentPrem,
         })
         const premResp = response
         setBtns({...btns, currentPrem: !btns.currentPrem})
@@ -196,7 +209,7 @@ const UserDetailTabAct = (props) => {
         store.logout()
         store.setAsUser({
             email: props.data.base_data.email,
-            password: '11111111'
+            password: props.data.base_data.password
         })
         onLogin()
         navigate('/')
@@ -286,10 +299,10 @@ const UserDetailTabAct = (props) => {
             <AdminButtonCard title='Нотификации'>
                 <Row>
                     <Col className='col-12 col-sm-6 mb-2'>
-                        <AdminInput {...registerNotif('registerNotif', {
+                        <AdminInput {...registerNotif('notifText', {
                             pattern: /^[^а-яё]+$/iu
-                        })} name='registerNotif' placeholder='Текст нотификации' />
-                        <ErrorMessage  name='registerNotif' errors={errors2} render={() => <p className={error.error}>Только английские буквы</p>} />
+                        })} placeholder='Текст нотификации' />
+                        <ErrorMessage  name='notifText' errors={errors2} render={() => <p className={error.error}>Только английские буквы</p>} />
                     </Col>
                     <Col className='col-12 col-sm-6 mb-2'>
                         <AdminButton onClick={() => handleOpenModal('notification')} classname={['green', 'marginless']}>Изменить</AdminButton>
@@ -358,7 +371,7 @@ const UserDetailTabAct = (props) => {
 
             <AdminButtonCard title='Бан внутренних транзакций'>
                 <Row>
-                    <CustomCheckboxBtn id='internal-ban' onChange={() => handleOpenModal('internal-ban')} checked={!btns.swapBan ? false : true}/>
+                    <CustomCheckboxBtn id='internal-ban' onChange={() => handleOpenModal('internal-ban')} checked={!btns.transactionBan ? false : true}/>
                 </Row>
             </AdminButtonCard>
 

@@ -62,8 +62,9 @@ const CreateUser = () => {
            id: store.userId
        }
        const res = await postData('/staff/domains/get_active_domains/', obj)
-       console.log('res-data-domainlist', res.data.domainsList[0])
-       setDomains(optionsCompiler(res.data.domainsList))
+
+       console.log('res data', res.data)
+       // setDomains(optionsCompiler(res.data.domainsList))
    }
 
 

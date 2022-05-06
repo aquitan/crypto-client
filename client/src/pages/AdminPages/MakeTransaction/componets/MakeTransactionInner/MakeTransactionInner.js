@@ -55,7 +55,7 @@ const MakeTransactionInner = () => {
     console.log('time', timeDate)
     return (
         <>
-                <AdminButtonCard title='Внутренние транзакции'>
+                <AdminButtonCard title='Internal transactions'>
                     <AdminForm onSubmit={handleSubmit(onSubmit)}>
                         <Row className='mb-3 flex-items'>
                             <Col className='col-12 col-lg-2 mb-3'>
@@ -66,7 +66,9 @@ const MakeTransactionInner = () => {
                                 <Select {...register('currency')} options={optionsCurrency}/>
                             </Col>
 
-
+                            <Col className='col-12 col-lg-2'>
+                                <AdminInput {...register('sum')} placeholder='Сумма' />
+                            </Col>
                             <Col className='col-12 col-lg-3 mb-3' style={{position: 'relative'}}>
                                 <DatePickert required
                                              customInput={<DatePickerCustom/>}
@@ -89,9 +91,6 @@ const MakeTransactionInner = () => {
                                              dateFormat="HH:mm"
                                 />
                                 <span style={styles.todayBtn} onClick={onNowTime}>Now</span>
-                            </Col>
-                            <Col className='col-12 col-lg-2'>
-                                <AdminInput {...register('sum')} placeholder='Сумма' />
                             </Col>
                         </Row>
                         <Row className='mb-3'>

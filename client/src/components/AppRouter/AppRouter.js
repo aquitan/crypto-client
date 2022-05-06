@@ -30,12 +30,21 @@ const AppRouter = () => {
 
     const getRates = async () => {
         const res = await getRate()
+
+        console.log('res data rates', res.data)
         const obj = {
-            btc: res.data.bitcoin,
-            eth: res.data.ethereum,
-            bch: res.data['bitcoin-cash'],
-            usdt: res.data.tether
+            btc: res.data[0].current_price,
+            eth: res.data[1].current_price,
+            bch: res.data[3].current_price,
+            usdt: res.data[2].current_price
         }
+        const ratesChange = {
+            btc: res.data[0].price_change_24h,
+            eth: res.data[1].price_change_24h,
+            bch: res.data[3].price_change_24h,
+            usdt: res.data[2].price_change_24h
+        }
+        store.setRatesChange(ratesChange)
         store.setRates(obj)
     }
 

@@ -36,6 +36,7 @@ const UserDetail = () => {
     }, [])
 
 
+    console.log('user-detail', userDetail)
 
     return (
         <Container className={cls.app_continer}>

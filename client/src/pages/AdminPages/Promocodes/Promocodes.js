@@ -24,8 +24,8 @@ const Promocodes = () => {
     ]
     const [state, setState] = useState({
         currentPromocodes: '',
-        usedPromocodes: '',
     })
+    const [usedPromocodes, setUsedPromocodes] = useState('')
     const [modal, setModal] = useState({
         isOpen: false,
         onClickConfirm: null,
@@ -57,11 +57,10 @@ const Promocodes = () => {
     const sendPromocode = async (data) => {
         let dataPrep = prepareData(data.counter, data.min, data.max)
 
-        let currentDate = new Date()
         let promoData = {
             value: dataPrep,
             date: dateToTimestamp(),
-            staff: store.userId,
+            staffId: store.userId,
             domainName: window.location.host,
             counter: data.counter,
             currency: data.currency,
@@ -76,7 +75,8 @@ const Promocodes = () => {
             isStaff: store.isStaff,
             isAdmin: store.isAdmin,
             id: store.userId,
-            rootAccess: store.fullAccess
+            rootAccess: store.fullAccess,
+            staffEmail: store.userEmail
         }
         const res = await postData('/staff/get_promocode_list/', promoData)
         const data = await res.data
@@ -95,7 +95,9 @@ const Promocodes = () => {
         }
         const res = await postData('/staff/get_used_promocode_list/', promoData)
         const data = await res.data
-        console.log('used', data)
+
+        setUsedPromocodes(data.promocodeList)
+        console.log('data.promocodeList', data.promocodeList)
     }
 
     useEffect(() => {
@@ -119,7 +121,12 @@ const Promocodes = () => {
         }
     }
     const deleteAllUsed = async () => {
-        const res = await deleteData('/123')
+        const obj = {
+            isStaff: store.isStaff,
+            isAdmin: store.isAdmin,
+            id: store.userId
+        }
+        const res = await deleteData('/staff/delete_all_used_promocode/', {data: obj})
         setState({...state, usedPromocodes: ''})
         handleCloseModal()
     }
@@ -137,6 +144,8 @@ const Promocodes = () => {
     const handleCloseModal = () => {
         setModal({isOpen: false, onClickConfirm: null, isDelete: false})
     }
+
+    console.log('currentPromocodes', state.usedPromocodes)
 
     const {isOpen, onClickConfirm, isDelete} = modal
 
@@ -234,7 +243,8 @@ const Promocodes = () => {
                                     id={promo.ID}
                                     code={promo.code}
                                     reward={promo.value}
-                                    type={promo.type}/>
+                                    btn={true}
+                                    currency={promo.coinName}/>
                             })
                             : null
                     }
@@ -252,16 +262,21 @@ const Promocodes = () => {
                     </Col>
                 </Row>
                 <Row className={cls.table_header}>
-                    <Col className='d-none d-md-block'>Код</Col>
-                    <Col className='d-none d-md-block'>Награждение</Col>
-                    <Col className='d-none d-md-block'>Валюта</Col>
-                    <Col className='d-none d-md-block'>Конфигурировать</Col>
+                    <Col className='d-none d-md-block col-2'>Код</Col>
+                    <Col className='d-none d-md-block col-2'>Награждение</Col>
+                    <Col className='d-none d-md-block col-2'>Валюта</Col>
                 </Row>
                 <div className={cls.current_promocodes}>
                     {
-                        state.usedPromocodes ?
-                            state.usedPromocodes.map(promo => {
-                                return <PromocodesItem key={promo.ID} id={promo.ID} code={promo.code} reward={promo.value} type={promo.type}/>
+                        usedPromocodes ?
+                            usedPromocodes.map(promo => {
+                                return <PromocodesItem
+                                    key={promo.ID}
+                                    id={promo.ID}
+                                    code={promo.code}
+                                    reward={promo.value}
+                                    btn={false}
+                                    currency={promo.coinName}/>
                             })
                             : null
                     }

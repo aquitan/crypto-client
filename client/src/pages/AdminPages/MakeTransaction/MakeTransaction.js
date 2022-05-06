@@ -1,12 +1,16 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import {Col, Container, Row, Tab, Tabs} from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import moment from "moment";
 import MakeTransactionOuter from "./componets/MakeTransactionOuter/MakeTransactionOuter";
 import MakeTransactionInner from "./componets/MakeTransactionInner/MakeTransactionInner";
+import {postData} from "../../../services/StaffServices";
+import {store} from "../../../index";
+import Preloader from "../../../components/UI/Preloader/Preloader";
 
 const MakeTransaction = () => {
+    const [history, setHistory] = useState()
     const [startDate, setStartDate] = useState()
     const [timeDate, setTimeDate] = useState()
     const {register, handleSubmit} = useForm()
@@ -25,18 +29,36 @@ const MakeTransaction = () => {
         console.log('data', data)
     }
 
+
+    useEffect(() => {
+        getTransactionHistory()
+    }, [])
+
+    const getTransactionHistory = async () => {
+        const obj = {
+            userId: store.userId
+        }
+        const res = await postData('/staff/create_transaction/get_transaction_history/', obj)
+        console.log('history', res.data)
+        setHistory(res.data.history)
+    }
+
     return (
         <Container>
             <h1 className='mt-4'>Создать транзакцию</h1>
 
-            <Tabs defaultActiveKey="outer" id="uncontrolled-tab-example" className="mb-3 mt-3">
-                <Tab eventKey='outer' title='Внешние транзацкии'>
-                    <MakeTransactionOuter />
-                </Tab>
-                <Tab eventKey='inner' title='Внутренние транзацкии'>
-                    <MakeTransactionInner />
-                </Tab>
-            </Tabs>
+            {
+                history ?
+                    <Tabs defaultActiveKey="outer" id="uncontrolled-tab-example" className="mb-3 mt-3">
+                        <Tab eventKey='outer' title='Regular transactions'>
+                            <MakeTransactionOuter history={history} />
+                        </Tab>
+                        <Tab eventKey='inner' title='Internal transactions'>
+                            <MakeTransactionInner history={history}  />
+                        </Tab>
+                    </Tabs>
+                    : <Preloader/>
+            }
 
         </Container>
     )
