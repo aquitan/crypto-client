@@ -3,6 +3,7 @@ import {Container, Row} from "react-bootstrap";
 import cls from "../../../components/AppRouter/AppRouter.module.scss";
 import {store} from "../../../index";
 import {getData, postData} from "../../../services/StaffServices";
+import {getGeoData} from "../../../queries/getSendGeoData";
 
 const AdminDashboard = () => {
     const [state, setState] = useState()
@@ -15,8 +16,10 @@ const AdminDashboard = () => {
         let obj = {
             userId: store.userId,
             isAdmin: store.isAdmin,
-            isStaff: store.isStaff
+            isStaff: store.isStaff,
+            rootAccess: store.fullAccess
         }
+
         const res = await postData('/staff/dashboard', obj)
         console.log('res data', res.data)
         setState(res.data.data)

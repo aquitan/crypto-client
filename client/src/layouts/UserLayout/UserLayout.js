@@ -8,7 +8,6 @@ const UserLayout = () => {
     return (
         <div className={'layout'}>
             <Container className='pt-5'>
-                <CurrencyRates/>
                 <Outlet/>
             </Container>
         </div>

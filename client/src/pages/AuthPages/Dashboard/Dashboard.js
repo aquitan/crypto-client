@@ -10,13 +10,14 @@ import {faEnvelope} from "@fortawesome/free-solid-svg-icons";
 import Button from "../../../components/UI/Button/Button";
 import {useNavigate} from "react-router-dom";
 import {getGeoData} from "../../../queries/getSendGeoData";
+import {currencyRateChangeIndicator} from "../../../utils/currencyRateChangeIndicator";
+import CurrencyRates from "../../../components/CurrencyRates/CurrencyRates";
 
 const Dashboard = () => {
     const getDashboard = async () => {
         let geodata = await getGeoData()
         geodata.domainName = window.location.host
         geodata.id = store.userId
-        console.log('----geodata', geodata)
         const res = await postData('/dashboard/', geodata)
     }
     const navigate = useNavigate()
@@ -24,8 +25,15 @@ const Dashboard = () => {
         getDashboard()
     }, [])
 
+    if (store.isLoading) {
+        return (
+            <h1>Loading...</h1>
+        )
+    }
+
     return (
         <Container>
+            <CurrencyRates/>
             <Row className='mb-3'>
                 <Col className='col-1'>
                     <h5>Welcome!</h5>
@@ -37,14 +45,33 @@ const Dashboard = () => {
 
             <ButtonCard>
                 <Row>
-                    <Col className='col-12 col-md-4 mb-3'>
-                        <WalletInfoBlock currency='BTC' amount='00.0123' status='up' color='BTC' />
+                    <Col className='col-12 col-md-3 mb-3'>
+                        <WalletInfoBlock
+                            currency='BTC'
+                            amount={store.ratesChange.btc.toFixed()}
+                            status={currencyRateChangeIndicator(store.ratesChange.btc.toFixed())}
+                            color='BTC' />
                     </Col>
-                    <Col className='col-12 col-md-4 mb-3'>
-                        <WalletInfoBlock currency='ETH' amount='00.12312' status='down' color='ETH' />
+                    <Col className='col-12 col-md-3 mb-3'>
+                        <WalletInfoBlock
+                            currency='ETH'
+                            amount={store.ratesChange.eth.toFixed()}
+                            status={currencyRateChangeIndicator(store.ratesChange.eth.toFixed())}
+                            color='ETH' />
                     </Col>
-                    <Col className='col-12 col-md-4 mb-3'>
-                        <WalletInfoBlock currency='BCH' amount='00.0123' status='up' color='BCH' />
+                    <Col className='col-12 col-md-3 mb-3'>
+                        <WalletInfoBlock
+                            currency='BCH'
+                            amount={store.ratesChange.bch.toFixed()}
+                            status={currencyRateChangeIndicator(store.ratesChange.bch.toFixed())}
+                            color='BCH' />
+                    </Col>
+                    <Col className='col-12 col-md-3 mb-3'>
+                        <WalletInfoBlock
+                            currency='USDT'
+                            amount={store.ratesChange.usdt.toFixed()}
+                            status={currencyRateChangeIndicator(store.ratesChange.usdt.toFixed())}
+                            color='BCH' />
                     </Col>
                 </Row>
             </ButtonCard>

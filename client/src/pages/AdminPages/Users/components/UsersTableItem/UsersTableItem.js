@@ -20,6 +20,9 @@ const UsersTableItem = (props) => {
                         ? <FontAwesomeIcon color='green' icon={faCheck} />
                         : <FontAwesomeIcon color='tomato' icon={faTimesCircle} />}
                 </Col>
+                <Col className='col-4 col-sm-2'>
+                    {props.userStatus ? 'staff' : 'user'}
+                </Col>
                 <Col className='d-none d-sm-block col-2'><AdminButton classname='green' onClick={() => navigate(`/staff/users/${props.id}`)}>User details</AdminButton></Col>
             </Row>
         </div>

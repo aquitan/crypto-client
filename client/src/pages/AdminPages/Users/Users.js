@@ -23,7 +23,8 @@ const Users = () => {
         const userData = {
             isAdmin: store.isAdmin,
             isStaff: store.isStaff,
-            domainName: window.location.host
+            domainName: window.location.host,
+            rootAccess: store.fullAccess
         }
         const res = await postData('/staff/users/', userData)
         const usersReversed = res.data.usersList.slice(0).reverse()
@@ -72,6 +73,7 @@ const Users = () => {
                                 <Col className='d-none d-sm-block col-2'>Name</Col>
                                 <Col className='col-8 col-sm-2'>Email</Col>
                                 <Col className='col-4 col-sm-2'>KYC</Col>
+                                <Col className='col-4 col-sm-2'>Status</Col>
                                 <Col className='d-none d-sm-block col-2'>Action</Col>
                             </Row>
                             {
@@ -84,7 +86,8 @@ const Users = () => {
                                                 registerDate={user.registerDate}
                                                 name={user.userName}
                                                 email={user.userEmail}
-                                                id={user._id}
+                                                id={user.userId}
+                                                userStatus={user.userStatus}
                                                 kycStatus={user.kycStatus}
                                                 staff={true}/>
                                         )

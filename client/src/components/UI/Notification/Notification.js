@@ -15,7 +15,9 @@ const Notification = () => {
 
     useEffect(() => {
         setNotification(notif)
-        getNotification()
+        if (!store.fullAccess) {
+            getNotification()
+        }
     }, [])
 
     const getNotification = async () => {

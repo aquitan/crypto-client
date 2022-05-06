@@ -15,9 +15,11 @@ import Table from "../../../../../components/UI/Table/Table";
 import TableHeader from "../../../../../components/UI/Table/components/TableHeader/TableHeader";
 import TableBody from "../../../../../components/UI/Table/components/TableBody/TableBody";
 import TableItem from "../../../../../components/UI/Table/components/TableItem/TableItem";
-import {postData} from "../../../../../services/StaffServices";
+import {postData, putData} from "../../../../../services/StaffServices";
+import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
+import {store} from "../../../../../index";
 
-const MakeTransactionOuter = () => {
+const MakeTransactionOuter = ({history}) => {
     const [startDate, setStartDate] = useState()
     const [defaultDate, setDefaultDate] = useState()
     const [timeDate, setTimeDate] = useState()
@@ -44,10 +46,43 @@ const MakeTransactionOuter = () => {
         {value: 'Внутренний перевод', text: 'Внутренний перевод'},
     ]
 
+    const getCurCoinName = (coin, bucs) => {
+        if (coin === 'usd' || coin === 'usdt') {
+            return bucs
+        }
+        else {
+            return store.rates[coin] * bucs
+        }
+    }
+
     const onSubmit = async (data) => {
         data.date = moment(startDate).format('yyyy/MM/DD')
-        data.time = moment(timeDate).format('hh:mm')
-        const res = await postData('/123')
+        data.time = moment(timeDate).format('hh:mm:ss')
+        let newDate = data.date + ' ' + data.time
+
+        delete data.date
+        delete data.time
+        data.amountInCrypto = +data.amountInCrypto
+        data.userId = store.userId
+        data.userEmail = store.userEmail
+        data.domainName = window.location.host
+        data.amountInUsd = getCurCoinName(data.coinName.toLowerCase(), data.amountInCrypto)
+        data.currentDate = dateToTimestamp(newDate)
+        data.depositStatus = 'pending'
+
+        console.log('log-data', data)
+
+        if (data.transaction === 'Deposit') {
+            const res = await putData('/staff/create_transaction/create_regular_deposit_transaction/', data)
+        }
+        if (data.transaction === 'Withdraw') {
+            data.withdrawalAddress = null
+            data.withdrawalStatus = 'complete'
+            delete data.depositAddress
+            delete data.depositStatus
+            const res = await putData('/staff/create_transaction/create_regular_withdrawal_transaction/', data)
+        }
+
     }
 
     const onToday = () => {
@@ -60,7 +95,7 @@ const MakeTransactionOuter = () => {
 
     return (
         <>
-                <AdminButtonCard title='Внешние транзакции'>
+                <AdminButtonCard title='Regular transactions'>
                     <AdminForm onSubmit={handleSubmit(onSubmit)}>
                         <Row className='mb-3 flex-items'>
                             <Col className='col-12 col-lg-2 mb-3'>
@@ -68,10 +103,12 @@ const MakeTransactionOuter = () => {
                             </Col>
 
                             <Col className='col-12 col-lg-2 mb-3'>
-                                <Select {...register('currency')} options={optionsCurrency}/>
+                                <Select {...register('coinName')} options={optionsCurrency}/>
                             </Col>
 
-
+                            <Col className='col-12 col-lg-2'>
+                                <AdminInput {...register('amountInCrypto')} placeholder='Сумма' />
+                            </Col>
                             <Col className='col-12 col-lg-3 mb-3' style={{position: 'relative'}}>
                                 <DatePickert required
                                              customInput={<DatePickerCustom/>}
@@ -95,13 +132,10 @@ const MakeTransactionOuter = () => {
                                              dateFormat="HH:mm"/>
                                 <span style={styles.todayBtn} onClick={onNowTime}>Now</span>
                             </Col>
-                            <Col className='col-12 col-lg-2'>
-                                <AdminInput {...register('sum')} placeholder='Сумма' />
-                            </Col>
                         </Row>
                         <Row className='mb-3'>
                             <Col>
-                                <AdminInput {...register('address')} placeholder='Адрес'/>
+                                <AdminInput {...register('depositAddress')} placeholder='Адрес'/>
                             </Col>
                         </Row>
                         <Row>
@@ -116,7 +150,15 @@ const MakeTransactionOuter = () => {
                     <Table>
                         <TableHeader elems={transTableHeader}/>
                         <TableBody>
-                            <TableItem/>
+                            {
+                                history.map(item => {
+                                    return(
+                                        <Row>
+
+                                        </Row>
+                                    )
+                                })
+                            }
                         </TableBody>
                     </Table>
                 </AdminButtonCard>

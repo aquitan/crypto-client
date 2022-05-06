@@ -147,7 +147,7 @@ const InternalSwap = () => {
                             </Row>
                             <Row className='mb-3'>
                                 <Col>
-                                    <h5 className='mb-3'>Enter Amount (Fee {store.domain.internal_swap_fee}%)</h5>
+                                    <h5 className='mb-3'>Enter Amount (Fee {store.domain.internalSwapFee}%)</h5>
                                     <Input {...register('amount', {
                                         required: 'Check the value',
                                         pattern: /(\d+(?:\.\d+)?)/,

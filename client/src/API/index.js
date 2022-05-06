@@ -3,7 +3,7 @@ import {config} from "@fortawesome/fontawesome-svg-core";
 
 export const BASE_URL = '/api'
 export const GEO_API = 'https://geolocation-db.com/json/'
-export const COINS_API = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin%2Cethereum%2Cbitcoin-cash%2Ctether&vs_currencies=usd'
+export const COINS_API = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin%2C%20ethereum%2C%20bitcoin-cash%2C%20tether&order=market_cap_desc&per_page=100&page=1&sparkline=false\n'
 
 export const $usersApi = axios.create({
     baseURL: BASE_URL,
