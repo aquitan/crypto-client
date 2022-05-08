@@ -48,6 +48,7 @@ router.put('/personal_area/verification/', authChecker, userController.personalA
 // router.get('/internal_wallets/get_user_internal_wallet/', authChecker, userController.getInternalWallet)
 
 // user money transfer logic
+router.get('/get_user_balance/:id/', authChecker, userController.getUserBalance) // get user balances for every coins
 router.post('/wallets/generate_internal_wallets/', authChecker, userController.generateUserWallets) // generate wallets for internal transfers
 router.put('/deposit/make_deposit/', authChecker, userController.makeDeposit) // create deposit as user
 router.post('/deposit/get_deposit_history/', authChecker, userController.getDepositHistory) // get deposit history

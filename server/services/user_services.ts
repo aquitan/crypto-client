@@ -15,6 +15,7 @@ import depositHistory from '../models/Deposit_history.model'
 import withdrawalHistory from '../models/Withdrawal_history.model'
 import swapHistory from '../models/Swap_history.model'
 import internalHistory from '../models/Internal_history.model'
+import userBalance from '../models/User_balance.model'
 
 
 
@@ -218,6 +219,16 @@ class UserServices {
 		return true
 	}
 
+
+
+	async getUserBalance(userId: string) {
+		const curBalance: any = await userBalance.find({
+			userId: userId
+		})
+		console.log('curBalance => ', curBalance);
+		if (!curBalance) return false
+		return curBalance
+	}
 
 	async GetDepositHistory(user_id: string) {
 		const userDepositHistory: any = await depositHistory.find({

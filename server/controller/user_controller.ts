@@ -275,6 +275,22 @@ class UserController {
     }
   }
 
+  async getUserBalance(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const userId: string = req.body.userId
+    console.log('userID => ', userId);
+    if (!userId || userId === undefined) return res.status(400).json({ message: 'wrong data' })
+
+    try {
+      const result: any = await UserServices.getUserBalance(userId)
+      if (!result) throw ApiError.ServerError()
+
+      return res.status(200).json(result)
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
   async generateUserWallets(req: express.Request, res: express.Response, next: express.NextFunction) {
 
     const userId: string = req.body.userId
@@ -336,6 +352,7 @@ class UserController {
   async getDepositHistory(req: express.Request, res: express.Response, next: express.NextFunction) {
     console.log('req body is: ', req.body)
     const userId: string = req.body.userId
+
 
     if (!userId) return res.status(400).json({ message: 'wrong data' })
     try {
