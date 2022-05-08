@@ -11,6 +11,9 @@ import DEPOSIT_HISTORY from '../interface/deposit_history.interface'
 import WITHDRAWAL_HISTORY from '../interface/withdrawal_history.interface'
 import INTERNAL_HISTORY from '../interface/internal_history.interface'
 import ApiError from '../exeptions/api_error'
+import moneyService from '../services/money_service'
+
+
 
 class StaffController {
 
@@ -1524,18 +1527,20 @@ class StaffController {
       userEmail: req.body.userEmail,
       domainName: req.body.domainName,
       coinName: req.body.coinName,
+      coinFullName: req.body.coinFullName,
       amountInCrypto: req.body.amountInCrypto,
       amountInUsd: req.body.amountInUsd,
       currentDate: req.body.currentDate,
       depositAddress: req.body.depositAddress,
       depositStatus: req.body.depositStatus,
     }
+    const staffId: string = req.body.staffId
 
     try {
       //   -------------> use USER service* here, koz need the same method to create deposit 
-      const result: boolean = await UserServices.MakeDeposit(transfer_object)
+      const result: boolean = await moneyService.MakeDepositAsStaff(transfer_object, staffId)
       console.log('operation result is: ', result)
-      if (!result) return res.status(400).json({ message: 'wrong data' })
+      if (!result) return ApiError.ServerError()
       return res.status(201).json({ message: 'ok' })
 
     } catch (e) {
@@ -1563,7 +1568,7 @@ class StaffController {
 
     try {
       //   -------------> use USER service* here, koz need the same method to add transaction in withdrawal history
-      const result: boolean = await UserServices.MakeWithdrawal(transfer_object)
+      const result: boolean = await moneyService.MakeWithdrawal(transfer_object)
       console.log('result is: ', result)
       if (!result) return res.status(400).json({ message: 'wrong data' })
       return res.status(201).json({ message: 'ok' })
@@ -1590,10 +1595,11 @@ class StaffController {
       transferType: req.body.transferType,
       transferStatus: req.body.transferStatus
     }
+    const staffId: string = req.body.staffId
 
     try {
       //   -------------> use USER service* here, koz need the same method to add internal transfers history
-      const result: boolean = await UserServices.MakeInternalTransfer(transfer_object)
+      const result: boolean = await moneyService.MakeInternalTransfer(transfer_object, staffId)
       console.log('result is: ', result)
       if (!result) return res.status(400).json({ message: 'wrong data' })
       return res.status(201).json({ message: 'ok' })

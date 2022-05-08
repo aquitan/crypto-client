@@ -47,7 +47,7 @@ export const USER_PARAMS = {
   },
   userId: {
     type: Schema.Types.ObjectId,
-    ref: 'UserBaseData',
+    ref: 'User_Base_Data',
     require: true
   }
 }

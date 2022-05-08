@@ -4,6 +4,7 @@ export default interface DEPOSIT_HISTORY {
   userEmail: string
   domainName: string
   coinName: string
+  coinFullName: string
   amountInCrypto: number
   amountInUsd: number
   currentDate: number

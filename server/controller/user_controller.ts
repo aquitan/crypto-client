@@ -2,6 +2,8 @@ import * as express from 'express'
 // import { validationResult } from 'express-validator'
 // import ApiError from '../exeptions/api_error'
 import UserServices from '../services/user_services'
+import moneyService from '../services/money_service'
+import ApiError from '../exeptions/api_error'
 import telegram from '../api/telegram_api'
 import codeGenerator from '../api/password_generator'
 import auth_services from '../services/auth_services'
@@ -14,7 +16,7 @@ import DEPOSIT_HISTORY from 'interface/deposit_history.interface'
 import WITHDRAWAL_HISTORY from 'interface/withdrawal_history.interface'
 import SWAP_HISTORY from 'interface/swap_history.interface'
 import INTERNAL_HISTORY from 'interface/internal_history.interface'
-import ApiError from '../exeptions/api_error'
+
 
 async function saveUserLogs(email: string, ipAddress: string, city: string, countryName: string, coordinates: string, browser: string, currentDate: string, userAction: string, userDomain: string) {
 
@@ -273,6 +275,25 @@ class UserController {
     }
   }
 
+  async generateUserWallets(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    const userId: string = req.body.userId
+    const domainName: string = req.body.domainName
+
+    try {
+      const result: boolean | string[] = await moneyService.GenerateInternalWalletsForUser(userId, domainName)
+      if (!result) throw ApiError.ServerError()
+
+      return res.status(201).json({
+        message: 'OK',
+        walletList: result
+      })
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
 
   async makeDeposit(req: express.Request, res: express.Response, next: express.NextFunction) {
     console.log('req body is: ', req.body)
@@ -282,6 +303,7 @@ class UserController {
       userEmail: req.body.userEmail,
       domainName: req.body.domainName,
       coinName: req.body.coinName,
+      coinFullName: req.body.coinFullName,
       amountInCrypto: req.body.amountInCrypto,
       amountInUsd: req.body.amountInUsd,
       currentDate: req.body.currentDate,
@@ -297,7 +319,7 @@ class UserController {
     const logTime: string = req.body.logTime
 
     try {
-      const result: boolean = await UserServices.MakeDeposit(transfer_object)
+      const result: boolean = await moneyService.MakeDeposit(transfer_object)
       console.log('operation result is: ', result)
 
       if (!result) return res.status(400).json({ message: 'wrong data' })
@@ -354,7 +376,7 @@ class UserController {
       transfer_object.withdrawalStatus = 'failed'
     }
     try {
-      const result: boolean = await UserServices.MakeWithdrawal(transfer_object)
+      const result: boolean = await moneyService.MakeWithdrawal(transfer_object)
       console.log('result is: ', result)
       if (!result) return res.status(400).json({ message: 'wrong data' })
 
@@ -408,7 +430,7 @@ class UserController {
     const logTime: string = req.body.logTime
 
     try {
-      const result: boolean = await UserServices.MakeSwap(transfer_object)
+      const result: boolean = await moneyService.MakeSwap(transfer_object)
       console.log('result is: ', result)
 
       if (!result) return res.status(400).json({ message: 'wrong data' })
@@ -430,7 +452,7 @@ class UserController {
     try {
       const result: any = await UserServices.GetSwapHistory(userId)
       console.log(' result is: ', result)
-      if (!result) return res.status(500).json({ message: 'internal server error' })
+      if (!result) throw ApiError.ServerError()
 
       return res.status(200).json({ message: 'ok', swapHistory: result })
     } catch (e) {
@@ -462,10 +484,11 @@ class UserController {
     const browser: string = req.body.browser
     const countryName: string = req.body.countryName
     const coordinates: string = req.body.coordinates
+    const staffId: string = 'self'
     const logTime: string = req.body.logTime
 
     try {
-      const result: boolean = await UserServices.MakeInternalTransfer(transfer_object)
+      const result: boolean = await moneyService.MakeInternalTransfer(transfer_object, staffId)
       console.log('result is: ', result)
 
       if (!result) return res.status(400).json({ message: 'wrong data' })

@@ -48,6 +48,7 @@ router.put('/personal_area/verification/', authChecker, userController.personalA
 // router.get('/internal_wallets/get_user_internal_wallet/', authChecker, userController.getInternalWallet)
 
 // user money transfer logic
+router.post('/wallets/generate_internal_wallets/', authChecker, userController.generateUserWallets) // generate wallets for internal transfers
 router.put('/deposit/make_deposit/', authChecker, userController.makeDeposit) // create deposit as user
 router.post('/deposit/get_deposit_history/', authChecker, userController.getDepositHistory) // get deposit history
 router.put('/withdraw/make_withdraw/', authChecker, userController.makeWithdrawal) // make withdrawal request as user
@@ -98,7 +99,7 @@ router.post('/staff/domains/get_active_domains/', staffController.getDomainsList
 router.put('/staff/errors/create_new_error/', staffController.createCustomError) // create new error for selected domain
 router.post('/staff/errors/get_all_errors/', staffController.getAllErrors) // get domain errors by domain ID
 
-
+// news ligic
 router.put('/staff/news/news_create/', staffController.newsCreate) // create news for user 
 router.patch('/staff/news/news_edit/', staffController.editNews) // edit news 
 router.post('/staff/news/get_news_list/', staffController.getNewsList) // get news list (if staff => only on onw domain) (if admin or other => find news by any domain)

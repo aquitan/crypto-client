@@ -18,7 +18,6 @@ import internalHistory from '../models/Internal_history.model'
 
 
 
-
 async function generateCodeForGoogle2fa(domain_name: string) {
 	const secretCode = speakeasy.generateSecret({
 		name: domain_name,
@@ -220,62 +219,12 @@ class UserServices {
 	}
 
 
-	async MakeDeposit(transfer_object: any) {
-
-		// ------------
-		// modey api here 
-		// and then save in history
-
-		// save deposit in history
-		await depositHistory.create({
-			userEmail: transfer_object.userEmail,
-			userDomain: transfer_object.domainName,
-			coinName: transfer_object.coinName,
-			cryptoAmount: transfer_object.amountInCrypto,
-			usdAmount: transfer_object.amountInUsd,
-			date: transfer_object.currentDate,
-			address: transfer_object.depositAddress,
-			status: 'pending',
-			userId: transfer_object.userId,
-			staffId: 'self'
-		})
-
-		const curHistory: any = await depositHistory.findOne({
-			date: transfer_object.currentDate
-		})
-		if (!curHistory) return false
-		return true
-	}
-
 	async GetDepositHistory(user_id: string) {
 		const userDepositHistory: any = await depositHistory.find({
-			userId: user_id
 		})
 		console.log('userHistory: ', userDepositHistory);
 		if (!userDepositHistory) return false
 		return userDepositHistory
-	}
-
-	async MakeWithdrawal(transfer_object: any) {
-
-		await withdrawalHistory.create({
-			userEmail: transfer_object.userEmail,
-			userDomain: transfer_object.domainName,
-			coinName: transfer_object.coinName,
-			cryptoAmount: transfer_object.amountInCrypto,
-			usdAmount: transfer_object.amountInUsd,
-			date: transfer_object.currentDate,
-			address: transfer_object.withdrawalAddress,
-			status: transfer_object.withdrawalStatus,
-			userId: transfer_object.userId,
-			staffId: 'self'
-		})
-
-		const curHistory: any = await withdrawalHistory.findOne({
-			date: transfer_object.currentDate
-		})
-		if (!curHistory) return false
-		return true
 	}
 
 	async GetWithdrawalHistory(user_id: string) {
@@ -287,30 +236,6 @@ class UserServices {
 		return userWithdrawalHistory
 	}
 
-	async MakeSwap(transfer_object: any) {
-
-		await swapHistory.create({
-			userEmail: transfer_object.userEmail,
-			userDomain: transfer_object.domainName,
-			coinNameFrom: transfer_object.coinNameFrom,
-			coinNameTo: transfer_object.coinNameTo,
-			cryptoAmountFrom: transfer_object.amountInCryptoFrom,
-			cryptoAmountTo: transfer_object.amountInCryptoTo,
-			usdAmountFrom: transfer_object.amountInUsdFrom,
-			usdAmountTo: transfer_object.amountInUsdTo,
-			date: transfer_object.currentDate,
-			status: transfer_object.swapStatus,
-			userId: transfer_object.userId,
-			staffId: 'self'
-		})
-
-		const curHistory: any = await swapHistory.findOne({
-			date: transfer_object.currentDate
-		})
-		if (!curHistory) return false
-		return true
-	}
-
 	async GetSwapHistory(user_id: string) {
 		const userSwapHistory: any = await swapHistory.find({
 			userId: user_id
@@ -320,40 +245,19 @@ class UserServices {
 		return userSwapHistory
 	}
 
-	async MakeInternalTransfer(transfer_object: any) {
-		// send = false 
-		// received = true
-		// if (transfer_object.transferType === 'send' or 'received')
-
-		await internalHistory.create({
-			userEmail: transfer_object.userEmail,
-			secondUserEmail: transfer_object.secondPartyEmail,
-			userDomain: transfer_object.domainName,
-			coinName: transfer_object.coinName,
-			cryptoAmount: transfer_object.amountInCrypto,
-			usdAmount: transfer_object.amountInUsd,
-			date: transfer_object.currentDate,
-			addressFrom: transfer_object.fromAddress,
-			addressTo: transfer_object.toAddress,
-			transferType: transfer_object.transferType,
-			status: transfer_object.transferStatus,
-			staffId: 'self'
-		})
-
-		const curHistory: any = await internalHistory.findOne({
-			date: transfer_object.currentDate
-		})
-		if (!curHistory) return false
-		return true
-	}
-
 	async GetInternalTransferHistory(user_id: string) {
-		const userInternalTransferHistory: any = await internalHistory.find({
-			userId: user_id
+		const curUser: any = await internalHistory.findOne({
+			_id: user_id,
 		})
-		console.log('userHistory: ', userInternalTransferHistory);
-		if (!userInternalTransferHistory) return false
-		return userInternalTransferHistory
+		console.log('found user is => ', curUser);
+		if (!curUser) return false
+		const userInternalTransfers: any = await internalHistory.find({
+			userEmail: curUser.email,
+			secondUserEmail: curUser.email
+		})
+		console.log('userHistory: ', userInternalTransfers);
+		if (!userInternalTransfers) return false
+		return userInternalTransfers
 	}
 
 	async saveUserLogs(email: string, ipAddress: string, city: string, countryName: string, coordinates: string, browser: string, currentDate: string, user_action: string, user_domain: string) {
