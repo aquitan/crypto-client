@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Col, Container, Row} from "react-bootstrap";
 import {getData, postData} from "../../../services/StaffServices";
 import {store} from "../../../index";
@@ -14,21 +14,26 @@ import {currencyRateChangeIndicator} from "../../../utils/currencyRateChangeIndi
 import CurrencyRates from "../../../components/CurrencyRates/CurrencyRates";
 
 const Dashboard = () => {
+    const [state, setState] = useState()
     const getDashboard = async () => {
         let geodata = await getGeoData()
         geodata.domainName = window.location.host
-        geodata.id = store.userId
+        geodata.id = store.user.id
         const res = await postData('/dashboard/', geodata)
     }
     const navigate = useNavigate()
     useEffect(() => {
         getDashboard()
+        getRates()
     }, [])
 
     if (store.isLoading) {
         return (
             <h1>Loading...</h1>
         )
+    }
+    const getRates = () => {
+        setState(store.domain.domainParams.rateCorrectSum)
     }
 
     return (
@@ -44,7 +49,7 @@ const Dashboard = () => {
                     </Col>
                 </Row>
                 <Row>
-                    <b>Total balance: $ 0</b>
+                    <b>Total balance: $ {store.total}</b>
                 </Row>
             </Row>
 
