@@ -379,7 +379,7 @@ class staffService {
 			rateCorrectSum: data_object.rateCorrectSum,
 			minDepositSum: data_object.minDepositSum,
 			minWithdrawalSum: data_object.minWithdrawalSum,
-			currencySwapFee: data_object.currencySwapFee,
+			coinSwapFee: data_object.currencySwapFee,
 			dateOfDomainCreate: data_object.dateOfDomainCreate,
 			domainId: curDomain.id
 		})

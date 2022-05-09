@@ -232,6 +232,7 @@ class UserServices {
 
 	async GetDepositHistory(user_id: string) {
 		const userDepositHistory: any = await depositHistory.find({
+			userId: user_id
 		})
 		console.log('userHistory: ', userDepositHistory);
 		if (!userDepositHistory) return false

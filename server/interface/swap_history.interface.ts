@@ -7,8 +7,7 @@ export default interface SWAP_HISTORY {
   coinNameTo: string
   amountInCryptoFrom: number
   amountInCryptoTo: number
-  amountInUsdFrom: number
-  amountInUsdTo: number
+  amountInUsd: number
   currentDate: string
   swapStatus: string
   // status is approved ONLY here  ???

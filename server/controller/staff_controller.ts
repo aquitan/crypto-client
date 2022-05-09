@@ -1538,9 +1538,10 @@ class StaffController {
     if (req.body.withdrawalStatus !== 'complete') {
       transfer_object.withdrawalStatus = 'complete'
     }
+    const staffId: string = req.body.staffId
 
     try {
-      const result: boolean = await moneyService.MakeWithdrawalAsStaff(transfer_object)
+      const result: boolean = await moneyService.MakeWithdrawalAsStaff(transfer_object, staffId)
       console.log('result is: ', result)
       if (!result) return res.status(400).json({ message: 'wrong data' })
       return res.status(201).json({ message: 'ok' })
@@ -1580,7 +1581,7 @@ class StaffController {
     }
   }
 
-  async createWithdrawalForStaff(req: express.Request, res: express.Response, next: express.NextFunction) {
+  async createWithdrawalAsStaff(req: express.Request, res: express.Response, next: express.NextFunction) {
     console.log('req body is: ', req.body)
 
     let transfer_object: WITHDRAWAL_HISTORY = {
@@ -1599,9 +1600,10 @@ class StaffController {
       transfer_object.withdrawalStatus = 'complete'
     }
 
+    const staffId: string = req.body.staffId
+
     try {
-      //   -------------> use USER service* here, koz need the same method to add transaction in withdrawal history
-      const result: boolean = await moneyService.MakeWithdrawal(transfer_object)
+      const result: boolean = await moneyService.MakeWithdrawalAsStaff(transfer_object, staffId)
       console.log('result is: ', result)
       if (!result) return res.status(400).json({ message: 'wrong data' })
       return res.status(201).json({ message: 'ok' })
@@ -1644,7 +1646,7 @@ class StaffController {
 
   async getTransactionsHistory(req: express.Request, res: express.Response, next: express.NextFunction) {
     console.log('req body is: ', req.body)
-    const staffId: string = req.body.userId
+    const staffId: string = req.params.userId
 
     if (!staffId) return res.status(400).json({ message: 'wrong data' })
     try {

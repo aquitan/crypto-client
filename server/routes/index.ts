@@ -106,11 +106,12 @@ router.patch('/staff/news/news_edit/', staffController.editNews) // edit news
 router.post('/staff/news/get_news_list/', staffController.getNewsList) // get news list (if staff => only on onw domain) (if admin or other => find news by any domain)
 
 // transaction logic
-router.put('/staff/users/user_detail/make_withdrawal/')
+router.put('/staff/users/user_detail/make_withdrawal/', staffController.makeWithdrawalForUserAsStaff)
+
 router.put('/staff/create_transaction/create_regular_deposit_transaction/', staffController.createDepositForUserAsStaff) // create deposit for user in your own domain as staff or for any user in project as admin
-router.put('/staff/create_transaction/create_regular_withdrawal_transaction/', staffController.createWithdrawalForStaff) // create approved withdrawal for user in your own domain as staff or for any user in project as admin
-router.put('/staff/create_transaction/create_internal_transfer_as_deposit/', staffController.createInternalTransaction) // reate approved internal withdrawal OR create internal deposit for your account
-router.post('/staff/create_transaction/get_transaction_history/', staffController.getTransactionsHistory) // get history about all transaction in your account
+router.put('/staff/create_transaction/create_regular_withdrawal_transaction/', staffController.makeWithdrawalForUserAsStaff) // create approved withdrawal for user in your own domain as staff or for any user in project as admin
+router.put('/staff/create_transaction/create_internal_transfer_as_staff/', staffController.createInternalTransaction) // reate approved internal withdrawal OR create internal deposit for your account
+router.get('/staff/create_transaction/get_transaction_history/:id/', staffController.getTransactionsHistory) // get history about all transaction in your account
 
 
 // router.put('/staff/wallets/create_staff_wallet/', staffController.createStaffWallet) // create staff wallet & staff 2fa checker

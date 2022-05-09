@@ -10,7 +10,7 @@ export default interface INTERNAL_HISTORY {
   currentDate: string
   fromAddress: string
   toAddress: string
-  transferType: string
+  transferType: boolean
   // type is *deposit* OR *withdrawal*
   transferStatus: string
 }

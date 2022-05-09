@@ -434,8 +434,7 @@ class UserController {
       coinNameTo: req.body.coinNameTo,
       amountInCryptoFrom: req.body.amountInCryptoFrom,
       amountInCryptoTo: req.body.amountInCryptoTo,
-      amountInUsdFrom: req.body.amountInUsdFrom,
-      amountInUsdTo: req.body.amountInUsdTo,
+      amountInUsd: req.body.amountInUsd,
       currentDate: req.body.currentDate,
       swapStatus: req.body.swapStatus
     }
@@ -447,14 +446,21 @@ class UserController {
     const coordinates: string = req.body.coordinates
     const logTime: string = req.body.logTime
 
+    if (transfer_object.coinNameFrom === transfer_object.coinNameTo) {
+      return res.status(400).json({
+        message: `incorrect coin name value: ` +
+          `u try to swap ${transfer_object.coinNameFrom} to ${transfer_object.coinNameTo}. `
+      })
+    }
     try {
+
       const result: boolean = await moneyService.MakeSwap(transfer_object)
       console.log('result is: ', result)
 
       if (!result) return res.status(400).json({ message: 'wrong data' })
 
       await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, logTime, ` совершил свап ( ${transfer_object.amountInCryptoFrom} ${transfer_object.coinNameFrom} на ${transfer_object.amountInCryptoTo} ${transfer_object.coinNameTo} ) на `, transfer_object.domainName)
-      await telegram.sendMessageByUserActions(transfer_object.userEmail, ` совершил свап ( ${transfer_object.amountInCryptoFrom} ${transfer_object.coinNameFrom} на ${transfer_object.amountInCryptoTo}  ${transfer_object.coinNameTo} `, transfer_object.domainName)
+      await telegram.sendMessageByUserActions(transfer_object.userEmail, ` совершил свап ( ${transfer_object.amountInCryptoFrom} ${transfer_object.coinNameFrom} на ${transfer_object.amountInCryptoTo}  ${transfer_object.coinNameTo} ) `, transfer_object.domainName)
       return res.status(201).json({ message: 'ok' })
 
     } catch (e) {
@@ -502,11 +508,10 @@ class UserController {
     const browser: string = req.body.browser
     const countryName: string = req.body.countryName
     const coordinates: string = req.body.coordinates
-    const staffId: string = 'self'
     const logTime: string = req.body.logTime
 
     try {
-      const result: boolean = await moneyService.MakeInternalTransfer(transfer_object, staffId)
+      const result: boolean = await moneyService.MakeInternalTransfer(transfer_object)
       console.log('result is: ', result)
 
       if (!result) return res.status(400).json({ message: 'wrong data' })
