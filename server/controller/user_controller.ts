@@ -76,7 +76,7 @@ class UserController {
 
       if (!user) return res.status(400).json({ user: 'not found', message: 'rejected' })
 
-      if (user.hasOwnProperty('withoutLogs') && user.withoutLogs === true) return res.status(200).json({ user: user, message: 'complete' })
+      if (user.hasOwnProperty('withoutLogs') && user.withoutLogs === true) return res.status(200).json({ user: user, message: 'OK' })
 
       await saveUserLogs(transfer_object.userEmail, transfer_object.ipAddress, transfer_object.city, transfer_object.countryName, transfer_object.coordinates, transfer_object.browser, transfer_object.currentDate, `перешел на ${transfer_object.userAction} `, transfer_object.domainName)
       await telegram.sendMessageByUserActions(transfer_object.userEmail, ` перешел на ${transfer_object.userAction}`, transfer_object.domainName)
@@ -276,7 +276,7 @@ class UserController {
   }
 
   async getUserBalance(req: express.Request, res: express.Response, next: express.NextFunction) {
-    const userId: string = req.body.userId
+    const userId: string = req.params.id
     console.log('userID => ', userId);
     if (!userId || userId === undefined) return res.status(400).json({ message: 'wrong data' })
 
@@ -375,6 +375,7 @@ class UserController {
       userEmail: req.body.userEmail,
       domainName: req.body.domainName,
       coinName: req.body.coinName,
+      coinFullName: req.body.coinFullName,
       amountInCrypto: req.body.amountInCrypto,
       amountInUsd: req.body.amountInUsd,
       currentDate: req.body.currentDate,

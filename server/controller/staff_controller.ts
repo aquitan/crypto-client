@@ -1519,6 +1519,38 @@ class StaffController {
   }
 
 
+
+  async makeWithdrawalForUserAsStaff(req: express.Request, res: express.Response, next: express.NextFunction) {
+    console.log('req body is: ', req.body)
+
+    let transfer_object: WITHDRAWAL_HISTORY = {
+      userId: req.body.userId,
+      userEmail: req.body.userEmail,
+      domainName: req.body.domainName,
+      coinName: req.body.coinName,
+      coinFullName: req.body.coinFullName,
+      amountInCrypto: req.body.amountInCrypto,
+      amountInUsd: req.body.amountInUsd,
+      currentDate: req.body.currentDate,
+      withdrawalAddress: req.body.withdrawalAddress,
+      withdrawalStatus: req.body.withdrawalStatus
+    }
+    if (req.body.withdrawalStatus !== 'complete') {
+      transfer_object.withdrawalStatus = 'complete'
+    }
+
+    try {
+      const result: boolean = await moneyService.MakeWithdrawalAsStaff(transfer_object)
+      console.log('result is: ', result)
+      if (!result) return res.status(400).json({ message: 'wrong data' })
+      return res.status(201).json({ message: 'ok' })
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
+
   async createDepositForUserAsStaff(req: express.Request, res: express.Response, next: express.NextFunction) {
     console.log('req body is: ', req.body)
 
@@ -1537,7 +1569,7 @@ class StaffController {
     const staffId: string = req.body.staffId
 
     try {
-      //   -------------> use USER service* here, koz need the same method to create deposit 
+
       const result: boolean = await moneyService.MakeDepositAsStaff(transfer_object, staffId)
       console.log('operation result is: ', result)
       if (!result) return ApiError.ServerError()
@@ -1556,6 +1588,7 @@ class StaffController {
       userEmail: req.body.userEmail,
       domainName: req.body.domainName,
       coinName: req.body.coinName,
+      coinFullName: req.body.coinFullName,
       amountInCrypto: req.body.amountInCrypto,
       amountInUsd: req.body.amountInUsd,
       currentDate: req.body.currentDate,
@@ -1598,7 +1631,7 @@ class StaffController {
     const staffId: string = req.body.staffId
 
     try {
-      //   -------------> use USER service* here, koz need the same method to add internal transfers history
+
       const result: boolean = await moneyService.MakeInternalTransfer(transfer_object, staffId)
       console.log('result is: ', result)
       if (!result) return res.status(400).json({ message: 'wrong data' })
@@ -1615,7 +1648,7 @@ class StaffController {
 
     if (!staffId) return res.status(400).json({ message: 'wrong data' })
     try {
-      //   -------------> use USER service* here, koz need the same method to get transactions history 
+
       const deposit: any = await UserServices.GetDepositHistory(staffId)
       const withdraw: any = await UserServices.GetWithdrawalHistory(staffId)
       const internal: any = await UserServices.GetInternalTransferHistory(staffId)

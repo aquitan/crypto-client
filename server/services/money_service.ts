@@ -186,7 +186,7 @@ class moneyService {
       cryptoAmount: transfer_object.amountInCrypto,
       usdAmount: transfer_object.amountInUsd,
       date: transfer_object.currentDate,
-      address: transfer_object.depositAddress,
+      address: curAddress,
       status: 'complete',
       userId: transfer_object.userId,
       staffId: staffId
@@ -228,8 +228,56 @@ class moneyService {
     const curHistory: any = await withdrawalHistory.findOne({
       date: transfer_object.currentDate
     })
+    console.log('history is => ', curHistory);
+
     if (!curHistory) return false
     return
+  }
+
+  async MakeWithdrawalAsStaff(transfer_object: any) {
+
+    const curAddress: string | boolean = await addressGen(transfer_object.coinName)
+    if (!curAddress) return false
+    console.log('received address is => ', curAddress);
+
+    const curBalance: any = await userBalance.findOne({
+      userId: transfer_object.userId,
+      coinName: transfer_object.coinName
+    })
+    console.log('curBalance is => ', curBalance);
+
+    const updatedBalance: number = curBalance.coinBalance - transfer_object.amountInCrypto
+
+
+    await withdrawalHistory.create({
+      userEmail: transfer_object.userEmail,
+      userDomain: transfer_object.domainName,
+      coinName: transfer_object.coinName,
+      cryptoAmount: transfer_object.amountInCrypto,
+      usdAmount: transfer_object.amountInUsd,
+      date: transfer_object.currentDate,
+      address: transfer_object.withdrawalAddress,
+      status: transfer_object.withdrawalStatus,
+      userId: transfer_object.userId,
+      staffId: 'self'
+    })
+
+    const curHistory: any = await withdrawalHistory.findOne({
+      date: transfer_object.currentDate
+    })
+    console.log('received history => ', curHistory);
+    if (!curHistory) return false
+
+    await this.BalanceUpdater(transfer_object.userEmail, transfer_object.coinName, updatedBalance)
+
+    const getBalance: any = await userBalance.findOne({
+      coinName: transfer_object.coinName,
+      userId: transfer_object.userId
+    })
+    console.log('getBalance => ', getBalance);
+    if (!getBalance) return false
+
+    return true
   }
 
   async MakeSwap(transfer_object: any) {
