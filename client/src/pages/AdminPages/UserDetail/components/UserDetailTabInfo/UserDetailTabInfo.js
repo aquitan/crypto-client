@@ -29,14 +29,14 @@ const UserDetailTabInfo = ({data}) => {
     }
     console.log('props', data)
     const onSubmit = async (datas) => {
-        datas.curError = +errorId
+        datas.curError = +datas.curError
         datas.domainName = window.location.host
         datas.staffId = store.userId
         datas.staffEmail = store.userEmail
         datas.userEmail = data.user.base_data.email
         console.log('user-error-data', datas)
 
-        let res = await patchData('/staff/users/user_detail/update_error_for_user/', datas)
+        // let res = await patchData('/staff/users/user_detail/update_error_for_user/', datas)
     }
 
     const toArr = () => {
@@ -44,7 +44,6 @@ const UserDetailTabInfo = ({data}) => {
         let arr = []
         for (let i = 0; i <= err.length - 1; i++) {
             let obj = {
-                value: err[i].errorName,
                 text: err[i].errorName,
                 id: i + 1
             }
@@ -54,16 +53,14 @@ const UserDetailTabInfo = ({data}) => {
         return arr
     }
 
-
-
-    const onChangeSelect = (e) => {
-        console.log('target', e.target)
-        const index = e.target.selectedIndex;
-        const el = e.target.childNodes[index]
-        const option =  el.getAttribute('id');
-        setErrorId(option)
-        console.log('option', option)
-    }
+    // const onChangeSelect = (e) => {
+    //     console.log('target', e.target)
+    //     const index = e.target.selectedIndex;
+    //     const el = e.target.childNodes[index]
+    //     const option =  el.getAttribute('id');
+    //     setErrorId(option)
+    //     console.log('option', option)
+    // }
 
     if (!data) {
         return <h1>Loading</h1>
@@ -158,7 +155,7 @@ const UserDetailTabInfo = ({data}) => {
                     <Row className={cls.users_detail_table_row}>
                         <p>Текущая ошибка</p>
                         <Col>
-                            <Select {...register('curError')} onChange={onChangeSelect} options={toArr()}/>
+                            <Select {...register('curError')} classname={'admin-square'} options={toArr()}/>
                         </Col>
                         <Col>
                             <AdminButton onClick={handleSubmit(onSubmit)} classname='green'>Использовать</AdminButton>

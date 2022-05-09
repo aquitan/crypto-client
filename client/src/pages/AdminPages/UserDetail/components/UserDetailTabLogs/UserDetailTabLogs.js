@@ -11,7 +11,6 @@ const UserDetailTabLogs = ({data}) => {
         return <h1>Loading</h1>
     }
     const reversedLogs = data.user_logs.slice(0).reverse()
-    console.log('logs-data', reversedLogs)
     return (
         <div>
             <Col className='col-12 col-md-3 mb-3 mt-3'>

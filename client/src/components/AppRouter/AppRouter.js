@@ -11,17 +11,24 @@ import {useQuery} from 'react-query'
 const AppRouter = () => {
     const {store} = useContext(AuthContext)
     const navigate = useNavigate()
-    // const {isLoading, data, error} = useQuery('notif query', async () => {
-    //     const res = await postData('/get_domain_params/', {domainName: window.location.host})
-    //     store.setDepositFee(res.data.domainInfo.domainParams.depositFee)
-    //     store.setDomain(res.data.domainInfo)
-    // })
+    const {isLoading, data, error} = useQuery('notif query', async () => {
+        const res = await postData('/get_domain_params/', {domainName: window.location.host})
+        if (res.data) {
+            const balance = await getData(`/get_user_balance/${store.user.id}`)
+            console.log('balance',  balance)
+        }
+
+        // store.setBalance(balance.data)
+        store.setDepositFee(res.data.domainInfo.domainParams.depositFee)
+        store.setDomain(res.data.domainInfo)
+    })
 
     useEffect( () => {
         if (localStorage.getItem('token')) {
             store.checkAuth()
         }
         if (!localStorage.getItem('token')) {
+            console.log('to landing')
             navigate('/')
         }
         sendDomainName()

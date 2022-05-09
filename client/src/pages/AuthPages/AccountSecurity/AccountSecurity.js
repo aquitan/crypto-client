@@ -166,6 +166,10 @@ const AccountSecurity = (props) => {
                 </Form>
             </Modal>
 
+            <Modal active={state.isStatus} title={'Password successfully changed!'}>
+
+            </Modal>
+
             <h2 className='mt-3 mb-3'>Account security</h2>
             <Row className='mb-4'>
                 <Col className='text-center p-1'>

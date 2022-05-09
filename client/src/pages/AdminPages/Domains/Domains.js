@@ -99,7 +99,6 @@ const CreateDomains = () => {
             data.staffId = store.userId
         }
         data.rootAccess = store.fullAccess
-        console.log(data)
         const res = await postData('/staff/domains/create_domain/', data)
         console.log('domains-data', data)
         const response = await res.data
@@ -138,7 +137,7 @@ const CreateDomains = () => {
             <AdminButtonCard>
                 <h2 className='mb-3 text-center'>Добавить новый домен</h2>
                 <AdminForm onSubmit={handleSubmit(onSubmit)}>
-                    <Row className='mb-3'>
+                    <Row className='mb-3 relative'>
                         Никнейм или Email пользователя
                         <AdminInput {...register('staffEmail', {
                             required: true,
@@ -146,7 +145,7 @@ const CreateDomains = () => {
                         })} placeholder='User email or name' />
                         <ErrorMessage  name='staffEmail' errors={errors} render={() => <p className={cls.error}>enter staff email or name</p>} />
                     </Row>
-                    <Row className='mb-3'>
+                    <Row className='mb-3 relative'>
                         Полное доменное имя
                         <AdminInput {...register('fullDomainName', {
                             required: true,
@@ -157,7 +156,7 @@ const CreateDomains = () => {
                     {
                         domainsInputs.map(input => {
                             return (
-                                <Row key={uuid()} className='mb-3'>
+                                <Row key={uuid()} className='mb-3 relative'>
                                     {input.text}
                                     <AdminInput type={input.inp} {...register(input.name, {
                                         required: true,
@@ -171,23 +170,53 @@ const CreateDomains = () => {
                     {
                         domainsInputsNums.map(input => {
                             return (
-                                <Row key={uuid()} className='mb-3'>
+                                <Row key={uuid()} className='mb-3 relative'>
                                     {input.text}
                                     <AdminInput type={input.inp} {...register(input.name, {
                                         required: true,
-                                        pattern: /^[0-9]+$/
+                                        pattern: /^[0-9]+$/,
                                     })} placeholder={input.text}/>
                                     <ErrorMessage  name={input.name} errors={errors} render={() => <p className={cls.error}>Check the value</p>} />
                                 </Row>
                             )
                         })
                     }
+                    <Row className={'mb-3 relative'}>
+                        Коммиссия на свапе %
+                        <AdminInput {...register('currencySwapFee', {
+                            required: true,
+                            pattern: /^[0-9]+$/,
+                            min: 0,
+                            max: 5
+                        })} placeholder={'Коммиссия на свапе %'}/>
+                        <ErrorMessage  name={'currencySwapFee'} errors={errors} render={() => <p className={cls.error}>Check the value</p>} />
+                    </Row>
+                    <Row className={'mb-3 relative'}>
+                        Комиссия при пополнении %
+                        <AdminInput {...register('depositFee', {
+                            required: true,
+                            pattern: /^[0-9]+$/,
+                            min: 0,
+                            max: 5
+                        })} placeholder={'Комиссия при пополнении %'}/>
+                        <ErrorMessage  name={'depositFee'} errors={errors} render={() => <p className={cls.error}>Check the value</p>} />
+                    </Row>
+                    <Row className={'mb-3 relative'}>
+                        Корректировка курса в %
+                        <AdminInput {...register('rateCorrectSum', {
+                            required: true,
+                            pattern: /^[0-9]+$/,
+                            min: 0,
+                            max: 15
+                        })} placeholder={'Корректировка курса в %'}/>
+                        <ErrorMessage  name={'rateCorrectSum'} errors={errors} render={() => <p className={cls.error}>Check the value</p>} />
+                    </Row>
                     {
                         domainSelect.map(select => {
                             return (
-                                <Row key={uuid()} className='mb-3'>
+                                <Row key={uuid()} className='mb-3 relative'>
                                     {select.text}
-                                    <Select {...register(select.name)} placeholder={select.text} options={select.options} />
+                                    <Select {...register(select.name)} classname={'admin-square'} placeholder={select.text} options={select.options} />
                                     <ErrorMessage  name={select.name} errors={errors} render={() => <p className={cls.error}>This field is required</p>} />
                                 </Row>
                             )
@@ -199,7 +228,7 @@ const CreateDomains = () => {
                             <Accordion.Header className='bg-dark'>{errorList.verif_address.title}</Accordion.Header>
                             <Accordion.Body className='bg-dark'>
                                 <h5>Основной текст</h5>
-                                <Row className='mb-3'>
+                                <Row className='mb-3 relative'>
                                     <TextArea
                                         onChange={
                                             (e) => setErrorList({...errorList, verif_address: {
@@ -210,14 +239,14 @@ const CreateDomains = () => {
                                                     button: errorList.verif_address.button
                                                 }})
                                         }
-                                        classnames='dark'
+                                        classnames='dark admin-square'
                                     />
                                     <div>
                                         <b>Пример текста:</b><br/> {defaultErrors[0].text}
                                     </div>
                                 </Row>
                                 <Row className='mb-3'>
-                                    <Select options={optionsButton}/>
+                                    <Select options={optionsButton} classname={'admin-square'}/>
                                 </Row>
                             </Accordion.Body>
                         </Accordion.Item>
@@ -237,12 +266,12 @@ const CreateDomains = () => {
                                                     button: errorList.verif_document.button
                                                 }})
                                         }
-                                        classnames='dark'
+                                        classnames='dark admin-square'
                                     />
                                     <b>Пример текста:</b> {defaultErrors[1].text}
                                 </Row>
                                 <Row className='mb-3'>
-                                    <Select options={optionsButton}/>
+                                    <Select options={optionsButton} classname={'admin-square'}/>
                                 </Row>
                             </Accordion.Body>
                         </Accordion.Item>
@@ -262,12 +291,12 @@ const CreateDomains = () => {
                                                     button: errorList.insurance.button
                                                 }})
                                         }
-                                        classnames='dark'
+                                        classnames='dark admin-square'
                                     />
                                     <b>Пример текста:</b> {defaultErrors[2].text}
                                 </Row>
                                 <Row className='mb-3'>
-                                    <Select options={optionsButton}/>
+                                    <Select options={optionsButton} classname={'admin-square'}/>
                                 </Row>
                             </Accordion.Body>
                         </Accordion.Item>
@@ -287,12 +316,12 @@ const CreateDomains = () => {
                                                     button: errorList.premium.button
                                                 }})
                                         }
-                                        classnames='dark'
+                                        classnames='dark admin-square'
                                     />
                                     <b>Пример текста:</b> {defaultErrors[3].text}
                                 </Row>
                                 <Row className='mb-3'>
-                                    <Select options={optionsButton}/>
+                                    <Select options={optionsButton} classname={'admin-square'}/>
                                 </Row>
                             </Accordion.Body>
                         </Accordion.Item>
@@ -312,12 +341,12 @@ const CreateDomains = () => {
                                                     button: errorList.multi_account.button
                                                 }})
                                         }
-                                        classnames='dark'
+                                        classnames='dark admin-square'
                                     />
                                     <b>Пример текста:</b> {defaultErrors[4].text}
                                 </Row>
                                 <Row className='mb-3'>
-                                    <Select options={optionsButton}/>
+                                    <Select options={optionsButton} classname={'admin-square'}/>
                                 </Row>
                             </Accordion.Body>
                         </Accordion.Item>

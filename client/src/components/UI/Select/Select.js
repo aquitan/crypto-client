@@ -21,7 +21,7 @@ const Select = forwardRef((
         <select ref={ref} className={classes} {...attr}>
             {
                 options.map(option => {
-                    return <option key={uuid()} id={option.id}  value={option.value}>{option.text}</option>
+                    return <option key={uuid()} id={option.id}  value={option.id ? option.id : option.value}>{option.text}</option>
                 })
             }
         </select>

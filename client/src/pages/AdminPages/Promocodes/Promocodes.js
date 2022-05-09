@@ -37,6 +37,18 @@ const Promocodes = () => {
         {value: 'BCH', text: 'BCH'},
         {value: 'USDT', text: 'USDT'},
     ]
+    const promoAmount = [
+        {text: 1, id: 1},
+        {text: 2, id: 2},
+        {text: 3, id: 3},
+        {text: 4, id: 4},
+        {text: 5, id: 5},
+        {text: 6, id: 6},
+        {text: 7, id: 7},
+        {text: 8, id: 8},
+        {text: 9, id: 9},
+        {text: 10, id: 10},
+    ]
 
     function getRandom(min, max) {
         return (Math.random() * (max - min) + min / 1).toFixed(3);
@@ -182,17 +194,23 @@ const Promocodes = () => {
                     </Row>
                     <Row>
                         <Col className='col-12 col-md-6 mb-3'>
-                            <AdminInput {...register('counter', {
+                            {/*<AdminInput {...register('counter', {*/}
+                            {/*    required: true,*/}
+                            {/*    message: 'Заполните поле'*/}
+                            {/*})} placeholder='Кол-во промокодов' />*/}
+
+                            <Select {...register('counter', {
                                 required: true,
                                 message: 'Заполните поле'
-                            })} placeholder='Кол-во промокодов' />
+                            })} classname={'admin-square'} options={promoAmount} />
+
                             <ErrorMessage  name='counter' errors={errors} render={() => <p className={error.error}>Заполните поле</p>} />
                         </Col>
                         <Col className='col-12 col-md-6 mb-3'>
                             <Select options={currentDomains} {...register('domainName', {
                                 required: true,
                                 message: 'Заполните поле'
-                            })} />
+                            })} classname={'admin-square'} />
                             <ErrorMessage  name='domainName' errors={errors} render={() => <p className={error.error}>Заполните поле</p>} />
                         </Col>
                     </Row>
@@ -211,7 +229,7 @@ const Promocodes = () => {
                             <Select {...register('currency', {
                                 required: true,
                                 message: 'Выберите валюту'
-                            })} options={options} />
+                            })} classname={'admin-square'} options={options} />
                             <ErrorMessage  name='currency' errors={errors} render={() => <p className={error.error}>Только английские буквы</p>} />
                         </Col>
                     </Row>

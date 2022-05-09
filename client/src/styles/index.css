@@ -24,6 +24,10 @@ body *::-webkit-scrollbar {
   display: none;
 }
 
+.relative {
+  position: relative;
+}
+
 @media (max-width: 680px) {
   .admin-black-card {
     padding: 5px;

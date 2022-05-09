@@ -35,12 +35,17 @@ const Dashboard = () => {
         <Container>
             <CurrencyRates/>
             <Row className='mb-3'>
-                <Col className='col-1'>
-                    <h5>Welcome!</h5>
-                </Col>
-                <Col>
-                    <span>{store.user.name ? store.user.name : store.userEmail}</span>
-                </Col>
+                <Row>
+                    <Col className='col-1'>
+                        <h5>Welcome!</h5>
+                    </Col>
+                    <Col>
+                        <span>{store.user.name ? store.user.name : store.userEmail}</span>
+                    </Col>
+                </Row>
+                <Row>
+                    <b>Total balance: $ 0</b>
+                </Row>
             </Row>
 
             <ButtonCard>

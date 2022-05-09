@@ -29,6 +29,7 @@ export default class Store {
     rates = {}
     ratesChange = {}
     depositFee = 0
+    balance = []
 
 
     constructor() {
@@ -102,6 +103,9 @@ export default class Store {
     }
     setDepositFee(num) {
         this.depositFee = num
+    }
+    setBalance(arr) {
+        this.balance = arr
     }
 
     async login(obj) {
@@ -178,12 +182,12 @@ export default class Store {
         try {
             this.setIsLoading(true)
             const response = await axios.get(`${BASE_URL}/refresh`, {withCredentials: true})
-            localStorage.setItem('token', response.data.accessToken)
-            this.setUserId(response.data.user.id)
-            this.setUserEmail(response.data.user.email)
-            if (response.data.user.isActivated) {
-                this.setIsActivated(true)
-            }
+            // localStorage.setItem('token', response.data.accessToken)
+            // this.setUserId(response.data.user.id)
+            // this.setUserEmail(response.data.user.email)
+            // if (response.data.user.isActivated) {
+            //     this.setIsActivated(true)
+            // }
             if (response.data.user.isStaff) {
                 this.setIsStaff(true)
             }
@@ -203,31 +207,32 @@ export default class Store {
                 this.setAuth(true)
                 this.setIsActivated(true)
             } else {
-                // if (!this.isBanned) {
-                //     this.setUserId(response.data.user.ID)
-                //     this.setUserEmail(response.data.user.email)
-                //     localStorage.setItem('token', response.data.accessToken)
-                //     if (response.data.user.isActivated) {
-                //         this.setIsActivated(true)
-                //     }
-                //     if (response.data.user.isStaff) {
-                //         this.setIsStaff(true)
-                //     }
-                //     if (response.data.user.isAdmin) {
-                //         this.setIsAdmin(true)
-                //     }
-                //     this.setAuth(true)
-                //     this.setUser(response.data.user)
-                // }
+                if (!this.isBanned) {
+                    this.setUserId(response.data.user.ID)
+                    this.setUserEmail(response.data.user.email)
+                    localStorage.setItem('token', response.data.accessToken)
+                    if (response.data.user.isActivated) {
+                        this.setIsActivated(true)
+                    }
+                    if (response.data.user.isStaff) {
+                        this.setIsStaff(true)
+                    }
+                    if (response.data.user.isAdmin) {
+                        this.setIsAdmin(true)
+                    }
+                    this.setAuth(true)
+                    this.setUser(response.data.user)
+                }
             }
 
         } catch(e) {
             console.log('error---', e)
-            // this.setAuth(false)
-            // this.setIsActivated(false)
-            // this.setIsAdmin(false)
-            // this.setUser({})
-            // this.setFullAccess(false)
+            localStorage.removeItem('token')
+            this.setAuth(false)
+            this.setIsActivated(false)
+            this.setIsAdmin(false)
+            this.setUser({})
+            this.setFullAccess(false)
         } finally {
             this.setIsLoading(false)
         }
