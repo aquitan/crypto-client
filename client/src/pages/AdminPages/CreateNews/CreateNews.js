@@ -77,7 +77,7 @@ const CreateNews = () => {
                                 onChange={(date) => setStartDate(date)} />
                         </Col>
                         <Col className='col-12 col-md-4 mb-3'>
-                            <Select classname='small narrow_select' {...register('domainNews', {
+                            <Select classname={['admin-square']} {...register('domainNews', {
                                 required: true,
                                 pattern: /^[^а-яё]+$/iu
                             })} options={domains} />

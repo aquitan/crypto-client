@@ -9,41 +9,30 @@ import {postData} from "../../../services/StaffServices";
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
 import {store} from "../../../index";
+import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 
 const Profile = () => {
-
-    // const testUser = {
-    //     name: 'user',
-    //     data: {
-    //         email: 'user@email.com',
-    //         ip_address: '123123123'
-    //     }
-    // }
-
-
-    // const [profileData, setProfileData] = useState('')
     const [profileData, setProfileData] = useState()
     const [state, setState] = useState(false)
     const location = useLocation()
 
-    console.log('state profile', profileData)
     const getProfile = async () => {
         let geodata =  await getGeoData()
-        geodata.currentDate = getCurrentDate()
+        geodata.currentDate = getCurrentDate(dateToTimestamp())
         geodata.domainName = window.location.host
         delete geodata.id
         delete geodata.email
-        geodata.userId = store.userId
+        geodata.userId = store.user.id
         geodata.userEmail = store.userEmail
         let userLocation = location.pathname.split(/[\\\/]/)
         if (geodata) geodata.userAction = userLocation[userLocation.length - 1]
 
+        console.log('dataProfile', geodata)
         const res = await postData('/personal_area/profile/', geodata)
         setProfileData(res.data)
         const data = await res.data
-
         setProfileData(data)
-        console.log('dataProfile', data)
+
     }
 
     const checkPromocodeProfile = async () => {

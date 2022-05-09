@@ -69,6 +69,7 @@ const MakeTransactionOuter = ({history}) => {
         data.amountInUsd = getCurCoinName(data.coinName.toLowerCase(), data.amountInCrypto)
         data.currentDate = dateToTimestamp(newDate)
         data.depositStatus = 'pending'
+        data.coinFullName = 'bitcoin'
 
         console.log('log-data', data)
 
@@ -99,11 +100,11 @@ const MakeTransactionOuter = ({history}) => {
                     <AdminForm onSubmit={handleSubmit(onSubmit)}>
                         <Row className='mb-3 flex-items'>
                             <Col className='col-12 col-lg-2 mb-3'>
-                                <Select {...register('transaction')} options={trsType}/>
+                                <Select {...register('transaction')} classname={'admin-square'} options={trsType}/>
                             </Col>
 
                             <Col className='col-12 col-lg-2 mb-3'>
-                                <Select {...register('coinName')} options={optionsCurrency}/>
+                                <Select {...register('coinName')} classname={'admin-square'} options={optionsCurrency}/>
                             </Col>
 
                             <Col className='col-12 col-lg-2'>

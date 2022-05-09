@@ -66,7 +66,7 @@ const StaffErrors = () => {
         console.log('getDomainList ========', res.data.domainsList)
         let arr = []
         if (typeof res.data.domainsList !== "string") {
-            for (let i = 0; i <= res.data.domainsList.length - 1; i++) {
+            for (let i = 0; i <= res.data.domainsList?.length - 1; i++) {
                 let obj = {
                     value: res.data.domainsList[i].domainName,
                     text: res.data.domainsList[i].domainName,
@@ -159,11 +159,11 @@ const StaffErrors = () => {
                   </Row>
                   <Row className='mb-3'>
                       Выбери домен
-                      {state.allDomains ? <Select value={state.allDomains[0]} onChange={onChangeCustDomain} options={state.allDomains} /> : <Preloader/>}
+                      {state.allDomains ? <Select value={state.allDomains[0]} classname={'admin-square'} onChange={onChangeCustDomain} options={state.allDomains} /> : <Preloader/>}
                   </Row>
                   <Row className='mb-3'>
                       Кнопка
-                      <Select {...register('errorButton')} options={optionsButton} classname='' />
+                      <Select {...register('errorButton')} options={optionsButton} classname={'admin-square'} />
                   </Row>
                   <AdminButton classname='green'>Добавить ошибку</AdminButton>
               </AdminForm>
@@ -174,7 +174,7 @@ const StaffErrors = () => {
                 <Row>
                     <Col>
                         {
-                            state.allDomains ? <Select options={state.allDomains} value={state.allDomains[0]} onChange={onChangeDomain} /> : <Preloader/>
+                            state.allDomains ? <Select options={state.allDomains} classname={'admin-square'} value={state.allDomains[0]} onChange={onChangeDomain} /> : <Preloader/>
                         }
                     </Col>
                     <Col>
@@ -186,7 +186,9 @@ const StaffErrors = () => {
                     state.domain ? state.domain.map(error => {
                         return <StaffErrorItem data={error} />
                     })
-                        : <h4>choose domain</h4>
+                        : <Row className='mt-4 mb-4'>
+                            <h4>Выбери домен</h4>
+                        </Row>
                 }
             </AdminButtonCard>
         </Container>

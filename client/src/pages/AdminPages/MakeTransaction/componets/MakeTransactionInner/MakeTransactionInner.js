@@ -59,11 +59,11 @@ const MakeTransactionInner = () => {
                     <AdminForm onSubmit={handleSubmit(onSubmit)}>
                         <Row className='mb-3 flex-items'>
                             <Col className='col-12 col-lg-2 mb-3'>
-                                <Select {...register('transaction')} options={actionType}/>
+                                <Select {...register('transaction')} classname={'admin-square'} options={actionType}/>
                             </Col>
 
                             <Col className='col-12 col-lg-2 mb-3'>
-                                <Select {...register('currency')} options={optionsCurrency}/>
+                                <Select {...register('currency')} classname={'admin-square'} options={optionsCurrency}/>
                             </Col>
 
                             <Col className='col-12 col-lg-2'>

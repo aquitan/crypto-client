@@ -16,10 +16,11 @@ import CustomCheckboxBtn from "../../../../../components/UI/CustomCheckboxBtn/Cu
 import {useNavigate} from "react-router-dom";
 import {onLogin} from "../../../../../utils/onLogin";
 import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
+import moment from "moment";
+import Select from "../../../../../components/UI/Select/Select";
+import {optionsCurrency} from "../../../../../utils/staffConstants";
 
 const UserDetailTabAct = (props) => {
-
-    console.log('props-user act', props)
 
     const navigate = useNavigate()
     const [state, setState] = useState({
@@ -42,7 +43,7 @@ const UserDetailTabAct = (props) => {
         currentDate: dateToTimestamp(),
     }
 
-    const {register: balanceRegister, handleSubmit: balanceHandleSubmit, formState: {errors}} = useForm({
+    const {register: balanceRegister, handleSubmit: handleBalanceSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
     })
     const {register: registerNotif, handleSubmit: handleNotifSubmit, formState: {errors: errors2}} = useForm({
@@ -58,35 +59,64 @@ const UserDetailTabAct = (props) => {
         mode: 'onBlur'
     })
 
+    const getCurCoinName = (coin, bucs) => {
+        if (coin === 'usd' || coin === 'usdt') {
+            return bucs
+        }
+        else {
+            return store.rates[coin] * bucs
+        }
+    }
+
     const changeBalance = async (data) => {
+        console.log('balance', data)
+        data.amountInCrypto = +data.amountInCrypto
+        data.userId = store.userId
+        data.userEmail = store.userEmail
+        data.domainName = window.location.host
+        data.amountInUsd = getCurCoinName(data.coinName.toLowerCase(), data.amountInCrypto)
+        data.currentDate = dateToTimestamp()
+        data.depositStatus = 'pending'
+        data.coinFullName = 'bitcoin'
+        data.userId = store.user.id
+        data.depositAddress = 'alkalksdlaksndlaksd'
+
+        console.log('user id', store.user.id)
+
+        if (data.transaction === 'Deposit') {
+            const res = await putData('/staff/create_transaction/create_regular_deposit_transaction/', data)
+        }
+        if (data.transaction === 'Withdraw') {
+            data.withdrawalAddress = null
+            data.withdrawalStatus = 'complete'
+            delete data.depositAddress
+            delete data.depositStatus
+            const res = await putData('/staff/create_transaction/create_regular_withdrawal_transaction/', data)
+        }
+
         handleCloseModal()
     }
     const changeNotif = async (data) => {
         data.userEmail = store.userEmail
         data.domainName = window.location.host
         const response = await putData('/staff/notifications/create_new_notification/', data)
-        console.log('notif', data)
         handleCloseModal()
     }
     const changePercent = async (data) => {
-        console.log(data)
         // const response = await UserService.postUserDetailData('/123', data)
         handleCloseModal()
     }
     const changeReqruiterName = async (data) => {
         // const response = await UserService.postUserDetailData('/123', data)
-        console.log('chage', data)
         handleCloseModal()
     }
     const changeSupportName = async (data) => {
         delete dataObj.userId
         delete dataObj.userEmail
-        console.log(data)
         const response = await patchData('/staff/users/user_detail/update_staff_support_name/', {
             ...dataObj, updatedName: data.supportName
         })
         handleCloseModal()
-        console.log('reqruiter')
     }
     const makeStaff = async () => {
         dataObj.status =  !btns.isStaff
@@ -94,7 +124,6 @@ const UserDetailTabAct = (props) => {
             dataObj.rootAccess = store.fullAccess
         }
         delete dataObj.userId
-        console.log('data)bject----', dataObj)
         const response = await patchData('/staff/users/user_detail/update_staff_status/', dataObj)
         setBtns({...btns, isStaff: !btns.isStaff})
         handleCloseModal()
@@ -186,7 +215,7 @@ const UserDetailTabAct = (props) => {
             case 'make-staff':
                 return makeStaff;
             case 'balance':
-                return balanceHandleSubmit(changeBalance);
+                return handleBalanceSubmit(changeBalance);
             case 'ip-clear':
                 return makeIpClear;
             case 'email-clear':
@@ -215,6 +244,15 @@ const UserDetailTabAct = (props) => {
         navigate('/')
     }
 
+    const trsType = [
+        {
+            value: 'Deposit', text: 'Deposit'
+        },
+        {
+            value: 'Withdraw', text: 'Withdraw',
+        }
+    ]
+
     if (!props) {
         return <h1>Loading...</h1>
     }
@@ -240,46 +278,43 @@ const UserDetailTabAct = (props) => {
                 <AdminButton onClick={onUserEnter} classname='green'>Войти</AdminButton>
             </AdminButtonCard>
 
+
+
+
             <AdminButtonCard title='Изменение баланса'>
                 <Row className='mb-3'>
                     <Col className='col-12 col-md-2 col-lg-2'>
                         Счёт пользователя:
                     </Col>
                     <Col className='col-12 col-md-6 col-lg-6'>
-                        <Form.Select {...balanceRegister('wallet')} aria-label="Default select example">
-                            <option value="BTC">BTC</option>
-                            <option value="ETH">ETH</option>
-                        </Form.Select>
+                        <Select {...balanceRegister('coinName')} classname={'admin-square'} options={optionsCurrency}/>
                     </Col>
                 </Row>
                 <Row className='mb-3'>
                     <Col className='col-12 col-md-2 col-lg-2'>
                         Баланс кошелька:
                     </Col>
-                    <Col className='col-12 col-md-6 col-lg-6'>
-                        <AdminInput {...balanceRegister('balance')} name='balance' placeholder='balance' value='2.0'/>
-                    </Col>
+                    {/*<Col className='col-12 col-md-6 col-lg-6'>*/}
+                    {/*    <AdminInput {...balanceRegister('balance')} placeholder='balance'/>*/}
+                    {/*</Col>*/}
                 </Row>
+                {/*<Row className='mb-3'>*/}
+                {/*    <Col className='col-12 col-md-2 col-lg-2'>*/}
+                {/*        Нотификация:*/}
+                {/*    </Col>*/}
+                {/*    <Col className='col-12 col-md-6 col-lg-6'>*/}
+                {/*        <AdminInput {...balanceRegister('notification', {*/}
+                {/*            required: false,*/}
+                {/*            pattern: /^[^а-яё]+$/iu*/}
+                {/*        })} name='notification' placeholder='This your notif text'/>*/}
+                {/*    </Col>*/}
+                {/*</Row>*/}
                 <Row className='mb-3'>
-                    <Col className='col-12 col-md-2 col-lg-2'>
-                        Нотификация:
-                    </Col>
-                    <Col className='col-12 col-md-6 col-lg-6'>
-                        <AdminInput {...balanceRegister('notification', {
-                            required: true,
-                            pattern: /^[^а-яё]+$/iu
-                        })} name='notification' placeholder='This your notif text'/>
-                    </Col>
-                </Row>
-                <Row>
                     <Col className='col-12 col-md-2 col-lg-2'>
                         Направление:
                     </Col>
                     <Col className='col-12 col-md-6 col-lg-6'>
-                        <Form.Select className='mb-3' {...balanceRegister('type')} aria-label="Default select example">
-                            <option value="deposit">Пополнение</option>
-                            <option value="withdraw">Снятие</option>
-                        </Form.Select>
+                        <Select {...balanceRegister('transaction')} classname={'admin-square'} options={trsType}/>
                     </Col>
                 </Row>
                 <Row className='mb-3'>
@@ -287,7 +322,7 @@ const UserDetailTabAct = (props) => {
                         Сумма:
                     </Col>
                     <Col className='col-12 col-md-6 col-lg-6'>
-                        <AdminInput {...balanceRegister('sum')} name='sum' placeholder='0' />
+                        <AdminInput {...balanceRegister('amountInCrypto')} placeholder='0' />
                     </Col>
                 </Row>
                 <Row>
@@ -295,6 +330,9 @@ const UserDetailTabAct = (props) => {
                 </Row>
 
             </AdminButtonCard>
+
+
+
 
             <AdminButtonCard title='Нотификации'>
                 <Row>
