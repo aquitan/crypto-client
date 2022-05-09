@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import {Card, Col, Container, Row, Table} from "react-bootstrap";
 import {store} from "../../../index";
@@ -17,9 +17,16 @@ import Form from "../../../components/UI/Form/Form";
 import error from "../../../styles/Error.module.scss";
 import {ErrorMessage} from "@hookform/error-message";
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
+import {getData, postData, putData} from "../../../services/StaffServices";
+import {dateToTimestamp} from "../../../utils/dateToTimestamp";
+import {emailValidate} from "../../../utils/checkEmail";
+import Preloader from "../../../components/UI/Preloader/Preloader";
+import {countCryptoTarget, getCurCoinName, getCurCoinVal, getCurValUsd, getValue} from "../../../utils/countCryptos";
 
 const InternalSwap = () => {
     const cx = classNames.bind(cls)
+    const [balance, setBalance] = useState([])
+    const [history, setHistory] = useState([])
     const {register, handleSubmit, setError, formState: {errors, isValid, isDirty}} = useForm({
         mode: "onBlur",
         defaultValues: {
@@ -31,20 +38,15 @@ const InternalSwap = () => {
         error: ''
     })
     const [checked, setChecked] = useState(false)
-    const options = [
-        {value: 0.2748991, currency: 'BTC'},
-        {value: 0.1123124, currency: 'ETH'},
-        {value: 0.000123, currency: 'BCH'},
-        {value: 0.432321, currency: 'USDT'},
-    ]
+
     const [state, setState] = useState({
         initial: {
-            value: options[0].value,
-            currency: options[0].currency,
+            value: 123123123,
+            currency: 'btc',
         },
         target: {
-            value: options[0].value,
-            currency: options[0].currency,
+            value: 123123123,
+            currency: 'btc',
         }
     })
     const [openList, setOpenList] = useState({
@@ -99,84 +101,158 @@ const InternalSwap = () => {
         setActions({...actions, percent: val1 + val2})
     }
 
-    const onSubmit = (data) => {
-        data.initialValue = state.initial.value
-        data.targetValue = state.target.value
-        data.initialCurrency = state.initial.currency
-        data.targetCurrency = state.target.currency
-        console.log(data)
+    const getCurCoinName = (coin, bucs) => {
+        if (coin === 'usd' || coin === 'usdt') {
+            return bucs
+        }
+        else {
+            return store.rates[coin] * bucs
+        }
     }
-    console.log('isValid', !isValid)
-    console.log('isDirty', isDirty)
-    console.log('checked', !checked)
+
+    useEffect(() => {
+        getBalance()
+        getSwapHistory()
+    }, [])
+
+    const getBalance = async () => {
+        const res = await getData(`/get_user_balance/${store.user.id}`)
+        setBalance(res.data)
+    }
+
+    const onSubmit = async (data) => {
+
+        data.userId = store.user.id
+        data.userEmail = store.userEmail
+        data.domainName = window.location.host
+        data.coinNameFrom = state.initial.currency
+        data.coinNameTo = state.target.currency
+        data.amountInCryptoFrom = +data.amount + (+data.amount / 100 * chekPercent())
+        data.amountInCryptoTo = getValue(state.initial.currency.toLowerCase(), state.target.currency.toLowerCase(), +data.amount)
+        data.amountInUsdFrom = getCurValUsd(state.initial.currency.toLowerCase(), +data.amount)
+        data.amountInUsdTo = getCurValUsd(state.target.currency.toLowerCase(), getValue(state.initial.currency.toLowerCase(), state.target.currency.toLowerCase(), +data.amount, ))
+        data.currentDate = dateToTimestamp()
+        data.swapStatus = 'pending'
+
+        delete data.amount
+        delete data.initialValue
+        delete data.targetValue
+        delete data.initialCurrency
+        delete data.targetCurrency
+
+        console.log('sent', data)
+        const res = await putData('/swap/make_swap/', data)
+
+        if (res.status) {
+            getSwapHistory()
+        }
+
+    }
+
+    const getSwapHistory = async () => {
+        const res = await postData('/swap/get_swap_history/', {userId: store.user.id})
+        setHistory(res.data.swapHistory)
+    }
+
+    const chekPercent = () => {
+
+        if (store.domain.domainParams.coinSwapFee === 1) {
+            return 0.01
+        } else if (store.domain.domainParams.coinSwapFee === 2) {
+            return 0.02
+        } else if (store.domain.domainParams.coinSwapFee === 3) {
+            return 0.03
+        } else if (store.domain.domainParams.coinSwapFee === 4) {
+            return 0.04
+        } else if (store.domain.domainParams.coinSwapFee === 5) {
+            return 0.05
+        }
+    }
+
+    console.log('chekPercent', chekPercent())
+
     return (
         <Container>
             <Row>
                 <Col className='col-12 col-lg-6 mb-3'>
                     <ButtonCard>
                         <h2>Internal swap</h2>
-                        <Form classnames='form_big' onSubmit={handleSubmit(onSubmit)}>
-                            <Row className=''>
-                                <Col className='col-12 col-md-6 mb-3'>
-                                    <h5 className='mb-3'>Choose address from</h5>
-                                    <div onClick={onOpenInitialList}
-                                         className={cls.value_box}>{state.initial.value} {state.initial.currency}</div>
-                                    {
-                                        openList.initialList ?
-                                            <ul className={cls.value_list}>
-                                                {options.map(option => <li
-                                                    onClick={() => onChangeInitialValue(option.value, option.currency)}
-                                                    key={uuid()}>{option.value} <span>{option.currency}</span></li>)}
-                                            </ul>
-                                            : null
-                                    }
-                                </Col>
-                                <Col className='col-12 col-md-6 mb-3'>
-                                    <h5 className='mb-3'>Choose address to</h5>
-                                    <div onClick={onOpenTargetList} className={cls.value_box}>{state.target.value} {state.target.currency}</div>
-                                    {
-                                        openList.targetList ?
-                                            <ul className={cls.value_list}>
-                                                {options.map(option => <li
-                                                    onClick={() => onChangeTargetValue(option.value, option.currency)}
-                                                    key={uuid()}>{option.value} <span>{option.currency}</span></li>)}
-                                            </ul>
-                                            : null
-                                    }
-                                </Col>
-                            </Row>
-                            <Row className='mb-3'>
-                                <Col>
-                                    <h5 className='mb-3'>Enter Amount (Fee {store.domain.internalSwapFee}%)</h5>
-                                    <Input {...register('amount', {
-                                        required: 'Check the value',
-                                        pattern: /(\d+(?:\.\d+)?)/,
-                                        message: 'Check the value',
-                                        valueAsNumber: true,
-                                        validate: {
-                                            positive: v => parseFloat(v) > 0,
-                                        },
-                                        onChange: (e) => checkValue(e.target.value),
-                                    })} placeholder='0' />
-                                    {<p className={cls.error}>{errors.amount?.message}</p>}
-                                    <ErrorMessage  name='amount' errors={errors} render={() => <p className={cls.error}>Check values</p>} />
-                                </Col>
-                                {
-                                    isValid ? <span>you will pay {actions.percent}</span> : null
-                                }
-                            </Row>
-                            <Row>
-                                <Col>
-                                    <input onChange={() => setChecked(!checked)} type='checkbox' />
-                                    <Link to={'/terms-and-conditions'}>I accept Terms and conditions</Link>
-                                </Col>
-                            </Row>
-                            <Row className='mt-3'>
-                                <Col className='justify-content-center'>
-                                    <Button classname='small' disabled={!isValid && !checked ? true : false}>Confirm & proceed</Button>
-                                </Col>
-                            </Row>
-                        </Form>
+                        {
+                            balance ?
+                                <Form classnames='form_big' onSubmit={handleSubmit(onSubmit)}>
+                                    <Row className=''>
+                                        <Col className='col-12 col-md-6 mb-3'>
+                                            <h5 className='mb-3'>Choose address from</h5>
+                                            <div onClick={onOpenInitialList}
+                                                 className={cls.value_box}>{state.initial.value} {state.initial.currency}</div>
+                                            {
+                                                openList.initialList ?
+                                                    <ul className={cls.value_list}>
+                                                        {balance.map(option => <li
+                                                            onClick={() => onChangeInitialValue(option.coinBalance.toFixed(3), option.coinName)}
+                                                            key={uuid()}>{option.coinBalance.toFixed(3)} <span>{option.coinName}</span></li>)}
+                                                    </ul>
+                                                    : null
+                                            }
+                                        </Col>
+                                        <Col className='col-12 col-md-6 mb-3'>
+                                            <h5 className='mb-3'>Choose address to</h5>
+                                            <div onClick={onOpenTargetList} className={cls.value_box}>{state.target.value} {state.target.currency}</div>
+                                            {
+                                                openList.targetList ?
+                                                    <ul className={cls.value_list}>
+                                                        {balance.map(option => <li
+                                                            onClick={() => onChangeTargetValue(option.coinBalance.toFixed(3), option.coinName)}
+                                                            key={uuid()}>{option.coinBalance.toFixed(3)} <span>{option.coinName}</span></li>)}
+                                                    </ul>
+                                                    : null
+                                            }
+                                        </Col>
+                                    </Row>
+                                    {/*<Row className='mb-3'>*/}
+                                    {/*    <Col>*/}
+                                    {/*        <Input {...register('secondPartyEmail', {*/}
+                                    {/*            required: 'You must specify email to SignIn',*/}
+                                    {/*            validate: emailValidate,*/}
+                                    {/*            message: 'Email is not valid',*/}
+                                    {/*        })} placeholder='Specify your second party Email' />*/}
+                                    {/*        <ErrorMessage  name='secondPartyEmail' errors={errors} render={() => <p className={cls.error}>Email is not valid</p>} />*/}
+                                    {/*    </Col>*/}
+                                    {/*</Row>*/}
+                                    <Row className='mb-3'>
+                                        <Col>
+                                            <h5 className='mb-3'>Enter Amount (Fee {store.domain.domainParams.coinSwapFee}%)</h5>
+                                            <Input {...register('amount', {
+                                                required: 'Check the value',
+                                                pattern: /(\d+(?:\.\d+)?)/,
+                                                message: 'Check the value',
+                                                valueAsNumber: true,
+                                                validate: {
+                                                    positive: v => parseFloat(v) > 0,
+                                                },
+                                                onChange: (e) => checkValue(e.target.value),
+                                            })} placeholder='0' />
+                                            {<p className={cls.error}>{errors.amount?.message}</p>}
+                                            <ErrorMessage  name='amount' errors={errors} render={() => <p className={cls.error}>Check values</p>} />
+                                        </Col>
+                                        {
+                                            isValid ? <span>you will pay {actions.percent.toFixed(7)}</span> : null
+                                        }
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            <input onChange={() => setChecked(!checked)} type='checkbox' />
+                                            <Link to={'/terms-and-conditions'}>I accept Terms and conditions</Link>
+                                        </Col>
+                                    </Row>
+                                    <Row className='mt-3'>
+                                        <Col className='justify-content-center'>
+                                            <Button classname='small' disabled={!isValid && !checked ? true : false}>Confirm & proceed</Button>
+                                        </Col>
+                                    </Row>
+                                </Form>
+                                : <Preloader />
+                        }
                     </ButtonCard>
                 </Col>
                 <Col className='col-12 col-lg-6 mb-3'>
@@ -185,7 +261,21 @@ const InternalSwap = () => {
                         <Table>
                             <TableHeader classname='table_header-dark' elems={['date', 'operation']} />
                             <TableBody>
-                                <InternalSwapTableItem date={getCurrentDate()} operation={'12312 BTC / 23123 ETH'} />
+
+
+                                {
+                                    history ?
+                                        history.map(item => {
+                                            return <InternalSwapTableItem
+                                                date={getCurrentDate(item.date)}
+                                                amountFrom={item.cryptoAmountFrom.toFixed(5)}
+                                                amountTo={item.cryptoAmountTo.toFixed(5)}
+                                                coinFrom={item.coinNameFrom}
+                                                coinTo={item.coinNameTo}
+                                            />
+                                        })
+                                        : <h3>No data</h3>
+                                }
                             </TableBody>
                         </Table>
                     </ButtonCard>

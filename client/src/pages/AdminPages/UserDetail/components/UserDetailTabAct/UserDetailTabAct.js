@@ -91,7 +91,7 @@ const UserDetailTabAct = (props) => {
             data.withdrawalStatus = 'complete'
             delete data.depositAddress
             delete data.depositStatus
-            const res = await putData('/staff/create_transaction/create_regular_withdrawal_transaction/', data)
+            const res = await putData('/staff/users/user_detail/make_withdrawal/', data)
         }
 
         handleCloseModal()

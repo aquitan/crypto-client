@@ -12,10 +12,10 @@ export const dropdownLinks = [
         name: 'Deposit', to: '/deposit'
     },
     {
-        name: 'Internal Swap', to: '/internal-swap'
+        name: 'Currency Swap', to: '/internal-swap'
     },
     {
-        name: 'Internal Addresses', to: '/internal-addresses'
+        name: 'Internal Transfers', to: '/internal-addresses'
     },
     {
         name: 'Support', to: '/support'

@@ -2,11 +2,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Col, Row} from "react-bootstrap";
 
-const InternalSwapTableItem = ({date, operation}) => {
+const InternalSwapTableItem = ({date, operation, coinFrom, coinTo, amountFrom, amountTo}) => {
     return (
-        <Row>
+        <Row style={{color: '#fff'}}>
             <Col>{date}</Col>
-            <Col>{operation}</Col>
+            <Col>
+                {amountFrom} {coinFrom} &#8594; {amountTo} {coinTo}
+            </Col>
         </Row>
     )
 }

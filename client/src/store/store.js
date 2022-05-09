@@ -30,6 +30,7 @@ export default class Store {
     ratesChange = {}
     depositFee = 0
     balance = []
+    total = 0
 
 
     constructor() {
@@ -106,6 +107,9 @@ export default class Store {
     }
     setBalance(arr) {
         this.balance = arr
+    }
+    setTotal(num) {
+        this.total = num
     }
 
     async login(obj) {

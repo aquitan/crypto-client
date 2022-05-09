@@ -17,6 +17,7 @@ import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
 import {postData, putData} from "../../../services/StaffServices";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
+import TableItemUser from "../../../components/UI/TableItemUser/TableItemUser";
 const Withdraw = () => {
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
@@ -28,7 +29,7 @@ const Withdraw = () => {
     }, [])
 
     const getHistoryDeposit = async () => {
-        const res = await postData('/withdraw/get_withdrawal_history/', {userId: store.userId})
+        const res = await postData('/withdraw/get_withdrawal_history/', {userId: store.user.id})
         setHistory(res.data.withdrawHistory)
     }
     const [state, setState] = useState({
@@ -134,23 +135,24 @@ const Withdraw = () => {
                             <Col>Status</Col>
                             <Col></Col>
                         </Row>
-                        {
-                            history ?
-                                history.map(item => {
-                                    return (
-                                        <Row className={'mt-3 mb-3'}>
-                                            <Col className='col-3'>{getCurrentDate(item.data)}</Col>
-                                            <Col className='col-3'>${item.usdAmount}/ ({item.cryptoAmount}/ {item.coinName})</Col>
-                                            <Col className='col-3'>{item.status}</Col>
-                                            <Col className='col-3'>
-                                                <Button classname='green'>Show</Button>
-                                            </Col>
-                                        </Row>
-                                    )
-                                })
-                                : <h3>No data</h3>
+                        <div style={{maxHeight: 400, overflowY: 'auto', height: '100%'}}>
+                            {
+                                history ?
+                                    history.map(item => {
+                                        return (
+                                            <TableItemUser
+                                                date={getCurrentDate(item.date)}
+                                                usdAmount={item.usdAmount}
+                                                cryptoAmount={item.cryptoAmount}
+                                                coinName={item.coinName}
+                                                status={item.status}
+                                            />
+                                        )
+                                    })
+                                    : <h3>No data</h3>
 
-                        }
+                            }
+                        </div>
                     </ButtonCard>
                 </Col>
             </Row>

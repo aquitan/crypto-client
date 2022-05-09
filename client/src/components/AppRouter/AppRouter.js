@@ -7,18 +7,22 @@ import {getData, postData} from "../../services/StaffServices";
 import {useNavigate} from "react-router-dom";
 import {getRate} from "../../services/CurrencyService";
 import {useQuery} from 'react-query'
+import {findPercent} from "../../utils/findPercent";
+
 
 const AppRouter = () => {
     const {store} = useContext(AuthContext)
+    const [state, setState] = useState([])
+    const [percent, setPercent] = useState([])
     const navigate = useNavigate()
     const {isLoading, data, error} = useQuery('notif query', async () => {
         const res = await postData('/get_domain_params/', {domainName: window.location.host})
         if (res.data) {
             const balance = await getData(`/get_user_balance/${store.user.id}`)
-            console.log('balance',  balance)
+            setState(balance.data)
+            countTotalBalance()
         }
-
-        // store.setBalance(balance.data)
+        setPercent(store.domain.domainParams.rateCorrectSum)
         store.setDepositFee(res.data.domainInfo.domainParams.depositFee)
         store.setDomain(res.data.domainInfo)
     })
@@ -34,6 +38,33 @@ const AppRouter = () => {
         sendDomainName()
         getRates()
     }, [])
+
+    const countTotalBalance = () => {
+        console.log('blance state', state)
+        let total = 0
+        let arr = []
+        state.forEach(item => {
+            if (item.coinName === 'BTC') {
+                let val = item.coinBalance * findPercent(store.rates.btc, percent)
+                arr.push(val)
+            } else if (item.coinName === 'ETH') {
+                let val = item.coinBalance * findPercent(store.rates.eth, percent)
+                arr.push(val)
+            } else if (item.coinName === 'BCH') {
+                let val = item.coinBalance * findPercent(store.rates.bch, percent)
+                arr.push(val)
+            } else if (item.coinName === 'USDT') {
+                let val = item.coinBalance * findPercent(store.rates.usdt, percent)
+                arr.push(val)
+            }
+
+        })
+
+        for (let i = 0; i <= arr.length - 1; i++) {
+            total += arr[i]
+        }
+        store.setTotal(total.toFixed(3))
+    }
 
     const getRates = async () => {
         const res = await getRate()

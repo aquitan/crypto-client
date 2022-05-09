@@ -63,7 +63,7 @@ const MakeTransactionOuter = ({history}) => {
         delete data.date
         delete data.time
         data.amountInCrypto = +data.amountInCrypto
-        data.userId = store.userId
+        data.userId = store.user.id
         data.userEmail = store.userEmail
         data.domainName = window.location.host
         data.amountInUsd = getCurCoinName(data.coinName.toLowerCase(), data.amountInCrypto)
@@ -74,9 +74,11 @@ const MakeTransactionOuter = ({history}) => {
         console.log('log-data', data)
 
         if (data.transaction === 'Deposit') {
+            delete data.transaction
             const res = await putData('/staff/create_transaction/create_regular_deposit_transaction/', data)
         }
         if (data.transaction === 'Withdraw') {
+            delete data.transaction
             data.withdrawalAddress = null
             data.withdrawalStatus = 'complete'
             delete data.depositAddress
@@ -152,13 +154,15 @@ const MakeTransactionOuter = ({history}) => {
                         <TableHeader elems={transTableHeader}/>
                         <TableBody>
                             {
-                                history.map(item => {
-                                    return(
-                                        <Row>
+                                history ?
+                                    history.map(item => {
+                                        return(
+                                            <Row>
 
-                                        </Row>
-                                    )
-                                })
+                                            </Row>
+                                        )
+                                    })
+                                    : null
                             }
                         </TableBody>
                     </Table>
