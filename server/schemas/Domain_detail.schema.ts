@@ -11,10 +11,14 @@ export const DOMAIN_DETAIL_SCHEMA = {
   },
   depositFee: {
     type: Number,
+    min: 1,
+    max: 5,
     require: true
   },
   rateCorrectSum: {
     type: Number,
+    min: 0,
+    max: 15,
     require: true
   },
   minDepositSum: {
@@ -27,6 +31,8 @@ export const DOMAIN_DETAIL_SCHEMA = {
   },
   coinSwapFee: {
     type: Number,
+    min: 1,
+    max: 5,
     require: true
   },
   dateOfCreate: {

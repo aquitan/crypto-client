@@ -15,6 +15,7 @@ export const USER_WALLET_SCHEMA = {
   },
   userId: {
     type: Schema.Types.ObjectId,
+    ref: 'user_base_datas',
     require: true
   }
 }

@@ -8,12 +8,10 @@ interface HistotyParams {
   coinNameTo: string
   cryptoAmountFrom: number
   cryptoAmountTo: number
-  usdAmountFrom: number
-  usdAmountTo: number
+  usdAmount: number
   date: number
   status: string
   userId: Schema.Types.ObjectId
-  staffId: string
 }
 const SwapHistory = new Schema<HistotyParams>(SWAP_HISTORY_SCHEMA)
 

@@ -25,11 +25,7 @@ export const SWAP_HISTORY_SCHEMA = {
     type: Number,
     require: true
   },
-  usdAmountFrom: {
-    type: Number,
-    require: true
-  },
-  usdAmountTo: {
+  usdAmount: {
     type: Number,
     require: true
   },
@@ -39,16 +35,13 @@ export const SWAP_HISTORY_SCHEMA = {
   },
   status: {
     type: String,
+    enum: ['pending', 'complete', 'failed'],
     require: true,
-    default: 'pending'
+    default: 'complete'
   },
   userId: {
     type: Schema.Types.ObjectId,
-    ref: 'UserBaseData',
-    require: true
-  },
-  staffId: {
-    type: String,
+    ref: 'user_base_datas',
     require: true
   }
 }

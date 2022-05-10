@@ -31,6 +31,5 @@ export const USER_BASE = {
   dateOfEntry: {
     type: Number,
     required: true
-  },
-
+  }
 }

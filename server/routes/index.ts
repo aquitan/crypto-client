@@ -41,14 +41,12 @@ router.patch('/personal_area/security/disable_two_step_status/', authChecker, us
 router.put('/personal_area/verification/', authChecker, userController.personalAreaKyc) // send kyc data
 
 // router.put('/personal_area/create_secure_deal/', authChecker, userController.secureDealCreate) // create secure deal
+router.get('/second_party_user_checker/:userEmail/:domainName/', authChecker, userController.secondPartyChecker) // find second user for secure deal & internal transfers
+
 // router.get('/personal_area/secure_deal_detail/:id'/, authChecker, userController.getSecureDealDetail) // get detail deal ingo by id
 // router.patch('/personal_area/secure_deal/accept_deal/', authChecker, userController.acceptDeal) // accept deal
 
-// router.put('/wallets/create_user_wallet/', authChecker, userController.createUserWallet)
-// router.get('/internal_wallets/get_user_internal_wallet/', authChecker, userController.getInternalWallet)
-
 // user money transfer logic
-router.get('/second_party_user_checker/:userEmail/:domainName/', authChecker, userController.secondPaartyChecker) // find second user for secure deal & internal transfers
 router.get('/get_user_balance/:id/', authChecker, userController.getUserBalance) // get user balances for every coins
 router.put('/deposit/make_deposit/', authChecker, userController.makeDeposit) // create deposit as user
 router.post('/deposit/get_deposit_history/', authChecker, userController.getDepositHistory) // get deposit history
@@ -56,6 +54,9 @@ router.put('/withdraw/make_withdraw/', authChecker, userController.makeWithdrawa
 router.post('/withdraw/get_withdrawal_history/', authChecker, userController.getWithdrawalHistory) // get withdrawal history
 router.put('/swap/make_swap/', authChecker, userController.makeSwap) // swap currency to another currency with user fee*
 router.post('/swap/get_swap_history/', authChecker, userController.getSwapHistory) // get swap history by user id
+router.get('/get_internal_data/:id/:userEmail/', authChecker, userController.getInternalData) // get user internal wallets & coin balances
+router.get('/user_balance_checker/:id/:coinName/', authChecker, userController.balanceChecker) // check balance before send internal transfer
+router.get('/internal_wallet_checker/:userWallet/:domainName/', authChecker, userController.checkInternalWallet) // verified internal wallet 
 router.put('/internal_transfer/make_internal_transfer/', authChecker, userController.makeInternalTransfer) // make internal domain transaction*
 router.post('/internal_transfer/get_internal_transfer_history/', authChecker, userController.getInternalTransferHistory) // get internal transfer history bu user id
 
@@ -73,9 +74,9 @@ router.patch('/staff/users/user_detail/update_double_deposit/', staffController.
 router.patch('/staff/users/user_detail/clear_match_ip_list/', staffController.clearMatchIpList) // ip match list checker (if someone has the same ip => send user ip & user email)
 router.patch('/staff/users/user_detail/update_staff_status/', staffController.updateStaffStatus) // get staff permission to regular user 
 router.patch('/staff/users/user_detail/update_staff_support_name/', staffController.updateStaffSupportName) // change name for staff in support chat
+router.delete('/staff/users/user_detail/delete_user_with_all_params/', staffController.deleteUser) // delete user params
 router.put('/staff/notifications/create_new_notification/', staffController.createNewNotification) // create new notification for user
 router.post('/staff/notifications/get_all_notifications/', staffController.getNotificationList) // get notification request by user_id
-
 
 router.post('/staff/users/kyc/', staffController.kycList) // get kyc list (if staff => when staff is domain owner) (if admin & other => all kyc )
 router.patch('/staff/kyc/update_kyc_status/', staffController.changeKycStatus) // change kyc status for user (in user verification page)

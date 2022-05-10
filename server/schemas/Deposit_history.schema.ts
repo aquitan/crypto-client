@@ -27,16 +27,19 @@ export const DEPOSIT_HISTORY_SCHEMA = {
   },
   address: {
     type: String,
+    minlength: 40,
+    maxlength: 46,
     require: true
   },
   status: {
     type: String,
+    enum: ['pending', 'complete', 'failed'],
     require: true,
     default: 'pending'
   },
   userId: {
     type: Schema.Types.ObjectId,
-    ref: 'UserBaseData',
+    ref: 'user_base_datas',
     require: true
   },
   staffId: {

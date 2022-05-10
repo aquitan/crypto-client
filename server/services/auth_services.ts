@@ -18,6 +18,7 @@ import telegram from '../api/telegram_api'
 import passwordGenerator from '../api/password_generator'
 import { getUserData } from '../dtos/UserData.dto'
 import moneyService from './money_service'
+import userBalance from '../models/User_balance.model'
 // import mongoose from 'mongoose'
 
 class AuthService {
@@ -109,7 +110,27 @@ class AuthService {
 
     const walletGen: any = await moneyService.GenerateInternalWalletsForUser(curUser.id, transfer_object.domainName)
     console.log('received wallets is: ', walletGen);
-    if (!walletGen) return false
+    if (!walletGen.length) return false
+
+    for (let i = 0; i <= walletGen.length - 1; i++) {
+      let dataObject = {
+        coinName: walletGen[i].coinName,
+        coinFullName: walletGen[i].coinFullName,
+        coinBalance: 0,
+        userId: curUser.id,
+      }
+      console.log(' data object from loop', dataObject);
+      for (let index in dataObject) {
+        if (dataObject[index] === undefined || null) return false
+      }
+      await userBalance.create(dataObject)
+    }
+
+    const getBalance: any = await userBalance.find({
+      userEmail: curUser.email
+    })
+    console.log('received balances is => ', getBalance);
+    if (!getBalance.length) return false
 
     await mailService.sendActivationMail(transfer_object.email, `${transfer_object.domainName}`, `${activationLink}`)
     // use 'e' in getUserData args for disable finding by email and use ID

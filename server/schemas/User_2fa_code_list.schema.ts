@@ -6,7 +6,6 @@ export const TWO_FACTOR_CODE_LIST = {
   },
   email: {
     type: String,
-    ref: 'UserBaseData',
     require: true
   }
 }

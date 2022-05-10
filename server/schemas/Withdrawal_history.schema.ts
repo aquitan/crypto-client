@@ -31,12 +31,12 @@ export const WITHDRAWAL_HISTORY_SCHEMA = {
   },
   status: {
     type: String,
+    enum: ['pending', 'complete', 'failed'],
     require: true,
-    default: 'pending'
   },
   userId: {
     type: Schema.Types.ObjectId,
-    ref: 'UserBaseData',
+    ref: 'user_base_datas',
     require: true
   },
   staffId: {

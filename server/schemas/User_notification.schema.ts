@@ -16,7 +16,7 @@ export const USER_NOTIF = {
   },
   userId: {
     type: Schema.Types.ObjectId,
-    ref: 'UserBaseData',
+    ref: 'user_base_datas',
     require: true
   }
 }

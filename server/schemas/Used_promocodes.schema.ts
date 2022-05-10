@@ -31,7 +31,7 @@ export const ALREADY_USED_PROMO = {
   },
   staffUserId: {
     type: Schema.Types.ObjectId,
-    ref: 'UserBaseData',
+    ref: 'user_base_datas',
     require: true
   }
 }

@@ -1,4 +1,3 @@
-import { Schema } from 'mongoose'
 
 export const INTERNAL_HISTORY_SCHEMA = {
   userEmail: {

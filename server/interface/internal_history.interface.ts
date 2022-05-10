@@ -2,7 +2,6 @@
 export default interface INTERNAL_HISTORY {
   userId: number
   userEmail: string
-  secondPartyEmail: string
   domainName: string
   coinName: string
   amountInCrypto: number
@@ -11,6 +10,6 @@ export default interface INTERNAL_HISTORY {
   fromAddress: string
   toAddress: string
   transferType: boolean
-  // type is *deposit* OR *withdrawal*
+  // if type is *deposit* = true OR *withdrawal* = false
   transferStatus: string
 }

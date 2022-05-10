@@ -7,6 +7,9 @@ import depositHistory from '../models/Deposit_history.model'
 import withdrawalHistory from '../models/Withdrawal_history.model'
 import swapHistory from '../models/Swap_history.model'
 import internalHistory from '../models/Internal_history.model'
+import userBaseData from '../models/User_base_data.model'
+import generatePassword from 'api/password_generator'
+import userActionInfo from '../models/User_info_for_action.model'
 
 async function addressGen(coinName: string) {
   if (!coinName) return false
@@ -18,29 +21,26 @@ class moneyService {
 
   async GenerateDepositAddress(userId: string, userEmail: string, coinName: string, coinFullName: string, date: number) {
     const expiredDate: number = 1000 * 60 * 30
+    console.log('expiredDate', expiredDate);
 
-    const getDepositWalletForCurUser: any = await depositWallets.findOne(
-      {
-        userId: userId,
-        coinName: coinName
-      })
-    console.log('actual wallets for deposit => ', getDepositWalletForCurUser);
-    if (getDepositWalletForCurUser.expiredDate > date) return false
     // generate address
-    const generatedAddress: string = 'someCryptoAddress'
+    // const generatedAddress: string = await this.addressGen(coinName)
+    const generatedAddress: string = await generatePassword(44)
     console.log('ur new address is => ', generatedAddress);
 
     await depositWallets.create({
-      coinName,
-      coinFullName,
+      coinName: coinName,
+      coinFullName: coinFullName,
       address: generatedAddress,
       status: 'pending',
-      expiredDate,
-      userEmail,
-      userId
+      expiredDate: expiredDate,
+      userEmail: userEmail,
+      userId: userId
     })
 
-    const curAddress: any = await depositWallets.findOne({ expiredDate })
+    const curAddress: any = await depositWallets.findOne({
+      address: generatedAddress
+    })
     console.log('curAddress is => ', curAddress);
     if (!curAddress) return false
 
@@ -53,44 +53,57 @@ class moneyService {
     const addresses = [
       {
         coinName: 'BTC',
-        coinAddress: 'btcx1address'
+        coinFullName: 'bitcoin',
+        walletAddress: await generatePassword(44),
       },
       {
         coinName: 'ETH',
-        coinAddress: 'ethx0address'
+        coinFullName: 'ethereum',
+        walletAddress: await generatePassword(44)
       },
       {
         coinName: 'BCH',
-        coinAddress: 'bchb1address'
+        coinFullName: 'bitcoin cash',
+        walletAddress: await generatePassword(43)
       },
       {
         coinName: 'SOL',
-        coinAddress: 'sol000address'
+        coinFullName: 'solana',
+        walletAddress: await generatePassword(44)
       },
       {
         coinName: 'USDT',
-        coinAddress: 'eth0xaddress'
+        coinFullName: 'tether',
+        walletAddress: await generatePassword(42)
       },
       {
         coinName: 'TRX',
-        coinAddress: 'trx312address'
+        coinFullName: 'tron',
+        walletAddress: await generatePassword(42)
+      },
+      {
+        coinName: 'TRX/USDT',
+        coinFullName: 'usdt trc20',
+        walletAddress: await generatePassword(42)
       }
     ]
     return addresses
   }
 
-  async BalanceUpdater(userEmail: string, coinName: string, value: number, userId?: string) {
-    if (!userEmail && !coinName && !value) return false
-    await userBalance.findOneAndUpdate(
+  async BalanceUpdater(userId: string, coinName: string, value: number,) {
+    const dataUpdate: any = await userBalance.findOneAndUpdate(
       {
-        userEmail: userEmail,
+        userId: userId,
         coinName: coinName
       },
       {
         coinBalance: value
       }
     )
+    console.log('from balanceupdater: => ', dataUpdate);
+
     return true
+
   }
 
   async MakeInternalTransfer(transfer_object: any, staffId?: string) {
@@ -100,9 +113,13 @@ class moneyService {
         userEmail: transfer_object.userEmail,
         coinName: transfer_object.coinName,
       })
+
       console.log('curUserBalance is => ', curUserBalance);
       if (!curUserBalance) return false
-
+      if (curUserBalance.coinBalance < transfer_object.amountInCrypto) {
+        console.log('the value of received crypto amount is bigger than current user balance');
+        return false
+      }
       let userUpdatedBalance: number
       if (!transfer_object.transferType) {
         userUpdatedBalance = curUserBalance.coinBalance - transfer_object.amountInCrypto
@@ -112,11 +129,15 @@ class moneyService {
         console.log('cur user balance => ', userUpdatedBalance);
       }
 
-      await this.BalanceUpdater(transfer_object.userEmail, transfer_object.coinName, userUpdatedBalance)
+      const secondPartyEmail: any = await userBaseData.findOne({
+        email: transfer_object.userEmail
+      })
+
+      await this.BalanceUpdater(transfer_object.userId, transfer_object.coinName, userUpdatedBalance)
 
       await internalHistory.create({
         userEmail: transfer_object.userEmail,
-        secondUserEmail: transfer_object.secondPartyEmail,
+        secondUserEmail: secondPartyEmail.email,
         userDomain: transfer_object.domainName,
         coinName: transfer_object.coinName,
         cryptoAmount: transfer_object.amountInCrypto,
@@ -135,11 +156,15 @@ class moneyService {
       console.log('history of cur transaction => ', curTransactionHistory);
       if (!curTransactionHistory) return false
 
-      return true
+      return secondPartyEmail.email
     }
 
+    const secondPartyEmail: any = await userBaseData.findOne({
+      email: transfer_object.userEmail
+    })
+
     const firstUserWallet: any = await userWallet.findOne({
-      addressFrom: transfer_object.fromAddress
+      userWallet: transfer_object.fromAddress
     })
     const firstUserBalance: any = await userBalance.findOne({
       userEmail: transfer_object.userEmail,
@@ -148,12 +173,16 @@ class moneyService {
     console.log('1st user wallet is => ', firstUserWallet);
     console.log('firstUserBalance is => ', firstUserBalance);
     if (!firstUserBalance || !firstUserWallet) return false
+    if (firstUserBalance.coinBalance < transfer_object.amountInCrypto) {
+      console.log('the value of received crypto amount is bigger than current user balance');
+      return false
+    }
 
     const secondUserWallet: string = await userWallet.findOne({
       addressTo: transfer_object.toAddress
     })
     const secondUserBalance: any = await userBalance.findOne({
-      userEmail: transfer_object.secondPartyEmail,
+      userEmail: secondPartyEmail,
       coinName: transfer_object.coinName,
     })
     console.log('2nd user wallet is => ', secondUserWallet);
@@ -163,11 +192,11 @@ class moneyService {
     const firstUserUpdatedBalance: number = firstUserBalance.coinBalance - transfer_object.amountInCrypto
     console.log('cur first user balance => ', firstUserUpdatedBalance);
 
-    await this.BalanceUpdater(transfer_object.userEmail, transfer_object.coinName, firstUserUpdatedBalance)
+    await this.BalanceUpdater(transfer_object.userId, transfer_object.coinName, firstUserUpdatedBalance)
 
     await internalHistory.create({
       userEmail: transfer_object.userEmail,
-      secondUserEmail: transfer_object.secondPartyEmail,
+      secondUserEmail: secondPartyEmail.email,
       userDomain: transfer_object.domainName,
       coinName: transfer_object.coinName,
       cryptoAmount: transfer_object.amountInCrypto,
@@ -182,7 +211,7 @@ class moneyService {
 
     const secondUserUpdatedBalance: number = secondUserBalance.coinBalance + transfer_object.amountInCrypto
     console.log('cur sec user balance => ', secondUserUpdatedBalance);
-    await this.BalanceUpdater(transfer_object.secondPartyEmail, transfer_object.coinName, secondUserUpdatedBalance)
+    await this.BalanceUpdater(secondPartyEmail.id, transfer_object.coinName, secondUserUpdatedBalance)
 
     const curTransactionHistory: any = await internalHistory.findOne({
       date: transfer_object.currentDate
@@ -190,10 +219,10 @@ class moneyService {
     console.log('history of cur transaction => ', curTransactionHistory);
     if (!curTransactionHistory) return false
 
-    return true
+    return secondPartyEmail.email
   }
 
-  async MakeDeposit(transfer_object: any) {
+  async MakeDeposit(transfer_object: any, logTime: string) {
 
     const curAddress: string | boolean = await this.GenerateDepositAddress(transfer_object.userId, transfer_object.userEmail, transfer_object.coinName, transfer_object.coinFullName, transfer_object.currentDate)
     if (!curAddress) return false
@@ -221,7 +250,20 @@ class moneyService {
       date: transfer_object.currentDate
     })
     if (!curHistory) return false
-    return true
+
+    await userActionInfo.findOneAndUpdate(
+      { userId: transfer_object.userId },
+      { lastDeposit: logTime, }
+    )
+
+    const getActionData: any = await userActionInfo.findOne({ userId: transfer_object.userId })
+    console.log('received new getActionData => ', getActionData);
+    if (getActionData.lastDeposit !== logTime) {
+      console.log('wrond date was writed in DB');
+      return false
+    }
+
+    return curAddress
   }
 
   async MakeDepositAsStaff(transfer_object: any, staffId: string) {
@@ -230,13 +272,15 @@ class moneyService {
     if (!curAddress) return false
     console.log('received address is => ', curAddress);
 
-    const curBalance: any = await userBalance.findOne({
-      userEmail: transfer_object.userEmail,
+    const curBalance: any = await userBalance.find({
+      userId: transfer_object.udseId,
       coinName: transfer_object.coinName
     })
-    console.log('curBalance is => ', curBalance);
+    console.log('curBalance is => ', curBalance[0]);
 
-    const updatedBalance: number = curBalance.coinBalance + transfer_object.amountInCrypto
+    const updatedBalance: number = curBalance[0].coinBalance + transfer_object.amountInCrypto
+    console.log('updated balance: ', updatedBalance);
+
 
     // save deposit in history
     await depositHistory.create({
@@ -255,18 +299,17 @@ class moneyService {
     const curHistory: any = await depositHistory.findOne({
       date: transfer_object.currentDate
     })
-    if (!curHistory) return false
+    console.log('history length => ', curHistory.length);
+    if (!curHistory.length) return false
 
+    await this.BalanceUpdater(transfer_object.userId, transfer_object.coinName, updatedBalance)
 
-    await this.BalanceUpdater(transfer_object.userEmail, transfer_object.coinName, updatedBalance)
-
-    const getBalance: any = await userBalance.findOne({
+    const getBalance: any = await userBalance.find({
       coinName: transfer_object.coinName,
-      userEmail: transfer_object.userEmail
+      userId: transfer_object.udseId,
     })
-    console.log('getBalance => ', getBalance);
-    if (!getBalance) return false
-
+    console.log('getBalance => ', getBalance[0]);
+    if (!getBalance[0]) return false
     return true
   }
 
@@ -291,6 +334,8 @@ class moneyService {
     console.log('history is => ', curHistory);
 
     if (!curHistory) return false
+
+    // get user action info here !!!!!!!!!!!!!!!! and return it
     return
   }
 
@@ -327,11 +372,11 @@ class moneyService {
     console.log('received history => ', curHistory);
     if (!curHistory) return false
 
-    await this.BalanceUpdater(transfer_object.userEmail, transfer_object.coinName, updatedBalance)
+    await this.BalanceUpdater(transfer_object.userId, transfer_object.coinName, updatedBalance)
 
     const getBalance: any = await userBalance.findOne({
       coinName: transfer_object.coinName,
-      userEmail: transfer_object.userEmail
+      userId: transfer_object.userId
     })
     console.log('getBalance => ', getBalance);
     if (!getBalance) return false
@@ -342,11 +387,11 @@ class moneyService {
   async MakeSwap(transfer_object: any) {
 
     const curUserBalanceFrom: any = await userBalance.findOne({
-      userEmail: transfer_object.userEmail,
+      userId: transfer_object.userId,
       coinName: transfer_object.coinNameFrom,
     })
     const curUserBalanceTo: any = await userBalance.findOne({
-      userEmail: transfer_object.userEmail,
+      userId: transfer_object.userId,
       coinName: transfer_object.coinNameTo,
     })
     console.log('UserBalance from is => ', curUserBalanceFrom);
@@ -363,8 +408,8 @@ class moneyService {
     const userUpdatedBalanceTo: number = curUserBalanceTo.coinBalance + transfer_object.amountInCryptoTo
     console.log('cur user balance from => ', userUpdatedBalanceTo);
 
-    await this.BalanceUpdater(transfer_object.userEmail, transfer_object.coinNameFrom, userUpdatedBalanceFrom)
-    await this.BalanceUpdater(transfer_object.userEmail, transfer_object.coinNameTo, userUpdatedBalanceTo)
+    await this.BalanceUpdater(transfer_object.userId, transfer_object.coinNameFrom, userUpdatedBalanceFrom)
+    await this.BalanceUpdater(transfer_object.userId, transfer_object.coinNameTo, userUpdatedBalanceTo)
 
     await swapHistory.create({
       userEmail: transfer_object.userEmail,
@@ -376,8 +421,7 @@ class moneyService {
       usdAmount: transfer_object.amountInUsd,
       date: transfer_object.currentDate,
       status: transfer_object.swapStatus,
-      userId: transfer_object.userId,
-      staffId: 'self'
+      userId: transfer_object.userId
     })
 
     const curHistory: any = await swapHistory.findOne({
@@ -389,6 +433,50 @@ class moneyService {
     return true
   }
 
+  async GetInternalData(userId: string, userEmail?: string) {
+    const getUserWallets: any = await userWallet.find({
+      userId: userId
+    })
+    console.log('getUserWallets', getUserWallets.length);
+    if (!getUserWallets.length) return false
+
+    let dataArray = []
+    for (let i = 0; i <= getUserWallets.length - 1; i++) {
+      const getUserBalance: any = await userBalance.findOne({
+        coinName: getUserWallets[i].coinName,
+        userId: getUserWallets[i].userId
+      })
+      console.log('getUserBalance', getUserBalance);
+      if (!getUserBalance) return false
+
+      let dataObject = {
+        coinName: getUserWallets[i].coinName,
+        balance: getUserBalance.coinBalance,
+        walletAddress: getUserWallets[i].userWallet
+      }
+      console.log('prepared data => ', dataObject);
+      for (let index in dataObject) {
+        if (dataObject[index] === undefined || null) return false
+      }
+      dataArray.push(dataObject)
+    }
+    console.log('dataArray to send => ', dataArray);
+    if (!dataArray.length) return false
+    return dataArray
+
+  }
+
+
+  async getBalances(userId: string, coinName: string) {
+
+    const getUserBalance: any = await userBalance.findOne({
+      coinName: coinName,
+      userId: userId
+    })
+    console.log('getUserBalance', getUserBalance);
+    if (!getUserBalance) return false
+    return true
+  }
 
   async GenerateInternalWalletsForUser(userId: string, domainName: string) {
     const candidate: any = await baseUserData.findOne({
@@ -403,21 +491,21 @@ class moneyService {
     console.log('wallet list is => ', userWalletList);
     if (!userWalletList) return false
 
-    for (let i = 0; i <= userWalletList - 1; i++) {
+    for (let i = 0; i <= userWalletList.length - 1; i++) {
       const dataObject = {
         coinName: userWalletList[i].coinName,
         coinFullName: userWalletList[i].coinFullName,
         userWallet: userWalletList[i].walletAddress,
         userId: candidate.id
       }
+      console.log('received data is => ', dataObject);
       for (let index in dataObject) {
         if (dataObject[index] === undefined || null) return false
       }
-      console.log('received data is => ', dataObject);
-      await userBalance.create(dataObject)
+      await userWallet.create(dataObject)
     }
 
-    const curWallets: any = await userBalance.find({ userId: candidate.id })
+    const curWallets: any = await userWallet.find({ userId: candidate.id })
     console.log('saved wallet is => ', curWallets);
     if (!curWallets.length) return false
 

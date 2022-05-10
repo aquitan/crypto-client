@@ -27,6 +27,8 @@ export const DOMAIN_SCHEMA = {
   },
   companyYear: {
     type: Number,
+    min: 2001,
+    max: 2021,
     require: true
   },
   companyCountry: {
@@ -34,7 +36,8 @@ export const DOMAIN_SCHEMA = {
     require: true
   },
   domainOwner: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: 'user_base_datas',
     require: true
   }
 }

@@ -275,18 +275,33 @@ class UserController {
     }
   }
 
-  async secondPaartyChecker(req: express.Request, res: express.Response, next: express.NextFunction) {
-    console.log('req: ', req.body);
+  async secondPartyChecker(req: express.Request, res: express.Response, next: express.NextFunction) {
+    console.log('req: ', req.params);
     const userEmail: string = req.params.userEmail
     const domainName: string = req.params.domainName
-    if (!userEmail || domainName) return res.status(400).json({ message: 'wrong data' })
+    if (!userEmail || !domainName) return res.status(400).json({ message: 'wrong data' })
 
     try {
       const result: any = await UserServices.FindSecondPartyUser(userEmail, domainName)
       if (!result) throw ApiError.ServerError()
 
-      return res.status(200).json(result)
+      return res.status(200).json({ message: 'OK' })
+    } catch (e) {
+      next(e)
+    }
+  }
 
+  async checkInternalWallet(req: express.Request, res: express.Response, next: express.NextFunction) {
+    console.log('req: ', req.params);
+    const domainName: string = req.params.domainName
+    const userWallet: string = req.params.userWallet
+    if (!domainName || !userWallet) return res.status(400).json({ message: 'wrong data' })
+
+    try {
+      const result: any = await UserServices.verifInternalWallet(userWallet, domainName)
+      if (!result) throw ApiError.ServerError()
+
+      return res.status(200).json({ message: 'OK' })
     } catch (e) {
       next(e)
     }
@@ -307,26 +322,6 @@ class UserController {
       next(e)
     }
   }
-
-  // async generateUserWallets(req: express.Request, res: express.Response, next: express.NextFunction) {
-
-  //   const userId: string = req.body.userId
-  //   const domainName: string = req.body.domainName
-
-  //   try {
-  //     const result: boolean | string[] = await moneyService.GenerateInternalWalletsForUser(userId, domainName)
-  //     if (!result) throw ApiError.ServerError()
-
-  //     return res.status(201).json({
-  //       message: 'OK',
-  //       walletList: result
-  //     })
-
-  //   } catch (e) {
-  //     next(e)
-  //   }
-  // }
-
 
   async makeDeposit(req: express.Request, res: express.Response, next: express.NextFunction) {
     console.log('req body is: ', req.body)
@@ -352,14 +347,14 @@ class UserController {
     const logTime: string = req.body.logTime
 
     try {
-      const result: boolean = await moneyService.MakeDeposit(transfer_object)
+      const result: boolean | string = await moneyService.MakeDeposit(transfer_object, logTime)
       console.log('operation result is: ', result)
 
       if (!result) return res.status(400).json({ message: 'wrong data' })
 
       await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, logTime, ` создал заявку на вывод на сумму ${transfer_object.amountInCrypto} ${transfer_object.coinName} ($ ${transfer_object.amountInUsd} )`, transfer_object.domainName)
       await telegram.sendMessageByUserActions(transfer_object.userEmail, ` создал заявку на депозит на сумму ${transfer_object.amountInCrypto} ( ${transfer_object.amountInUsd} ) ${transfer_object.coinName} `, transfer_object.domainName)
-      return res.status(201).json({ message: 'ok' })
+      return res.status(201).json(result)
 
     } catch (e) {
       next(e)
@@ -501,6 +496,40 @@ class UserController {
     }
   }
 
+  async getInternalData(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    let userId: string | null = req.params.id
+    const userEmail: string = req.params.userEmail
+    console.log('req body is: ', userId);
+    if (!userId || !userEmail) return res.status(400).json({ message: 'wrong data' })
+    if (userId === 'null') userId = null
+    try {
+      const result: any = await moneyService.GetInternalData(userId, userEmail)
+      if (!result) throw ApiError.ServerError()
+      return res.status(200).json(result)
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
+
+  async balanceChecker(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    const userId: string = req.params.id
+    const coinName: string = req.params.coinName
+    console.log('req params is: ', req.params);
+
+    if (!userId || !coinName) return res.status(400).json({ message: 'wrong data' })
+    try {
+      const result: any = await moneyService.getBalances(userId, coinName)
+      if (!result) throw ApiError.ServerError()
+      return res.status(200).json(result)
+
+    } catch (e) {
+      next(e)
+    }
+  }
 
   async makeInternalTransfer(req: express.Request, res: express.Response, next: express.NextFunction) {
     console.log('req body is: ', req.body)
@@ -508,7 +537,6 @@ class UserController {
     const transfer_object: INTERNAL_HISTORY = {
       userId: req.body.userId,
       userEmail: req.body.userEmail,
-      secondPartyEmail: req.body.secondPartyEmail,
       domainName: req.body.domainName,
       coinName: req.body.coinName,
       amountInCrypto: req.body.amountInCrypto,
@@ -528,13 +556,12 @@ class UserController {
     const logTime: string = req.body.logTime
 
     try {
-      const result: boolean = await moneyService.MakeInternalTransfer(transfer_object)
+      const result: boolean | string = await moneyService.MakeInternalTransfer(transfer_object)
       console.log('result is: ', result)
-
       if (!result) return res.status(400).json({ message: 'wrong data' })
 
-      await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, logTime, ` совершил внутренний перевод пользователю ${transfer_object.secondPartyEmail} на сумму  ${transfer_object.amountInCrypto}  ${transfer_object.coinName} на `, transfer_object.domainName)
-      await telegram.sendMessageByUserActions(transfer_object.userEmail, ` совершил внутренний перевод пользователю ${transfer_object.secondPartyEmail} на сумму  ${transfer_object.amountInCrypto}  ${transfer_object.coinName} `, transfer_object.domainName)
+      await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, logTime, ` совершил внутренний перевод пользователю ${result} на сумму  ${transfer_object.amountInCrypto}  ${transfer_object.coinName} на `, transfer_object.domainName)
+      await telegram.sendMessageByUserActions(transfer_object.userEmail, ` совершил внутренний перевод пользователю ${result} на сумму  ${transfer_object.amountInCrypto}  ${transfer_object.coinName} `, transfer_object.domainName)
       return res.status(201).json({ message: 'ok' })
 
     } catch (e) {

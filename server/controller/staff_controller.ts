@@ -575,6 +575,22 @@ class StaffController {
     }
   }
 
+  async deleteUser(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const userEmail: string = req.body.userEmail
+    const userId: string = req.body.userId
+    const rootAccess: boolean = req.body.rootAccess
+    if (!rootAccess) return res.status(400).json({ message: 'permission denied' })
+
+    try {
+      const result: boolean = await adminService.fullUserDelete(userId)
+      if (!result) throw ApiError.ServerError()
+      return res.status(200).json({ message: `user ${userEmail} was deleted with all params` })
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
   async updateDoubleDeposit(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       const { userId, staffId, status, staffEmail, userEmail, domainName } = req.body
@@ -1619,7 +1635,6 @@ class StaffController {
     const transfer_object: INTERNAL_HISTORY = {
       userId: req.body.userId,
       userEmail: req.body.userEmail,
-      secondPartyEmail: req.body.secondPartyEmail,
       domainName: req.body.domainName,
       coinName: req.body.coinName,
       amountInCrypto: req.body.amountInCrypto,
@@ -1634,7 +1649,7 @@ class StaffController {
 
     try {
 
-      const result: boolean = await moneyService.MakeInternalTransfer(transfer_object, staffId)
+      const result: boolean | string = await moneyService.MakeInternalTransfer(transfer_object, staffId)
       console.log('result is: ', result)
       if (!result) return res.status(400).json({ message: 'wrong data' })
       return res.status(201).json({ message: 'ok' })

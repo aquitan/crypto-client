@@ -10,10 +10,10 @@ interface User_KYC {
   documentNumber: string
   documentType: string
   mainAddress: string
-  subAddress?: string
+  subAddress?: string | null
   city: string
   countryName: string
-  state?: string
+  state?: string | null
   zipCode: number
   frontDocumentPhoto: string
   backDocumentPhoto: string

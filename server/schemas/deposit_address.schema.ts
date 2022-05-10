@@ -11,12 +11,15 @@ export const DEPOSIT_WALLETS_SCHEMA = {
   },
   address: {
     type: String,
+    minlength: 40,
+    maxlength: 50,
     require: true
   },
   status: {
     type: String,
-    default: 'pending',
-    require: true
+    enum: ['pending', 'complete', 'failed'],
+    require: true,
+    default: 'pending'
   },
   expiredDate: {
     type: Number,
@@ -28,7 +31,7 @@ export const DEPOSIT_WALLETS_SCHEMA = {
   },
   userId: {
     type: Schema.Types.ObjectId,
-    ref: 'User_Base_Data',
+    ref: 'user_base_datas',
     require: true
   }
 }

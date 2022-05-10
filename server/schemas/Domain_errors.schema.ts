@@ -23,7 +23,7 @@ export const DOMAIN_ERRORS_SCHEMA = {
   },
   domainId: {
     type: Schema.Types.ObjectId,
-    ref: 'DomainList',
+    ref: 'domain_lists',
     require: true
   }
 }

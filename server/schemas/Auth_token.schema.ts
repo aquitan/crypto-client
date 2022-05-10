@@ -7,7 +7,7 @@ export const AUTH_TOKEN = {
   },
   userId: {
     type: Schema.Types.ObjectId,
-    ref: 'UserBaseData',
+    ref: 'user_base_datas',
     require: true
   }
 }

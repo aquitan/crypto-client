@@ -43,11 +43,13 @@ export const USER_PARAMS = {
   },
   kycStatus: {
     type: String,
-    require: true
+    enum: ['empty', 'pending', 'failed', 'complete'],
+    require: true,
+    default: 'empty'
   },
   userId: {
     type: Schema.Types.ObjectId,
-    ref: 'User_Base_Data',
+    ref: 'user_base_datas',
     require: true
   }
 }

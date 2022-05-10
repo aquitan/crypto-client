@@ -3,6 +3,8 @@ import { Schema } from 'mongoose'
 export const USER_INFO_FOR_ACTION = {
   depositFee: {
     type: Number,
+    min: 1,
+    max: 5,
     require: true
   },
   doubleDeposit: {
@@ -15,11 +17,12 @@ export const USER_INFO_FOR_ACTION = {
   },
   activeError: {
     type: Number,
+    ref: 'domain_withdrawal_errors',
     require: true
   },
   userId: {
     type: Schema.Types.ObjectId,
-    ref: 'UserBaseData',
+    ref: 'user_base_datas',
     require: true
   }
 }

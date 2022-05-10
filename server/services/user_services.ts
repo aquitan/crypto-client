@@ -16,6 +16,7 @@ import withdrawalHistory from '../models/Withdrawal_history.model'
 import swapHistory from '../models/Swap_history.model'
 import internalHistory from '../models/Internal_history.model'
 import userBalance from '../models/User_balance.model'
+import userWallet from '../models/user_wallet.model'
 
 
 
@@ -93,8 +94,8 @@ class UserServices {
 
 	async enableTwoStepVerification(transferObject: any) {
 
-		if (transferObject.twoFaType !== 'email' &&
-			transferObject.twoFaType !== 'telegram' &&
+		if (transferObject.twoFaType !== 'email' ||
+			transferObject.twoFaType !== 'telegram' ||
 			transferObject.twoFaType !== 'google') return false
 
 		if (transferObject.twoFaType === 'email') {
@@ -229,12 +230,28 @@ class UserServices {
 		return true
 	}
 
+	async verifInternalWallet(wallet: string, domainName: string) {
+		const curWallet: any = await userWallet.findOne({
+			userWallet: wallet
+		})
+		console.log(' found curWallet is => ', curWallet);
+		if (!curWallet) return false
+
+		const secondUser: any = await baseUserData.findOne({
+			_id: curWallet.userId
+		})
+		console.log(' found secondUser is => ', secondUser);
+		if (!secondUser) return false
+		if (secondUser.domainName !== domainName) return false
+		return true
+	}
+
 	async getUserBalance(userId: string) {
 		const curBalance: any = await userBalance.find({
 			userId: userId
 		})
-		console.log('curBalance => ', curBalance);
-		if (!curBalance) return false
+		console.log('curBalance => ', curBalance.length);
+		if (!curBalance.length) return false
 		return curBalance
 	}
 
@@ -242,8 +259,8 @@ class UserServices {
 		const userDepositHistory: any = await depositHistory.find({
 			userId: user_id
 		})
-		console.log('userHistory: ', userDepositHistory);
-		if (!userDepositHistory) return false
+		console.log('userHistory: ', userDepositHistory.length);
+		if (!userDepositHistory.length) return false
 		return userDepositHistory
 	}
 
@@ -251,8 +268,8 @@ class UserServices {
 		const userWithdrawalHistory: any = await withdrawalHistory.find({
 			userId: user_id
 		})
-		console.log('userHistory: ', userWithdrawalHistory);
-		if (!userWithdrawalHistory) return false
+		console.log('userHistory: ', userWithdrawalHistory.length);
+		if (!userWithdrawalHistory.length) return false
 		return userWithdrawalHistory
 	}
 
@@ -260,8 +277,8 @@ class UserServices {
 		const userSwapHistory: any = await swapHistory.find({
 			userId: user_id
 		})
-		console.log('userHistory: ', userSwapHistory);
-		if (!userSwapHistory) return false
+		console.log('userHistory: ', userSwapHistory.length);
+		if (!userSwapHistory.length) return false
 		return userSwapHistory
 	}
 
@@ -275,8 +292,8 @@ class UserServices {
 			userEmail: curUser.email,
 			secondUserEmail: curUser.email
 		})
-		console.log('userHistory: ', userInternalTransfers);
-		if (!userInternalTransfers) return false
+		console.log('userHistory: ', userInternalTransfers.length);
+		if (!userInternalTransfers.length) return false
 		return userInternalTransfers
 	}
 

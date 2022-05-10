@@ -15,6 +15,8 @@ export const USER_KYC = {
   },
   phoneNumber: {
     type: String,
+    minlength: 9,
+    maxlength: 15,
     require: true
   },
   dateOfBitrh: {
@@ -34,9 +36,9 @@ export const USER_KYC = {
     require: true
   },
   subAddress: {
-    type: String,
+    type: String || null,
     require: false,
-    default: ''
+    default: null
   },
   city: {
     type: String,
@@ -47,9 +49,9 @@ export const USER_KYC = {
     require: true
   },
   state: {
-    type: String,
+    type: String || null,
     require: false,
-    default: ''
+    default: null
   },
   zipCode: {
     type: Number,
@@ -73,7 +75,7 @@ export const USER_KYC = {
   },
   userId: {
     type: Schema.Types.ObjectId,
-    ref: 'UserBaseData',
+    ref: 'user_base_datas',
     require: true
   }
 }
