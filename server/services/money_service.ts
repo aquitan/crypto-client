@@ -52,12 +52,28 @@ class moneyService {
 
     const addresses = [
       {
-        coinName: 'btc',
-        coinAddress: 'awe12eqwrq'
+        coinName: 'BTC',
+        coinAddress: 'btcx1address'
       },
       {
-        coinName: 'eth',
-        coinAddress: 'lasfhas8f9g12'
+        coinName: 'ETH',
+        coinAddress: 'ethx0address'
+      },
+      {
+        coinName: 'BCH',
+        coinAddress: 'bchb1address'
+      },
+      {
+        coinName: 'SOL',
+        coinAddress: 'sol000address'
+      },
+      {
+        coinName: 'USDT',
+        coinAddress: 'eth0xaddress'
+      },
+      {
+        coinName: 'TRX',
+        coinAddress: 'trx312address'
       }
     ]
     return addresses

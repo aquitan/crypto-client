@@ -275,6 +275,23 @@ class UserController {
     }
   }
 
+  async secondPaartyChecker(req: express.Request, res: express.Response, next: express.NextFunction) {
+    console.log('req: ', req.body);
+    const userEmail: string = req.params.userEmail
+    const domainName: string = req.params.domainName
+    if (!userEmail || domainName) return res.status(400).json({ message: 'wrong data' })
+
+    try {
+      const result: any = await UserServices.FindSecondPartyUser(userEmail, domainName)
+      if (!result) throw ApiError.ServerError()
+
+      return res.status(200).json(result)
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
   async getUserBalance(req: express.Request, res: express.Response, next: express.NextFunction) {
     const userId: string = req.params.id
     console.log('userID => ', userId);
@@ -291,24 +308,24 @@ class UserController {
     }
   }
 
-  async generateUserWallets(req: express.Request, res: express.Response, next: express.NextFunction) {
+  // async generateUserWallets(req: express.Request, res: express.Response, next: express.NextFunction) {
 
-    const userId: string = req.body.userId
-    const domainName: string = req.body.domainName
+  //   const userId: string = req.body.userId
+  //   const domainName: string = req.body.domainName
 
-    try {
-      const result: boolean | string[] = await moneyService.GenerateInternalWalletsForUser(userId, domainName)
-      if (!result) throw ApiError.ServerError()
+  //   try {
+  //     const result: boolean | string[] = await moneyService.GenerateInternalWalletsForUser(userId, domainName)
+  //     if (!result) throw ApiError.ServerError()
 
-      return res.status(201).json({
-        message: 'OK',
-        walletList: result
-      })
+  //     return res.status(201).json({
+  //       message: 'OK',
+  //       walletList: result
+  //     })
 
-    } catch (e) {
-      next(e)
-    }
-  }
+  //   } catch (e) {
+  //     next(e)
+  //   }
+  // }
 
 
   async makeDeposit(req: express.Request, res: express.Response, next: express.NextFunction) {

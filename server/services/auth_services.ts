@@ -17,6 +17,7 @@ import mailService from '../services/mail_services'
 import telegram from '../api/telegram_api'
 import passwordGenerator from '../api/password_generator'
 import { getUserData } from '../dtos/UserData.dto'
+import moneyService from './money_service'
 // import mongoose from 'mongoose'
 
 class AuthService {
@@ -105,8 +106,12 @@ class AuthService {
     })
     const userParamsInfo: any = await userParams.findOne({ userId: curUser.id })
     console.log(userParamsInfo);
-    await mailService.sendActivationMail(transfer_object.email, `${transfer_object.domainName}`, `${activationLink}`)
 
+    const walletGen: any = await moneyService.GenerateInternalWalletsForUser(curUser.id, transfer_object.domainName)
+    console.log('received wallets is: ', walletGen);
+    if (!walletGen) return false
+
+    await mailService.sendActivationMail(transfer_object.email, `${transfer_object.domainName}`, `${activationLink}`)
     // use 'e' in getUserData args for disable finding by email and use ID
     const userDto = await getUserData('e', curUser.id)
 

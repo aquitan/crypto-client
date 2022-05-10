@@ -219,7 +219,15 @@ class UserServices {
 		return true
 	}
 
-
+	async FindSecondPartyUser(userEmail: string, domainName: string) {
+		const curUser: any = await baseUserData.findOne({
+			email: userEmail,
+			domainName: domainName
+		})
+		console.log(' found user is => ', curUser);
+		if (!curUser) return false
+		return true
+	}
 
 	async getUserBalance(userId: string) {
 		const curBalance: any = await userBalance.find({
