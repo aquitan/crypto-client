@@ -10,6 +10,7 @@ export const links = [
     {link: '/staff/domains', text: 'Домены'},
     // {link: '/staff/terms', text: 'Пользовательское соглашение'},
     {link: '/staff/transactions', text: 'Создать транзакцию'},
+    {link: '/staff/secure-deal', text: 'Защищенные сделки'},
     {link: '/staff/create-news', text: 'Создать новости'},
     {link: '/staff/group-list', text: 'Список групп'},
     {link: '/staff/project-support', text: 'Поддержка'},

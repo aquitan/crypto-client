@@ -6,7 +6,6 @@ import {faMapMarkedAlt} from "@fortawesome/free-solid-svg-icons";
 import {getCurrentDate} from "../../../../../utils/getCurrentDate";
 
 const UserDetailTabLogs = ({data}) => {
-    console.log('log user', data)
     if (!data) {
         return <h1>Loading</h1>
     }

@@ -44,7 +44,14 @@ import {
     CRYPTOCURRENCIES_AUTH,
     ERROR_DETAIL,
     SECUREDEAL_ROUTE,
-    INTERNAL_SWAP, INTERNAL_ADDRESSES, DASHBOARD_ROUTE, SUPPORT_ROUTE, PREMIUM_BENEFITS, GROUP_DETAILS, SECURE_DEAL
+    INTERNAL_SWAP,
+    INTERNAL_ADDRESSES,
+    DASHBOARD_ROUTE,
+    SUPPORT_ROUTE,
+    PREMIUM_BENEFITS,
+    GROUP_DETAILS,
+    SECURE_DEAL,
+    ADMINSECURE_DEAL, ADMINSECURE_DEAL_DETAIL
 } from "../utils/constants"
 import SignUp from '../pages/NonAuthPages/SignUp/SignUp'
 import SignIn from '../pages/NonAuthPages/SignIn/SignIn'
@@ -95,6 +102,8 @@ import Support from "../pages/AuthPages/Support/Support";
 import PremiumBenefits from "../pages/AuthPages/PremiumBenefits/PremiumBenefits";
 import GroupDetails from "../pages/AdminPages/GroupList/GroupDetails/GroupDetails";
 import SecureDealDetail from "../pages/AuthPages/SecureDeal/components/SecureDealDetail/SecureDealDetail";
+import AdminSecureDeal from "../pages/AdminPages/AdminSecureDeal/AdminSecureDeal";
+import AdminSecureDealDetail from "../pages/AdminPages/AdminSecureDeal/components/AdminSecureDealDetail";
 
 export const authRoutes = [
     {
@@ -249,6 +258,14 @@ export const adminRoutes = [
     {
         path: GROUP_DETAILS,
         component: <GroupDetails/>
+    },
+    {
+        path: ADMINSECURE_DEAL,
+        component: <AdminSecureDeal/>
+    },
+    {
+        path: ADMINSECURE_DEAL_DETAIL,
+        component: <AdminSecureDealDetail/>
     },
 ]
 

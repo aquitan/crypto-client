@@ -1,18 +1,35 @@
+.sidebarWrap {
+  display: none;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, .1);
+  z-index: 99999;
+  transition: all .2s linear;
+}
+.sidebarWrap.activeSidebar {
+  display: block;
+}
+
 .user_sidebar {
   display: flex;
   flex-direction: column;
-  border-right: 1px solid #cecece;
   padding: 30px 30px 20px 20px;
-  background-color: #000 !important;
+  background-color: #222331 !important;
   max-width: 300px;
   width: 100%;
   overflow-y: auto;
-  @media (max-width: 1200px) {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: -100%;
-    z-index: 999;
-    transition: all .2s linear;
-  }
+  height: 100%;
+  border: none;
+  transition: all .2s linear;
+  //@media (max-width: 1200px) {
+  //  position: fixed;
+  //  top: 0;
+  //  bottom: 0;
+  //  left: -100%;
+  //  z-index: 999;
+  //  transition: all .2s linear;
+  //}
 }

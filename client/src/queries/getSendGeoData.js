@@ -24,6 +24,7 @@ export const getGeoData = async () => {
             id: store.userId,
             email: store.userEmail,
             browser: detectBrowser(),
+            logTime: getCurrentDate(dateToTimestamp())
             // rootAccess: store.fullAccess
         }
         return geoDatas

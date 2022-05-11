@@ -36,6 +36,14 @@ const InternalAddressesCard = ({currency, sum, onCopy, wallet}) => {
         console.log('card data ---', data)
     }
 
+    const imgMatch = (currency) => {
+        if (currency === 'TRX/USDT') {
+            return 'trx-usdt'
+        } else {
+            return currency
+        }
+    }
+
     return (
         <div className={`${cls.internal_address_card} p-3`}>
             {
@@ -48,7 +56,7 @@ const InternalAddressesCard = ({currency, sum, onCopy, wallet}) => {
                 <Col className='col-12 col-md-4'>
                     <div>
                         <h4 className='d-flex align-items-center'>
-                            <Image src={`/img/${currency}.svg`} height={20} width={20} alt={'crypto'} />
+                            <Image src={`/img/${imgMatch(currency)}.svg`} height={20} width={20} alt={'crypto'} />
                             {currency} Address
                         </h4>
                     </div>
@@ -66,7 +74,7 @@ const InternalAddressesCard = ({currency, sum, onCopy, wallet}) => {
             </Row>
             {
                 state.isOpen ?
-                    <InternalAddressCardForm setFormData={setFormData} currency={currency} valid={state.isValid} checkAddress={checkAddress} />
+                    <InternalAddressCardForm setFormData={setFormData} sum={sum} wallet={wallet} currency={currency} valid={state.isValid} checkAddress={checkAddress} />
                     : null
             }
             {

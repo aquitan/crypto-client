@@ -16,15 +16,17 @@ const AppRouter = () => {
     const [percent, setPercent] = useState([])
     const navigate = useNavigate()
     const {isLoading, data, error} = useQuery('notif query', async () => {
-        const res = await postData('/get_domain_params/', {domainName: window.location.host})
-        if (res.data) {
-            const balance = await getData(`/get_user_balance/${store.user.id}`)
-            setState(balance.data)
-            countTotalBalance()
+        if (store.isAuth) {
+            const res = await postData('/get_domain_params/', {domainName: window.location.host})
+            if (res.data) {
+                const balance = await getData(`/get_user_balance/${store.user.id}`)
+                setState(balance.data)
+                countTotalBalance()
+            }
+            setPercent(store.domain.domainParams.rateCorrectSum)
+            store.setDepositFee(res.data.domainInfo.domainParams.depositFee)
+            store.setDomain(res.data.domainInfo)
         }
-        setPercent(store.domain.domainParams.rateCorrectSum)
-        store.setDepositFee(res.data.domainInfo.domainParams.depositFee)
-        store.setDomain(res.data.domainInfo)
     })
 
     useEffect( () => {
@@ -37,6 +39,9 @@ const AppRouter = () => {
         }
         sendDomainName()
         getRates()
+        if (store.isAuth) {
+
+        }
     }, [])
 
     const countTotalBalance = () => {
@@ -57,7 +62,6 @@ const AppRouter = () => {
                 let val = item.coinBalance * findPercent(store.rates.usdt, percent)
                 arr.push(val)
             }
-
         })
 
         for (let i = 0; i <= arr.length - 1; i++) {

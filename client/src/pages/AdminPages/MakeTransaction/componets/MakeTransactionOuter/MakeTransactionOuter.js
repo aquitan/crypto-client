@@ -70,6 +70,7 @@ const MakeTransactionOuter = ({history}) => {
         data.currentDate = dateToTimestamp(newDate)
         data.depositStatus = 'pending'
         data.coinFullName = 'bitcoin'
+        data.staffId = store.user.id
 
         console.log('log-data', data)
 
@@ -139,6 +140,9 @@ const MakeTransactionOuter = ({history}) => {
                         <Row className='mb-3'>
                             <Col>
                                 <AdminInput {...register('depositAddress')} placeholder='Адрес'/>
+                            </Col>
+                            <Col>
+                                <AdminInput {...register('userEmail')} placeholder='Почта'/>
                             </Col>
                         </Row>
                         <Row>

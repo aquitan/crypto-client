@@ -7,7 +7,7 @@ import {faBars, faGripLinesVertical} from "@fortawesome/free-solid-svg-icons";
 const BurgerMenu = ({onHandleClick, open}) => {
     return (
         <div onClick={onHandleClick} className={cls.burger_btn} >
-            <FontAwesomeIcon icon={!open ? faBars : faGripLinesVertical} />
+            <FontAwesomeIcon icon={!open ? faBars : faGripLinesVertical} color={'#fff'} />
         </div>
     )
 }

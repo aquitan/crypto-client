@@ -12,9 +12,12 @@ import {useNavigate} from "react-router-dom";
 import {getGeoData} from "../../../queries/getSendGeoData";
 import {currencyRateChangeIndicator} from "../../../utils/currencyRateChangeIndicator";
 import CurrencyRates from "../../../components/CurrencyRates/CurrencyRates";
+import {findPercent} from "../../../utils/findPercent";
+import Preloader from "../../../components/UI/Preloader/Preloader";
 
 const Dashboard = () => {
-    const [state, setState] = useState()
+    const [state, setState] = useState([])
+    const [percent, setPercent] = useState([])
     const getDashboard = async () => {
         let geodata = await getGeoData()
         geodata.domainName = window.location.host
@@ -25,6 +28,7 @@ const Dashboard = () => {
     useEffect(() => {
         getDashboard()
         getRates()
+        getBalance()
     }, [])
 
     if (store.isLoading) {
@@ -35,6 +39,42 @@ const Dashboard = () => {
     const getRates = () => {
         setState(store.domain.domainParams.rateCorrectSum)
     }
+
+    const getBalance = async () => {
+        const balance = await getData(`/get_user_balance/${store.user.id}`)
+        setState(balance.data)
+        setPercent(store.domain.domainParams.rateCorrectSum)
+        // countTotalBalance()
+    }
+
+    // const countTotalBalance = () => {
+    //     console.log('blance state', state)
+    //     let total = 0
+    //     let arr = []
+    //     state.forEach(item => {
+    //         if (item.coinName === 'BTC') {
+    //             let val = item.coinBalance * findPercent(store.rates.btc, percent)
+    //             arr.push(val)
+    //         } else if (item.coinName === 'ETH') {
+    //             let val = item.coinBalance * findPercent(store.rates.eth, percent)
+    //             arr.push(val)
+    //         } else if (item.coinName === 'BCH') {
+    //             let val = item.coinBalance * findPercent(store.rates.bch, percent)
+    //             arr.push(val)
+    //         } else if (item.coinName === 'USDT') {
+    //             let val = item.coinBalance * findPercent(store.rates.usdt, percent)
+    //             arr.push(val)
+    //         }
+    //
+    //     })
+    //
+    //     for (let i = 0; i <= arr.length - 1; i++) {
+    //         total += arr[i]
+    //     }
+    //     store.setTotal(total.toFixed(3))
+    // }
+
+    console.log('store-rates', store.ratesChange.btc)
 
     return (
         <Container>
@@ -55,34 +95,41 @@ const Dashboard = () => {
 
             <ButtonCard>
                 <Row>
-                    <Col className='col-12 col-md-3 mb-3'>
-                        <WalletInfoBlock
-                            currency='BTC'
-                            amount={store.ratesChange.btc.toFixed()}
-                            status={currencyRateChangeIndicator(store.ratesChange.btc.toFixed())}
-                            color='BTC' />
-                    </Col>
-                    <Col className='col-12 col-md-3 mb-3'>
-                        <WalletInfoBlock
-                            currency='ETH'
-                            amount={store.ratesChange.eth.toFixed()}
-                            status={currencyRateChangeIndicator(store.ratesChange.eth.toFixed())}
-                            color='ETH' />
-                    </Col>
-                    <Col className='col-12 col-md-3 mb-3'>
-                        <WalletInfoBlock
-                            currency='BCH'
-                            amount={store.ratesChange.bch.toFixed()}
-                            status={currencyRateChangeIndicator(store.ratesChange.bch.toFixed())}
-                            color='BCH' />
-                    </Col>
-                    <Col className='col-12 col-md-3 mb-3'>
-                        <WalletInfoBlock
-                            currency='USDT'
-                            amount={store.ratesChange.usdt.toFixed()}
-                            status={currencyRateChangeIndicator(store.ratesChange.usdt.toFixed())}
-                            color='BCH' />
-                    </Col>
+                    {
+                        store.ratesChange.btc ?
+                            <>
+                                <Col className='col-12 col-md-3 mb-3'>
+                                    <WalletInfoBlock
+                                        currency='BTC'
+                                        amount={store.ratesChange.btc?.toFixed()}
+                                        status={currencyRateChangeIndicator(store.ratesChange.btc.toFixed())}
+                                        color='BTC' />
+                                </Col>
+                                <Col className='col-12 col-md-3 mb-3'>
+                                    <WalletInfoBlock
+                                        currency='ETH'
+                                        amount={store.ratesChange.eth?.toFixed()}
+                                        status={currencyRateChangeIndicator(store.ratesChange.eth.toFixed())}
+                                        color='ETH' />
+                                </Col>
+                                <Col className='col-12 col-md-3 mb-3'>
+                                    <WalletInfoBlock
+                                        currency='BCH'
+                                        amount={store.ratesChange.bch?.toFixed()}
+                                        status={currencyRateChangeIndicator(store.ratesChange.bch.toFixed())}
+                                        color='BCH'
+                                    />
+                                </Col>
+                                <Col className='col-12 col-md-3 mb-3'>
+                                    <WalletInfoBlock
+                                        currency='USDT'
+                                        amount={store.ratesChange.usdt?.toFixed()}
+                                        status={currencyRateChangeIndicator(store.ratesChange.usdt.toFixed())}
+                                        color='BCH' />
+                                </Col>
+                            </>
+                        : <Preloader />
+                    }
                 </Row>
             </ButtonCard>
             <ButtonCard>

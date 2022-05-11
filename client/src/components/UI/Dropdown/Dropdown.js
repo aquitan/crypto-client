@@ -16,7 +16,7 @@ const Dropdown = () => {
     return (
         <div className='dropdown'>
             <div className='dropdown_head' onClick={onDropdownHandler}>
-                <span className='me-2'>Menu</span>
+                <span className='me-2'>My Wallet</span>
                 <FontAwesomeIcon icon={faChevronDown} color={'#cecece'} />
             </div>
             <div className='dropdown_body'>
