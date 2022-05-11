@@ -19,6 +19,7 @@ import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
 import moment from "moment";
 import Select from "../../../../../components/UI/Select/Select";
 import {optionsCurrency} from "../../../../../utils/staffConstants";
+import {log} from "util";
 
 const UserDetailTabAct = (props) => {
 
@@ -26,6 +27,7 @@ const UserDetailTabAct = (props) => {
     const [state, setState] = useState({
         isOpen: false,
         onClickConfirm: null,
+        doubleConfirm: false
     })
     const [btns, setBtns] = useState({
         currentPrem: props.data.user_params_data.premiumStatus,
@@ -35,6 +37,7 @@ const UserDetailTabAct = (props) => {
         isStaff: props.data.user_params_data.isStaff,
         swapBan: props.data.user_params_data.swapBan
     })
+    console.log('user-actions', props.data)
     const dataObj = {
         userId: props.data.base_data._id,
         staffEmail: store.userEmail,
@@ -69,19 +72,16 @@ const UserDetailTabAct = (props) => {
     }
 
     const changeBalance = async (data) => {
-        console.log('balance', data)
         data.amountInCrypto = +data.amountInCrypto
-        data.userId = store.userId
-        data.userEmail = store.userEmail
+        data.userId = props.data.base_data._id
+        data.userEmail = props.data.base_data.email
         data.domainName = window.location.host
         data.amountInUsd = getCurCoinName(data.coinName.toLowerCase(), data.amountInCrypto)
         data.currentDate = dateToTimestamp()
         data.depositStatus = 'pending'
         data.coinFullName = 'bitcoin'
-        data.userId = store.user.id
         data.depositAddress = 'alkalksdlaksndlaksd'
-
-        console.log('user id', store.user.id)
+        data.staffId = store.user.id
 
         if (data.transaction === 'Deposit') {
             const res = await putData('/staff/create_transaction/create_regular_deposit_transaction/', data)
@@ -220,6 +220,10 @@ const UserDetailTabAct = (props) => {
                 return makeIpClear;
             case 'email-clear':
                 return makeEmailClear;
+            case 'delete-user':
+                return deleteUser;
+            case 'confirm-delete':
+                return confirmDelete;
             default:
                 return () => {
                     console.log('default')
@@ -228,11 +232,22 @@ const UserDetailTabAct = (props) => {
     }
 
     const handleOpenModal = (requestType) => {
-        const onClickConfirm = handleFindType(requestType)
-        setState({
-            isOpen: true,
-            onClickConfirm
-        })
+        if (requestType === 'confirm-delete') {
+            const onClickConfirm = handleFindType(requestType)
+            setState({
+                isOpen: false,
+                onClickConfirm,
+                doubleConfirm: true
+            })
+        } else {
+            const onClickConfirm = handleFindType(requestType)
+            setState({
+                isOpen: true,
+                onClickConfirm,
+                doubleConfirm: false
+            })
+        }
+
     }
     const onUserEnter = () => {
         store.logout()
@@ -257,13 +272,30 @@ const UserDetailTabAct = (props) => {
         return <h1>Loading...</h1>
     }
 
-    const {isOpen, onClickConfirm} = state
+    const deleteUser = () => {
+        handleCloseModal()
+        setState({isOpen: false, onClickConfirm: null})
+        setTimeout(() => {
+            handleOpenModal('confirm-delete')
+        }, 1500)
+    }
+    const confirmDelete = () => {
+        handleOpenModal('confirm-delete')
+        console.log("you've deleted user")
+    }
+
+
+    const {isOpen, onClickConfirm, doubleConfirm} = state
 
     return (
         <div>
 
             <ModalDark active={isOpen} onClick={onClickConfirm} setActive={handleCloseModal}>
                 <Row>Вы уверены?</Row>
+            </ModalDark>
+
+            <ModalDark active={doubleConfirm} onClick={onClickConfirm} setActive={handleCloseModal}>
+                <Row>Вы точно уверены?</Row>
             </ModalDark>
 
             {
@@ -281,55 +313,55 @@ const UserDetailTabAct = (props) => {
 
 
 
-            <AdminButtonCard title='Изменение баланса'>
-                <Row className='mb-3'>
-                    <Col className='col-12 col-md-2 col-lg-2'>
-                        Счёт пользователя:
-                    </Col>
-                    <Col className='col-12 col-md-6 col-lg-6'>
-                        <Select {...balanceRegister('coinName')} classname={'admin-square'} options={optionsCurrency}/>
-                    </Col>
-                </Row>
-                <Row className='mb-3'>
-                    <Col className='col-12 col-md-2 col-lg-2'>
-                        Баланс кошелька:
-                    </Col>
-                    {/*<Col className='col-12 col-md-6 col-lg-6'>*/}
-                    {/*    <AdminInput {...balanceRegister('balance')} placeholder='balance'/>*/}
-                    {/*</Col>*/}
-                </Row>
-                {/*<Row className='mb-3'>*/}
-                {/*    <Col className='col-12 col-md-2 col-lg-2'>*/}
-                {/*        Нотификация:*/}
-                {/*    </Col>*/}
-                {/*    <Col className='col-12 col-md-6 col-lg-6'>*/}
-                {/*        <AdminInput {...balanceRegister('notification', {*/}
-                {/*            required: false,*/}
-                {/*            pattern: /^[^а-яё]+$/iu*/}
-                {/*        })} name='notification' placeholder='This your notif text'/>*/}
-                {/*    </Col>*/}
-                {/*</Row>*/}
-                <Row className='mb-3'>
-                    <Col className='col-12 col-md-2 col-lg-2'>
-                        Направление:
-                    </Col>
-                    <Col className='col-12 col-md-6 col-lg-6'>
-                        <Select {...balanceRegister('transaction')} classname={'admin-square'} options={trsType}/>
-                    </Col>
-                </Row>
-                <Row className='mb-3'>
-                    <Col className='col-12 col-md-2 col-lg-2'>
-                        Сумма:
-                    </Col>
-                    <Col className='col-12 col-md-6 col-lg-6'>
-                        <AdminInput {...balanceRegister('amountInCrypto')} placeholder='0' />
-                    </Col>
-                </Row>
-                <Row>
-                    <AdminButton onClick={() => handleOpenModal('balance')} classname={['green', 'marginless']} >Изменить</AdminButton>
-                </Row>
+            {/*<AdminButtonCard title='Изменение баланса'>*/}
+            {/*    <Row className='mb-3'>*/}
+            {/*        <Col className='col-12 col-md-2 col-lg-2'>*/}
+            {/*            Счёт пользователя:*/}
+            {/*        </Col>*/}
+            {/*        <Col className='col-12 col-md-6 col-lg-6'>*/}
+            {/*            <Select {...balanceRegister('coinName')} classname={'admin-square'} options={optionsCurrency}/>*/}
+            {/*        </Col>*/}
+            {/*    </Row>*/}
+            {/*    <Row className='mb-3'>*/}
+            {/*        <Col className='col-12 col-md-2 col-lg-2'>*/}
+            {/*            Баланс кошелька:*/}
+            {/*        </Col>*/}
+            {/*        /!*<Col className='col-12 col-md-6 col-lg-6'>*!/*/}
+            {/*        /!*    <AdminInput {...balanceRegister('balance')} placeholder='balance'/>*!/*/}
+            {/*        /!*</Col>*!/*/}
+            {/*    </Row>*/}
+            {/*    /!*<Row className='mb-3'>*!/*/}
+            {/*    /!*    <Col className='col-12 col-md-2 col-lg-2'>*!/*/}
+            {/*    /!*        Нотификация:*!/*/}
+            {/*    /!*    </Col>*!/*/}
+            {/*    /!*    <Col className='col-12 col-md-6 col-lg-6'>*!/*/}
+            {/*    /!*        <AdminInput {...balanceRegister('notification', {*!/*/}
+            {/*    /!*            required: false,*!/*/}
+            {/*    /!*            pattern: /^[^а-яё]+$/iu*!/*/}
+            {/*    /!*        })} name='notification' placeholder='This your notif text'/>*!/*/}
+            {/*    /!*    </Col>*!/*/}
+            {/*    /!*</Row>*!/*/}
+            {/*    <Row className='mb-3'>*/}
+            {/*        <Col className='col-12 col-md-2 col-lg-2'>*/}
+            {/*            Направление:*/}
+            {/*        </Col>*/}
+            {/*        <Col className='col-12 col-md-6 col-lg-6'>*/}
+            {/*            <Select {...balanceRegister('transaction')} classname={'admin-square'} options={trsType}/>*/}
+            {/*        </Col>*/}
+            {/*    </Row>*/}
+            {/*    <Row className='mb-3'>*/}
+            {/*        <Col className='col-12 col-md-2 col-lg-2'>*/}
+            {/*            Сумма:*/}
+            {/*        </Col>*/}
+            {/*        <Col className='col-12 col-md-6 col-lg-6'>*/}
+            {/*            <AdminInput {...balanceRegister('amountInCrypto')} placeholder='0' />*/}
+            {/*        </Col>*/}
+            {/*    </Row>*/}
+            {/*    <Row>*/}
+            {/*        <AdminButton onClick={() => handleOpenModal('balance')} classname={['green', 'marginless']} >Изменить</AdminButton>*/}
+            {/*    </Row>*/}
 
-            </AdminButtonCard>
+            {/*</AdminButtonCard>*/}
 
 
 
@@ -447,6 +479,19 @@ const UserDetailTabAct = (props) => {
                 </Row>
                 
             </AdminButtonCard>
+
+            {
+                store.fullAccess ?
+                    <AdminButtonCard>
+                        <Row className={'text-center mb-5'}>
+                            <h2>Удалить пользователя</h2>
+                        </Row>
+                        <Row className={'justify-content-center mb-4'}>
+                            <AdminButton onClick={() => handleOpenModal('delete-user')} classname={['red', 'xxl']}>Удалить</AdminButton>
+                        </Row>
+                    </AdminButtonCard>
+                    : null
+            }
         </div>
     )
 }

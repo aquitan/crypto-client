@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Card, Col, Container, Row} from "react-bootstrap";
 import InternalAddressesCard from "./components/InternalAddressesCard/InternalAddressesCard";
 import {copyTextToClipboard} from "../../../utils/copyToClipboard";
@@ -12,9 +12,11 @@ import Button from "../../../components/UI/Button/Button";
 import Modal from "../../../components/UI/Modal/Modal";
 import InternalAddressModal from "../../../components/UI/InternalAddressModal/InternalAddressModal";
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
+import {getData} from "../../../services/StaffServices";
+import {store} from "../../../index";
 
 const InternalAddresses = () => {
-
+    const [wallets, setWallets] = useState([])
     const [state, setState] = useState([])
     const [modal, setModal] = useState({
         isOpen: false,
@@ -24,15 +26,27 @@ const InternalAddresses = () => {
         currency: ''
     })
 
-    const wallets = [
-        {wallet: '1EnwkHG4evkJbwPQmPfSkMtdfZgjv92anw', currency: 'BTC', sum: 123123123},
-        {wallet: '0x16aA7eBd63864c01b766Bc25B6D3E96041F79F57', currency: 'ETH', sum: 123123123},
-        {wallet: '0xbad95082ed21245DD61FaDba372fbB8E863E2eCd', currency: 'USDT', sum: 123123123},
-        {wallet: '1DKRsrFt8L1rwvxBwMiukVrhGWDCovjjbc', currency: 'BCH', sum: 123123123}
-    ]
+    // const wallets = [
+    //     {wallet: '1EnwkHG4evkJbwPQmPfSkMtdfZgjv92anw', currency: 'BTC', sum: 123123123},
+    //     {wallet: '0x16aA7eBd63864c01b766Bc25B6D3E96041F79F57', currency: 'ETH', sum: 123123123},
+    //     {wallet: '0xbad95082ed21245DD61FaDba372fbB8E863E2eCd', currency: 'USDT', sum: 123123123},
+    //     {wallet: '1DKRsrFt8L1rwvxBwMiukVrhGWDCovjjbc', currency: 'BCH', sum: 123123123}
+    // ]
+
+
 
     const onCopy = (text) => {
         copyTextToClipboard(text)
+    }
+
+    useEffect(() => {
+        getWalletsData()
+    }, [])
+
+    const getWalletsData = async () => {
+        const res = await getData(`/get_internal_data/${store.user.id}/${store.user.email}`)
+        setWallets(res.data)
+        console.log('res', res.data)
     }
 
     const onModalOpen = (obj) => {
@@ -66,7 +80,7 @@ const InternalAddresses = () => {
                                 return (
                                     <Row>
                                         <Col className='col-12 mb-3'>
-                                            <InternalAddressesCard wallet={wallet.wallet} currency={wallet.currency} onCopy={onCopy} sum={wallet.sum} />
+                                            <InternalAddressesCard wallet={wallet.walletAddress} currency={wallet.coinName} onCopy={onCopy} sum={wallet.balance} />
                                         </Col>
                                     </Row>
                                 )

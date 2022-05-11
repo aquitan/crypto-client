@@ -17,7 +17,6 @@ const UserDetail = () => {
     const [isPremium, setIsPremium] = useState(false)
     const params = useParams()
 
-    console.log('user params', params)
     const getAdminUsersDetail = async () => {
         const res = await getData(`/staff/users/user_detail/${params.id}`)
         let geodata = await getGeoData()
@@ -34,9 +33,6 @@ const UserDetail = () => {
     useEffect(() => {
         getAdminUsersDetail()
     }, [])
-
-
-    console.log('user-detail', userDetail)
 
     return (
         <Container className={cls.app_continer}>

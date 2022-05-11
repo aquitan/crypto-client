@@ -22,7 +22,7 @@ const SecureDealDetail = () => {
     const [modal, setModal] = useState(false)
     const [state, setState] = useState({
         seller: false,
-        buyer: false,
+        sellerbuyer: false,
         completed: false
     })
     const [acception, setAcception] = useState(true)

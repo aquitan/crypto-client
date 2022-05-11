@@ -25,8 +25,6 @@ const Deposit = () => {
         { value: "BCH", text: "BCH"},
         { value: "USDT", text: "USDT"},
     ];
-    const btnsVal = [500, 1000, 1500, 5000, 10000]
-
 
     useEffect(() => {
         getHistoryDeposit()
@@ -34,7 +32,8 @@ const Deposit = () => {
 
     const getHistoryDeposit = async () => {
         const res = await postData('/deposit/get_deposit_history/', {userId: store.user.id})
-        setHistory(res.data.depositHistory)
+        const reversedLogs = res.data.depositHistory.slice(0).reverse()
+        setHistory(reversedLogs)
     }
 
 
@@ -44,12 +43,12 @@ const Deposit = () => {
         let calc = +val / btc
         setState({text: val, value: calc})
     }
-    const onSubmit = (data, e) => {
+    const onSubmit = async (data, e) => {
         e.preventDefault()
         data.value = state.value
 
         const obj = {
-            userId: store.userId,
+            userId: store.user.id,
             userEmail: store.userEmail,
             domainName: window.location.host,
             coinName: data.coinName,
@@ -60,8 +59,11 @@ const Deposit = () => {
             depositStatus: 'pending',
             logTime: getCurrentDate(dateToTimestamp())
         }
-        const res = putData('/deposit/make_deposit/', obj)
-        console.log(data)
+        const res = await putData('/deposit/make_deposit/', obj)
+        if (res.status) {
+            getHistoryDeposit()
+        }
+        console.log('res.data', res.status)
     }
     const onChange = (e) => {
         console.log(e.target.value)

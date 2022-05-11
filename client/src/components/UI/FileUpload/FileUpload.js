@@ -14,7 +14,7 @@ const FileUpload = forwardRef(({id}, ref) => {
     }
     return (
         <div className={classes}>
-            <label htmlFor={id}>{!state ? 'Выберите файл' : 'Выбрано файлов: ' + state}</label>
+            <label htmlFor={id}>{!state ? 'Choose File' : 'Files: ' + state}</label>
             <input onChange={imgAmount} className={cls.my} ref={ref} id={id} type="file"/>
         </div>
     )

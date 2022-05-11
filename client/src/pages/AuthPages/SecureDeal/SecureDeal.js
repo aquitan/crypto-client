@@ -20,6 +20,9 @@ import SecureDealTableItem from "./components/SecureDealTableItem/SecureDealTabl
 import {useNavigate} from "react-router-dom";
 import Form from "../../../components/UI/Form/Form";
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
+import {emailValidate} from "../../../utils/checkEmail";
+import {getData} from "../../../services/StaffServices";
+import {store} from "../../../index";
 
 const SecureDeal = () => {
     const [startDate, setStartDate] = useState()
@@ -38,6 +41,11 @@ const SecureDeal = () => {
     const onSubmit = (data) => {
         data.deadline = getCurrentDate(startDate)
         console.log(data)
+    }
+
+    const checkOnBlur = async () => {
+        const res = await getData(`/second_party_user_checker/${store.userEmail}/${window.location.host}`)
+        console.log('on blur')
     }
 
     return (
@@ -78,7 +86,10 @@ const SecureDeal = () => {
                         <p>Please enter username or email of another participant. User should have account at localhost</p>
                         <Col>
                             <Input {...register('secondPartyName', {
-                                required: 'This field is required',
+                                required: 'You must specify email',
+                                validate: emailValidate,
+                                message: 'Email is not valid',
+                                onBlur: checkOnBlur
                             })} placeholder='Second party name' />
                             <ErrorMessage
                                 name='secondPartyName'

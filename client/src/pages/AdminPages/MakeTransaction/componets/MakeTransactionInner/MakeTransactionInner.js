@@ -15,14 +15,16 @@ import Table from "../../../../../components/UI/Table/Table";
 import TableHeader from "../../../../../components/UI/Table/components/TableHeader/TableHeader";
 import TableBody from "../../../../../components/UI/Table/components/TableBody/TableBody";
 import TableItem from "../../../../../components/UI/Table/components/TableItem/TableItem";
-import {postData, putData} from "../../../../../services/StaffServices";
+import {getData, postData, putData} from "../../../../../services/StaffServices";
 import {store} from "../../../../../index";
 import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
 
 const MakeTransactionInner = () => {
     const [startDate, setStartDate] = useState()
     const [timeDate, setTimeDate] = useState()
-    const {register, handleSubmit} = useForm()
+    const {register, handleSubmit} = useForm({
+        mode: 'onBlur'
+    })
     const styles = {
         todayBtn: {
             position: 'absolute',
@@ -89,6 +91,10 @@ const MakeTransactionInner = () => {
         let time = new Date()
         setTimeDate(time)
     }
+
+    const onBlur = async (e) => {
+        const res = await getData(`/get_internal_data/null/${e.target.value}/`)
+    }
     console.log('time', timeDate)
     return (
         <>
@@ -130,14 +136,14 @@ const MakeTransactionInner = () => {
                                 <span style={styles.todayBtn} onClick={onNowTime}>Now</span>
                             </Col>
                         </Row>
-                        <Row>
-                            <Col>
-                                <AdminInput {...register('secondPartyEmail')} placeholder='Почта'/>
-                            </Col>
-                        </Row>
                         <Row className='mb-3'>
                             <Col>
-                                <AdminInput {...register('toAddress')} placeholder='Адрес'/>
+                                <AdminInput {...register('toAddress' )} placeholder='Адрес'/>
+                            </Col>
+                            <Col>
+                                <AdminInput {...register('userEmail', {
+                                    onBlur: (e) => onBlur(e)
+                                })} placeholder='Почта'/>
                             </Col>
                         </Row>
 

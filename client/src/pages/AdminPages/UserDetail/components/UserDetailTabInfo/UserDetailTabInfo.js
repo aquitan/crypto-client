@@ -27,14 +27,12 @@ const UserDetailTabInfo = ({data}) => {
         if (data.user.user_params_data.isStaff) return 'Стафф'
         return 'Пользователь'
     }
-    console.log('props', data)
     const onSubmit = async (datas) => {
         datas.curError = +datas.curError
         datas.domainName = window.location.host
         datas.staffId = store.userId
         datas.staffEmail = store.userEmail
         datas.userEmail = data.user.base_data.email
-        console.log('user-error-data', datas)
 
         // let res = await patchData('/staff/users/user_detail/update_error_for_user/', datas)
     }
