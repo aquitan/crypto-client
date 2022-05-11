@@ -37,3 +37,13 @@ export async function getUserData(email: string, userId?: string) {
   }
   return userDto
 }
+
+// Athlete.
+//   find().
+//   where('sport').equals('Tennis').
+//   where('age').gt(17).lt(50).  //Дополнительное условие
+//   limit(5).
+//   sort({ age: -1 }).
+//   select('name age').
+//   exec(callback); // callback - имя нашей колбэк-функции.
+
