@@ -1691,6 +1691,119 @@ class StaffController {
     }
   }
 
+  async createStaffWallet(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    const staffId: string = req.body.staffId
+    const walletList = [
+      {
+        coinName: 'BTC',
+        coinAddress: req.body.btcWallet
+      },
+      {
+        coinName: 'BCH',
+        coinAddress: req.body.bchWallet,
+      },
+      {
+        coinName: 'ETH',
+        coinAddress: req.body.ethWallet,
+      },
+      {
+        coinName: 'USDT',
+        coinAddress: req.body.usdtWallet,
+      },
+      {
+        coinName: 'TRX',
+        coinAddress: req.body.tronWallet,
+      },
+      {
+        coinName: 'USDTTRX',
+        coinAddress: req.body.trxUsdtWallet,
+      },
+      {
+        coinName: 'SOL',
+        coinAddress: req.body.solanaWalet
+      }
+    ]
+    for (let index in walletList) {
+      if (walletList[index] === undefined || walletList[index] === null) {
+        console.log(`received an empty value of ${walletList[index]}. check ur request. `);
+
+        return res.status(400).json({ message: 'wrong data' })
+      }
+    }
+
+    try {
+      const result: boolean = await staffService.createStaffWallet(walletList, staffId)
+      if (!result) throw ApiError.ServerError()
+      return res.status(201).json({ message: 'ok' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async editStaffWallets(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const staffId: string = req.body.staffId
+    const rootAccess: boolean = req.body.rootAccess
+    const walletList = [
+      {
+        coinName: 'BTC',
+        coinAddress: req.body.btcWallet
+      },
+      {
+        coinName: 'BCH',
+        coinAddress: req.body.bchWallet,
+      },
+      {
+        coinName: 'ETH',
+        coinAddress: req.body.ethWallet,
+      },
+      {
+        coinName: 'USDT',
+        coinAddress: req.body.usdtWallet,
+      },
+      {
+        coinName: 'TRX',
+        coinAddress: req.body.tronWallet,
+      },
+      {
+        coinName: 'USDTTRX',
+        coinAddress: req.body.trxUsdtWallet,
+      },
+      {
+        coinName: 'SOL',
+        coinAddress: req.body.solanaWalet
+      }
+    ]
+    for (let index in walletList) {
+      if (walletList[index] === undefined || walletList[index] === null) {
+        console.log(`received an empty value of ${walletList[index]}. check ur request. `);
+
+        return res.status(400).json({ message: 'wrong data' })
+      }
+    }
+    try {
+      if (!rootAccess) return res.status(403).json({ message: 'permission denied' })
+
+      const result: boolean = await adminService.editStaffWallets(walletList, staffId)
+      if (!result) throw ApiError.ServerError()
+      return res.status(202).json({ message: 'ok' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async getStaffWallet(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const staffId: string = req.params.staffId
+    if (!staffId) return res.status(400).json({ message: 'wrong data' })
+    try {
+      const result: boolean = await staffService.getStaffWallet(staffId)
+      if (!result) throw ApiError.ServerError()
+      return res.status(200).json(result)
+    } catch (e) {
+      next(e)
+    }
+  }
+
 }
 
 export default new StaffController()

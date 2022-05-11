@@ -40,11 +40,12 @@ router.patch('/personal_area/security/disable_two_step_status/', authChecker, us
 
 router.put('/personal_area/verification/', authChecker, userController.personalAreaKyc) // send kyc data
 
-// router.put('/personal_area/create_secure_deal/', authChecker, userController.secureDealCreate) // create secure deal
+router.put('/personal_area/secure_deal/create_secure_deal/', authChecker, userController.secureDealCreate) // create secure deal
 router.get('/second_party_user_checker/:userEmail/:domainName/', authChecker, userController.secondPartyChecker) // find second user for secure deal & internal transfers
+router.get('/personal_area/secure_deal/secure_deal_detail/:dealId/', authChecker, userController.getSecureDealDetail) // get detail deal info by dealId
+router.get('/personal_area/secure_deal/secure_deal_history/:userEmail/', authChecker, userController.getSecureDealHistory) // get deal history for user by userEmail
 
-// router.get('/personal_area/secure_deal_detail/:id'/, authChecker, userController.getSecureDealDetail) // get detail deal ingo by id
-// router.patch('/personal_area/secure_deal/accept_deal/', authChecker, userController.acceptDeal) // accept deal
+router.patch('/personal_area/secure_deal/secure_deal_detail/accept_deal/', authChecker, userController.acceptDeal) // accept deal
 
 // user money transfer logic
 router.get('/get_user_balance/:id/', authChecker, userController.getUserBalance) // get user balances for every coins
@@ -108,16 +109,15 @@ router.post('/staff/news/get_news_list/', staffController.getNewsList) // get ne
 
 // transaction logic
 router.put('/staff/users/user_detail/make_withdrawal/', staffController.makeWithdrawalForUserAsStaff)
-
 router.put('/staff/create_transaction/create_regular_deposit_transaction/', staffController.createDepositForUserAsStaff) // create deposit for user in your own domain as staff or for any user in project as admin
 router.put('/staff/create_transaction/create_regular_withdrawal_transaction/', staffController.makeWithdrawalForUserAsStaff) // create approved withdrawal for user in your own domain as staff or for any user in project as admin
 router.put('/staff/create_transaction/create_internal_transfer_as_staff/', staffController.createInternalTransaction) // reate approved internal withdrawal OR create internal deposit for your account
 router.get('/staff/create_transaction/get_transaction_history/:id/', staffController.getTransactionsHistory) // get history about all transaction in your account
 
 
-// router.put('/staff/wallets/create_staff_wallet/', staffController.createStaffWallet) // create staff wallet & staff 2fa checker
-// router.post('/staff/staff_wallets/get_wallets/', staffController.getStaffWallet) // if staff => get support wallet for current staff, (if admin) => select with staff emails to choose wallet by current staff user
-// router.patch('/staff/staff_wallets/edit_staff_wallets/', staffController.editStaffWallets) // edit wallets for current staff ONLY by root
+router.put('/staff/wallets/create_staff_wallet/', staffController.createStaffWallet) // create staff wallet 
+router.get('/staff/staff_wallets/get_wallets/:staffId/', staffController.getStaffWallet) // if staff => get support wallet for current staff, (if admin) => select with staff emails to choose wallet by current staff user
+router.patch('/staff/staff_wallets/edit_staff_wallets/', staffController.editStaffWallets) // edit wallets for current staff ONLY by root
 
 // router.post('/staff/terms/get_term_by_domain/', staffController.getTermsByDomainName) // get terms by selected domain
 // router.patch('/staff/terms/update_terms/', staffController.updateTerms) // update terms at selected domain

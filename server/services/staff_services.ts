@@ -17,7 +17,7 @@ import usedPromoList from '../models/Used_promocodes.model'
 import staffLogs from '../models/Staff_logs.model'
 import TokenModel from '../models/Token.model'
 import TERMS from '../config/terms.template'
-import * as mongoose from 'mongoose'
+import staffWallet from '../models/staff_wallet.model'
 
 
 class staffService {
@@ -430,28 +430,29 @@ class staffService {
 
 	async EditDomainInfo(data_object: any) {
 
-		const domains: any = await domainList.findOne({
+		const curDomain: any = await domainList.findOne({
 			fullDomainName: data_object.fullDomainName,
 			domainOwner: data_object.staffId
 		})
-		if (domains) return false
-		console.log('received domain is: ', domains);
+		if (!curDomain) return false
+		console.log('received domain is: ', curDomain);
 
-		await domainList.findOneAndUpdate({ fullDomainName: data_object.fullDomainName }, {
-			fullDomainName: data_object.fullDomainName,
-			domainName: data_object.domainName,
-			companyAddress: data_object.companyAddress,
-			companyPhoneNumber: data_object.companyPhoneNumber,
-			companyEmail: data_object.companyEmail,
-			companyOwnerName: data_object.companyOwnerName,
-			companyYear: data_object.companyYear,
-			companyCountry: data_object.companyCountry,
-			domainOwnerEmail: data_object.staffEmail
-		})
-
-
-		const curDomain: any = await domainList.findOne({ fullDomainName: data_object.fullDomainName })
-		console.log('base domain info from db: ', curDomain);
+		await domainList.findOneAndUpdate(
+			{
+				fullDomainName: data_object.fullDomainName,
+				_id: curDomain.id
+			},
+			{
+				fullDomainName: data_object.fullDomainName,
+				domainName: data_object.domainName,
+				companyAddress: data_object.companyAddress,
+				companyPhoneNumber: data_object.companyPhoneNumber,
+				companyEmail: data_object.companyEmail,
+				companyOwnerName: data_object.companyOwnerName,
+				companyYear: data_object.companyYear,
+				companyCountry: data_object.companyCountry,
+				domainOwnerEmail: data_object.staffEmail
+			})
 
 		await domainDetail.findOneAndUpdate({ _id: curDomain.id }, {
 			showNews: data_object.showNews,
@@ -466,37 +467,35 @@ class staffService {
 		})
 		const detailCheck: any = await domainDetail.findOne({ domainId: curDomain.id })
 		console.log('domain params => ', detailCheck);
+		if (!detailCheck) return false
 
-		if (detailCheck) return false
+		const curErrorList: any = [
+			data_object.errorList.verif_document,
+			data_object.errorList.verif_address,
+			data_object.errorList.insurance,
+			data_object.errorList.premium,
+			data_object.errorList.multi_account
+		]
 
-		// const curErrorList: any = [
-		// 	data_object.errorList.verif_document,
-		// 	data_object.errorList.verif_address,
-		// 	data_object.errorList.insurance,
-		// 	data_object.errorList.premium,
-		// 	data_object.errorList.multi_account
-		// ]
-
-		// for (let i = 0; i < curErrorList.length; i++) {
-		// 	await domainErrors.create({
-		// 		domainName: curDomain.fullDomainName,
-		// 		errorName: curErrorList[i].errorName,
-		// 		errorTitle: curErrorList[i].title,
-		// 		errorText: curErrorList[i].text,
-		// 		errorButton: curErrorList[i].button,
-		// 		domainId: curDomain.id
-		// 	})
-		// 	console.log('error item is: ', '\n', curErrorList[i], '\n', ' was waved');
-		// }
-		// const dbErrorList: any = await domainErrors.find({
-		// 	domainId: curDomain.id
-		// })
-		// console.log('db errors: ', dbErrorList);
-
-		// if (dbErrorList.length < 5) {
-		// 	console.log('some writing error in <save domain errors>');
-		// 	return false
-		// }
+		for (let i = 0; i < curErrorList.length; i++) {
+			await domainErrors.findOneAndUpdate(
+				{ domainId: curDomain.id },
+				{
+					errorName: curErrorList[i].errorName,
+					errorTitle: curErrorList[i].title,
+					errorText: curErrorList[i].text,
+					errorButton: curErrorList[i].button,
+				})
+			console.log('error item is: ', '\n', curErrorList[i], '\n', ' was waved');
+		}
+		const dbErrorList: any = await domainErrors.find({
+			domainId: curDomain.id
+		})
+		console.log('db errors: ', dbErrorList);
+		if (dbErrorList.length < 5) {
+			console.log('some writing error in <save domain errors>');
+			return false
+		}
 
 		return true
 	}
@@ -731,6 +730,42 @@ class staffService {
 		console.log('found news: ', newsArr);
 		if (!newsArr) return false
 		return newsArr
+	}
+
+	async createStaffWallet(transfer_object: any, staffId: string) {
+		const checkWallets: any = await staffWallet.find({
+			staffId: staffId
+		})
+		console.log('checkWallets is => ', checkWallets.length);
+		if (checkWallets.length > 0) return false
+
+		for (let i = 0; i <= transfer_object.length - 1; i++) {
+			console.log('cur transfer_object item is => ', transfer_object[i]);
+			let dataObj = {
+				coinName: transfer_object[i].coinName,
+				walletAddress: transfer_object[i].coinAddress,
+				staffId: staffId
+			}
+			console.log('cur data obj is => ', dataObj);
+			await staffWallet.create(dataObj)
+		}
+
+		const getWallets: any = await staffWallet.find({
+			staffId: staffId
+		})
+		console.log('received getWallets is => ', getWallets.length);
+		if (!getWallets.length) return false
+
+		return true
+	}
+
+	async getStaffWallet(staffId: string) {
+		const getWallets: any = await staffWallet.find({
+			staffId: staffId
+		})
+		console.log('received getWallets is => ', getWallets.length);
+		if (!getWallets.length) return false
+		return getWallets
 	}
 
 }

@@ -16,6 +16,7 @@ import DEPOSIT_HISTORY from 'interface/deposit_history.interface'
 import WITHDRAWAL_HISTORY from 'interface/withdrawal_history.interface'
 import SWAP_HISTORY from 'interface/swap_history.interface'
 import INTERNAL_HISTORY from 'interface/internal_history.interface'
+import { DEAL_INTERFACE } from 'interface/secure_deal.interface'
 
 
 async function saveUserLogs(email: string, ipAddress: string, city: string, countryName: string, coordinates: string, browser: string, currentDate: string, userAction: string, userDomain: string) {
@@ -401,18 +402,19 @@ class UserController {
     const countryName: string = req.body.countryName
     const coordinates: string = req.body.coordinates
     const logTime: string = req.body.logTime
+    const errorNumber: number = req.body.errorNumber
 
     if (req.body.withdrawalStatus !== 'failed ') {
       transfer_object.withdrawalStatus = 'failed'
     }
     try {
-      const result: boolean = await moneyService.MakeWithdrawal(transfer_object)
+      const result: any = await moneyService.MakeWithdrawal(transfer_object, errorNumber)
       console.log('result is: ', result)
       if (!result) return res.status(400).json({ message: 'wrong data' })
 
       await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, logTime, ` создал заявку на вывод на сумму ${transfer_object.amountInCrypto} ${transfer_object.coinName} ($ ${transfer_object.amountInUsd} )`, transfer_object.domainName)
       await telegram.sendMessageByUserActions(transfer_object.userEmail, ` создал заявку на вывод на сумму ${transfer_object.amountInCrypto} ( ${transfer_object.amountInUsd} ) ${transfer_object.coinName} `, transfer_object.domainName)
-      return res.status(201).json({ message: 'ok' })
+      return res.status(201).json(result)
 
     } catch (e) {
       next(e)
@@ -571,13 +573,12 @@ class UserController {
 
   async getInternalTransferHistory(req: express.Request, res: express.Response, next: express.NextFunction) {
     const userId: string = req.body.userId
-    console.log('int id is: ', userId)
 
     if (!userId) return res.status(400).json({ message: 'wrong data' })
     try {
       const result: any = await UserServices.GetInternalTransferHistory(userId)
       console.log(' result is: ', result)
-      if (!result) return res.status(500).json({ message: 'internal server error' })
+      if (!result) throw ApiError.ServerError()
 
       return res.status(200).json({ message: 'ok', internalTransferHistory: result })
     } catch (e) {
@@ -602,28 +603,84 @@ class UserController {
   //   }
   // }
 
-  async secureDeal(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
+  async secureDealCreate(req: express.Request, res: express.Response, next: express.NextFunction) {
 
-      // secure deal form & history
+    const transferObject: DEAL_INTERFACE = {
+      userEmail: req.body.userEmail,
+      secondPartyEmail: req.body.secondPartyEmail,
+      dealCondition: req.body.dealCondition,
+      coinName: req.body.coinName,
+      amountInCrypto: req.body.amountInCrypto,
+      seller: req.body.sellerEmail,
+      buyer: req.body.buyerEmail,
+      status: req.body.status,
+      acceptCode: '1',
+      dealDedline: req.body.dealDedline,
+      dateOfCreate: req.body.currentDate
+    }
+    const userId: string = req.body.userId
+
+    for (let i in transferObject) {
+      if (transferObject[i] === undefined || transferObject[i] === null) {
+        console.log(`received object value of ${transferObject[i]} is wrong.`);
+        return res.status(400).json({ message: 'wrong data' })
+      }
+    }
+    try {
+      const result: boolean = await UserServices.createSecureDeal(transferObject, userId)
+      console.log(' result is: ', result)
+      if (!result) throw ApiError.ServerError()
+
+      return res.status(200).json({ message: 'ok' })
     } catch (e) {
       next(e)
     }
   }
 
   async getSecureDealDetail(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
 
-      // current secure deal info & support chat
+    const dealId: string = req.params.dealId
+    if (!dealId) return res.status(400).json({ message: 'wrong data' })
+
+    try {
+      const result: any = await UserServices.getSecureDealDetail(dealId)
+      console.log(' result is: ', result)
+      if (!result) throw ApiError.ServerError()
+
+      return res.status(200).json({ message: 'ok', dealDetail: result })
+    } catch (e) {
+      next(e)
+    }
+
+  }
+
+  async getSecureDealHistory(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    const userEmail: string = req.params.userEmail
+    if (!userEmail) return res.status(400).json({ message: 'wrong data' })
+
+    try {
+      const result: any = await UserServices.getSecureDealHistory(userEmail)
+      console.log(' result is: ', result)
+      if (!result) throw ApiError.ServerError()
+
+      return res.status(200).json({ message: 'ok', history: result })
     } catch (e) {
       next(e)
     }
   }
 
   async acceptDeal(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
+    const dealId: string = req.body.dealId
+    const dealCode: string = req.body.acceptCode
 
-      // accept deal as buyer
+    if (!dealId || !dealCode) return res.status(400).json({ message: 'wrong data' })
+    try {
+      const result: any = await UserServices.acceptSecureDeal(dealId, dealCode)
+      console.log(' result is: ', result)
+      if (!result) throw ApiError.ServerError()
+
+      return res.status(200).json({ message: 'ok' })
     } catch (e) {
       next(e)
     }

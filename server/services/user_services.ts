@@ -17,7 +17,8 @@ import swapHistory from '../models/Swap_history.model'
 import internalHistory from '../models/Internal_history.model'
 import userBalance from '../models/User_balance.model'
 import userWallet from '../models/user_wallet.model'
-
+import generatePassword from 'api/password_generator'
+import secureDeal from '../models/secure_deal.model'
 
 
 async function generateCodeForGoogle2fa(domain_name: string) {
@@ -297,6 +298,48 @@ class UserServices {
 		return userInternalTransfers
 	}
 
+	async createSecureDeal(transfer_object: any, userId: string) {
+
+		const acceptCode: string = await generatePassword(8)
+
+		const getUserBalance: any = await userBalance.findOne({
+			coinName: transfer_object.coinName,
+			userId: userId
+		})
+		console.log('received balance => ', getUserBalance.coinBalance);
+		if (!getUserBalance) return false
+		if (getUserBalance < transfer_object.amountInCrypto) {
+			console.log('wrong balance value');
+			return false
+		}
+		const dataObject = {
+			userEmail: transfer_object.userEmail,
+			secoondPartyEmail: transfer_object.secondPartyEmail,
+			dealCondition: transfer_object.dealCondition,
+			coinName: transfer_object.coinName,
+			amountInCrypto: transfer_object.amountInCrypto,
+			buyer: transfer_object.buyer,
+			seller: transfer_object.seller,
+			status: false,
+			acceptCode: acceptCode,
+			dealDedline: transfer_object.dealDedline,
+			dateOfCreate: transfer_object.dateOfCreate
+		}
+		console.log('dataObject is => ', dataObject);
+		await secureDeal.create(dataObject)
+
+		const getDeal: any = await secureDeal.findOne({
+			dateOfCreate: transfer_object.dateOfCreate
+		})
+		console.log('found getDeal is => ', getDeal);
+		if (!getDeal) return false
+
+		return true
+	}
+
+
+
+
 	async saveUserLogs(email: string, ipAddress: string, city: string, countryName: string, coordinates: string, browser: string, currentDate: string, user_action: string, user_domain: string) {
 
 		const logs: any = {
@@ -329,6 +372,114 @@ class UserServices {
 		})
 
 		return logs
+	}
+
+	async getSecureDealDetail(dealId: string) {
+		const foundDeal: any = await secureDeal.findById({
+			_id: dealId
+		})
+		if (!foundDeal) return false
+		return foundDeal
+	}
+
+	async getSecureDealHistory(userEmail: string) {
+
+		const dealHistoryAsCreator: any = await secureDeal.find({
+			userEmail: userEmail
+		})
+		if (!dealHistoryAsCreator.length) return false
+
+		const dealHistoryAsSecondParty: any = await secureDeal.find({
+			secondPartyEmail: userEmail
+		})
+		if (!dealHistoryAsSecondParty.length) return false
+
+		let dataArray = {
+			dealHistoryAsCreator: dealHistoryAsCreator,
+			dealHistoryAsSecondParty: dealHistoryAsSecondParty
+		}
+
+		return dataArray
+	}
+
+	async acceptSecureDeal(dealId: string, acceptCode: string) {
+		const curDeal: any = await secureDeal.findOne({
+			_id: dealId
+		})
+		console.log('found curDeal is => ', curDeal);
+		if (!curDeal || curDeal.acceptCode !== acceptCode) return false
+
+		const updateStatus: any = await secureDeal.findByIdAndUpdate(
+			{ _id: dealId },
+			{ status: true }
+		)
+		console.log('updateStatus is => ', updateStatus);
+		if (!updateStatus) return false
+
+		const firstUser: any = await baseUserData.findOne({
+			email: curDeal.buyer
+		})
+		console.log('found firstUser is => ', firstUser);
+		if (!firstUser) return false
+
+		const secondUser: any = await baseUserData.findOne({
+			email: curDeal.seller
+		})
+		console.log('found secondUser is => ', secondUser);
+		if (!secondUser) return false
+
+		const firstUserBalance: any = await userBalance.findOne({
+			coinName: curDeal.coinName,
+			userId: firstUser.id
+		})
+		console.log('found firstUserBalance is => ', firstUserBalance);
+		if (!firstUserBalance) return false
+
+		const secondUserBalance: any = await userBalance.findOne({
+			coinName: curDeal.coinName,
+			userId: secondUser.id
+		})
+		console.log('found secondUserBalance is => ', secondUserBalance);
+		if (!secondUserBalance) return false
+
+		const curFirstBalance: number = firstUserBalance.coinBalance - curDeal.amountInCrypto
+		const curSecondBalance: number = secondUserBalance.coinBalance + curDeal.amountInCrypto
+
+		await userBalance.findOneAndUpdate(
+			{
+				_id: firstUser.id,
+				coinName: curDeal.coinName
+			},
+			{
+				coinBalance: curFirstBalance
+			}
+		)
+
+		await userBalance.findOneAndUpdate(
+			{
+				_id: secondUser.id,
+				coinName: curDeal.coinName
+			},
+			{
+				coinBalance: curSecondBalance
+			}
+		)
+
+		const updatedFirstBalance: any = await userBalance.findOne({
+			userId: firstUser.id,
+			coinName: curDeal.coinName,
+		})
+		console.log('found updatedFirstBalance is => ', updatedFirstBalance);
+		if (!updatedFirstBalance || updatedFirstBalance.coinBalance === firstUserBalance.coinBalance) return false
+
+		const updatedSecondBalance: any = await userBalance.findOne({
+			userId: secondUser.id,
+			coinName: curDeal.coinName,
+		})
+		console.log('found updatedSecondBalance is => ', updatedSecondBalance);
+		if (!updatedSecondBalance || updatedSecondBalance.coinBalance === secondUserBalance.coinBalance) return false
+
+		return true
 	}
 
 

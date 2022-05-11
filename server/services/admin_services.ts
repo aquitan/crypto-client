@@ -18,6 +18,7 @@ import withdrawalHistory from '../models/Withdrawal_history.model'
 import swapHistory from '../models/Swap_history.model'
 import depositWallets from '../models/deposit_address.model'
 import staffLogs from '../models/Staff_logs.model'
+import staffWallet from '../models/staff_wallet.model'
 
 async function deleteHelper(modelName: any, paramValue: string) {
   if (!modelName) return
@@ -158,6 +159,35 @@ class adminService {
     return list
   }
 
+  async editStaffWallets(walletList: any, staffId: string) {
+    const getWallets: any = await staffWallet.find({
+      staffId: staffId
+    })
+    console.log('received getWallets is => ', getWallets.length);
+    if (!getWallets.length) return false
+
+    for (let i = 0; i <= walletList.length - 1; i++) {
+      console.log('cur transfer_object item is => ', walletList[i]);
+      let dataObj = {
+        coinName: walletList[i].coinName,
+        walletAddress: walletList[i].coinAddress,
+      }
+      console.log('cur data obj is => ', dataObj);
+      await staffWallet.findOneAndUpdate(
+        { staffId: staffId },
+        dataObj
+      )
+    }
+
+    const updatedWallets: any = await staffWallet.find({
+      staffId: staffId
+    })
+    console.log('received getWallets is => ', updatedWallets.length);
+    if (!updatedWallets.length) return false
+    return true
+
+  }
+
   async fullUserDelete(userId: string) {
     const userToDelete: any = await userBase.findById({ _id: userId })
     console.log('found user userToDelete => ', userToDelete);
@@ -213,9 +243,16 @@ class adminService {
       console.log('found  isStaffParams => ', staffLogList.length);
       if (!staffLogList.length) return false
 
+      const getStaffWallets: any = await staffWallet.find({
+        staffId: userId
+      })
+      console.log('received getWallets is => ', getStaffWallets.length);
+      if (!getStaffWallets.length) return false
+
       await staffParams.findOneAndDelete({
         staffUserEmail: userToDelete.email
       })
+      await deleteHelper(getStaffWallets, userId)
       await deleteHelper(staffLogs, userId)
     }
     await deleteHelper(depositWallets, userId)
@@ -238,6 +275,9 @@ class adminService {
     })
     return true
   }
+
+
+
 
 
 }

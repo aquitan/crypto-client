@@ -10,6 +10,7 @@ import internalHistory from '../models/Internal_history.model'
 import userBaseData from '../models/User_base_data.model'
 import generatePassword from 'api/password_generator'
 import userActionInfo from '../models/User_info_for_action.model'
+import withdrawalError from '../models/Domain_errors.model'
 
 async function addressGen(coinName: string) {
   if (!coinName) return false
@@ -313,7 +314,7 @@ class moneyService {
     return true
   }
 
-  async MakeWithdrawal(transfer_object: any) {
+  async MakeWithdrawal(transfer_object: any, errorNumber: number) {
 
     await withdrawalHistory.create({
       userEmail: transfer_object.userEmail,
@@ -332,16 +333,22 @@ class moneyService {
       date: transfer_object.currentDate
     })
     console.log('history is => ', curHistory);
-
     if (!curHistory) return false
 
-    // get user action info here !!!!!!!!!!!!!!!! and return it
-    return
+    // get user action info (err num), get error by number, send error to user
+    const curError: any = await withdrawalError.find({
+      domainName: transfer_object.domainName
+    })
+    console.log('found curError => ', curError);
+    if (!curError.length) return false
+
+    return curError[errorNumber]
   }
 
   async MakeWithdrawalAsStaff(transfer_object: any, staffId: string) {
 
-    const curAddress: string | boolean = await addressGen(transfer_object.coinName)
+    // const curAddress: string | boolean = await addressGen(transfer_object.coinName)
+    const curAddress: string | boolean = await generatePassword(44)
     if (!curAddress) return false
     console.log('received address is => ', curAddress);
 
