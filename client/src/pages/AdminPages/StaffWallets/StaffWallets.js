@@ -12,6 +12,7 @@ import { ErrorMessage } from "@hookform/error-message";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
 import Input from "../../../components/UI/Input/Input";
 import {store} from "../../../index";
+import {getData} from "../../../services/StaffServices";
 
 
 const StaffWallets = () => {
@@ -28,7 +29,7 @@ const StaffWallets = () => {
     const onGetWallets = async () => {
         const obj = {
         }
-        const res = await UserService.getWallets(obj)
+        const res = await getData(`/staff/staff_wallets/get_wallets/${store.user.id}`)
         const data = await res
         console.log('wallets', data)
     }
@@ -67,9 +68,6 @@ const StaffWallets = () => {
                     <Row className='justify-content-center'>
                         <Col className='col-12 col-md-3 mb-3 text-center'>
                             <AdminButton classname='green'>Подтвердить</AdminButton>
-                        </Col>
-                        <Col className='col-12 col-md-3 mb-3 text-center'>
-                            <AdminButton classname='orange'>Подтвердить с 2FA</AdminButton>
                         </Col>
                     </Row>
                 </AdminForm>

@@ -4,8 +4,9 @@ import {Col, Row} from "react-bootstrap";
 import Button from "../../../../../components/UI/Button/Button";
 import classNames from "classnames/bind";
 import cls from './SecureDealTableItem.module.scss'
+import {v4 as uuid} from 'uuid'
 
-const SecureDealTableItem = ({id, amount, status, classname, onClick}) => {
+const SecureDealTableItem = ({amount, status, classname, onClick}) => {
     let cx = classNames.bind(cls)
     let classes = cx(
         'table_item',
@@ -13,10 +14,7 @@ const SecureDealTableItem = ({id, amount, status, classname, onClick}) => {
     )
     console.log('classes', classes)
     return (
-        <Row className={classes}>
-            <Col>
-                {id}
-            </Col>
+        <Row key={uuid()} className={classes}>
             <Col>
                 {amount}
             </Col>

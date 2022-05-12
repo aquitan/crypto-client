@@ -28,13 +28,13 @@ const UserDetailTabInfo = ({data}) => {
         return 'Пользователь'
     }
     const onSubmit = async (datas) => {
-        datas.curError = +datas.curError
+        datas.errorId = +datas.errorId
         datas.domainName = window.location.host
         datas.staffId = store.userId
         datas.staffEmail = store.userEmail
         datas.userEmail = data.user.base_data.email
 
-        // let res = await patchData('/staff/users/user_detail/update_error_for_user/', datas)
+        let res = await patchData('/staff/users/user_detail/update_error_for_user/', datas)
     }
 
     const toArr = () => {
@@ -43,7 +43,7 @@ const UserDetailTabInfo = ({data}) => {
         for (let i = 0; i <= err.length - 1; i++) {
             let obj = {
                 text: err[i].errorName,
-                id: i + 1
+                id: i
             }
             arr.push(obj)
         }
@@ -153,7 +153,7 @@ const UserDetailTabInfo = ({data}) => {
                     <Row className={cls.users_detail_table_row}>
                         <p>Текущая ошибка</p>
                         <Col>
-                            <Select {...register('curError')} classname={'admin-square'} options={toArr()}/>
+                            <Select {...register('errorId')} classname={'admin-square'} options={toArr()}/>
                         </Col>
                         <Col>
                             <AdminButton onClick={handleSubmit(onSubmit)} classname='green'>Использовать</AdminButton>
