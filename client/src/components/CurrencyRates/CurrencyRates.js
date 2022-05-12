@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import {Col, Row} from "react-bootstrap";
 import {store} from "../../index";
 import {findPercent} from "../../utils/findPercent";
+import cls from './CurrencyRates.module.scss'
 
 const CurrencyRates = () => {
     const [state, setState] = useState()
@@ -16,7 +17,7 @@ const CurrencyRates = () => {
     }
 
     return (
-        <Row className='mb-3' style={{maxWidth: 1000}}>
+        <Row className={`${cls.currencyRates} mb-3`} style={{maxWidth: 1000}}>
             <Col><b>BTC:</b> {findPercent(store.rates.btc, state)}</Col>
             <Col><b>ETH:</b> {findPercent(store.rates.eth, state)}</Col>
             <Col><b>BCH:</b> {findPercent(store.rates.bch, state)}</Col>

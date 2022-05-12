@@ -88,6 +88,7 @@ const NavBar = () => {
                             </NavLink>
                             : null
                     }
+                    <CurrencyRates />
                 </UserSidebar>
 
                 <div className={cls.navWrap}>

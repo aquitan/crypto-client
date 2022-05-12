@@ -18,11 +18,15 @@ import {getCurrentDate} from "../../../utils/getCurrentDate";
 import {postData, putData} from "../../../services/StaffServices";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import TableItemUser from "../../../components/UI/TableItemUser/TableItemUser";
+import ErrorModal from "../../../components/ErrorModal/ErrorModal";
 const Withdraw = () => {
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
     })
     const [history, setHistory] = useState()
+    const [modal, setModal] = useState(false)
+    const [error, setError] = useState()
+
 
     useEffect(() => {
         getHistoryDeposit()
@@ -58,7 +62,7 @@ const Withdraw = () => {
         setState({text: +calc.toFixed(5), value: +e.target.value})
     }
 
-    const onSubmit = (data, e) => {
+    const onSubmit = async (data, e) => {
         e.preventDefault()
         data.value = state.value
 
@@ -72,16 +76,31 @@ const Withdraw = () => {
             currentDate: dateToTimestamp(),
             withdrawalAddress: data.withdrawalAddress,
             withdrawalStatus: 'failed',
-            logTime: getCurrentDate(dateToTimestamp())
+            logTime: getCurrentDate(dateToTimestamp()),
+            errorNumber: store.user.userError
         }
 
-        const res = putData('/withdraw/make_withdraw/', obj)
+        const res = await putData('/withdraw/make_withdraw/', obj)
+        setError(res.data)
+        if (res.status === 201) {
+            setModal(true)
+        }
         console.log(data)
     }
 
 
     return (
         <Container>
+
+            <ErrorModal
+                errorText={error?.errorText}
+                btnType={error?.errorButton}
+                errorType={error?.errorTitle}
+                active={modal}
+                title={'Withdrowal Error!'}
+                setActive={setModal}
+            />
+
             <Row>
                 <Col className='col-12 col-md-6 mb-3'>
                     <ButtonCard>

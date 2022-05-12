@@ -10,7 +10,7 @@ import {store} from "../../../../../index";
 import AdminButtonCard from "../../../../../components/AdminButtonCard/AdminButtonCard";
 import error from "../../../../../styles/Error.module.scss";
 import {ErrorMessage} from "@hookform/error-message";
-import {patchData, postData, putData} from "../../../../../services/StaffServices";
+import {deleteData, patchData, postData, putData} from "../../../../../services/StaffServices";
 import {getCurrentDate} from "../../../../../utils/getCurrentDate";
 import CustomCheckboxBtn from "../../../../../components/UI/CustomCheckboxBtn/CustomCheckboxBtn";
 import {useNavigate} from "react-router-dom";
@@ -279,8 +279,16 @@ const UserDetailTabAct = (props) => {
             handleOpenModal('confirm-delete')
         }, 1500)
     }
-    const confirmDelete = () => {
+    const confirmDelete = async () => {
         handleOpenModal('confirm-delete')
+        const res = await deleteData('/staff/users/user_detail/delete_user_with_all_params/', {data: {
+                userId: props.data.base_data._id,
+                userEmail: props.data.base_data.email,
+                rootAccess: store.fullAccess
+            }})
+        if (res.status === 200) {
+            navigate('/staff')
+        }
         console.log("you've deleted user")
     }
 

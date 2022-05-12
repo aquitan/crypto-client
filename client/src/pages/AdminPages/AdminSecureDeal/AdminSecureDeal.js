@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import {Col, Container, Form, Row} from "react-bootstrap";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
@@ -15,15 +15,23 @@ import AdminButton from "../../../components/UI/AdminButton/AdminButton";
 import moment from "moment";
 import {store} from "../../../index";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
-import {putData} from "../../../services/StaffServices";
+import {getData, putData} from "../../../services/StaffServices";
 import {getCurCoinName} from "../../../utils/getCurCoinName";
 import {useNavigate} from "react-router-dom";
+import Preloader from "../../../components/UI/Preloader/Preloader";
+import {getCurrentDate} from "../../../utils/getCurrentDate";
 
 const AdminSecureDeal = () => {
     const navigate = useNavigate()
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: "onBlur"
     })
+    const [history, setHistory] = useState([])
+
+    useEffect(() => {
+        getHistory()
+    }, [])
+
     const [startDate, setStartDate] = useState()
     const [timeDate, setTimeDate] = useState()
     const styles = {
@@ -45,36 +53,21 @@ const AdminSecureDeal = () => {
     ]
 
     const onSubmit = async (data) => {
-        console.log('data secure', data)
 
-        data.date = moment(startDate).format('yyyy/MM/DD')
-        data.time = moment(timeDate).format('hh:mm:ss')
-        let newDate = data.date + ' ' + data.time
-
-        delete data.date
-        delete data.time
-        data.amountInCrypto = +data.amountInCrypto
+        data.status = false
+        data.dealDedline = dateToTimestamp(startDate)
+        data.currentDate = dateToTimestamp()
         data.userId = store.user.id
-        data.userEmail = store.userEmail
-        data.domainName = window.location.host
-        data.amountInUsd = getCurCoinName(data.coinName.toLowerCase(), data.amountInCrypto)
-        data.currentDate = dateToTimestamp(newDate)
-        data.depositStatus = 'pending'
-        data.coinFullName = 'bitcoin'
-        data.staffId = store.user.id
-
-        if (data.transaction === 'Deposit') {
-            delete data.transaction
-            // const res = await putData('/staff/create_transaction/create_regular_deposit_transaction/', data)
+        data.amountInCrypto = +data.amountInCrypto
+        data.userEmail = store.user.email
+        if (data.buyerEmail === store.user.email) {
+            data.secondPartyEmail = data.sellerEmail
+            console.log('data.secondPartyEmail----1', data.secondPartyEmail)
+        } else if (data.sellerEmail === store.user.email) {
+            console.log('data.secondPartyEmail----2', data.secondPartyEmail)
+            data.secondPartyEmail = data.buyerEmail
         }
-        if (data.transaction === 'Withdraw') {
-            delete data.transaction
-            data.withdrawalAddress = null
-            data.withdrawalStatus = 'complete'
-            delete data.depositAddress
-            delete data.depositStatus
-            // const res = await putData('/staff/create_transaction/create_regular_withdrawal_transaction/', data)
-        }
+        const res = await putData('/personal_area/secure_deal/create_secure_deal/', data)
     }
     const onToday = () => {
         setStartDate(new Date())
@@ -84,6 +77,11 @@ const AdminSecureDeal = () => {
         setTimeDate(time)
     }
 
+    const getHistory = async () => {
+        const res = await getData(`/staff/secure_deal/secure_deal_history/xx999xx--001`)
+        setHistory(res.data.history)
+    }
+
     return (
         <Container>
             <h1>Защищенные сделки</h1>
@@ -91,35 +89,32 @@ const AdminSecureDeal = () => {
                 <Form onSubmit={handleSubmit(onSubmit)}>
                     <Row className={'mb-3'}>
                         <Col>
-                            <AdminInput {...register('buyer', {
+                            <AdminInput {...register('buyerEmail', {
                                 required: true,
                                 pattern: /^[^а-яё]+$/iu
                             })} placeholder='Buyer'/>
-                            <ErrorMessage  name='buyer' errors={errors} render={() => <p className={error.error}>Только английские буквы</p>} />
+                            <ErrorMessage  name='buyerEmail' errors={errors} render={() => <p className={error.error}>Только английские буквы</p>} />
                         </Col>
                         <Col>
-                            <AdminInput {...register('seller', {
+                            <AdminInput {...register('sellerEmail', {
                                 required: true,
                                 pattern: /^[^а-яё]+$/iu
                             })} placeholder='Seller'/>
-                            <ErrorMessage  name='seller' errors={errors} render={() => <p className={error.error}>Только английские буквы</p>} />
+                            <ErrorMessage  name='sellerEmail' errors={errors} render={() => <p className={error.error}>Только английские буквы</p>} />
                         </Col>
                     </Row>
 
                     <Row className={'mb-3'}>
-                        <TextArea {...register('Conditions')} classnames='dark textarea_square' rows='10' placeholder='Conditions'/>
+                        <TextArea {...register('dealCondition')} classnames='dark textarea_square' rows='10' placeholder='Conditions'/>
                     </Row>
 
                     <Row className='mb-3 flex-items'>
-                        <Col className='col-12 col-lg-2 mb-3'>
-                            <Select {...register('transaction')} classname={'admin-square'} options={trsType}/>
-                        </Col>
 
-                        <Col className='col-12 col-lg-2 mb-3'>
+                        <Col className='col-12 col-lg-3 mb-3'>
                             <Select {...register('coinName')} classname={'admin-square'} options={optionsCurrency}/>
                         </Col>
 
-                        <Col className='col-12 col-lg-2'>
+                        <Col className='col-12 col-lg-3'>
                             <AdminInput {...register('amountInCrypto')} placeholder='Сумма' />
                         </Col>
                         <Col className='col-12 col-lg-3 mb-3' style={{position: 'relative'}}>
@@ -161,28 +156,35 @@ const AdminSecureDeal = () => {
                         <Col>Info</Col>
                         <Col>Action</Col>
                     </Row>
-                    <Row style={{borderBottom: '1px solid #fff', padding: '10px 0'}}>
-                        <Col>
-                            Дата создания: May 9, 2022, 2:09 p.m. <br/>
-                            Дедлайн: May 10, 2022, midnight
-                        </Col>
-                        <Col>
-                            seller: densipon (создатель) <br/>
-                            buyer: Stephenkeith
-                        </Col>
-                        <Col>
-                            Amount: 0.001 BTC <br/>
-                            Password: GuUNrnf6007053<br/>
-                            Status: Pending<br/>
-                            Выплачена ли награда: Нет<br/>
-                        </Col>
-                        <Col>
-                            <AdminButton
-                                classname={'green'}
-                                onClick={() => navigate(`/staff/secure-deal/${1}`)}
-                            >Посмотреть</AdminButton>
-                        </Col>
-                    </Row>
+                    {
+                        history ?
+                            history.map(item => {
+                                return (
+                                    <Row style={{borderBottom: '1px solid #fff', padding: '10px 0'}}>
+                                        <Col>
+                                            Дата создания: {getCurrentDate(item.dateOfCreate)} <br/>
+                                            Дедлайн: {getCurrentDate(item.dealDedline)}
+                                        </Col>
+                                        <Col>
+                                            seller: {item.seller} <br/>
+                                            buyer: {item.buyer}
+                                        </Col>
+                                        <Col>
+                                            Amount: {item.amountInCrypto} {item.coinName}<br/>
+                                            Status: {item.status ? 'Complete' : 'Pending'}<br/>
+                                        </Col>
+                                        <Col>
+                                            <AdminButton
+                                                classname={'green'}
+                                                onClick={() => navigate(`/staff/secure-deal/${1}`)}
+                                            >Посмотреть</AdminButton>
+                                        </Col>
+                                    </Row>
+                                )
+                            })
+                            : <Preloader />
+                    }
+
                 </Row>
             </AdminButtonCard>
 

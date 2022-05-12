@@ -31,6 +31,7 @@ export default class Store {
     depositFee = 0
     balance = []
     total = 0
+    activeError = 0
 
 
     constructor() {
@@ -111,6 +112,8 @@ export default class Store {
     setTotal(num) {
         this.total = num
     }
+
+
 
     async login(obj) {
         try {

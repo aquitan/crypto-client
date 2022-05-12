@@ -1,7 +1,6 @@
 import React from 'react'
 import {Container} from "react-bootstrap";
 import {Outlet} from "react-router-dom";
-import CurrencyRates from "../../components/CurrencyRates/CurrencyRates";
 
 const UserLayout = () => {
 

@@ -68,9 +68,6 @@ const StaffWallets = () => {
                         <Col className='col-12 col-md-3 mb-3 text-center'>
                             <AdminButton classname='green'>Подтвердить</AdminButton>
                         </Col>
-                        <Col className='col-12 col-md-3 mb-3 text-center'>
-                            <AdminButton classname='orange'>Подтвердить с 2FA</AdminButton>
-                        </Col>
                     </Row>
                 </AdminForm>
             </AdminButtonCard>

@@ -5,7 +5,7 @@ import Button from "../../../../../components/UI/Button/Button";
 import classNames from "classnames/bind";
 import cls from './SecureDealTableItem.module.scss'
 
-const SecureDealTableItem = ({id, amount, status, classname, onClick}) => {
+const SecureDealTableItem = ({amount, status, classname, onClick}) => {
     let cx = classNames.bind(cls)
     let classes = cx(
         'table_item',
@@ -14,9 +14,6 @@ const SecureDealTableItem = ({id, amount, status, classname, onClick}) => {
     console.log('classes', classes)
     return (
         <Row className={classes}>
-            <Col>
-                {id}
-            </Col>
             <Col>
                 {amount}
             </Col>
