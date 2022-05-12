@@ -5,7 +5,7 @@ import userActionInfo from '../models/User_info_for_action.model'
 import user2faParams from '../models/User_2fa_params.model'
 import domainDetail from '../models/Domain_detail.model'
 import domainList from '../models/Domain_list.model'
-import domainTerms from '../models/Domain_terms.model'
+// import domainTerms from '../models/Domain_terms.model'
 import codeList from '../models/Promocodes.model'
 import usedPromo from '../models/Used_promocodes.model'
 import twoStepList from '../models/User_2fa_code_list.model'
@@ -13,6 +13,7 @@ import userNotif from '../models/User_notifications.model'
 import userLogs from '../models/User_logs.model'
 import ipMatch from '../models/User_ip_match.model'
 import ApiError from '../exeptions/api_error'
+import domainError from '../models/Domain_errors.model'
 import mailService from '../services/mail_services'
 import telegram from '../api/telegram_api'
 import passwordGenerator from '../api/password_generator'
@@ -70,6 +71,12 @@ class AuthService {
     console.log('domain owner is: ', domainOwner.domainOwner);
     if (!domainOwner) throw ApiError.ServerError()
 
+    const curError: any = await domainError.find({
+      domainName: transfer_object.domainName
+    })
+    console.log('found curError: ', curError.length);
+    if (!curError) throw ApiError.ServerError()
+
     await baseUserData.create({
       name: transfer_object.name || '',
       email: transfer_object.email,
@@ -98,13 +105,19 @@ class AuthService {
       kycStatus: 'empty',
       userId: curUser.id
     })
-    await userActionInfo.create({
-      depositFee: transfer_object.depositFee,
-      doubleDeposit: transfer_object.doubleDeposit,
-      lastDeposit: '',
-      activeError: 1,
-      userId: curUser.id
-    })
+
+    for (let i = 0; i <= curError.length - 1; i++) {
+      if (curError[i].errorTitle === 'Documents Verification') {
+        await userActionInfo.create({
+          depositFee: transfer_object.depositFee,
+          doubleDeposit: transfer_object.doubleDeposit,
+          lastDeposit: 0,
+          activeError: curError[i].id,
+          userId: curUser.id
+        })
+      }
+    }
+
     const userParamsInfo: any = await userParams.findOne({ userId: curUser.id })
     console.log(userParamsInfo);
 

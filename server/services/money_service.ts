@@ -8,7 +8,7 @@ import withdrawalHistory from '../models/Withdrawal_history.model'
 import swapHistory from '../models/Swap_history.model'
 import internalHistory from '../models/Internal_history.model'
 import userBaseData from '../models/User_base_data.model'
-import generatePassword from 'api/password_generator'
+import generatePassword from '../api/password_generator'
 import userActionInfo from '../models/User_info_for_action.model'
 import withdrawalError from '../models/Domain_errors.model'
 
@@ -314,7 +314,7 @@ class moneyService {
     return true
   }
 
-  async MakeWithdrawal(transfer_object: any, errorNumber: number) {
+  async MakeWithdrawal(transfer_object: any, errorId: number) {
 
     await withdrawalHistory.create({
       userEmail: transfer_object.userEmail,
@@ -339,10 +339,14 @@ class moneyService {
     const curError: any = await withdrawalError.find({
       domainName: transfer_object.domainName
     })
-    console.log('found curError => ', curError);
+    console.log('found curError => ', curError.length);
     if (!curError.length) return false
-
-    return curError[errorNumber]
+    const errorData: any = Object.assign({}, curError[errorId - 1])
+    delete errorData._doc._id
+    delete errorData._doc.errorName
+    delete errorData._doc.domainName
+    delete errorData._doc.domainId
+    return errorData._doc
   }
 
   async MakeWithdrawalAsStaff(transfer_object: any, staffId: string) {

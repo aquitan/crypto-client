@@ -255,20 +255,12 @@ class StaffController {
             status: 'rejected'
           })
         }
-        return res.status(202).json({
-          message: 'OK',
-          status: 'complete'
-        })
+        return res.status(202).json({ message: 'OK' })
 
       }
       const result: boolean = await staffService.UpdateUserError(userEmail, curError)
-      if (result === false) {
-        console.log('error');
-        return res.status(401).json({
-          message: 'error',
-          status: 'rejected'
-        })
-      }
+      if (!result) throw ApiError.ServerError()
+
 
       await staffService.saveStaffLogs(staffEmail, ` поменял ошибку пользователя ${userEmail} на ${curError}`, domainName, staffId)
       await telegram.sendMessageByStaffActions(staffEmail, ` поменял ошибку пользователя ${userEmail} на ${curError}`, domainName)
@@ -880,7 +872,7 @@ class StaffController {
       const result: any = await staffService.GetDomainErrors(domainName)
       if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
 
-      return res.status(202).json({
+      return res.status(200).json({
         errorList: result,
         status: 'complete'
       })
@@ -892,17 +884,17 @@ class StaffController {
 
 
   async getErrorsByDomainName(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    console.log('req body is: ', req.params);
+    const domainName: string = req.params.domainName
+    if (!req.params) return res.status(400).json({ message: 'wrong data' })
+
     try {
-      const domain_name: string = req.body.domainName
-      console.log('req body is: ', req.body);
 
-      const result: any = await staffService.GetErrorsByDomainName(domain_name)
-      if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+      const result: any = await staffService.GetErrorsByDomainName(domainName)
+      if (!result) throw ApiError.ServerError()
 
-      return res.status(202).json({
-        domainErrorsList: result,
-        status: 'complete'
-      })
+      return res.status(200).json({ errorsList: result })
     } catch (e) {
       next(e)
     }
@@ -1691,6 +1683,21 @@ class StaffController {
     }
   }
 
+  async getSecureDealHistory(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const staffId: string = req.params.staffId
+    if (!staffId) return res.status(400).json({ message: 'wrong data' })
+
+    try {
+      const result: any = await staffService.getSecureDealHistoryAsStaff(staffId)
+      console.log(' result is: ', result)
+      if (!result) throw ApiError.ServerError()
+
+      return res.status(200).json({ message: 'ok', history: result })
+    } catch (e) {
+      next(e)
+    }
+  }
+
   async createStaffWallet(req: express.Request, res: express.Response, next: express.NextFunction) {
 
     const staffId: string = req.body.staffId
@@ -1796,7 +1803,7 @@ class StaffController {
     const staffId: string = req.params.staffId
     if (!staffId) return res.status(400).json({ message: 'wrong data' })
     try {
-      const result: boolean = await staffService.getStaffWallet(staffId)
+      const result: any = await staffService.getStaffWallet(staffId)
       if (!result) throw ApiError.ServerError()
       return res.status(200).json(result)
     } catch (e) {
@@ -1804,6 +1811,18 @@ class StaffController {
     }
   }
 
+  async deleteSecureDeal(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const dealId: string = req.params.dealId
+    console.log('dealId => ', dealId);
+    if (!dealId) return res.status(400).json({ message: 'wrong data' })
+    try {
+      const result: boolean = await staffService.deleteSecureDeal(dealId)
+      if (!result) throw ApiError.ServerError()
+      return res.status(200).json({ message: 'ok' })
+    } catch (e) {
+      next(e)
+    }
+  }
 }
 
 export default new StaffController()

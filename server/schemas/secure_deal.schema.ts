@@ -29,8 +29,10 @@ export const SECURE_DEAL_SCHEMA = {
     require: true
   },
   status: {
-    type: Boolean,
-    require: true
+    type: String,
+    enum: ['pending', 'failed', 'complete'],
+    require: true,
+    default: 'pending'
   },
   acceptCode: {
     type: String,

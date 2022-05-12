@@ -33,7 +33,8 @@ export async function getUserData(email: string, userId?: string) {
     doubleDeposit: actionInfo.doubleDeposit,
     swapBan: userParamsInfo.swapBan,
     internalBan: userParamsInfo.internalBan,
-    depositFee: actionInfo.depositFee
+    depositFee: actionInfo.depositFee,
+    userError: actionInfo.activeError
   }
   return userDto
 }
