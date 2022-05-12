@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose'
-import { USER_WALLET_SCHEMA } from '../schemas/User_balance.schema'
+import { USER_BALANCE_SCHEMA } from '../schemas/User_balance.schema'
 
 interface BalanceParams {
   coinName: string
@@ -7,6 +7,6 @@ interface BalanceParams {
   coinBalance: number
   staffId: Schema.Types.ObjectId
 }
-const UserBalance = new Schema<BalanceParams>(USER_WALLET_SCHEMA)
+const UserBalance = new Schema<BalanceParams>(USER_BALANCE_SCHEMA)
 
 export default model('User_Balance', UserBalance)

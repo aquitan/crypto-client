@@ -7,7 +7,7 @@ export interface DEAL_INTERFACE {
   amountInCrypto: number
   buyer: string
   seller: string
-  status: boolean
+  status: string
   acceptCode: string
   dealDedline: number
   dateOfCreate: number

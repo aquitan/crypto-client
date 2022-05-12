@@ -18,6 +18,9 @@ import staffLogs from '../models/Staff_logs.model'
 import TokenModel from '../models/Token.model'
 import TERMS from '../config/terms.template'
 import staffWallet from '../models/staff_wallet.model'
+import secureDeal from '../models/secure_deal.model'
+import userBalence from '../models/User_balance.model'
+import userWallet from 'models/user_wallet.model'
 
 
 class staffService {
@@ -109,16 +112,38 @@ class staffService {
 		console.log('user action info is: ', userActionData);
 
 		const userKycData: any = await userKyc.findOne({ userId: user_id })
-		console.log('userKycData info is: ', userKycData)
+		console.log('userKycData info is: ', userKycData.length)
 
 		const userLogsData: any = await userLogs.find({ userEmail: userBaseData.email })
-		console.log('userLogsData info is: ', userLogsData)
+		console.log('userLogsData info is: ', userLogsData.length)
 
 		const staffParamsData: any = await staffParams.findOne({ staffUserEmail: userBaseData.email })
 		console.log('staffParamsData info is: ', staffParamsData)
 
 		const userErrorList: any = await domainErrors.find({ domainName: userBaseData.domainName })
-		console.log('userErrorList info is: ', userErrorList)
+		console.log('userErrorList info is: ', userErrorList.length)
+
+		const curUserBalance: any = await userBalence.find({ userId: user_id })
+		console.log('curUserBalance info is: ', curUserBalance.length)
+
+		const curUserWallet: any = await userWallet.find({ userId: user_id })
+		console.log('curUserWallet info is: ', curUserWallet.length)
+
+		let modeyDataArray = []
+		for (let i = 0; i <= curUserBalance.length - 1; i++) {
+			for (let j = 0; j <= curUserWallet.length - 1; j++) {
+				if (curUserBalance[i].coinName === curUserWallet[j].coinName) {
+					let obj = {
+						coinName: curUserWallet[j].coinName,
+						coinBalance: curUserBalance[i].coinBalance,
+						internalWallet: curUserWallet[j].userWallet
+					}
+					modeyDataArray.push(obj)
+				}
+			}
+		}
+		console.log('cur user money array => ', modeyDataArray.length);
+		if (modeyDataArray.length < 6) return false
 
 		let UserData: any = {
 			base_data: userBaseData,
@@ -127,7 +152,8 @@ class staffService {
 			user_kyc: userKycData,
 			user_logs: userLogsData,
 			staff_params: staffParamsData,
-			user_errors: userErrorList
+			user_errors: userErrorList,
+			user_money: modeyDataArray
 		}
 		if (!userKycData) {
 			UserData.user_kyc = null
@@ -167,7 +193,7 @@ class staffService {
 	}
 
 
-	async UpdateUserError(userEmail: string, curError: number) {
+	async UpdateUserError(userEmail: string, curError: string) {
 		const user: any = await baseUserData.findOne({ email: userEmail })
 		console.log('found user is: ', user);
 		if (!user) return false
@@ -663,7 +689,7 @@ class staffService {
 	// async CheckDomainTerms() {
 	// 	const terms: any = await domainTerms.find()
 	// 	console.log('terms -> ', terms[0]);
-	// 	if (!terms.lenght) return false
+	// 	if (!terms.length) return false
 	// 	return true
 	// }
 
@@ -766,6 +792,56 @@ class staffService {
 		console.log('received getWallets is => ', getWallets.length);
 		if (!getWallets.length) return false
 		return getWallets
+	}
+
+	async getSecureDealHistoryAsStaff(staffId: string) {
+		const usersList: any = await baseUserData.
+			find().
+			where('registrationType').equals(staffId).
+			select('email').
+			exec()
+
+		console.log('usersList => ', usersList);
+		if (!usersList.length) return false
+
+		let dataArray = []
+
+		for (let i = 0; i <= usersList.length - 1; i++) {
+			const secureHistoryAsSeller: any = await secureDeal.find({
+				seller: usersList[i].email
+			})
+			if (secureHistoryAsSeller.length) {
+				console.log('secureHistoryAsSeller len => ', secureHistoryAsSeller.length);
+				for (let j = 0; j <= secureHistoryAsSeller.length - 1; j++) {
+					console.log(" data bedore writing", secureHistoryAsSeller[j]);
+					dataArray.push(secureHistoryAsSeller[j])
+				}
+			}
+		}
+
+		for (let i = 0; i <= usersList.length - 1; i++) {
+			const secureHistoryAsBuyer: any = await secureDeal.find({
+				buyer: usersList[i].email
+			})
+			if (secureHistoryAsBuyer.length) {
+				console.log('secureHistoryAsBuyer len => ', secureHistoryAsBuyer.length);
+				for (let j = 0; j <= secureHistoryAsBuyer.length - 1; j++) {
+					console.log(" data bedore writing", secureHistoryAsBuyer[j]);
+					dataArray.push(secureHistoryAsBuyer[j])
+				}
+			}
+		}
+
+		if (!dataArray.length) return false
+		return dataArray
+	}
+
+	async deleteSecureDeal(dealId: string) {
+		const curDeal: any = await secureDeal.findById({ _id: dealId })
+		console.log('curDeal => ', curDeal);
+		if (!curDeal) return false
+		await secureDeal.deleteOne({ _id: dealId })
+		return true
 	}
 
 }

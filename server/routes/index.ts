@@ -37,15 +37,19 @@ router.post('/personal_area/security/two_step_enable/', authChecker, userControl
 router.patch('/personal_area/security/disable_two_step_status/', authChecker, userController.disableTwoStepVerificationStatus) // disable 2fa status
 
 // router.delete('/user_two_step_code_list/delete_code/', userController.deleteExpiredCode) // request to delete 2fa code if it's not used
-
 router.put('/personal_area/verification/', authChecker, userController.personalAreaKyc) // send kyc data
 
+
+// secure deal logic  (userlogic = staff logic, & u can use the same routers for stafff and for userArea)
 router.put('/personal_area/secure_deal/create_secure_deal/', authChecker, userController.secureDealCreate) // create secure deal
 router.get('/second_party_user_checker/:userEmail/:domainName/', authChecker, userController.secondPartyChecker) // find second user for secure deal & internal transfers
-router.get('/personal_area/secure_deal/secure_deal_detail/:dealId/', authChecker, userController.getSecureDealDetail) // get detail deal info by dealId
+router.get('/personal_area/secure_deal/secure_deal_detail/:dealId/:userEmail/', authChecker, userController.getSecureDealDetail) // get detail deal info by dealId
 router.get('/personal_area/secure_deal/secure_deal_history/:userEmail/', authChecker, userController.getSecureDealHistory) // get deal history for user by userEmail
-
+router.get('/staff/secure_deal/secure_deal_history/:staffId/', staffController.getSecureDealHistory) // get deal history for staff by domainName
 router.patch('/personal_area/secure_deal/secure_deal_detail/accept_deal/', authChecker, userController.acceptDeal) // accept deal
+router.patch('/personal_area/secure_deal/secure_deal_detail/miss_dedline/', authChecker, userController.killDealByMissDeadline) // if deal dedline > date.now => status failed 
+router.delete('/personal_area/secure_deal/secure_deal_detail/delete_deal/:dealId/', staffController.deleteSecureDeal) // delete secure deal by id
+
 
 // user money transfer logic
 router.get('/get_user_balance/:id/', authChecker, userController.getUserBalance) // get user balances for every coins
@@ -100,7 +104,8 @@ router.patch('/staff/domains/domain_detail/domain_edit/', staffController.editDo
 
 router.post('/staff/domains/get_active_domains/', staffController.getDomainsList) // get domain list (if staff => when domain owner is staff ) ( if admin and other => all domains )
 router.put('/staff/errors/create_new_error/', staffController.createCustomError) // create new error for selected domain
-router.post('/staff/errors/get_all_errors/', staffController.getAllErrors) // get domain errors by domain ID
+router.get('/staff/errors/get_all_errors/:domainName/', staffController.getAllErrors) // get domain errors by domainName
+
 
 // news ligic
 router.put('/staff/news/news_create/', staffController.newsCreate) // create news for user 

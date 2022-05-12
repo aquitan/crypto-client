@@ -12,7 +12,7 @@ import userAction from '../models/User_info_for_action.model'
 import userLogs from '../models/User_logs.model'
 import userBalance from '../models/User_balance.model'
 import userWallet from '../models/user_wallet.model'
-import depositHistory from 'models/Deposit_history.model'
+import depositHistory from '../models/Deposit_history.model'
 import internalHistory from '../models/Internal_history.model'
 import withdrawalHistory from '../models/Withdrawal_history.model'
 import swapHistory from '../models/Swap_history.model'
@@ -207,31 +207,31 @@ class adminService {
 
     const balanceList: any = await userBalance.find({ userId: userId })
     console.log('found  balances => ', balanceList.length);
-    if (!balanceList.length) return false
+    // if (!balanceList.length) return false
 
     const walletList: any = await userWallet.find({ userId: userId })
     console.log('found  walletList => ', walletList.length);
-    if (!walletList.length) return false
+    // if (!walletList.length) return false
 
     const withdrHist: any = await withdrawalHistory.find({ userId: userId })
     console.log('found  withdrHist => ', withdrHist.length);
-    if (!withdrHist.length) return false
+    // if (!withdrHist.length) return false
 
     const swapHist: any = await swapHistory.find({ userId: userId })
     console.log('found  swapHist => ', swapHist.length);
-    if (!swapHist.length) return false
+    // if (!swapHist.length) return false
 
     const depHistory: any = await depositHistory.find({ userId: userId })
     console.log('found  depoHistory => ', depHistory.length);
-    if (!depHistory.length) return false
+    // if (!depHistory.length) return false
 
     const intenrHistory: any = await internalHistory.find({ userId: userId })
     console.log('found  intenrnalHistory => ', intenrHistory.length);
-    if (!intenrHistory.length) return false
+    // if (!intenrHistory.length) return false
 
     const depWallets: any = await depositWallets.find({ userId: userId })
     console.log('found  depWallets => ', depWallets.length);
-    if (!depWallets.length) return false
+    // if (!depWallets.length) return false
 
     const isStaffParams: any = await staffParams.findOne({ staffUserEmail: userToDelete.email })
     console.log('found  isStaffParams => ', isStaffParams);
@@ -247,7 +247,7 @@ class adminService {
         staffId: userId
       })
       console.log('received getWallets is => ', getStaffWallets.length);
-      if (!getStaffWallets.length) return false
+      // if (!getStaffWallets.length) return false
 
       await staffParams.findOneAndDelete({
         staffUserEmail: userToDelete.email
@@ -275,10 +275,6 @@ class adminService {
     })
     return true
   }
-
-
-
-
 
 }
 

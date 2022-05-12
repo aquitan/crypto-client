@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose'
 
-export const USER_WALLET_SCHEMA = {
+export const USER_BALANCE_SCHEMA = {
   coinName: {
     type: String,
     require: true

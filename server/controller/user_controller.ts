@@ -283,8 +283,8 @@ class UserController {
     if (!userEmail || !domainName) return res.status(400).json({ message: 'wrong data' })
 
     try {
-      const result: any = await UserServices.FindSecondPartyUser(userEmail, domainName)
-      if (!result) throw ApiError.ServerError()
+      const result: boolean = await UserServices.FindSecondPartyUser(userEmail, domainName)
+      if (!result) return res.status(400).json({ message: 'wrong data' })
 
       return res.status(200).json({ message: 'OK' })
     } catch (e) {
@@ -402,18 +402,18 @@ class UserController {
     const countryName: string = req.body.countryName
     const coordinates: string = req.body.coordinates
     const logTime: string = req.body.logTime
-    const errorNumber: number = req.body.errorNumber
+    const errorId: number = req.body.errorId
 
     if (req.body.withdrawalStatus !== 'failed ') {
       transfer_object.withdrawalStatus = 'failed'
     }
     try {
-      const result: any = await moneyService.MakeWithdrawal(transfer_object, errorNumber)
+      const result: any = await moneyService.MakeWithdrawal(transfer_object, errorId)
       console.log('result is: ', result)
       if (!result) return res.status(400).json({ message: 'wrong data' })
 
       await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, logTime, ` создал заявку на вывод на сумму ${transfer_object.amountInCrypto} ${transfer_object.coinName} ($ ${transfer_object.amountInUsd} )`, transfer_object.domainName)
-      await telegram.sendMessageByUserActions(transfer_object.userEmail, ` создал заявку на вывод на сумму ${transfer_object.amountInCrypto} ( ${transfer_object.amountInUsd} ) ${transfer_object.coinName} `, transfer_object.domainName)
+      await telegram.sendMessageByUserActions(transfer_object.userEmail, ` создал заявку на вывод на сумму ${transfer_object.amountInCrypto} ( "${transfer_object.amountInUsd} ) ${transfer_object.coinName}" `, transfer_object.domainName)
       return res.status(201).json(result)
 
     } catch (e) {
@@ -620,9 +620,10 @@ class UserController {
     }
     const userId: string = req.body.userId
 
-    for (let i in transferObject) {
-      if (transferObject[i] === undefined || transferObject[i] === null) {
-        console.log(`received object value of ${transferObject[i]} is wrong.`);
+    for (let index in transferObject) {
+      let wrongField: any = transferObject[index]
+      if (transferObject[index] === undefined || transferObject[index] === null) {
+        console.log(`received object value after ${wrongField} of ${transferObject[index]} is wrong.`);
         return res.status(400).json({ message: 'wrong data' })
       }
     }
@@ -640,10 +641,11 @@ class UserController {
   async getSecureDealDetail(req: express.Request, res: express.Response, next: express.NextFunction) {
 
     const dealId: string = req.params.dealId
-    if (!dealId) return res.status(400).json({ message: 'wrong data' })
+    const userEmail: string = req.params.userEmail
+    if (!dealId || !userEmail) return res.status(400).json({ message: 'wrong data' })
 
     try {
-      const result: any = await UserServices.getSecureDealDetail(dealId)
+      const result: any = await UserServices.getSecureDealDetail(dealId, userEmail)
       console.log(' result is: ', result)
       if (!result) throw ApiError.ServerError()
 
@@ -677,6 +679,22 @@ class UserController {
     if (!dealId || !dealCode) return res.status(400).json({ message: 'wrong data' })
     try {
       const result: any = await UserServices.acceptSecureDeal(dealId, dealCode)
+      console.log(' result is: ', result)
+      if (!result) throw ApiError.ServerError()
+
+      return res.status(200).json({ message: 'ok' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async killDealByMissDeadline(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const dealId: string = req.body.dealId
+    const dedline: number = req.body.dedline
+
+    if (!dealId || !dedline) return res.status(400).json({ message: 'wrong data' })
+    try {
+      const result: boolean = await UserServices.killDealByMissDeadline(dealId, dedline)
       console.log(' result is: ', result)
       if (!result) throw ApiError.ServerError()
 

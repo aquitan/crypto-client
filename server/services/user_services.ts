@@ -8,7 +8,7 @@ import baseUserData from '../models/User_base_data.model'
 import userKyc from '../models/KYC.model'
 import userParams from '../models/User_params.model'
 import userLogs from '../models/User_logs.model'
-import userAction from '../models/User_info_for_action.model'
+// import userAction from '../models/User_info_for_action.model'
 import twoFaCodeList from '../models/User_2fa_code_list.model'
 import twoStepParams from '../models/User_2fa_params.model'
 import depositHistory from '../models/Deposit_history.model'
@@ -17,7 +17,7 @@ import swapHistory from '../models/Swap_history.model'
 import internalHistory from '../models/Internal_history.model'
 import userBalance from '../models/User_balance.model'
 import userWallet from '../models/user_wallet.model'
-import generatePassword from 'api/password_generator'
+import generatePassword from '../api/password_generator'
 import secureDeal from '../models/secure_deal.model'
 
 
@@ -338,32 +338,56 @@ class UserServices {
 	}
 
 
-	async getSecureDealDetail(dealId: string) {
+	async getSecureDealDetail(dealId: string, userEmail: string) {
 		const foundDeal: any = await secureDeal.findById({
 			_id: dealId
 		})
+		console.log(' found deal foundDeal, ', foundDeal);
 		if (!foundDeal) return false
-		return foundDeal
+
+		if (foundDeal.seller === userEmail) {
+			return foundDeal
+		} else if (foundDeal.buyer === userEmail) {
+			let infoObj = Object.assign({}, foundDeal)
+			delete infoObj._doc.acceptCode
+			console.log(' updated data => ', infoObj);
+			return infoObj._doc
+		}
 	}
 
 	async getSecureDealHistory(userEmail: string) {
-
-		const dealHistoryAsCreator: any = await secureDeal.find({
-			userEmail: userEmail
-		})
-		if (!dealHistoryAsCreator.length) return false
-
-		const dealHistoryAsSecondParty: any = await secureDeal.find({
-			secondPartyEmail: userEmail
-		})
-		if (!dealHistoryAsSecondParty.length) return false
-
 		let dataArray = {
-			dealHistoryAsCreator: dealHistoryAsCreator,
-			dealHistoryAsSecondParty: dealHistoryAsSecondParty
+			dealHistoryAsSeller: [],
+			dealHistoryAsBuyer: []
 		}
 
-		return dataArray
+		let dealHistoryAsSeller: any = await secureDeal.find({
+			seller: userEmail
+		})
+		console.log('dealHistoryAsSeller is: ', dealHistoryAsSeller);
+		if (dealHistoryAsSeller.length > 0) dataArray.dealHistoryAsSeller = dealHistoryAsSeller
+
+		let dealHistoryAsBuyer: any = await secureDeal.find({
+			buyer: userEmail
+		})
+		console.log('dealHistoryAsBuyer is: ', dealHistoryAsBuyer);
+		if (dealHistoryAsBuyer.length > 0) dataArray.dealHistoryAsBuyer = dealHistoryAsBuyer
+
+		let historyArray = []
+
+		for (let index in dataArray) {
+			// console.log('dataArray ind =>  ', dataArray[index]);
+			if (dataArray[index].length > 0) {
+				for (let x = 0; x <= dataArray[index].length - 1; x++) {
+					let curIndex = Object.assign({}, dataArray[index][x])
+					// console.log('curIndex  =>  ', curIndex);
+					delete curIndex._doc.acceptCode
+					historyArray.push(dataArray[index][x])
+				}
+			}
+		}
+		console.log('historyArray => ', historyArray);
+		return historyArray
 	}
 
 	async acceptSecureDeal(dealId: string, acceptCode: string) {
@@ -375,7 +399,7 @@ class UserServices {
 
 		const updateStatus: any = await secureDeal.findByIdAndUpdate(
 			{ _id: dealId },
-			{ status: true }
+			{ status: 'complete' }
 		)
 		console.log('updateStatus is => ', updateStatus);
 		if (!updateStatus) return false
@@ -406,12 +430,12 @@ class UserServices {
 		console.log('found secondUserBalance is => ', secondUserBalance);
 		if (!secondUserBalance) return false
 
-		const curFirstBalance: number = firstUserBalance.coinBalance - curDeal.amountInCrypto
-		const curSecondBalance: number = secondUserBalance.coinBalance + curDeal.amountInCrypto
+		const curFirstBalance: number = firstUserBalance.coinBalance + curDeal.amountInCrypto
+		const curSecondBalance: number = secondUserBalance.coinBalance - curDeal.amountInCrypto
 
 		await userBalance.findOneAndUpdate(
 			{
-				_id: firstUser.id,
+				userId: firstUser.id,
 				coinName: curDeal.coinName
 			},
 			{
@@ -421,7 +445,7 @@ class UserServices {
 
 		await userBalance.findOneAndUpdate(
 			{
-				_id: secondUser.id,
+				userId: secondUser.id,
 				coinName: curDeal.coinName
 			},
 			{
@@ -445,6 +469,24 @@ class UserServices {
 
 		return true
 	}
+
+	async killDealByMissDeadline(dealId: string, deadline: number) {
+
+		const curDateTime: number = new Date().getTime()
+		const curDeal: any = await secureDeal.findById({ _id: dealId })
+		console.log('curDeal => ', curDeal);
+		if (!curDeal) return false
+		if (curDateTime < deadline) return false
+		const updateStatus: any = await secureDeal.findByIdAndUpdate(
+			{ _id: dealId },
+			{ status: 'failed' }
+		)
+		console.log('updateStatus is => ', updateStatus);
+		if (!updateStatus) return false
+		return true
+
+	}
+
 
 
 	async support() {
