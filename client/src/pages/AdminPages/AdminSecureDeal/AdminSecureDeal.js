@@ -15,7 +15,7 @@ import AdminButton from "../../../components/UI/AdminButton/AdminButton";
 import moment from "moment";
 import {store} from "../../../index";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
-import {getData, putData} from "../../../services/StaffServices";
+import {deleteData, getData, patchData, putData} from "../../../services/StaffServices";
 import {getCurCoinName} from "../../../utils/getCurCoinName";
 import {useNavigate} from "react-router-dom";
 import Preloader from "../../../components/UI/Preloader/Preloader";
@@ -79,7 +79,25 @@ const AdminSecureDeal = () => {
 
     const getHistory = async () => {
         const res = await getData(`/staff/secure_deal/secure_deal_history/xx999xx--001`)
-        setHistory(res.data.history)
+        setHistory(res.data.history.filter(item => {
+            if (dateToTimestamp() > item.dealDedline) {
+                onMissDeadline(item._id, item.dealDedline)
+            }
+            return  dateToTimestamp() < item.dealDedline
+        }))
+    }
+
+    const onMissDeadline = async (id, deadline) => {
+        const obj = {
+            dealId: id,
+            dedline: deadline
+        }
+
+        const res = await patchData('/personal_area/secure_deal/secure_deal_detail/miss_dedline/', obj)
+        if (res.status === 200) {
+            const resDel = await deleteData(`/personal_area/secure_deal/secure_deal_detail/delete_deal/${id}`, {data: {staffId: id}})
+        }
+        console.log('on miss deadline', obj)
     }
 
     return (

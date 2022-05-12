@@ -21,7 +21,7 @@ import {useNavigate} from "react-router-dom";
 import Form from "../../../components/UI/Form/Form";
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 import {emailValidate} from "../../../utils/checkEmail";
-import {getData, putData} from "../../../services/StaffServices";
+import {deleteData, getData, patchData, putData} from "../../../services/StaffServices";
 import {store} from "../../../index";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import Modal from "../../../components/UI/Modal/Modal";
@@ -53,7 +53,7 @@ const SecureDeal = () => {
             data.buyerEmail = store.user.email
         }
         delete data.role
-        data.status = false
+        data.status = 'pending'
         data.dealDedline = dateToTimestamp(startDate)
         data.currentDate = dateToTimestamp()
         data.userId = store.user.id
@@ -66,18 +66,40 @@ const SecureDeal = () => {
 
     useEffect(() => {
         getHistory()
+        onFilter()
     }, [])
 
     const getHistory = async () => {
         const res = await getData(`/personal_area/secure_deal/secure_deal_history/${store.user.email}`)
-        console.log('res.data.dealHistoryAsCreator',)
-        setHistory(res.data.history)
+        setHistory(res.data.history.filter(item => {
+            if (dateToTimestamp() > item.dealDedline) {
+                onMissDeadline(item._id, item.dealDedline)
+            }
+            return  dateToTimestamp() < item.dealDedline
+        }))
+        console.log('history', history)
     }
 
-    console.log('history', history)
+    const onMissDeadline = async (id, deadline) => {
+        const obj = {
+            dealId: id,
+            dedline: deadline
+        }
+
+        const res = await patchData('/personal_area/secure_deal/secure_deal_detail/miss_dedline/', obj)
+        if (res.status === 200) {
+            const resDel = await deleteData(`/personal_area/secure_deal/secure_deal_detail/delete_deal/${id}`, {data: {staffId: id}})
+        }
+        console.log('on miss deadline', obj)
+    }
 
     const checkOnBlur = async (e) => {
         const res = await getData(`/second_party_user_checker/${e.target.value}/${window.location.host}`)
+    }
+
+    const onFilter = () => {
+
+        console.log('history filter', history)
     }
 
     return (
