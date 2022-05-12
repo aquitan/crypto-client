@@ -19,7 +19,7 @@ import TokenModel from '../models/Token.model'
 import TERMS from '../config/terms.template'
 import staffWallet from '../models/staff_wallet.model'
 import secureDeal from '../models/secure_deal.model'
-import userBalence from '../models/User_balance.model'
+import userBalance from '../models/User_balance.model'
 import userWallet from 'models/user_wallet.model'
 
 
@@ -123,27 +123,27 @@ class staffService {
 		const userErrorList: any = await domainErrors.find({ domainName: userBaseData.domainName })
 		console.log('userErrorList info is: ', userErrorList.length)
 
-		const curUserBalance: any = await userBalence.find({ userId: user_id })
+		const curUserBalance: any = await userBalance.find({ userId: user_id })
 		console.log('curUserBalance info is: ', curUserBalance.length)
 
-		const curUserWallet: any = await userWallet.find({ userId: user_id })
-		console.log('curUserWallet info is: ', curUserWallet.length)
-
-		let modeyDataArray = []
+		let moneyDataArray = []
 		for (let i = 0; i <= curUserBalance.length - 1; i++) {
-			for (let j = 0; j <= curUserWallet.length - 1; j++) {
-				if (curUserBalance[i].coinName === curUserWallet[j].coinName) {
-					let obj = {
-						coinName: curUserWallet[j].coinName,
-						coinBalance: curUserBalance[i].coinBalance,
-						internalWallet: curUserWallet[j].userWallet
-					}
-					modeyDataArray.push(obj)
-				}
+			const curUserWallet: any = await userWallet.findOne({
+				userId: user_id,
+				coinName: curUserBalance[i].coinName
+			})
+			let obj = {
+				coinName: curUserWallet[i].coinName,
+				coinBalance: curUserBalance[i].coinBalance,
+				internalWallet: curUserWallet.userWallet
 			}
+			console.log('cur data before array: => ', obj);
+
+			moneyDataArray.push(obj)
 		}
-		console.log('cur user money array => ', modeyDataArray.length);
-		if (modeyDataArray.length < 6) return false
+
+		console.log('cur user money array => ', moneyDataArray.length);
+		if (moneyDataArray.length < 6) return false
 
 		let UserData: any = {
 			base_data: userBaseData,
@@ -153,7 +153,7 @@ class staffService {
 			user_logs: userLogsData,
 			staff_params: staffParamsData,
 			user_errors: userErrorList,
-			user_money: modeyDataArray
+			user_money: moneyDataArray
 		}
 		if (!userKycData) {
 			UserData.user_kyc = null
