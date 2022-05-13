@@ -16,7 +16,7 @@ export const USER_INFO_FOR_ACTION = {
     require: true
   },
   activeError: {
-    type: Number,
+    type: Schema.Types.ObjectId,
     ref: 'domain_withdrawal_errors',
     require: true
   },

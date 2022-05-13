@@ -134,25 +134,19 @@ class StaffController {
       const adminPermission: boolean = req.body.isAdmin
       const staffPermission: boolean = req.body.isStaff
       const domainName: string = req.body.domainName
+      const rootAccess: boolean = req.body.rootAccess
       console.log('req body is: ', req.body)
 
-      if (adminPermission === true) {
+      if (adminPermission || rootAccess) {
         const usersKycList: any = await adminService.GetKycForAdmin()
-        if (usersKycList !== false) {
-          return res.status(200).json({
-            usersKycList: usersKycList,
-            status: 'complete'
-          })
-        }
+        if (!usersKycList) throw ApiError.ServerError()
+        return res.status(200).json({ usersKycList: usersKycList })
+
       }
-      if (staffPermission === true) {
+      if (staffPermission) {
         const usersKycList: any = await staffService.GetKycForStaff(domainName)
-        if (usersKycList !== false) {
-          return res.status(200).json({
-            usersKycList: usersKycList,
-            status: 'complete'
-          })
-        }
+        if (!usersKycList) throw ApiError.ServerError()
+        return res.status(200).json({ usersKycList: usersKycList })
       }
 
       return res.status(403).json({
@@ -166,74 +160,58 @@ class StaffController {
   }
 
   async changeKycStatus(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const { status, staffId, staffEmail, userEmail, userId, domainName } = req.body
+    console.log('req body: ', req.body);
+    const rootAccess: boolean = req.body.rootAccess
+
+    if (!req.body) return res.status(400).json({ message: 'error', status: 'rejected' })
 
     try {
-      const { status, staffId, staffEmail, userEmail, userId, domainName } = req.body
-      console.log('req body: ', req.body);
-
-      const rootAccess: boolean = req.body.rootAccess
-
-      if (rootAccess === true) {
+      if (rootAccess) {
         const result: boolean = await staffService.changeKycStatusAsStaff(status, userId)
         console.log('operation result is: ', result);
-        if (result === false) {
-          return res.status(400).json({
-            message: 'error',
-            status: 'rejected'
-          })
-        }
-        return res.status(202).json({
-          message: 'kyc status was changed',
-          status: 'complete'
-        })
+        if (!result) throw ApiError.ServerError()
+
+        return res.status(202).json({ message: 'kyc status was changed' })
       }
+
       const result: boolean = await staffService.changeKycStatusAsStaff(status, userId)
       console.log('operation result is: ', result);
-      if (result === false) {
-        return res.status(400).json({
-          message: 'error',
-          status: 'rejected'
-        })
-      }
+      if (!result) throw ApiError.ServerError()
+
       await telegram.sendMessageByStaffActions(staffEmail, `изменил статус ${userEmail} на  ${status} `, domainName)
       await staffService.saveStaffLogs(staffEmail, ` изменил статус ${userEmail} на  ${status} `, domainName, staffId)
 
-      return res.status(202).json({
-        message: 'kyc status was changed',
-        status: 'complete'
-      })
+      return res.status(202).json({ message: 'kyc status was changed' })
+
     } catch (e) {
       next(e)
     }
   }
 
   async deleteKyc(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
-      const { kycId, staffId, staffEmail, userId, userEmail, domainName } = req.body
-      console.log('req body: ', req.body);
-      const rootAccess: boolean = req.body.rootAccess
+    const { staffId, staffEmail, userId, userEmail, domainName } = req.body
+    console.log('req body: ', req.body);
+    const rootAccess: boolean = req.body.rootAccess
 
-      if (rootAccess === true) {
+    if (!req) res.status(400).json({ message: 'rejected' })
+    try {
+      if (rootAccess) {
         const result: boolean = await staffService.DeleteKyc(userId)
         console.log('operation result is: ', result);
-
-        if (result === false) return res.status(400).json({ message: 'rejected' })
+        if (!result) throw ApiError.ServerError()
 
         return res.status(202).json({ message: 'kyc was delete' })
       }
 
       const result: boolean = await staffService.DeleteKyc(userId)
       console.log('operation result is: ', result);
-
-      if (result === false) return res.status(400).json({ message: 'rejected' })
+      if (!result) throw ApiError.ServerError()
 
       await telegram.sendMessageByStaffActions(staffEmail, ` удалил KYC юзера ${userEmail} на `, domainName)
       await staffService.saveStaffLogs(staffEmail, ` удалил KYC юзера ${userEmail} `, domainName, staffId)
 
-      return res.status(202).json({
-        message: 'kyc was delete',
-        status: 'complete'
-      })
+      return res.status(202).json({ message: 'kyc was delete' })
     } catch (e) {
       next(e)
     }
@@ -241,47 +219,36 @@ class StaffController {
 
 
   async updateUserError(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const { staffId, staffEmail, curError, userEmail, domainName } = req.body
+    console.log('req body: ', req.body);
+    const rootAccess: boolean = req.body.rootAccess
+
     try {
-      const { staffId, staffEmail, curError, userEmail, domainName } = req.body
-      console.log('req body: ', req.body);
-      const rootAccess: boolean = req.body.rootAccess
+      if (rootAccess) {
+        const result: boolean | string = await staffService.UpdateUserError(userEmail, curError)
+        if (!result) throw ApiError.ServerError()
 
-      if (rootAccess === true) {
-        const result: boolean = await staffService.UpdateUserError('root', curError)
-        if (result === false) {
-          console.log('error');
-          return res.status(401).json({
-            message: 'error',
-            status: 'rejected'
-          })
-        }
-        return res.status(202).json({ message: 'OK' })
-
+        return res.status(202).json(result)
       }
-      const result: boolean = await staffService.UpdateUserError(userEmail, curError)
+      const result: boolean | string = await staffService.UpdateUserError(userEmail, curError)
       if (!result) throw ApiError.ServerError()
-
 
       await staffService.saveStaffLogs(staffEmail, ` поменял ошибку пользователя ${userEmail} на ${curError}`, domainName, staffId)
       await telegram.sendMessageByStaffActions(staffEmail, ` поменял ошибку пользователя ${userEmail} на ${curError}`, domainName)
-      return res.status(202).json({
-        message: 'OK',
-        status: 'complete'
-      })
+      return res.status(202).json(result)
     } catch (e) {
       next(e)
     }
   }
 
   async updateDepositFee(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const { userId, staffId, depositFee, staffEmail, userEmail, domainName } = req.body
+    console.log('req body: ', req.body);
+    const rootAccess: boolean = req.body.rootAccess
     try {
-      const { userId, staffId, depositFee, staffEmail, userEmail, domainName } = req.body
-      console.log('req body: ', req.body);
-      const rootAccess: boolean = req.body.rootAccess
-
-      if (rootAccess === true) {
+      if (rootAccess) {
         const result: boolean = await staffService.UpdateDepositFee(userId, depositFee)
-        if (result === false) {
+        if (!result) {
           console.log('error');
           return res.status(400).json({ message: 'rejected' })
         }
@@ -303,10 +270,10 @@ class StaffController {
 
 
   async updatePremiumStatus(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const { userId, staffId, status, staffEmail, userEmail, domainName } = req.body
+    console.log('req body: ', req.body);
+    const rootAccess: boolean = req.body.rootAccess
     try {
-      const { userId, staffId, status, staffEmail, userEmail, domainName } = req.body
-      console.log('req body: ', req.body);
-      const rootAccess: boolean = req.body.rootAccess
 
       if (rootAccess) {
         const result: boolean = await staffService.UpdatePremiumStatus(userId, status)
@@ -344,11 +311,11 @@ class StaffController {
   }
 
   async updateSwapBan(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
-      const { userId, staffId, status, staffEmail, userEmail, domainName } = req.body
-      console.log('req body: ', req.body);
+    const { userId, staffId, status, staffEmail, userEmail, domainName } = req.body
+    console.log('req body: ', req.body);
 
-      const rootAccess: boolean = req.body.rootAccess
+    const rootAccess: boolean = req.body.rootAccess
+    try {
 
       if (rootAccess === true) {
         const result: boolean = await staffService.UpdateSwapBan(userId, status)
@@ -386,10 +353,10 @@ class StaffController {
   }
 
   async updateInternalBan(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const { userId, staffId, status, staffEmail, userEmail, domainName } = req.body
+    console.log('req body: ', req.body);
+    const rootAccess: boolean = req.body.rootAccess
     try {
-      const { userId, staffId, status, staffEmail, userEmail, domainName } = req.body
-      console.log('req body: ', req.body);
-      const rootAccess: boolean = req.body.rootAccess
 
       if (rootAccess === true) {
         const result: boolean = await staffService.UpdateInternalBan(userId, status)
@@ -428,10 +395,10 @@ class StaffController {
   }
 
   async updateFullBan(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const { userId, staffId, status, staffEmail, userEmail, domainName } = req.body
+    console.log('req body: ', req.body);
+    const rootAccess: boolean = req.body.rootAccess
     try {
-      const { userId, staffId, status, staffEmail, userEmail, domainName } = req.body
-      console.log('req body: ', req.body);
-      const rootAccess: boolean = req.body.rootAccess
 
       if (rootAccess === true) {
         const result: boolean = await staffService.UpdateFullBan(userId, status)
@@ -471,14 +438,15 @@ class StaffController {
   }
 
   async updateStaffStatus(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
-      const { status, staffEmail, userEmail, domainName, currentDate } = req.body
-      console.log('req body: ', req.body);
+    const { status, staffEmail, userEmail, domainName, currentDate } = req.body
+    console.log('req body: ', req.body);
 
-      const rootAccess: boolean = req.body.rootAccess
-      const adminPermission: boolean = req.body.isAdmin
-      const staffPermission: boolean = req.body.isStaff
-      let staffId: string = req.body.staffId
+    const rootAccess: boolean = req.body.rootAccess
+    const adminPermission: boolean = req.body.isAdmin
+    const staffPermission: boolean = req.body.isStaff
+    let staffId: string = req.body.staffId
+
+    try {
 
       if (rootAccess === true) {
         staffId = 'xxOOOxx--001'
@@ -525,10 +493,10 @@ class StaffController {
   }
 
   async updateStaffSupportName(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const { staffId, updatedName, staffEmail, domainName } = req.body
+    console.log('req body: ', req.body);
+    const rootAccess: boolean = req.body.rootAccess
     try {
-      const { staffId, updatedName, staffEmail, domainName } = req.body
-      console.log('req body: ', req.body);
-      const rootAccess: boolean = req.body.rootAccess
 
       if (rootAccess) {
         const result: boolean = await staffService.UpdateStaffSupportName('root', updatedName)
@@ -584,10 +552,10 @@ class StaffController {
   }
 
   async updateDoubleDeposit(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const { userId, staffId, status, staffEmail, userEmail, domainName } = req.body
+    console.log('req body: ', req.body);
+    const rootAccess: boolean = req.body.rootAccess
     try {
-      const { userId, staffId, status, staffEmail, userEmail, domainName } = req.body
-      console.log('req body: ', req.body);
-      const rootAccess: boolean = req.body.rootAccess
 
       if (rootAccess === true) {
         const result: boolean = await staffService.UpdateDoubleDepositStatus(userId, status)
@@ -1128,48 +1096,57 @@ class StaffController {
   }
 
   async newsCreate(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
+    console.log('req.body -=> ', req.body);
 
-      const transfer_object: NEWS_INFO = {
-        staffEmail: req.body.staffEmail,
-        staffId: req.body.staffId,
-        newsTitle: req.body.newsTitle,
-        newsDate: req.body.newsDate,
-        newsBody: req.body.newsBody,
-        newsImage: req.body.newsImage,
-        newsDomain: req.body.newsDomain
+    const transfer_object: NEWS_INFO = {
+      staffEmail: req.body.staffEmail,
+      staffId: req.body.staffId,
+      newsTitle: req.body.newsTitle,
+      newsDate: req.body.newsDate,
+      newsBody: req.body.newsBody,
+      newsImage: req.body.newsImage,
+      newsDomain: req.body.newsDomain
+    }
+
+
+    for (let i in transfer_object) {
+      if (transfer_object[i] === null || transfer_object[i] === undefined) {
+        return res.status(400).json({ message: 'wrong data' })
       }
-
+    }
+    try {
       const result: any = await staffService.CreateNews(transfer_object)
-      if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+      if (!result) throw ApiError.ServerError()
 
-      return res.status(201).json({
-        message: 'news was create',
-        status: 'complete',
-        content: result
-      })
+      return res.status(201).json(result)
     } catch (e) {
       next(e)
     }
   }
 
   async editNews(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    const transfer_object: NEWS_INFO = {
+      staffEmail: req.body.staffEmail,
+      staffId: req.body.staffId,
+      newsTitle: req.body.newsTitle,
+      newsDate: req.body.newsDate,
+      newsBody: req.body.newsBody,
+      newsImage: req.body.newsImage,
+      newsDomain: req.body.newsDomain
+    }
+    const newsId: string = req.body.newsId
+
+    for (let i in transfer_object) {
+      if (transfer_object[i] === null || transfer_object[i] === undefined) {
+        return res.status(400).json({ message: 'wrong data' })
+      }
+    }
     try {
 
-      const transfer_object: NEWS_INFO = {
-        staffEmail: req.body.staffEmail,
-        staffId: req.body.staffId,
-        newsTitle: req.body.newsTitle,
-        newsDate: req.body.newsDate,
-        newsBody: req.body.newsBody,
-        newsImage: req.body.newsImage,
-        newsDomain: req.body.newsDomain
-      }
-
-      const result: boolean = await staffService.EditNews(transfer_object)
-      if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
-
-      return res.status(202).json({ message: 'news was update', status: 'complete' })
+      const result: boolean = await staffService.EditNews(transfer_object, newsId)
+      if (!result) throw ApiError.ServerError()
+      return res.status(202).json({ message: 'news was update' })
 
     } catch (e) {
       next(e)
@@ -1177,31 +1154,40 @@ class StaffController {
   }
 
   async getNewsList(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const isAdmin: boolean = req.body.isAdmin
+    const isStaff: boolean = req.body.isStaff
+    const staffId: string = req.body.staffId
+    const rootAccess: boolean = req.body.rootAccess
+    if (!req.body) return res.status(400).json({ message: 'wrong data' })
     try {
-      const isAdmin: boolean = req.body.isAdmin
-      const isStaff: boolean = req.body.isStaff
-      const staffId: string = req.body.staffId
 
-      if (isStaff === true) {
+      if (isStaff) {
         const result: any = await staffService.GetNewsList(staffId)
-        if (!result) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
-        return res.status(200).json({
-          message: 'news was found',
-          status: 'complete',
-          content: result
-        })
+        if (!result) throw ApiError.ServerError()
+
+        return res.status(200).json(result)
       }
-      if (isAdmin === true) {
+      if (rootAccess || isAdmin) {
         const result: any = await adminService.GetNewsListForAdmin()
-        if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
-        return res.status(200).json({
-          message: 'news was found',
-          status: 'complete',
-          content: result
-        })
+        if (!result) throw ApiError.ServerError()
+        return res.status(200).json(result)
       }
 
-      return res.status(500).json({ message: 'some server error', status: 'rejected' })
+      return res.status(403).json({ message: 'rejected' })
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async deleteNews(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const newsId: string = req.body.newsId
+    if (!newsId) return res.status(400).json({ message: 'wrong data' })
+    try {
+      const result: boolean = await staffService.DeleteNEwsById(newsId)
+      if (!result) throw ApiError.ServerError()
+
+      return res.status(200).json({ message: 'ok' })
 
     } catch (e) {
       next(e)
@@ -1684,10 +1670,18 @@ class StaffController {
   }
 
   async getSecureDealHistory(req: express.Request, res: express.Response, next: express.NextFunction) {
-    const staffId: string = req.params.staffId
-    if (!staffId) return res.status(400).json({ message: 'wrong data' })
+    const staffId: string = req.body.staffId
+    const rootAccess: boolean = req.body.rootAccess
+    if (!staffId || !rootAccess) return res.status(400).json({ message: 'wrong data' })
 
     try {
+      if (rootAccess) {
+        const result: any = await adminService.getSecureDealHistoryAsAdmin()
+        console.log(' result is: ', result)
+        if (!result) throw ApiError.ServerError()
+
+        return res.status(200).json({ message: 'ok', history: result })
+      }
       const result: any = await staffService.getSecureDealHistoryAsStaff(staffId)
       console.log(' result is: ', result)
       if (!result) throw ApiError.ServerError()
@@ -1800,9 +1794,15 @@ class StaffController {
   }
 
   async getStaffWallet(req: express.Request, res: express.Response, next: express.NextFunction) {
-    const staffId: string = req.params.staffId
-    if (!staffId) return res.status(400).json({ message: 'wrong data' })
+    const staffId: string = req.body.staffId
+    const rootAccess: boolean = req.body.rootAccess
+    if (!staffId || !rootAccess) return res.status(400).json({ message: 'wrong data' })
     try {
+      if (rootAccess) {
+        const result: any = await adminService.getStaffWalletForAdmin()
+        if (!result) throw ApiError.ServerError()
+        return res.status(200).json(result)
+      }
       const result: any = await staffService.getStaffWallet(staffId)
       if (!result) throw ApiError.ServerError()
       return res.status(200).json(result)

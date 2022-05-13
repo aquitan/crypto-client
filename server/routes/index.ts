@@ -45,7 +45,7 @@ router.put('/personal_area/secure_deal/create_secure_deal/', authChecker, userCo
 router.get('/second_party_user_checker/:userEmail/:domainName/', authChecker, userController.secondPartyChecker) // find second user for secure deal & internal transfers
 router.get('/personal_area/secure_deal/secure_deal_detail/:dealId/:userEmail/', authChecker, userController.getSecureDealDetail) // get detail deal info by dealId
 router.get('/personal_area/secure_deal/secure_deal_history/:userEmail/', authChecker, userController.getSecureDealHistory) // get deal history for user by userEmail
-router.get('/staff/secure_deal/secure_deal_history/:staffId/', staffController.getSecureDealHistory) // get deal history for staff by domainName
+router.post('/staff/secure_deal/secure_deal_history/', staffController.getSecureDealHistory) // get deal history for staff 
 router.patch('/personal_area/secure_deal/secure_deal_detail/accept_deal/', authChecker, userController.acceptDeal) // accept deal
 router.patch('/personal_area/secure_deal/secure_deal_detail/miss_dedline/', authChecker, userController.killDealByMissDeadline) // if deal dedline > date.now => status failed 
 router.delete('/personal_area/secure_deal/secure_deal_detail/delete_deal/:dealId/', staffController.deleteSecureDeal) // delete secure deal by id
@@ -111,6 +111,7 @@ router.get('/staff/errors/get_all_errors/:domainName/', staffController.getAllEr
 router.put('/staff/news/news_create/', staffController.newsCreate) // create news for user 
 router.patch('/staff/news/news_edit/', staffController.editNews) // edit news 
 router.post('/staff/news/get_news_list/', staffController.getNewsList) // get news list (if staff => only on onw domain) (if admin or other => find news by any domain)
+router.delete('/staff/news/news_delete/:newsId', staffController.deleteNews) // delete news
 
 // transaction logic
 router.put('/staff/users/user_detail/make_withdrawal/', staffController.makeWithdrawalForUserAsStaff)
@@ -119,15 +120,20 @@ router.put('/staff/create_transaction/create_regular_withdrawal_transaction/', s
 router.put('/staff/create_transaction/create_internal_transfer_as_staff/', staffController.createInternalTransaction) // reate approved internal withdrawal OR create internal deposit for your account
 router.get('/staff/create_transaction/get_transaction_history/:id/', staffController.getTransactionsHistory) // get history about all transaction in your account
 
-
+// staff wallets => 
 router.put('/staff/wallets/create_staff_wallet/', staffController.createStaffWallet) // create staff wallet 
-router.get('/staff/staff_wallets/get_wallets/:staffId/', staffController.getStaffWallet) // if staff => get support wallet for current staff, (if admin) => select with staff emails to choose wallet by current staff user
+router.post('/staff/staff_wallets/get_wallets/', staffController.getStaffWallet) // if staff => get support wallet for current staff, (if admin) => select with staff emails to choose wallet by current staff user
 router.patch('/staff/staff_wallets/edit_staff_wallets/', staffController.editStaffWallets) // edit wallets for current staff ONLY by root
+
 
 // router.post('/staff/terms/get_term_by_domain/', staffController.getTermsByDomainName) // get terms by selected domain
 // router.patch('/staff/terms/update_terms/', staffController.updateTerms) // update terms at selected domain
 router.get('/staff/project_support/get_wallet/', staffController.projectSupport) // if staff => get support wallet for current staff, (if admin) => select with staff emails to choose wallet by current staff user 
 router.post('/staff/project_support_form/', staffController.projectSupportRequest) // send question to platform developers
+
+
+
+// only for root access 
 
 
 

@@ -57,17 +57,19 @@ export const USER_KYC = {
     type: Number,
     require: true
   },
-  frontDocumentPhoto: {
-    type: String,
-    require: true
-  },
-  backDocumentPhoto: {
-    type: String,
-    require: true
-  },
-  selfieDocumentPhoto: {
-    type: String,
-    require: true
+  documents: {
+    frontDocumentPhoto: {
+      type: String,
+      require: true
+    },
+    backDocumentPhoto: {
+      type: String,
+      require: true
+    },
+    selfieDocumentPhoto: {
+      type: String,
+      require: true
+    }
   },
   userDomain: {
     type: String,

@@ -15,9 +15,11 @@ interface User_KYC {
   countryName: string
   state?: string | null
   zipCode: number
-  frontDocumentPhoto: string
-  backDocumentPhoto: string
-  selfieDocumentPhoto: string
+  documents: {
+    frontDocumentPhoto: string
+    backDocumentPhoto: string
+    selfieDocumentPhoto: string
+  }
   userDomain: string
   userId: Schema.Types.ObjectId
 }

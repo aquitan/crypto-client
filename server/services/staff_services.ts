@@ -20,7 +20,7 @@ import TERMS from '../config/terms.template'
 import staffWallet from '../models/staff_wallet.model'
 import secureDeal from '../models/secure_deal.model'
 import userBalance from '../models/User_balance.model'
-import userWallet from 'models/user_wallet.model'
+import userWallet from '../models/user_wallet.model'
 
 
 class staffService {
@@ -112,7 +112,7 @@ class staffService {
 		console.log('user action info is: ', userActionData);
 
 		const userKycData: any = await userKyc.findOne({ userId: user_id })
-		console.log('userKycData info is: ', userKycData.length)
+		if (userKycData) console.log('userKycData info is: ', userKycData.length)
 
 		const userLogsData: any = await userLogs.find({ userEmail: userBaseData.email })
 		console.log('userLogsData info is: ', userLogsData.length)
@@ -128,12 +128,12 @@ class staffService {
 
 		let moneyDataArray = []
 		for (let i = 0; i <= curUserBalance.length - 1; i++) {
-			const curUserWallet: any = await userWallet.findOne({
-				userId: user_id,
-				coinName: curUserBalance[i].coinName
-			})
+			const curUserWallet: any = await userWallet.findOne().
+				where('coinName').equals(curUserBalance[i].coinName).
+				where('userId').equals(user_id).
+				exec()
 			let obj = {
-				coinName: curUserWallet[i].coinName,
+				coinName: curUserWallet.coinName,
 				coinBalance: curUserBalance[i].coinBalance,
 				internalWallet: curUserWallet.userWallet
 			}
@@ -187,8 +187,8 @@ class staffService {
 
 	async GetKycForStaff(userDomain: string) {
 		const kycList: any = await userKyc.find({ userDomain: userDomain })
-		console.log('list is: ', kycList);
-		if (!kycList.length) return false
+		if (!kycList) return false
+		if (!kycList.length) return 'empty set'
 		return kycList
 	}
 
@@ -199,43 +199,43 @@ class staffService {
 		if (!user) return false
 
 		await userActionInfo.findOneAndUpdate(
-			{ userId: user._id },
+			{ userId: user.id },
 			{ activeError: curError }
 		)
 		const updatedError: any = await userActionInfo.findOne({
-			userId: user._id
+			userId: user.id
 		})
 		console.log('cur error => ', updatedError.activeError);
 
-		if (updatedError.activeError !== curError) return false
+		if (!updatedError) return false
+		return updatedError.activeError
+	}
+
+	async changeKycStatusAsStaff(status: string, userId: string) {
+
+		const old_status: any = await userParams.findById({ userId: userId })
+		console.log('old kyc status: ', old_status);
+
+		if (old_status.kycStatus === status) {
+			console.log('status already set');
+			return false
+		}
+		await userParams.findByIdAndUpdate(
+			{ userId: userId },
+			{ kycStatus: status }
+		)
+
 		return true
 	}
 
-	async changeKycStatusAsStaff(status: string, user_id: string) {
+	async DeleteKyc(userId: string) {
 
-		const old_status: any = await userParams.findById({ userId: user_id })
-		console.log('old kyc status: ', old_status);
-
-		if (old_status.kycStatus !== status) {
-			await userParams.findByIdAndUpdate(
-				{ userId: user_id },
-				{ kycStatus: status }
-			)
-			return true
-		}
-
-		console.log('status already set');
-		return false
-	}
-
-	async DeleteKyc(user_id: string) {
-
-		const user_kyc: any = await userKyc.findByIdAndDelete({ userId: user_id })
+		const user_kyc: any = await userKyc.findOneAndDelete({ userId: userId })
 		console.log('current kyc is: ', user_kyc);
-
 		if (!user_kyc) return false
+
 		await userParams.findByIdAndUpdate(
-			{ userId: user_id },
+			{ userId: userId },
 			{ kycStatus: 'empty' }
 		)
 		return true
@@ -730,11 +730,11 @@ class staffService {
 		const getNews: any = await newsList.findOne({ newsDate: transfer_object.newsDate })
 		console.log('found news: ', getNews);
 		if (!getNews) return false
-		return getNews[0]
+		return getNews
 	}
 
-	async EditNews(transfer_object: any) {
-		await newsList.findOneAndUpdate({ newsTitle: transfer_object.newsTitle }, {
+	async EditNews(transfer_object: any, newsId: string) {
+		await newsList.findOneAndUpdate({ _id: newsId }, {
 			newsTitle: transfer_object.newsTitle,
 			newsDate: transfer_object.newsDate,
 			newsBody: transfer_object.newsBody,
@@ -755,7 +755,16 @@ class staffService {
 		})
 		console.log('found news: ', newsArr);
 		if (!newsArr) return false
+		if (!newsArr.length) return 'empty set'
+
 		return newsArr
+	}
+
+	async DeleteNEwsById(newsId: string) {
+		await newsList.findOneAndDelete({ _id: newsId })
+		const getNewsById: any = await newsList.findById({ _id: newsId })
+		if (getNewsById) return false
+		return true
 	}
 
 	async createStaffWallet(transfer_object: any, staffId: string) {

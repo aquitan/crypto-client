@@ -238,7 +238,7 @@ class UserController {
     console.log('req body kyc: ', req.body);
 
     const transfer_object: KYC_DATA = {
-      userId: req.body.id,
+      userId: req.body.userId,
       userEmail: req.body.email,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
@@ -259,6 +259,12 @@ class UserController {
       userAction: req.body.userAction,
       domainName: req.body.domainName,
       kycStatus: 'pending'
+    }
+
+    for (let index in transfer_object) {
+      if (transfer_object[index] === null || transfer_object[index] === undefined) {
+        return res.status(400).json({ message: 'wrong data' })
+      }
     }
 
     try {
@@ -402,7 +408,7 @@ class UserController {
     const countryName: string = req.body.countryName
     const coordinates: string = req.body.coordinates
     const logTime: string = req.body.logTime
-    const errorId: number = req.body.errorId
+    const errorId: string = req.body.errorId
 
     if (req.body.withdrawalStatus !== 'failed ') {
       transfer_object.withdrawalStatus = 'failed'

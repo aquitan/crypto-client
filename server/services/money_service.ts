@@ -269,17 +269,24 @@ class moneyService {
 
   async MakeDepositAsStaff(transfer_object: any, staffId: string) {
 
-    const curAddress: string | boolean = await addressGen(transfer_object.coinName)
+    // const curAddress: string | boolean = await addressGen(transfer_object.coinName)
+    const curAddress: string | boolean = await generatePassword(44)
     if (!curAddress) return false
     console.log('received address is => ', curAddress);
 
-    const curBalance: any = await userBalance.find({
-      userId: transfer_object.udseId,
+    const curUser: any = await userBaseData.findOne({
+      email: transfer_object.userEmail
+    })
+    console.log('curUser => ', curUser);
+
+
+    const curBalance: any = await userBalance.findOne({
+      userId: curUser.id,
       coinName: transfer_object.coinName
     })
-    console.log('curBalance is => ', curBalance[0]);
+    console.log('curBalance is => ', curBalance);
 
-    const updatedBalance: number = curBalance[0].coinBalance + transfer_object.amountInCrypto
+    const updatedBalance: number = curBalance.coinBalance + transfer_object.amountInCrypto
     console.log('updated balance: ', updatedBalance);
 
 
@@ -293,28 +300,28 @@ class moneyService {
       date: transfer_object.currentDate,
       address: curAddress,
       status: 'complete',
-      userId: transfer_object.userId,
+      userId: curUser.id,
       staffId: staffId
     })
 
     const curHistory: any = await depositHistory.findOne({
       date: transfer_object.currentDate
     })
-    console.log('history length => ', curHistory.length);
-    if (!curHistory.length) return false
+    console.log('history length => ', curHistory);
+    if (!curHistory) return false
 
-    await this.BalanceUpdater(transfer_object.userId, transfer_object.coinName, updatedBalance)
+    await this.BalanceUpdater(curUser.id, transfer_object.coinName, updatedBalance)
 
     const getBalance: any = await userBalance.find({
       coinName: transfer_object.coinName,
-      userId: transfer_object.udseId,
+      userId: curUser.id,
     })
     console.log('getBalance => ', getBalance[0]);
     if (!getBalance[0]) return false
     return true
   }
 
-  async MakeWithdrawal(transfer_object: any, errorId: number) {
+  async MakeWithdrawal(transfer_object: any, errorId: string) {
 
     await withdrawalHistory.create({
       userEmail: transfer_object.userEmail,
@@ -336,16 +343,17 @@ class moneyService {
     if (!curHistory) return false
 
     // get user action info (err num), get error by number, send error to user
-    const curError: any = await withdrawalError.find({
-      domainName: transfer_object.domainName
+    const curError: any = await withdrawalError.findOne({
+      _id: errorId
     })
-    console.log('found curError => ', curError.length);
-    if (!curError.length) return false
-    const errorData: any = Object.assign({}, curError[errorId - 1])
+    console.log('found curError => ', curError);
+    if (!curError) return false
+    const errorData: any = Object.assign({}, curError)
     delete errorData._doc._id
     delete errorData._doc.errorName
     delete errorData._doc.domainName
     delete errorData._doc.domainId
+
     return errorData._doc
   }
 

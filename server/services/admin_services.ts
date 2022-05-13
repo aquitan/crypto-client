@@ -19,6 +19,7 @@ import swapHistory from '../models/Swap_history.model'
 import depositWallets from '../models/deposit_address.model'
 import staffLogs from '../models/Staff_logs.model'
 import staffWallet from '../models/staff_wallet.model'
+import secureDeal from '../models/secure_deal.model'
 
 async function deleteHelper(modelName: any, paramValue: string) {
   if (!modelName) return
@@ -115,10 +116,10 @@ class adminService {
 
   async GetKycForAdmin() {
     const kycList: any = await userKyc.find()
-    console.log("list is: ", kycList)
-    if (!kycList.length) return false
+    console.log("list is: ", kycList.length)
+    if (!kycList) return false
+    if (!kycList.length) return 'empty set'
     return kycList
-
   }
 
   async GetPromocodeListForAdmin() {
@@ -155,7 +156,8 @@ class adminService {
   async GetNewsListForAdmin() {
     const list: any = await newsList.find()
     console.log('found news: ', newsList);
-    if (!list.length) return false
+    if (!list) return false
+    if (!list.length) return 'empty set'
     return list
   }
 
@@ -276,6 +278,22 @@ class adminService {
     return true
   }
 
+  async getSecureDealHistoryAsAdmin() {
+    const history: any = await secureDeal.find()
+    console.log('history is => ', history.length);
+
+    if (!history) return false
+    if (!history.length) return 'empty set'
+    return history
+  }
+
+  async getStaffWalletForAdmin() {
+    const getWallets: any = await staffWallet.find()
+    console.log('received getWallets is => ', getWallets.length);
+    if (!getWallets) return false
+    if (!getWallets.length) return 'empty set'
+    return getWallets
+  }
 }
 
 export default new adminService()

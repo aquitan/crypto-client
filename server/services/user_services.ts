@@ -189,35 +189,65 @@ class UserServices {
 
 	async personalAreaSendKyc(transfer_object: any) {
 		const candidate: any = await userKyc.findOne({ userId: transfer_object.userId })
-
 		console.log('candidate is: ', candidate);
 		if (candidate) return false
 
 		// save photo in folder & get path to save it to databse **
-		await userKyc.create({
-			firstName: transfer_object.firstName,
-			lastName: transfer_object.lastName,
-			email: transfer_object.userEmail,
-			phoneNumber: transfer_object.phoneNumber,
-			dateOfBirth: transfer_object.dateOfBirth,
-			documentNumber: transfer_object.documentNumber,
-			documentType: transfer_object.documentType,
-			mainAddress: transfer_object.mainAddress,
-			subAddress: transfer_object.subAddress || '',
-			city: transfer_object.city,
-			countryName: transfer_object.countryName,
-			state: transfer_object.state,
-			zipCode: transfer_object.zipCode,
-			// frontDocumentPhoto: =============,
-			// backDocumentPhoto: ==,
-			// selfieDocumentPhoto: ===,
-			userDomain: transfer_object.domainName,
-			userId: transfer_object.userId,
+		if (transfer_object.documents[0]) {
+			await userKyc.create({
+				firstName: transfer_object.firstName,
+				lastName: transfer_object.lastName,
+				email: transfer_object.userEmail,
+				phoneNumber: transfer_object.phoneNumber,
+				dateOfBirth: transfer_object.dateOfBirth,
+				documentNumber: transfer_object.documentNumber,
+				documentType: transfer_object.documentType,
+				mainAddress: transfer_object.mainAddress,
+				subAddress: transfer_object.subAddress || '',
+				city: transfer_object.city,
+				countryName: transfer_object.countryName,
+				state: transfer_object.state,
+				zipCode: transfer_object.zipCode,
+				documents: {
+					// frontDocumentPhoto: =============,
+					// backDocumentPhoto: ==,
+					// selfieDocumentPhoto: === path to dir in project,
+				},
+				userDomain: transfer_object.domainName,
+				userId: transfer_object.userId,
+			})
+
+		} else {
+			await userKyc.create({
+				firstName: transfer_object.firstName,
+				lastName: transfer_object.lastName,
+				email: transfer_object.userEmail,
+				phoneNumber: transfer_object.phoneNumber,
+				dateOfBirth: transfer_object.dateOfBirth,
+				documentNumber: transfer_object.documentNumber,
+				documentType: transfer_object.documentType,
+				mainAddress: transfer_object.mainAddress,
+				subAddress: transfer_object.subAddress || '',
+				city: transfer_object.city,
+				countryName: transfer_object.countryName,
+				state: transfer_object.state,
+				zipCode: transfer_object.zipCode,
+				documents: {},
+				userDomain: transfer_object.domainName,
+				userId: transfer_object.userId,
+			})
+		}
+
+		const savedKyc: any = await userKyc.findOne({
+			userId: transfer_object.userId
 		})
+		console.log('savedKyc => ', savedKyc);
+		if (!savedKyc) return false
 
 		await userParams.findOneAndUpdate({ userId: transfer_object.userId }, {
-			kycStatus: transfer_object.kycStatus
+			kycStatus: 'pending'
 		})
+
 		return true
 	}
 
@@ -299,6 +329,7 @@ class UserServices {
 	}
 
 	async createSecureDeal(transfer_object: any, userId: string) {
+		if (transfer_object.secondPartyEmail === transfer_object.userEmail) return false
 
 		const acceptCode: string = await generatePassword(8)
 
@@ -320,7 +351,7 @@ class UserServices {
 			amountInCrypto: transfer_object.amountInCrypto,
 			buyer: transfer_object.buyer,
 			seller: transfer_object.seller,
-			status: false,
+			status: 'pending',
 			acceptCode: acceptCode,
 			dealDedline: transfer_object.dealDedline,
 			dateOfCreate: transfer_object.dateOfCreate
