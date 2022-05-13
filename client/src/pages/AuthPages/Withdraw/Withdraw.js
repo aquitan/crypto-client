@@ -65,10 +65,10 @@ const Withdraw = () => {
     const onSubmit = async (data, e) => {
         e.preventDefault()
         data.value = state.value
-
+        console.log('store error', store.user.userError)
         const obj = {
-            userId: store.userId,
-            userEmail: store.userEmail,
+            userId: store.user.id,
+            userEmail: store.user.email,
             domainName: window.location.host,
             coinName: data.coinName,
             amountInCrypto: state.value,
@@ -77,7 +77,7 @@ const Withdraw = () => {
             withdrawalAddress: data.withdrawalAddress,
             withdrawalStatus: 'failed',
             logTime: getCurrentDate(dateToTimestamp()),
-            errorNumber: store.user.userError
+            errorId: store.user.userError
         }
 
         const res = await putData('/withdraw/make_withdraw/', obj)

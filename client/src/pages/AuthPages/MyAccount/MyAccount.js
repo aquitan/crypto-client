@@ -32,7 +32,7 @@ const MyAccount = (props) => {
             delete geodata.id
             delete geodata.email
             geodata.userEmail = store.userEmail
-            geodata.userId = store.userId
+            geodata.userId = store.user.id
             const response = await UserService.editUser(geodata)
             setChangeName(false)
             if (response.status === 200) {
@@ -50,12 +50,12 @@ const MyAccount = (props) => {
     const promoUse = async () => {
         let geodata =  await getGeoData()
         geodata.code = promo
-        geodata.userId = store.userId
+        geodata.userId = store.user.id
         geodata.userEmail = store.userEmail
         geodata.domainName = window.location.host
         delete geodata.id
         delete geodata.email
-        geodata.userId = store.userId
+        geodata.userId = store.user.id
         geodata.userEmail = store.userEmail
 
         const res = await postData('/use_promocode_in_profile/', geodata)

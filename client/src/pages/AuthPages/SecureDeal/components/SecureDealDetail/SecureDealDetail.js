@@ -109,7 +109,7 @@ const SecureDealDetail = () => {
                                 dealData.acceptCode ?
                                     <Row className='mb-3'>
                                         <Col>Password (shown only for buyer)</Col>
-                                        <Col>lkjskldflksdlkflksjdf</Col>
+                                        <Col>{dealData.acceptCode}</Col>
                                     </Row>
                                     : null
                             }

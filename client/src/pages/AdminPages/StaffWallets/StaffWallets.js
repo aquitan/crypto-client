@@ -1,7 +1,6 @@
 import React, {useEffect} from 'react'
-import {Card, Col, Container, Row} from "react-bootstrap";
+import {Col, Container, Row} from "react-bootstrap";
 import StaffWalletsItem from "./components/StaffWalletsItem/StaffWalletsItem";
-import UserService from "../../../services/UserService";
 import cls from './StaffWallets.module.scss'
 import err from '../../../styles/Error.module.scss'
 import AdminForm from "../../../components/UI/AdminForm/AdminForm";
@@ -10,9 +9,9 @@ import AdminButton from "../../../components/UI/AdminButton/AdminButton";
 import { useForm } from 'react-hook-form';
 import { ErrorMessage } from "@hookform/error-message";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
-import Input from "../../../components/UI/Input/Input";
 import {store} from "../../../index";
-import {getData} from "../../../services/StaffServices";
+import {postData, putData} from "../../../services/StaffServices";
+import {v4 as uuid} from 'uuid'
 
 
 const StaffWallets = () => {
@@ -20,36 +19,53 @@ const StaffWallets = () => {
         mode: 'onBlur'
     })
     const wallets = [
-        {currency: 'BTC', id: 1},
-        {currency: 'ETH', id: 2},
-        {currency: 'USDT', id: 3},
-        {currency: 'BCH', id: 4},
+        {currency: 'BTC'},
+        {currency: 'BCH'},
+        {currency: 'ETH'},
+        {currency: 'USDT'},
+        {currency: 'TRX'},
+        {currency: 'USDTTRX'},
+        {currency: 'SOL'},
     ]
 
-    const onGetWallets = async () => {
-        const obj = {
-        }
-        const res = await getData(`/staff/staff_wallets/get_wallets/${store.user.id}`)
-        const data = await res
-        console.log('wallets', data)
-    }
     useEffect(() => {
-        onGetWallets()
+        getWallet()
     }, [])
 
-    const onSubmit = (data) => {
-        console.log(data)
+    const onSubmit = async (data) => {
+        let id = store.fullAccess ? '1' : store.user.id
+        const arr = [
+            {coinName: 'BTC', coinAddress: data.BTC},
+            {coinName: 'BCH', coinAddress: data.BCH},
+            {coinName: 'ETH', coinAddress: data.ETH},
+            {coinName: 'USDT', coinAddress: data.USDT},
+            {coinName: 'TRX', coinAddress: data.TRX},
+            {coinName: 'USDTTRX', coinAddress: data.USDTTRX},
+            {coinName: 'SOL', coinAddress: data.SOL},
+
+        ]
+        const res = await putData('/staff/wallets/create_staff_wallet/', {walletList: arr, staffId: id, rootAccess: store.fullAccess})
+        console.log('wallet', arr)
+
+    }
+
+    const getWallet = async () => {
+        const obj = {
+            staffId: store.fullAccess ? '1' : store.user.id,
+            rootAccess: store.fullAccess
+        }
+        const res = await postData(`/staff/staff_wallets/get_wallets/`, obj)
     }
 
     return (
         <Container className='container-xxl'>
             <h1 className='mt-4 mb-4'>Staff Wallets</h1>
-            <AdminButtonCard className={`${cls.bg_black} mb-3 p-3`}>
+            <AdminButtonCard className={`${cls.bg_black} mb-3 p-3`} title={'Создать кошельки'}>
                 <AdminForm onSubmit={handleSubmit(onSubmit)}>
                     {
                         wallets.map(currency => {
                             return(
-                                <Row className='mb-3' key={currency.id}>
+                                <Row className='mb-3' key={uuid()}>
                                     <AdminInput {...register(`${currency.currency}`, {
                                         minLength: {
                                             value: 30,
@@ -77,29 +93,39 @@ const StaffWallets = () => {
                 store.fullAccess || store.isAdmin ?
                     <AdminButtonCard>
                         <Row>
-                            <AdminInput type='search' placeholder='Найти кошелек'/>
+                            <Col>
+                                <Row>
+                                    <Col>
+                                        <AdminInput type='search' placeholder='Найти пользователя'/>
+                                    </Col>
+                                    <Col>
+                                        <AdminButton classname={'green'}>Найти</AdminButton>
+                                    </Col>
+                                </Row>
+                            </Col>
+                            <Col>
+                                <Row>
+                                    <Col>
+                                        <AdminInput type='search' placeholder='Найти кошелек'/>
+                                    </Col>
+                                    <Col>
+                                        <AdminButton classname={'green'}>Найти</AdminButton>
+                                    </Col>
+                                </Row>
+                            </Col>
                         </Row>
                     </AdminButtonCard>
                     : null
             }
 
-            <AdminButtonCard className={`${cls.bg_black} mb-3 p-3`}>
-                <Row className='mb-3'>
-                    <Col className='col-lg-3'>
-                        <select name="currency" id="">
-                            <option value='BTC'>BTC</option>
-                            <option value='ETH'>ETH</option>
-                            <option value='USDT'>USDT</option>
-                            <option value='BCH'>BCH</option>
-                        </select>
-                    </Col>
-                </Row>
+            <AdminButtonCard className={`${cls.bg_black} mb-3 p-3`} title={'Все кошелки'}>
+
                 <Row style={{borderBottom: '1px solid #cecece'}} className={'mb-3'}>
                     <Col>Name</Col>
                     <Col className='d-none d-md-block'>Currency</Col>
                     <Col>Address</Col>
-                    <Col className='d-none d-md-block'>Total</Col>
-                    <Col className='d-none d-md-block'>last</Col>
+                    <Col className='d-none d-md-block'>Edit</Col>
+                    <Col className='d-none d-md-block'>Approve</Col>
                 </Row>
                 <StaffWalletsItem name={'sadas'} currency={'BTC'} address={'ljsdfjsdkjfskjdfsdfsdfsdf'} total={0.0} last={0.0}/>
             </AdminButtonCard>

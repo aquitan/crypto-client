@@ -28,11 +28,13 @@ const UserDetailTabInfo = ({data}) => {
         return 'Пользователь'
     }
     const onSubmit = async (datas) => {
-        datas.errorId = +datas.errorId
+        datas.curError = datas.errorId
         datas.domainName = window.location.host
-        datas.staffId = store.userId
+        datas.staffId = store.user.id
         datas.staffEmail = store.userEmail
         datas.userEmail = data.user.base_data.email
+        datas.rootAccess = store.fullAccess
+        delete datas.errorId
 
         let res = await patchData('/staff/users/user_detail/update_error_for_user/', datas)
     }
@@ -43,7 +45,7 @@ const UserDetailTabInfo = ({data}) => {
         for (let i = 0; i <= err.length - 1; i++) {
             let obj = {
                 text: err[i].errorName,
-                id: i
+                id: err[i]._id
             }
             arr.push(obj)
         }
@@ -151,19 +153,6 @@ const UserDetailTabInfo = ({data}) => {
                         </Col>
                     </Row>
                     <Row className={cls.users_detail_table_row}>
-                        <p>Текущая ошибка</p>
-                        <Col>
-                            <Select {...register('errorId')} classname={'admin-square'} options={toArr()}/>
-                        </Col>
-                        <Col>
-                            <AdminButton onClick={handleSubmit(onSubmit)} classname='green'>Использовать</AdminButton>
-                        </Col>
-                    </Row>
-                </Col>
-
-
-                <Col className='col-12 col-xl-6'>
-                    <Row className={cls.users_detail_table_row}>
                         <Col className={cls.users_detail_table_col}>
                             Зарегистрирован
                         </Col>
@@ -227,37 +216,39 @@ const UserDetailTabInfo = ({data}) => {
                             <Link to='/staff/transactions'>Создать/Посмотреть</Link>
                         </Col>
                     </Row>
+                </Col>
+
+
+                <Col className='col-12 col-xl-6'>
+
                     <Row className={cls.users_detail_table_row}>
-                        <Col className={cls.users_detail_table_col}>
-                            Интернал адреса пользователей
+                        <p>Текущая ошибка</p>
+                        <Col>
+                            <Select {...register('errorId')} classname={'admin-square'} options={toArr()}/>
                         </Col>
-                        <Col className={cls.users_detail_table_col}>
-                            <Row className={cls.users_detail_table_row}>
-                                2.0 BTC 2.0 $
-                                1AjU5dRmEHPvrF81rH56PwTQCmL5jFpxUm
-                            </Row>
-                            <Row className={cls.users_detail_table_row}>
-                                0.0 ETH 0.0 $
-                                0x20F32773b28c9F9401e55E9C576e7D4c846e7Df9
-                            </Row>
-                            <Row className={cls.users_detail_table_row}>
-                                0.0 BCH 0.0 $
-                                1
-                            </Row>
-                            <Row className={cls.users_detail_table_row}>
-                                0.0 USDT 0.0 $
-                                1
-                            </Row>
-                            <Row className={cls.users_detail_table_row}>
-                                0.0 TRX/USDT 0.0 $
-                                1
-                            </Row>
-                            <Row className={cls.users_detail_table_row}>
-                                0.0 TRX 0.0 $
-                                1
-                            </Row>
+                        <Col>
+                            <AdminButton onClick={handleSubmit(onSubmit)} classname='green'>Использовать</AdminButton>
                         </Col>
                     </Row>
+                    <Row className={cls.users_detail_table_row}>
+                        <Row>
+                            <h3>Кошельки пользователя</h3>
+                        </Row>
+                    </Row>
+                    {
+                        data.user.user_money.map(money => {
+                            return (
+                                <Row className={cls.users_detail_table_row}>
+                                    <Col className={'col-12 col-md-3'}>
+                                        {money.coinBalance} {money.coinName} <br/>
+                                    </Col>
+                                    <Col className={'col-12 col-md-9'}>
+                                        {money.internalWallet}
+                                    </Col>
+                                </Row>
+                            )
+                        })
+                    }
                     {/*<Row className={cls.users_detail_table_row}>*/}
                     {/*    <Col className={cls.users_detail_table_col}>*/}
                     {/*        Внутренние обмены*/}

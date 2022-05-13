@@ -72,7 +72,7 @@ const Promocodes = () => {
         let promoData = {
             value: dataPrep,
             date: dateToTimestamp(),
-            staffId: store.userId,
+            staffId: store.user.id,
             domainName: window.location.host,
             counter: data.counter,
             currency: data.currency,
@@ -86,7 +86,7 @@ const Promocodes = () => {
         let promoData = {
             isStaff: store.isStaff,
             isAdmin: store.isAdmin,
-            id: store.userId,
+            id: store.user.id,
             rootAccess: store.fullAccess,
             staffEmail: store.userEmail
         }
@@ -102,7 +102,7 @@ const Promocodes = () => {
         let promoData = {
             isStaff: store.isStaff,
             isAdmin: store.isAdmin,
-            id: store.userId,
+            id: store.user.id,
             rootAccess: store.fullAccess
         }
         const res = await postData('/staff/get_used_promocode_list/', promoData)
@@ -136,7 +136,7 @@ const Promocodes = () => {
         const obj = {
             isStaff: store.isStaff,
             isAdmin: store.isAdmin,
-            id: store.userId
+            id: store.user.id
         }
         const res = await deleteData('/staff/delete_all_used_promocode/', {data: obj})
         setState({...state, usedPromocodes: ''})

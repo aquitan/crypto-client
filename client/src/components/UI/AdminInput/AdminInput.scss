@@ -9,6 +9,10 @@
   &::placeholder {
     color: #fff;
   }
+  &:disabled {
+    background-color: rgba(101, 101, 101, 0.38);
+    color: #4e4747;
+  }
 }
 .small_input {
   padding: 5px 10px;

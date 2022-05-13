@@ -64,7 +64,6 @@ const MakeTransactionOuter = ({history}) => {
         delete data.time
         data.amountInCrypto = +data.amountInCrypto
         data.userId = store.user.id
-        data.userEmail = store.userEmail
         data.domainName = window.location.host
         data.amountInUsd = getCurCoinName(data.coinName.toLowerCase(), data.amountInCrypto)
         data.currentDate = dateToTimestamp(newDate)

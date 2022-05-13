@@ -15,7 +15,7 @@ import AdminButton from "../../../components/UI/AdminButton/AdminButton";
 import moment from "moment";
 import {store} from "../../../index";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
-import {deleteData, getData, patchData, putData} from "../../../services/StaffServices";
+import {deleteData, getData, patchData, postData, putData} from "../../../services/StaffServices";
 import {getCurCoinName} from "../../../utils/getCurCoinName";
 import {useNavigate} from "react-router-dom";
 import Preloader from "../../../components/UI/Preloader/Preloader";
@@ -78,13 +78,19 @@ const AdminSecureDeal = () => {
     }
 
     const getHistory = async () => {
-        const res = await getData(`/staff/secure_deal/secure_deal_history/xx999xx--001`)
-        setHistory(res.data.history.filter(item => {
-            if (dateToTimestamp() > item.dealDedline) {
-                onMissDeadline(item._id, item.dealDedline)
-            }
-            return  dateToTimestamp() < item.dealDedline
-        }))
+        const obj = {
+            staffId: store.fullAccess ? '1' : store.user.id,
+            rootAccess: store.fullAccess
+        }
+        const res = await postData(`/staff/secure_deal/secure_deal_history/`, obj)
+        if (!res.data.history === 'empty set') {
+            setHistory(res.data.history.filter(item => {
+                if (dateToTimestamp() > item.dealDedline) {
+                    onMissDeadline(item._id, item.dealDedline)
+                }
+                return  dateToTimestamp() < item.dealDedline
+            }))
+        }
     }
 
     const onMissDeadline = async (id, deadline) => {
@@ -94,10 +100,11 @@ const AdminSecureDeal = () => {
         }
 
         const res = await patchData('/personal_area/secure_deal/secure_deal_detail/miss_dedline/', obj)
-        if (res.status === 200) {
-            const resDel = await deleteData(`/personal_area/secure_deal/secure_deal_detail/delete_deal/${id}`, {data: {staffId: id}})
-        }
-        console.log('on miss deadline', obj)
+    }
+
+    const deleteSecureDeal = async (id) => {
+        console.log('id', id)
+        const res = await deleteData(`/personal_area/secure_deal/secure_deal_detail/delete_deal/${id}`)
     }
 
     return (
@@ -175,7 +182,7 @@ const AdminSecureDeal = () => {
                         <Col>Action</Col>
                     </Row>
                     {
-                        history ?
+                        history.length ?
                             history.map(item => {
                                 return (
                                     <Row style={{borderBottom: '1px solid #fff', padding: '10px 0'}}>
@@ -192,15 +199,22 @@ const AdminSecureDeal = () => {
                                             Status: {item.status ? 'Complete' : 'Pending'}<br/>
                                         </Col>
                                         <Col>
-                                            <AdminButton
-                                                classname={'green'}
-                                                onClick={() => navigate(`/staff/secure-deal/${1}`)}
-                                            >Посмотреть</AdminButton>
+                                            <Row>
+                                                <Col>
+                                                    <AdminButton classname={'red'} onClick={() => deleteSecureDeal(item._id)}>Удалить</AdminButton>
+                                                </Col>
+                                                <Col>
+                                                    <AdminButton
+                                                        classname={'green'}
+                                                        onClick={() => navigate(`/staff/secure-deal/${1}`)}
+                                                    >Посмотреть</AdminButton>
+                                                </Col>
+                                            </Row>
                                         </Col>
                                     </Row>
                                 )
                             })
-                            : <Preloader />
+                            : <h3 className={'mb-3 mt-3'}>Нет активных сделок</h3>
                     }
 
                 </Row>

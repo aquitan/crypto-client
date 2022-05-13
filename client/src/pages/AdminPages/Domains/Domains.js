@@ -96,7 +96,7 @@ const CreateDomains = () => {
         if (store.fullAccess) {
             data.staffId = 'dsfsdf'
         } else {
-            data.staffId = store.userId
+            data.staffId = store.user.id
         }
         data.rootAccess = store.fullAccess
         const res = await postData('/staff/domains/create_domain/', data)

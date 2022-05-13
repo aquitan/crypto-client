@@ -21,7 +21,7 @@ const Notification = () => {
     }, [])
 
     const getNotification = async () => {
-        const res = await postData('/staff/notifications/get_all_notifications/', {userId: store.userId})
+        const res = await postData('/staff/notifications/get_all_notifications/', {userId: store.user.id})
     }
 
     return (

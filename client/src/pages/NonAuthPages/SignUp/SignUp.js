@@ -80,10 +80,9 @@ const SignUp = () => {
     }
 
     const query = async (data) => {
+        const geoData = await getGeoData()
         console.log('data', data)
         // const promocode = compareStr(promoStatus.promocodeList, data.promocode)
-        const geoData = await getGeoData()
-        geoData.email = data.email
         geoData.password = data.password
         geoData.name = data.name
         delete geoData.id
@@ -96,9 +95,9 @@ const SignUp = () => {
         geoData.minDepositSum = store.domain.domainParams.minDepositSum
         geoData.minWithdrawalSum = store.domain.domainParams.minWithdrawalSum
         geoData.currencySwapFee = store.domain.domainParams.currencySwapFee
+        geoData.email = data.email
 
-        console.log('asdasd', geoData)
-        store.registration(geoData)
+        await store.registration(geoData)
         navigate('/register-confirm')
 
         if (store.isError) {

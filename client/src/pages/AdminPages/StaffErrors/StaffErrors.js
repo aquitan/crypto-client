@@ -60,7 +60,7 @@ const StaffErrors = () => {
             isStaff: store.isStaff,
             staffEmail: store.userEmail,
             rootAccess: store.fullAccess,
-            id: store.userId
+            id: store.user.id
         }
         const res = await postData('/staff/domains/get_active_domains/', obj)
         console.log('getDomainList ========', res.data.domainsList)
@@ -96,7 +96,7 @@ const StaffErrors = () => {
     const onSubmit = async (data) => {
         data.domainId = optionId
         data.staffEmail = store.userEmail
-        data.staffId = store.userId
+        data.staffId = store.user.id
         data.adminPermission = store.isAdmin
         data.staffPermission = store.isStaff
         data.rootAccess = store.fullAccess

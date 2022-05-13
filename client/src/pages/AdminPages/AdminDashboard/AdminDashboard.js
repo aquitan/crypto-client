@@ -14,7 +14,7 @@ const AdminDashboard = () => {
 
     const getDataDashboard = async () => {
         let obj = {
-            userId: store.userId,
+            userId: store.user.id,
             isAdmin: store.isAdmin,
             isStaff: store.isStaff,
             rootAccess: store.fullAccess
