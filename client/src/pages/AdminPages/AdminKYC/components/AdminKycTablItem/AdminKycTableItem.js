@@ -38,7 +38,7 @@ const AdminKycTableItem = (props) => {
             userEmail: props.email,
             kycId: props.id,
             domainName: window.location.host,
-            staffId: store.userId
+            staffId: store.user.id
         }
 
         const res = await patchData('/staff/kyc/update_kyc_status/', statusData)
@@ -53,7 +53,7 @@ const AdminKycTableItem = (props) => {
             userEmail: props.email,
             kycId: props.id,
             domainName: window.location.host,
-            staffId: store.userId
+            staffId: store.user.id
         }
         const res = await deleteData('/staff/kyc/delete_kyc/', statusData)
         const data = await res.data

@@ -31,7 +31,7 @@ const CreateNews = () => {
 
     const onSubmit = async (data) => {
         data.newsDate = moment(startDate).format('yyyy/MM/DD')
-        data.staffId = store.userId
+        data.staffId = store.user.id
         data.staffEmail = store.userEmail
         createNews(data)
     }
@@ -43,7 +43,7 @@ const CreateNews = () => {
         const obj = {
             isAdmin: store.isAdmin,
             isStaff: store.isStaff,
-            staffId: store.userId
+            staffId: store.user.id
         }
         const res = await postData('/staff/news/get_news_list/', obj)
         setState(res.data.content)

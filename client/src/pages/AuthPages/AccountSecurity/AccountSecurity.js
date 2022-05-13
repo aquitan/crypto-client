@@ -36,9 +36,9 @@ const AccountSecurity = (props) => {
     }
 
     const onChangePassword = async (data) => {
-        data.id = store.userId
+        data.id = store.user.id
         let geodata =  await getGeoData()
-        geodata.id = store.userId
+        geodata.id = store.user.id
         delete geodata.email
         geodata.userEmail = store.userEmail
         geodata.newPassword = data.newPassword
@@ -55,7 +55,7 @@ const AccountSecurity = (props) => {
         let geodata =  await getGeoData()
         delete geodata.id
         delete geodata.email
-        geodata.userId = store.userId
+        geodata.userId = store.user.id
         geodata.userEmail = store.userEmail
         geodata.userAction = '2FA Turned Off'
         const res = await patchData('/personal_area/security/disable_two_step_status/', geodata)
@@ -66,7 +66,7 @@ const AccountSecurity = (props) => {
         const obj = {
             domainName: window.location.host,
             userEmail: store.userEmail,
-            userId: store.userId,
+            userId: store.user.id,
             twoFaType: 'email',
             twoFaStatus: true
         }
@@ -88,7 +88,7 @@ const AccountSecurity = (props) => {
         console.log('code', state.twoFaCode)
         if (data.code === state.twoFaCode) {
             const obj = {
-                id: store.userId,
+                id: store.user.id,
                 userEmail: store.userEmail,
                 domainName: window.location.host,
                 twoFaStatus: true,

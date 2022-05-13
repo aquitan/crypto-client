@@ -85,11 +85,10 @@ const SecureDeal = () => {
             dealId: id,
             dedline: deadline
         }
-
         const res = await patchData('/personal_area/secure_deal/secure_deal_detail/miss_dedline/', obj)
-        if (res.status === 200) {
-            const resDel = await deleteData(`/personal_area/secure_deal/secure_deal_detail/delete_deal/${id}`, {data: {staffId: id}})
-        }
+        // if (res.status === 200) {
+        //     const resDel = await deleteData(`/personal_area/secure_deal/secure_deal_detail/delete_deal/${id}`, {data: {staffId: id}})
+        // }
         console.log('on miss deadline', obj)
     }
 
