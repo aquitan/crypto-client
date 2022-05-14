@@ -68,9 +68,6 @@ const Profile = () => {
                     <KYC status={profileData?.user}/>
                 </Tab>
             </Tabs>
-            <ButtonCard>
-
-            </ButtonCard>
         </Container>
     )
 }

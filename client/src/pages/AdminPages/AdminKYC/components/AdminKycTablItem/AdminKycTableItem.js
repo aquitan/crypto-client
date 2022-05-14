@@ -33,12 +33,18 @@ const AdminKycTableItem = (props) => {
 
     const onSendStatus = async () => {
         const statusData = {
-            status: kycStatus,
-            staffEmail: store.userEmail,
+            status: 'approved',
+            staffEmail: store.user.email,
             userEmail: props.email,
             kycId: props.id,
+            userId: props.userId,
             domainName: window.location.host,
-            staffId: store.user.id
+            staffId: store.user.id,
+            rootAccess: store.fullAccess
+        }
+        if (store.fullAccess) {
+            delete statusData.staffEmail
+            delete statusData.staffId
         }
 
         const res = await patchData('/staff/kyc/update_kyc_status/', statusData)
@@ -47,16 +53,20 @@ const AdminKycTableItem = (props) => {
     }
 
     const onSendDelete = async () => {
-        const statusData = {
-            status: kycStatus,
+        const data = {
             staffEmail: store.userEmail,
             userEmail: props.email,
-            kycId: props.id,
             domainName: window.location.host,
-            staffId: store.user.id
+            staffId: store.user.id,
+            userId: props.userId,
+            rootAccess: store.fullAccess
         }
-        const res = await deleteData('/staff/kyc/delete_kyc/', statusData)
-        const data = await res.data
+        if (store.fullAccess) {
+            delete data.staffEmail
+            delete data.staffId
+        }
+        console.log('delete kyc', data)
+        const res = await deleteData('/staff/kyc/delete_kyc/', {data})
         handleCloseModal()
     }
 
@@ -115,7 +125,7 @@ const AdminKycTableItem = (props) => {
                                 })} classname='small' options={kusStatuses} />
                             </Col>
                             <Col>
-                                <AdminButton onClick={() => handleOpenModal('delete')} classname='red xs' >Удалить</AdminButton>
+                                <AdminButton onClick={() => handleOpenModal('delete')} classname={'red'} >Удалить</AdminButton>
                             </Col>
                         </Row>
                     </Col>

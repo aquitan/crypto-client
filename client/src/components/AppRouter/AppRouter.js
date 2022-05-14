@@ -15,19 +15,19 @@ const AppRouter = () => {
     const [state, setState] = useState([])
     const [percent, setPercent] = useState([])
     const navigate = useNavigate()
-    const {isLoading, data, error} = useQuery('notif query', async () => {
-        if (store.isAuth) {
-            const res = await postData('/get_domain_params/', {domainName: window.location.host})
-            if (res.data) {
-                const balance = await getData(`/get_user_balance/${store.user.id}`)
-                setState(balance.data)
-                countTotalBalance()
-            }
-            setPercent(store.domain.domainParams.rateCorrectSum)
-            store.setDepositFee(res.data.domainInfo.domainParams.depositFee)
-            store.setDomain(res.data.domainInfo)
-        }
-    })
+    // const {isLoading, data, error} = useQuery('notif query', async () => {
+    //     if (store.isAuth) {
+    //         const res = await postData('/get_domain_params/', {domainName: window.location.host})
+    //         if (res.data) {
+    //             const balance = await getData(`/get_user_balance/${store.user.id}`)
+    //             setState(balance.data)
+    //             countTotalBalance()
+    //         }
+    //         setPercent(store.domain.domainParams.rateCorrectSum)
+    //         store.setDepositFee(res.data.domainInfo.domainParams.depositFee)
+    //         store.setDomain(res.data.domainInfo)
+    //     }
+    // })
 
     useEffect( () => {
         if (localStorage.getItem('token')) {

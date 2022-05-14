@@ -81,9 +81,9 @@ const MyAccount = (props) => {
                 <Row className='mb-3 mt-3'>
                     {
                         !store.premiumStatus ?
-                            <div className='d-flex'>
+                            <div className='d-flex align-items-center'>
                                 <div>Upgrade your account to unlock full features and increase your limit of transaction amount.&nbsp;</div>
-                                <b onClick={() => setLearnMore(true)}> Learn more &nbsp;</b>
+                                <b style={{cursor: 'pointer', color: '#ccc'}} onClick={() => setLearnMore(true)}> Learn more &nbsp;</b>
                                 <Button classname='small' onClick={() => navigate('/premium-benefits')}>Upgrade</Button>
                             </div>
                             : null
@@ -138,7 +138,7 @@ const MyAccount = (props) => {
                                                 <Input classname='input_small' onChange={onPromocodeChange} placeholder='enter promocode' />
                                             </Col>
                                             <Col>
-                                                <Button classname='small' onClick={promoUse}>Use</Button>
+                                                <Button classname='logout' onClick={promoUse}>Use</Button>
                                             </Col>
                                         </Row>
                                     </Col>
