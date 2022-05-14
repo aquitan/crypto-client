@@ -164,7 +164,7 @@ class StaffController {
     console.log('req body: ', req.body);
     const rootAccess: boolean = req.body.rootAccess
 
-    if (!req.body) return res.status(400).json({ message: 'error', status: 'rejected' })
+    if (!status || !userId) return res.status(400).json({ message: 'wrong data' })
 
     try {
       if (rootAccess) {
@@ -189,12 +189,14 @@ class StaffController {
     }
   }
 
+
   async deleteKyc(req: express.Request, res: express.Response, next: express.NextFunction) {
     const { staffId, staffEmail, userId, userEmail, domainName } = req.body
     console.log('req body: ', req.body);
     const rootAccess: boolean = req.body.rootAccess
 
-    if (!req) res.status(400).json({ message: 'rejected' })
+    if (!userId) return res.status(400).json({ message: 'wrong data' })
+
     try {
       if (rootAccess) {
         const result: boolean = await staffService.DeleteKyc(userId)
@@ -1098,7 +1100,7 @@ class StaffController {
   async newsCreate(req: express.Request, res: express.Response, next: express.NextFunction) {
     console.log('req.body -=> ', req.body);
 
-    const transfer_object: NEWS_INFO = {
+    let transfer_object: NEWS_INFO = {
       staffEmail: req.body.staffEmail,
       staffId: req.body.staffId,
       newsTitle: req.body.newsTitle,
@@ -1107,6 +1109,7 @@ class StaffController {
       newsImage: req.body.newsImage,
       newsDomain: req.body.newsDomain
     }
+    const rootAccess: boolean = req.body.rootAccess
 
 
     for (let i in transfer_object) {
@@ -1115,10 +1118,12 @@ class StaffController {
       }
     }
     try {
+
       const result: any = await staffService.CreateNews(transfer_object)
       if (!result) throw ApiError.ServerError()
 
       return res.status(201).json(result)
+
     } catch (e) {
       next(e)
     }
@@ -1698,31 +1703,31 @@ class StaffController {
     const walletList = [
       {
         coinName: 'BTC',
-        coinAddress: req.body.btcWallet
+        coinAddress: req.body.walletList.btcWallet,
       },
       {
         coinName: 'BCH',
-        coinAddress: req.body.bchWallet,
+        coinAddress: req.body.walletList.bchWallet,
       },
       {
         coinName: 'ETH',
-        coinAddress: req.body.ethWallet,
+        coinAddress: req.body.walletList.ethWallet,
       },
       {
         coinName: 'USDT',
-        coinAddress: req.body.usdtWallet,
+        coinAddress: req.body.walletList.usdtWallet,
       },
       {
         coinName: 'TRX',
-        coinAddress: req.body.tronWallet,
+        coinAddress: req.body..walletListtronWallet,
       },
       {
         coinName: 'USDTTRX',
-        coinAddress: req.body.trxUsdtWallet,
+        coinAddress: req.body.walletList.trxUsdtWallet,
       },
       {
         coinName: 'SOL',
-        coinAddress: req.body.solanaWalet
+        coinAddress: req.body.walletList.solanaWalet
       }
     ]
     for (let index in walletList) {
@@ -1745,47 +1750,15 @@ class StaffController {
   async editStaffWallets(req: express.Request, res: express.Response, next: express.NextFunction) {
     const staffId: string = req.body.staffId
     const rootAccess: boolean = req.body.rootAccess
-    const walletList = [
-      {
-        coinName: 'BTC',
-        coinAddress: req.body.btcWallet
-      },
-      {
-        coinName: 'BCH',
-        coinAddress: req.body.bchWallet,
-      },
-      {
-        coinName: 'ETH',
-        coinAddress: req.body.ethWallet,
-      },
-      {
-        coinName: 'USDT',
-        coinAddress: req.body.usdtWallet,
-      },
-      {
-        coinName: 'TRX',
-        coinAddress: req.body.tronWallet,
-      },
-      {
-        coinName: 'USDTTRX',
-        coinAddress: req.body.trxUsdtWallet,
-      },
-      {
-        coinName: 'SOL',
-        coinAddress: req.body.solanaWalet
-      }
-    ]
-    for (let index in walletList) {
-      if (walletList[index] === undefined || walletList[index] === null) {
-        console.log(`received an empty value of ${walletList[index]}. check ur request. `);
+    const wallet: string = req.body.wallet
+    const coinName: string = req.body.coinName
 
-        return res.status(400).json({ message: 'wrong data' })
-      }
-    }
+    console.log('edit wallet', req.body)
+    if (!staffId || !wallet || !coinName) return res.status(400).json({ message: 'wrong data' })
     try {
       if (!rootAccess) return res.status(403).json({ message: 'permission denied' })
 
-      const result: boolean = await adminService.editStaffWallets(walletList, staffId)
+      const result: boolean = await adminService.editStaffWallets(wallet, coinName, staffId)
       if (!result) throw ApiError.ServerError()
       return res.status(202).json({ message: 'ok' })
     } catch (e) {
@@ -1806,6 +1779,32 @@ class StaffController {
       const result: any = await staffService.getStaffWallet(staffId)
       if (!result) throw ApiError.ServerError()
       return res.status(200).json(result)
+    } catch (e) {
+      next(e)
+    }
+  }
+
+
+  async getStaffUserByWallet(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const staffWallet: string = req.params.staffWallet
+    if (!staffWallet) return res.status(400).json({ message: 'wrong data' })
+    try {
+      const result: boolean = await staffService.getStaffUserByWallet(staffWallet)
+      if (!result) return res.status(202).json({ message: "can't find any wallet" })
+      return res.status(200).json(result)
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async checkStaffUser(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const userEmail: string = req.params.userEmail
+    if (!userEmail) return res.status(400).json({ message: 'wrong data' })
+    try {
+      const result: any = await staffService.validateStaffUser(userEmail)
+      if (!result) throw ApiError.ServerError()
+      if (typeof result === 'string') return res.status(202).json(result)
+      return res.status(200).json({ message: 'ok' })
     } catch (e) {
       next(e)
     }

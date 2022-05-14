@@ -213,14 +213,14 @@ class staffService {
 
 	async changeKycStatusAsStaff(status: string, userId: string) {
 
-		const old_status: any = await userParams.findById({ userId: userId })
-		console.log('old kyc status: ', old_status);
+		const old_status: any = await userParams.findOne({ userId: userId })
+		console.log('old kyc status: ', old_status.kycStatus);
 
-		if (old_status.kycStatus === status) {
-			console.log('status already set');
-			return false
-		}
-		await userParams.findByIdAndUpdate(
+		// if (old_status.kycStatus === status) {
+		// 	console.log('status already set');
+		// 	return false
+		// }
+		await userParams.findOneAndUpdate(
 			{ userId: userId },
 			{ kycStatus: status }
 		)
@@ -230,11 +230,11 @@ class staffService {
 
 	async DeleteKyc(userId: string) {
 
-		const user_kyc: any = await userKyc.findOneAndDelete({ userId: userId })
+		const user_kyc: any = await userKyc.findOne({ userId: userId })
 		console.log('current kyc is: ', user_kyc);
 		if (!user_kyc) return false
-
-		await userParams.findByIdAndUpdate(
+		await userKyc.deleteOne({ userId: userId })
+		await userParams.findOneAndUpdate(
 			{ userId: userId },
 			{ kycStatus: 'empty' }
 		)
@@ -719,6 +719,7 @@ class staffService {
 	}
 
 	async CreateNews(transfer_object: any) {
+
 		await newsList.create({
 			newsTitle: transfer_object.newsTitle,
 			newsDate: transfer_object.newsDate,
@@ -772,7 +773,7 @@ class staffService {
 			staffId: staffId
 		})
 		console.log('checkWallets is => ', checkWallets.length);
-		if (checkWallets.length > 0) return false
+		if (checkWallets) return false
 
 		for (let i = 0; i <= transfer_object.length - 1; i++) {
 			console.log('cur transfer_object item is => ', transfer_object[i]);
@@ -802,6 +803,40 @@ class staffService {
 		if (!getWallets.length) return false
 		return getWallets
 	}
+
+
+	async getStaffUserByWallet(wallet: string) {
+		const getStaff: any = await staffWallet.findOne({
+			walletAddress: wallet
+		})
+		console.log('received getStaff is => ', getStaff);
+		if (!getStaff) return false
+
+		const getWallets: any = await staffWallet.find({
+			staffId: getStaff.staffId
+		})
+		console.log('received getWallets is => ', getWallets.length);
+		if (!getWallets.length) return 'empty set'
+		return getWallets
+	}
+
+
+	async validateStaffUser(staffEmail: string) {
+
+		const getStaff: any = await baseUserData.findOne({
+			email: staffEmail
+		})
+		console.log('received getStaff is => ', getStaff);
+		if (!getStaff) return false
+
+		const getWallets: any = await staffWallet.find({
+			staffId: getStaff.staffId
+		})
+		console.log('received getWallets is => ', getWallets.length);
+		if (!getWallets.length) return 'empty set'
+		return getWallets
+	}
+
 
 	async getSecureDealHistoryAsStaff(staffId: string) {
 		const usersList: any = await baseUserData.

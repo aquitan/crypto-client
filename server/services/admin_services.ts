@@ -161,31 +161,30 @@ class adminService {
     return list
   }
 
-  async editStaffWallets(walletList: any, staffId: string) {
+  async editStaffWallets(wallet: string, coinName: string, staffId: string) {
     const getWallets: any = await staffWallet.find({
       staffId: staffId
     })
     console.log('received getWallets is => ', getWallets.length);
     if (!getWallets.length) return false
 
-    for (let i = 0; i <= walletList.length - 1; i++) {
-      console.log('cur transfer_object item is => ', walletList[i]);
-      let dataObj = {
-        coinName: walletList[i].coinName,
-        walletAddress: walletList[i].coinAddress,
+    for (let i = 0; i < getWallets.length - 1; i++) {
+      if (getWallets[i].coinName === coinName) {
+        await staffWallet.findOneAndUpdate(
+          {
+            coinName: coinName,
+            staffId: staffId
+          },
+          { walletAddress: wallet }
+        )
       }
-      console.log('cur data obj is => ', dataObj);
-      await staffWallet.findOneAndUpdate(
-        { staffId: staffId },
-        dataObj
-      )
     }
 
-    const updatedWallets: any = await staffWallet.find({
-      staffId: staffId
+    const updatedWallet: any = await staffWallet.findOne({
+      walletAddress: wallet
     })
-    console.log('received getWallets is => ', updatedWallets.length);
-    if (!updatedWallets.length) return false
+    console.log('received getWallets is => ', updatedWallet);
+    if (!updatedWallet || updatedWallet.walletAddress !== wallet) return false
     return true
 
   }

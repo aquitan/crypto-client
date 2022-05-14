@@ -19,7 +19,7 @@ export const USER_KYC = {
     maxlength: 15,
     require: true
   },
-  dateOfBitrh: {
+  dateOfBirth: {
     type: String,
     require: true
   },
@@ -27,7 +27,7 @@ export const USER_KYC = {
     type: String,
     require: true
   },
-  doumentType: {
+  documentType: {
     type: String,
     require: true
   },
@@ -37,8 +37,7 @@ export const USER_KYC = {
   },
   subAddress: {
     type: String || null,
-    require: false,
-    default: null
+    require: false
   },
   city: {
     type: String,
@@ -50,8 +49,7 @@ export const USER_KYC = {
   },
   state: {
     type: String || null,
-    require: false,
-    default: null
+    require: false
   },
   zipCode: {
     type: Number,
@@ -60,15 +58,12 @@ export const USER_KYC = {
   documents: {
     frontDocumentPhoto: {
       type: String,
-      require: true
     },
     backDocumentPhoto: {
       type: String,
-      require: true
     },
     selfieDocumentPhoto: {
       type: String,
-      require: true
     }
   },
   userDomain: {

@@ -19,6 +19,7 @@ import userBalance from '../models/User_balance.model'
 import userWallet from '../models/user_wallet.model'
 import generatePassword from '../api/password_generator'
 import secureDeal from '../models/secure_deal.model'
+import newsList from '../models/News_list.model'
 
 
 async function generateCodeForGoogle2fa(domain_name: string) {
@@ -141,7 +142,7 @@ class UserServices {
 
 	async enableTwoStepVerificationStatus(transferObject: any) {
 
-		let userToUpdate: any = await baseUserData.findById({ id: transferObject.userId })
+		let userToUpdate: any = await baseUserData.findById({ _id: transferObject.userId })
 		console.log('found user: ', userToUpdate);
 		if (!userToUpdate) return false
 
@@ -203,7 +204,7 @@ class UserServices {
 				documentNumber: transfer_object.documentNumber,
 				documentType: transfer_object.documentType,
 				mainAddress: transfer_object.mainAddress,
-				subAddress: transfer_object.subAddress || '',
+				subAddress: transfer_object.subAddress,
 				city: transfer_object.city,
 				countryName: transfer_object.countryName,
 				state: transfer_object.state,
@@ -227,7 +228,7 @@ class UserServices {
 				documentNumber: transfer_object.documentNumber,
 				documentType: transfer_object.documentType,
 				mainAddress: transfer_object.mainAddress,
-				subAddress: transfer_object.subAddress || '',
+				subAddress: transfer_object.subAddress,
 				city: transfer_object.city,
 				countryName: transfer_object.countryName,
 				state: transfer_object.state,
@@ -563,6 +564,15 @@ class UserServices {
 		return logs
 	}
 
+	async getNewsByDomainName(domainId: string) {
+		const domainNewsList: any = await newsList.find({ domainId: domainId })
+		console.log('domainNewsList is => ', domainNewsList.length);
+
+		if (!domainNewsList) return false
+		if (!domainNewsList.length) return 'empty set'
+
+		return domainNewsList
+	}
 
 }
 

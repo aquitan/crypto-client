@@ -11,10 +11,15 @@ export default interface KYC_DATA {
   zipCode: number
   documentType: string
   ipAddress: string
-  state: string
+  state?: string | null
   city: string
   browser: string
-  subAddress?: string
+  documents: {
+    frontDocumentPhoto: string
+    backDocumentPhoto: string
+    selfieDocumentPhoto: string
+  }
+  subAddress?: string | null
   countryName: string
   coordinates: string
   currentDate: string

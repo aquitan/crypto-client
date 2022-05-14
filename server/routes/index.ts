@@ -112,6 +112,7 @@ router.put('/staff/news/news_create/', staffController.newsCreate) // create new
 router.patch('/staff/news/news_edit/', staffController.editNews) // edit news 
 router.post('/staff/news/get_news_list/', staffController.getNewsList) // get news list (if staff => only on onw domain) (if admin or other => find news by any domain)
 router.delete('/staff/news/news_delete/:newsId', staffController.deleteNews) // delete news
+router.get('/news/get_user_for_user/:domainId', authChecker, userController.getNews) // get news for user area
 
 // transaction logic
 router.put('/staff/users/user_detail/make_withdrawal/', staffController.makeWithdrawalForUserAsStaff)
@@ -124,6 +125,8 @@ router.get('/staff/create_transaction/get_transaction_history/:id/', staffContro
 router.put('/staff/wallets/create_staff_wallet/', staffController.createStaffWallet) // create staff wallet 
 router.post('/staff/staff_wallets/get_wallets/', staffController.getStaffWallet) // if staff => get support wallet for current staff, (if admin) => select with staff emails to choose wallet by current staff user
 router.patch('/staff/staff_wallets/edit_staff_wallets/', staffController.editStaffWallets) // edit wallets for current staff ONLY by root
+router.get('/staff/staff_wallets/check_staff/:userEmail/', staffController.checkStaffUser) // validate staff email before get staff wallet request
+router.get('/staff/staff_wallets/check_staff_by_wallet/:staffWallet/', staffController.getStaffUserByWallet) // validate staff user wallet
 
 
 // router.post('/staff/terms/get_term_by_domain/', staffController.getTermsByDomainName) // get terms by selected domain

