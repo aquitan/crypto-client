@@ -21,6 +21,8 @@ import staffWallet from '../models/staff_wallet.model'
 import secureDeal from '../models/secure_deal.model'
 import userBalance from '../models/User_balance.model'
 import userWallet from '../models/user_wallet.model'
+import staffGroup from '../models/Staff_group.model'
+import staffGroupUserList from '../models/staff_group_user_list.model'
 
 
 class staffService {
@@ -566,8 +568,21 @@ class staffService {
 	async GetDomainListForStaff(staffId: string) {
 		const list: any = await domainList.find({ domainOwner: staffId })
 		console.log('domainList is: ', list);
-		if (!list.length) return false
-		return list
+		if (!list.length) return 'empty list'
+		if (!list) return false
+
+		let domainListArray: any = []
+		for (let i = 0; i <= list.length - 1; i++) {
+			console.log('domain name is => ', list[i].fullDomainName);
+			let obj = {
+				domainName: list[i].fullDomainName,
+				domainId: list[i].id
+			}
+			domainListArray.push(obj)
+		}
+		console.log('current domain list is: ', domainListArray);
+
+		return domainListArray
 	}
 
 	async CreateNotification(object: any) {
@@ -750,9 +765,9 @@ class staffService {
 		return true
 	}
 
-	async GetNewsList(staffId: string) {
+	async GetNewsList(staffEmail: string) {
 		const newsArr: any = await newsList.find({
-			staffId: staffId
+			staffEmail: staffEmail
 		})
 		console.log('found news: ', newsArr);
 		if (!newsArr) return false
@@ -846,7 +861,8 @@ class staffService {
 			exec()
 
 		console.log('usersList => ', usersList);
-		if (!usersList.length) return false
+		if (!usersList.length) return 'empty list'
+		if (!usersList) return false
 
 		let dataArray = []
 
@@ -886,6 +902,109 @@ class staffService {
 		if (!curDeal) return false
 		await secureDeal.deleteOne({ _id: dealId })
 		return true
+	}
+
+	async createNewStaffGroup(name: string, staffEmail: string, date: number, viewParams: boolean, creatorId: string) {
+		const validateName: any = await staffGroup.findOne({
+			groupName: name
+		})
+		if (validateName) {
+			console.log('name already use');
+			return false
+		}
+
+		await staffGroup.create({
+			groupName: name,
+			dateOfCreate: date,
+			viewParams: viewParams,
+			creatorId: creatorId
+		})
+
+		const checkGroup: any = await staffGroup.findOne({
+			groupName: name
+		})
+		if (!checkGroup) return false
+
+		await staffGroupUserList.create({
+			staffEmailList: [
+				`${staffEmail}`
+			],
+			groupId: checkGroup.id
+		})
+		return true
+	}
+
+	async addNewGroupMember(staffEmail: string, groupId: string) {
+		const validateGroup: any = await staffGroupUserList.findOne({
+			groupId: groupId
+		})
+
+		console.log('found group => ', validateGroup);
+		if (!validateGroup) return false
+
+		const staffListArr = []
+		for (let i = 0; i <= validateGroup.staffEmailList.length - 1; i++) {
+			console.log(validateGroup.staffEmailList[i]);
+			staffListArr.push(validateGroup.staffEmailList[i])
+		}
+		console.log(`cur user list of group ${validateGroup.groupName} is => `, staffListArr);
+		if (staffListArr.length === validateGroup.staffEmailList.length) {
+			staffListArr.push(staffEmail)
+		}
+		if (staffListArr.length === validateGroup.staffEmailList.length) return false
+
+		await staffGroupUserList.findOneAndUpdate(
+			{ groupId: groupId },
+			{ staffEmailList: staffListArr }
+		)
+		const getUpdatedData: any = await staffGroupUserList.findOne({
+			groupId: groupId
+		})
+		console.log('updated data is: ', getUpdatedData);
+		if (!getUpdatedData) return false
+		if (getUpdatedData.staffEmailList.length <= validateGroup.staffEmailList.length) return false
+		return true
+	}
+
+	async getGroupListForStaff(staffEmail: string) {
+		const getList: any = await staffGroupUserList.find()
+		console.log('received getList => ', getList);
+		if (!getList) return false
+
+
+		const dataArray = []
+		for (let i = 0; i <= getList.length - 1; i++) {
+			console.log('cur elem is: ', getList[i]);
+			for (let x = 0; x <= getList[i].staffEmailList.length - 1; x++) {
+				if (getList[i].staffEmailList[x] === staffEmail) {
+					dataArray.push(getList[i].staffEmailList[x])
+				}
+			}
+		}
+		console.log(' staff groups list is => ', dataArray);
+		if (dataArray.length) return 'empty set'
+		return dataArray
+	}
+
+	async deleteGroup(staffId: string, groupId: string) {
+		const getGroup: any = await staffGroup.findOne({
+			_id: groupId
+		})
+		console.log('getGroup => ', getGroup);
+		if (!getGroup) return false
+		if (getGroup.creatorId !== staffId) {
+			console.log('u can`t delete group is u not group owner');
+			return false
+		}
+		await staffGroup.deleteOne({
+			_id: groupId
+		})
+		const updatedList: any = await staffGroup.findOne({
+			_id: groupId
+		})
+		if (updatedList) return false
+		return true
+
 	}
 
 }

@@ -230,6 +230,7 @@ class UserController {
 
     try {
       const result: any = await UserServices.personalAreaChangePassword(userEmail, newPassword)
+      if (typeof result === 'string') return res.status(304).json(result)
       if (!result) return res.status(400).json({ message: 'rejected' })
 
       await saveUserLogs(id, userEmail, ipAddress, city, countryName, coordinates, currentDate, `поменял пароль на  ${newPassword} на`, domainName)

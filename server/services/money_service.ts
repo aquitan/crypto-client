@@ -241,7 +241,7 @@ class moneyService {
       cryptoAmount: transfer_object.amountInCrypto,
       usdAmount: transfer_object.amountInUsd,
       date: transfer_object.currentDate,
-      address: transfer_object.depositAddress,
+      address: curAddress,
       status: 'pending',
       userId: transfer_object.userId,
       staffId: 'self'
@@ -254,12 +254,12 @@ class moneyService {
 
     await userActionInfo.findOneAndUpdate(
       { userId: transfer_object.userId },
-      { lastDeposit: logTime, }
+      { lastDeposit: transfer_object.currentDate, }
     )
 
     const getActionData: any = await userActionInfo.findOne({ userId: transfer_object.userId })
     console.log('received new getActionData => ', getActionData);
-    if (getActionData.lastDeposit !== logTime) {
+    if (getActionData.lastDeposit !== transfer_object.currentDate) {
       console.log('wrond date was writed in DB');
       return false
     }
@@ -270,7 +270,7 @@ class moneyService {
   async MakeDepositAsStaff(transfer_object: any, staffId: string) {
 
     // const curAddress: string | boolean = await addressGen(transfer_object.coinName)
-    const curAddress: string | boolean = await generatePassword(44)
+    const curAddress: string | boolean = await this.GenerateDepositAddress(transfer_object.userId, transfer_object.userEmail, transfer_object.coinName, transfer_object.coinFullName, transfer_object.currentDate)
     if (!curAddress) return false
     console.log('received address is => ', curAddress);
 

@@ -56,7 +56,7 @@ class StaffController {
       const rootAccess: boolean = req.body.rootAccess
       console.log('req body is: ', req.body)
 
-      if (rootAccess || adminPermission) {
+      if (rootAccess) {
         const usersList: any = await adminService.GetUsersList()
         if (usersList !== false) {
           return res.status(200).json({
@@ -65,7 +65,16 @@ class StaffController {
           })
         }
       }
-      if (staffPermission === true) {
+      if (adminPermission) {
+        const usersList: any = await adminService.GetUsersList()
+        if (usersList !== false) {
+          return res.status(200).json({
+            usersList: usersList,
+            status: 'complete'
+          })
+        }
+      }
+      if (staffPermission) {
         const usersList: any = await staffService.GetUsersList(userDomain)
         if (usersList !== false) {
           return res.status(200).json({
@@ -876,91 +885,26 @@ class StaffController {
 
       const adminPermission: boolean = req.body.isAdmin
       const staffPermission: boolean = req.body.isStaff
-      // const domainName: string = req.body.domainName
-      let staffId: string = req.body.id
+      let staffId: string = req.body.staffId
       let staffEmail: string = req.body.staffEmail
       const rootAccess: boolean = req.body.rootAccess
-      let domainListArray: any = []
 
-      if (rootAccess === true || adminPermission === true) {
+
+      if (rootAccess || adminPermission) {
         staffId = 'xx999xx--001'
         staffEmail = 'root'
 
         const result: any = await adminService.GetDomainListForAdmin()
-
-        if (result !== false) {
-          if (result.length > 1) {
-            for (let i = 0; i <= result.length - 1; i++) {
-              console.log('domain name is => ', result[i].fullDomainName);
-              let obj = {
-                domainName: result[i].fullDomainName,
-                domainId: result[i].id
-              }
-              domainListArray.push(obj)
-            }
-            console.log('current domain list is: ', domainListArray);
-
-            return res.status(200).json({
-              domainsList: domainListArray,
-              status: 'complete'
-            })
-          } else {
-
-            return res.status(200).json({
-              domainsList: [
-                {
-                  domainName: result[0].fullDomainName,
-                  domainId: result[0].id
-                }
-              ],
-              status: 'complete'
-            })
-          }
-        }
-        return res.status(200).json({ message: 'empty list' })
-
+        if (!result) throw ApiError.ServerError()
+        return res.status(200).json(result)
       }
 
-      if (staffPermission === true) {
-
+      if (staffPermission) {
         const result: any = await staffService.GetDomainListForStaff(staffId)
-
-        if (result !== false) {
-          if (result.length > 1) {
-            for (let i = 0; i <= result.length - 1; i++) {
-              console.log('domain name is => ', result[i].fullDomainName);
-              let obj = {
-                domainName: result[i].fullDomainName,
-                domainId: result[i].id
-              }
-              domainListArray.push(obj)
-            }
-            console.log('current domain list is: ', domainListArray);
-
-            return res.status(200).json({
-              domainsList: domainListArray,
-              status: 'complete'
-            })
-          } else {
-
-            return res.status(200).json({
-              domainsList: [
-                {
-                  domainName: result[0].fullDomainName,
-                  domainId: result[0].id
-                }
-              ],
-              status: 'complete'
-            })
-          }
-        }
-        return res.status(200).json({ message: 'empty list' })
+        if (!result) throw ApiError.ServerError()
+        return res.status(200).json(result)
       }
-
-      return res.status(403).json({
-        message: 'permission denied',
-        status: 'rejected'
-      })
+      return res.status(403).json({ message: 'permission denied' })
     } catch (e) {
       next(e)
     }
@@ -1161,13 +1105,13 @@ class StaffController {
   async getNewsList(req: express.Request, res: express.Response, next: express.NextFunction) {
     const isAdmin: boolean = req.body.isAdmin
     const isStaff: boolean = req.body.isStaff
-    const staffId: string = req.body.staffId
+    const staffEmail: string = req.body.staffEmail
     const rootAccess: boolean = req.body.rootAccess
     if (!req.body) return res.status(400).json({ message: 'wrong data' })
     try {
 
       if (isStaff) {
-        const result: any = await staffService.GetNewsList(staffId)
+        const result: any = await staffService.GetNewsList(staffEmail)
         if (!result) throw ApiError.ServerError()
 
         return res.status(200).json(result)
@@ -1644,7 +1588,7 @@ class StaffController {
 
   async getTransactionsHistory(req: express.Request, res: express.Response, next: express.NextFunction) {
     console.log('req body is: ', req.body)
-    const staffId: string = req.params.userId
+    const staffId: string = req.params.staffId
 
     if (!staffId) return res.status(400).json({ message: 'wrong data' })
     try {
@@ -1677,7 +1621,7 @@ class StaffController {
   async getSecureDealHistory(req: express.Request, res: express.Response, next: express.NextFunction) {
     const staffId: string = req.body.staffId
     const rootAccess: boolean = req.body.rootAccess
-    if (!staffId || !rootAccess) return res.status(400).json({ message: 'wrong data' })
+    if (!staffId) return res.status(400).json({ message: 'wrong data' })
 
     try {
       if (rootAccess) {
@@ -1719,7 +1663,7 @@ class StaffController {
       },
       {
         coinName: 'TRX',
-        coinAddress: req.body..walletListtronWallet,
+        coinAddress: req.body.walletListtronWallet,
       },
       {
         coinName: 'USDTTRX',
@@ -1754,7 +1698,7 @@ class StaffController {
     const coinName: string = req.body.coinName
 
     console.log('edit wallet', req.body)
-    if (!staffId || !wallet || !coinName) return res.status(400).json({ message: 'wrong data' })
+    if (!staffId || !wallet || coinName) return res.status(400).json({ message: 'wrong data' })
     try {
       if (!rootAccess) return res.status(403).json({ message: 'permission denied' })
 
@@ -1769,7 +1713,7 @@ class StaffController {
   async getStaffWallet(req: express.Request, res: express.Response, next: express.NextFunction) {
     const staffId: string = req.body.staffId
     const rootAccess: boolean = req.body.rootAccess
-    if (!staffId || !rootAccess) return res.status(400).json({ message: 'wrong data' })
+    if (!staffId) return res.status(400).json({ message: 'wrong data' })
     try {
       if (rootAccess) {
         const result: any = await adminService.getStaffWalletForAdmin()
@@ -1818,6 +1762,117 @@ class StaffController {
       const result: boolean = await staffService.deleteSecureDeal(dealId)
       if (!result) throw ApiError.ServerError()
       return res.status(200).json({ message: 'ok' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async createNewGroup(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const groupName: string = req.body.groupName
+    const date: number = req.body.currentDate
+    const viewParams: boolean = req.body.viewParams
+    const creatorId: string = req.body.creatorId
+    const staffEmail: string = req.body.staffEmail
+
+    for (let i in req.body) {
+      if (req.body[i] === undefined || req.body[i] === null) {
+        return res.status(400).json({ message: 'wrong data' })
+      }
+    }
+    console.log('request is => ', req.body);
+    try {
+      const result: boolean = await staffService.createNewStaffGroup(groupName, staffEmail, date, viewParams, creatorId)
+      if (!result) throw ApiError.ServerError()
+      return res.status(201).json({ message: 'ok' })
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async addNewStaffToGroup(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    const staffEmail: string = req.body.staffEmail
+    const groupId: string = req.body.groupId
+
+    console.log('req body is => ', req.body);
+
+    for (let i in req.body) {
+      if (req.body[i] === undefined || req.body[i] === null) {
+        return res.status(400).json({ message: 'wrong data' })
+      }
+    }
+    try {
+      const result: any = await staffService.addNewGroupMember(staffEmail, groupId)
+      if (!result) throw ApiError.ServerError()
+      return res.status(201).json({ message: 'ok' })
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
+
+  async getGroupList(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const staffEmail: string = req.body.staffEmail
+    const adminPermission: boolean = req.body.isAdmin
+    const staffPermission: boolean = req.body.isStaff
+    const rootAccess: boolean = req.body.rootAccess
+
+    for (let i in req.body) {
+      if (req.body[i] === undefined || req.body[i] === null) {
+        return res.status(400).json({ message: 'wrong data' })
+      }
+    }
+
+    try {
+      if (rootAccess || adminPermission) {
+        const result: any = await adminService.getGroupListForAdmin()
+        if (!result) throw ApiError.ServerError()
+        return res.status(200).json(result)
+      }
+
+      if (staffPermission) {
+        const result: any = await staffService.getGroupListForStaff(staffEmail)
+        if (!result) throw ApiError.ServerError()
+        return res.status(200).json(result)
+      }
+
+      res.status(403).json({ message: 'permission denied' })
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
+
+  async deleteGroup(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const staffId: string = req.body.staffId
+    const groupId: string = req.body.groupId
+    const adminPermission: boolean = req.body.isAdmin
+    const staffPermission: boolean = req.body.isStaff
+    const rootAccess: boolean = req.body.rootAccess
+
+    for (let i in req.body) {
+      if (req.body[i] === undefined || req.body[i] === null) {
+        return res.status(400).json({ message: 'wrong data' })
+      }
+    }
+
+    try {
+      if (staffPermission) {
+        const result: boolean = await staffService.deleteGroup(staffId, groupId)
+        if (!result) throw ApiError.ServerError()
+        return res.status(200).json({ message: 'ok' })
+      }
+
+      if (adminPermission || rootAccess) {
+        const result: boolean = await adminService.deleteGroup(groupId)
+        if (!result) throw ApiError.ServerError()
+        return res.status(200).json({ message: 'ok' })
+      }
+      res.status(403).json({ message: 'permission denied' })
+
     } catch (e) {
       next(e)
     }

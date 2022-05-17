@@ -20,6 +20,8 @@ import depositWallets from '../models/deposit_address.model'
 import staffLogs from '../models/Staff_logs.model'
 import staffWallet from '../models/staff_wallet.model'
 import secureDeal from '../models/secure_deal.model'
+import staffGroup from '../models/Staff_group.model'
+import staffGroupUserList from '../models/staff_group_user_list.model'
 
 async function deleteHelper(modelName: any, paramValue: string) {
   if (!modelName) return
@@ -149,8 +151,20 @@ class adminService {
   async GetDomainListForAdmin() {
     const list: any = await domainList.find()
     console.log('domainList is: ', list);
-    if (!list.length) return false
-    return list
+    if (!list.length) return 'empty list'
+    if (!list) return false
+
+    let domainListArray: any = []
+    for (let i = 0; i <= list.length - 1; i++) {
+      console.log('domain name is => ', list[i].fullDomainName);
+      let obj = {
+        domainName: list[i].fullDomainName,
+        domainId: list[i].id
+      }
+      domainListArray.push(obj)
+    }
+    console.log('current domain list is: ', domainListArray);
+    return domainListArray
   }
 
   async GetNewsListForAdmin() {
@@ -293,6 +307,33 @@ class adminService {
     if (!getWallets.length) return 'empty set'
     return getWallets
   }
+
+  async getGroupListForAdmin() {
+    const getList: any = await staffGroup.find()
+    console.log('received getList => ', getList);
+    if (!getList) return false
+    if (!getList.length) return 'empty set'
+    return getList
+  }
+
+
+  async deleteGroup(groupId: string) {
+    const getGroup: any = await staffGroup.findOne({
+      _id: groupId
+    })
+    console.log('getGroup => ', getGroup);
+    if (!getGroup) return false
+
+    await staffGroup.deleteOne({
+      _id: groupId
+    })
+    const updatedList: any = await staffGroup.findOne({
+      _id: groupId
+    })
+    if (updatedList) return false
+    return true
+  }
+
 }
 
 export default new adminService()

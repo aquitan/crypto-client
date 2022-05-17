@@ -85,7 +85,7 @@ class UserServices {
 
 		let user: any = await baseUserData.findOne({ email: userEmail })
 		console.log('found user is: ', user);
-
+		if (user.password === newPassword) return 'match old and new password.'
 		if (!user) return false
 		await baseUserData.findOneAndUpdate({ email: userEmail }, { password: newPassword })
 		let curUser: any = await baseUserData.findOne({ email: userEmail })

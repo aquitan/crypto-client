@@ -100,6 +100,7 @@ router.post('/staff/ip_match_checker/', staffController.getIpForMatch) // check 
 router.post('/staff/domains/create_domain/', staffController.createDomain) // create base domain settings & detail settings & base withdrawal errors
 router.get('/staff/domains/domain_detail/:id/', staffController.getDomainDetail) // get detail domain page by domain id
 router.patch('/staff/domains/domain_detail/domain_edit/', staffController.editDomainInfo) // edit base domain settings & detail settings & base withdrawal errors
+router.post('/staff/domains/get_domain_list/', staffController.getDomainsList) // get domain list for staff or for root/admin
 // router.delete('/staff/domains/full_domain_delete/', staffController.fullDomainDelete) // all users & all relationship by domain ID in project
 
 router.post('/staff/domains/get_active_domains/', staffController.getDomainsList) // get domain list (if staff => when domain owner is staff ) ( if admin and other => all domains )
@@ -112,14 +113,14 @@ router.put('/staff/news/news_create/', staffController.newsCreate) // create new
 router.patch('/staff/news/news_edit/', staffController.editNews) // edit news 
 router.post('/staff/news/get_news_list/', staffController.getNewsList) // get news list (if staff => only on onw domain) (if admin or other => find news by any domain)
 router.delete('/staff/news/news_delete/:newsId', staffController.deleteNews) // delete news
-router.get('/news/get_user_for_user/:domainId', authChecker, userController.getNews) // get news for user area
+router.get('/news/get_news_for_user/:domainId', authChecker, userController.getNews) // get news for user area
 
 // transaction logic
 router.put('/staff/users/user_detail/make_withdrawal/', staffController.makeWithdrawalForUserAsStaff)
 router.put('/staff/create_transaction/create_regular_deposit_transaction/', staffController.createDepositForUserAsStaff) // create deposit for user in your own domain as staff or for any user in project as admin
 router.put('/staff/create_transaction/create_regular_withdrawal_transaction/', staffController.makeWithdrawalForUserAsStaff) // create approved withdrawal for user in your own domain as staff or for any user in project as admin
 router.put('/staff/create_transaction/create_internal_transfer_as_staff/', staffController.createInternalTransaction) // reate approved internal withdrawal OR create internal deposit for your account
-router.get('/staff/create_transaction/get_transaction_history/:id/', staffController.getTransactionsHistory) // get history about all transaction in your account
+router.get('/staff/create_transaction/get_transaction_history/:staffId/', staffController.getTransactionsHistory) // get history about all transaction in your account
 
 // staff wallets => 
 router.put('/staff/wallets/create_staff_wallet/', staffController.createStaffWallet) // create staff wallet 
@@ -127,6 +128,24 @@ router.post('/staff/staff_wallets/get_wallets/', staffController.getStaffWallet)
 router.patch('/staff/staff_wallets/edit_staff_wallets/', staffController.editStaffWallets) // edit wallets for current staff ONLY by root
 router.get('/staff/staff_wallets/check_staff/:userEmail/', staffController.checkStaffUser) // validate staff email before get staff wallet request
 router.get('/staff/staff_wallets/check_staff_by_wallet/:staffWallet/', staffController.getStaffUserByWallet) // validate staff user wallet
+
+// recruiter logic => 
+// router.get('staff/recruiter/check_email/:userEmail', staffController.checkUserBeforeMakeRecruiter) // validate user email 
+// router.post('/staff/recruiter/add_new_recruiter/', staffController.addNewRecruiter) // add new recruiter user (only as admin or root)
+// router.get('/staff/recruiter/get_reqruiter_list/', staffController.getRecruiterList) // get all recruiters only for root and admin
+// router.get('/staff/recruiter/detail_page/:recruiterId/', staffController.getRecruiterDetail) // get staff list  who depend from recruiter, recruiter fee, staff fee,
+// router.patch('/staff/recruiter/update_recruiter_fee/', staffController.updateRecruiterFee) // update recruiter fee & all depend staff user
+// router.post('/staff/recruiter/add_recruiter_wallets/', staffController.addRecruiterWallets) // add cur wallets for recruiter
+// router.patch('staff/recruiter/update_recruiter_wallet/', staffController.updateCurrentWallet) // update wallet for recruiter by coinName
+// router.delete('/staff/recruiter/delete_staff_user_from_recruiter/', staffController.deleteStaffFromRecruiter) // delete staff user und update his fee
+// router.delete('/staff/recruiter/delete_recruiter_user/', staffController.deleteRecruiterUser) // delete recruiter & update fee to all depend staff 
+
+
+// staff groups => 
+router.post('/staff/groups/create_new_group/', staffController.createNewGroup) // create new group
+router.patch('/staff/groups/add_new_group_member/', staffController.addNewStaffToGroup) // add staff to current group
+router.post('/staff/groups/get_group_list/', staffController.getGroupList) // get all groups by staff id
+router.delete('/staff/groups/delete_group/', staffController.deleteGroup) // gelete active group only as owner 
 
 
 // router.post('/staff/terms/get_term_by_domain/', staffController.getTermsByDomainName) // get terms by selected domain
