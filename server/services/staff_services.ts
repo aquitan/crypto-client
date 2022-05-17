@@ -845,7 +845,7 @@ class staffService {
 		if (!getStaff) return false
 
 		const getWallets: any = await staffWallet.find({
-			staffId: getStaff.staffId
+			staffId: getStaff.id
 		})
 		console.log('received getWallets is => ', getWallets.length);
 		if (!getWallets.length) return 'empty set'
@@ -966,23 +966,61 @@ class staffService {
 		return true
 	}
 
+	async deleteUserFromGroup(groupId: string, staffId: string, staffEmail: string) {
+		const getList: any = await staffGroupUserList.findOne({
+			groupId: groupId
+		})
+		console.log('received getList => ', getList);
+		if (!getList) return false
+
+		const isOwner: any = await staffGroup.findOne({
+			creatorId: staffId
+		})
+		if (!isOwner) {
+			console.log('permission denied. U need to be a group owner');
+			return false
+		}
+
+		let dataArray = []
+		for (let x = 0; x <= getList.staffEmailList.length - 1; x++) {
+			if (getList.staffEmailList[x] === staffEmail) {
+				console.log('received group email is => ', getList.staffEmailList[x]);
+				dataArray.push(getList.staffEmailList[x])
+			}
+		}
+
+		console.log(' staff groups list is => ', dataArray);
+		if (!dataArray.length) return false
+
+		await staffGroupUserList.findOneAndUpdate(
+			{ groupId: groupId },
+			{ staffEmailList: dataArray }
+		)
+		return true
+	}
+
 	async getGroupListForStaff(staffEmail: string) {
 		const getList: any = await staffGroupUserList.find()
 		console.log('received getList => ', getList);
 		if (!getList) return false
 
-
-		const dataArray = []
+		let dataArray = []
 		for (let i = 0; i <= getList.length - 1; i++) {
 			console.log('cur elem is: ', getList[i]);
 			for (let x = 0; x <= getList[i].staffEmailList.length - 1; x++) {
 				if (getList[i].staffEmailList[x] === staffEmail) {
-					dataArray.push(getList[i].staffEmailList[x])
+					const receivedData: any = await staffGroup.findOne({ _id: getList[i].groupId })
+					console.log('received group object => ', receivedData);
+					let dataObj = {
+						groupData: receivedData,
+						groupUsers: getList[i].staffEmailList
+					}
+					dataArray.push(dataObj)
 				}
 			}
 		}
 		console.log(' staff groups list is => ', dataArray);
-		if (dataArray.length) return 'empty set'
+		if (!dataArray.length) return 'empty set'
 		return dataArray
 	}
 

@@ -369,14 +369,13 @@ class UserController {
     const logTime: string = req.body.logTime
 
     try {
-      const result: boolean | string = await moneyService.MakeDeposit(transfer_object, logTime)
+      const result: any = await moneyService.MakeDeposit(transfer_object, logTime)
       console.log('operation result is: ', result)
-
-      if (!result) return res.status(400).json({ message: 'wrong data' })
+      if (!result) throw ApiError.ServerError()
 
       await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, logTime, ` создал заявку на вывод на сумму ${transfer_object.amountInCrypto} ${transfer_object.coinName}($ ${transfer_object.amountInUsd})`, transfer_object.domainName)
       await telegram.sendMessageByUserActions(transfer_object.userEmail, ` создал заявку на депозит на сумму ${transfer_object.amountInCrypto}(${transfer_object.amountInUsd}) ${transfer_object.coinName} `, transfer_object.domainName)
-      return res.status(201).json(result)
+      return res.status(201).json({ address: result })
 
     } catch (e) {
       next(e)

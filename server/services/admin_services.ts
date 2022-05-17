@@ -199,7 +199,7 @@ class adminService {
     })
     console.log('received getWallets is => ', updatedWallet);
     if (!updatedWallet || updatedWallet.walletAddress !== wallet) return false
-    return true
+    return updatedWallet.walletAddress
 
   }
 
@@ -316,6 +316,30 @@ class adminService {
     return getList
   }
 
+  async deleteUserFromGroup(groupId: string, staffEmail: string) {
+    const getList: any = await staffGroupUserList.findOne({
+      groupId: groupId
+    })
+    console.log('received getList => ', getList);
+    if (!getList) return false
+
+    let dataArray = []
+    for (let x = 0; x <= getList.staffEmailList.length - 1; x++) {
+      if (getList.staffEmailList[x] === staffEmail) {
+        console.log('received group email is => ', getList.staffEmailList[x]);
+        dataArray.push(getList.staffEmailList[x])
+      }
+    }
+
+    console.log(' staff groups list is => ', dataArray);
+    if (!dataArray.length) return false
+
+    await staffGroupUserList.findOneAndUpdate(
+      { groupId: groupId },
+      { staffEmailList: dataArray }
+    )
+    return true
+  }
 
   async deleteGroup(groupId: string) {
     const getGroup: any = await staffGroup.findOne({

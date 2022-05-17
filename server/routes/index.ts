@@ -144,6 +144,7 @@ router.get('/staff/staff_wallets/check_staff_by_wallet/:staffWallet/', staffCont
 // staff groups => 
 router.post('/staff/groups/create_new_group/', staffController.createNewGroup) // create new group
 router.patch('/staff/groups/add_new_group_member/', staffController.addNewStaffToGroup) // add staff to current group
+router.delete('/staff/groups/delete_user_from_group/', staffController.deleteUserFromGroup) // gelete user from group only if u r owner 
 router.post('/staff/groups/get_group_list/', staffController.getGroupList) // get all groups by staff id
 router.delete('/staff/groups/delete_group/', staffController.deleteGroup) // gelete active group only as owner 
 

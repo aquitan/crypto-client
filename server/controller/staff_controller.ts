@@ -846,7 +846,7 @@ class StaffController {
 
   async getAllErrors(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      const domainName: string = req.body.domainName
+      const domainName: string = req.params.domainName
       console.log('current domain id is: ', domainName);
       const result: any = await staffService.GetDomainErrors(domainName)
       if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
@@ -1698,7 +1698,7 @@ class StaffController {
     const coinName: string = req.body.coinName
 
     console.log('edit wallet', req.body)
-    if (!staffId || !wallet || coinName) return res.status(400).json({ message: 'wrong data' })
+    if (!staffId || !wallet || !coinName) return res.status(400).json({ message: 'wrong data' })
     try {
       if (!rootAccess) return res.status(403).json({ message: 'permission denied' })
 
@@ -1747,8 +1747,7 @@ class StaffController {
     try {
       const result: any = await staffService.validateStaffUser(userEmail)
       if (!result) throw ApiError.ServerError()
-      if (typeof result === 'string') return res.status(202).json(result)
-      return res.status(200).json({ message: 'ok' })
+      return res.status(200).json(result)
     } catch (e) {
       next(e)
     }
@@ -1813,6 +1812,40 @@ class StaffController {
   }
 
 
+  async deleteUserFromGroup(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const groupId: string = req.body.groupId
+    const staffId: string = req.body.staffId
+    const staffEmail: string = req.body.staffEmail
+    const rootAccess: boolean = req.body.rootAccess
+    const adminPermission: boolean = req.body.isAdmin
+    const staffPermission: boolean = req.body.isStaff
+    console.log('req body is => ', req.body);
+
+    for (let i in req.body) {
+      if (req.body[i] === undefined || req.body[i] === null) {
+        return res.status(400).json({ message: 'wrong data' })
+      }
+    }
+
+    try {
+      if (rootAccess || adminPermission) {
+        const result: any = await adminService.deleteUserFromGroup(groupId, staffEmail)
+        if (!result) throw ApiError.ServerError()
+        return res.status(201).json(result)
+      }
+      if (staffPermission) {
+        const result: any = await staffService.deleteUserFromGroup(groupId, staffId, staffEmail)
+        if (!result) throw ApiError.ServerError()
+        return res.status(201).json(result)
+      }
+      res.status(403).json({ message: 'permission denied' })
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
+
   async getGroupList(req: express.Request, res: express.Response, next: express.NextFunction) {
     const staffEmail: string = req.body.staffEmail
     const adminPermission: boolean = req.body.isAdmin
@@ -1844,7 +1877,6 @@ class StaffController {
       next(e)
     }
   }
-
 
   async deleteGroup(req: express.Request, res: express.Response, next: express.NextFunction) {
     const staffId: string = req.body.staffId
