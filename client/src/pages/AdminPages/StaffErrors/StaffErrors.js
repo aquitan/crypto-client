@@ -26,7 +26,7 @@ const StaffErrors = () => {
         domainOptions: '',
         allDomains: []
     })
-    const [erorrs, setErrors] = useState([])
+    const [domainErrors, setDomainErrors] = useState([])
     const [curSelect, setCurSelect] = useState('')
     const [custSelect, setCustSelect] = useState('')
     const [optionId, setOptionId] = useState('')
@@ -49,8 +49,9 @@ const StaffErrors = () => {
             domainName: curSelect
         }
         const err = await getData(`/staff/errors/get_all_errors/${curSelect}`)
-        setErrors(err.data)
+        setDomainErrors(err.data.errorList)
     }
+    console.log('error list', domainErrors)
 
     const getDomainList = async () => {
         const obj = {
@@ -62,12 +63,12 @@ const StaffErrors = () => {
         }
         const res = await postData('/staff/domains/get_active_domains/', obj)
         let arr = []
-        if (typeof res.data.domainsList !== "string") {
-            for (let i = 0; i <= res.data.domainsList?.length - 1; i++) {
+        if (typeof res.data !== "string") {
+            for (let i = 0; i <= res.data?.length - 1; i++) {
                 let obj = {
-                    value: res.data.domainsList[i].domainName,
-                    text: res.data.domainsList[i].domainName,
-                    id: res.data.domainsList[i].domainId
+                    value: res.data[i].domainName,
+                    text: res.data[i].domainName,
+                    id: res.data[i].domainId
                 }
                 arr.push(obj)
                 setState({...state, allDomains: arr})
@@ -78,9 +79,9 @@ const StaffErrors = () => {
 
         } else {
             let obj = {
-                value: res.data.domainsList,
-                text: res.data.domainsList,
-                id: res.data.domainsList.domainId
+                value: res.data,
+                text: res.data,
+                id: res.data.domainId
             }
             arr.push(obj)
             setState({...state, allDomains: arr})
@@ -202,11 +203,32 @@ const StaffErrors = () => {
                         </Row>
                 }
                 {
-                    erorrs.length ?
-                        errors.map(item => {
+                    domainErrors.length ?
+                        domainErrors.map(item => {
                             return (
-                                <Row>
-                                    <Col>{item}</Col>
+                                <Row style={{borderBottom: '1px solid #fff', paddingBottom: 20, paddingTop: 20}}>
+                                    <Col>
+                                        <Row className={'mb-3'}>
+                                            <Col>Domain name</Col>
+                                            <Col>{item.domainName}</Col>
+                                        </Row>
+                                        <Row className={'mb-3'}>
+                                            <Col>Error Name</Col>
+                                            <Col>{item.errorName}</Col>
+                                        </Row>
+                                        <Row className={'mb-3'}>
+                                            <Col>Error Title</Col>
+                                            <Col>{item.errorTitle}</Col>
+                                        </Row>
+                                        <Row className={'mb-3'}>
+                                            <Col>Error Text</Col>
+                                            <Col>{item.errorText}</Col>
+                                        </Row>
+                                        <Row className={'mb-3'}>
+                                            <Col>Error Button</Col>
+                                            <Col>{item.errorButton}</Col>
+                                        </Row>
+                                    </Col>
                                 </Row>
                             )
                         })
