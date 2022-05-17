@@ -108,7 +108,7 @@ export const defaultErrors = [
 
 ]
 
-export const tableHeaderDomains = ['#', 'Domain', 'Username', 'Date & time', 'Action']
+export const tableHeaderDomains = ['Domain', 'Action']
 export const twoFaElems = [
     {
         value: 'Email',

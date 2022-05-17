@@ -20,28 +20,25 @@ import ModalDark from "../../../components/UI/ModalDark/ModalDark";
 
 const StaffErrors = () => {
     const [modal, setModal] = useState(false)
-    const {register, handleSubmit, formState: {errors}, reset} = useForm({
-        mode: 'onBlur'
-    })
     const [state, setState] = useState({
         domainDetail: '',
         domain: '',
         domainOptions: '',
         allDomains: []
     })
+    const [erorrs, setErrors] = useState([])
     const [curSelect, setCurSelect] = useState('')
     const [custSelect, setCustSelect] = useState('')
     const [optionId, setOptionId] = useState('')
-    const options = [
-        {value: 'Вывод', text: 'Вывод'},
-        {value: 'Верификация', text: 'Верификация'},
-        {value: 'Мульти-акк', text: 'Мульти-акк'},
-    ]
-    const optionsDomain = [
-        {value: 'localhost:3000', text: 'localhost:3000'},
-        {value: 'localhost:3001', text: 'localhost:3001'},
-        {value: 'localhost:3002', text: 'localhost:3002'},
-    ]
+    const {register, handleSubmit, formState: {errors}, reset} = useForm({
+        mode: 'onBlur',
+    })
+    const {register: allErrors, handleSubmit: allErrorsSubmit} = useForm({
+        mode: 'onBlur',
+        defaultValues: {
+            domainError: state.allDomains[0]
+        }
+    })
 
     useEffect(() => {
         getDomainList()
@@ -51,7 +48,8 @@ const StaffErrors = () => {
         const obj = {
             domainName: curSelect
         }
-        const err = await postData(`/staff/errors/get_all_errors/`, obj)
+        const err = await getData(`/staff/errors/get_all_errors/${curSelect}`)
+        setErrors(err.data)
     }
 
     const getDomainList = async () => {
@@ -63,7 +61,6 @@ const StaffErrors = () => {
             id: store.user.id
         }
         const res = await postData('/staff/domains/get_active_domains/', obj)
-        console.log('getDomainList ========', res.data.domainsList)
         let arr = []
         if (typeof res.data.domainsList !== "string") {
             for (let i = 0; i <= res.data.domainsList?.length - 1; i++) {
@@ -93,6 +90,8 @@ const StaffErrors = () => {
         }
     }
 
+    console.log('allDomains', state.allDomains)
+
     const onSubmit = async (data) => {
         data.domainId = optionId
         data.staffEmail = store.userEmail
@@ -111,6 +110,7 @@ const StaffErrors = () => {
     const onChangeDomain = async (e) => {
         // const res = await getData('/staff/errors/get_all_errors/1/')
         // setState({...state, domain: res.data.domain_detail})
+        console.log('change-domain', state.allDomains)
         setCurSelect(e.target.value)
     }
     const onChangeCustDomain = async (e) => {
@@ -159,11 +159,15 @@ const StaffErrors = () => {
                   </Row>
                   <Row className='mb-3'>
                       Выбери домен
-                      {state.allDomains ? <Select value={state.allDomains[0]} classname={'admin-square'} onChange={onChangeCustDomain} options={state.allDomains} /> : <Preloader/>}
+                      {state.allDomains ?
+                          <Select value={custSelect}
+                                  classname={'admin-square'}
+                                  onChange={onChangeCustDomain}
+                                  options={state.allDomains} /> : <Preloader/>}
                   </Row>
                   <Row className='mb-3'>
                       Кнопка
-                      <Select {...register('errorButton')} options={optionsButton} classname={'admin-square'} />
+                      <Select {...register('errorButton')} getAvalue={true} options={optionsButton} classname={'admin-square'} />
                   </Row>
                   <AdminButton classname='green'>Добавить ошибку</AdminButton>
               </AdminForm>
@@ -174,7 +178,14 @@ const StaffErrors = () => {
                 <Row>
                     <Col>
                         {
-                            state.allDomains ? <Select options={state.allDomains} classname={'admin-square'} value={state.allDomains[0]} onChange={onChangeDomain} /> : <Preloader/>
+                            state.allDomains.length ?
+                                <Select
+                                    getAvalue={true}
+                                    value={curSelect}
+                                    options={state.allDomains}
+                                    classname={'admin-square'}
+                                    onChange={onChangeDomain} />
+                                : <Preloader/>
                         }
                     </Col>
                     <Col>
@@ -189,6 +200,17 @@ const StaffErrors = () => {
                         : <Row className='mt-4 mb-4'>
                             <h4>Выбери домен</h4>
                         </Row>
+                }
+                {
+                    erorrs.length ?
+                        errors.map(item => {
+                            return (
+                                <Row>
+                                    <Col>{item}</Col>
+                                </Row>
+                            )
+                        })
+                        : <h2>No data!</h2>
                 }
             </AdminButtonCard>
         </Container>

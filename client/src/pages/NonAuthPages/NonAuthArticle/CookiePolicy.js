@@ -4,7 +4,7 @@ import {Container} from "react-bootstrap";
 import {store} from "../../../index";
 
 const CookiePolicy = () => {
-    let domain = store.domain.domain_name.toUpperCase()
+    let domain = store.domain.domainName.toUpperCase()
     return (
         <Container>
             <div className="article footer_links_page">

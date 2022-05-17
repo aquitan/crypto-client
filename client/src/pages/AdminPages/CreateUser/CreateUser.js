@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {Container, Row} from "react-bootstrap";
+import {Container, Modal, Row} from "react-bootstrap";
 import AdminForm from "../../../components/UI/AdminForm/AdminForm";
 import AdminInput from "../../../components/UI/AdminInput/AdminInput";
 import AdminButton from "../../../components/UI/AdminButton/AdminButton";
@@ -9,78 +9,84 @@ import error from "../../../styles/Error.module.scss";
 import {ErrorMessage} from "@hookform/error-message";
 import {emailValidate} from "../../../utils/checkEmail";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
-import Table from "../../../components/UI/Table/Table";
-import TableHeader from "../../../components/UI/Table/components/TableHeader/TableHeader";
-import TableBody from "../../../components/UI/Table/components/TableBody/TableBody";
-import TableItem from "../../../components/UI/Table/components/TableItem/TableItem";
 import {postData} from "../../../services/StaffServices";
-import TableItemCreateUser from "../../../components/UI/Table/components/TableItemCreateUser/TableItemCreateUser";
-import {optionsCompiler} from "../../../utils/optionsCompiler";
 import Select from "../../../components/UI/Select/Select";
 import Preloader from "../../../components/UI/Preloader/Preloader";
-import {getCurrentDate} from "../../../utils/getCurrentDate";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 
 const CreateUser = () => {
-    const [users, setUsers] = useState([])
     const [domains, setDomains] = useState()
+    const [isModal, setIsModal] = useState(false)
+    const [isModalError, setIsModalError] = useState(false)
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: "onBlur"
     })
-    const tableHeader = [
-        'Username',
-        'Recruter for',
-        'Is can be recruter?',
-        'Domain',
-        'Date',
-        'Profit Percent',
-        'Profit',
-        'Action'
-    ]
-    const getProfile = async () => {
-        const userData = {
-            isAdmin: store.isAdmin,
-            isStaff: store.isStaff,
-            domainName: window.location.host,
-        }
-        const res = await postData('/staff/users/', userData)
-        const data = await res.data
-        const usersReversed = data.usersList.slice(0).reverse()
-        setUsers(usersReversed)
-    }
+
+    // const getProfile = async () => {
+    //     const userData = {
+    //         isAdmin: store.isAdmin,
+    //         isStaff: store.isStaff,
+    //         domainName: window.location.host,
+    //     }
+    //     const res = await postData('/staff/users/', userData)
+    //     const data = await res.data
+    //     const usersReversed = data.usersList.slice(0).reverse()
+    //     setUsers(usersReversed)
+    // }
     useEffect(() => {
-        getProfile()
-        getAllUsers()
+        getDomains()
     }, [])
 
-   const getAllUsers = async () => {
-       const obj = {
-           isAdmin: store.isAdmin,
-           isStaff: store.isStaff,
-           staffEmail: store.userEmail,
-           rootAccess: store.fullAccess,
-           id: store.user.id
-       }
-       const res = await postData('/staff/domains/get_active_domains/', obj)
+    const getDomains = async () => {
+        const obj = {
+            isAdmin: store.isAdmin,
+            isStaff: store.isStaff,
+            staffEmail: store.userEmail,
+            rootAccess: store.fullAccess,
+            staffId: store.user.id
 
-       console.log('res data', res.data)
-       // setDomains(optionsCompiler(res.data.domainsList))
-   }
-
+        }
+        const res = await postData('/staff/domains/get_active_domains/', obj)
+        if (res.status === 200 && typeof res.data === "object") {
+            let arr = []
+            res.data.forEach(item => {
+                let obj = {
+                    value: item.domainName,
+                    text: item.domainName
+                }
+                arr.push(obj)
+            })
+            setDomains(arr)
+            console.log('log-res', arr)
+        }
+    }
 
     const onSubmit = async (data, e) => {
         e.preventDefault()
         data.staffId = store.user.id
         data.currentDate = dateToTimestamp()
-        data.staffEmail = store.userEmail
+        data.staffEmail = store.user.email
         data.rootAccess = store.fullAccess
 
         console.log('create-user', data)
         const res = await postData('/staff/create_user', data)
+        if (res.status === 200) {
+            console.log('add user success', res)
+            setIsModal(true)
+        } else {
+            console.log('add user error', res)
+            setIsModalError(true)
+        }
     }
 
     return (
         <Container>
+            <Modal active={isModal} setActive={setIsModal}>
+                Пользователь добавлен!
+            </Modal>
+            <Modal active={isModalError} setActive={setIsModalError}>
+                Упс! Что-то пошло не так!
+            </Modal>
             <h1 className='mt-4'>Создать пользователя</h1>
             <AdminButtonCard>
                 <AdminForm onSubmit={handleSubmit(onSubmit)}>
@@ -107,28 +113,15 @@ const CreateUser = () => {
                     </Row>
                     {
                         domains ? <Row className='mb-3'>
-                            <Select {...register('domainName')} options={domains} />
+                            <Select {...register('domainName')} classname={'admin-square'} options={domains} />
                         </Row>
-                            : <Preloader />
+                            : <h4>No domains!</h4>
                     }
                     <Row className='mb-3'>
                         <AdminButton classname='green'>Создать пользователя</AdminButton>
                     </Row>
                 </AdminForm>
             </AdminButtonCard>
-            {
-                !store.isAdmin ?
-                    <AdminButtonCard classname='scrollable-table'>
-                        <h2>Редактировать пользователя</h2>
-                        <Table>
-                            <TableHeader elems={tableHeader} />
-                        </Table>
-                        <TableBody>
-                            <TableItemCreateUser users={users} />
-                        </TableBody>
-                    </AdminButtonCard>
-                    : null
-            }
         </Container>
     )
 }

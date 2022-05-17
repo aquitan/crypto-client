@@ -57,16 +57,15 @@ const AdminSecureDeal = () => {
         data.status = false
         data.dealDedline = dateToTimestamp(startDate)
         data.currentDate = dateToTimestamp()
-        data.userId = store.user.id
+        data.userId = store.fullAccess ? '1' : store.user.id
         data.amountInCrypto = +data.amountInCrypto
         data.userEmail = store.user.email
         if (data.buyerEmail === store.user.email) {
             data.secondPartyEmail = data.sellerEmail
-            console.log('data.secondPartyEmail----1', data.secondPartyEmail)
         } else if (data.sellerEmail === store.user.email) {
-            console.log('data.secondPartyEmail----2', data.secondPartyEmail)
             data.secondPartyEmail = data.buyerEmail
         }
+        data.rootAccess = store.fullAccess
         const res = await putData('/personal_area/secure_deal/create_secure_deal/', data)
     }
     const onToday = () => {
@@ -85,7 +84,7 @@ const AdminSecureDeal = () => {
         const res = await postData(`/staff/secure_deal/secure_deal_history/`, obj)
         if (!res.data.history === 'empty set') {
             setHistory(res.data.history.filter(item => {
-                if (dateToTimestamp() > item.dealDedline) {
+                if (dateToTimestamp() < item.dealDedline) {
                     onMissDeadline(item._id, item.dealDedline)
                 }
                 return  dateToTimestamp() < item.dealDedline

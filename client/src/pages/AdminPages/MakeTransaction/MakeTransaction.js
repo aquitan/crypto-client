@@ -35,9 +35,9 @@ const MakeTransaction = () => {
     }, [])
 
     const getTransactionHistory = async () => {
-        // const res = await getData(`/staff/create_transaction/get_transaction_history/${store.user.id}`)
-        // console.log('history', res.data)
-        // setHistory(res.data.history)
+        const res = await getData(`/staff/create_transaction/get_transaction_history/${store.user.id}`)
+        console.log('history', res.data)
+        setHistory(res.data.history)
     }
 
     return (

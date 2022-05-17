@@ -10,17 +10,14 @@ const TableitemUser = ({date, usdAmount, cryptoAmount, coinName, status}) => {
     const cx = classNames.bind(cls)
     const classnames = cx('complete')
 
+
+
     return (
         <Row className={`mt-3 mb-3 align-items-center ${cls.item}`}>
-            <Col className='col-3'>{getCurrentDate(date)}</Col>
-            <Col className='col-3'>${usdAmount}/ ({cryptoAmount}/ {coinName})</Col>
-            <Col className='col-3'>
-                <span className={status === 'complete' ? classnames : cls.failed}>
-                    {status}
-                </span>
-            </Col>
-            <Col className='col-3'>
-                <Button classname='green'>Show</Button>
+            <Col className='text-center' style={{whiteSpace: 'pre-wrap'}}>{getCurrentDate(date)}</Col>
+            <Col className='text-center'>${usdAmount}<br/> ({cryptoAmount.toFixed(5)} {coinName})</Col>
+            <Col className=''>
+                <Button classname={['green', status, 'medium_btn']}>Show</Button>
             </Col>
         </Row>
     )

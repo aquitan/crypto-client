@@ -26,9 +26,10 @@
   background-color: lightblue;
 }
 .orange {
-  background-color: orange;
+  background-color: darkorange;
   color: #fff;
 }
+
 .marginless {
   margin: 0;
 }
@@ -44,6 +45,13 @@
   height: 50px;
   font-size: 18px;
   font-weight: bold;
+}
+
+.medium_btn {
+  height: 35px;
+  max-width: 200px;
+  min-width: 80px;
+  padding: 5px;
 }
 
 .promo_absolute {

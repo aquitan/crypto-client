@@ -43,7 +43,7 @@ const SignIn = () => {
 
         if (data.twoFaCode) {
             const res = await postData('/get_verified_two_step_code/', {code: data.twoFaCode})
-            if (res.data.verivication) {
+            if (res.data.verification) {
                 sendLoginData(data)
             }
         }

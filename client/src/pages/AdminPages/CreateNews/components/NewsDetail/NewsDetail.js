@@ -1,36 +1,38 @@
 import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
-import {Col, Container, Row} from "react-bootstrap";
-import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
-import AdminInput from "../../../components/UI/AdminInput/AdminInput";
-import TextArea from "../../../components/UI/TextArea/TextArea";
-import AdminButton from "../../../components/UI/AdminButton/AdminButton";
-import {useForm} from "react-hook-form";
-import AdminForm from "../../../components/UI/AdminForm/AdminForm";
-import DatePickert from "react-datepicker";
-import DatePickerCustom from "../../../components/UI/DatePickerCustom/DatePickerCustom";
-import {postData, putData} from "../../../services/StaffServices";
-import {store} from "../../../index";
-import moment from "moment";
-import Select from "../../../components/UI/Select/Select";
-import AllNews from "./components/AllNews/AllNews";
-import error from "../../../styles/Error.module.scss";
+import {Col, Container, Form, Row} from "react-bootstrap";
+import AdminButtonCard from "../../../../../components/AdminButtonCard/AdminButtonCard";
+import AdminInput from "../../../../../components/UI/AdminInput/AdminInput";
+import TextArea from "../../../../../components/UI/TextArea/TextArea";
 import {ErrorMessage} from "@hookform/error-message";
-import FileUpload from "../../../components/UI/FileUpload/FileUpload";
-import {dateToTimestamp} from "../../../utils/dateToTimestamp";
+import error from "../../../../../styles/Error.module.scss";
+import DatePickert from "react-datepicker";
+import DatePickerCustom from "../../../../../components/UI/DatePickerCustom/DatePickerCustom";
+import Select from "../../../../../components/UI/Select/Select";
+import {useForm} from "react-hook-form";
+import moment from "moment";
+import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
+import {store} from "../../../../../index";
+import {patchData, postData, putData} from "../../../../../services/StaffServices";
+import AdminButton from "../../../../../components/UI/AdminButton/AdminButton";
+import {useLocation} from "react-router-dom";
 
-const CreateNews = () => {
-    const [state, setState] = useState([])
+const NewsDetail = (props) => {
+    const location = useLocation()
+    const [state, setState] = useState(location.state)
     const [startDate, setStartDate] = useState()
     const [timeDate, setTimeDate] = useState()
     const {register, handleSubmit, formState: {errors}} = useForm({
-        mode: 'onBlur'
+        mode: 'onBlur',
+        defaultValues: {
+            newsTitle: state.newsTitle,
+            newsBody: state.newsBody
+        }
     })
 
-    useEffect(() => {
-        getAllNews()
-    }, [])
 
+
+    console.log('detail-props', location)
     const styles = {
         todayBtn: {
             position: 'absolute',
@@ -63,41 +65,27 @@ const CreateNews = () => {
         data.staffEmail = store.user.email
         data.newsImage = 'img'
         data.rootAccess = store.fullAccess
+        data.newsId = state._id
         if (store.fullAccess) {
             data.staffEmail = store.fullAccess ? 'root' : store.user.email
             data.staffId = store.fullAccess ? '1' : store.user.id
         }
-        const res = await putData('/staff/news/news_create/', data)
-        if (res.status === 201) {
-            getAllNews()
-        }
+        const res = await patchData('/staff/news/news_edit/', data)
     }
 
-    const getAllNews = async () => {
-        const obj = {
-            isAdmin: store.isAdmin,
-            isStaff: store.isStaff,
-            staffEmail: store.user.email,
-            rootAccess: store.fullAccess
-        }
-        if (store.fullAccess) {
-            obj.staffId = store.fullAccess ? '1' : store.user.id
-        }
-        const res = await postData('/staff/news/get_news_list/', obj)
-        console.log('news list', res.data)
-        setState(res.data)
-
-    }
 
     const domains = [
         {text: 'localhost:3000', value: 'localhost:3000'}
     ]
 
+
     return (
         <Container>
-            <h1>Новости</h1>
             <AdminButtonCard>
-                <AdminForm onSubmit={handleSubmit(onSubmit)}>
+                <h2>Детальная новости</h2>
+            </AdminButtonCard>
+            <AdminButtonCard>
+                <Form onSubmit={handleSubmit(onSubmit)}>
                     <Row>
                         <Col className='col-12 col-md-3 mb-3'>
                             <AdminInput {...register('newsTitle', {
@@ -137,45 +125,28 @@ const CreateNews = () => {
                             <ErrorMessage  name='newsDomain' errors={errors} render={() => <p className={error.error}>Только английские буквы</p>} />
                         </Col>
                     </Row>
-                    <Row className='mb-3'>
+                    <Row>
                         <Col>
                             <TextArea {...register('newsBody')} classnames='dark textarea_square' rows='10' placeholder='Основной текст'/>
                         </Col>
                     </Row>
-                    <Row className='mb-3'>
-                        <Col className='col-12 col-md-6 mb-3'>
-                            <FileUpload {...register('newsImage')} id='newsImg' />
-                        </Col>
-                        {/*<Col className='col-12 col-md-6 mb-3'>*/}
-                        {/*    <AdminInput {...register('youtubeLink')} placeholder='Ссылка на Youtube' />*/}
-                        {/*</Col>*/}
-                    </Row>
                     <Row>
                         <Col>
-                            <AdminButton classname='green'>Создать</AdminButton>
+                            <AdminButton classname='green'>Сохранить</AdminButton>
                         </Col>
                     </Row>
-                </AdminForm>
-            </AdminButtonCard>
-            <AdminButtonCard>
-                <h4>Все новости</h4>
-                {
-                    !state === 'empty list' ?
-                        state.map(news => {
-                            return <AllNews data={news} />
-                        })
-                        : <h4>No data!</h4>
-                }
+                </Form>
+
             </AdminButtonCard>
         </Container>
     )
 }
 
-CreateNews.propTypes = {
+NewsDetail.propTypes = {
 
 }
-CreateNews.defaultProps = {
+NewsDetail.defaultProps = {
 
 }
 
-export default CreateNews
+export default NewsDetail

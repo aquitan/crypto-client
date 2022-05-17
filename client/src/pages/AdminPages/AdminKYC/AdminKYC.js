@@ -14,12 +14,13 @@ const AdminKYC = () => {
         const userData = {
             isAdmin: store.isAdmin,
             isStaff: store.isStaff,
-            domainName: window.location.host
+            domainName: window.location.host,
+            rootAccess: store.fullAccess
         }
         const res = await postData('/staff/users/kyc/', userData)
         const data = await res.data
         setUsersKyc(data.usersKycList)
-        console.log('dataProfile', data)
+        console.log('dataProfile', data.usersKycList)
     }
 
     useEffect(() => {
@@ -52,21 +53,21 @@ const AdminKYC = () => {
                         <Col className={cls.default_col}>Action</Col>
                     </Row>
                     {
-                        usersKyc
+                        !usersKyc === 'empty set'
                             ?
                             usersKyc.map(user => {
                                 return(
                                     <AdminKycTableItem
-                                        key={user.ID}
-                                        registerDate={user.date_of_entry}
+                                        key={user._id}
                                         city={user.city}
-                                        zip={user.zip_code}
+                                        zip={user.zipCode}
                                         state={user.state}
-                                        name={user.name}
-                                        email={user.email}
-                                        docType={user.document_type}
-                                        kycStatus={user.kyc_status}
-                                        userId={user.user_id}
+                                        email={user.userEmail}
+                                        name={user.firstName}
+                                        docType={user.documentType}
+                                        kycStatus={user.kycStatus}
+                                        id={user._id}
+                                        userId={user.userId}
                                     />
                                 )
                             })

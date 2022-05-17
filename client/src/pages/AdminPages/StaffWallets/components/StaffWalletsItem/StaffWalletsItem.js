@@ -5,6 +5,8 @@ import {useNavigate} from "react-router-dom";
 import AdminInput from "../../../../../components/UI/AdminInput/AdminInput";
 import {useForm} from "react-hook-form";
 import AdminButton from "../../../../../components/UI/AdminButton/AdminButton";
+import {patchData} from "../../../../../services/StaffServices";
+import {store} from "../../../../../index";
 
 
 const StaffWalletsItem = (props) => {
@@ -19,28 +21,42 @@ const StaffWalletsItem = (props) => {
         setState(!state)
     }
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         console.log('wallet data', data)
+        let id = store.fullAccess ? '1' : store.user.id
+
+
+        const obj = {
+            staffId: props.id,
+            rootAccess: store.fullAccess,
+            wallet: data.currentWallet,
+            coinName: props.currency
+        }
+        const res = await patchData('/staff/staff_wallets/edit_staff_wallets/', obj)
     }
+
 
     return (
         <div>
             <Row className={`${cls.wallet_item} mb-3`}>
-                <Col>
-                    {props.name}
-                </Col>
                 <Col className='d-none d-md-block'>
                     {props.currency}
                 </Col>
                 <Col>
                     <AdminInput disabled={state}  name='currentWallet' {...register('currentWallet')} />
                 </Col>
-                <Col className='d-none d-md-block'>
-                    <AdminButton onClick={onEdit} classname={'orange'}>Редактировать</AdminButton>
-                </Col>
-                <Col className='d-none d-md-block'>
-                    <AdminButton classname={'green'} onClick={handleSubmit(onSubmit)}>Редактировать</AdminButton>
-                </Col>
+                {
+                    store.fullAccess ?
+                        <>
+                            <Col className='d-none d-md-block'>
+                                <AdminButton onClick={onEdit} classname={['orange','medium_btn']}>Редактировать</AdminButton>
+                            </Col>
+                            <Col className='d-none d-md-block'>
+                                <AdminButton classname={['green', 'medium_btn']} onClick={handleSubmit(onSubmit)}>Сохранить</AdminButton>
+                            </Col>
+                        </>
+                    :null
+                }
             </Row>
         </div>
     )

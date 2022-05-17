@@ -3,15 +3,16 @@ import PropTypes from 'prop-types'
 import {store} from "../../../index";
 import {Container} from "react-bootstrap";
 import Preloader from "../../../components/UI/Preloader/Preloader";
+import TERMS from "../../../terms";
 
 const TermsConditions = () => {
-    const term = JSON.parse(JSON.stringify(store.terms.terms_body))
-    const domainStore = JSON.parse(JSON.stringify(store.domain))
-    let domain = store.domain.domain_name
-    let domainBig = store.domain.full_domain_name
-    let percent = store.domain.deposit_fee
-    let str = term.replaceAll(('${domainSmall}'), domain).replaceAll(('${domainBig}'), domainBig).replaceAll('%percent%', percent+'%')
-        .replaceAll('%General_Basics%', '<a href="/general-basics">General Basics</a>')
+
+    let domain = store.domain.domainName
+    let domainBig = store.domain.fullDomainName
+    let domainSupport = store.domain.companyEmail
+    let generalBasics = '<a href="/general-basics">General Basics</a>'
+    let percent = store.domain.domainParams.depositFee
+    const str = TERMS(domain, domainBig, domainSupport, percent, generalBasics)
 
     function createMarkup() {
         return {__html: `${str}`};
@@ -23,7 +24,7 @@ const TermsConditions = () => {
         <Container>
             {
                 store.terms ?
-                    <div dangerouslySetInnerHTML={createMarkup()}/>
+                    <div className={'terms-style'} dangerouslySetInnerHTML={createMarkup()}/>
                     : <Preloader />
             }
         </Container>

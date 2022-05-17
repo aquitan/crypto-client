@@ -15,19 +15,19 @@ const AppRouter = () => {
     const [state, setState] = useState([])
     const [percent, setPercent] = useState([])
     const navigate = useNavigate()
-    const {isLoading, data, error} = useQuery('notif query', async () => {
-        if (store.isAuth) {
-            const res = await postData('/get_domain_params/', {domainName: window.location.host})
-            if (res.data) {
-                const balance = await getData(`/get_user_balance/${store.user.id}`)
-                setState(balance.data)
-                countTotalBalance()
-            }
-            setPercent(store.domain.domainParams.rateCorrectSum)
-            store.setDepositFee(res.data.domainInfo.domainParams.depositFee)
-            store.setDomain(res.data.domainInfo)
-        }
-    })
+    // const {isLoading, data, error} = useQuery('notif query', async () => {
+    //     if (store.isAuth) {
+    //         const res = await postData('/get_domain_params/', {domainName: window.location.host})
+    //         if (res.data) {
+    //             const balance = await getData(`/get_user_balance/${store.user.id}`)
+    //             setState(balance.data)
+    //             countTotalBalance()
+    //         }
+    //         setPercent(store.domain.domainParams.rateCorrectSum)
+    //         store.setDepositFee(res.data.domainInfo.domainParams.depositFee)
+    //         store.setDomain(res.data.domainInfo)
+    //     }
+    // })
 
     useEffect( () => {
         if (localStorage.getItem('token')) {
@@ -77,14 +77,18 @@ const AppRouter = () => {
         const obj = {
             btc: res.data[0].current_price,
             eth: res.data[1].current_price,
-            bch: res.data[3].current_price,
-            usdt: res.data[2].current_price
+            usdt: res.data[2].current_price,
+            sol: res.data[3].current_price,
+            trx: res.data[4].current_price,
+            bch: res.data[5].current_price,
         }
         const ratesChange = {
             btc: res.data[0].price_change_24h,
             eth: res.data[1].price_change_24h,
-            bch: res.data[3].price_change_24h,
-            usdt: res.data[2].price_change_24h
+            usdt: res.data[2].price_change_24h,
+            sol: res.data[3].price_change_24h,
+            trx: res.data[4].price_change_24h,
+            bch: res.data[5].price_change_24h,
         }
         store.setRatesChange(ratesChange)
         store.setRates(obj)

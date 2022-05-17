@@ -8,18 +8,29 @@ import {faCoffee} from "@fortawesome/free-solid-svg-icons";
 import Form from "../../../components/UI/Form/Form";
 import Select from '../../../components/UI/Select/Select'
 import Button from "../../../components/UI/Button/Button";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {ErrorMessage} from "@hookform/error-message";
 import error from "../../../styles/Error.module.scss";
 import {useForm} from "react-hook-form";
 import {store} from "../../../index";
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
-import {postData, putData} from "../../../services/StaffServices";
+import {getData, postData, putData} from "../../../services/StaffServices";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import TableItemUser from "../../../components/UI/TableItemUser/TableItemUser";
 import ErrorModal from "../../../components/ErrorModal/ErrorModal";
+import {observer} from "mobx-react-lite";
+import {findPercent} from "../../../utils/findPercent";
+import Preloader from "../../../components/UI/Preloader/Preloader";
+
 const Withdraw = () => {
+    const [state, setState] = useState({
+        value: '',
+        text: ''
+    })
+    const navigate = useNavigate()
+    const [balance, setBalance] = useState(0)
+    const [coins, setCoins] = useState([])
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
     })
@@ -30,35 +41,27 @@ const Withdraw = () => {
 
     useEffect(() => {
         getHistoryDeposit()
+        getBalance()
     }, [])
 
     const getHistoryDeposit = async () => {
         const res = await postData('/withdraw/get_withdrawal_history/', {userId: store.user.id})
+        if (res.status === 500) {
+            navigate('/error-500')
+        }
         setHistory(res.data.withdrawHistory)
     }
-    const [state, setState] = useState({
-        value: '',
-        text: ''
-    })
-    const statusOptions = [
-        { value: "BTC", text: "BTC", icon: <FontAwesomeIcon icon={faCoffee}/>, amount: '123123' },
-        { value: "ETH", text: "ETH", icon: <FontAwesomeIcon icon={faCoffee}/>, amount: '123123' },
-        { value: "BCH", text: "BCH", icon: <FontAwesomeIcon icon={faCoffee}/>, amount: '123123' },
-        { value: "USDT", text: "USDT", icon: <FontAwesomeIcon icon={faCoffee}/>, amount: '123123' },
-    ];
+
     let btc = 38500
-    const options = [
-        {value: 'BTC', text: 'BTC'},
-        {value: 'USD', text: 'USD'},
-    ]
+
     const onChangeUsd = (e) => {
         console.log('textVal', state.value)
-        let calc = +e.target.value / btc
+        let calc = +e.target.value / findPercent(store.rates.btc, store.domain.domainParams.rateCorrectSum).toFixed(5)
         setState({text: +e.target.value, value: +calc})
     }
     const onChangeCrypto = (e) => {
         console.log(e.target.value)
-        let calc = +e.target.value * btc
+        let calc = +e.target.value * findPercent(store.rates.btc, store.domain.domainParams.rateCorrectSum).toFixed(5)
         setState({text: +calc.toFixed(5), value: +e.target.value})
     }
 
@@ -88,6 +91,37 @@ const Withdraw = () => {
         console.log(data)
     }
 
+    const onValChange = (e) => {
+        console.log('value', e.target.value)
+        let target = e.target.value
+        let balanceAmount = 0
+        coins.filter(el => {
+            if (el.coinName === target) {
+                balanceAmount = el.coinBalance.toFixed(5)
+                return balanceAmount
+            }
+        })
+        setBalance(balanceAmount)
+    }
+
+    const getBalance = async () => {
+        const res = await getData(`/get_user_balance/${store.user.id}`)
+        let arr = []
+            res.data.forEach(item => {
+                let obj = {
+                    value: item.coinName,
+                    text: item.coinName
+                }
+                arr.push(obj)
+            })
+        setCoins(arr)
+        setBalance(res.data[0].coinBalance)
+        console.log('res balance', res.data)
+    }
+
+
+
+
 
     return (
         <Container>
@@ -106,16 +140,26 @@ const Withdraw = () => {
                     <ButtonCard>
                         <h2 className='mb-3'>Withdraw</h2>
                         <Form classnames='form_big'>
-                            <Row className='mb-3'>
+                            <Row className='mb-3 align-items-center'>
                                 <Col className='col-12 col-lg-4'>
                                     <p>Chose currency</p>
-                                    <Select {...register('coinName')} classname='transparent' options={statusOptions} />
+                                    {
+                                        coins.length ?
+                                            <Select {...register('coinName', {
+                                                onChange: e => onValChange(e)
+                                            })} classname='transparent' options={coins} />
+                                            : <Preloader/>
+                                    }
+                                </Col>
+                                <Col>
+                                    <p>Balance</p>
+                                    <Input placeholder={`Coin balance: ${balance}`} disabled={true}/>
                                 </Col>
                             </Row>
                             <Row className='mb-3'>
                                 <Col>
                                     <Input placeholder='Amount in USD' type='number' onChange={onChangeUsd} value={state.text} />
-                                    <span style={{fontSize: 10}}>Minimum withdraw amount is {store.domain.minWithdrawalSum} USD</span>
+                                    <span style={{fontSize: 10}}>Minimum withdraw amount is {store.domain.domainParams.minWithdrawalSum} USD</span>
                                 </Col>
                             </Row>
                             <Row className='mb-3'>
@@ -147,12 +191,11 @@ const Withdraw = () => {
                 </Col>
                 <Col className='col-12 col-md-6 mb-3'>
                     <ButtonCard>
-                        <h2 className='mb-3'>Table</h2>
+                        <h2 className='mb-3'>History</h2>
                         <Row style={{padding: '10px', borderBottom: '1px solid #fff' }}>
-                            <Col>Date</Col>
-                            <Col>Sum</Col>
-                            <Col>Status</Col>
-                            <Col></Col>
+                            <Col className={'text-center'}>Date</Col>
+                            <Col className={'text-center'}>Sum</Col>
+                            <Col className={'text-center'}></Col>
                         </Row>
                         <div style={{maxHeight: 400, overflowY: 'auto', height: '100%'}}>
                             {
@@ -186,4 +229,4 @@ Withdraw.defaultProps = {
 
 }
 
-export default Withdraw
+export default observer(Withdraw)

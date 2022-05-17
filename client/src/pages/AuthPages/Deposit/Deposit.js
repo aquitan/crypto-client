@@ -113,8 +113,8 @@ const Deposit = () => {
                             <span>Amount in Crypto</span>
                             <Input placeholder='' onChange={onChange} disabled value={state.value} />
                         </Row>
-                        <span>Note: Minimum deposit amount is {store.domain.minDepositSum} USD</span>
-                        <span>Note: Deposit fee is: {store.domain.depositFee}%</span>
+                        <span style={{fontSize: 12}}>Note: Minimum deposit amount is {store.domain.domainParams.minDepositSum} USD</span>
+                        <span style={{fontSize: 12}}>Note: Deposit fee is: {store.domain.domainParams.depositFee}%</span>
                         <Row className='mb-3 mt-3 justify-content-center'>
                             <Col className='col-6'>
                                 <Button classname='user-green' onClick={handleSubmit(onSubmit)}>Submit</Button>
@@ -124,12 +124,11 @@ const Deposit = () => {
                 </Col>
                 <Col className='col-12 col-md-6 mb-3'>
                     <ButtonCard>
-                        <h2 className='mb-3'>Table</h2>
+                        <h2 className='mb-3'>History</h2>
                         <Row style={{padding: '10px', borderBottom: '1px solid #fff' }}>
-                            <Col>Date</Col>
-                            <Col>Sum</Col>
-                            <Col>Status</Col>
-                            <Col></Col>
+                            <Col className={'text-center'}>Date</Col>
+                            <Col className={'text-center'}>Amount</Col>
+                            <Col className={'text-center'}></Col>
                         </Row>
 
                         <div style={{maxHeight: 400, overflowY: 'auto', height: '100%'}}>

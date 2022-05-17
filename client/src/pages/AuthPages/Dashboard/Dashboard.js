@@ -14,6 +14,8 @@ import {currencyRateChangeIndicator} from "../../../utils/currencyRateChangeIndi
 import CurrencyRates from "../../../components/CurrencyRates/CurrencyRates";
 import {findPercent} from "../../../utils/findPercent";
 import Preloader from "../../../components/UI/Preloader/Preloader";
+import SlickSlider from "../../../components/UI/SlickSlider/SlickSlider";
+import {observer} from "mobx-react-lite";
 
 const Dashboard = () => {
     const [state, setState] = useState([])
@@ -44,37 +46,36 @@ const Dashboard = () => {
         const balance = await getData(`/get_user_balance/${store.user.id}`)
         setState(balance.data)
         setPercent(store.domain.domainParams.rateCorrectSum)
-        // countTotalBalance()
     }
 
-    // const countTotalBalance = () => {
-    //     console.log('blance state', state)
-    //     let total = 0
-    //     let arr = []
-    //     state.forEach(item => {
-    //         if (item.coinName === 'BTC') {
-    //             let val = item.coinBalance * findPercent(store.rates.btc, percent)
-    //             arr.push(val)
-    //         } else if (item.coinName === 'ETH') {
-    //             let val = item.coinBalance * findPercent(store.rates.eth, percent)
-    //             arr.push(val)
-    //         } else if (item.coinName === 'BCH') {
-    //             let val = item.coinBalance * findPercent(store.rates.bch, percent)
-    //             arr.push(val)
-    //         } else if (item.coinName === 'USDT') {
-    //             let val = item.coinBalance * findPercent(store.rates.usdt, percent)
-    //             arr.push(val)
-    //         }
-    //
-    //     })
-    //
-    //     for (let i = 0; i <= arr.length - 1; i++) {
-    //         total += arr[i]
-    //     }
-    //     store.setTotal(total.toFixed(3))
-    // }
+    const countTotalBalance = () => {
+        let total = 0
+        let arr = []
+        state.forEach(item => {
+            if (item.coinName === 'BTC') {
+                let val = item.coinBalance * findPercent(store.rates.btc, percent)
+                arr.push(val)
+            } else if (item.coinName === 'ETH') {
+                let val = item.coinBalance * findPercent(store.rates.eth, percent)
+                arr.push(val)
+            } else if (item.coinName === 'BCH') {
+                let val = item.coinBalance * findPercent(store.rates.bch, percent)
+                arr.push(val)
+            } else if (item.coinName === 'USDT') {
+                let val = item.coinBalance * findPercent(store.rates.usdt, percent)
+                arr.push(val)
+            }
 
-    console.log('store-rates', store.ratesChange.btc)
+        })
+
+        for (let i = 0; i <= arr.length - 1; i++) {
+            total += arr[i]
+        }
+        store.setTotal(total.toFixed(3))
+        return total.toFixed(3)
+    }
+
+    console.log('store-total', store.total)
 
     return (
         <Container>
@@ -89,7 +90,12 @@ const Dashboard = () => {
                     </Col>
                 </Row>
                 <Row>
-                    <b>Total balance: $ {store.total}</b>
+                    {
+                        state.length ?
+                            <b>Total balance: $ {state ? countTotalBalance() : <Preloader/>}</b>
+                            : <Preloader />
+                    }
+
                 </Row>
             </Row>
 
@@ -97,7 +103,7 @@ const Dashboard = () => {
                 <Row>
                     {
                         store.ratesChange.btc ?
-                            <>
+                            <SlickSlider>
                                 <Col className='col-12 col-md-3 mb-3'>
                                     <WalletInfoBlock
                                         currency='BTC'
@@ -127,7 +133,21 @@ const Dashboard = () => {
                                         status={currencyRateChangeIndicator(store.ratesChange.usdt.toFixed())}
                                         color='BCH' />
                                 </Col>
-                            </>
+                                <Col className='col-12 col-md-3 mb-3'>
+                                    <WalletInfoBlock
+                                        currency='SOL'
+                                        amount={store.ratesChange.sol?.toFixed()}
+                                        status={currencyRateChangeIndicator(store.ratesChange.sol.toFixed())}
+                                        color='SOL' />
+                                </Col>
+                                <Col className='col-12 col-md-3 mb-3'>
+                                    <WalletInfoBlock
+                                        currency='TRX'
+                                        amount={store.ratesChange.trx?.toFixed()}
+                                        status={currencyRateChangeIndicator(store.ratesChange.trx.toFixed())}
+                                        color='TRX' />
+                                </Col>
+                            </SlickSlider>
                         : <Preloader />
                     }
                 </Row>
@@ -149,4 +169,4 @@ const Dashboard = () => {
     )
 }
 
-export default Dashboard
+export default observer(Dashboard)
