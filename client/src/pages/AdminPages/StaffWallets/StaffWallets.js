@@ -34,8 +34,7 @@ const StaffWallets = () => {
     ]
 
     useEffect(() => {
-        getWallet()
-    }, [])
+    }, [wallet])
 
     const onSubmit = async (data) => {
         let id = store.fullAccess ? '1' : store.user.id
@@ -55,24 +54,28 @@ const StaffWallets = () => {
 
     }
 
-    const getWallet = async () => {
-        const obj = {
-            staffId: store.fullAccess ? '1' : store.user.id,
-            rootAccess: store.fullAccess
-        }
-        const res = await postData(`/staff/staff_wallets/get_wallets/`, obj)
-        setWallet(res.data)
-    }
+    // const getWallet = async () => {
+    //     const obj = {
+    //         staffId: store.fullAccess ? '1' : store.user.id,
+    //         rootAccess: store.fullAccess
+    //     }
+    //     const res = await postData(`/staff/staff_wallets/get_wallets/`, obj)
+    //     setWallet(res.data)
+    // }
 
     const findUser = async (data) => {
-        const res = getData(`/staff/staff_wallets/check_staff/${data.userEmail}`)
-        if (res.status !== 200) {
+        const res = await getData(`/staff/staff_wallets/check_staff/${data.userEmail}`)
+        setWallet(res.data)
+        console.log('res-data-wallet', res)
+        if (res.status !== 202) {
             setModal(true)
         }
     }
     const findWallet = async (data) => {
-        const res = getData(`/staff/staff_wallets/check_staff_by_wallet/${data.userWallet}`)
-        if (res.status !== 200) {
+        const res = await getData(`/staff/staff_wallets/check_staff_by_wallet/${data.userWallet}`)
+        setWallet(res.data)
+        console.log('res-data-wallet', res)
+        if (res.status !== 202) {
             setModal(true)
         }
     }
@@ -166,6 +169,7 @@ const StaffWallets = () => {
                     wallet ?
                         wallet.map(wallet => {
                             return <StaffWalletsItem
+                                        key={uuid()}
                                         id={wallet.staffId}
                                         currency={wallet.coinName}
                                         address={wallet.walletAddress} />
