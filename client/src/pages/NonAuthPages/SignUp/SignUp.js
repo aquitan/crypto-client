@@ -94,9 +94,10 @@ const SignUp = () => {
         geoData.rateCorrectSum = store.domain.domainParams.rateCorrectSum
         geoData.minDepositSum = store.domain.domainParams.minDepositSum
         geoData.minWithdrawalSum = store.domain.domainParams.minWithdrawalSum
-        geoData.currencySwapFee = store.domain.domainParams.currencySwapFee
+        geoData.currencySwapFee = store.domain.domainParams.coinSwapFee
         geoData.email = data.email
 
+        console.log('register', geoData)
         await store.registration(geoData)
         navigate('/register-confirm')
 

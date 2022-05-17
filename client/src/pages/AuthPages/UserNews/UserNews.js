@@ -14,7 +14,7 @@ const UserNews = () => {
     }, [])
 
     const getNews = async () => {
-        const res = await getData(`/news/get_user_for_user/${store.domain.domainId}`)
+        const res = await getData(`/news/get_news_for_user/${store.domain.domainId}`)
         setState(res.data)
     }
 

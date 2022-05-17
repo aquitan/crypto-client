@@ -77,14 +77,18 @@ const AppRouter = () => {
         const obj = {
             btc: res.data[0].current_price,
             eth: res.data[1].current_price,
-            bch: res.data[3].current_price,
-            usdt: res.data[2].current_price
+            usdt: res.data[2].current_price,
+            sol: res.data[3].current_price,
+            trx: res.data[4].current_price,
+            bch: res.data[5].current_price,
         }
         const ratesChange = {
             btc: res.data[0].price_change_24h,
             eth: res.data[1].price_change_24h,
-            bch: res.data[3].price_change_24h,
-            usdt: res.data[2].price_change_24h
+            usdt: res.data[2].price_change_24h,
+            sol: res.data[3].price_change_24h,
+            trx: res.data[4].price_change_24h,
+            bch: res.data[5].price_change_24h,
         }
         store.setRatesChange(ratesChange)
         store.setRates(obj)

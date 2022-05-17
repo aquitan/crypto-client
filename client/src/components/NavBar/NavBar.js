@@ -84,6 +84,10 @@ const NavBar = () => {
                         <FontAwesomeIcon icon={faShieldAlt} />
                         <span>News</span>
                     </NavLink>
+                    <NavLink className={cls.link} to={'/trading'}>
+                        <FontAwesomeIcon icon={faShieldAlt} />
+                        <span>Trading</span>
+                    </NavLink>
                     {
                         store.isStaff || store.fullAccess || store.isAdmin ?
                             <NavLink className={cls.link} to='/admin'>
@@ -107,11 +111,13 @@ const NavBar = () => {
                             <div className={cls.navbar_links} style={{width: '100%'}}>
                                 <Dropdown />
                                 <NavLink className={cls.link} to={'/'}>Dashboard</NavLink>
+                                <NavLink className={cls.link} to={'/trading'}>Trading</NavLink>
                                 <NavLink className={cls.link} to={'/profile'}>Profile</NavLink>
                                 <NavLink className={cls.link} to={'/internal-swap'}>Currency Swap</NavLink>
                                 <NavLink className={cls.link} to={'/support'}>Support</NavLink>
                                 <NavLink className={cls.link} to={'/secure-deal'}>Secure Deal</NavLink>
                                 <NavLink className={cls.link} to={'/news'}>News</NavLink>
+
                                 {
                                     store.isStaff || store.fullAccess || store.isAdmin ? <NavLink className={cls.link} to='/admin'>Staff</NavLink> : null
                                 }

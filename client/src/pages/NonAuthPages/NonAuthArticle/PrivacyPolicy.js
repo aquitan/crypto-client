@@ -4,8 +4,8 @@ import {Container} from "react-bootstrap";
 import {store} from "../../../index";
 
 const PrivacyPolicy = () => {
-    let domain = store.domain.domain_name.toUpperCase()
-    let domainFull = store.domain.full_domain_name
+    let domain = store.domain.domainName.toUpperCase()
+    let domainFull = store.domain.fullDomainName
     return (
         <Container>
             <div className="article footer_links_page">

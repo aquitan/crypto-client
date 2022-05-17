@@ -45,12 +45,18 @@ const StaffWalletsItem = (props) => {
                 <Col>
                     <AdminInput disabled={state}  name='currentWallet' {...register('currentWallet')} />
                 </Col>
-                <Col className='d-none d-md-block'>
-                    <AdminButton onClick={onEdit} classname={'orange'}>Редактировать</AdminButton>
-                </Col>
-                <Col className='d-none d-md-block'>
-                    <AdminButton classname={'green'} onClick={handleSubmit(onSubmit)}>Редактировать</AdminButton>
-                </Col>
+                {
+                    store.fullAccess ?
+                        <>
+                            <Col className='d-none d-md-block'>
+                                <AdminButton onClick={onEdit} classname={['orange','medium_btn']}>Редактировать</AdminButton>
+                            </Col>
+                            <Col className='d-none d-md-block'>
+                                <AdminButton classname={['green', 'medium_btn']} onClick={handleSubmit(onSubmit)}>Сохранить</AdminButton>
+                            </Col>
+                        </>
+                    :null
+                }
             </Row>
         </div>
     )

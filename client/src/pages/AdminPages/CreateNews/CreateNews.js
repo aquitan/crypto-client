@@ -20,7 +20,7 @@ import FileUpload from "../../../components/UI/FileUpload/FileUpload";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 
 const CreateNews = () => {
-    const [state, setState] = useState()
+    const [state, setState] = useState([])
     const [startDate, setStartDate] = useState()
     const [timeDate, setTimeDate] = useState()
     const {register, handleSubmit, formState: {errors}} = useForm({
@@ -68,13 +68,16 @@ const CreateNews = () => {
             data.staffId = store.fullAccess ? '1' : store.user.id
         }
         const res = await putData('/staff/news/news_create/', data)
+        if (res.status === 201) {
+            getAllNews()
+        }
     }
 
     const getAllNews = async () => {
         const obj = {
             isAdmin: store.isAdmin,
             isStaff: store.isStaff,
-            staffId: store.user.id,
+            staffEmail: store.user.email,
             rootAccess: store.fullAccess
         }
         if (store.fullAccess) {
@@ -157,10 +160,11 @@ const CreateNews = () => {
             <AdminButtonCard>
                 <h4>Все новости</h4>
                 {
-                    state ?
+                    !state === 'empty list' ?
                         state.map(news => {
                             return <AllNews data={news} />
-                        }): <h4>No data!</h4>
+                        })
+                        : <h4>No data!</h4>
                 }
             </AdminButtonCard>
         </Container>

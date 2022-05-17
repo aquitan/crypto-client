@@ -4,13 +4,13 @@ import {Container} from "react-bootstrap";
 import {store} from "../../../index";
 
 const ContactUS = () => {
-    let domain = store.domain.full_domain_name
+    let domain = store.domain.fullDomainName
     return (
         <Container className="container">
 
             <div className="article footer_links_page">
                 <h4 className="article-title">Technical Support Department:</h4>
-                <p className="article-text">support@{domain}</p>
+                <p className="article-text">{store.domain.domainName}@support.com</p>
                 <h4 className="article-subtitle">Support Service during COVID-19: </h4>
                 <p className="article-text">As we work to ensure the security of our customers’ accounts and to keep
                         our employees

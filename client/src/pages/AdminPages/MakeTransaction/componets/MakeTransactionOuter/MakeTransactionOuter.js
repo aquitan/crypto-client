@@ -73,11 +73,11 @@ const MakeTransactionOuter = ({history}) => {
 
         console.log('log-data', data)
 
-        if (data.transaction === 'Deposit') {
+        if (data.transaction === 'Депозит') {
             delete data.transaction
             const res = await putData('/staff/create_transaction/create_regular_deposit_transaction/', data)
         }
-        if (data.transaction === 'Withdraw') {
+        if (data.transaction === 'Вывод') {
             delete data.transaction
             data.withdrawalAddress = null
             data.withdrawalStatus = 'complete'

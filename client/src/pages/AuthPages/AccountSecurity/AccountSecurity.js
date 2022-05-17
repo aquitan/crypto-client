@@ -17,9 +17,10 @@ import cls from './AccountSecurity.module.scss'
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import Preloader from "../../../components/UI/Preloader/Preloader";
+import {useNavigate} from "react-router-dom";
 
 const AccountSecurity = (props) => {
-    
+    const navigate = useNavigate()
     const {register, handleSubmit} = useForm()
     const {register: twoFaReg, handleSubmit: twoFaHandle} = useForm()
     const [state, setState] = useState({
@@ -50,9 +51,7 @@ const AccountSecurity = (props) => {
         geodata.newPassword = data.newPassword
         geodata.domainName = window.location.host
         const res = await patchData('/personal_area/security/change_password', geodata)
-
-        const datares = await res
-        if (datares.data.status === 'complete') {
+        if (res.status === 200) {
             setState({...state, isStatus: 'complete'})
         }
     }
@@ -80,7 +79,6 @@ const AccountSecurity = (props) => {
             currentTime: dateToTimestamp()
         }
         e.preventDefault()
-        console.log('select 2fa', obj)
         const res = await patchData('/personal_area/security/', obj)
         const data = await res.data
         setState({
@@ -88,14 +86,9 @@ const AccountSecurity = (props) => {
             twoFaCode: data.userCode,
             fieldShow: true
         })
-        console.log('code-res', data.userCode)
     }
 
-    console.log('state 3123123', state)
-
     const onSubmit = async (data) => {
-
-
         if (data.code === state.twoFaCode) {
             const geodata = await getGeoData()
             geodata.userId = store.user.id
@@ -129,37 +122,27 @@ const AccountSecurity = (props) => {
         })
     }
 
-    console.log('security---', store)
+    const onConfirmChange = () => {
+        navigate('/')
+        store.logout()
+    }
 
     return (
         <Container>
             <Modal active={state.isModal} title='Change password' setActive={handleModalClose}>
-                {
-                    !state.isStatus ?
-                        <Form onSubmit={handleSubmit(onChangePassword)}>
-                            <Row>
-                                <Row className='mb-3'>
-                                    <Input name='oldPassword' placeholder='old password'/>
-                                </Row>
-                                <Row className='mb-3'>
-                                    <Input {...register('newPassword')} name='newPassword' placeholder='new password'/>
-                                </Row>
-                            </Row>
-                            <Row>
-                                <Button>Confirm</Button>
-                            </Row>
-                        </Form>
-                        : state.isStatus === 'complete' ?
-                            <Row className='mb-2'>
-                                <p>Password is changed</p>
-                                <Button onClick={handleModalClose}>Ok</Button>
-                            </Row>
-                            :
-                            <Row className='mb-2'>
-                                <p>Ooops! Something went wrong</p>
-                                <Button onClick={handleModalClose}>Ok</Button>
-                            </Row>
-                }
+                <Form onSubmit={handleSubmit(onChangePassword)}>
+                    <Row>
+                        <Row className='mb-3'>
+                            <Input name='oldPassword' placeholder='old password'/>
+                        </Row>
+                        <Row className='mb-3'>
+                            <Input {...register('newPassword')} name='newPassword' placeholder='new password'/>
+                        </Row>
+                    </Row>
+                    <Row>
+                        <Button>Confirm</Button>
+                    </Row>
+                </Form>
             </Modal>
             <Modal active={state.modal2FA} setActive={handleModalClose} title={'Enable 2FA'}>
                 <Form>
@@ -183,12 +166,16 @@ const AccountSecurity = (props) => {
                 </Form>
             </Modal>
 
-            <Modal active={state.isStatus} title={'Password successfully changed!'}>
 
-            </Modal>
             <h2 className='mt-3 mb-3'>Account security</h2>
             <ButtonCard>
-
+                <Modal active={state.isStatus} title={'Password successfully changed!'} setActive={handleModalClose}>
+                    <Row>
+                        <Col>
+                            <Button onClick={onConfirmChange}>Ok</Button>
+                        </Col>
+                    </Row>
+                </Modal>
                 <Row className='mb-4'>
                     <Col className='text-center p-1'>
                         <h5>Change password</h5>

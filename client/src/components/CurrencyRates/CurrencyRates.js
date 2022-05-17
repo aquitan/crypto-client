@@ -18,9 +18,9 @@ const CurrencyRates = () => {
 
     return (
         <Row className={`${cls.currencyRates} mb-3`} style={{maxWidth: 1000}}>
-            <Col><b>BTC:</b> {findPercent(store.rates.btc, state)}</Col>
-            <Col><b>ETH:</b> {findPercent(store.rates.eth, state)}</Col>
-            <Col><b>BCH:</b> {findPercent(store.rates.bch, state)}</Col>
+            <Col><b>BTC:</b> {findPercent(store.rates.btc, state).toFixed(5)}</Col>
+            <Col><b>ETH:</b> {findPercent(store.rates.eth, state).toFixed(5)}</Col>
+            <Col><b>BCH:</b> {findPercent(store.rates.bch, state).toFixed(5)}</Col>
             <Col><b>USDT:</b> {store.rates.usdt}</Col>
         </Row>
     )

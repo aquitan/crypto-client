@@ -3,6 +3,7 @@
   padding: 12px;
   border-radius: 10px;
   width: 100%;
+  max-width: 330px;
 }
 
 .btc {
@@ -15,6 +16,12 @@
 
 .bch {
   background-color: #3693FF;
+}
+.sol {
+  background-color: #00FFA3;
+}
+.trx {
+  background-color: #ff401d;
 }
 
 .up svg {

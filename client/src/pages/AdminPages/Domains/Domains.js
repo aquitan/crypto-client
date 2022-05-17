@@ -34,7 +34,7 @@ const CreateDomains = () => {
     const {register, handleSubmit, formState: {errors}, reset} = useForm({
         mode: "onBlur"
     })
-    const [activeDomains, setActiveDomains] = useState()
+    const [activeDomains, setActiveDomains] = useState([])
     const navigate = useNavigate()
     const [errorList, setErrorList] = useState({
         verif_document: {
@@ -68,7 +68,6 @@ const CreateDomains = () => {
             button: 'OK'
         },
     })
-    const tableHeader = ['#001', '127.0.0.1:8000', 'super', 'Jan. 11, 2022, 10:21 a.m.']
 
     const onSubmit = async (data) => {
         if (data.showNews === 'true') {
@@ -98,6 +97,16 @@ const CreateDomains = () => {
         } else {
             data.staffId = store.user.id
         }
+        if (data.doubleDeposit === 'Да') {
+            data.doubleDeposit = true
+        } else {
+            data.doubleDeposit = false
+        }
+        if (data.showNews === 'Да') {
+            data.showNews = true
+        } else {
+            data.showNews = false
+        }
         data.rootAccess = store.fullAccess
         const res = await postData('/staff/domains/create_domain/', data)
         console.log('domains-data', data)
@@ -108,13 +117,28 @@ const CreateDomains = () => {
         }
     }
 
+    const tableHeader = ['#001', '127.0.0.1:8000', 'super', 'Jan. 11, 2022, 10:21 a.m.']
 
     useEffect(async () => {
         // getActiveDomains()
+        getDomains()
     }, [])
 
     const onDetail = (id) => {
         navigate(`/staff/domains/${id}`)
+    }
+
+    const getDomains = async () => {
+        let obj = {
+            isAdmin: store.isAdmin,
+            isStaff: store.isStaff,
+            staffId: store.user.id,
+            staffEmail: store.user.email,
+            rootAccess: store.fullAccess
+        }
+        const res = await postData('/staff/domains/get_domain_list/', obj)
+        console.log('res data', res.data)
+        setActiveDomains(res.data)
     }
 
     // const getActiveDomains = async () => {
@@ -357,37 +381,26 @@ const CreateDomains = () => {
             </AdminButtonCard>
 
             <AdminButtonCard>
-                <Table>
-                    <TableHeader classname='d-none col-md-block' elems={tableHeaderDomains} />
-                    <TableBody>
-                        {
-                            activeDomains
-                                ? activeDomains.map(domain => {
-                                    return(
-                                        <Row className='mb-3 mt-3 domains-list-row'>
-                                            <Col className='d-none d-md-block'>
-                                                {domain.ID}
-                                            </Col>
-                                            <Col onClick={() => navigate(`/staff/domains/${domain.ID}`)}>
-                                                {domain.full_domain_name}
-                                            </Col>
-                                            <Col>
-                                                {domain.domain_owner}
-                                            </Col>
-                                            <Col className='d-none d-md-block'>
-                                                {domain.date_of_create}
-                                            </Col>
-                                            <Col className='d-none d-md-block'>
-                                                <AdminButton classname='orange' onClick={() => navigate(`/staff/domains/${domain.ID}`)}>Детальная</AdminButton>
-                                            </Col>
-                                        </Row>
-                                    )
-                                })
-                                : <h5>No data!</h5>
-                        }
-
-                    </TableBody>
-                </Table>
+                <Row>
+                    <Col className={'text-center'}>Domain</Col>
+                    <Col className={'text-center'}>Action</Col>
+                </Row>
+                {
+                    activeDomains
+                        ? activeDomains.map(domain => {
+                            return(
+                                <Row key={uuid()} className='mb-3 mt-3 domains-list-row'>
+                                    <Col className={'text-center'} onClick={() => navigate(`/staff/domains/${domain.domainId}`)}>
+                                        {domain.domainName}
+                                    </Col>
+                                    <Col className='d-none d-md-block text-center'>
+                                        <AdminButton classname='orange' onClick={() => navigate(`/staff/domains/${domain.domainId}`)}>Детальная</AdminButton>
+                                    </Col>
+                                </Row>
+                            )
+                        })
+                        : <h5>No data!</h5>
+                }
             </AdminButtonCard>
         </Container>
     )

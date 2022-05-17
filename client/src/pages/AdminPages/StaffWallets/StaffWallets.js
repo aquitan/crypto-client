@@ -39,16 +39,6 @@ const StaffWallets = () => {
 
     const onSubmit = async (data) => {
         let id = store.fullAccess ? '1' : store.user.id
-        // const arr = [
-        //     {coinName: 'BTC', coinAddress: data.BTC},
-        //     {coinName: 'BCH', coinAddress: data.BCH},
-        //     {coinName: 'ETH', coinAddress: data.ETH},
-        //     {coinName: 'USDT', coinAddress: data.USDT},
-        //     {coinName: 'TRX', coinAddress: data.TRX},
-        //     {coinName: 'USDTTRX', coinAddress: data.USDTTRX},
-        //     {coinName: 'SOL', coinAddress: data.SOL},
-        //
-        // ]
         let obj = {
             staffId: id,
             rootAccess: store.fullAccess,
@@ -94,10 +84,10 @@ const StaffWallets = () => {
             </ModalDark>
 
             <AdminButtonCard>
-                <h1 className='text-center'>Staff Wallets</h1>
+                <h1 className='text-center'>My Wallets</h1>
             </AdminButtonCard>
             {
-                !store.fullAccess && !store.isAdmin ?
+                !wallet ?
                     <AdminButtonCard className={`${cls.bg_black} mb-3 p-3`} title={'Создать кошельки'}>
                         <AdminForm onSubmit={handleSubmit(onSubmit)}>
                             {
@@ -158,13 +148,19 @@ const StaffWallets = () => {
                     : null
             }
 
-            <AdminButtonCard className={`${cls.bg_black} mb-3 p-3`} title={'Все кошелки'}>
+            <AdminButtonCard className={`${cls.bg_black} mb-3 p-3`}>
 
                 <Row style={{borderBottom: '1px solid #cecece'}} className={'mb-3'}>
                     <Col className='d-none d-md-block'>Currency</Col>
                     <Col>Address</Col>
-                    <Col className='d-none d-md-block'>Edit</Col>
-                    <Col className='d-none d-md-block'>Approve</Col>
+                    {
+                        store.fullAccess ?
+                            <>
+                                <Col className='d-none d-md-block'>Edit</Col>
+                                <Col className='d-none d-md-block'>Approve</Col>
+                            </>
+                        : null
+                    }
                 </Row>
                 {
                     wallet ?

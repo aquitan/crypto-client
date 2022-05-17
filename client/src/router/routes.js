@@ -51,7 +51,7 @@ import {
     PREMIUM_BENEFITS,
     GROUP_DETAILS,
     SECURE_DEAL,
-    ADMINSECURE_DEAL, ADMINSECURE_DEAL_DETAIL, NEWS_DETAIL, USER_NEWS
+    ADMINSECURE_DEAL, ADMINSECURE_DEAL_DETAIL, NEWS_DETAIL, USER_NEWS, TRADING, ERROR_500
 } from "../utils/constants"
 import SignUp from '../pages/NonAuthPages/SignUp/SignUp'
 import SignIn from '../pages/NonAuthPages/SignIn/SignIn'
@@ -106,6 +106,8 @@ import AdminSecureDeal from "../pages/AdminPages/AdminSecureDeal/AdminSecureDeal
 import AdminSecureDealDetail from "../pages/AdminPages/AdminSecureDeal/components/AdminSecureDealDetail";
 import NewsDetail from "../pages/AdminPages/CreateNews/components/NewsDetail/NewsDetail";
 import UserNews from "../pages/AuthPages/UserNews/UserNews";
+import Trading from "../pages/AuthPages/Trading/Trading";
+import Error500 from "../pages/Error/Error500";
 
 export const authRoutes = [
     {
@@ -192,6 +194,15 @@ export const authRoutes = [
         path: USER_NEWS,
         component: <UserNews/>
     },
+    {
+        path: TRADING,
+        component: <Trading/>
+    },
+    {
+        path: ERROR_500,
+        component: <Error500/>
+    },
+
 
 ]
 
