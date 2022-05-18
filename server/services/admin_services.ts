@@ -309,11 +309,27 @@ class adminService {
   }
 
   async getGroupListForAdmin() {
-    const getList: any = await staffGroup.find()
+    const getList: any = await staffGroupUserList.find()
     console.log('received getList => ', getList);
     if (!getList) return false
     if (!getList.length) return 'empty set'
-    return getList
+
+    let dataArray = []
+    for (let i = 0; i <= getList.length - 1; i++) {
+      console.log('cur elem is: ', getList[i]);
+      const receivedData: any = await staffGroup.findById({ _id: getList[i].groupId })
+      const userEmail: any = await baseUserData.findOne({ _id: getList[i].creatorId })
+      console.log('received group object => ', receivedData);
+      let dataObj = {
+        groupData: receivedData,
+        groupUsers: getList[i].staffEmailList,
+        ownerEmail: userEmail.email
+      }
+      dataArray.push(dataObj)
+    }
+    console.log(' staff groups list is => ', dataArray);
+    if (!dataArray.length) return 'empty set'
+    return dataArray
   }
 
   async deleteUserFromGroup(groupId: string, staffEmail: string) {
@@ -325,7 +341,7 @@ class adminService {
 
     let dataArray = []
     for (let x = 0; x <= getList.staffEmailList.length - 1; x++) {
-      if (getList.staffEmailList[x] === staffEmail) {
+      if (getList.staffEmailList[x] !== staffEmail) {
         console.log('received group email is => ', getList.staffEmailList[x]);
         dataArray.push(getList.staffEmailList[x])
       }
@@ -347,6 +363,16 @@ class adminService {
     })
     console.log('getGroup => ', getGroup);
     if (!getGroup) return false
+
+    const groupUserList: any = await staffGroupUserList.findOne({ groupId: groupId })
+    console.log('groupUserList => ', groupUserList);
+    if (!groupUserList) return false
+    await staffGroupUserList.deleteOne({
+      groupId: groupId
+    })
+    const updatedUsersList: any = await staffGroupUserList.findOne({ groupId: groupId })
+    console.log('updatedUsersList => ', updatedUsersList);
+    if (updatedUsersList) return false
 
     await staffGroup.deleteOne({
       _id: groupId

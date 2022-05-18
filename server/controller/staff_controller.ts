@@ -52,36 +52,20 @@ class StaffController {
 
       const adminPermission: boolean = req.body.isAdmin
       const staffPermission: boolean = req.body.isStaff
+      const staffId: string = req.body.staffId
+      const staffEmail: string = req.body.staffEmail
       const userDomain: string = req.body.domainName
       const rootAccess: boolean = req.body.rootAccess
       console.log('req body is: ', req.body)
 
-      if (rootAccess) {
+      if (rootAccess || adminPermission) {
         const usersList: any = await adminService.GetUsersList()
-        if (usersList !== false) {
-          return res.status(200).json({
-            usersList: usersList,
-            status: 'complete'
-          })
-        }
-      }
-      if (adminPermission) {
-        const usersList: any = await adminService.GetUsersList()
-        if (usersList !== false) {
-          return res.status(200).json({
-            usersList: usersList,
-            status: 'complete'
-          })
-        }
+        if (!usersList) return res.status(200).json({ usersList })
+
       }
       if (staffPermission) {
-        const usersList: any = await staffService.GetUsersList(userDomain)
-        if (usersList !== false) {
-          return res.status(200).json({
-            usersList: usersList,
-            status: 'complete'
-          })
-        }
+        const usersList: any = await staffService.GetUsersList(userDomain, staffId, staffEmail)
+        if (!usersList) return res.status(200).json({ usersList })
       }
 
       return res.status(403).json({
@@ -1836,7 +1820,8 @@ class StaffController {
       if (staffPermission) {
         const result: any = await staffService.deleteUserFromGroup(groupId, staffId, staffEmail)
         if (!result) throw ApiError.ServerError()
-        return res.status(201).json(result)
+        if (typeof result === 'string') return res.status(200).json(result)
+        return res.status(202).json(result)
       }
       res.status(403).json({ message: 'permission denied' })
 
@@ -1893,9 +1878,10 @@ class StaffController {
 
     try {
       if (staffPermission) {
-        const result: boolean = await staffService.deleteGroup(staffId, groupId)
+        const result: any = await staffService.deleteGroup(staffId, groupId)
+        if (typeof result === 'string') return res.status(200).json(result)
         if (!result) throw ApiError.ServerError()
-        return res.status(200).json({ message: 'ok' })
+        return res.status(202).json({ message: 'ok' })
       }
 
       if (adminPermission || rootAccess) {
