@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import PropTypes from 'prop-types'
 import {Col, Container, Row} from "react-bootstrap";
 import AdminButtonCard from "../../../../components/AdminButtonCard/AdminButtonCard";
@@ -7,35 +7,69 @@ import './GroupDetails.scss'
 import {useLocation} from "react-router-dom";
 import {getCurrentDate} from "../../../../utils/getCurrentDate";
 import AdminInput from "../../../../components/UI/AdminInput/AdminInput";
-import {deleteData, patchData} from "../../../../services/StaffServices";
+import {deleteData, patchData, postData} from "../../../../services/StaffServices";
 import {useForm} from "react-hook-form";
 import {store} from "../../../../index";
+import Modal from "../../../../components/UI/Modal/Modal";
+import {log} from "util";
+import {SwalSimple} from "../../../../utils/SweetAlert";
 
 const GroupDetails = () => {
-    const {register, handleSubmit} = useForm()
-    const {register: regDelete, handleSubmit: handleDelete} = useForm()
+    const {register, handleSubmit, reset} = useForm()
+    const {register: regDelete, handleSubmit: handleDelete, reset: resetDelete} = useForm()
+    const [list, setList] = useState()
+    const [isModal, setIsModal] = useState(false)
+    const [titleModal, setTitleModal] = useState('')
     const location = useLocation()
 
     const addUser = async (data) => {
-        data.groupId = location.state._id
+        data.groupId = location.state.groupData._id
         console.log('data', data)
         const res = await patchData('/staff/groups/add_new_group_member/', data)
+        if (res.status === 200 || res.status === 201) {
+            SwalSimple('Пользователь добавлен')
+            reset({data: ''})
+        } else {
+            SwalSimple('Что-то пошло не так!')
+        }
     }
     const deleteUser = async (data) => {
-        data.groupId = location.state._id
+        data.groupId = location.state.groupData._id
         data.staffId = store.user.id
         data.rootAccess = store.fullAccess
         data.isAdmin = store.isAdmin
         data.isStaff = store.isStaff
-        console.log('data', data)
         const res = await deleteData('/staff/groups/delete_user_from_group/', {data: data})
+        if (res.status === 202) {
+            SwalSimple('Пользователь удален')
+            resetDelete({data: ''})
+        } else if (res.status === 200) {
+            SwalSimple('Если вы не создатель группы, вы не можете удалить пользователя!')
+        }
     }
 
+    const getGroupList = async () => {
+        const obj = {
+            staffEmail: store.user.email,
+            isAdmin: store.isAdmin,
+            isStaff: store.isStaff,
+            rootAccess: store.fullAccess
+        }
+        const res = await postData('/staff/groups/get_group_list/', obj)
+        console.log('group list', res.data)
+        setList(res.data)
+    }
 
-    const {state} = location
+    console.log('location', location)
+
+    const {groupData, groupUsers} = location.state
 
     return (
         <Container>
+            <Modal active={isModal} setActive={setIsModal} title={titleModal}>
+
+            </Modal>
+
             <AdminButtonCard title='Данные по группе' >
                 <Row className='mb-3'>
                     <Col className='col-12 col-lg-6'>
@@ -44,7 +78,7 @@ const GroupDetails = () => {
                                 Создатель
                             </Col>
                             <Col>
-                                {state.creatorId}
+                                {location.state.ownerEmail}
                             </Col>
                         </Row>
                     </Col>
@@ -54,7 +88,7 @@ const GroupDetails = () => {
                                 Нзвание
                             </Col>
                             <Col>
-                                {state.groupName}
+                                {groupData.groupName}
                             </Col>
                         </Row>
                     </Col>
@@ -66,7 +100,7 @@ const GroupDetails = () => {
                                 Дата создания
                             </Col>
                             <Col>
-                                {getCurrentDate(state.dateOfCreate)}
+                                {getCurrentDate(groupData.dateOfCreate)}
                             </Col>
                         </Row>
                     </Col>
@@ -76,22 +110,30 @@ const GroupDetails = () => {
                                 Видны ли все пользователи
                             </Col>
                             <Col>
-                                {state.viewParams ? 'Да' : 'Нет'}
+                                {groupData.viewParams ? 'Да' : 'Нет'}
                             </Col>
                         </Row>
                     </Col>
                 </Row>
-                <Row className='justify-content-center'>
-                    <Col className='col-12 col-lg-4 text-center mb-3'>
-                        <AdminButton classname='red'>Выйти из группы</AdminButton>
+                <Row>
+                    <Col>
+                        Список пользователей
                     </Col>
-                    <Col className='col-12 col-lg-4 text-center mb-3'>
-                        <AdminButton classname='orange'>Изменить видимость участников</AdminButton>
-                    </Col>
-                    <Col className='col-12 col-lg-4 text-center mb-3'>
-                        <AdminButton classname='green'>Отправить заявку на участие</AdminButton>
+                    <Col>
+                        {
+                            groupUsers ?
+                                groupUsers.map(user => {
+                                    return(
+                                        <Row className='active-group-col' >
+                                            {user}
+                                        </Row>
+                                    )
+                                })
+                                : null
+                        }
                     </Col>
                 </Row>
+
             </AdminButtonCard>
             <AdminButtonCard title={'Добавить в группу'}>
                 <Row>

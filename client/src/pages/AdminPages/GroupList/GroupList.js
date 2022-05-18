@@ -5,14 +5,16 @@ import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard
 import AdminInput from "../../../components/UI/AdminInput/AdminInput";
 import Select from "../../../components/UI/Select/Select";
 import AdminButton from "../../../components/UI/AdminButton/AdminButton";
-import TableHeader from "../../../components/UI/Table/components/TableHeader/TableHeader";
-import TableBody from "../../../components/UI/Table/components/TableBody/TableBody";
-import TableItem from "../../../components/UI/Table/components/TableItem/TableItem";
 import ActiveGroups from "./ActiveGroups/ActiveGroups";
 import {useForm} from "react-hook-form";
 import {deleteData, postData} from "../../../services/StaffServices";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import {store} from "../../../index";
+import Modal from "../../../components/UI/Modal/Modal";
+import {SwalSimple, SweetAlert} from "../../../utils/SweetAlert";
+import Swal from "sweetalert2";
+import withReactContent from 'sweetalert2-react-content'
+
 
 const GroupList = () => {
     const {register, handleSubmit} = useForm()
@@ -21,7 +23,8 @@ const GroupList = () => {
         {value: true, text: 'Видны'},
         {value: false, text: 'Не видны'},
     ]
-    const headerData = ['Информация', 'Дата', 'Действие']
+    const [isModal, setIsModal] = useState(false)
+    const [titleModal, setTitleModal] = useState('')
 
     const onSubmit = async (data) => {
         data.currentDate = dateToTimestamp()
@@ -43,24 +46,31 @@ const GroupList = () => {
             rootAccess: store.fullAccess
         }
         const res = await postData('/staff/groups/get_group_list/', obj)
+        console.log('group list', res.data)
         setList(res.data)
-
     }
     const onDelete = async (id) => {
         const obj = {
-            staffEmail: store.user.email,
+            staffId: store.user.id,
             isAdmin: store.isAdmin,
             isStaff: store.isStaff,
             rootAccess: store.fullAccess,
             groupId: id
         }
         const res = await deleteData('/staff/groups/delete_group/', {data: obj})
-        console.log('id', id)
+        if (res.status === 200 || res.status === 201) {
+            SwalSimple('Группа удалена!')
+        } else {
+            SwalSimple('Что то пошло не так! 8/')
+        }
         getGroupList()
     }
 
     return (
         <Container>
+            <Modal active={isModal} setActive={setIsModal} title={titleModal}>
+
+            </Modal>
             <h1 className='m-4'>Создать группы</h1>
             <AdminButtonCard>
                 <Form onSubmit={handleSubmit(onSubmit)}>
@@ -83,14 +93,14 @@ const GroupList = () => {
             <AdminButtonCard>
                 <h2>Список групп</h2>
                 {
-                    list.length ?
-                        list.map(item => {
-                            return <ActiveGroups
-                                dateOfCreate={item.dateOfCreate}
-                                groupName={item.groupName}
+                    typeof list === "object" ?
+                        list?.map(item => {
+                            return <ActiveGroups key={item.groupData._id}
+                                dateOfCreate={item.groupData.dateOfCreate}
+                                groupName={item.groupData.groupName}
                                 item={item}
                                 onDelete={onDelete}
-                                id={item._id}
+                                id={item.groupData._id}
                             />
                         })
                         : <h3>No groups!</h3>
