@@ -78,28 +78,80 @@ class staffService {
 
 
 
-	async GetUsersList(domainName: string) {
-		const usersList: any = await baseUserData.find({ domainName: domainName })
-		console.log('user list: ', usersList);
+	async GetUsersList(domainName: string, staffId: string, staffEmail: string) {
+		const groupList: any = await staffGroup.find({ creatorId: staffId })
 
 		let dataArray: any = []
 
-		for (let i = 0; i <= usersList.length - 1; i++) {
-			const kycParams: any = await userParams.findOne({ userId: usersList[i].id })
-			if (!kycParams) return false
-			let dataObject = {
-				userId: usersList[i].id,
-				registerDate: usersList[i].dateOfEntry,
-				userName: usersList[i].name,
-				userEmail: usersList[i].email,
-				userStatus: kycParams.isStaff,
-				kycStatus: kycParams.kycStatus
+		if (!groupList.length) {
+			const usersList: any = await baseUserData.find({ domainName: domainName })
+			console.log('user list: ', usersList);
+
+			for (let i = 0; i <= usersList.length - 1; i++) {
+				const kycParams: any = await userParams.findOne({ userId: usersList[i].id })
+				if (!kycParams) return false
+				let dataObject = {
+					userId: usersList[i].id,
+					registerDate: usersList[i].dateOfEntry,
+					userName: usersList[i].name,
+					userEmail: usersList[i].email,
+					userStatus: kycParams.isStaff,
+					kycStatus: kycParams.kycStatus
+				}
+				dataArray.push(dataObject)
 			}
-			dataArray.push(dataObject)
+			if (!dataArray.length) return false
+			return dataArray
+		} else {
+
+			for (let i = 0; i <= groupList.length - 1; i++) {
+				const groupUsers: any = await staffGroupUserList.find({ groupId: groupList[i].id })
+				console.log('received groupUsers => ', groupUsers);
+				for (let j = 0; j <= groupUsers.length - 1; j++) {
+					for (let x = 0; x <= groupUsers[j].staffEmailList[x] - 1; x++) {
+						if (groupUsers[j].staffEmailList[x] === staffEmail) {
+
+							const usersList: any = await baseUserData.find()
+							console.log('user list: ', usersList);
+							for (let f = 0; f <= usersList.length - 1; f++) {
+								if (groupList[i].viewParams === false) {
+									const kycParams: any = await userParams.findOne({ userId: usersList[f].id })
+									if (!kycParams) return false
+									let dataObject = {
+										userId: usersList[f].id,
+										registerDate: usersList[f].dateOfEntry,
+										userName: usersList[f].name,
+										userEmail: usersList[f].email,
+										userStatus: kycParams.isStaff,
+										kycStatus: kycParams.kycStatus
+									}
+									dataArray.push(dataObject)
+								} else {
+									if (usersList[f].dateOfCreate < groupList[i].dateOfCreate) {
+										const kycParams: any = await userParams.findOne({ userId: usersList[f].id })
+										if (!kycParams) return false
+										let dataObject = {
+											userId: usersList[f].id,
+											registerDate: usersList[f].dateOfEntry,
+											userName: usersList[f].name,
+											userEmail: usersList[f].email,
+											userStatus: kycParams.isStaff,
+											kycStatus: kycParams.kycStatus
+										}
+										dataArray.push(dataObject)
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			console.log('dataArray is => ', dataArray);
+			if (!dataArray.length) return false
+			return dataArray
 		}
-		if (!dataArray.length) return false
-		return dataArray
 	}
+
 
 
 	async GetUserDetail(user_id: string) {
@@ -976,14 +1028,13 @@ class staffService {
 		const isOwner: any = await staffGroup.findOne({
 			creatorId: staffId
 		})
-		if (!isOwner) {
-			console.log('permission denied. U need to be a group owner');
-			return false
-		}
+		console.log('isOwner =>  ', isOwner);
+
+		if (!isOwner) return 'permission denied. U need to be a group owner'
 
 		let dataArray = []
 		for (let x = 0; x <= getList.staffEmailList.length - 1; x++) {
-			if (getList.staffEmailList[x] === staffEmail) {
+			if (getList.staffEmailList[x] !== staffEmail) {
 				console.log('received group email is => ', getList.staffEmailList[x]);
 				dataArray.push(getList.staffEmailList[x])
 			}
@@ -1009,11 +1060,13 @@ class staffService {
 			console.log('cur elem is: ', getList[i]);
 			for (let x = 0; x <= getList[i].staffEmailList.length - 1; x++) {
 				if (getList[i].staffEmailList[x] === staffEmail) {
-					const receivedData: any = await staffGroup.findOne({ _id: getList[i].groupId })
+					const receivedData: any = await staffGroup.findById({ _id: getList[i].groupId })
+					const userEmail: any = await baseUserData.findOne({ _id: receivedData.creatorId })
 					console.log('received group object => ', receivedData);
 					let dataObj = {
 						groupData: receivedData,
-						groupUsers: getList[i].staffEmailList
+						groupUsers: getList[i].staffEmailList,
+						ownerEmail: userEmail.email
 					}
 					dataArray.push(dataObj)
 				}
@@ -1030,13 +1083,24 @@ class staffService {
 		})
 		console.log('getGroup => ', getGroup);
 		if (!getGroup) return false
-		if (getGroup.creatorId !== staffId) {
-			console.log('u can`t delete group is u not group owner');
-			return false
-		}
+		if (getGroup.creatorId.toString() !== staffId) return 'u can`t delete group is u not group owner'
+
+		const groupUserList: any = await staffGroupUserList.findOne({ groupId: groupId })
+		console.log('groupUserList => ', groupUserList);
+		if (!groupUserList) return false
+
+		await staffGroupUserList.deleteOne({
+			groupId: groupId
+		})
+
 		await staffGroup.deleteOne({
 			_id: groupId
 		})
+
+		const updatedUsersList: any = await staffGroupUserList.findOne({ groupId: groupId })
+		console.log('updatedUsersList => ', updatedUsersList);
+		if (updatedUsersList) return false
+
 		const updatedList: any = await staffGroup.findOne({
 			_id: groupId
 		})
