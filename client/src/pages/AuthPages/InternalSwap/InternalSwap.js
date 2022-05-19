@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
-import {Card, Col, Container, Row, Table} from "react-bootstrap";
+import {Card, Col, Container, Image, Row, Table} from "react-bootstrap";
 import {store} from "../../../index";
 import cls from './InternalSwap.module.scss'
 import classNames from "classnames/bind";
@@ -22,6 +22,7 @@ import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import {emailValidate} from "../../../utils/checkEmail";
 import Preloader from "../../../components/UI/Preloader/Preloader";
 import {countCryptoTarget, getCurCoinName, getCurCoinVal, getCurValUsd, getValue} from "../../../utils/countCryptos";
+import {imgMatch} from "../../../utils/imgMatch";
 
 const InternalSwap = () => {
     const cx = classNames.bind(cls)
@@ -41,12 +42,12 @@ const InternalSwap = () => {
 
     const [state, setState] = useState({
         initial: {
-            value: 123123123,
-            currency: 'btc',
+            value: '00000',
+            currency: 'Loading...',
         },
         target: {
-            value: 123123123,
-            currency: 'btc',
+            value: '00000',
+            currency: 'Loading...',
         }
     })
     const [openList, setOpenList] = useState({
@@ -118,6 +119,17 @@ const InternalSwap = () => {
     const getBalance = async () => {
         const res = await getData(`/get_user_balance/${store.user.id}`)
         setBalance(res.data)
+        setState({
+            target: {
+                value: res.data[0].coinBalance,
+                currency: res.data[0].coinName
+            },
+            initial: {
+                value: res.data[0].coinBalance,
+                currency: res.data[0].coinName
+            },
+        })
+        console.log('state', state)
     }
 
     const onSubmit = async (data) => {
@@ -181,29 +193,72 @@ const InternalSwap = () => {
                             balance ?
                                 <Form classnames='form_big' onSubmit={handleSubmit(onSubmit)}>
                                     <Row className=''>
-                                        <Col className='col-12 col-md-6 mb-3'>
+                                        <Col
+                                            style={{position: 'relative'}}
+                                            className='col-12 col-md-6 mb-3'>
                                             <h5 className='mb-3'>Choose address from</h5>
                                             <div onClick={onOpenInitialList}
-                                                 className={cls.value_box}>{state.initial.value} {state.initial.currency}</div>
+                                                 style={{display: 'flex', justifyContent: 'space-between'}}
+                                                 className={cls.value_box}>
+                                                <span style={{display: 'inline-block', marginRight: 10}}>
+                                                    {state?.initial.value} {state.initial.currency}
+                                                </span>
+                                                <Image
+                                                    src={`/img/${imgMatch(state?.initial.currency.toLowerCase())}.svg`}
+                                                    height={30}
+                                                    width={30}
+                                                    alt={'crypto'} />
+                                            </div>
                                             {
                                                 openList.initialList ?
                                                     <ul className={cls.value_list}>
                                                         {balance.map(option => <li
+                                                            style={{display: 'flex', justifyContent: 'space-between'}}
                                                             onClick={() => onChangeInitialValue(option.coinBalance.toFixed(3), option.coinName)}
-                                                            key={uuid()}>{option.coinBalance.toFixed(3)} <span>{option.coinName}</span></li>)}
+                                                            key={uuid()}>
+                                                            <span>
+                                                                {option.coinBalance.toFixed(3)} <span>{option.coinName}</span>
+                                                            </span>
+                                                            <Image
+                                                                src={`/img/${imgMatch(option.coinName.toLowerCase())}.svg`}
+                                                                height={30}
+                                                                width={30}
+                                                                alt={'crypto'} />
+                                                        </li>)}
                                                     </ul>
                                                     : null
                                             }
                                         </Col>
-                                        <Col className='col-12 col-md-6 mb-3'>
+                                        <Col
+                                            style={{position: 'relative'}}
+                                            className='col-12 col-md-6 mb-3'>
                                             <h5 className='mb-3'>Choose address to</h5>
-                                            <div onClick={onOpenTargetList} className={cls.value_box}>{state.target.value} {state.target.currency}</div>
+                                            <div onClick={onOpenTargetList}
+                                                 style={{display: 'flex', justifyContent: 'space-between'}}
+                                                 className={cls.value_box}>
+                                                <span>{state.target.value} {state.target.currency}</span>
+                                                <Image
+                                                    src={`/img/${imgMatch(state?.target.currency.toLowerCase())}.svg`}
+                                                    height={30}
+                                                    width={30}
+                                                    alt={'crypto'} />
+                                            </div>
                                             {
                                                 openList.targetList ?
                                                     <ul className={cls.value_list}>
                                                         {balance.map(option => <li
+                                                            style={{display: 'flex', justifyContent: 'space-between'}}
                                                             onClick={() => onChangeTargetValue(option.coinBalance.toFixed(3), option.coinName)}
-                                                            key={uuid()}>{option.coinBalance.toFixed(3)} <span>{option.coinName}</span></li>)}
+                                                            key={uuid()}>
+                                                            <span>
+                                                                {option.coinBalance.toFixed(3)} <span>{option.coinName}</span>
+                                                            </span>
+                                                            <Image
+                                                                src={`/img/${imgMatch(option.coinName.toLowerCase())}.svg`}
+                                                                height={30}
+                                                                width={30}
+                                                                alt={'crypto'} />
+                                                        </li>)}
                                                     </ul>
                                                     : null
                                             }
@@ -221,7 +276,7 @@ const InternalSwap = () => {
                                     {/*</Row>*/}
                                     <Row className='mb-3'>
                                         <Col>
-                                            <h5 className='mb-3'>Enter Amount (Fee {store.domain.domainParams.coinSwapFee}%)</h5>
+                                            <h5 className='mb-3' style={{fontSize: 12}}>Enter Amount (Fee {store.domain.domainParams.coinSwapFee}%)</h5>
                                             <Input {...register('amount', {
                                                 required: 'Check the value',
                                                 pattern: /(\d+(?:\.\d+)?)/,

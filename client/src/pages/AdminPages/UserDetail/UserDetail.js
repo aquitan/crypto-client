@@ -9,6 +9,7 @@ import {store} from "../../../index";
 import {useParams} from "react-router-dom";
 import {getGeoData} from "../../../queries/getSendGeoData";
 import {getData, postData} from "../../../services/StaffServices";
+import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
 
 const UserDetail = () => {
 
@@ -36,7 +37,9 @@ const UserDetail = () => {
 
     return (
         <Container className={cls.app_continer}>
-            <h2>user page</h2>
+            <AdminButtonCard>
+                <h1 className={'text-center'}>Детальная страница пользователя</h1>
+            </AdminButtonCard>
             <Tabs defaultActiveKey="info" id="uncontrolled-tab-example" className="mb-3 mt-3">
                 <Tab eventKey="info" title="Инфо">
                     <UserDetailTabInfo data={userDetail} />
@@ -48,9 +51,6 @@ const UserDetail = () => {
                     {
                         userDetail ? <UserDetailTabAct isPremium={isPremium} data={userDetail.user} ipData={ipData} /> : null
                     }
-                </Tab>
-                <Tab eventKey="statistics" title="Статистика" >
-                    <UserDetailTab num={4}/>
                 </Tab>
             </Tabs>
         </Container>

@@ -5,14 +5,14 @@ import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard
 import AdminInput from "../../../components/UI/AdminInput/AdminInput";
 import Select from "../../../components/UI/Select/Select";
 import AdminButton from "../../../components/UI/AdminButton/AdminButton";
-import TableHeader from "../../../components/UI/Table/components/TableHeader/TableHeader";
-import TableBody from "../../../components/UI/Table/components/TableBody/TableBody";
-import TableItem from "../../../components/UI/Table/components/TableItem/TableItem";
 import ActiveGroups from "./ActiveGroups/ActiveGroups";
 import {useForm} from "react-hook-form";
 import {deleteData, postData} from "../../../services/StaffServices";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import {store} from "../../../index";
+import Modal from "../../../components/UI/Modal/Modal";
+import {SwalSimple, SweetAlert} from "../../../utils/SweetAlert";
+
 
 const GroupList = () => {
     const {register, handleSubmit} = useForm()
@@ -21,7 +21,8 @@ const GroupList = () => {
         {value: true, text: 'Видны'},
         {value: false, text: 'Не видны'},
     ]
-    const headerData = ['Информация', 'Дата', 'Действие']
+    const [isModal, setIsModal] = useState(false)
+    const [titleModal, setTitleModal] = useState('')
 
     const onSubmit = async (data) => {
         data.currentDate = dateToTimestamp()
@@ -29,6 +30,10 @@ const GroupList = () => {
         data.staffEmail = store.user.email
         data.viewParams = data.viewParams === 'true' ? true : false
         const res = await postData('/staff/groups/create_new_group/', data)
+        if (res.status === 201) {
+            SwalSimple('Группа создана!')
+            getGroupList()
+        }
     }
 
     useEffect(() => {
@@ -44,24 +49,32 @@ const GroupList = () => {
         }
         const res = await postData('/staff/groups/get_group_list/', obj)
         setList(res.data)
-
     }
     const onDelete = async (id) => {
         const obj = {
-            staffEmail: store.user.email,
+            staffId: store.user.id,
             isAdmin: store.isAdmin,
             isStaff: store.isStaff,
             rootAccess: store.fullAccess,
             groupId: id
         }
         const res = await deleteData('/staff/groups/delete_group/', {data: obj})
-        console.log('id', id)
+        if (res.status === 200) {
+            SwalSimple('Группа удалена!')
+        } else {
+            SwalSimple('Что то пошло не так! 8/')
+        }
         getGroupList()
     }
 
     return (
         <Container>
-            <h1 className='m-4'>Создать группы</h1>
+            {/*<Modal active={isModal} setActive={setIsModal} title={titleModal}>*/}
+
+            {/*</Modal>*/}
+            <AdminButtonCard>
+                <h1 className='text-center'>Создать группы</h1>
+            </AdminButtonCard>
             <AdminButtonCard>
                 <Form onSubmit={handleSubmit(onSubmit)}>
                     <Row className='mb-3'>
@@ -83,14 +96,16 @@ const GroupList = () => {
             <AdminButtonCard>
                 <h2>Список групп</h2>
                 {
-                    list.length ?
-                        list.map(item => {
+                    typeof list === "object" ?
+                        list?.map((item, index) => {
                             return <ActiveGroups
-                                dateOfCreate={item.dateOfCreate}
-                                groupName={item.groupName}
+                                index={index}
+                                key={item.groupData._id}
+                                dateOfCreate={item.groupData.dateOfCreate}
+                                groupName={item.groupData.groupName}
                                 item={item}
                                 onDelete={onDelete}
-                                id={item._id}
+                                id={item.groupData._id}
                             />
                         })
                         : <h3>No groups!</h3>

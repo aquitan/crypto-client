@@ -6,7 +6,7 @@ import './ActiveGroups.scss'
 import {useNavigate} from "react-router-dom";
 import {getCurrentDate} from "../../../../utils/getCurrentDate";
 
-const ActiveGroups = ({dateOfCreate, groupName, item, onDelete, id}) => {
+const ActiveGroups = ({dateOfCreate, groupName, item, index, onDelete, id}) => {
     const navigate = useNavigate()
     return (
         <Row className='active-group mt-3'>
@@ -17,7 +17,9 @@ const ActiveGroups = ({dateOfCreate, groupName, item, onDelete, id}) => {
                 {groupName}
             </Col>
             <Col>
-                <AdminButton onClick={() => navigate(`/staff/group-list/group`, {state: item})} classname={['green', 'xs']}>Перейти</AdminButton>
+                <AdminButton onClick={() => navigate(`/staff/group-list/group`, {state: {
+                    item: item, index: index
+                    }})} classname={['green', 'xs']}>Перейти</AdminButton>
             </Col>
             <Col>
                 <AdminButton onClick={() => onDelete(id)} classname={['red', 'xs']}>Удалить</AdminButton>

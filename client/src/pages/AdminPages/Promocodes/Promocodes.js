@@ -14,8 +14,11 @@ import {deleteData, postData, putData} from '../../../services/StaffServices';
 import AdminButtonCard from '../../../components/AdminButtonCard/AdminButtonCard';
 import ModalDark from "../../../components/UI/ModalDark/ModalDark";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
+import {SwalSimple} from "../../../utils/SweetAlert";
 
 const Promocodes = () => {
+    const [curSelect, setCurSelect] = useState('')
+    const [optionId, setOptionId] = useState('')
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: "onBlur"
     })
@@ -31,8 +34,10 @@ const Promocodes = () => {
         onClickConfirm: null,
         isDelete: false
     })
+    const [allDomains, setAllDomains] = useState([])
+
     const options = [
-        {value: 'BTC', text: 'BTC'}, 
+        {value: 'BTC', text: 'BTC'},
         {value: 'ETH', text: 'ETH'},
         {value: 'BCH', text: 'BCH'},
         {value: 'USDT', text: 'USDT'},
@@ -79,7 +84,10 @@ const Promocodes = () => {
             notification: data.notification
         }
         const res = await putData('/staff/create_promocode/', promoData)
-        if (res.status === 201) getAllPromocodes()
+        if (res.status === 201) {
+            SwalSimple('Промокод создан!')
+            getAllPromocodes()
+        }
     }
 
     const getAllPromocodes = async () => {
@@ -115,6 +123,7 @@ const Promocodes = () => {
     useEffect(() => {
         getAllPromocodes()
         getUsedPromocodes()
+        getDomainList()
     }, [])
 
     const onDeletePromo = async (code) => {
@@ -157,6 +166,46 @@ const Promocodes = () => {
         setModal({isOpen: false, onClickConfirm: null, isDelete: false})
     }
 
+
+
+    const getDomainList = async () => {
+        const obj = {
+            isAdmin: store.isAdmin,
+            isStaff: store.isStaff,
+            staffEmail: store.userEmail,
+            rootAccess: store.fullAccess,
+            staffId: store.user.id
+        }
+        const res = await postData('/staff/domains/get_active_domains/', obj)
+        let arr = []
+        if (typeof res.data !== "string") {
+            for (let i = 0; i <= res.data?.length - 1; i++) {
+                let obj = {
+                    value: res.data[i].domainName,
+                    text: res.data[i].domainName,
+                    id: res.data[i].domainId
+                }
+                arr.push(obj)
+                setAllDomains(arr)
+                setCurSelect(arr[0].value)
+                setOptionId(arr[0].id)
+            }
+
+        } else {
+            let obj = {
+                value: res.data,
+                text: res.data,
+                id: res.data.domainId
+            }
+            arr.push(obj)
+            setAllDomains(arr)
+            setCurSelect(arr[0].value)
+            setOptionId(arr[0].id)
+        }
+    }
+
+
+
     console.log('currentPromocodes', state.usedPromocodes)
 
     const {isOpen, onClickConfirm, isDelete} = modal
@@ -172,7 +221,9 @@ const Promocodes = () => {
                 <h2>Код удален!</h2>
             </ModalDark>
 
-            <h1 className='mt-4'>Промокоды</h1>
+            <AdminButtonCard>
+                <h1 className='text-center'>Промокоды</h1>
+            </AdminButtonCard>
             <AdminButtonCard className={`${cls.bg_black} mb-3 p-3`}>
                 <h2 className={'mb-3'}>Создать промокод</h2>
                 <AdminForm onSubmit={handleSubmit(sendPromocode)}>
@@ -207,10 +258,7 @@ const Promocodes = () => {
                             <ErrorMessage  name='counter' errors={errors} render={() => <p className={error.error}>Заполните поле</p>} />
                         </Col>
                         <Col className='col-12 col-md-6 mb-3'>
-                            <Select options={currentDomains} {...register('domainName', {
-                                required: true,
-                                message: 'Заполните поле'
-                            })} classname={'admin-square'} />
+                            <Select value={curSelect} classname={'admin-square'} options={allDomains} />
                             <ErrorMessage  name='domainName' errors={errors} render={() => <p className={error.error}>Заполните поле</p>} />
                         </Col>
                     </Row>

@@ -6,6 +6,7 @@ import cls from './AdminKYC.module.scss'
 import AdminInput from "../../../components/UI/AdminInput/AdminInput";
 import AdminKycTableItem from "./components/AdminKycTablItem/AdminKycTableItem";
 import {postData} from "../../../services/StaffServices";
+import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
 
 const AdminKYC = () => {
     const [usersKyc, setUsersKyc] = useState()
@@ -15,7 +16,8 @@ const AdminKYC = () => {
             isAdmin: store.isAdmin,
             isStaff: store.isStaff,
             domainName: window.location.host,
-            rootAccess: store.fullAccess
+            rootAccess: store.fullAccess,
+            staffEmail: store.user.email
         }
         const res = await postData('/staff/users/kyc/', userData)
         const data = await res.data
@@ -27,15 +29,20 @@ const AdminKYC = () => {
         getStaffKyc()
     }, [])
 
+    console.log('user kyc------', usersKyc)
     return (
         <Container>
-            <h1 className='mt-4'>Kyc</h1>
-            <Row className='mt-4 mb-4'>
-                <UsersInfoCard color={'blue'} type={'Total'} amount={2} />
-                <UsersInfoCard color={'green'} type={'Online'} amount={1} />
-                <UsersInfoCard color={'red'} type={'Banned'} amount={0} />
-                <UsersInfoCard color={'orange'} type={'Not active 7 days'} amount={0} />
-            </Row>
+            <AdminButtonCard>
+                <h1 className='text-center'>Kyc</h1>
+            </AdminButtonCard>
+            <AdminButtonCard>
+                <Row className=''>
+                    <UsersInfoCard color={'blue'} type={'Total'} amount={2} />
+                    <UsersInfoCard color={'green'} type={'Online'} amount={1} />
+                    <UsersInfoCard color={'red'} type={'Banned'} amount={0} />
+                    <UsersInfoCard color={'orange'} type={'Not active 7 days'} amount={0} />
+                </Row>
+            </AdminButtonCard>
             <Row>
                 <Card className={`${cls.bg_black} p-3 mb-3`}>
                     <AdminInput placeholder='поиск'/>
@@ -44,16 +51,16 @@ const AdminKYC = () => {
             <Row>
                 <Card className={`${cls.bg_black} p-3 scrollable-table`}>
                     <Row className={cls.table_header}>
-                        <Col className={cls.default_col}>Date of registration</Col>
-                        <Col className={cls.default_col}>Name</Col>
-                        <Col className={cls.default_col}>Email</Col>
-                        <Col className={cls.default_col}>Information</Col>
-                        <Col className={cls.default_col}>Documents</Col>
-                        <Col className={cls.default_col}>Status</Col>
-                        <Col className={cls.default_col}>Action</Col>
+                        {/*<Col className={'col-1'}>Register date</Col>*/}
+                        <Col className={'col-1'}>Name</Col>
+                        <Col className={'col-2'}>Email</Col>
+                        <Col className={'col-2'}>Information</Col>
+                        <Col className={'col-2'}>Documents</Col>
+                        <Col className={'col-2'}>Status</Col>
+                        <Col className={'col-3'}>Action</Col>
                     </Row>
                     {
-                        !usersKyc === 'empty set'
+                        usersKyc &&  typeof usersKyc !== 'string'
                             ?
                             usersKyc.map(user => {
                                 return(
@@ -62,7 +69,7 @@ const AdminKYC = () => {
                                         city={user.city}
                                         zip={user.zipCode}
                                         state={user.state}
-                                        email={user.userEmail}
+                                        email={user.email}
                                         name={user.firstName}
                                         docType={user.documentType}
                                         kycStatus={user.kycStatus}

@@ -8,6 +8,7 @@ import MakeTransactionInner from "./componets/MakeTransactionInner/MakeTransacti
 import {getData, postData} from "../../../services/StaffServices";
 import {store} from "../../../index";
 import Preloader from "../../../components/UI/Preloader/Preloader";
+import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
 
 const MakeTransaction = () => {
     const [history, setHistory] = useState()
@@ -42,7 +43,9 @@ const MakeTransaction = () => {
 
     return (
         <Container>
-            <h1 className='mt-4'>Создать транзакцию</h1>
+            <AdminButtonCard>
+                <h1 className='text-center'>Создать транзакцию</h1>
+            </AdminButtonCard>
 
             <Tabs defaultActiveKey="outer" id="uncontrolled-tab-example" className="mb-3 mt-3">
                 <Tab eventKey='outer' title='Regular transactions'>

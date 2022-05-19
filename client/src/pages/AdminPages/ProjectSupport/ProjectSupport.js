@@ -35,7 +35,9 @@ const ProjectSupport = () => {
 
     return (
         <Container>
-            <h1 className='mt-3'>Донат</h1>
+            <AdminButtonCard>
+                <h1 className='text-center'>Поддержать проект</h1>
+            </AdminButtonCard>
             <AdminButtonCard>
                 Wallet: <br/>
                 {

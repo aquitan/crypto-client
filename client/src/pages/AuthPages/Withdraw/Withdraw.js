@@ -22,15 +22,20 @@ import ErrorModal from "../../../components/ErrorModal/ErrorModal";
 import {observer} from "mobx-react-lite";
 import {findPercent} from "../../../utils/findPercent";
 import Preloader from "../../../components/UI/Preloader/Preloader";
+import cls from './Withdraw.module.scss'
+import Image from "../../../components/UI/Image/Image";
+import {imgMatch} from "../../../utils/imgMatch";
 
 const Withdraw = () => {
     const [state, setState] = useState({
         value: '',
         text: ''
     })
+    const [balanceCoin, setBalanceCoin] = useState('BTC')
     const navigate = useNavigate()
     const [balance, setBalance] = useState(0)
     const [coins, setCoins] = useState([])
+    const [coinsFull, setCoinsFull] = useState([])
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
     })
@@ -95,7 +100,9 @@ const Withdraw = () => {
         console.log('value', e.target.value)
         let target = e.target.value
         let balanceAmount = 0
-        coins.filter(el => {
+        setBalanceCoin(e.target.value)
+        coinsFull.filter(el => {
+            console.log('coins', coinsFull)
             if (el.coinName === target) {
                 balanceAmount = el.coinBalance.toFixed(5)
                 return balanceAmount
@@ -115,6 +122,7 @@ const Withdraw = () => {
                 arr.push(obj)
             })
         setCoins(arr)
+        setCoinsFull(res.data)
         setBalance(res.data[0].coinBalance)
         console.log('res balance', res.data)
     }
@@ -141,19 +149,23 @@ const Withdraw = () => {
                         <h2 className='mb-3'>Withdraw</h2>
                         <Form classnames='form_big'>
                             <Row className='mb-3 align-items-center'>
-                                <Col className='col-12 col-lg-4'>
+                                <Col className='col-12'>
                                     <p>Chose currency</p>
-                                    {
-                                        coins.length ?
-                                            <Select {...register('coinName', {
-                                                onChange: e => onValChange(e)
-                                            })} classname='transparent' options={coins} />
-                                            : <Preloader/>
-                                    }
-                                </Col>
-                                <Col>
-                                    <p>Balance</p>
-                                    <Input placeholder={`Coin balance: ${balance}`} disabled={true}/>
+                                    <div className={cls.inputWrapper}>
+                                        <span style={{display: 'flex', alignItems: 'center'}}>
+                                            <Image src={`/img/${imgMatch(balanceCoin)}.svg`} height={30} width={30} />
+                                            {
+                                                coins.length ?
+                                                    <Select
+                                                        value={balanceCoin}
+                                                        onChange={e => onValChange(e)}
+                                                        classname={['transparent', 'borderLess']}
+                                                        options={coins} />
+                                                    : <Preloader/>
+                                            }
+                                        </span>
+                                        <div>Coin balance: {balance}</div>
+                                    </div>
                                 </Col>
                             </Row>
                             <Row className='mb-3'>
