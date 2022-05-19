@@ -59,7 +59,7 @@ const StaffErrors = () => {
             isStaff: store.isStaff,
             staffEmail: store.userEmail,
             rootAccess: store.fullAccess,
-            id: store.user.id
+            staffId: store.user.id
         }
         const res = await postData('/staff/domains/get_active_domains/', obj)
         let arr = []
@@ -131,7 +131,9 @@ const StaffErrors = () => {
             <ModalDark active={modal} setActive={setModal} singleBtn={true}>
                 <h2>Ошибка создана успешно!</h2>
             </ModalDark>
-            <h1 className='mt-4'>Ошибки</h1>
+            <AdminButtonCard>
+                <h1 className='text-center'>Ошибки</h1>
+            </AdminButtonCard>
            <AdminButtonCard>
               <AdminForm onSubmit={handleSubmit(onSubmit)}>
                   <h2 className='text-center'>Создание новой ошибки</h2>

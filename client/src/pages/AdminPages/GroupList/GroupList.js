@@ -12,8 +12,6 @@ import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import {store} from "../../../index";
 import Modal from "../../../components/UI/Modal/Modal";
 import {SwalSimple, SweetAlert} from "../../../utils/SweetAlert";
-import Swal from "sweetalert2";
-import withReactContent from 'sweetalert2-react-content'
 
 
 const GroupList = () => {
@@ -32,6 +30,10 @@ const GroupList = () => {
         data.staffEmail = store.user.email
         data.viewParams = data.viewParams === 'true' ? true : false
         const res = await postData('/staff/groups/create_new_group/', data)
+        if (res.status === 201) {
+            SwalSimple('Группа создана!')
+            getGroupList()
+        }
     }
 
     useEffect(() => {
@@ -46,7 +48,6 @@ const GroupList = () => {
             rootAccess: store.fullAccess
         }
         const res = await postData('/staff/groups/get_group_list/', obj)
-        console.log('group list', res.data)
         setList(res.data)
     }
     const onDelete = async (id) => {
@@ -58,7 +59,7 @@ const GroupList = () => {
             groupId: id
         }
         const res = await deleteData('/staff/groups/delete_group/', {data: obj})
-        if (res.status === 200 || res.status === 201) {
+        if (res.status === 200) {
             SwalSimple('Группа удалена!')
         } else {
             SwalSimple('Что то пошло не так! 8/')
@@ -68,10 +69,12 @@ const GroupList = () => {
 
     return (
         <Container>
-            <Modal active={isModal} setActive={setIsModal} title={titleModal}>
+            {/*<Modal active={isModal} setActive={setIsModal} title={titleModal}>*/}
 
-            </Modal>
-            <h1 className='m-4'>Создать группы</h1>
+            {/*</Modal>*/}
+            <AdminButtonCard>
+                <h1 className='text-center'>Создать группы</h1>
+            </AdminButtonCard>
             <AdminButtonCard>
                 <Form onSubmit={handleSubmit(onSubmit)}>
                     <Row className='mb-3'>
@@ -94,8 +97,10 @@ const GroupList = () => {
                 <h2>Список групп</h2>
                 {
                     typeof list === "object" ?
-                        list?.map(item => {
-                            return <ActiveGroups key={item.groupData._id}
+                        list?.map((item, index) => {
+                            return <ActiveGroups
+                                index={index}
+                                key={item.groupData._id}
                                 dateOfCreate={item.groupData.dateOfCreate}
                                 groupName={item.groupData.groupName}
                                 item={item}

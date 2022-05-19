@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import {Col, Container, Row} from "react-bootstrap";
 import AdminButtonCard from "../../../../components/AdminButtonCard/AdminButtonCard";
@@ -17,24 +17,26 @@ import {SwalSimple} from "../../../../utils/SweetAlert";
 const GroupDetails = () => {
     const {register, handleSubmit, reset} = useForm()
     const {register: regDelete, handleSubmit: handleDelete, reset: resetDelete} = useForm()
-    const [list, setList] = useState()
     const [isModal, setIsModal] = useState(false)
     const [titleModal, setTitleModal] = useState('')
     const location = useLocation()
+    const [list, setList] = useState(location.state.item.groupUsers)
 
     const addUser = async (data) => {
-        data.groupId = location.state.groupData._id
+        data.groupId = location.state.item.groupData._id
         console.log('data', data)
         const res = await patchData('/staff/groups/add_new_group_member/', data)
         if (res.status === 200 || res.status === 201) {
             SwalSimple('Пользователь добавлен')
             reset({data: ''})
+            getGroupList(location.state.index)
+            console.log('location.state.index', location.state.index)
         } else {
             SwalSimple('Что-то пошло не так!')
         }
     }
     const deleteUser = async (data) => {
-        data.groupId = location.state.groupData._id
+        data.groupId = location.state.item.groupData._id
         data.staffId = store.user.id
         data.rootAccess = store.fullAccess
         data.isAdmin = store.isAdmin
@@ -43,12 +45,17 @@ const GroupDetails = () => {
         if (res.status === 202) {
             SwalSimple('Пользователь удален')
             resetDelete({data: ''})
+            getGroupList(location.state.index)
         } else if (res.status === 200) {
             SwalSimple('Если вы не создатель группы, вы не можете удалить пользователя!')
         }
     }
 
-    const getGroupList = async () => {
+    useEffect(() => {
+        getGroupList(location.state.index)
+    }, [])
+
+    const getGroupList = async (index) => {
         const obj = {
             staffEmail: store.user.email,
             isAdmin: store.isAdmin,
@@ -56,14 +63,14 @@ const GroupDetails = () => {
             rootAccess: store.fullAccess
         }
         const res = await postData('/staff/groups/get_group_list/', obj)
-        console.log('group list', res.data)
-        setList(res.data)
+        console.log('group list', res.data.groupUsers)
+        setList(res.data[index].groupUsers)
     }
 
     console.log('location', location)
 
-    const {groupData, groupUsers} = location.state
-
+    const {groupData, groupUsers} = location.state.item
+    console.log('groupData', groupData.groupName)
     return (
         <Container>
             <Modal active={isModal} setActive={setIsModal} title={titleModal}>
@@ -78,7 +85,7 @@ const GroupDetails = () => {
                                 Создатель
                             </Col>
                             <Col>
-                                {location.state.ownerEmail}
+                                {location.state.item.ownerEmail}
                             </Col>
                         </Row>
                     </Col>
@@ -121,8 +128,8 @@ const GroupDetails = () => {
                     </Col>
                     <Col>
                         {
-                            groupUsers ?
-                                groupUsers.map(user => {
+                            list ?
+                                list?.map(user => {
                                     return(
                                         <Row className='active-group-col' >
                                             {user}

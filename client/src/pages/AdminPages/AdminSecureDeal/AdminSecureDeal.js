@@ -108,7 +108,9 @@ const AdminSecureDeal = () => {
 
     return (
         <Container>
-            <h1>Защищенные сделки</h1>
+            <AdminButtonCard>
+                <h1 className={'text-center'}>Защищенные сделки</h1>
+            </AdminButtonCard>
             <AdminButtonCard>
                 <Form onSubmit={handleSubmit(onSubmit)}>
                     <Row className={'mb-3'}>
@@ -129,7 +131,9 @@ const AdminSecureDeal = () => {
                     </Row>
 
                     <Row className={'mb-3'}>
-                        <TextArea {...register('dealCondition')} classnames='dark textarea_square' rows='10' placeholder='Conditions'/>
+                        <Col>
+                            <TextArea {...register('dealCondition')} classnames='dark textarea_square' rows='10' placeholder='Conditions'/>
+                        </Col>
                     </Row>
 
                     <Row className='mb-3 flex-items'>

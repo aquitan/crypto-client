@@ -104,31 +104,26 @@ const AdminKycTableItem = (props) => {
             </ModalDark>
 
 
-            <div className={`${cls.table_item} scrollable-table`}>
+            <div className={'mt-3 mb-3'}>
                 <Row>
-                    <Col className={cls.default_col}>{props.registerDate}</Col>
-                    <Col className={cls.default_col}>{props.name ? props.name : <FontAwesomeIcon icon={faTimesCircle} color='tomato' />}</Col>
-                    <Col className={cls.default_col}>{props.email}</Col>
-                    <Col className={cls.default_col}>
+                    {/*<Col className={'col-1'}>{props.registerDate}</Col>*/}
+                    <Col className={'col-1'}>{props.name ? props.name : <FontAwesomeIcon icon={faTimesCircle} color='tomato' />}</Col>
+                    <Col className={'col-2'}>{props.email}</Col>
+                    <Col className={'col-2'}>
                         {props.city + ' '}
                         {props.zip}<br/>
                         {props.state},<br/>
                         Документ: {props.docType}
                     </Col>
-                    <Col className={cls.default_col}>Фото</Col>
-                    <Col className={cls.default_col}>{props.kycStatus}</Col>
-                    <Col className={cls.default_col}>
-                        <Row>
-                            <Col>
-                                <Select {...register('status', {
-                                    onChange: (value) => handleOpenModal('edit')
-                                })} classname='small' options={kusStatuses} />
-                            </Col>
-                            <Col>
-                                <AdminButton onClick={() => handleOpenModal('delete')} classname={'red'} >Удалить</AdminButton>
-                            </Col>
-                        </Row>
+                    <Col className={'col-2'}>Фото</Col>
+                    <Col className={'col-2'}>{props.kycStatus}</Col>
+                    <Col className={'col-3 d-flex'}>
+                        <Select {...register('status', {
+                            onChange: (value) => handleOpenModal('edit')
+                        })} classname='' options={kusStatuses} />
+                        <AdminButton onClick={() => handleOpenModal('delete')} classname={'red'} >Удалить</AdminButton>
                     </Col>
+
                 </Row>
             </div>
         </>

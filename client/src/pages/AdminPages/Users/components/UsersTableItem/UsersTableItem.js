@@ -13,9 +13,12 @@ const UsersTableItem = (props) => {
         <div className={cls.table_item}>
             <Row>
                 <Col className='d-none d-md-block col-2'>{getCurrentDate(getCurrentDate(props.registerDate))}</Col>
-                <Col className='d-none d-sm-block col-2'>{props.name}</Col>
+                <Col className='d-none d-sm-block col-1'>{props.name}</Col>
                 <Col className='col-8 col-sm-2'><span onClick={() => navigate(`/staff/users/${props.id}`)}>{props.email}</span></Col>
                 <Col className='col-4 col-sm-2'>
+                    {props.userDomain}
+                </Col>
+                <Col className='col-4 col-sm-1'>
                     {props.kycStatus !== 'empty'
                         ? <FontAwesomeIcon color='green' icon={faCheck} />
                         : <FontAwesomeIcon color='tomato' icon={faTimesCircle} />}

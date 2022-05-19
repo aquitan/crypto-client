@@ -21,14 +21,18 @@ import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 
 const CreateNews = () => {
     const [state, setState] = useState([])
+    const [curSelect, setCurSelect] = useState('')
+    const [optionId, setOptionId] = useState('')
     const [startDate, setStartDate] = useState()
     const [timeDate, setTimeDate] = useState()
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
     })
+    const [allDomains, setAllDomains] = useState([])
 
     useEffect(() => {
         getAllNews()
+        getDomainList()
     }, [])
 
     const styles = {
@@ -63,6 +67,7 @@ const CreateNews = () => {
         data.staffEmail = store.user.email
         data.newsImage = 'img'
         data.rootAccess = store.fullAccess
+        data.newsDomain = curSelect
         if (store.fullAccess) {
             data.staffEmail = store.fullAccess ? 'root' : store.user.email
             data.staffId = store.fullAccess ? '1' : store.user.id
@@ -89,13 +94,48 @@ const CreateNews = () => {
 
     }
 
-    const domains = [
-        {text: 'localhost:3000', value: 'localhost:3000'}
-    ]
+    const getDomainList = async () => {
+        const obj = {
+            isAdmin: store.isAdmin,
+            isStaff: store.isStaff,
+            staffEmail: store.userEmail,
+            rootAccess: store.fullAccess,
+            staffId: store.user.id
+        }
+        const res = await postData('/staff/domains/get_active_domains/', obj)
+        let arr = []
+        if (typeof res.data !== "string") {
+            for (let i = 0; i <= res.data?.length - 1; i++) {
+                let obj = {
+                    value: res.data[i].domainName,
+                    text: res.data[i].domainName,
+                    id: res.data[i].domainId
+                }
+                arr.push(obj)
+                setAllDomains(arr)
+                setCurSelect(arr[0].value)
+                setOptionId(arr[0].id)
+            }
+
+        } else {
+            let obj = {
+                value: res.data,
+                text: res.data,
+                id: res.data.domainId
+            }
+            arr.push(obj)
+            setAllDomains(arr)
+            setCurSelect(arr[0].value)
+            setOptionId(arr[0].id)
+        }
+    }
+
 
     return (
         <Container>
-            <h1>Новости</h1>
+            <AdminButtonCard>
+                <h1 className={'text-center'}>Новости</h1>
+            </AdminButtonCard>
             <AdminButtonCard>
                 <AdminForm onSubmit={handleSubmit(onSubmit)}>
                     <Row>
@@ -130,11 +170,7 @@ const CreateNews = () => {
                             <span style={styles.todayBtn} onClick={onNowTime}>Now</span>
                         </Col>
                         <Col className='col-12 col-md-3 mb-3'>
-                            <Select classname={['admin-square']} {...register('newsDomain', {
-                                required: true,
-                                pattern: /^[^а-яё]+$/iu
-                            })} options={domains} />
-                            <ErrorMessage  name='newsDomain' errors={errors} render={() => <p className={error.error}>Только английские буквы</p>} />
+                            <Select classname={['admin-square']} value={curSelect} options={allDomains} />
                         </Col>
                     </Row>
                     <Row className='mb-3'>

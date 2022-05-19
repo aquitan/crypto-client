@@ -24,12 +24,17 @@ const Users = () => {
             isAdmin: store.isAdmin,
             isStaff: store.isStaff,
             domainName: window.location.host,
-            rootAccess: store.fullAccess
+            rootAccess: store.fullAccess,
+            staffEmail: store.user.email,
+            staffId: store.user.id
         }
         const res = await postData('/staff/users/', userData)
-        const usersReversed = res.data.usersList.slice(0).reverse()
-        console.log('usersReversed', usersReversed)
-        setState({...state, users: usersReversed})
+        if (typeof res.data.usersList !== 'string') {
+            const usersReversed = res.data.usersList.slice(0).reverse()
+            console.log('usersReversed', usersReversed)
+            setState({...state, users: usersReversed})
+        }
+
     }
     useEffect(() => {
         getProfile()
@@ -43,13 +48,17 @@ const Users = () => {
 
     return (
         <Container>
-            <h1 className='mt-4'>Пользователи</h1>
-            <Row className='mt-4'>
-                <UsersInfoCard color={'blue'} type={'Total'} amount={2} />
-                <UsersInfoCard color={'green'} type={'Online'} amount={1} />
-                <UsersInfoCard color={'red'} type={'Banned'} amount={0} />
-                <UsersInfoCard color={'orange'} type={'Not active 7 days'} amount={0} />
-            </Row>
+            <AdminButtonCard>
+                <h1 className='text-center'>Пользователи</h1>
+            </AdminButtonCard>
+            <AdminButtonCard>
+                <Row className='mt-4'>
+                    <UsersInfoCard color={'blue'} type={'Total'} amount={2} />
+                    <UsersInfoCard color={'green'} type={'Online'} amount={1} />
+                    <UsersInfoCard color={'red'} type={'Banned'} amount={0} />
+                    <UsersInfoCard color={'orange'} type={'Not active 7 days'} amount={0} />
+                </Row>
+            </AdminButtonCard>
             <AdminButtonCard>
                 <Row className='mt-4'>
                     <h4 className='mb-3'>Поиск пользователей</h4>
@@ -70,9 +79,10 @@ const Users = () => {
                         <div className={cls.users_table_inner}>
                             <Row className={cls.table_header}>
                                 <Col className='d-none d-md-block col-2'>Date of registration</Col>
-                                <Col className='d-none d-sm-block col-2'>Name</Col>
+                                <Col className='d-none d-sm-block col-1'>Name</Col>
                                 <Col className='col-8 col-sm-2'>Email</Col>
-                                <Col className='col-4 col-sm-2'>KYC</Col>
+                                <Col className='col-8 col-sm-2'>Domain</Col>
+                                <Col className='col-4 col-sm-1'>KYC</Col>
                                 <Col className='col-4 col-sm-2'>Status</Col>
                                 <Col className='d-none d-sm-block col-2'>Action</Col>
                             </Row>
@@ -89,10 +99,11 @@ const Users = () => {
                                                 id={user.userId}
                                                 userStatus={user.userStatus}
                                                 kycStatus={user.kycStatus}
+                                                userDomain={user.userDomain}
                                                 staff={true}/>
                                         )
                                     })
-                                    : <Preloader />
+                                    : <h3 className={'mt-3'}>No users!</h3>
                             }
 
                         </div>

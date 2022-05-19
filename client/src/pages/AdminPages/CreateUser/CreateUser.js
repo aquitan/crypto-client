@@ -13,26 +13,16 @@ import {postData} from "../../../services/StaffServices";
 import Select from "../../../components/UI/Select/Select";
 import Preloader from "../../../components/UI/Preloader/Preloader";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
+import {SwalSimple} from "../../../utils/SweetAlert";
 
 const CreateUser = () => {
     const [domains, setDomains] = useState()
     const [isModal, setIsModal] = useState(false)
     const [isModalError, setIsModalError] = useState(false)
-    const {register, handleSubmit, formState: {errors}} = useForm({
+    const {register, handleSubmit, formState: {errors}, reset} = useForm({
         mode: "onBlur"
     })
 
-    // const getProfile = async () => {
-    //     const userData = {
-    //         isAdmin: store.isAdmin,
-    //         isStaff: store.isStaff,
-    //         domainName: window.location.host,
-    //     }
-    //     const res = await postData('/staff/users/', userData)
-    //     const data = await res.data
-    //     const usersReversed = data.usersList.slice(0).reverse()
-    //     setUsers(usersReversed)
-    // }
     useEffect(() => {
         getDomains()
     }, [])
@@ -72,10 +62,10 @@ const CreateUser = () => {
         const res = await postData('/staff/create_user', data)
         if (res.status === 200) {
             console.log('add user success', res)
-            setIsModal(true)
+            SwalSimple('Пользователь создан!')
         } else {
             console.log('add user error', res)
-            setIsModalError(true)
+            SwalSimple('Что то пошло не так!')
         }
     }
 
@@ -87,7 +77,9 @@ const CreateUser = () => {
             <Modal active={isModalError} setActive={setIsModalError}>
                 Упс! Что-то пошло не так!
             </Modal>
-            <h1 className='mt-4'>Создать пользователя</h1>
+            <AdminButtonCard>
+                <h1 className='text-center'>Создать пользователя</h1>
+            </AdminButtonCard>
             <AdminButtonCard>
                 <AdminForm onSubmit={handleSubmit(onSubmit)}>
                     <h2 className='mb-3'>Создать</h2>

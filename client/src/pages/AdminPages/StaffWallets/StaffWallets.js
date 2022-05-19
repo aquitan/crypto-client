@@ -87,7 +87,7 @@ const StaffWallets = () => {
             </ModalDark>
 
             <AdminButtonCard>
-                <h1 className='text-center'>My Wallets</h1>
+                <h1 className='text-center'>Мои кошельки</h1>
             </AdminButtonCard>
             {
                 !wallet ?

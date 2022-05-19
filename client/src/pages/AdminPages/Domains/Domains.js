@@ -157,7 +157,9 @@ const CreateDomains = () => {
             <ModalDark active={modal} setActive={setModal} singleBtn={true}>
                 <h2>Домен создан успешно!</h2>
             </ModalDark>
-            <h1 className='mt-4'>Домены</h1>
+            <AdminButtonCard>
+                <h1 className='text-center'>Домены</h1>
+            </AdminButtonCard>
             <AdminButtonCard>
                 <h2 className='mb-3 text-center'>Добавить новый домен</h2>
                 <AdminForm onSubmit={handleSubmit(onSubmit)}>
@@ -386,7 +388,7 @@ const CreateDomains = () => {
                     <Col className={'text-center'}>Action</Col>
                 </Row>
                 {
-                    activeDomains
+                    typeof activeDomains !== 'string'
                         ? activeDomains.map(domain => {
                             return(
                                 <Row key={uuid()} className='mb-3 mt-3 domains-list-row'>

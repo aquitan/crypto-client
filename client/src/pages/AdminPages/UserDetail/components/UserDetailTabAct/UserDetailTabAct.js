@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {Col, Form, Row} from "react-bootstrap";
+import {Col, Container, Form, Row} from "react-bootstrap";
 import AdminButton from "../../../../../components/UI/AdminButton/AdminButton";
 import cls from '../../UserDetail.module.scss'
 import AdminInput from "../../../../../components/UI/AdminInput/AdminInput";
@@ -296,7 +296,7 @@ const UserDetailTabAct = (props) => {
     const {isOpen, onClickConfirm, doubleConfirm} = state
 
     return (
-        <div>
+        <Container>
 
             <ModalDark active={isOpen} onClick={onClickConfirm} setActive={handleCloseModal}>
                 <Row>Вы уверены?</Row>
@@ -500,7 +500,7 @@ const UserDetailTabAct = (props) => {
                     </AdminButtonCard>
                     : null
             }
-        </div>
+        </Container>
     )
 }
 
