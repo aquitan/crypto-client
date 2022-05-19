@@ -38,7 +38,8 @@ class adminService {
     let dataArray: any = []
 
     for (let i = 0; i <= usersList.length - 1; i++) {
-      const kycParams: any = await userParams.findOne({ userId: usersList[i].id })
+      let curId: string = usersList[i].id.toString()
+      const kycParams: any = await userParams.findOne({ userId: curId })
       if (!kycParams) return false
       let dataObject = {
         userId: usersList[i].id,
@@ -317,9 +318,12 @@ class adminService {
     let dataArray = []
     for (let i = 0; i <= getList.length - 1; i++) {
       console.log('cur elem is: ', getList[i]);
+
       const receivedData: any = await staffGroup.findById({ _id: getList[i].groupId })
-      const userEmail: any = await baseUserData.findOne({ _id: getList[i].creatorId })
+      const userEmail: any = await baseUserData.findById({ _id: receivedData.creatorId })
       console.log('received group object => ', receivedData);
+      console.log(' user => ', userEmail);
+
       let dataObj = {
         groupData: receivedData,
         groupUsers: getList[i].staffEmailList,

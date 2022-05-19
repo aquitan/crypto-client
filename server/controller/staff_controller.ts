@@ -12,20 +12,20 @@ import WITHDRAWAL_HISTORY from '../interface/withdrawal_history.interface'
 import INTERNAL_HISTORY from '../interface/internal_history.interface'
 import ApiError from '../exeptions/api_error'
 import moneyService from '../services/money_service'
-
+import bodyValidator from '../api/body_validator'
 
 
 class StaffController {
 
   async staffDashboard(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const user_id: string = req.body.userId
+    const adminPermission: boolean = req.body.isAdmin
+    const staffPermission: boolean = req.body.isStaff
+    const rootAccess: boolean = req.body.rootAccess
+
+    const validData: boolean = await bodyValidator(req.body, 4)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
-      const user_id: string = req.body.userId
-      const adminPermission: boolean = req.body.isAdmin
-      const staffPermission: boolean = req.body.isStaff
-
-      console.log('req body: ', req.body);
-
-      const rootAccess: boolean = req.body.rootAccess
 
       if (rootAccess || adminPermission) {
         const result: any = await adminService.DashboardInfo()
@@ -48,30 +48,31 @@ class StaffController {
   }
 
   async usersList(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const adminPermission: boolean = req.body.isAdmin
+    const staffPermission: boolean = req.body.isStaff
+    const staffId: string = req.body.staffId
+    const staffEmail: string = req.body.staffEmail
+    const rootAccess: boolean = req.body.rootAccess
+
+    const validData: boolean = await bodyValidator(req.body, 5)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
     try {
 
-      const adminPermission: boolean = req.body.isAdmin
-      const staffPermission: boolean = req.body.isStaff
-      const staffId: string = req.body.staffId
-      const staffEmail: string = req.body.staffEmail
-      const userDomain: string = req.body.domainName
-      const rootAccess: boolean = req.body.rootAccess
-      console.log('req body is: ', req.body)
 
       if (rootAccess || adminPermission) {
         const usersList: any = await adminService.GetUsersList()
-        if (!usersList) return res.status(200).json({ usersList })
+        if (!usersList) throw ApiError.ServerError()
+        return res.status(200).json({ usersList })
 
       }
       if (staffPermission) {
-        const usersList: any = await staffService.GetUsersList(userDomain, staffId, staffEmail)
-        if (!usersList) return res.status(200).json({ usersList })
+        const usersList: any = await staffService.GetUsersList(staffId, staffEmail)
+        if (!usersList) throw ApiError.ServerError()
+        return res.status(200).json({ usersList })
       }
 
-      return res.status(403).json({
-        message: 'permission denied',
-        status: 'rejected'
-      })
+      return res.status(403).json({ message: 'permission denied' })
 
     } catch (e) {
       next(e)
@@ -79,10 +80,8 @@ class StaffController {
   }
 
   async userDetail(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const user_id: string = req.params.id
     try {
-
-      const user_id: string = req.params.id
-
       const user: any = await staffService.GetUserDetail(user_id)
       console.log('found user: ', user)
       if (!user) return res.status(400).json({ message: 'wrong data' })
@@ -123,12 +122,17 @@ class StaffController {
   }
 
   async kycList(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    const adminPermission: boolean = req.body.isAdmin
+    const staffPermission: boolean = req.body.isStaff
+    const staffEmail: string = req.body.staffEmail
+    const staffId: string = req.body.staffId
+    const rootAccess: boolean = req.body.rootAccess
+
+    const validData: boolean = await bodyValidator(req.body, 5)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
     try {
-      const adminPermission: boolean = req.body.isAdmin
-      const staffPermission: boolean = req.body.isStaff
-      const domainName: string = req.body.domainName
-      const rootAccess: boolean = req.body.rootAccess
-      console.log('req body is: ', req.body)
 
       if (adminPermission || rootAccess) {
         const usersKycList: any = await adminService.GetKycForAdmin()
@@ -137,7 +141,7 @@ class StaffController {
 
       }
       if (staffPermission) {
-        const usersKycList: any = await staffService.GetKycForStaff(domainName)
+        const usersKycList: any = await staffService.GetKycForStaff(staffId, staffEmail)
         if (!usersKycList) throw ApiError.ServerError()
         return res.status(200).json({ usersKycList: usersKycList })
       }
@@ -154,10 +158,10 @@ class StaffController {
 
   async changeKycStatus(req: express.Request, res: express.Response, next: express.NextFunction) {
     const { status, staffId, staffEmail, userEmail, userId, domainName } = req.body
-    console.log('req body: ', req.body);
     const rootAccess: boolean = req.body.rootAccess
 
-    if (!status || !userId) return res.status(400).json({ message: 'wrong data' })
+    const validData: boolean = await bodyValidator(req.body, 7)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {
       if (rootAccess) {
@@ -185,10 +189,10 @@ class StaffController {
 
   async deleteKyc(req: express.Request, res: express.Response, next: express.NextFunction) {
     const { staffId, staffEmail, userId, userEmail, domainName } = req.body
-    console.log('req body: ', req.body);
     const rootAccess: boolean = req.body.rootAccess
 
-    if (!userId) return res.status(400).json({ message: 'wrong data' })
+    const validData: boolean = await bodyValidator(req.body, 6)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {
       if (rootAccess) {
@@ -215,8 +219,10 @@ class StaffController {
 
   async updateUserError(req: express.Request, res: express.Response, next: express.NextFunction) {
     const { staffId, staffEmail, curError, userEmail, domainName } = req.body
-    console.log('req body: ', req.body);
     const rootAccess: boolean = req.body.rootAccess
+
+    const validData: boolean = await bodyValidator(req.body, 6)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {
       if (rootAccess) {
@@ -238,8 +244,10 @@ class StaffController {
 
   async updateDepositFee(req: express.Request, res: express.Response, next: express.NextFunction) {
     const { userId, staffId, depositFee, staffEmail, userEmail, domainName } = req.body
-    console.log('req body: ', req.body);
     const rootAccess: boolean = req.body.rootAccess
+
+    const validData: boolean = await bodyValidator(req.body, 7)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
       if (rootAccess) {
         const result: boolean = await staffService.UpdateDepositFee(userId, depositFee)
@@ -266,38 +274,23 @@ class StaffController {
 
   async updatePremiumStatus(req: express.Request, res: express.Response, next: express.NextFunction) {
     const { userId, staffId, status, staffEmail, userEmail, domainName } = req.body
-    console.log('req body: ', req.body);
     const rootAccess: boolean = req.body.rootAccess
+
+    const validData: boolean = await bodyValidator(req.body, 7)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
 
       if (rootAccess) {
         const result: boolean = await staffService.UpdatePremiumStatus(userId, status)
-        if (result === false) {
-          console.log('error');
-          return res.status(400).json({
-            message: 'error',
-            status: 'rejected'
-          })
-        }
-        return res.status(202).json({
-          message: 'premium status was changed',
-          status: 'complete'
-        })
+        if (!result) throw ApiError.ServerError()
+        return res.status(202).json({ message: 'ok' })
       } else {
         const result: boolean = await staffService.UpdatePremiumStatus(userId, status)
-        if (result === false) {
-          console.log('error');
-          return res.status(400).json({
-            message: 'error',
-            status: 'rejected'
-          })
-        }
+        if (!result) throw ApiError.ServerError()
+
         await staffService.saveStaffLogs(staffEmail, ` изменил премиум статус ${userEmail} `, domainName, staffId)
         await telegram.sendMessageByStaffActions(staffEmail, ` изменил премиум статус ${userEmail} `, domainName)
-        return res.status(202).json({
-          message: 'premium status was changed',
-          status: 'complete'
-        })
+        return res.status(202).json({ message: 'ok' })
       }
 
     } catch (e) {
@@ -307,41 +300,24 @@ class StaffController {
 
   async updateSwapBan(req: express.Request, res: express.Response, next: express.NextFunction) {
     const { userId, staffId, status, staffEmail, userEmail, domainName } = req.body
-    console.log('req body: ', req.body);
-
     const rootAccess: boolean = req.body.rootAccess
+
+    const validData: boolean = await bodyValidator(req.body, 7)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
     try {
 
-      if (rootAccess === true) {
+      if (rootAccess) {
         const result: boolean = await staffService.UpdateSwapBan(userId, status)
-        if (result === false) {
-          console.log('error');
-          return res.status(401).json({
-            message: 'error',
-            status: 'rejected'
-          })
-        }
-        return res.status(202).json({
-          message: 'swap ban status was updated',
-          status: 'complete'
-        })
+        if (!result) throw ApiError.ServerError()
+        return res.status(202).json({ message: 'ok' })
       }
       const result: boolean = await staffService.UpdateSwapBan(userId, status)
-      if (result === false) {
-        console.log('error');
-        return res.status(401).json({
-          message: 'error',
-          status: 'rejected'
-        })
-      }
+      if (!result) throw ApiError.ServerError()
 
       await staffService.saveStaffLogs(staffEmail, ` изменил бан свапов для ${userEmail} на  ${status} `, domainName, staffId)
       await telegram.sendMessageByStaffActions(staffEmail, ` изменил бан свапов для  ${userEmail} на  ${status} `, domainName)
-      return res.status(202).json({
-        message: 'swap ban status was updated',
-        status: 'complete'
-      })
-
+      return res.status(202).json({ message: 'ok' })
     } catch (e) {
       next(e)
     }
@@ -349,41 +325,25 @@ class StaffController {
 
   async updateInternalBan(req: express.Request, res: express.Response, next: express.NextFunction) {
     const { userId, staffId, status, staffEmail, userEmail, domainName } = req.body
-    console.log('req body: ', req.body);
     const rootAccess: boolean = req.body.rootAccess
+
+    const validData: boolean = await bodyValidator(req.body, 7)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
 
-      if (rootAccess === true) {
+      if (rootAccess) {
         const result: boolean = await staffService.UpdateInternalBan(userId, status)
-        if (result === false) {
-          console.log('error');
-          return res.status(401).json({
-            message: 'error',
-            status: 'rejected'
-          })
-        }
-        return res.status(202).json({
-          message: 'internal ban status was updated',
-          status: 'complete'
-        })
+        if (!result) throw ApiError.ServerError()
+        return res.status(202).json({ message: 'ok' })
+      } else {
+
+        const result: boolean = await staffService.UpdateInternalBan(userId, status)
+        if (!result) throw ApiError.ServerError()
+
+        await staffService.saveStaffLogs(staffEmail, ` изменил бан внутренних транзакций для ${userEmail} на  ${status} `, domainName, staffId)
+        await telegram.sendMessageByStaffActions(staffEmail, ` изменил бан внутренних транзакций для  ${userEmail} на  ${status} `, domainName)
+        return res.status(202).json({ message: 'ok' })
       }
-      const result: boolean = await staffService.UpdateInternalBan(userId, status)
-      if (result === false) {
-        console.log('error');
-        return res.status(401).json({
-          message: 'error',
-          status: 'rejected'
-        })
-      }
-
-      await staffService.saveStaffLogs(staffEmail, ` изменил бан внутренних транзакций для ${userEmail} на  ${status} `, domainName, staffId)
-      await telegram.sendMessageByStaffActions(staffEmail, ` изменил бан внутренних транзакций для  ${userEmail} на  ${status} `, domainName)
-      return res.status(202).json({
-        message: 'internal ban status was updated',
-        status: 'complete'
-      })
-
-
     } catch (e) {
       next(e)
     }
@@ -391,42 +351,24 @@ class StaffController {
 
   async updateFullBan(req: express.Request, res: express.Response, next: express.NextFunction) {
     const { userId, staffId, status, staffEmail, userEmail, domainName } = req.body
-    console.log('req body: ', req.body);
     const rootAccess: boolean = req.body.rootAccess
+
+    const validData: boolean = await bodyValidator(req.body, 7)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
 
-      if (rootAccess === true) {
+      if (rootAccess) {
         const result: boolean = await staffService.UpdateFullBan(userId, status)
-        if (result === false) {
-          console.log('error');
-          return res.status(401).json({
-            message: 'error',
-            status: 'rejected'
-          })
-        }
-        return res.status(202).json({
-          message: 'full ban status was updated',
-          status: 'complete'
-        })
+        if (!result) throw ApiError.ServerError()
+        return res.status(202).json({ message: 'ok' })
+      } else {
+        const result: boolean = await staffService.UpdateFullBan(userId, status)
+        if (!result) throw ApiError.ServerError()
+
+        await staffService.saveStaffLogs(staffEmail, ` изменил статус полного бана для ${userEmail} на  ${status} `, domainName, staffId)
+        await telegram.sendMessageByStaffActions(staffEmail, ` изменил статус полного бана для  ${userEmail} на  ${status} `, domainName)
+        return res.status(202).json({ message: 'ok' })
       }
-
-      const result: boolean = await staffService.UpdateFullBan(userId, status)
-      if (result === false) {
-        console.log('error');
-        return res.status(401).json({
-          message: 'error',
-          status: 'rejected'
-        })
-      }
-
-      await staffService.saveStaffLogs(staffEmail, ` изменил статус полного бана для ${userEmail} на  ${status} `, domainName, staffId)
-      await telegram.sendMessageByStaffActions(staffEmail, ` изменил статус полного бана для  ${userEmail} на  ${status} `, domainName)
-      return res.status(202).json({
-        message: 'full ban status was updated',
-        status: 'complete'
-      })
-
-
     } catch (e) {
       next(e)
     }
@@ -434,53 +376,32 @@ class StaffController {
 
   async updateStaffStatus(req: express.Request, res: express.Response, next: express.NextFunction) {
     const { status, staffEmail, userEmail, domainName, currentDate } = req.body
-    console.log('req body: ', req.body);
-
     const rootAccess: boolean = req.body.rootAccess
     const adminPermission: boolean = req.body.isAdmin
     const staffPermission: boolean = req.body.isStaff
     let staffId: string = req.body.staffId
 
+    const validData: boolean = await bodyValidator(req.body, 9)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
 
-      if (rootAccess === true) {
-        staffId = 'xxOOOxx--001'
-        const result: boolean = await adminService.UpdateStaffStatus('root', userEmail, currentDate, status)
-        if (result === false) {
-          console.log('error');
-          return res.status(401).json({
-            message: 'error',
-            status: 'rejected'
-          })
-        }
-        return res.status(202).json({
-          message: 'user staff status was updated',
-          status: 'complete'
-        })
+      if (rootAccess) {
+        staffId = process.env.SUPER_ID
+        const result: boolean = await adminService.UpdateStaffStatus(process.env.SUPER_1_LOGIN, userEmail, currentDate, status)
+        if (!result) throw ApiError.ServerError()
+        return res.status(202).json({ message: 'ok' })
       }
 
       if (adminPermission || staffPermission) {
         const result: boolean = await adminService.UpdateStaffStatus(staffEmail, userEmail, currentDate, status)
-        if (result === false) {
-          console.log('error');
-          return res.status(401).json({
-            message: 'error',
-            status: 'rejected'
-          })
-        }
+        if (!result) throw ApiError.ServerError()
 
         await staffService.saveStaffLogs(staffEmail, ` изменил стафф права пользователя ${userEmail} на  ${status} `, domainName, staffId)
         await telegram.sendMessageByStaffActions(staffEmail, ` изменил стафф права пользователя  ${userEmail} на  ${status} `, domainName)
-        return res.status(202).json({
-          message: 'user staff status was updated',
-          status: 'complete'
-        })
+        return res.status(202).json({ message: 'ok' })
       }
 
-      return res.status(400).json({
-        message: 'rejected',
-        status: 'complete'
-      })
+      return res.status(403).json({ message: 'permission denied' })
 
     } catch (e) {
       next(e)
@@ -489,39 +410,23 @@ class StaffController {
 
   async updateStaffSupportName(req: express.Request, res: express.Response, next: express.NextFunction) {
     const { staffId, updatedName, staffEmail, domainName } = req.body
-    console.log('req body: ', req.body);
     const rootAccess: boolean = req.body.rootAccess
+
+    const validData: boolean = await bodyValidator(req.body, 5)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
 
       if (rootAccess) {
-        const result: boolean = await staffService.UpdateStaffSupportName('root', updatedName)
-        if (result === false) {
-          console.log('error');
-          return res.status(401).json({
-            message: 'error',
-            status: 'rejected'
-          })
-        }
-        return res.status(202).json({
-          message: 'support name was updated',
-          status: 'complete'
-        })
+        const result: boolean = await staffService.UpdateStaffSupportName(process.env.SUPER_1_LOGIN, updatedName)
+        if (!result) throw ApiError.ServerError()
+        return res.status(202).json({ message: 'ok' })
+
       } else {
         const result: boolean = await staffService.UpdateStaffSupportName(staffEmail, updatedName)
-        if (result === false) {
-          console.log('error');
-          return res.status(401).json({
-            message: 'error',
-            status: 'rejected'
-          })
-        }
-
+        if (!result) throw ApiError.ServerError()
         await staffService.saveStaffLogs(staffEmail, ` изменил имя в саппорте на  ${updatedName} `, domainName, staffId)
         await telegram.sendMessageByStaffActions(staffEmail, ` изменил имя в саппорте на  ${updatedName} `, domainName)
-        return res.status(202).json({
-          message: 'support name was updated',
-          status: 'complete'
-        })
+        return res.status(202).json({ message: 'ok' })
       }
 
 
@@ -534,8 +439,11 @@ class StaffController {
     const userEmail: string = req.body.userEmail
     const userId: string = req.body.userId
     const rootAccess: boolean = req.body.rootAccess
-    if (!rootAccess) return res.status(400).json({ message: 'permission denied' })
 
+    const validData: boolean = await bodyValidator(req.body, 3)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
+    if (!rootAccess) return res.status(403).json({ message: 'permission denied' })
     try {
       const result: boolean = await adminService.fullUserDelete(userId)
       if (!result) throw ApiError.ServerError()
@@ -548,40 +456,24 @@ class StaffController {
 
   async updateDoubleDeposit(req: express.Request, res: express.Response, next: express.NextFunction) {
     const { userId, staffId, status, staffEmail, userEmail, domainName } = req.body
-    console.log('req body: ', req.body);
     const rootAccess: boolean = req.body.rootAccess
-    try {
 
-      if (rootAccess === true) {
+    const validData: boolean = await bodyValidator(req.body, 7)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
+    try {
+      if (rootAccess) {
         const result: boolean = await staffService.UpdateDoubleDepositStatus(userId, status)
-        if (result === false) {
-          console.log('error');
-          return res.status(401).json({
-            message: 'error',
-            status: 'rejected'
-          })
-        }
-        return res.status(202).json({
-          message: 'double deposit status was updated',
-          status: 'complete'
-        })
+        if (!result) throw ApiError.ServerError()
+        return res.status(202).json({ message: 'ok' })
       }
 
       const result: boolean = await staffService.UpdateDoubleDepositStatus(userId, status)
-      if (result === false) {
-        console.log('error');
-        return res.status(401).json({
-          message: 'error',
-          status: 'rejected'
-        })
-      }
+      if (!result) throw ApiError.ServerError()
 
       await staffService.saveStaffLogs(staffEmail, ` изменил статус даблдепов пользователя ${userEmail} на  ${status} `, domainName, staffId)
       await telegram.sendMessageByStaffActions(staffEmail, ` изменил статус даблдепов пользователя  ${userEmail} на  ${status} `, domainName)
-      return res.status(202).json({
-        message: 'double deposit status was updated',
-        status: 'complete'
-      })
+      return res.status(202).json({ message: 'ok' })
 
     } catch (e) {
       next(e)
@@ -589,74 +481,61 @@ class StaffController {
   }
 
   async clearMatchIpList(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
-      const { userId, staffId, staffEmail, userEmail, domainName, ipAddress } = req.body
-      console.log('req body: ', req.body);
-      const rootAccess: boolean = req.body.rootAccess
+    const { staffId, staffEmail, userEmail, domainName, ipAddress } = req.body
+    const rootAccess: boolean = req.body.rootAccess
 
-      if (rootAccess === true) {
-        const result: boolean = await staffService.ClearMatchIpUsers('root', ipAddress)
-        if (result === false) {
-          console.log('error');
-          return res.status(401).json({
-            message: 'error',
-            status: 'rejected'
-          })
-        }
-        return res.status(202).json({
-          message: 'Match IP addresses was cleared',
-          status: 'complete'
-        })
+    const validData: boolean = await bodyValidator(req.body, 6)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
+    try {
+      if (rootAccess) {
+        const result: boolean = await staffService.ClearMatchIpUsers(process.env.SUPER_1_LOGIN, ipAddress)
+        if (!result) throw ApiError.ServerError()
+        return res.status(202).json({ message: 'ok' })
 
       }
       const result: boolean = await staffService.ClearMatchIpUsers(userEmail, ipAddress)
-      if (result === false) {
-        console.log('error');
-        return res.status(401).json({
-          message: 'error',
-          status: 'rejected'
-        })
-      }
+      if (!result) throw ApiError.ServerError()
 
       await staffService.saveStaffLogs(staffEmail, ` очистил повторяющиеся IP пользователя ${userEmail}`, domainName, staffId)
       await telegram.sendMessageByStaffActions(staffEmail, ` очистил повторяющиеся IP пользователя  ${userEmail} `, domainName)
-      return res.status(202).json({
-        message: 'Match IP addresses was cleared',
-        status: 'complete'
-      })
+      return res.status(202).json({ message: 'ok' })
+
     } catch (e) {
       next(e)
     }
   }
 
   async createNewUser(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    const rootAccess: boolean = req.body.rootAccess
+    let transfer_object: CREATE_USER_AS_STAFF = {
+      staffEmail: req.body.staffEmail,
+      staffId: req.body.staffId,
+      userEmail: req.body.userEmail,
+      password: req.body.password,
+      domainName: req.body.domainName,
+      currentDate: req.body.currentDate,
+      name: req.body.name
+    }
+
+    const validData: boolean = await bodyValidator(req.body, 8)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
 
-      let transfer_object: CREATE_USER_AS_STAFF = {
-        staffEmail: req.body.staffEmail,
-        staffId: req.body.staffId,
-        userEmail: req.body.userEmail,
-        password: req.body.password,
-        domainName: req.body.domainName,
-        currentDate: req.body.currentDate,
-        name: req.body.name
-      }
-      const rootAccess: boolean = req.body.rootAccess
-
-      if (rootAccess === true) {
-        transfer_object.staffId = 'xx999xx--001'
-        transfer_object.staffEmail = 'root'
+      if (!rootAccess) {
+        transfer_object.staffId = process.env.SUPER_ID
+        transfer_object.staffEmail = process.env.SUPER_1_LOGIN
         const result: boolean = await staffService.CreateUserAsStaff(transfer_object)
-        if (result === false) return res.status(400).json({ message: 'wrong data' })
-
+        if (!result) throw ApiError.ServerError()
         return res.status(201).json({ message: 'ok' })
       }
 
       const result: boolean = await staffService.CreateUserAsStaff(transfer_object)
-      if (result === false) return res.status(400).json({ message: 'wrong data' })
+      if (!result) throw ApiError.ServerError()
+
       await telegram.sendMessageByStaffActions(transfer_object.staffEmail, ` создал пользователя ${transfer_object.userEmail} `, transfer_object.domainName)
       await staffService.saveStaffLogs(transfer_object.staffEmail, ` создал пользователя ${transfer_object.userEmail} `, transfer_object.domainName, transfer_object.staffId)
-
       return res.status(201).json({ message: 'ok' })
     } catch (e) {
       next(e)
@@ -664,95 +543,90 @@ class StaffController {
   }
 
   async createDomain(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    const rootAccess: boolean = req.body.rootAccess
+    let object_to_send: DOMAIN_INFO = {
+      staffEmail: req.body.staffEmail,
+      fullDomainName: req.body.fullDomainName,
+      domainName: req.body.domainName,
+      companyAddress: req.body.companyAddress,
+      companyPhoneNumber: req.body.companyPhoneNumber,
+      companyEmail: req.body.companyEmail,
+      companyOwnerName: req.body.companyOwnerName,
+      companyYear: req.body.companyYear,
+      companyCountry: req.body.companyCountry,
+      showNews: req.body.showNews,
+      doubleDeposit: req.body.doubleDeposit,
+      depositFee: req.body.depositFee,
+      rateCorrectSum: req.body.rateCorrectSum,
+      minDepositSum: req.body.minDepositSum,
+      minWithdrawalSum: req.body.minWithdrawalSum,
+      currencySwapFee: req.body.currencySwapFee,
+      errorList: {
+        verif_document: {
+          domainName: req.body.fullDomainName,
+          errorName: req.body.errorList.verif_document.errorName,
+          title: req.body.errorList.verif_document.title,
+          text: req.body.errorList.verif_document.text,
+          button: req.body.errorList.verif_document.button
+        },
+        verif_address: {
+          domainName: req.body.fullDomainName,
+          errorName: req.body.errorList.verif_address.errorName,
+          title: req.body.errorList.verif_address.title,
+          text: req.body.errorList.verif_address.text,
+          button: req.body.errorList.verif_address.button,
+        },
+        insurance: {
+          domainName: req.body.fullDomainName,
+          errorName: req.body.errorList.insurance.errorName,
+          title: req.body.errorList.insurance.title,
+          text: req.body.errorList.insurance.text,
+          button: req.body.errorList.insurance.button,
+        },
+        premium: {
+          domainName: req.body.fullDomainName,
+          errorName: req.body.errorList.premium.errorName,
+          title: req.body.errorList.premium.title,
+          text: req.body.errorList.premium.text,
+          button: req.body.errorList.premium.button
+        },
+        multi_account: {
+          domainName: req.body.fullDomainName,
+          errorName: req.body.errorList.multi_account.errorName,
+          title: req.body.errorList.multi_account.title,
+          text: req.body.errorList.multi_account.text,
+          button: req.body.errorList.multi_account.button
+        }
+      },
+      dateOfDomainCreate: req.body.dateOfDomainCreate,
+      staffId: req.body.staffId
+    }
+
+    const validData: boolean = await bodyValidator(req.body, 44)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
 
-      console.log('req body is: ', req.body);
-
-      let object_to_send: DOMAIN_INFO = {
-        staffEmail: req.body.staffEmail,
-        fullDomainName: req.body.fullDomainName,
-        domainName: req.body.domainName,
-        companyAddress: req.body.companyAddress,
-        companyPhoneNumber: req.body.companyPhoneNumber,
-        companyEmail: req.body.companyEmail,
-        companyOwnerName: req.body.companyOwnerName,
-        companyYear: req.body.companyYear,
-        companyCountry: req.body.companyCountry,
-        showNews: req.body.showNews,
-        doubleDeposit: req.body.doubleDeposit,
-        depositFee: req.body.depositFee,
-        rateCorrectSum: req.body.rateCorrectSum,
-        minDepositSum: req.body.minDepositSum,
-        minWithdrawalSum: req.body.minWithdrawalSum,
-        currencySwapFee: req.body.currencySwapFee,
-        errorList: {
-          verif_document: {
-            domainName: req.body.fullDomainName,
-            errorName: req.body.errorList.verif_document.errorName,
-            title: req.body.errorList.verif_document.title,
-            text: req.body.errorList.verif_document.text,
-            button: req.body.errorList.verif_document.button
-          },
-          verif_address: {
-            domainName: req.body.fullDomainName,
-            errorName: req.body.errorList.verif_address.errorName,
-            title: req.body.errorList.verif_address.title,
-            text: req.body.errorList.verif_address.text,
-            button: req.body.errorList.verif_address.button,
-          },
-          insurance: {
-            domainName: req.body.fullDomainName,
-            errorName: req.body.errorList.insurance.errorName,
-            title: req.body.errorList.insurance.title,
-            text: req.body.errorList.insurance.text,
-            button: req.body.errorList.insurance.button,
-          },
-          premium: {
-            domainName: req.body.fullDomainName,
-            errorName: req.body.errorList.premium.errorName,
-            title: req.body.errorList.premium.title,
-            text: req.body.errorList.premium.text,
-            button: req.body.errorList.premium.button
-          },
-          multi_account: {
-            domainName: req.body.fullDomainName,
-            errorName: req.body.errorList.multi_account.errorName,
-            title: req.body.errorList.multi_account.title,
-            text: req.body.errorList.multi_account.text,
-            button: req.body.errorList.multi_account.button
-          }
-        },
-        dateOfDomainCreate: req.body.dateOfDomainCreate,
-        staffId: req.body.staffId
-      }
-
-      const rootAccess: boolean = req.body.rootAccess
 
       if (rootAccess === true) {
-        object_to_send.staffId = 'xx999xx--001'
-        object_to_send.staffEmail = 'root'
+        object_to_send.staffId = process.env.SUPER_ID
+        object_to_send.staffEmail = process.env.SUPER_1_LOGIN
       }
 
       const result: string | boolean = await staffService.CreateNewDomain(object_to_send)
 
-      if (result === false) return res.status(400).json({
-        message: 'wrong data. please try one more time.'
+      if (!result) return res.status(400).json({
+        message: 'wrong data saving. please try one more time.'
       })
-      if (result === 'error') return res.status(500).json({
-        message: 'internal server error.'
-      })
+      if (result === 'error') throw ApiError.ServerError()
       // const checkTerms: boolean = await staffService.CheckDomainTerms()
       // if (!checkTerms) await staffService.addTerms(req.body.fullDomainName)
 
-      if (rootAccess === false) {
+      if (!rootAccess) {
         await telegram.sendMessageByStaffActions(req.body.staffEmail, ` создал новый домен ${req.body.fullDomainName}} `, req.body.domainName)
         await staffService.saveStaffLogs(req.body.staffEmail, ` создал новый домен ${req.body.fullDomainName} `, '', req.body.staffId)
       }
-
-      return res.status(201).json({
-        message: 'domain was created with all settings.',
-        status: 'complete'
-      })
+      return res.status(201).json({ message: 'ok' })
     } catch (e) {
       next(e)
     }
@@ -764,12 +638,8 @@ class StaffController {
       const domain_id: string = req.params.id
       console.log('current domain id is: ', domain_id);
       const result: any = await staffService.GetDomainDetail(domain_id)
-      if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
-
-      return res.status(202).json({
-        domain_detail: result,
-        status: 'complete'
-      })
+      if (!result) throw ApiError.ServerError()
+      return res.status(202).json({ domain_detail: result })
 
     } catch (e) {
       next(e)
@@ -777,51 +647,47 @@ class StaffController {
   }
 
   async createCustomError(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    let obj_to_send: CREATE_CUSTOM_ERROR = {
+      domain_id: req.body.domainId,
+      domain_name: req.body.domainName,
+      errorName: req.body.errorName,
+      errorTitle: req.body.errorTitle,
+      errorText: req.body.errorText,
+      errorButton: req.body.errorButton
+    }
+
+    const adminPermission: boolean = req.body.isAdmin
+    const staffPremission: boolean = req.body.isStaff
+    let staffEmail: string = req.body.staffEmail
+    let staffId: string = req.body.stafId
+    const rootAccess: boolean = req.body.rootAccess
+
+
+    const validData: boolean = await bodyValidator(req.body, 11)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
-
-      console.log('req body is: ', req.body)
-
-      let obj_to_send: CREATE_CUSTOM_ERROR = {
-        domain_id: req.body.domainId,
-        domain_name: req.body.domainName,
-        errorName: req.body.errorName,
-        errorTitle: req.body.errorTitle,
-        errorText: req.body.errorText,
-        errorButton: req.body.errorButton
-      }
-
-      const adminPermission: boolean = req.body.isAdmin
-      const staffPremission: boolean = req.body.isStaff
-      let staffEmail: string = req.body.staffEmail
-      let staffId: string = req.body.stafId
-      const rootAccess: boolean = req.body.rootAccess
-
-      if (rootAccess === true || adminPermission) {
-        staffId = 'xx999xx--001'
-        staffEmail = 'root'
+      if (rootAccess || adminPermission) {
+        staffId = process.env.SUPER_ID
+        staffEmail = process.env.SUPER_1_LOGIN
 
         const result: any = await staffService.CreateCustomError(obj_to_send)
         console.log('result is: ', result);
-        if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
-
-        return res.status(201).json({ message: 'Error was created', status: 'completed' })
+        if (!result) throw ApiError.ServerError()
+        return res.status(201).json({ message: 'ok' })
 
       }
 
       if (staffPremission) {
         const result: any = await staffService.CreateCustomError(obj_to_send)
-        console.log('result is: ', result);
-
-        if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+        if (!result) throw ApiError.ServerError()
 
         await telegram.sendMessageByStaffActions(staffEmail, ` создал кастомную ошибку `, obj_to_send.domain_name)
         await staffService.saveStaffLogs(staffEmail, ` создал новый домен ${req.body.fullDomainName}} `, obj_to_send.domain_name, staffId)
-
-
-        return res.status(201).json({ message: 'Error was created', status: 'completed' })
+        return res.status(201).json({ message: 'ok' })
       }
 
-      throw ApiError.ServerError()
+      return res.status(403).json({ message: 'permission denied' })
 
     } catch (e) {
       next(e)
@@ -833,12 +699,9 @@ class StaffController {
       const domainName: string = req.params.domainName
       console.log('current domain id is: ', domainName);
       const result: any = await staffService.GetDomainErrors(domainName)
-      if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+      if (!result) throw ApiError.ServerError()
 
-      return res.status(200).json({
-        errorList: result,
-        status: 'complete'
-      })
+      return res.status(200).json({ errorList: result })
 
     } catch (e) {
       next(e)
@@ -848,12 +711,9 @@ class StaffController {
 
   async getErrorsByDomainName(req: express.Request, res: express.Response, next: express.NextFunction) {
 
-    console.log('req body is: ', req.params);
     const domainName: string = req.params.domainName
     if (!req.params) return res.status(400).json({ message: 'wrong data' })
-
     try {
-
       const result: any = await staffService.GetErrorsByDomainName(domainName)
       if (!result) throw ApiError.ServerError()
 
@@ -864,19 +724,16 @@ class StaffController {
   }
 
   async getDomainsList(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const adminPermission: boolean = req.body.isAdmin
+    const staffPermission: boolean = req.body.isStaff
+    let staffId: string = req.body.staffId
+    const rootAccess: boolean = req.body.rootAccess
+
+    const validData: boolean = await bodyValidator(req.body, 4)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
-      console.log('req body is: ', req.body)
-
-      const adminPermission: boolean = req.body.isAdmin
-      const staffPermission: boolean = req.body.isStaff
-      let staffId: string = req.body.staffId
-      let staffEmail: string = req.body.staffEmail
-      const rootAccess: boolean = req.body.rootAccess
-
-
       if (rootAccess || adminPermission) {
-        staffId = 'xx999xx--001'
-        staffEmail = 'root'
+        staffId = process.env.SUPER_ID
 
         const result: any = await adminService.GetDomainListForAdmin()
         if (!result) throw ApiError.ServerError()
@@ -895,115 +752,110 @@ class StaffController {
   }
 
   async editDomainInfo(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
-
-      console.log('req body is: ', req.body);
-
-      let object_to_send: DOMAIN_INFO = {
-        staffEmail: req.body.staffEmail,
-        fullDomainName: req.body.fullDomainName,
-        domainName: req.body.domainName,
-        companyAddress: req.body.companyAddress,
-        companyPhoneNumber: req.body.companyPhoneNumber,
-        companyEmail: req.body.companyEmail,
-        companyOwnerName: req.body.companyOwnerName,
-        companyYear: req.body.companyYear,
-        companyCountry: req.body.companyCountry,
-        showNews: req.body.showNews,
-        doubleDeposit: req.body.doubleDeposit,
-        depositFee: req.body.depositFee,
-        rateCorrectSum: req.body.rateCorrectSum,
-        minDepositSum: req.body.minDepositSum,
-        minWithdrawalSum: req.body.minWithdrawalSum,
-        currencySwapFee: req.body.currencySwapFee,
-        errorList: {
-          verif_document: {
-            domainName: req.body.fullDomainName,
-            errorName: req.body.errorList.verif_document.errorName,
-            title: req.body.errorList.verif_document.title,
-            text: req.body.errorList.verif_document.text,
-            button: req.body.errorList.verif_document.button
-          },
-          verif_address: {
-            domainName: req.body.fullDomainName,
-            errorName: req.body.errorList.verif_address.errorName,
-            title: req.body.errorList.verif_address.title,
-            text: req.body.errorList.verif_address.text,
-            button: req.body.errorList.verif_address.button,
-          },
-          insurance: {
-            domainName: req.body.fullDomainName,
-            errorName: req.body.errorList.insurance.errorName,
-            title: req.body.errorList.insurance.title,
-            text: req.body.errorList.insurance.text,
-            button: req.body.errorList.insurance.button,
-          },
-          premium: {
-            domainName: req.body.fullDomainName,
-            errorName: req.body.errorList.premium.errorName,
-            title: req.body.errorList.premium.title,
-            text: req.body.errorList.premium.text,
-            button: req.body.errorList.premium.button
-          },
-          multi_account: {
-            domainName: req.body.fullDomainName,
-            errorName: req.body.errorList.multi_account.errorName,
-            title: req.body.errorList.multi_account.title,
-            text: req.body.errorList.multi_account.text,
-            button: req.body.errorList.multi_account.button
-          }
+    let object_to_send: DOMAIN_INFO = {
+      staffEmail: req.body.staffEmail,
+      fullDomainName: req.body.fullDomainName,
+      domainName: req.body.domainName,
+      companyAddress: req.body.companyAddress,
+      companyPhoneNumber: req.body.companyPhoneNumber,
+      companyEmail: req.body.companyEmail,
+      companyOwnerName: req.body.companyOwnerName,
+      companyYear: req.body.companyYear,
+      companyCountry: req.body.companyCountry,
+      showNews: req.body.showNews,
+      doubleDeposit: req.body.doubleDeposit,
+      depositFee: req.body.depositFee,
+      rateCorrectSum: req.body.rateCorrectSum,
+      minDepositSum: req.body.minDepositSum,
+      minWithdrawalSum: req.body.minWithdrawalSum,
+      currencySwapFee: req.body.currencySwapFee,
+      errorList: {
+        verif_document: {
+          domainName: req.body.fullDomainName,
+          errorName: req.body.errorList.verif_document.errorName,
+          title: req.body.errorList.verif_document.title,
+          text: req.body.errorList.verif_document.text,
+          button: req.body.errorList.verif_document.button
         },
-        dateOfDomainCreate: req.body.dateOfDomainCreate,
-        staffId: req.body.staffId
-      }
+        verif_address: {
+          domainName: req.body.fullDomainName,
+          errorName: req.body.errorList.verif_address.errorName,
+          title: req.body.errorList.verif_address.title,
+          text: req.body.errorList.verif_address.text,
+          button: req.body.errorList.verif_address.button,
+        },
+        insurance: {
+          domainName: req.body.fullDomainName,
+          errorName: req.body.errorList.insurance.errorName,
+          title: req.body.errorList.insurance.title,
+          text: req.body.errorList.insurance.text,
+          button: req.body.errorList.insurance.button,
+        },
+        premium: {
+          domainName: req.body.fullDomainName,
+          errorName: req.body.errorList.premium.errorName,
+          title: req.body.errorList.premium.title,
+          text: req.body.errorList.premium.text,
+          button: req.body.errorList.premium.button
+        },
+        multi_account: {
+          domainName: req.body.fullDomainName,
+          errorName: req.body.errorList.multi_account.errorName,
+          title: req.body.errorList.multi_account.title,
+          text: req.body.errorList.multi_account.text,
+          button: req.body.errorList.multi_account.button
+        }
+      },
+      dateOfDomainCreate: req.body.dateOfDomainCreate,
+      staffId: req.body.staffId
+    }
 
-      const rootAccess: boolean = req.body.rootAccess
+    const rootAccess: boolean = req.body.rootAccess
 
-      if (rootAccess === true) {
-        object_to_send.staffId = 'xx999xx--001'
-        object_to_send.staffEmail = 'root'
+    const validData: boolean = await bodyValidator(req.body, 44)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
+    try {
+      if (rootAccess) {
+        object_to_send.staffId = process.env.SUPER_ID
+        object_to_send.staffEmail = process.env.SUPER_1_LOGIN
       }
 
       const result: boolean = await staffService.EditDomainInfo(object_to_send)
-
-      if (result === false) return res.status(400).json({ message: 'wrong data' })
-      if (rootAccess === false) {
+      if (!result) throw ApiError.ServerError()
+      if (!rootAccess) {
         await telegram.sendMessageByStaffActions(req.body.staffEmail, ` создал новый домен ${req.body.fullDomainName}} `, req.body.domainName)
         await staffService.saveStaffLogs(req.body.staffEmail, ` создал новый домен ${req.body.fullDomainName}} `, '', req.body.staffId)
-        return res.status(201).json({
-          message: 'domain was created with all settings.',
-          status: 'OK'
-        })
+        return res.status(201).json({ message: 'ok' })
       }
 
-      return res.status(201).json({ message: 'domain was created.' })
+      return res.status(201).json({ message: 'ok' })
     } catch (e) {
       next(e)
     }
   }
 
   async createNewNotification(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
-      interface request_object {
-        user_email: string
-        notification_text: string
-        domain_name: string
-      }
-      console.log('req body is: ', req.body);
+    interface request_object {
+      user_email: string
+      notification_text: string
+      domain_name: string
+    }
+    const obj_to_send: request_object = {
+      user_email: req.body.userEmail,
+      notification_text: req.body.notifText,
+      domain_name: req.body.domainName
+    }
 
-      const obj_to_send: request_object = {
-        user_email: req.body.userEmail,
-        notification_text: req.body.notifText,
-        domain_name: req.body.domainName
-      }
+
+    const validData: boolean = await bodyValidator(req.body, 3)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+    try {
 
       const result: any = await staffService.CreateNotification(obj_to_send)
-      console.log('result is: ', result);
-      if (!result) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+      if (!result) throw ApiError.ServerError()
 
-      return res.status(201).json({ message: 'notification was create', status: 'complete' })
-
-
+      return res.status(201).json({ message: 'ok' })
     } catch (e) {
       next(e)
     }
@@ -1011,22 +863,19 @@ class StaffController {
 
 
   async getNotificationList(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const userId: string = req.params.userId
+    console.log('req body is: ', req.params);
     try {
-      const userId: string = req.body.userId
-      console.log('req body is: ', req.body);
       const result: any = await staffService.GetNotificationForUser(userId)
-
-      if (result === false) return res.status(200).json({ message: 'empty list' })
+      if (!result) return res.status(200).json({ listForUser: 'empty list' })
 
       return res.status(200).json({ listForUser: result })
-
     } catch (e) {
       next(e)
     }
   }
 
   async newsCreate(req: express.Request, res: express.Response, next: express.NextFunction) {
-    console.log('req.body -=> ', req.body);
 
     let transfer_object: NEWS_INFO = {
       staffEmail: req.body.staffEmail,
@@ -1040,12 +889,13 @@ class StaffController {
     const rootAccess: boolean = req.body.rootAccess
 
 
-    for (let i in transfer_object) {
-      if (transfer_object[i] === null || transfer_object[i] === undefined) {
-        return res.status(400).json({ message: 'wrong data' })
-      }
-    }
+    const validData: boolean = await bodyValidator(req.body, 8)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
+      if (rootAccess) {
+        transfer_object.staffId = process.env.SUPER_ID
+        transfer_object.staffEmail = process.env.SUPER_1_LOGIN
+      }
 
       const result: any = await staffService.CreateNews(transfer_object)
       if (!result) throw ApiError.ServerError()
@@ -1069,13 +919,15 @@ class StaffController {
       newsDomain: req.body.newsDomain
     }
     const newsId: string = req.body.newsId
+    const rootAccess: boolean = req.body.rootAccess
 
-    for (let i in transfer_object) {
-      if (transfer_object[i] === null || transfer_object[i] === undefined) {
-        return res.status(400).json({ message: 'wrong data' })
-      }
-    }
+    const validData: boolean = await bodyValidator(req.body, 9)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
+      if (rootAccess) {
+        transfer_object.staffId = process.env.SUPER_ID
+        transfer_object.staffEmail = process.env.SUPER_1_LOGIN
+      }
 
       const result: boolean = await staffService.EditNews(transfer_object, newsId)
       if (!result) throw ApiError.ServerError()
@@ -1091,7 +943,9 @@ class StaffController {
     const isStaff: boolean = req.body.isStaff
     const staffEmail: string = req.body.staffEmail
     const rootAccess: boolean = req.body.rootAccess
-    if (!req.body) return res.status(400).json({ message: 'wrong data' })
+
+    const validData: boolean = await bodyValidator(req.body, 4)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
 
       if (isStaff) {
@@ -1178,193 +1032,133 @@ class StaffController {
   }
 
   async promocodeCreate(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
-      // add promocode & add before sign up
+    let { date, value, currency, notification, staffId, domainName, counter } = req.body
+    const rootAccess: boolean = req.body.rootAccess
 
-      const { date, value, currency, notification, staffId, domainName, counter } = req.body
-      console.log('body is: ', req.body);
+    const validData: boolean = await bodyValidator(req.body, 8)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+    try {
+      if (rootAccess) staffId = process.env.SUPER_ID
 
       const codesArray: any = await staffService.CreatePromocode(date, value, currency, notification, staffId, domainName, counter)
-      console.log('operation result is: ', codesArray);
+      if (!codesArray[0]) throw ApiError.ServerError()
 
-      if (!codesArray[0]) {
-        return res.status(400).json({
-          message: 'wrong data',
-          status: 'rejected'
-        })
-      }
-      return res.status(201).json({
-        message: 'code was created',
-        codesArray: codesArray,
-        status: 'complete'
-      })
-
+      return res.status(201).json({ codesArray: codesArray })
     } catch (e) {
       next(e)
     }
   }
 
   async getPromocodeListForStaff(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const adminPermission: boolean = req.body.isAdmin
+    const staffPremission: boolean = req.body.isStaff
+    let staffId: string = req.body.id
+    // let staffEmail: string = req.body.staffEmail
+    const rootAccess: boolean = req.body.rootAccess
+
+
+    const validData: boolean = await bodyValidator(req.body, 4)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
-      console.log('req body is: ', req.body)
 
-      const adminPermission: boolean = req.body.isAdmin
-      const staffPremission: boolean = req.body.isStaff
-      // const domainName: string = req.body.domainName
-      let staffId: string = req.body.id
-      let staffEmail: string = req.body.staffEmail
-      const rootAccess: boolean = req.body.rootAccess
-
-      if (rootAccess === true) {
-        staffId = 'xx999xx--001'
-        staffEmail = 'root'
+      if (rootAccess) {
+        staffId = process.env.SUPER_ID
+        // staffEmail = process.env.SUPER_1_LOGIN
 
         const codesList: any = await adminService.GetPromocodeListForAdmin()
-        if (codesList !== false) {
-          return res.status(200).json({
-            promocodeList: codesList,
-            status: 'complete'
-          })
-        }
-        return res.status(200).json({
-          promocodeList: null,
-          status: 'complete'
-        })
+        if (codesList !== false) return res.status(200).json({ promocodeList: codesList })
+        return res.status(200).json({ promocodeList: null })
 
       }
 
-      if (adminPermission === true) {
+      if (adminPermission) {
         const codesList: any = await adminService.GetPromocodeListForAdmin()
-        if (codesList !== false) {
-          return res.status(200).json({
-            promocodeList: codesList,
-            status: 'complete'
-          })
-        }
-        return res.status(200).json({
-          promocodeList: null,
-          status: 'complete'
-        })
+        if (codesList !== false) return res.status(200).json({ promocodeList: codesList })
+        return res.status(200).json({ promocodeList: null })
       }
 
-      if (staffPremission === true) {
+      if (staffPremission) {
         const codesList: any = await staffService.GetPromocodeListForStaff(staffId)
-        if (codesList !== false) {
-          return res.status(200).json({
-            promocodeList: codesList,
-            status: 'complete'
-          })
-        }
-        return res.status(200).json({
-          promocodeList: null,
-          status: 'complete'
-        })
+        if (codesList !== false) return res.status(200).json({ promocodeList: codesList })
+        return res.status(200).json({ promocodeList: null })
       }
-      return res.status(403).json({
-        message: 'permission denied',
-        status: 'rejected'
-      })
+      return res.status(403).json({ message: 'permission denied' })
     } catch (e) {
       next(e)
     }
   }
 
   async removePromocode(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const code: string = req.body.promocode
     try {
-      const code: string = req.body.promocode
 
       const result: boolean = await staffService.RemovePromocode(code)
-      if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+      if (!result) throw ApiError.ServerError()
 
-      return res.status(200).json({ message: 'code was delete', status: 'complete' })
+      return res.status(200).json({ message: 'ok' })
     } catch (e) {
       next(e)
     }
   }
 
   async getUsedPromocodeListForStaff(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const adminPermission: boolean = req.body.isAdmin
+    const staffPermission: boolean = req.body.isStaff
+    // const domainName: string = req.body.domainName
+    let staffId: string = req.body.id
+    // let staffEmail: string = req.body.staffEmail
+    const rootAccess: boolean = req.body.rootAccess
+
+    const validData: boolean = await bodyValidator(req.body, 4)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
-      console.log('req body is: ', req.body)
-
-      const adminPermission: boolean = req.body.isAdmin
-      const staffPermission: boolean = req.body.isStaff
-      // const domainName: string = req.body.domainName
-      let staffId: string = req.body.id
-      let staffEmail: string = req.body.staffEmail
-      const rootAccess: boolean = req.body.rootAccess
-
       if (rootAccess === true) {
-        staffId = 'xx999xx--001'
-        staffEmail = 'root'
+        staffId = process.env.SUPER_ID
+        // staffEmail = process.env.SUPER_1_LOGIN
 
         const codesList: any = await adminService.GetPromocodeListForAdmin()
-        if (codesList !== false) {
-          return res.status(200).json({
-            promocodeList: codesList,
-            status: 'complete'
-          })
-        }
-        return res.status(200).json({
-          promocodeList: null,
-          status: 'complete'
-        })
+        if (codesList !== false) return res.status(200).json({ promocodeList: codesList })
+        return res.status(200).json({ promocodeList: null })
 
       }
 
       if (adminPermission) {
         const codesList: any = await adminService.GetUsedPromocodeListForAdmin()
-        if (codesList !== false) {
-          return res.status(200).json({
-            promocodeList: codesList,
-            status: 'complete'
-          })
-        }
-        return res.status(200).json({
-          promocodeList: null,
-          status: 'complete'
-        })
+        if (codesList !== false) return res.status(200).json({ promocodeList: codesList })
+        return res.status(200).json({ promocodeList: null })
       }
       if (staffPermission) {
         const codesList: any = await staffService.GetUsedPromocodeList(staffId)
-        if (codesList !== false) {
-          return res.status(200).json({
-            promocodeList: codesList,
-            status: 'complete'
-          })
-        }
-        return res.status(200).json({
-          promocodeList: null,
-          status: 'complete'
-        })
+        if (codesList !== false) return res.status(200).json({ promocodeList: codesList })
+        return res.status(200).json({ promocodeList: null })
 
       }
-      return res.status(403).json({
-        message: 'permission denied',
-        status: 'rejected'
-      })
+      return res.status(403).json({ message: 'permission denied' })
     } catch (e) {
       next(e)
     }
   }
 
   async deleteUsedPromocodes(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const adminPermission: boolean = req.body.isAdmin
+    const staffPermission: boolean = req.body.isStaff
+    const staff_id: string = req.body.id
+
+
+    const validData: boolean = await bodyValidator(req.body, 3)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
-      const adminPermission: boolean = req.body.isAdmin
-      const staffPermission: boolean = req.body.isStaff
-      const staff_id: string = req.body.id
 
       if (adminPermission) {
         const result: boolean = await adminService.DeleteUsedPromocodesAsAdmin()
-        if (!result) return res.status(500).json({ message: 'internal server error.' })
-
+        if (!result) throw ApiError.ServerError()
         res.status(200).json({ message: 'OK' })
       }
-      if (staffPermission && !adminPermission) {
+      if (staffPermission) {
         const result: boolean = await staffService.DeleteUsedPromocodesAsStaff(staff_id)
-        if (!result) return res.status(500).json({ message: 'internal server error.' })
+        if (!result) throw ApiError.ServerError()
         res.status(200).json({ message: 'OK' })
       }
-
       return res.status(403).json({ message: 'permission denied' })
     }
     catch (e) {
@@ -1389,55 +1183,49 @@ class StaffController {
   }
 
 
-  async getTermsByDomainName(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
-      const domainName: string = req.body
-      console.log('req body is: ', req.body);
-      const result: any = await staffService.GetTermsByDomainName(domainName)
-      if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
-      res.status(202).json({ message: 'terms was updated', status: 'complete' })
-    } catch (e) {
-      next(e)
-    }
-  }
+  // async getTermsByDomainName(req: express.Request, res: express.Response, next: express.NextFunction) {
+  //   try {
+  //     const domainName: string = req.body
+  //     console.log('req body is: ', req.body);
+  //     const result: any = await staffService.GetTermsByDomainName(domainName)
+  //     if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+  //     res.status(202).json({ message: 'terms was updated', status: 'complete' })
+  //   } catch (e) {
+  //     next(e)
+  //   }
+  // }
 
-  async updateTerms(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
-      const { domainName, termsBody } = req.body
-      console.log('req body is: ', req.body);
-      const result: any = await staffService.UpdateTerms(domainName, termsBody)
-      if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
-      res.status(202).json({ message: 'terms was updated', status: 'complete' })
-    } catch (e) {
-      next(e)
-    }
-  }
+  // async updateTerms(req: express.Request, res: express.Response, next: express.NextFunction) {
+  //   try {
+  //     const { domainName, termsBody } = req.body
+  //     console.log('req body is: ', req.body);
+  //     const result: any = await staffService.UpdateTerms(domainName, termsBody)
+  //     if (result === false) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
+  //     res.status(202).json({ message: 'terms was updated', status: 'complete' })
+  //   } catch (e) {
+  //     next(e)
+  //   }
+  // }
 
   async projectSupport(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const wallet: string | undefined = process.env.SUPPORT_WALLET
+    console.log('wallet is => ', wallet);
+
     try {
-      console.log('req. body: ', req.body);
-
-      const wallet: string | undefined = process.env.SUPPORT_WALLET
-      console.log('wallet is: ', wallet);
-
-      return res.status(202).json({
-        wallet: wallet,
-        status: 'complete'
-      })
+      return res.status(202).json({ wallet: wallet })
     } catch (e) {
       next(e)
     }
   }
 
   async projectSupportRequest(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const staffEmail: string = req.body.staffEmail
+    const title: string = req.body.title
+    const message: string = req.body.message
+
+    const validData: boolean = await bodyValidator(req.body, 3)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
-      const staffEmail: string = req.body.staffEmail
-      const title: string = req.body.title
-      const message: string = req.body.message
-
-      console.log('req body is: ', req.body);
-      if (!staffEmail && !title && !message) return res.status(400).json({ message: 'wrong data', status: 'rejected' })
-
       await telegram.sendProjectSupportMessage(staffEmail, title, message)
       res.status(200).json({ message: 'done' })
     } catch (e) {
@@ -1448,7 +1236,6 @@ class StaffController {
 
 
   async makeWithdrawalForUserAsStaff(req: express.Request, res: express.Response, next: express.NextFunction) {
-    console.log('req body is: ', req.body)
 
     let transfer_object: WITHDRAWAL_HISTORY = {
       userId: req.body.userId,
@@ -1467,10 +1254,13 @@ class StaffController {
     }
     const staffId: string = req.body.staffId
 
+    const validData: boolean = await bodyValidator(req.body, 11)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
     try {
       const result: boolean = await moneyService.MakeWithdrawalAsStaff(transfer_object, staffId)
       console.log('result is: ', result)
-      if (!result) return res.status(400).json({ message: 'wrong data' })
+      if (!result) throw ApiError.ServerError()
       return res.status(201).json({ message: 'ok' })
 
     } catch (e) {
@@ -1480,7 +1270,6 @@ class StaffController {
 
 
   async createDepositForUserAsStaff(req: express.Request, res: express.Response, next: express.NextFunction) {
-    console.log('req body is: ', req.body)
 
     const transfer_object: DEPOSIT_HISTORY = {
       userId: req.body.userId,
@@ -1496,10 +1285,11 @@ class StaffController {
     }
     const staffId: string = req.body.staffId
 
+    const validData: boolean = await bodyValidator(req.body, 11)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
 
       const result: boolean = await moneyService.MakeDepositAsStaff(transfer_object, staffId)
-      console.log('operation result is: ', result)
       if (!result) return ApiError.ServerError()
       return res.status(201).json({ message: 'ok' })
 
@@ -1509,7 +1299,6 @@ class StaffController {
   }
 
   async createWithdrawalAsStaff(req: express.Request, res: express.Response, next: express.NextFunction) {
-    console.log('req body is: ', req.body)
 
     let transfer_object: WITHDRAWAL_HISTORY = {
       userId: req.body.userId,
@@ -1529,10 +1318,12 @@ class StaffController {
 
     const staffId: string = req.body.staffId
 
+    const validData: boolean = await bodyValidator(req.body, 11)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
     try {
       const result: boolean = await moneyService.MakeWithdrawalAsStaff(transfer_object, staffId)
-      console.log('result is: ', result)
-      if (!result) return res.status(400).json({ message: 'wrong data' })
+      if (!result) throw ApiError.ServerError()
       return res.status(201).json({ message: 'ok' })
 
     } catch (e) {
@@ -1541,7 +1332,6 @@ class StaffController {
   }
 
   async createInternalTransaction(req: express.Request, res: express.Response, next: express.NextFunction) {
-    console.log('req body is: ', req.body)
 
     const transfer_object: INTERNAL_HISTORY = {
       userId: req.body.userId,
@@ -1558,11 +1348,12 @@ class StaffController {
     }
     const staffId: string = req.body.staffId
 
+    const validData: boolean = await bodyValidator(req.body, 12)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
 
       const result: boolean | string = await moneyService.MakeInternalTransfer(transfer_object, staffId)
-      console.log('result is: ', result)
-      if (!result) return res.status(400).json({ message: 'wrong data' })
+      if (!result) throw ApiError.ServerError()
       return res.status(201).json({ message: 'ok' })
 
     } catch (e) {
@@ -1571,7 +1362,6 @@ class StaffController {
   }
 
   async getTransactionsHistory(req: express.Request, res: express.Response, next: express.NextFunction) {
-    console.log('req body is: ', req.body)
     const staffId: string = req.params.staffId
 
     if (!staffId) return res.status(400).json({ message: 'wrong data' })
@@ -1605,18 +1395,18 @@ class StaffController {
   async getSecureDealHistory(req: express.Request, res: express.Response, next: express.NextFunction) {
     const staffId: string = req.body.staffId
     const rootAccess: boolean = req.body.rootAccess
-    if (!staffId) return res.status(400).json({ message: 'wrong data' })
+
+    const validData: boolean = await bodyValidator(req.body, 2)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {
       if (rootAccess) {
         const result: any = await adminService.getSecureDealHistoryAsAdmin()
-        console.log(' result is: ', result)
         if (!result) throw ApiError.ServerError()
 
         return res.status(200).json({ message: 'ok', history: result })
       }
       const result: any = await staffService.getSecureDealHistoryAsStaff(staffId)
-      console.log(' result is: ', result)
       if (!result) throw ApiError.ServerError()
 
       return res.status(200).json({ message: 'ok', history: result })
@@ -1658,15 +1448,11 @@ class StaffController {
         coinAddress: req.body.walletList.solanaWalet
       }
     ]
-    for (let index in walletList) {
-      if (walletList[index] === undefined || walletList[index] === null) {
-        console.log(`received an empty value of ${walletList[index]}. check ur request. `);
 
-        return res.status(400).json({ message: 'wrong data' })
-      }
-    }
-
+    const validData: boolean = await bodyValidator(req.body, 8)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
+
       const result: boolean = await staffService.createStaffWallet(walletList, staffId)
       if (!result) throw ApiError.ServerError()
       return res.status(201).json({ message: 'ok' })
@@ -1681,8 +1467,8 @@ class StaffController {
     const wallet: string = req.body.wallet
     const coinName: string = req.body.coinName
 
-    console.log('edit wallet', req.body)
-    if (!staffId || !wallet || !coinName) return res.status(400).json({ message: 'wrong data' })
+    const validData: boolean = await bodyValidator(req.body, 4)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
       if (!rootAccess) return res.status(403).json({ message: 'permission denied' })
 
@@ -1757,12 +1543,9 @@ class StaffController {
     const creatorId: string = req.body.creatorId
     const staffEmail: string = req.body.staffEmail
 
-    for (let i in req.body) {
-      if (req.body[i] === undefined || req.body[i] === null) {
-        return res.status(400).json({ message: 'wrong data' })
-      }
-    }
-    console.log('request is => ', req.body);
+    const validData: boolean = await bodyValidator(req.body, 5)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
     try {
       const result: boolean = await staffService.createNewStaffGroup(groupName, staffEmail, date, viewParams, creatorId)
       if (!result) throw ApiError.ServerError()
@@ -1778,13 +1561,8 @@ class StaffController {
     const staffEmail: string = req.body.staffEmail
     const groupId: string = req.body.groupId
 
-    console.log('req body is => ', req.body);
-
-    for (let i in req.body) {
-      if (req.body[i] === undefined || req.body[i] === null) {
-        return res.status(400).json({ message: 'wrong data' })
-      }
-    }
+    const validData: boolean = await bodyValidator(req.body, 2)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
       const result: any = await staffService.addNewGroupMember(staffEmail, groupId)
       if (!result) throw ApiError.ServerError()
@@ -1803,19 +1581,15 @@ class StaffController {
     const rootAccess: boolean = req.body.rootAccess
     const adminPermission: boolean = req.body.isAdmin
     const staffPermission: boolean = req.body.isStaff
-    console.log('req body is => ', req.body);
 
-    for (let i in req.body) {
-      if (req.body[i] === undefined || req.body[i] === null) {
-        return res.status(400).json({ message: 'wrong data' })
-      }
-    }
-
+    const validData: boolean = await bodyValidator(req.body, 6)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
       if (rootAccess || adminPermission) {
         const result: any = await adminService.deleteUserFromGroup(groupId, staffEmail)
         if (!result) throw ApiError.ServerError()
-        return res.status(201).json(result)
+        if (typeof result === 'string') return res.status(200).json(result)
+        return res.status(202).json(result)
       }
       if (staffPermission) {
         const result: any = await staffService.deleteUserFromGroup(groupId, staffId, staffEmail)
@@ -1837,11 +1611,8 @@ class StaffController {
     const staffPermission: boolean = req.body.isStaff
     const rootAccess: boolean = req.body.rootAccess
 
-    for (let i in req.body) {
-      if (req.body[i] === undefined || req.body[i] === null) {
-        return res.status(400).json({ message: 'wrong data' })
-      }
-    }
+    const validData: boolean = await bodyValidator(req.body, 4)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {
       if (rootAccess || adminPermission) {
@@ -1870,11 +1641,8 @@ class StaffController {
     const staffPermission: boolean = req.body.isStaff
     const rootAccess: boolean = req.body.rootAccess
 
-    for (let i in req.body) {
-      if (req.body[i] === undefined || req.body[i] === null) {
-        return res.status(400).json({ message: 'wrong data' })
-      }
-    }
+    const validData: boolean = await bodyValidator(req.body, 5)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {
       if (staffPermission) {
@@ -1887,7 +1655,7 @@ class StaffController {
       if (adminPermission || rootAccess) {
         const result: boolean = await adminService.deleteGroup(groupId)
         if (!result) throw ApiError.ServerError()
-        return res.status(200).json({ message: 'ok' })
+        return res.status(202).json({ message: 'ok' })
       }
       res.status(403).json({ message: 'permission denied' })
 

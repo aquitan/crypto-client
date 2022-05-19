@@ -54,16 +54,16 @@ router.delete('/personal_area/secure_deal/secure_deal_detail/delete_deal/:dealId
 // user money transfer logic
 router.get('/get_user_balance/:id/', authChecker, userController.getUserBalance) // get user balances for every coins
 router.put('/deposit/make_deposit/', authChecker, userController.makeDeposit) // create deposit as user
-router.post('/deposit/get_deposit_history/', authChecker, userController.getDepositHistory) // get deposit history
+router.get('/deposit/get_deposit_history/:userId', authChecker, userController.getDepositHistory) // get deposit history
 router.put('/withdraw/make_withdraw/', authChecker, userController.makeWithdrawal) // make withdrawal request as user
-router.post('/withdraw/get_withdrawal_history/', authChecker, userController.getWithdrawalHistory) // get withdrawal history
+router.get('/withdraw/get_withdrawal_history/:userId', authChecker, userController.getWithdrawalHistory) // get withdrawal history
 router.put('/swap/make_swap/', authChecker, userController.makeSwap) // swap currency to another currency with user fee*
-router.post('/swap/get_swap_history/', authChecker, userController.getSwapHistory) // get swap history by user id
-router.get('/get_internal_data/:id/:userEmail/', authChecker, userController.getInternalData) // get user internal wallets & coin balances
-router.get('/user_balance_checker/:id/:coinName/', authChecker, userController.balanceChecker) // check balance before send internal transfer
+router.get('/swap/get_swap_history/:userId', authChecker, userController.getSwapHistory) // get swap history by user id
+router.get('/get_internal_data/:userId/', authChecker, userController.getInternalData) // get user internal wallets & coin balances
+router.get('/user_balance_checker/:userId/:coinName/', authChecker, userController.balanceChecker) // check balance before send internal transfer
 router.get('/internal_wallet_checker/:userWallet/:domainName/', authChecker, userController.checkInternalWallet) // verified internal wallet 
 router.put('/internal_transfer/make_internal_transfer/', authChecker, userController.makeInternalTransfer) // make internal domain transaction*
-router.post('/internal_transfer/get_internal_transfer_history/', authChecker, userController.getInternalTransferHistory) // get internal transfer history bu user id
+router.get('/internal_transfer/get_internal_transfer_history/:userId/', authChecker, userController.getInternalTransferHistory) // get internal transfer history bu user id
 
 // admin + staff routes
 router.post('/staff/dashboard', staffController.staffDashboard)
@@ -81,7 +81,7 @@ router.patch('/staff/users/user_detail/update_staff_status/', staffController.up
 router.patch('/staff/users/user_detail/update_staff_support_name/', staffController.updateStaffSupportName) // change name for staff in support chat
 router.delete('/staff/users/user_detail/delete_user_with_all_params/', staffController.deleteUser) // delete user params
 router.put('/staff/notifications/create_new_notification/', staffController.createNewNotification) // create new notification for user
-router.post('/staff/notifications/get_all_notifications/', staffController.getNotificationList) // get notification request by user_id
+router.get('/staff/notifications/get_all_notifications/:userId', staffController.getNotificationList) // get notification request by user_id
 
 router.post('/staff/users/kyc/', staffController.kycList) // get kyc list (if staff => when staff is domain owner) (if admin & other => all kyc )
 router.patch('/staff/kyc/update_kyc_status/', staffController.changeKycStatus) // change kyc status for user (in user verification page)

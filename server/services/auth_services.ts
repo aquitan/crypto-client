@@ -62,7 +62,10 @@ class AuthService {
   }
 
   async registration(transfer_object: any) {
-    const candidate: any = await baseUserData.findOne({ email: transfer_object.email })
+    const candidate: any = await baseUserData.findOne({
+      email: transfer_object.email,
+      domainName: transfer_object.domainName
+    })
 
     if (candidate) throw ApiError.BadRequest(`email ${transfer_object.email} already in use.`)
     const activationLink: string = await passwordGenerator(18)
@@ -88,7 +91,11 @@ class AuthService {
       dateOfEntry: transfer_object.currentDate
     })
 
-    const curUser: any = await baseUserData.findOne({ email: transfer_object.email })
+    const curUser: any = await baseUserData.findOne({
+      email: transfer_object.email,
+      domainName: transfer_object.domainName
+    })
+    console.log('curUser => ', curUser);
     if (!curUser) return false
 
     await userParams.create({
@@ -106,6 +113,10 @@ class AuthService {
       userId: curUser.id
     })
 
+    const userParamsInfo: any = await userParams.findOne({ userId: curUser.id })
+    console.log('params is => ', userParamsInfo);
+    if (!userParamsInfo) return false
+
     for (let i = 0; i <= curError.length - 1; i++) {
       if (curError[i].errorTitle === 'Documents Verification') {
         await userActionInfo.create({
@@ -118,12 +129,9 @@ class AuthService {
       }
     }
 
-    const userParamsInfo: any = await userParams.findOne({ userId: curUser.id })
-    console.log(userParamsInfo);
-
     const walletGen: any = await moneyService.GenerateInternalWalletsForUser(curUser.id, transfer_object.domainName)
     console.log('received wallets is: ', walletGen);
-    if (!walletGen.length) return false
+    if (!walletGen) return false
 
     for (let i = 0; i <= walletGen.length - 1; i++) {
       let dataObject = {
@@ -140,7 +148,7 @@ class AuthService {
     }
 
     const getBalance: any = await userBalance.find({
-      userEmail: curUser.email
+      userId: curUser.id
     })
     console.log('received balances is => ', getBalance);
     if (!getBalance.length) return false
@@ -260,20 +268,41 @@ class AuthService {
     const user: any = await baseUserData.findOne({ email: email })
     console.log('found user: ', user);
 
-    if (user === undefined || user.password !== password) return false
+    if (!user || user.password !== password) return false
 
-    if (user.email !== email || user.domainName !== user_domain) {
-      console.log('wrong user data');
-      return false
-    }
+    const domainInfo: any = await domainList.findOne({
+      domainOwner: user.id,
+      fullDomainName: user_domain
+    })
+    console.log('domainInfo => ', domainInfo);
 
-    const userDto: any = await getUserData(email)
-    const tokens: any = tokenService.generateTokens({ ...userDto })
-    await tokenService.saveToken(userDto.id, tokens.refreshToken)
+    if (!domainInfo) {
+      if (user.email !== email || user.domainName !== user_domain) {
+        console.log('wrong user data');
+        return false
+      } else {
+        const userDto: any = await getUserData(email)
+        const tokens: any = tokenService.generateTokens({ ...userDto })
+        await tokenService.saveToken(userDto.id, tokens.refreshToken)
 
-    return {
-      ...tokens,
-      user: userDto
+        return {
+          ...tokens,
+          user: userDto
+        }
+      }
+    } else {
+      if (user.id.toString() !== domainInfo.domainOwner.toString()) {
+        return false
+      } else {
+        const userDto: any = await getUserData(email)
+        const tokens: any = tokenService.generateTokens({ ...userDto })
+        await tokenService.saveToken(userDto.id, tokens.refreshToken)
+
+        return {
+          ...tokens,
+          user: userDto
+        }
+      }
     }
   }
 

@@ -4,6 +4,8 @@ import ApiError from '../exeptions/api_error'
 import authService from '../services/auth_services'
 import telegram from '../api/telegram_api'
 import REGISTRATION_DATA from 'interface/registration.interface'
+import bodyValidator from '../api/body_validator'
+
 
 class AuthController {
 
@@ -37,32 +39,34 @@ class AuthController {
   }
 
   async registration(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
-      const errors = validationResult(req)
-      if (!errors.isEmpty()) {
-        return next(ApiError.BadRequest('validation error', errors.array()))
-      }
-      console.log(req.body);
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      return next(ApiError.BadRequest('validation error', errors.array()))
+    }
 
-      const transfer_object: REGISTRATION_DATA = {
-        email: req.body.email,
-        password: req.body.password,
-        name: req.body.name,
-        promocode: req.body.promocode,
-        domainName: req.body.domainName,
-        ipAddress: req.body.ipAddress,
-        city: req.body.city,
-        countryName: req.body.countryName,
-        coordinates: req.body.coordinates,
-        browser: req.body.browser,
-        currentDate: req.body.currentDate,
-        doubleDeposit: req.body.doubleDeposit,
-        depositFee: req.body.depositFee,
-        rateCorrectSum: req.body.rateCorrectSum,
-        minDepositSum: req.body.minDepositSum,
-        minWithdrawalSum: req.body.minWithdrawalSum,
-        currencySwapFee: req.body.currencySwapFee
-      }
+    const transfer_object: REGISTRATION_DATA = {
+      email: req.body.email,
+      password: req.body.password,
+      name: req.body.name,
+      promocode: req.body.promocode,
+      domainName: req.body.domainName,
+      ipAddress: req.body.ipAddress,
+      city: req.body.city,
+      countryName: req.body.countryName,
+      coordinates: req.body.coordinates,
+      browser: req.body.browser,
+      currentDate: req.body.currentDate,
+      doubleDeposit: req.body.doubleDeposit,
+      depositFee: req.body.depositFee,
+      rateCorrectSum: req.body.rateCorrectSum,
+      minDepositSum: req.body.minDepositSum,
+      minWithdrawalSum: req.body.minWithdrawalSum,
+      currencySwapFee: req.body.currencySwapFee
+    }
+
+    const validData: boolean = await bodyValidator(req.body, 17)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+    try {
 
       if (transfer_object.promocode !== 'empty') {
         const userData = await authService.registration(transfer_object)
@@ -129,8 +133,12 @@ class AuthController {
   }
 
   async login(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const { email, password, domainName, ipAddress, city, countryName, coordinates, currentDate, browser } = req.body
+
+    const validData: boolean = await bodyValidator(req.body, 9)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
-      const { email, password, domainName, ipAddress, city, countryName, coordinates, currentDate, browser } = req.body
+
       if (email === process.env.SUPER_1_LOGIN && password === process.env.SUPER_1_PASSWORD) {
         console.log('root access is on by: ', email);
         res.cookie('refreshToken', process.env.ROOT_REFRESH_TOKEN, {
@@ -245,15 +253,13 @@ class AuthController {
   }
 
   async forgotPassword(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const { email, domainName } = req.body
+    const validData: boolean = await bodyValidator(req.body, 2)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
 
-      const { email, domainName } = req.body
-      console.log('req body: ', req.body);
       const result: boolean = await authService.forgotPassword(email, domainName)
-      if (result === false) return res.status(400).json({
-        message: 'wrong email address',
-        status: 'rejected'
-      })
+      if (!result) return res.status(400).json({ message: 'wrong email address' })
 
       return res.status(202).json({
         message: 'new password was send to email.',

@@ -76,16 +76,34 @@ class staffService {
 		return dataLIst
 	}
 
+	async isMemberCheck(userEmail: string) {
+		let dataObj: any = {}
+		const checkGroupUsers: any = await staffGroupUserList.find()
+		for (let i = 0; i <= checkGroupUsers.length - 1; i++) {
+			for (let x = 0; x <= checkGroupUsers[i].staffEmailList.length - 1; x++) {
+				if (checkGroupUsers[i].staffEmailList[x] === userEmail) {
+					const curList: any = await staffGroup.find({ _id: checkGroupUsers[i].groupId })
+					dataObj.isGroupMember = true
+					dataObj.groupList = curList
+				}
+			}
+		}
+		return dataObj
+	}
 
 
-	async GetUsersList(domainName: string, staffId: string, staffEmail: string) {
-		const groupList: any = await staffGroup.find({ creatorId: staffId })
+	async GetUsersList(staffId: string, staffEmail: string) {
+		const checker: any = await this.isMemberCheck(staffEmail)
+		console.log('checker result => ', checker);
+		const isGroupMember: boolean = checker.isGroupMember
+		const groupList: any = checker.groupList
 
 		let dataArray: any = []
-
-		if (!groupList.length) {
-			const usersList: any = await baseUserData.find({ domainName: domainName })
+		if (!isGroupMember) {
+			const usersList: any = await baseUserData.find({ registrationType: staffId })
 			console.log('user list: ', usersList);
+			if (!usersList.length) return 'empty set'
+			if (!usersList) return false
 
 			for (let i = 0; i <= usersList.length - 1; i++) {
 				const kycParams: any = await userParams.findOne({ userId: usersList[i].id })
@@ -96,11 +114,12 @@ class staffService {
 					userName: usersList[i].name,
 					userEmail: usersList[i].email,
 					userStatus: kycParams.isStaff,
-					kycStatus: kycParams.kycStatus
+					kycStatus: kycParams.kycStatus,
+					userDomain: usersList[i].domainName
 				}
 				dataArray.push(dataObject)
 			}
-			if (!dataArray.length) return false
+			if (!dataArray.length) return 'empty set'
 			return dataArray
 		} else {
 
@@ -108,14 +127,16 @@ class staffService {
 				const groupUsers: any = await staffGroupUserList.find({ groupId: groupList[i].id })
 				console.log('received groupUsers => ', groupUsers);
 				for (let j = 0; j <= groupUsers.length - 1; j++) {
-					for (let x = 0; x <= groupUsers[j].staffEmailList[x] - 1; x++) {
+					for (let x = 0; x <= groupUsers[j].staffEmailList.length - 1; x++) {
 						if (groupUsers[j].staffEmailList[x] === staffEmail) {
 
 							const usersList: any = await baseUserData.find()
 							console.log('user list: ', usersList);
 							for (let f = 0; f <= usersList.length - 1; f++) {
 								if (groupList[i].viewParams === false) {
-									const kycParams: any = await userParams.findOne({ userId: usersList[f].id })
+									const kycParams: any = await userParams.findOne({ userId: usersList[f].id.toString() })
+									console.log('kycParams => ', kycParams);
+									// if (!kycParams.length)
 									if (!kycParams) return false
 									let dataObject = {
 										userId: usersList[f].id,
@@ -123,12 +144,14 @@ class staffService {
 										userName: usersList[f].name,
 										userEmail: usersList[f].email,
 										userStatus: kycParams.isStaff,
-										kycStatus: kycParams.kycStatus
+										kycStatus: kycParams.kycStatus,
+										userDomain: usersList[f].domainName
 									}
 									dataArray.push(dataObject)
 								} else {
-									if (usersList[f].dateOfCreate < groupList[i].dateOfCreate) {
+									if (usersList[f].dateOfEntry > groupList[i].dateOfCreate) {
 										const kycParams: any = await userParams.findOne({ userId: usersList[f].id })
+										console.log('kycParams => ', kycParams);
 										if (!kycParams) return false
 										let dataObject = {
 											userId: usersList[f].id,
@@ -136,10 +159,14 @@ class staffService {
 											userName: usersList[f].name,
 											userEmail: usersList[f].email,
 											userStatus: kycParams.isStaff,
-											kycStatus: kycParams.kycStatus
+											kycStatus: kycParams.kycStatus,
+											userDomain: usersList[f].domainName
 										}
 										dataArray.push(dataObject)
 									}
+									//  else {
+									// 	return 'empty set'
+									// }
 								}
 							}
 						}
@@ -147,7 +174,7 @@ class staffService {
 				}
 			}
 			console.log('dataArray is => ', dataArray);
-			if (!dataArray.length) return false
+			if (!dataArray.length) return 'empty set'
 			return dataArray
 		}
 	}
@@ -239,11 +266,44 @@ class staffService {
 		return false
 	}
 
-	async GetKycForStaff(userDomain: string) {
-		const kycList: any = await userKyc.find({ userDomain: userDomain })
-		if (!kycList) return false
-		if (!kycList.length) return 'empty set'
-		return kycList
+	async GetKycForStaff(staffId: string, staffEmail: string) {
+
+		const checker: any = await this.isMemberCheck(staffEmail)
+		console.log('checker result => ', checker);
+		const isGroupMember: boolean = checker.isGroupMember
+		const groupList: any = checker.groupList
+		// need to update
+		let dataArray = []
+		if (!isGroupMember) {
+			const kycList: any = await userKyc.find({ userDomain: staffId })
+			if (!kycList) return false
+			if (!kycList.length) return 'empty set'
+			return kycList
+		} else {
+			for (let i = 0; i <= groupList.length - 1; i++) {
+				for (let j = 0; j <= groupList[i].staffEmailList.length - 1; j++) {
+					if (groupList[i].staffEmailList[j] === staffEmail) {
+						const staffId: any = await baseUserData.findOne({ email: staffEmail })
+						console.log('staffId =>  ', staffId);
+						if (!staffId) return false
+						const usersList: any = await baseUserData.find({ registrationType: staffId.id })
+						console.log('user list: ', usersList);
+						if (!usersList) return false
+						for (let f = 0; f <= usersList.length - 1; f++) {
+							const kycList: any = await userKyc.find({ userId: usersList[f].id })
+							console.log('kycList => ', kycList);
+							if (!kycList) return false
+							for (let g = 0; g <= kycList.length - 1; g++) {
+								dataArray.push(kycList[g])
+							}
+						}
+					}
+				}
+			}
+		}
+		console.log('dataArray is => ', dataArray);
+		if (!dataArray.length) return 'empty set'
+		return dataArray
 	}
 
 

@@ -525,45 +525,6 @@ class UserServices {
 
 	}
 
-
-
-
-
-
-	async saveUserLogs(email: string, ipAddress: string, city: string, countryName: string, coordinates: string, browser: string, currentDate: string, user_action: string, user_domain: string) {
-
-		const logs: any = {
-			email: email,
-			ip_address: ipAddress,
-			user_city: city,
-			country_name: countryName,
-			location_on_map: coordinates,
-			browser: browser,
-			date_time: currentDate,
-			user_action: user_action,
-			domain: user_domain
-		}
-		console.log('received logs is: ', logs)
-
-		for (let i = 0; i < logs.length; i++) {
-			if (logs.i === undefined) return false
-		}
-
-		await userLogs.create({
-			userEmail: email,
-			ipAddress: ipAddress,
-			requestCity: city,
-			countryName: countryName,
-			location: coordinates,
-			browser: browser,
-			actionDate: currentDate,
-			userAction: user_action,
-			userDomain: user_domain
-		})
-
-		return logs
-	}
-
 	async getNewsByDomainName(domainId: string) {
 		const domainNewsList: any = await newsList.find({ domainId: domainId })
 		console.log('domainNewsList is => ', domainNewsList.length);

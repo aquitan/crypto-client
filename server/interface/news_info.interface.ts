@@ -1,7 +1,7 @@
 
 export default interface NEWS_INFO {
   staffEmail: string
-  staffId: number
+  staffId: string
   newsTitle: string
   newsDate: number
   newsBody: string

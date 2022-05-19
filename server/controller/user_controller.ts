@@ -17,26 +17,21 @@ import WITHDRAWAL_HISTORY from 'interface/withdrawal_history.interface'
 import SWAP_HISTORY from 'interface/swap_history.interface'
 import INTERNAL_HISTORY from 'interface/internal_history.interface'
 import { DEAL_INTERFACE } from 'interface/secure_deal.interface'
+import bodyValidator from '../api/body_validator'
+import saveUserLogs from '../api/save_user_logs'
 
-
-async function saveUserLogs(email: string, ipAddress: string, city: string, countryName: string, coordinates: string, browser: string, currentDate: string, userAction: string, userDomain: string) {
-
-  const userLogs: any = await UserServices.saveUserLogs(email, ipAddress, city, countryName, coordinates, browser, currentDate, userAction, userDomain)
-  if (userLogs) {
-    console.log('result from save logs func is : ', userLogs)
-    return { status: 'logs was received.' }
-  }
-  return { status: 'logs was rejected' }
-}
 
 class UserController {
 
   async dashboard(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const { id, email, ipAddress, city, browser, countryName, coordinates, currentDate, domainName } = req.body
+
+    const validData: boolean = await bodyValidator(req.body, 9)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
       // get user id & => 
       // get total balance & currency balances 
-      const { id, email, ipAddress, city, browser, countryName, coordinates, currentDate, userAction, domainName } = req.body
-      console.log(req.body)
+
       const user: any = await UserServices.dashboard(id)
       console.log('found user is: ', user)
       if (!user) throw ApiError.ServerError()
@@ -69,14 +64,14 @@ class UserController {
       userAction: req.body.userAction,
       domainName: req.body.domainName
     }
-    try {
-      console.log('req body: ', req.body);
 
+    const validData: boolean = await bodyValidator(req.body, 10)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+    try {
       const user: any = await UserServices.personalAreaProfile(transfer_object.userId)
       console.log('found user is: ', user)
 
-      if (!user) return res.status(400).json({ user: 'not found', message: 'rejected' })
-
+      if (!user) throw ApiError.ServerError()
       if (user.hasOwnProperty('withoutLogs') && user.withoutLogs === true) return res.status(200).json({ user: user, message: 'OK' })
 
       await saveUserLogs(transfer_object.userEmail, transfer_object.ipAddress, transfer_object.city, transfer_object.countryName, transfer_object.coordinates, transfer_object.browser, transfer_object.currentDate, `перешел на ${transfer_object.userAction} `, transfer_object.domainName)
@@ -89,8 +84,6 @@ class UserController {
   }
 
   async usePromocodeInProfile(req: express.Request, res: express.Response, next: express.NextFunction) {
-
-    console.log('req body: ', req.body);
 
     const transfer_object: USE_PROMO_IN_PROFILE = {
       userId: req.body.userId,
@@ -105,12 +98,15 @@ class UserController {
       domainName: req.body.domainName,
       promocode: req.body.code
     }
+
+    const validData: boolean = await bodyValidator(req.body, 11)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
       const result: any = await UserServices.UsePromocodeInProfile(transfer_object.promocode)
-      if (result === false) return res.status(400).json({ message: 'wrong data' })
+      if (!result) throw ApiError.ServerError()
 
       const rebasePromo: boolean = await auth_services.rebasePromocodeToUsed(transfer_object.promocode, transfer_object.userEmail)
-      if (!rebasePromo) return res.status(500).json({ message: 'internal server error' })
+      if (!rebasePromo) throw ApiError.ServerError()
       await saveUserLogs(transfer_object.userEmail, transfer_object.ipAddress, transfer_object.city, transfer_object.countryName, transfer_object.coordinates, transfer_object.browser, transfer_object.currentDate, ` использовал промокод ${transfer_object.promocode} на `, transfer_object.domainName)
       await telegram.sendMessageByUserActions(transfer_object.userEmail, ` использовал промокод ${transfer_object.promocode} `, transfer_object.domainName)
       return res.status(200).json({ message: 'ok' })
@@ -152,9 +148,12 @@ class UserController {
       code: code
     }
 
+    const validData: boolean = await bodyValidator(req.body, 6)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
     try {
       const result: any = await UserServices.enableTwoStepVerification(transferObject)
-      if (!result) return res.status(400).json({ message: 'wrong data' })
+      if (!result) throw ApiError.ServerError()
 
       return res.status(202).json({ message: '2fa was enabled', userCode: code })
     } catch (e) {
@@ -180,10 +179,12 @@ class UserController {
       logTime: req.body.logTime,
     }
 
+    const validData: boolean = await bodyValidator(req.body, 12)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
 
       const result: boolean = await UserServices.enableTwoStepVerificationStatus(transferObject)
-      if (!result) return res.status(400).json({ message: 'wrong data' })
+      if (!result) throw ApiError.ServerError()
       await saveUserLogs(transferObject.userEmail, logObject.ipAddress, logObject.city, logObject.countryName, logObject.coordinates, logObject.browser, logObject.logTime, ` включил 2fa по ${transferObject.twoFaType} на `, transferObject.domainName)
       await telegram.sendMessageByUserActions(transferObject.userEmail, ` включит 2fa по ${transferObject.twoFaType} `, transferObject.domainName)
       return res.status(200).json({ message: '2fa turned on' })
@@ -208,12 +209,13 @@ class UserController {
 
 
   async disableTwoStepVerificationStatus(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const { userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, domainName } = req.body
+    const validData: boolean = await bodyValidator(req.body, 8)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
-      const { userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, userAction, domainName } = req.body
-      console.log('req body: ', req.body);
 
       const result: boolean = await UserServices.disableUserTwoStep(userId)
-      if (!result) return res.status(400).json({ message: 'rejected' })
+      if (!result) throw ApiError.ServerError()
 
       await saveUserLogs(userId, userEmail, ipAddress, city, countryName, coordinates, currentDate, ` выключил 2фа аутентификацию на`, domainName)
       await telegram.sendMessageByUserActions(userEmail, ` выключил 2фа аутентификацию`, domainName)
@@ -225,9 +227,10 @@ class UserController {
   }
 
   async personalAreaSecurityChangePassword(req: express.Request, res: express.Response, next: express.NextFunction) {
-    const { id, newPassword, userEmail, domainName, ipAddress, city, countryName, coordinates, currentDate, userAction } = req.body
-    console.log('req body is: ', req.body)
+    const { id, newPassword, userEmail, domainName, ipAddress, city, countryName, coordinates, currentDate } = req.body
 
+    const validData: boolean = await bodyValidator(req.body, 9)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
       const result: any = await UserServices.personalAreaChangePassword(userEmail, newPassword)
       if (typeof result === 'string') return res.status(304).json(result)
@@ -245,8 +248,6 @@ class UserController {
 
   async personalAreaKyc(req: express.Request, res: express.Response, next: express.NextFunction) {
 
-    console.log('req body kyc: ', req.body);
-
     const transfer_object: KYC_DATA = {
       userId: req.body.userId,
       userEmail: req.body.userEmail,
@@ -263,6 +264,7 @@ class UserController {
       city: req.body.city,
       browser: req.body.browser,
       documents: {
+        // req file !!!!!!!!!!!!!
         frontDocumentPhoto: req.body.frontDocumentPhoto,
         backDocumentPhoto: req.body.frontDocumentPhoto,
         selfieDocumentPhoto: req.body.selfieDocumentPhoto
@@ -276,11 +278,8 @@ class UserController {
       kycStatus: 'pending'
     }
 
-    // for (let index in transfer_object) {
-    //   if (transfer_object[index] === undefined) {
-    //     return res.status(400).json({ message: 'wrong data' })
-    //   }
-    // }
+    const validData: boolean = await bodyValidator(req.body, 20)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {
       const result: boolean = await UserServices.personalAreaSendKyc(transfer_object)
@@ -346,7 +345,6 @@ class UserController {
   }
 
   async makeDeposit(req: express.Request, res: express.Response, next: express.NextFunction) {
-    console.log('req body is: ', req.body)
 
     const transfer_object: DEPOSIT_HISTORY = {
       userId: req.body.userId,
@@ -368,6 +366,9 @@ class UserController {
     const coordinates: string = req.body.coordinates
     const logTime: string = req.body.logTime
 
+    const validData: boolean = await bodyValidator(req.body, 16)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
     try {
       const result: any = await moneyService.MakeDeposit(transfer_object, logTime)
       console.log('operation result is: ', result)
@@ -383,8 +384,8 @@ class UserController {
   }
 
   async getDepositHistory(req: express.Request, res: express.Response, next: express.NextFunction) {
-    console.log('req body is: ', req.body)
-    const userId: string = req.body.userId
+    console.log('req params is: ', req.params)
+    const userId: string = req.params.userId
 
 
     if (!userId) return res.status(400).json({ message: 'wrong data' })
@@ -401,7 +402,6 @@ class UserController {
   }
 
   async makeWithdrawal(req: express.Request, res: express.Response, next: express.NextFunction) {
-    console.log('req body is: ', req.body)
 
     let transfer_object: WITHDRAWAL_HISTORY = {
       userId: req.body.userId,
@@ -427,10 +427,12 @@ class UserController {
     if (req.body.withdrawalStatus !== 'failed ') {
       transfer_object.withdrawalStatus = 'failed'
     }
+
+    const validData: boolean = await bodyValidator(req.body, 17)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
       const result: any = await moneyService.MakeWithdrawal(transfer_object, errorId)
-      console.log('result is: ', result)
-      if (!result) return res.status(400).json({ message: 'wrong data' })
+      if (!result) throw ApiError.ServerError()
 
       await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, logTime, ` создал заявку на вывод на сумму ${transfer_object.amountInCrypto} ${transfer_object.coinName}($ ${transfer_object.amountInUsd})`, transfer_object.domainName)
       await telegram.sendMessageByUserActions(transfer_object.userEmail, ` создал заявку на вывод на сумму ${transfer_object.amountInCrypto}("${transfer_object.amountInUsd} ) ${transfer_object.coinName}" `, transfer_object.domainName)
@@ -442,8 +444,8 @@ class UserController {
   }
 
   async getWithdrawalHistory(req: express.Request, res: express.Response, next: express.NextFunction) {
-    const userId: string = req.body.userId
-    console.log('int id is: ', userId)
+    const userId: string = req.params.userId
+    console.log('user id is: ', userId)
 
     if (!userId) return res.status(400).json({ message: 'wrong data' })
     try {
@@ -458,7 +460,6 @@ class UserController {
   }
 
   async makeSwap(req: express.Request, res: express.Response, next: express.NextFunction) {
-    console.log('req body is: ', req.body)
 
     const transfer_object: SWAP_HISTORY = {
       userId: req.body.userId,
@@ -480,18 +481,12 @@ class UserController {
     const coordinates: string = req.body.coordinates
     const logTime: string = req.body.logTime
 
-    if (transfer_object.coinNameFrom === transfer_object.coinNameTo) {
-      return res.status(400).json({
-        message: `incorrect coin name value: ` +
-          `u try to swap ${transfer_object.coinNameFrom} to ${transfer_object.coinNameTo}.`
-      })
-    }
+    const validData: boolean = await bodyValidator(req.body, 16)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
 
       const result: boolean = await moneyService.MakeSwap(transfer_object)
-      console.log('result is: ', result)
-
-      if (!result) return res.status(400).json({ message: 'wrong data' })
+      if (!result) throw ApiError.ServerError()
 
       await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, logTime, ` совершил свап(${transfer_object.amountInCryptoFrom} ${transfer_object.coinNameFrom} на ${transfer_object.amountInCryptoTo} ${transfer_object.coinNameTo}) на `, transfer_object.domainName)
       await telegram.sendMessageByUserActions(transfer_object.userEmail, ` совершил свап(${transfer_object.amountInCryptoFrom} ${transfer_object.coinNameFrom} на ${transfer_object.amountInCryptoTo}  ${transfer_object.coinNameTo}) `, transfer_object.domainName)
@@ -503,13 +498,12 @@ class UserController {
   }
 
   async getSwapHistory(req: express.Request, res: express.Response, next: express.NextFunction) {
-    const userId: string = req.body.userId
-    console.log('int id is: ', userId)
+    const userId: string = req.params.userId
+    console.log('user id is: ', userId)
 
     if (!userId) return res.status(400).json({ message: 'wrong data' })
     try {
       const result: any = await UserServices.GetSwapHistory(userId)
-      console.log(' result is: ', result)
       if (!result) throw ApiError.ServerError()
 
       return res.status(200).json({ message: 'ok', swapHistory: result })
@@ -520,13 +514,11 @@ class UserController {
 
   async getInternalData(req: express.Request, res: express.Response, next: express.NextFunction) {
 
-    let userId: string | null = req.params.id
-    const userEmail: string = req.params.userEmail
-    console.log('req body is: ', userId);
-    if (!userId || !userEmail) return res.status(400).json({ message: 'wrong data' })
-    if (userId === 'null') userId = null
+    let userId: string = req.params.userId
+    console.log('req params is: ', userId);
+    if (!userId) return res.status(400).json({ message: 'wrong data' })
     try {
-      const result: any = await moneyService.GetInternalData(userId, userEmail)
+      const result: any = await moneyService.GetInternalData(userId)
       if (!result) throw ApiError.ServerError()
       return res.status(200).json(result)
 
@@ -538,7 +530,7 @@ class UserController {
 
   async balanceChecker(req: express.Request, res: express.Response, next: express.NextFunction) {
 
-    const userId: string = req.params.id
+    const userId: string = req.params.userId
     const coinName: string = req.params.coinName
     console.log('req params is: ', req.params);
 
@@ -554,7 +546,6 @@ class UserController {
   }
 
   async makeInternalTransfer(req: express.Request, res: express.Response, next: express.NextFunction) {
-    console.log('req body is: ', req.body)
 
     const transfer_object: INTERNAL_HISTORY = {
       userId: req.body.userId,
@@ -577,10 +568,12 @@ class UserController {
     const coordinates: string = req.body.coordinates
     const logTime: string = req.body.logTime
 
+    const validData: boolean = await bodyValidator(req.body, 17)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
       const result: boolean | string = await moneyService.MakeInternalTransfer(transfer_object)
       console.log('result is: ', result)
-      if (!result) return res.status(400).json({ message: 'wrong data' })
+      if (!result) throw ApiError.ServerError()
 
       await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, logTime, ` совершил внутренний перевод пользователю ${result} на сумму  ${transfer_object.amountInCrypto}  ${transfer_object.coinName} на `, transfer_object.domainName)
       await telegram.sendMessageByUserActions(transfer_object.userEmail, ` совершил внутренний перевод пользователю ${result} на сумму  ${transfer_object.amountInCrypto}  ${transfer_object.coinName} `, transfer_object.domainName)
@@ -592,12 +585,11 @@ class UserController {
   }
 
   async getInternalTransferHistory(req: express.Request, res: express.Response, next: express.NextFunction) {
-    const userId: string = req.body.userId
+    const userId: string = req.params.userId
 
     if (!userId) return res.status(400).json({ message: 'wrong data' })
     try {
       const result: any = await UserServices.GetInternalTransferHistory(userId)
-      console.log(' result is: ', result)
       if (!result) throw ApiError.ServerError()
 
       return res.status(200).json({ message: 'ok', internalTransferHistory: result })
@@ -649,16 +641,10 @@ class UserController {
     }
     const userId: string = req.body.userId
 
-    for (let index in transferObject) {
-      let wrongField: any = transferObject[index]
-      if (transferObject[index] === undefined || transferObject[index] === null) {
-        console.log(`received object value after ${wrongField} of ${transferObject[index]} is wrong.`);
-        return res.status(400).json({ message: 'wrong data' })
-      }
-    }
+    const validData: boolean = await bodyValidator(req.body, 11)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
       const result: boolean = await UserServices.createSecureDeal(transferObject, userId)
-      console.log(' result is: ', result)
       if (!result) throw ApiError.ServerError()
 
       return res.status(200).json({ message: 'ok' })
