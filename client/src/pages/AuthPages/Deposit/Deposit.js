@@ -31,7 +31,7 @@ const Deposit = () => {
     }, [])
 
     const getHistoryDeposit = async () => {
-        const res = await postData('/deposit/get_deposit_history/', {userId: store.user.id})
+        const res = await getData(`/deposit/get_deposit_history/${store.user.id}`)
         const reversedLogs = res.data.depositHistory.slice(0).reverse()
         setHistory(reversedLogs)
     }

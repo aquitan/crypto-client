@@ -11,10 +11,10 @@ const Support = () => {
         <Container>
             <ButtonCard>
                 <Row>
-                    <Col className='col-12 col-lg-6'>
+                    <Col className='col-12 col-lg-8'>
                         <ChatWindow />
                     </Col>
-                    <Col className='col-12 col-lg-6'>
+                    <Col className='col-12 col-lg-4'>
                         <ChatRules rulesDisclamer={supportRulesText} />
                     </Col>
                 </Row>

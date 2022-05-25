@@ -11,6 +11,8 @@ import Input from "../../../components/UI/Input/Input";
 import {postData} from "../../../services/StaffServices";
 import {useNavigate} from "react-router-dom";
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faUserCircle} from "@fortawesome/free-solid-svg-icons";
 
 const MyAccount = (props) => {
     const [name, setName] = useState(props.name)
@@ -61,6 +63,11 @@ const MyAccount = (props) => {
         const res = await postData('/use_promocode_in_profile/', geodata)
     }
 
+    const onLogout= () => {
+        store.logout()
+        navigate('/')
+    }
+
     console.log('props.data', props.data)
 
     return (
@@ -77,85 +84,112 @@ const MyAccount = (props) => {
             </Modal>
             <h2 className='mt-3 mb-3'>My Account</h2>
 
-            <ButtonCard>
-                <Row className='mb-3 mt-3'>
-                    {
-                        !store.premiumStatus ?
-                            <div className='d-flex align-items-center'>
-                                <div>Upgrade your account to unlock full features and increase your limit of transaction amount.&nbsp;</div>
-                                <b style={{cursor: 'pointer', color: '#ccc'}} onClick={() => setLearnMore(true)}> Learn more &nbsp;</b>
-                                <Button classname='small' onClick={() => navigate('/premium-benefits')}>Upgrade</Button>
+            <Row>
+                <Col className={'col-12 col-lg-6'}>
+                    <ButtonCard classname={'fixed-height'} style={{minHeight: 320, height: '100%'}}>
+                        <Row className={'justify-content-center'}>
+                            <FontAwesomeIcon
+                                style={{fontSize: '100px'}}
+                                color={'#fff'}
+                                icon={faUserCircle} />
+                            <div className={'text-center'}>
+                                <div>{props.data.name === '' ? '-' : props.data.name}</div>
+                                <div style={{fontSize: 14, color: '#ccc', marginBottom: 10 }}>{props.data.email === '' ? '-' : props.data.email}</div>
+                                <div style={{fontSize: 22, fontWeight: 'bold', marginBottom: 10 }}>01.01.2020</div>
+                                <Row className={'justify-content-center'}>
+                                    <Button classname={'logout'} onClick={onLogout}>Logout</Button>
+                                </Row>
                             </div>
-                            : null
-                    }
-                </Row>
-            </ButtonCard>
-            <ButtonCard>
-                <Row>
-                    <Col>
-                        <Row className={cls.account_row}>
-                            <Col>
-                                <div>Name</div>
-                            </Col>
-                            <Col className='d-flex align-items-center'>
-                                <span>{props.data.name === '' ? '-' : props.data.name}</span>
-                                {/*<Button classname='small' onClick={setNewName}>{changeName ? 'Change' : 'Change name'}</Button>*/}
-                            </Col>
                         </Row>
-                        <Row className={cls.account_row}>
-                            <Col>
-                                <div>Email</div>
-                            </Col>
-                            <Col>
-                                <div>{props.data.email === '' ? '-' : props.data.email}</div>
-                            </Col>
+                    </ButtonCard>
+                </Col>
+                <Col className={'col-12 col-lg-6'}>
+                    <ButtonCard classname={'fixed-height'} style={{minHeight: 320, height: '100%'}}>
+                        <Row className='mb-3 mt-3'>
+                            {
+                                !store.premiumStatus ?
+                                    <div className='d-flex flex-column align-items-center'>
+                                        <div style={{marginBottom: 10, textAlign: 'center'}}>Upgrade your account to unlock full features and increase your limit of transaction amount.&nbsp;</div>
+                                        <b style={{cursor: 'pointer', color: '#ccc', marginBottom: 10}} onClick={() => setLearnMore(true)}> Learn more &nbsp;</b>
+                                        <Button classname='small' onClick={() => navigate('/premium-benefits')}>Upgrade</Button>
+                                    </div>
+                                    : null
+                            }
                         </Row>
-                        <Row className={cls.account_row}>
+                    </ButtonCard>
+                </Col>
+            </Row>
+
+            <Row>
+                <Col>
+                    <ButtonCard>
+                        <Row>
                             <Col>
-                                <div>Phone</div>
-                            </Col>
-                            <Col>
-                                <div>{props.data.phoneNumber === null ? '-' : props.data.phoneNumber}</div>
-                            </Col>
-                        </Row>
-                        <Row className={cls.account_row}>
-                            <Col>
-                                <div>Registration date</div>
-                            </Col>
-                            <Col>
-                                <div>01.01.2020</div>
-                            </Col>
-                        </Row>
-                        {
-                            props.promocode ?
+                                {/*<Row className={cls.account_row}>*/}
+                                {/*    <Col>*/}
+                                {/*        <div>Name</div>*/}
+                                {/*    </Col>*/}
+                                {/*    <Col className='d-flex align-items-center'>*/}
+                                {/*        <span>{props.data.name === '' ? '-' : props.data.name}</span>*/}
+                                {/*        /!*<Button classname='small' onClick={setNewName}>{changeName ? 'Change' : 'Change name'}</Button>*!/*/}
+                                {/*    </Col>*/}
+                                {/*</Row>*/}
+                                {/*<Row className={cls.account_row}>*/}
+                                {/*    <Col>*/}
+                                {/*        <div>Email</div>*/}
+                                {/*    </Col>*/}
+                                {/*    <Col>*/}
+                                {/*        <div>{props.data.email === '' ? '-' : props.data.email}</div>*/}
+                                {/*    </Col>*/}
+                                {/*</Row>*/}
                                 <Row className={cls.account_row}>
                                     <Col>
-                                        <div>Use promocode</div>
+                                        <div>Phone</div>
                                     </Col>
                                     <Col>
-                                        <Row>
-                                            <Col>
-                                                <Input classname='input_small' onChange={onPromocodeChange} placeholder='enter promocode' />
-                                            </Col>
-                                            <Col>
-                                                <Button classname='logout' onClick={promoUse}>Use</Button>
-                                            </Col>
-                                        </Row>
+                                        <div>{props.data.phoneNumber === null ? '-' : props.data.phoneNumber}</div>
                                     </Col>
                                 </Row>
-                                : null
-                        }
-                        <Row className={cls.account_row}>
-                            <Col>
-                                <div>Premium status</div>
-                            </Col>
-                            <Col>
-                                <div>{store.premiumStatus ? 'Premium' : 'Base'}</div>
+                                {/*<Row className={cls.account_row}>*/}
+                                {/*    <Col>*/}
+                                {/*        <div>Registration date</div>*/}
+                                {/*    </Col>*/}
+                                {/*    <Col>*/}
+                                {/*        <div>01.01.2020</div>*/}
+                                {/*    </Col>*/}
+                                {/*</Row>*/}
+                                {
+                                    props.promocode ?
+                                        <Row className={cls.account_row}>
+                                            <Col>
+                                                <div>Use promocode</div>
+                                            </Col>
+                                            <Col>
+                                                <Row>
+                                                    <Col>
+                                                        <Input classname='input_small' onChange={onPromocodeChange} placeholder='enter promocode' />
+                                                    </Col>
+                                                    <Col>
+                                                        <Button classname='logout' onClick={promoUse}>Use</Button>
+                                                    </Col>
+                                                </Row>
+                                            </Col>
+                                        </Row>
+                                        : null
+                                }
+                                <Row className={cls.account_row}>
+                                    <Col>
+                                        <div>Premium status</div>
+                                    </Col>
+                                    <Col>
+                                        <div>{store.premiumStatus ? 'Premium' : 'Base'}</div>
+                                    </Col>
+                                </Row>
                             </Col>
                         </Row>
-                    </Col>
-                </Row>
-            </ButtonCard>
+                    </ButtonCard>
+                </Col>
+            </Row>
         </>
     )
 }

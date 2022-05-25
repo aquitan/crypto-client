@@ -108,13 +108,13 @@ const CreateDomains = () => {
             data.showNews = false
         }
         data.rootAccess = store.fullAccess
-        const res = await postData('/staff/domains/create_domain/', data)
+        // const res = await postData('/staff/domains/create_domain/', data)
         console.log('domains-data', data)
-        const response = await res.data
-        if (res.status === 201) {
-            setModal(true)
-            reset({data: ''})
-        }
+        // const response = await res.data
+        // if (res.status === 201) {
+        //     setModal(true)
+        //     reset({data: ''})
+        // }
     }
 
     const tableHeader = ['#001', '127.0.0.1:8000', 'super', 'Jan. 11, 2022, 10:21 a.m.']

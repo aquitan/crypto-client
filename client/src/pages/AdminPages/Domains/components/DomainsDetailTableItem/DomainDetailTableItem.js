@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Col, Row} from "react-bootstrap";
 
-const DomainsDetailTableItem = ({data}) => {
+const DomainsDetailTableItem = ({data, params}) => {
     return (
         <>
             <Row className='mb-3 domain_table_item'>
@@ -10,7 +10,7 @@ const DomainsDetailTableItem = ({data}) => {
                     ID
                 </Col>
                 <Col className='col-6 col-md-2'>
-                    {data.ID}
+                    {data._id}
                 </Col>
             </Row>
             <Row className='mb-3 domain_table_item'>
@@ -18,7 +18,7 @@ const DomainsDetailTableItem = ({data}) => {
                     Адрес компании
                 </Col>
                 <Col className='col-6 col-md-2'>
-                    {data.company_address}
+                    {data.companyAddress}
                 </Col>
             </Row>
             <Row className='mb-3 domain_table_item'>
@@ -26,7 +26,7 @@ const DomainsDetailTableItem = ({data}) => {
                     Страна
                 </Col>
                 <Col className='col-6 col-md-2'>
-                    {data.company_country}
+                    {data.companyCountry}
                 </Col>
             </Row>
             <Row className='mb-3 domain_table_item'>
@@ -34,7 +34,7 @@ const DomainsDetailTableItem = ({data}) => {
                     Почта
                 </Col>
                 <Col className='col-6 col-md-2'>
-                    {data.company_email}
+                    {data.companyEmail}
                 </Col>
             </Row>
             <Row className='mb-3 domain_table_item'>
@@ -42,7 +42,7 @@ const DomainsDetailTableItem = ({data}) => {
                     Имя владельца
                 </Col>
                 <Col className='col-6 col-md-2'>
-                    {data.company_owner_name}
+                    {data.companyOwnerName}
                 </Col>
             </Row>
             <Row className='mb-3 domain_table_item'>
@@ -50,7 +50,7 @@ const DomainsDetailTableItem = ({data}) => {
                     Телефон
                 </Col>
                 <Col className='col-6 col-md-2'>
-                    {data.company_phone_number}
+                    {data.companyPhoneNumber}
                 </Col>
             </Row>
             <Row className='mb-3 domain_table_item'>
@@ -58,15 +58,7 @@ const DomainsDetailTableItem = ({data}) => {
                     Год создания
                 </Col>
                 <Col className='col-6 col-md-2'>
-                    {data.company_year}
-                </Col>
-            </Row>
-            <Row className='mb-3 domain_table_item'>
-                <Col className='col-6 col-md-2'>
-                    Комиссия на свапе
-                </Col>
-                <Col className='col-6 col-md-2'>
-                    {data.currency_swap_fee}%
+                    {data.companyYear}
                 </Col>
             </Row>
             <Row className='mb-3 domain_table_item'>
@@ -74,7 +66,7 @@ const DomainsDetailTableItem = ({data}) => {
                     Дата создания
                 </Col>
                 <Col className='col-6 col-md-2'>
-                    {data.date_of_create}
+                    {data.dateOfCreate}
                 </Col>
             </Row>
             <Row className='mb-3 domain_table_item'>
@@ -82,7 +74,7 @@ const DomainsDetailTableItem = ({data}) => {
                     Комиссия на депозите
                 </Col>
                 <Col className='col-6 col-md-2'>
-                    {data.deposit_fee}%
+                    {params.depositFee}%
                 </Col>
             </Row>
             <Row className='mb-3 domain_table_item'>
@@ -90,7 +82,7 @@ const DomainsDetailTableItem = ({data}) => {
                     Создатель домена
                 </Col>
                 <Col className='col-6 col-md-2'>
-                    {data.domain_owner}
+                    {data.domainOwner}
                 </Col>
             </Row>
             <Row className='mb-3 domain_table_item'>
@@ -98,7 +90,7 @@ const DomainsDetailTableItem = ({data}) => {
                     Удваивать депозит
                 </Col>
                 <Col className='col-6 col-md-2'>
-                    {data.double_deposit === 1 ? 'Да' : 'Нет'}
+                    {params.doubleDeposit ? 'Да' : 'Нет'}
                 </Col>
             </Row>
             <Row className='mb-3 domain_table_item'>
@@ -106,23 +98,16 @@ const DomainsDetailTableItem = ({data}) => {
                     Полное название домена
                 </Col>
                 <Col className='col-6 col-md-2'>
-                    {data.full_domain_name}
+                    {data.fullDomainName}
                 </Col>
             </Row>
-            <Row className='mb-3 domain_table_item'>
-                <Col className='col-6 col-md-2'>
-                    Комиссия на свапе
-                </Col>
-                <Col className='col-6 col-md-2'>
-                    {data.internal_swap_fee}
-                </Col>
-            </Row>
+
             <Row className='mb-3 domain_table_item'>
                 <Col className='col-6 col-md-2'>
                     Минимальная сумма депозита
                 </Col>
                 <Col className='col-6 col-md-2'>
-                    {data.min_deposit_sum}
+                    {params.minDepositSum}
                 </Col>
             </Row>
             <Row className='mb-3 domain_table_item'>
@@ -130,7 +115,7 @@ const DomainsDetailTableItem = ({data}) => {
                     Минимальная сумма вывода
                 </Col>
                 <Col className='col-6 col-md-2'>
-                    {data.min_withdrawal_sum}
+                    {params.minWithdrawalSum}
                 </Col>
             </Row>
             <Row className='mb-3 domain_table_item'>
@@ -138,7 +123,7 @@ const DomainsDetailTableItem = ({data}) => {
                     Корректировка курса
                 </Col>
                 <Col className='col-6 col-md-2'>
-                    {data.rate_correct_sum}
+                    {params.rateCorrectSum}
                 </Col>
             </Row>
             <Row className='mb-3 domain_table_item'>
@@ -146,7 +131,7 @@ const DomainsDetailTableItem = ({data}) => {
                     Показывать новости
                 </Col>
                 <Col className='col-6 col-md-2'>
-                    {data.show_news === 1 ? 'Да' : 'Нет'}
+                    {params.showNews ? 'Да' : 'Нет'}
                 </Col>
             </Row>
         </>

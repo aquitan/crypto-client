@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react'
-import {Col, Container, Nav, Navbar, Row} from "react-bootstrap";
+import {Col, Container, Image, Nav, Navbar, Row} from "react-bootstrap";
 import {AuthContext} from "../../index";
 import {NavLink, useNavigate} from "react-router-dom";
 import cls from './NavBar.module.scss'
@@ -15,7 +15,7 @@ import {
     faHeadset, faMoneyCheck,
     faPhoneVolume,
     faShieldAlt,
-    faSync, faUserLock
+    faSync, faUser, faUserCircle, faUserLock
 } from "@fortawesome/free-solid-svg-icons";
 import BurgerMenu from "../UI/BurgerMenu/BurgerMenu";
 import UserSidebar from "../UserSidebar/UserSidebar";
@@ -112,7 +112,7 @@ const NavBar = () => {
                                 <Dropdown />
                                 <NavLink className={cls.link} to={'/'}>Dashboard</NavLink>
                                 <NavLink className={cls.link} to={'/trading'}>Trading</NavLink>
-                                <NavLink className={cls.link} to={'/profile'}>Profile</NavLink>
+                                {/*<NavLink className={cls.link} to={'/profile'}>Profile</NavLink>*/}
                                 <NavLink className={cls.link} to={'/internal-swap'}>Currency Swap</NavLink>
                                 <NavLink className={cls.link} to={'/support'}>Support</NavLink>
                                 <NavLink className={cls.link} to={'/secure-deal'}>Secure Deal</NavLink>
@@ -129,7 +129,22 @@ const NavBar = () => {
                                         <FontAwesomeIcon className={cls.navbar_icon} icon={faPhoneVolume} />
                                     </NavLink>
                                 </div>
-                                <Button classname='logout' onClick={onLogOut}>Logout</Button>
+                                <div>
+                                    <Row className={'flex-column align-items-center'} style={{color: '#fff', fontSize: 12}}>
+                                        <NavLink to={'/profile'}>
+                                            <Col>
+                                                <div className={'text-center'}>
+                                                    <FontAwesomeIcon style={{fontSize: 24}} icon={faUserCircle} color={'#444'} />
+                                                </div>
+                                            </Col>
+                                            <Col>
+                                                <div>
+                                                    {store.user.email}
+                                                </div>
+                                            </Col>
+                                        </NavLink>
+                                    </Row>
+                                </div>
                             </div>
                         </Nav>
                     </Navbar>

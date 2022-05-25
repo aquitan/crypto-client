@@ -22,9 +22,6 @@ const Promocodes = () => {
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: "onBlur"
     })
-    const currentDomains = [
-        {value: 'localhost:3000', text: 'localhost:3000'}
-    ]
     const [state, setState] = useState({
         currentPromocodes: '',
     })
@@ -79,9 +76,10 @@ const Promocodes = () => {
             date: dateToTimestamp(),
             staffId: store.user.id,
             domainName: window.location.host,
-            counter: data.counter,
+            counter: +data.counter,
             currency: data.currency,
-            notification: data.notification
+            notification: data.notification,
+            rootAccess: store.fullAccess
         }
         const res = await putData('/staff/create_promocode/', promoData)
         if (res.status === 201) {

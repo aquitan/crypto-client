@@ -14,10 +14,12 @@ import InternalAddressModal from "../../../components/UI/InternalAddressModal/In
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 import {getData} from "../../../services/StaffServices";
 import {store} from "../../../index";
+import {getCurrentDate} from "../../../utils/getCurrentDate";
 
 const InternalAddresses = () => {
     const [wallets, setWallets] = useState([])
     const [state, setState] = useState([])
+    const [history, setHistory] = useState([])
     const [modal, setModal] = useState({
         isOpen: false,
         amount: '',
@@ -25,13 +27,6 @@ const InternalAddresses = () => {
         to: '',
         currency: ''
     })
-
-    // const wallets = [
-    //     {wallet: '1EnwkHG4evkJbwPQmPfSkMtdfZgjv92anw', currency: 'BTC', sum: 123123123},
-    //     {wallet: '0x16aA7eBd63864c01b766Bc25B6D3E96041F79F57', currency: 'ETH', sum: 123123123},
-    //     {wallet: '0xbad95082ed21245DD61FaDba372fbB8E863E2eCd', currency: 'USDT', sum: 123123123},
-    //     {wallet: '1DKRsrFt8L1rwvxBwMiukVrhGWDCovjjbc', currency: 'BCH', sum: 123123123}
-    // ]
 
 
 
@@ -41,10 +36,11 @@ const InternalAddresses = () => {
 
     useEffect(() => {
         getWalletsData()
+        getInternalHistory()
     }, [])
 
     const getWalletsData = async () => {
-        const res = await getData(`/get_internal_data/${store.user.id}/${store.user.email}`)
+        const res = await getData(`/get_internal_data/${store.user.id}`)
         setWallets(res.data)
         console.log('res', res.data)
     }
@@ -52,13 +48,18 @@ const InternalAddresses = () => {
     const onModalOpen = (obj) => {
         setModal({
             isOpen: true,
-            amount: obj.amount,
+            amount: obj.amount.toFixed(5),
             id: obj.id,
             currency: obj.currency,
             from: '1DKRsrFt8L1rwvxBwMiukVrhGWDCovjjbc',
             to: '1DKRsrFt8L1rwvxBwMiukVrhGWDCovjjbc'
         })
         console.log('modal', obj)
+    }
+
+    const getInternalHistory = async () => {
+        const res = await getData(`/internal_transfer/get_internal_transfer_history/${store.user.id}`)
+        setHistory(res.data.internalTransferHistory)
     }
 
 
@@ -93,22 +94,28 @@ const InternalAddresses = () => {
                 <ButtonCard>
                     <Row>
                         <Col>
-                            <TableHeader classname='table_header-light' elems={['Date', 'Transaction Details', 'Amount', 'Status']} />
+                            <Row>
+                                <Col className={'d-none d-md-block text-center'}>Date</Col>
+                                <Col className={'text-center'}>Transaction details</Col>
+                                <Col className={'text-center'}>Amount</Col>
+                            </Row>
                             <TableBody>
-                                <InternalAddressesTableItem
-                                    onClick={onModalOpen}
-                                    date={'Feb. 22, 2022, 8:05 a.m.'}
-                                    currency={'BTC'}
-                                    amount={'00.1'}
-                                    id={1}
-                                    status={'Success'} />
-                                <InternalAddressesTableItem
-                                    onClick={onModalOpen}
-                                    date={'today'}
-                                    currency={'ETH'}
-                                    amount={'00.2'}
-                                    id={2}
-                                    status={'Success'} />
+                                {
+                                    history ?
+                                        history.map(item => {
+                                            return (
+                                                <InternalAddressesTableItem
+                                                    onClick={onModalOpen}
+                                                    date={getCurrentDate(item.date)}
+                                                    currency={item.coinName}
+                                                    amount={item.usdAmount}
+                                                    cryptoAmount={item.cryptoAmount}
+                                                    id={item._id}
+                                                    status={item.status} />
+                                            )
+                                        })
+                                        : <h4>No data!</h4>
+                                }
                             </TableBody>
                         </Col>
                     </Row>

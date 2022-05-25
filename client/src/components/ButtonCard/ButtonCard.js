@@ -6,7 +6,7 @@ import classNames from "classnames/bind";
 
 const ButtonCard = ({children, title, classname}) => {
     const cx = classNames.bind(cls)
-    const classes = cx('button-card')
+    const classes = cx('button-card', classname)
 
     return (
         <Card className={classes}>

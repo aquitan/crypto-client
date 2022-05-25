@@ -51,7 +51,6 @@ const StaffErrors = () => {
         const err = await getData(`/staff/errors/get_all_errors/${curSelect}`)
         setDomainErrors(err.data.errorList)
     }
-    console.log('error list', domainErrors)
 
     const getDomainList = async () => {
         const obj = {
@@ -91,7 +90,6 @@ const StaffErrors = () => {
         }
     }
 
-    console.log('allDomains', state.allDomains)
 
     const onSubmit = async (data) => {
         data.domainId = optionId
@@ -109,9 +107,8 @@ const StaffErrors = () => {
     }
 
     const onChangeDomain = async (e) => {
-        // const res = await getData('/staff/errors/get_all_errors/1/')
+        const res = await getData(`/staff/errors/get_all_errors/${e.target.value}`)
         // setState({...state, domain: res.data.domain_detail})
-        console.log('change-domain', state.allDomains)
         setCurSelect(e.target.value)
     }
     const onChangeCustDomain = async (e) => {

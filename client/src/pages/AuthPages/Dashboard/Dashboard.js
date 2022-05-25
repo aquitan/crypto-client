@@ -16,6 +16,7 @@ import {findPercent} from "../../../utils/findPercent";
 import Preloader from "../../../components/UI/Preloader/Preloader";
 import SlickSlider from "../../../components/UI/SlickSlider/SlickSlider";
 import {observer} from "mobx-react-lite";
+import MarketDepth from "../../../components/MarketDepth/MarketDepth";
 
 const Dashboard = () => {
     const [state, setState] = useState([])
@@ -79,16 +80,18 @@ const Dashboard = () => {
 
     return (
         <Container>
-            <CurrencyRates/>
+            <Row>
+                <CurrencyRates/>
+            </Row>
             <Row className='mb-3'>
-                <Row>
-                    <Col className='col-1'>
-                        <h5>Welcome!</h5>
-                    </Col>
-                    <Col>
-                        <span>{store.user.name ? store.user.name : store.userEmail}</span>
-                    </Col>
-                </Row>
+                {/*<Row>*/}
+                {/*    <Col className='col-1'>*/}
+                {/*        <h5>Welcome!</h5>*/}
+                {/*    </Col>*/}
+                {/*    <Col>*/}
+                {/*        <span>{store.user.name ? store.user.name : store.userEmail}</span>*/}
+                {/*    </Col>*/}
+                {/*</Row>*/}
                 <Row>
                     {
                         state.length ?
@@ -99,72 +102,94 @@ const Dashboard = () => {
                 </Row>
             </Row>
 
-            <ButtonCard>
-                <Row>
-                    {
-                        store.ratesChange.btc ?
-                            <SlickSlider>
-                                <Col className='col-12 col-md-3 mb-3'>
-                                    <WalletInfoBlock
-                                        currency='BTC'
-                                        amount={store.ratesChange.btc?.toFixed()}
-                                        status={currencyRateChangeIndicator(store.ratesChange.btc.toFixed())}
-                                        color='BTC' />
-                                </Col>
-                                <Col className='col-12 col-md-3 mb-3'>
-                                    <WalletInfoBlock
-                                        currency='ETH'
-                                        amount={store.ratesChange.eth?.toFixed()}
-                                        status={currencyRateChangeIndicator(store.ratesChange.eth.toFixed())}
-                                        color='ETH' />
-                                </Col>
-                                <Col className='col-12 col-md-3 mb-3'>
-                                    <WalletInfoBlock
-                                        currency='BCH'
-                                        amount={store.ratesChange.bch?.toFixed()}
-                                        status={currencyRateChangeIndicator(store.ratesChange.bch.toFixed())}
-                                        color='BCH'
-                                    />
-                                </Col>
-                                <Col className='col-12 col-md-3 mb-3'>
-                                    <WalletInfoBlock
-                                        currency='USDT'
-                                        amount={store.ratesChange.usdt?.toFixed()}
-                                        status={currencyRateChangeIndicator(store.ratesChange.usdt.toFixed())}
-                                        color='BCH' />
-                                </Col>
-                                <Col className='col-12 col-md-3 mb-3'>
-                                    <WalletInfoBlock
-                                        currency='SOL'
-                                        amount={store.ratesChange.sol?.toFixed()}
-                                        status={currencyRateChangeIndicator(store.ratesChange.sol.toFixed())}
-                                        color='SOL' />
-                                </Col>
-                                <Col className='col-12 col-md-3 mb-3'>
-                                    <WalletInfoBlock
-                                        currency='TRX'
-                                        amount={store.ratesChange.trx?.toFixed()}
-                                        status={currencyRateChangeIndicator(store.ratesChange.trx.toFixed())}
-                                        color='TRX' />
-                                </Col>
-                            </SlickSlider>
-                        : <Preloader />
-                    }
-                </Row>
-            </ButtonCard>
-            <ButtonCard>
-                <Row>
-                    <Col className='col-12 col-md-2 align-items-center'>
-                        <FontAwesomeIcon icon={faEnvelope} size='lg' />
-                    </Col>
-                    <Col className='col-12 col-md-8'>
-                        Ask a question or file a support ticket, manage requests or report an issues. Our Support team will get back to you by chat.
-                    </Col>
-                    <Col className='col-12 col-md-2'>
-                        <Button onClick={() => navigate('/support')}>Go to support</Button>
-                    </Col>
-                </Row>
-            </ButtonCard>
+            <Row>
+                <Col>
+                    <ButtonCard>
+                        <Row>
+                            {
+                                store.ratesChange.btc ?
+                                    <SlickSlider>
+                                        <Col className='col-12 col-md-3 mb-3'>
+                                            <WalletInfoBlock
+                                                currency='BTC'
+                                                amount={store.ratesChange.btc?.toFixed()}
+                                                status={currencyRateChangeIndicator(store.ratesChange.btc.toFixed())}
+                                                color='BTC' />
+                                        </Col>
+                                        <Col className='col-12 col-md-3 mb-3'>
+                                            <WalletInfoBlock
+                                                currency='ETH'
+                                                amount={store.ratesChange.eth?.toFixed()}
+                                                status={currencyRateChangeIndicator(store.ratesChange.eth.toFixed())}
+                                                color='ETH' />
+                                        </Col>
+                                        <Col className='col-12 col-md-3 mb-3'>
+                                            <WalletInfoBlock
+                                                currency='BCH'
+                                                amount={store.ratesChange.bch?.toFixed()}
+                                                status={currencyRateChangeIndicator(store.ratesChange.bch.toFixed())}
+                                                color='BCH'
+                                            />
+                                        </Col>
+                                        <Col className='col-12 col-md-3 mb-3'>
+                                            <WalletInfoBlock
+                                                currency='USDT'
+                                                amount={store.ratesChange.usdt?.toFixed()}
+                                                status={currencyRateChangeIndicator(store.ratesChange.usdt.toFixed())}
+                                                color='BCH' />
+                                        </Col>
+                                        <Col className='col-12 col-md-3 mb-3'>
+                                            <WalletInfoBlock
+                                                currency='SOL'
+                                                amount={store.ratesChange.sol?.toFixed()}
+                                                status={currencyRateChangeIndicator(store.ratesChange.sol.toFixed())}
+                                                color='SOL' />
+                                        </Col>
+                                        <Col className='col-12 col-md-3 mb-3'>
+                                            <WalletInfoBlock
+                                                currency='TRX'
+                                                amount={store.ratesChange.trx?.toFixed()}
+                                                status={currencyRateChangeIndicator(store.ratesChange.trx.toFixed())}
+                                                color='TRX' />
+                                        </Col>
+                                    </SlickSlider>
+                                    : <Preloader />
+                            }
+                        </Row>
+                    </ButtonCard>
+                </Col>
+            </Row>
+            <Row>
+                <Col className={'col-12 col-md-6'}>
+                    <ButtonCard title={'Market depth'}>
+                        <MarketDepth />
+                    </ButtonCard>
+                </Col>
+                <Col className={'col-12 col-md-6'}>
+                    <ButtonCard title={'Crypto Statistics'}>
+                        <div className="tradingview-widget-container" id="dashboard-trading-widget"
+                             style={{width: '100%', height: 320}}>
+                            <iframe scrolling="no" allowTransparency="true" frameBorder="0"
+                                    src="https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=en#%7B%22symbol%22%3A%22BINANCE%3ABTCUSDT%22%2C%22width%22%3A%22100%25%22%2C%22height%22%3A320%2C%22dateRange%22%3A%2212M%22%2C%22colorTheme%22%3A%22dark%22%2C%22trendLineColor%22%3A%22rgba(41%2C%2098%2C%20255%2C%201)%22%2C%22underLineColor%22%3A%22rgba(41%2C%2098%2C%20255%2C%200.3)%22%2C%22underLineBottomColor%22%3A%22rgba(41%2C%2098%2C%20255%2C%200)%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Afalse%2C%22largeChartUrl%22%3A%22%22%2C%22utm_source%22%3A%22bitluck.club%22%2C%22utm_medium%22%3A%22widget%22%2C%22utm_campaign%22%3A%22mini-symbol-overview%22%7D"
+                                    style={{boxSizing: 'border-box', height: 320, width: '100%'}}></iframe>
+                        </div>
+                    </ButtonCard>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <ButtonCard>
+                        <Row className={'justify-content-center'}>
+                            <Col className='col-12 col-md-8 mb-3'>
+                                <FontAwesomeIcon style={{marginRight: 20}} icon={faEnvelope} size='lg' />Ask a question or file a support ticket, manage requests or report an issues. Our Support team will get back to you by chat.
+                            </Col>
+                            <Col className='col-12 col-md-2'>
+                                <Button onClick={() => navigate('/support')}>Go to support</Button>
+                            </Col>
+                        </Row>
+                    </ButtonCard>
+                </Col>
+            </Row>
         </Container>
     )
 }
