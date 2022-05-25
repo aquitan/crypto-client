@@ -1,11 +1,20 @@
+import { Schema } from 'mongoose'
 
 export const RECRUITER_SCHEMA = {
-  userEmail: {
+  recruiterEmail: {
     type: String,
+    require: true
+  },
+  recruiterId: {
+    type: Schema.Types.ObjectId,
     require: true
   },
   permissionDate: {
     type: Number,
+    require: true
+  },
+  accessFrom: {
+    type: String,
     require: true
   },
   currentFee: {

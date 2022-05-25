@@ -96,9 +96,7 @@ class UserServices {
 
 	async enableTwoStepVerification(transferObject: any) {
 
-		if (transferObject.twoFaType !== 'email' ||
-			transferObject.twoFaType !== 'telegram' ||
-			transferObject.twoFaType !== 'google') return false
+		console.log('transfer obj => ', transferObject);
 
 		if (transferObject.twoFaType === 'email') {
 			await mailService.sendActivationMail(transferObject.userEmail, `${transferObject.domainName}`, `${transferObject.code}`)
@@ -138,6 +136,8 @@ class UserServices {
 			// await telegram.send2faMessage(transferObject.userEmail, `${transferObject.domainName}`, `${transferObject.code}`)
 			// return true
 		}
+
+		return false
 	}
 
 	async enableTwoStepVerificationStatus(transferObject: any) {
@@ -162,12 +162,15 @@ class UserServices {
 
 	}
 
-	// async deleteExpiredCode(code: string) {
-	// 	let codeToDelete: any = await database.GetTwoStepCode(code)
-	// 	console.log('found code is: ', codeToDelete[0]);
-	// 	if (!codeToDelete[0]) return false
+	// async deleteExpiredCode(userEmail: string) {
+	// 	const code: any = await twoFaCodeList.findOne({ userEmail: userEmail })
+	// 	console.log('found code is: ', code);
+	// 	if (!code) return false
+	// 	await twoFaCodeList.deleteOne({ code: code })
 
-	// 	await database.DeleteTwoStepCode(code)
+	// 	const updatedCode: any = await twoFaCodeList.findOne({ code: code })
+	// 	console.log('updatedCode => ', updatedCode);
+	// 	if (updatedCode) return false
 	// 	return true
 	// }
 
@@ -315,18 +318,34 @@ class UserServices {
 	}
 
 	async GetInternalTransferHistory(user_id: string) {
-		const curUser: any = await internalHistory.findOne({
+		const curUser: any = await baseUserData.findOne({
 			_id: user_id,
 		})
 		console.log('found user is => ', curUser);
 		if (!curUser) return false
-		const userInternalTransfers: any = await internalHistory.find({
-			userEmail: curUser.email,
+		const userInternalTransfersSend: any = await internalHistory.find({
+			userEmail: curUser.email
+		})
+
+		const userInternalTransfersReceive: any = await internalHistory.find({
 			secondUserEmail: curUser.email
 		})
-		console.log('userHistory: ', userInternalTransfers.length);
-		if (!userInternalTransfers.length) return false
-		return userInternalTransfers
+		const tempArray = [
+			userInternalTransfersSend,
+			userInternalTransfersReceive
+		]
+		const dataArray = []
+
+		for (let i = 0; i <= tempArray.length - 1; i++) {
+			for (let j = 0; j <= tempArray[i].length - 1; j++) {
+				dataArray.push(tempArray[i][j])
+			}
+		}
+
+		console.log('userHistory: ', dataArray.length);
+		if (!dataArray) return false
+		if (!dataArray.length) return 'empty set'
+		return dataArray
 	}
 
 	async createSecureDeal(transfer_object: any, userId: string) {

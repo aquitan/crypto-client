@@ -164,9 +164,6 @@ class staffService {
 										}
 										dataArray.push(dataObject)
 									}
-									//  else {
-									// 	return 'empty set'
-									// }
 								}
 							}
 						}
@@ -251,12 +248,9 @@ class staffService {
 			console.log('data from service: ', UserData);
 			return UserData
 		}
-
-		// get user balances + last deposit date 
-		// get user owner name + get recruiter  
 		console.log('data from service: ', UserData);
 		return UserData
-
+		// get recruiter if user is staff 
 	}
 
 	async getUserForIpMatch(ip_address: string) {
@@ -272,21 +266,32 @@ class staffService {
 		console.log('checker result => ', checker);
 		const isGroupMember: boolean = checker.isGroupMember
 		const groupList: any = checker.groupList
-		// need to update
-		let dataArray = []
+
+		const ownDomains: any = await domainList.find({ domainOwner: staffId })
+		console.log('ownDomains => ', ownDomains);
+		if (!ownDomains) return false
+
+		let userKycList = [{}]
 		if (!isGroupMember) {
-			const kycList: any = await userKyc.find({ userDomain: staffId })
-			if (!kycList) return false
-			if (!kycList.length) return 'empty set'
-			return kycList
+			for (let i = 0; i <= ownDomains.length - 1; i++) {
+				const kycList: any = await userKyc.find({ userDomain: ownDomains[i].domainFullName })
+				if (!kycList.length) return false
+				for (let x = 0; x <= kycList.length - 1; x++) {
+					userKycList.push(kycList[x])
+				}
+			}
+			console.log('userKycList is => ', userKycList);
+			if (!userKycList) return false
+			if (!userKycList.length) return 'empty set'
+			return userKycList
 		} else {
 			for (let i = 0; i <= groupList.length - 1; i++) {
 				for (let j = 0; j <= groupList[i].staffEmailList.length - 1; j++) {
 					if (groupList[i].staffEmailList[j] === staffEmail) {
-						const staffId: any = await baseUserData.findOne({ email: staffEmail })
-						console.log('staffId =>  ', staffId);
-						if (!staffId) return false
-						const usersList: any = await baseUserData.find({ registrationType: staffId.id })
+						const staffUser: any = await baseUserData.findOne({ email: staffEmail })
+						console.log('staffId =>  ', staffUser);
+						if (!staffUser) return false
+						const usersList: any = await baseUserData.find({ registrationType: staffUser.id })
 						console.log('user list: ', usersList);
 						if (!usersList) return false
 						for (let f = 0; f <= usersList.length - 1; f++) {
@@ -294,16 +299,16 @@ class staffService {
 							console.log('kycList => ', kycList);
 							if (!kycList) return false
 							for (let g = 0; g <= kycList.length - 1; g++) {
-								dataArray.push(kycList[g])
+								userKycList.push(kycList[g])
 							}
 						}
 					}
 				}
 			}
 		}
-		console.log('dataArray is => ', dataArray);
-		if (!dataArray.length) return 'empty set'
-		return dataArray
+		console.log('dataArray is => ', userKycList);
+		if (!userKycList.length) return 'empty set'
+		return userKycList
 	}
 
 
@@ -329,11 +334,6 @@ class staffService {
 
 		const old_status: any = await userParams.findOne({ userId: userId })
 		console.log('old kyc status: ', old_status.kycStatus);
-
-		// if (old_status.kycStatus === status) {
-		// 	console.log('status already set');
-		// 	return false
-		// }
 		await userParams.findOneAndUpdate(
 			{ userId: userId },
 			{ kycStatus: status }
@@ -367,7 +367,6 @@ class staffService {
 
 	async UpdatePremiumStatus(user_id: string, status: boolean) {
 
-		// const user: any = await baseUserData.findOne({ _id: user_id })
 		const curStatus: any = await userParams.findOne({ userId: user_id })
 		console.log('found user status is: ', curStatus);
 		if (!curStatus) return false
@@ -562,10 +561,17 @@ class staffService {
 	}
 
 	async GetDomainDetail(domain_id: string) {
-		const receivedDomain: any = await domainDetail.findById({ _id: domain_id })
-		console.log('domain is: ', receivedDomain);
-		if (!receivedDomain) return false
-		return receivedDomain
+		const receivedDomain: any = await domainList.findById({ _id: domain_id })
+		const receivedDomainParams: any = await domainDetail.findOne({ domainId: domain_id })
+		const receivedDomainErrors: any = await domainErrors.find({ domainId: domain_id })
+		const dataObj = {
+			baseDomainData: receivedDomain,
+			domainParams: receivedDomainParams,
+			domainErrors: receivedDomainErrors
+		}
+		console.log('domain is: ', dataObj);
+		if (!dataObj) return false
+		return dataObj
 	}
 
 	async EditDomainInfo(data_object: any) {
@@ -574,8 +580,8 @@ class staffService {
 			fullDomainName: data_object.fullDomainName,
 			domainOwner: data_object.staffId
 		})
-		if (!curDomain) return false
 		console.log('received domain is: ', curDomain);
+		if (!curDomain) return false
 
 		await domainList.findOneAndUpdate(
 			{
@@ -947,6 +953,18 @@ class staffService {
 		return getWallets
 	}
 
+	async validateStaffEmail(staffEmail: string) {
+
+		const getStaff: any = await baseUserData.findOne({
+			email: staffEmail
+		})
+		const isStaff: any = await userParams.findOne({
+			userId: getStaff.id
+		})
+		console.log('received getStaff is => ', isStaff);
+		if (!isStaff.isStaff) return false
+		return true
+	}
 
 	async validateStaffUser(staffEmail: string) {
 
@@ -955,6 +973,12 @@ class staffService {
 		})
 		console.log('received getStaff is => ', getStaff);
 		if (!getStaff) return false
+
+		const isStaff: any = await userParams.findOne({
+			userId: getStaff.id
+		})
+		console.log('received getStaff is => ', isStaff);
+		if (!isStaff.isStaff) return false
 
 		const getWallets: any = await staffWallet.find({
 			staffId: getStaff.id

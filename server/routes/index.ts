@@ -36,7 +36,7 @@ router.patch('/personal_area/security/change_password/', authChecker, userContro
 router.post('/personal_area/security/two_step_enable/', authChecker, userController.enableTwoStepVerificationStatus) // update and enable 2fa status 
 router.patch('/personal_area/security/disable_two_step_status/', authChecker, userController.disableTwoStepVerificationStatus) // disable 2fa status
 
-// router.delete('/user_two_step_code_list/delete_code/', userController.deleteExpiredCode) // request to delete 2fa code if it's not used
+// router.delete('/user_two_step_code_list/delete_code/:userEmail', userController.deleteExpiredCode) // request to delete 2fa code if it's not used
 router.put('/personal_area/verification/', authChecker, userController.personalAreaKyc) // send kyc data
 
 
@@ -129,16 +129,17 @@ router.patch('/staff/staff_wallets/edit_staff_wallets/', staffController.editSta
 router.get('/staff/staff_wallets/check_staff/:userEmail/', staffController.checkStaffUser) // validate staff email before get staff wallet request
 router.get('/staff/staff_wallets/check_staff_by_wallet/:staffWallet/', staffController.getStaffUserByWallet) // validate staff user wallet
 
-// recruiter logic => 
-// router.get('staff/recruiter/check_email/:userEmail', staffController.checkUserBeforeMakeRecruiter) // validate user email 
-// router.post('/staff/recruiter/add_new_recruiter/', staffController.addNewRecruiter) // add new recruiter user (only as admin or root)
-// router.get('/staff/recruiter/get_reqruiter_list/', staffController.getRecruiterList) // get all recruiters only for root and admin
-// router.get('/staff/recruiter/detail_page/:recruiterId/', staffController.getRecruiterDetail) // get staff list  who depend from recruiter, recruiter fee, staff fee,
-// router.patch('/staff/recruiter/update_recruiter_fee/', staffController.updateRecruiterFee) // update recruiter fee & all depend staff user
-// router.post('/staff/recruiter/add_recruiter_wallets/', staffController.addRecruiterWallets) // add cur wallets for recruiter
-// router.patch('staff/recruiter/update_recruiter_wallet/', staffController.updateCurrentWallet) // update wallet for recruiter by coinName
-// router.delete('/staff/recruiter/delete_staff_user_from_recruiter/', staffController.deleteStaffFromRecruiter) // delete staff user und update his fee
-// router.delete('/staff/recruiter/delete_recruiter_user/', staffController.deleteRecruiterUser) // delete recruiter & update fee to all depend staff 
+// recruiter logic =>
+router.get('staff/recruiter/check_email/:userEmail', staffController.checkUserBeforeMakeRecruiter) // validate user email 
+router.post('/staff/recruiter/add_new_recruiter/', staffController.addNewRecruiter) // add new recruiter user (only as admin or root)
+router.post('/staff/recruiter/add_staff_user_to_current_recruiter/', staffController.addNewStaffToRecruiter) // add new staff to recruiter & update staff fee (recruiter fee - payment fee in staff params)
+router.post('/staff/recruiter/get_reqruiter_list/', staffController.getRecruiterList) // get all recruiters only for root and admin
+router.get('/staff/recruiter/detail_page/:recruiterId/', staffController.getRecruiterDetail) // get staff list  who depend from recruiter, recruiter fee, staff fee,
+router.patch('/staff/recruiter/update_recruiter_fee/', staffController.updateRecruiterFee) // update recruiter fee & all depend staff user
+router.post('/staff/recruiter/add_recruiter_wallets/', staffController.addRecruiterWallet) // add cur wallets for recruiter
+router.patch('staff/recruiter/update_recruiter_wallet/', staffController.updateCurrentRecruiterWallet) // update wallet for recruiter by coinName
+router.delete('/staff/recruiter/delete_staff_user_from_recruiter/', staffController.deleteStaffFromRecruiter) // delete staff user und update his fee
+router.delete('/staff/recruiter/delete_recruiter_user/', staffController.deleteRecruiterUser) // delete recruiter & update fee to all depend staff 
 
 
 // staff groups => 

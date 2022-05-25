@@ -195,11 +195,13 @@ class UserController {
 
   // async deleteExpiredCode(req: express.Request, res: express.Response, next: express.NextFunction) {
   //   try {
-  //     const code: string = req.body.code
-  //     console.log('req body: ', req.body);
-  //     if (!code) return res.status(400).json({ message: 'rejected' })
-  //     const result: boolean = await UserServices.deleteExpiredCode(code)
-  //     if (!result) return res.status(500).json({ message: 'internal server error' })
+  //     const userEmail: string = req.params.userEmail
+
+  //     console.log('req userEmail: ', req.params);
+  //     if (!userEmail) return res.status(400).json({ message: 'wrong data' })
+
+  //     const result: boolean = await UserServices.deleteExpiredCode(userEmail)
+  //     if (!result) throw ApiError.ServerError()
 
   //     return res.status(200).json({ message: 'OK' })
   //   } catch (e) {
@@ -586,10 +588,12 @@ class UserController {
 
   async getInternalTransferHistory(req: express.Request, res: express.Response, next: express.NextFunction) {
     const userId: string = req.params.userId
+    console.log('userId', userId);
 
     if (!userId) return res.status(400).json({ message: 'wrong data' })
     try {
       const result: any = await UserServices.GetInternalTransferHistory(userId)
+      if (typeof result === 'string') return res.status(200).json(result)
       if (!result) throw ApiError.ServerError()
 
       return res.status(200).json({ message: 'ok', internalTransferHistory: result })

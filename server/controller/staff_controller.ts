@@ -58,8 +58,6 @@ class StaffController {
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {
-
-
       if (rootAccess || adminPermission) {
         const usersList: any = await adminService.GetUsersList()
         if (!usersList) throw ApiError.ServerError()
@@ -603,11 +601,20 @@ class StaffController {
       staffId: req.body.staffId
     }
 
-    const validData: boolean = await bodyValidator(req.body, 44)
-    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+    for (let index in req.body) {
+      if (req.body[index] === null || req.body[index] === undefined) {
+        if (typeof req.body[index] === 'object') {
+          for (let i in req.body[index]) {
+            if (req.body[index][i] === null || req.body[index][i] === undefined) {
+              return res.status(400).json({ message: 'wrong data' })
+            }
+          }
+          return res.status(400).json({ message: 'wrong data' })
+        }
+      }
+    }
+
     try {
-
-
       if (rootAccess === true) {
         object_to_send.staffId = process.env.SUPER_ID
         object_to_send.staffEmail = process.env.SUPER_1_LOGIN
@@ -752,6 +759,7 @@ class StaffController {
   }
 
   async editDomainInfo(req: express.Request, res: express.Response, next: express.NextFunction) {
+
     let object_to_send: DOMAIN_INFO = {
       staffEmail: req.body.staffEmail,
       fullDomainName: req.body.fullDomainName,
@@ -812,6 +820,18 @@ class StaffController {
 
     const rootAccess: boolean = req.body.rootAccess
 
+    for (let index in req.body) {
+      if (req.body[index] === null || req.body[index] === undefined) {
+        if (typeof req.body[index] === 'object') {
+          for (let i in req.body[index]) {
+            if (req.body[index][i] === null || req.body[index][i] === undefined) {
+              return res.status(400).json({ message: 'wrong data' })
+            }
+          }
+          return res.status(400).json({ message: 'wrong data' })
+        }
+      }
+    }
     const validData: boolean = await bodyValidator(req.body, 44)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
@@ -1663,6 +1683,245 @@ class StaffController {
       next(e)
     }
   }
+
+  async checkUserBeforeMakeRecruiter(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const userEmail: string = req.params.userEmail
+    console.log('userEmail => ', userEmail);
+    if (!userEmail) throw ApiError.BadRequest()
+    try {
+      const result: boolean = await staffService.validateStaffEmail(userEmail)
+      if (!result) throw ApiError.ServerError()
+      return res.status(200).json({ message: 'ok' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+
+  async addNewRecruiter(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const adminPermission: boolean = req.body.isAdmin
+    const rootAccess: boolean = req.body.rootAccess
+    const recruiterFee: number = req.body.recruiterFee
+    const currentDate: number = req.body.currentDate
+    const userEmail: string = req.body.userEmail
+    const adminId: string = req.body.adminId
+
+    const validData: boolean = await bodyValidator(req.body, 6)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
+    const transferObject: object = {
+      staffEmail: userEmail,
+      recruiterFee: recruiterFee,
+      permissionDate: currentDate,
+      adminId: adminId
+    }
+    try {
+      if (adminPermission || rootAccess) {
+        const result: boolean | string = await adminService.addNewRecruiterUser(transferObject)
+        if (!result) throw ApiError.ServerError()
+        return res.status(201).json({ message: 'ok' })
+      }
+
+      return res.status(403).json({ message: 'permission denied' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async addNewStaffToRecruiter(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    const adminPermission: boolean = req.body.isAdmin
+    const rootAccess: boolean = req.body.rootAccess
+    const staffEmail: string = req.body.staffEmail
+    const recruiterFee: number = req.body.recruiterFee
+    const recruiterId: string = req.body.recruiterId
+
+    const validData: boolean = await bodyValidator(req.body, 5)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
+    try {
+      if (adminPermission || rootAccess) {
+        const result: boolean | string = await adminService.addStaffToRecruiter(staffEmail, recruiterFee, recruiterId)
+        if (!result) throw ApiError.ServerError()
+        return res.status(201).json({ message: 'ok' })
+      }
+
+      return res.status(403).json({ message: 'permission denied' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async getRecruiterList(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const adminPermission: boolean = req.body.isAdmin
+    const rootAccess: boolean = req.body.rootAccess
+
+    const validData: boolean = await bodyValidator(req.body, 2)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+    try {
+      if (adminPermission || rootAccess) {
+        const result: any | string = await adminService.getRecruiterList()
+        if (!result) throw ApiError.ServerError()
+        return res.status(201).json(result)
+      }
+
+      return res.status(403).json({ message: 'permission denied' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async getRecruiterDetail(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const adminPermission: boolean = req.body.isAdmin
+    const rootAccess: boolean = req.body.rootAccess
+    const recruiterId: string = req.body.recruiterId
+
+    const validData: boolean = await bodyValidator(req.body, 3)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+    try {
+      if (adminPermission || rootAccess) {
+        const result: any | string = await adminService.getRecruiterDetail(recruiterId)
+        if (!result) throw ApiError.ServerError()
+        return res.status(201).json(result)
+      }
+
+      return res.status(403).json({ message: 'permission denied' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async updateRecruiterFee(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const adminPermission: boolean = req.body.isAdmin
+    const rootAccess: boolean = req.body.rootAccess
+    const recruiterId: string = req.body.recruiterId
+    const updatedFee: number = req.body.updatedFee
+
+    const validData: boolean = await bodyValidator(req.body, 4)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+    try {
+      if (adminPermission || rootAccess) {
+        const result: boolean | string = await adminService.updateRecruiterFee(recruiterId, updatedFee)
+        if (!result) throw ApiError.ServerError()
+        return res.status(201).json({ message: 'ok' })
+      }
+
+      return res.status(403).json({ message: 'permission denied' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async addRecruiterWallet(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    const recruiterId: string = req.body.recruiterId
+    const walletList = [
+      {
+        coinName: 'BTC',
+        coinAddress: req.body.walletList.btcWallet,
+      },
+      {
+        coinName: 'BCH',
+        coinAddress: req.body.walletList.bchWallet,
+      },
+      {
+        coinName: 'ETH',
+        coinAddress: req.body.walletList.ethWallet,
+      },
+      {
+        coinName: 'USDT',
+        coinAddress: req.body.walletList.usdtWallet,
+      },
+      {
+        coinName: 'TRX',
+        coinAddress: req.body.walletListtronWallet,
+      },
+      {
+        coinName: 'USDTTRX',
+        coinAddress: req.body.walletList.trxUsdtWallet,
+      },
+      {
+        coinName: 'SOL',
+        coinAddress: req.body.walletList.solanaWalet
+      }
+    ]
+
+    const validData: boolean = await bodyValidator(req.body, 8)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+    try {
+
+      const result: boolean = await adminService.createRecruiterWallet(walletList, recruiterId)
+      if (!result) throw ApiError.ServerError()
+      return res.status(201).json({ message: 'ok' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async updateCurrentRecruiterWallet(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const recruiterId: string = req.body.recruiterId
+    const rootAccess: boolean = req.body.rootAccess
+    const adminPermission: boolean = req.body.isAdmin
+    const wallet: string = req.body.wallet
+    const coinName: string = req.body.coinName
+
+    const validData: boolean = await bodyValidator(req.body, 5)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+    try {
+      if (rootAccess || adminPermission) {
+        const result: boolean = await adminService.editRecruiterWallet(wallet, coinName, recruiterId)
+        if (!result) throw ApiError.ServerError()
+        return res.status(202).json({ message: 'ok' })
+      }
+
+      return res.status(403).json({ message: 'permission denied' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async deleteStaffFromRecruiter(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const recruiterId: string = req.body.recruiterId
+    const rootAccess: boolean = req.body.rootAccess
+    const adminPermission: boolean = req.body.isAdmin
+    const staffId: string = req.body.staffId
+    const staffEmail: string = req.body.staffEmail
+
+    const validData: boolean = await bodyValidator(req.body, 5)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+    try {
+      if (rootAccess || adminPermission) {
+        const result: boolean = await adminService.deleteStaffFromRecruiter(staffId, staffEmail, recruiterId)
+        if (!result) throw ApiError.ServerError()
+        return res.status(202).json({ message: 'ok' })
+      }
+
+      return res.status(403).json({ message: 'permission denied' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async deleteRecruiterUser(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const recruiterId: string = req.body.recruiterId
+    const rootAccess: boolean = req.body.rootAccess
+    const adminPermission: boolean = req.body.isAdmin
+
+    const validData: boolean = await bodyValidator(req.body, 3)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+    try {
+      if (rootAccess || adminPermission) {
+        const result: boolean = await adminService.deleteRecruiterUser(recruiterId)
+        if (!result) throw ApiError.ServerError()
+        return res.status(202).json({ message: 'ok' })
+      }
+
+      return res.status(403).json({ message: 'permission denied' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
 }
 
 export default new StaffController()

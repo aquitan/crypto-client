@@ -1,6 +1,7 @@
 import { Schema } from 'mongoose';
 
 export const RECRUITER_WALLET_SCHEMA = {
+
   coinName: {
     type: String,
     require: true
@@ -11,8 +12,9 @@ export const RECRUITER_WALLET_SCHEMA = {
     maxlength: 50,
     require: true
   },
-  recruiterId: {
+  staffId: {
     type: Schema.Types.ObjectId,
     require: true
   }
+
 }

@@ -67,7 +67,7 @@ class AuthService {
       domainName: transfer_object.domainName
     })
 
-    if (candidate) throw ApiError.BadRequest(`email ${transfer_object.email} already in use.`)
+    if (candidate) throw ApiError.BadRequest()
     const activationLink: string = await passwordGenerator(18)
 
     const domainOwner: any = await domainList.findOne({ domainFullName: transfer_object.domainName })
@@ -208,7 +208,7 @@ class AuthService {
 
   async activate(activationLink: string) {
     const link: any = await baseUserData.findOne({ activationLink: activationLink })
-    if (!link) throw ApiError.BadRequest('incorrect link =/')
+    if (!link) throw ApiError.BadRequest()
     await userParams.findOneAndUpdate({ userId: link.id }, {
       isActivated: true
     })

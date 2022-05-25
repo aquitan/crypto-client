@@ -12,7 +12,7 @@ class AuthController {
   async getDomainParams(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       const domain_name: string = req.body.domainName
-      if (!domain_name) throw ApiError.BadRequest('wrong data');
+      if (!domain_name) throw ApiError.BadRequest();
       const result: any = await authService.GetDomainInfo(domain_name)
       if (!result) throw ApiError.ServerError()
 
@@ -41,7 +41,7 @@ class AuthController {
   async registration(req: express.Request, res: express.Response, next: express.NextFunction) {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
-      return next(ApiError.BadRequest('validation error', errors.array()))
+      return next(ApiError.BadRequest())
     }
 
     const transfer_object: REGISTRATION_DATA = {
