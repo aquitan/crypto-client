@@ -55,16 +55,16 @@ router.delete('/personal_area/secure_deal/secure_deal_detail/delete_deal/:dealId
 // user money transfer logic
 router.get('/get_user_balance/:id/', authChecker, userController.getUserBalance) // get user balances for every coins
 router.put('/deposit/make_deposit/', authChecker, userController.makeDeposit) // create deposit as user
-router.get('/deposit/get_deposit_history/:userId', authChecker, userController.getDepositHistory) // get deposit history
+router.get('/deposit/get_deposit_history/:userId/:skipValue/limitValue/', authChecker, userController.getDepositHistory) // get deposit history
 router.put('/withdraw/make_withdraw/', authChecker, userController.makeWithdrawal) // make withdrawal request as user
-router.get('/withdraw/get_withdrawal_history/:userId', authChecker, userController.getWithdrawalHistory) // get withdrawal history
+router.get('/withdraw/get_withdrawal_history/:userId/:skipValue/limitValue/', authChecker, userController.getWithdrawalHistory) // get withdrawal history
 router.put('/swap/make_swap/', authChecker, userController.makeSwap) // swap currency to another currency with user fee*
 router.get('/swap/get_swap_history/:userId', authChecker, userController.getSwapHistory) // get swap history by user id
 router.get('/get_internal_data/:userId/', authChecker, userController.getInternalData) // get user internal wallets & coin balances
 router.get('/user_balance_checker/:userId/:coinName/', authChecker, userController.balanceChecker) // check balance before send internal transfer
 router.get('/internal_wallet_checker/:userWallet/:domainName/', authChecker, userController.checkInternalWallet) // verified internal wallet 
 router.put('/internal_transfer/make_internal_transfer/', authChecker, userController.makeInternalTransfer) // make internal domain transaction*
-router.get('/internal_transfer/get_internal_transfer_history/:userId/', authChecker, userController.getInternalTransferHistory) // get internal transfer history bu user id
+router.get('/internal_transfer/get_internal_transfer_history/:userId/:skipValue/limitValue/', authChecker, userController.getInternalTransferHistory) // get internal transfer history bu user id
 
 // admin + staff routes
 router.post('/staff/dashboard', staffController.staffDashboard)
@@ -121,7 +121,7 @@ router.put('/staff/users/user_detail/make_withdrawal/', staffController.makeWith
 router.put('/staff/create_transaction/create_regular_deposit_transaction/', staffController.createDepositForUserAsStaff) // create deposit for user in your own domain as staff or for any user in project as admin
 router.put('/staff/create_transaction/create_regular_withdrawal_transaction/', staffController.makeWithdrawalForUserAsStaff) // create approved withdrawal for user in your own domain as staff or for any user in project as admin
 router.put('/staff/create_transaction/create_internal_transfer_as_staff/', staffController.createInternalTransaction) // reate approved internal withdrawal OR create internal deposit for your account
-router.get('/staff/create_transaction/get_transaction_history/:staffId/', staffController.getTransactionsHistory) // get history about all transaction in your account
+router.post('/staff/create_transaction/get_transaction_history/', staffController.getTransactionsHistory) // get history about all transaction in your account
 
 // staff wallets => 
 router.put('/staff/wallets/create_staff_wallet/', staffController.createStaffWallet) // create staff wallet 
@@ -131,14 +131,15 @@ router.get('/staff/staff_wallets/check_staff/:userEmail/', staffController.check
 router.get('/staff/staff_wallets/check_staff_by_wallet/:staffWallet/', staffController.getStaffUserByWallet) // validate staff user wallet
 
 // recruiter logic =>
-router.get('staff/recruiter/check_email/:userEmail', staffController.checkUserBeforeMakeRecruiter) // validate user email 
+router.get('/staff/recruiter/check_email/:userEmail/', staffController.checkUserBeforeMakeRecruiter) // validate user email 
 router.post('/staff/recruiter/add_new_recruiter/', staffController.addNewRecruiter) // add new recruiter user (only as admin or root)
 router.post('/staff/recruiter/add_staff_user_to_current_recruiter/', staffController.addNewStaffToRecruiter) // add new staff to recruiter & update staff fee (recruiter fee - payment fee in staff params)
-router.post('/staff/recruiter/get_reqruiter_list/', staffController.getRecruiterList) // get all recruiters only for root and admin
-router.get('/staff/recruiter/detail_page/:recruiterId/', staffController.getRecruiterDetail) // get staff list  who depend from recruiter, recruiter fee, staff fee,
+router.post('/staff/recruiter/get_recruiter_list/', staffController.getRecruiterList) // get all recruiters only for root and admin
+router.post('/staff/recruiter/detail_page/', staffController.getRecruiterDetail) // get staff list  who depend from recruiter, recruiter fee, staff fee,
 router.patch('/staff/recruiter/update_recruiter_fee/', staffController.updateRecruiterFee) // update recruiter fee & all depend staff user
 router.post('/staff/recruiter/add_recruiter_wallets/', staffController.addRecruiterWallet) // add cur wallets for recruiter
-router.patch('staff/recruiter/update_recruiter_wallet/', staffController.updateCurrentRecruiterWallet) // update wallet for recruiter by coinName
+router.post('/staff/recruiter/get_recruiter_wallets/', staffController.getRecruiterWallets) // get wallets by recruiter id
+router.patch('/staff/recruiter/update_recruiter_wallet/', staffController.updateCurrentRecruiterWallet) // update wallet for recruiter by coinName
 router.delete('/staff/recruiter/delete_staff_user_from_recruiter/', staffController.deleteStaffFromRecruiter) // delete staff user und update his fee
 router.delete('/staff/recruiter/delete_recruiter_user/', staffController.deleteRecruiterUser) // delete recruiter & update fee to all depend staff 
 

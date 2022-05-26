@@ -23,6 +23,8 @@ import userBalance from '../models/User_balance.model'
 import userWallet from '../models/user_wallet.model'
 import staffGroup from '../models/Staff_group.model'
 import staffGroupUserList from '../models/staff_group_user_list.model'
+import recruiterModel from '../models/recruiter.model'
+import recruiterOwnUsers from '../models/recruiter_own_users.model'
 
 
 class staffService {
@@ -76,7 +78,7 @@ class staffService {
 		return dataLIst
 	}
 
-	async isMemberCheck(userEmail: string) {
+	async isGroupMemberCheck(userEmail: string) {
 		let dataObj: any = {}
 		const checkGroupUsers: any = await staffGroupUserList.find()
 		for (let i = 0; i <= checkGroupUsers.length - 1; i++) {
@@ -91,12 +93,42 @@ class staffService {
 		return dataObj
 	}
 
+	async isRecruiterCheck(staffId: string) {
+		let dataObj: any = {}
+
+		const isRecruiter: any = await recruiterModel.findOne({ recruiterId: staffId })
+		if (!isRecruiter) {
+			dataObj.isRecruiter = false
+			dataObj.staffIdList = []
+			return dataObj
+		}
+
+		const getOwnUsers: any = await recruiterOwnUsers.find({ recruiterId: staffId })
+		let tempIdArray = []
+		for (let i = 0; i <= getOwnUsers.length - 1; i++) {
+			const staffUser: any = await baseUserData.findOne({ email: getOwnUsers[i].staffEmail })
+			tempIdArray.push(staffUser.id)
+		}
+		dataObj.isRecruiter = true
+		dataObj.staffIdList = tempIdArray
+
+		console.log('dataObj from isRecruiter checker => ', dataObj);
+		return dataObj
+	}
+
+
 
 	async GetUsersList(staffId: string, staffEmail: string) {
-		const checker: any = await this.isMemberCheck(staffEmail)
+		const checker: any = await this.isGroupMemberCheck(staffEmail)
 		console.log('checker result => ', checker);
 		const isGroupMember: boolean = checker.isGroupMember
 		const groupList: any = checker.groupList
+
+		const recruiterChecker: any = await this.isRecruiterCheck(staffId)
+		console.log('recruiterChecker result => ', recruiterChecker);
+		const isRecruiter: boolean = recruiterChecker.isRecruiter
+		const staffIdList: string[] = recruiterChecker.staffIdList
+
 
 		let dataArray: any = []
 		if (!isGroupMember) {
@@ -262,7 +294,7 @@ class staffService {
 
 	async GetKycForStaff(staffId: string, staffEmail: string) {
 
-		const checker: any = await this.isMemberCheck(staffEmail)
+		const checker: any = await this.isGroupMemberCheck(staffEmail)
 		console.log('checker result => ', checker);
 		const isGroupMember: boolean = checker.isGroupMember
 		const groupList: any = checker.groupList

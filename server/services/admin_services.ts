@@ -52,7 +52,8 @@ class adminService {
         userName: usersList[i].name,
         userEmail: usersList[i].email,
         userStatus: kycParams.isStaff,
-        kycStatus: kycParams.kycStatus
+        kycStatus: kycParams.kycStatus,
+        userDomain: usersList[i].domainName
       }
       dataArray.push(dataObject)
     }
@@ -394,7 +395,7 @@ class adminService {
   }
 
   async addNewRecruiterUser(transferObject: any) {
-    const staffUser: any = await baseUserData.findOne({ email: transferObject.userEmail })
+    const staffUser: any = await baseUserData.findOne({ email: transferObject.staffEmail })
     if (!staffUser) return false
 
     const candidate: any = await recruiterModel.findOne({ recruiterId: staffUser.id })
@@ -424,6 +425,7 @@ class adminService {
   async addStaffToRecruiter(staffEmail: string, recruiterFee: number, recruiterId: string) {
     const validateUser: boolean = await staffServices.validateStaffEmail(staffEmail)
     if (!validateUser) return false
+
     const staffSettings: any = await staffParams.findOne({ staffUserEmail: staffEmail })
     console.log('staffSettings => ', staffSettings);
     if (!staffSettings) return false
@@ -432,7 +434,7 @@ class adminService {
 
     const staffFee: number = staffSettings.paymentFee - recruiterFee
     console.log('updated staff fee is => ', staffFee);
-    await staffParams.findByIdAndUpdate(
+    await staffParams.findOneAndUpdate(
       { staffUserEmail: staffEmail },
       { paymentFee: staffFee }
     )
@@ -483,28 +485,41 @@ class adminService {
 
     const staffUpdatedFee: number = 80 - updatedFee
 
+    console.log('staffUpdatedFee => ', staffUpdatedFee);
+
+
     const getOwnUsers: any = await recruiterOwnUsers.find({ recruiterId: recruiterId })
     console.log('getOwnUsers => ', getOwnUsers);
     if (!getOwnUsers) return false
-    if (getOwnUsers.length) {
-      for (let i = 0; i <= recruiterOwnUsers.length - 1; i++) {
-        const foundStaff: any = await staffParams.findOne({ staffUserEmail: recruiterOwnUsers[i].staffEmail })
-        console.log('foundStaff => ', foundStaff);
-        if (foundStaff) {
-          await staffParams.findOneAndUpdate(
-            { staffUserEmail: recruiterOwnUsers[i].staffEmail },
-            { paymentFee: staffUpdatedFee }
-          )
-          const updatedStaffFee: any = await staffParams.findOne({ staffUserEmail: recruiterOwnUsers[i].staffEmail })
-          console.log('updatedStaffFee => ', updatedStaffFee.paymentFee);
-          if (updatedStaffFee.paymentFee !== staffUpdatedFee) return false
+    if (!getOwnUsers.length) return false
+
+    for (let i = 0; i <= getOwnUsers.length - 1; i++) {
+      const foundStaff: any = await staffParams.findOne({ staffUserEmail: getOwnUsers[i].staffEmail })
+      console.log('foundStaff => ', foundStaff);
+      if (!foundStaff) return false
+
+      await staffParams.findOneAndUpdate(
+        { staffUserEmail: getOwnUsers[i].staffEmail },
+        { paymentFee: staffUpdatedFee }
+      )
+
+      await recruiterOwnUsers.findOneAndUpdate(
+        { staffEmail: getOwnUsers[i].staffEmail },
+        {
+          staffFee: staffUpdatedFee,
+          recruiterFee: updatedFee
         }
-      }
+      )
+
+      const updatedStaffFee: any = await staffParams.findOne({ staffUserEmail: getOwnUsers[i].staffEmail })
+      console.log('updatedStaffFee => ', updatedStaffFee.paymentFee);
+      if (updatedStaffFee.paymentFee !== staffUpdatedFee) return false
     }
+
 
     await recruiterModel.findOneAndUpdate(
       { recruiterId: recruiterId },
-      { currentFee: updatedFee }
+      { currentFee: updatedFee, }
     )
 
     const updatedRecruiterFee: any = await recruiterModel.findOne({ recruiterId: recruiterId })
@@ -520,7 +535,7 @@ class adminService {
       recruiterId: recruiterId
     })
     console.log('checkWallets is => ', checkWallets.length);
-    if (checkWallets) return false
+    if (checkWallets.length) return false
 
     for (let i = 0; i <= walletList.length - 1; i++) {
       console.log('cur walletList item is => ', walletList[i]);
@@ -542,6 +557,16 @@ class adminService {
     return true
   }
 
+  async getRecruiterWallets(recruiterId: string) {
+    const getWallets: any = await recruiterWallet.find({
+      recruiterId: recruiterId
+    })
+    console.log('received getWallets is => ', getWallets.length);
+    if (!getWallets) return false
+
+    return getWallets
+  }
+
   async editRecruiterWallet(wallet: string, coinName: string, recruiterId: string) {
     const getWallets: any = await recruiterWallet.find({
       recruiterId: recruiterId
@@ -551,7 +576,7 @@ class adminService {
 
     for (let i = 0; i < getWallets.length - 1; i++) {
       if (getWallets[i].coinName === coinName) {
-        await staffWallet.findOneAndUpdate(
+        await recruiterWallet.findOneAndUpdate(
           {
             coinName: coinName,
             recruiterId: recruiterId
@@ -578,18 +603,18 @@ class adminService {
       })
     console.log('getOwnUsers => ', getOwnUsers);
     if (!getOwnUsers) return false
-    if (getOwnUsers.length) {
-      await recruiterOwnUsers.deleteOne({ userEmail: staffEmail })
-      const getStaff: any = await recruiterOwnUsers.findOne({ userEmail: staffEmail })
-      if (getStaff) return false
-      await staffParams.findOneAndUpdate(
-        { staffId: staffId },
-        { paymentFee: 80 }
-      )
-      const updatedStaffParams: any = await staffParams.findOne({ staffId: staffId })
-      if (!updatedStaffParams || updatedStaffParams.paymentFee !== 80) return false
-      return true
-    }
+
+    await recruiterOwnUsers.deleteOne({ userEmail: staffEmail })
+    const getStaff: any = await recruiterOwnUsers.findOne({ userEmail: staffEmail })
+    if (getStaff) return false
+    await staffParams.findOneAndUpdate(
+      { staffId: staffId },
+      { paymentFee: 80 }
+    )
+    const updatedStaffParams: any = await staffParams.findOne({ staffId: staffId })
+    if (!updatedStaffParams || updatedStaffParams.paymentFee !== 80) return false
+    return true
+
   }
 
   async deleteRecruiterUser(recruiterId: string) {
@@ -615,20 +640,27 @@ class adminService {
         console.log('updatedStaffFee => ', updatedStaffFee);
         if (!updatedStaffFee || updatedStaffFee.paymentFee !== 80) return false
 
+        await recruiterOwnUsers.deleteMany({ recruiterId: recruiterId })
       }
-
-      await recruiterOwnUsers.deleteMany({ recruiterId: recruiterId })
-      await recruiterWallet.deleteMany({ recruiterId: recruiterId })
-
-      const getUpdatedOwnUsers: any = await recruiterOwnUsers.find({ recruiterId: recruiterId })
-      console.log('getUpdatedOwnUsers => ', getUpdatedOwnUsers);
-      if (getOwnUsers.length) return false
-
-      const getUpdatedWallet: any = await recruiterWallet.find({ recruiterId: recruiterId })
-      console.log('getUpdatedWallet => ', getUpdatedWallet);
-      if (getOwnUsers.length) return false
-      return true
     }
+
+    await recruiterWallet.deleteMany({ recruiterId: recruiterId })
+
+    const getUpdatedOwnUsers: any = await recruiterOwnUsers.find({ recruiterId: recruiterId })
+    console.log('getUpdatedOwnUsers => ', getUpdatedOwnUsers);
+    if (getOwnUsers.length) return false
+
+    const getUpdatedWallet: any = await recruiterWallet.find({ recruiterId: recruiterId })
+    console.log('getUpdatedWallet => ', getUpdatedWallet);
+    if (getOwnUsers.length) return false
+
+    await recruiterModel.deleteOne({ recruiterId: recruiterId })
+
+    const checkRecruiter: any = await recruiterModel.findOne({ recruiterId: recruiterId })
+    console.log('foundRecruiter => ', checkRecruiter);
+    if (checkRecruiter) return false
+
+    return true
   }
 
 }

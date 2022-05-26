@@ -1388,11 +1388,13 @@ class StaffController {
   }
 
   async getTransactionsHistory(req: express.Request, res: express.Response, next: express.NextFunction) {
-    const staffId: string = req.params.staffId
+    const staffId: string = req.body.staffId
     const rootAccess: boolean = req.body.rootAccess
     const adminPermission: boolean = req.body.isAdmin
+    const skipValue: number = req.body.skipValue
+    const limitValue: number = req.body.limitValue
 
-    const validData: boolean = await bodyValidator(req.body, 2)
+    const validData: boolean = await bodyValidator(req.body, 5)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {
@@ -1400,9 +1402,9 @@ class StaffController {
       const dataArray = [{}]
 
       if (rootAccess || adminPermission) {
-        const deposit: any = await UserServices.GetDepositHistory()
-        const withdraw: any = await UserServices.GetWithdrawalHistory()
-        const internal: any = await UserServices.GetInternalTransferHistory()
+        const deposit: any = await UserServices.GetDepositHistory(skipValue, limitValue)
+        const withdraw: any = await UserServices.GetWithdrawalHistory(skipValue, limitValue)
+        const internal: any = await UserServices.GetInternalTransferHistory(skipValue, limitValue)
         for (let d = 0; d <= deposit.length - 1; d++) {
           if (deposit[d]) dataArray.push(deposit[d])
         }
@@ -1418,11 +1420,11 @@ class StaffController {
         return res.status(200).json({ history: dataArray })
 
       }
-      if (staffId) {
+      if (staffId !== '1') {
 
-        const deposit: any = await UserServices.GetDepositHistory(staffId)
-        const withdraw: any = await UserServices.GetWithdrawalHistory(staffId)
-        const internal: any = await UserServices.GetInternalTransferHistory(staffId)
+        const deposit: any = await UserServices.GetDepositHistory(skipValue, limitValue, staffId)
+        const withdraw: any = await UserServices.GetWithdrawalHistory(skipValue, limitValue, staffId)
+        const internal: any = await UserServices.GetInternalTransferHistory(skipValue, limitValue, staffId)
 
         for (let d = 0; d <= deposit.length - 1; d++) {
           if (deposit[d]) dataArray.push(deposit[d])
@@ -1816,7 +1818,7 @@ class StaffController {
       if (adminPermission || rootAccess) {
         const result: any | string = await adminService.getRecruiterList()
         if (!result) throw ApiError.ServerError()
-        return res.status(201).json(result)
+        return res.status(200).json(result)
       }
 
       return res.status(403).json({ message: 'permission denied' })
@@ -1836,7 +1838,7 @@ class StaffController {
       if (adminPermission || rootAccess) {
         const result: any | string = await adminService.getRecruiterDetail(recruiterId)
         if (!result) throw ApiError.ServerError()
-        return res.status(201).json(result)
+        return res.status(200).json(result)
       }
 
       return res.status(403).json({ message: 'permission denied' })
@@ -1857,7 +1859,7 @@ class StaffController {
       if (adminPermission || rootAccess) {
         const result: boolean | string = await adminService.updateRecruiterFee(recruiterId, updatedFee)
         if (!result) throw ApiError.ServerError()
-        return res.status(201).json({ message: 'ok' })
+        return res.status(202).json({ message: 'ok' })
       }
 
       return res.status(403).json({ message: 'permission denied' })
@@ -1900,13 +1902,44 @@ class StaffController {
       }
     ]
 
-    const validData: boolean = await bodyValidator(req.body, 8)
-    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+    for (let index in req.body) {
+      if (req.body[index] === null || req.body[index] === undefined) {
+        if (typeof req.body[index] === 'object') {
+          for (let i in req.body[index]) {
+            if (req.body[index][i] === null || req.body[index][i] === undefined) {
+              return res.status(400).json({ message: 'wrong data' })
+            }
+          }
+          return res.status(400).json({ message: 'problem in received data' })
+        }
+      }
+    }
     try {
 
       const result: boolean = await adminService.createRecruiterWallet(walletList, recruiterId)
       if (!result) throw ApiError.ServerError()
       return res.status(201).json({ message: 'ok' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async getRecruiterWallets(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const recruiterId: string = req.body.recruiterId
+    const rootAccess: boolean = req.body.rootAccess
+    const adminPermission: boolean = req.body.isAdmin
+
+    const validData: boolean = await bodyValidator(req.body, 3)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+    try {
+      if (rootAccess || adminPermission) {
+        const result: any = await adminService.getRecruiterWallets(recruiterId)
+        if (!result) throw ApiError.ServerError()
+        return res.status(202).json(result)
+      }
+
+      return res.status(403).json({ message: 'permission denied' })
+
     } catch (e) {
       next(e)
     }
@@ -1947,7 +1980,7 @@ class StaffController {
       if (rootAccess || adminPermission) {
         const result: boolean = await adminService.deleteStaffFromRecruiter(staffId, staffEmail, recruiterId)
         if (!result) throw ApiError.ServerError()
-        return res.status(202).json({ message: 'ok' })
+        return res.status(200).json({ message: 'ok' })
       }
 
       return res.status(403).json({ message: 'permission denied' })
@@ -1967,7 +2000,7 @@ class StaffController {
       if (rootAccess || adminPermission) {
         const result: boolean = await adminService.deleteRecruiterUser(recruiterId)
         if (!result) throw ApiError.ServerError()
-        return res.status(202).json({ message: 'ok' })
+        return res.status(200).json({ message: 'ok' })
       }
 
       return res.status(403).json({ message: 'permission denied' })

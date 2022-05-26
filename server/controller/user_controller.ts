@@ -295,8 +295,19 @@ class UserController {
       kycStatus: 'pending'
     }
 
-    const validData: boolean = await bodyValidator(req.body, 20)
-    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
+    for (let index in req.body) {
+      if (req.body[index] === null || req.body[index] === undefined) {
+        if (typeof req.body[index] === 'object') {
+          for (let i in req.body[index]) {
+            if (req.body[index][i] === null || req.body[index][i] === undefined) {
+              return res.status(400).json({ message: 'wrong data' })
+            }
+          }
+          return res.status(400).json({ message: 'problem in received data' })
+        }
+      }
+    }
 
     try {
       const result: boolean = await UserServices.personalAreaSendKyc(transfer_object)
@@ -403,11 +414,14 @@ class UserController {
   async getDepositHistory(req: express.Request, res: express.Response, next: express.NextFunction) {
     console.log('req params is: ', req.params)
     const userId: string = req.params.userId
-
+    let skip: string = req.params.skipValue
+    const skipValue: number = parseInt(skip)
+    let limit: string = req.params.limitValue
+    const limitValue: number = parseInt(limit)
 
     if (!userId) return res.status(400).json({ message: 'wrong data' })
     try {
-      const result: any = await UserServices.GetDepositHistory(userId)
+      const result: any = await UserServices.GetDepositHistory(skipValue, limitValue, userId)
       console.log(' result is: ', result)
       if (!result) return res.status(500).json({ message: 'internal server error' })
 
@@ -462,11 +476,15 @@ class UserController {
 
   async getWithdrawalHistory(req: express.Request, res: express.Response, next: express.NextFunction) {
     const userId: string = req.params.userId
+    let skip: string = req.params.skipValue
+    const skipValue: number = parseInt(skip)
+    let limit: string = req.params.limitValue
+    const limitValue: number = parseInt(limit)
     console.log('user id is: ', userId)
 
     if (!userId) return res.status(400).json({ message: 'wrong data' })
     try {
-      const result: any = await UserServices.GetWithdrawalHistory(userId)
+      const result: any = await UserServices.GetWithdrawalHistory(skipValue, limitValue, userId)
       console.log(' result is: ', result)
       if (!result) return res.status(500).json({ message: 'internal server error' })
 
@@ -603,11 +621,15 @@ class UserController {
 
   async getInternalTransferHistory(req: express.Request, res: express.Response, next: express.NextFunction) {
     const userId: string = req.params.userId
+    let skip: string = req.params.skipValue
+    const skipValue: number = parseInt(skip)
+    let limit: string = req.params.limitValue
+    const limitValue: number = parseInt(limit)
     console.log('userId', userId);
 
     if (!userId) return res.status(400).json({ message: 'wrong data' })
     try {
-      const result: any = await UserServices.GetInternalTransferHistory(userId)
+      const result: any = await UserServices.GetInternalTransferHistory(skipValue, limitValue, userId)
       if (typeof result === 'string') return res.status(200).json(result)
       if (!result) throw ApiError.ServerError()
 

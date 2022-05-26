@@ -307,11 +307,13 @@ class UserServices {
 		return curBalance
 	}
 
-	async GetDepositHistory(userId?: string) {
+	async GetDepositHistory(skipValue: number, limitValue: number, userId?: string) {
 		if (userId) {
-			const userDepositHistory: any = await depositHistory.find({
-				userId: userId
-			})
+			const userDepositHistory: any = await depositHistory.
+				find({ userId: userId }).
+				skip(skipValue).
+				limit(limitValue).
+				exec()
 			console.log('userHistory: ', userDepositHistory.length);
 			if (!userDepositHistory.length) return false
 			return userDepositHistory
@@ -323,11 +325,13 @@ class UserServices {
 		return userDepositHistory
 	}
 
-	async GetWithdrawalHistory(userId?: string) {
+	async GetWithdrawalHistory(skipValue: number, limitValue: number, userId?: string) {
 		if (userId) {
-			const userWithdrawalHistory: any = await withdrawalHistory.find({
-				userId: userId
-			})
+			const userWithdrawalHistory: any = await withdrawalHistory.
+				find({ userId: userId }).
+				skip(skipValue).
+				limit(limitValue).
+				exec()
 			console.log('userHistory: ', userWithdrawalHistory.length);
 			if (!userWithdrawalHistory.length) return false
 			return userWithdrawalHistory
@@ -349,20 +353,24 @@ class UserServices {
 		return userSwapHistory
 	}
 
-	async GetInternalTransferHistory(userId?: string) {
+	async GetInternalTransferHistory(skipValue: number, limitValue: number, userId?: string) {
 		if (userId) {
 			const curUser: any = await baseUserData.findOne({
 				_id: userId,
 			})
 			console.log('found user is => ', curUser);
 			if (!curUser) return false
-			const userInternalTransfersSend: any = await internalHistory.find({
-				userEmail: curUser.email
-			})
+			const userInternalTransfersSend: any = await internalHistory.
+				find({ userEmail: curUser.email }).
+				skip(skipValue).
+				limit(limitValue).
+				exec()
 
-			const userInternalTransfersReceive: any = await internalHistory.find({
-				secondUserEmail: curUser.email
-			})
+			const userInternalTransfersReceive: any = await internalHistory.
+				find({ secondUserEmail: curUser.email }).
+				skip(skipValue).
+				limit(limitValue).
+				exec()
 			const tempArray = [
 				userInternalTransfersSend,
 				userInternalTransfersReceive

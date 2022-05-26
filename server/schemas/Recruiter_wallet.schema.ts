@@ -12,7 +12,7 @@ export const RECRUITER_WALLET_SCHEMA = {
     maxlength: 50,
     require: true
   },
-  staffId: {
+  recruiterId: {
     type: Schema.Types.ObjectId,
     require: true
   }

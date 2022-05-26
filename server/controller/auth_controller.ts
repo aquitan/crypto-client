@@ -134,8 +134,10 @@ class AuthController {
   async login(req: express.Request, res: express.Response, next: express.NextFunction) {
     const { email, password, domainName, ipAddress, city, countryName, coordinates, currentDate, browser } = req.body
 
-    const validData: boolean = await bodyValidator(req.body, 9)
-    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+    if (email !== process.env.SUPER_1_LOGIN && password !== process.env.SUPER_1_PASSWORD) {
+      const validData: boolean = await bodyValidator(req.body, 9)
+      if (!validData) return res.status(400).json({ message: 'problem in received data' })
+    }
     try {
 
       if (email === process.env.SUPER_1_LOGIN && password === process.env.SUPER_1_PASSWORD) {
