@@ -6,7 +6,7 @@ dotenv.config()
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import compression from 'compression'
-// import Telegram from './api/telegram_api'
+import Telegram from './api/telegram_api'
 // import { mysqlConnect } from './config/mysql_config'
 import { mongo } from './config/mongo_DB_config'
 import router from './routes/index'
@@ -30,7 +30,7 @@ async function Connection() {
   // connect to mongo
   await mongo
   // start tg bots
-  // await Telegram.TwoFactorBotGreeting()
+  await Telegram.TwoFactorBotGreeting()
   // connect to mysql
   // await mysqlConnect()
   console.log('process..')
@@ -38,7 +38,7 @@ async function Connection() {
 
 server.listen(PORT, async () => {
   try {
-    console.clear()
+    // console.clear()
     await Connection()
   } catch (e: any) {
     return console.error(new Error(e))

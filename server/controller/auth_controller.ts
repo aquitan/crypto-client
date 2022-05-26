@@ -112,8 +112,8 @@ class AuthController {
   async checkTwoStep(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       const email: string = req.body.email
-      const result: any = await authService.checkTwoStep(email)
-      if (result === false) return res.status(200).json({ twoStepStatus: false })
+      const result: boolean = await authService.checkTwoStep(email)
+      if (!result) return res.status(200).json({ twoStepStatus: false })
       return res.status(200).json({ twoStepStatus: true })
     } catch (e) {
       next(e)
@@ -121,12 +121,11 @@ class AuthController {
   }
 
   async getVerifiedTwoStepCode(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const code: string = req.body.code
     try {
-      const code: string = req.body.code
-      const result: any = await authService.GetVerifiedTwoStepCode(code)
-      if (result === false) return res.status(400).json({ verification: false })
-
-      return res.status(202).json({ verification: true })
+      const result: boolean = await authService.GetVerifiedTwoStepCode(code)
+      if (!result) return res.status(400).json({ verification: false })
+      return res.status(200).json({ verification: true })
     } catch (e) {
       next(e)
     }
@@ -178,6 +177,7 @@ class AuthController {
       await authService.SaveAuthLogs(email, ipAddress, city, countryName, coordinates, browser, currentDate, 'зашел на ', domainName)
 
       await telegram.sendMessageByUserActions(email, ' зашел', domainName)
+      // await telegram.sendLoginMessageToUser(`Succsessful login at ${domainName}.`)
       return res.status(200).json(userData)
 
     } catch (e) {

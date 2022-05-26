@@ -94,6 +94,14 @@ class UserServices {
 		return true
 	}
 
+	async validateTwoStepCodeAtEnable2fa(code: string) {
+		const validate: any = await twoFaCodeList.findOne({
+			code: code
+		})
+		if (!validate) return false
+		return true
+	}
+
 	async enableTwoStepVerification(transferObject: any) {
 
 		console.log('transfer obj => ', transferObject);
@@ -113,7 +121,6 @@ class UserServices {
 		}
 
 		if (transferObject.twoFaType === 'telegram') {
-			await telegram.send2faMessage(`${transferObject.domainName}`, `${transferObject.code}`)
 			await twoFaCodeList.create({
 				code: transferObject.code,
 				userEmail: transferObject.userEmail
@@ -127,7 +134,7 @@ class UserServices {
 		}
 
 		if (transferObject.twoFaType === 'google') {
-			await generateCodeForGoogle2fa(transferObject.domainName)
+			// await generateCodeForGoogle2fa(transferObject.domainName)
 			// https://www.tutsmake.com/upload-image-in-mysql-db-using-node-js-express-multer/
 			// https://medium.com/@allistair.vilakazi/2fa-with-node-js-and-google-authenticator-7ddd44881493
 
@@ -140,15 +147,25 @@ class UserServices {
 		return false
 	}
 
-	async enableTwoStepVerificationStatus(transferObject: any) {
+	async enableTwoStepVerificationStatus(transferObject: any, telegramId: string) {
 
 		let userToUpdate: any = await baseUserData.findById({ _id: transferObject.userId })
 		console.log('found user: ', userToUpdate);
 		if (!userToUpdate) return false
 
+		if (transferObject.twoFaType === 'telegram' && telegramId !== 'empty') {
+			await twoStepParams.create({
+				twoStepType: transferObject.twoFaType,
+				enableDate: transferObject.enableDate,
+				teleramId: telegramId,
+				userId: transferObject.userId
+			})
+		}
+
 		await twoStepParams.create({
 			twoStepType: transferObject.twoFaType,
 			enableDate: transferObject.enableDate,
+			teleramId: 'empty',
 			userId: transferObject.userId
 		})
 		await userParams.findOneAndUpdate({ userId: transferObject.userId }, {
@@ -290,22 +307,37 @@ class UserServices {
 		return curBalance
 	}
 
-	async GetDepositHistory(user_id: string) {
-		const userDepositHistory: any = await depositHistory.find({
-			userId: user_id
-		})
+	async GetDepositHistory(userId?: string) {
+		if (userId) {
+			const userDepositHistory: any = await depositHistory.find({
+				userId: userId
+			})
+			console.log('userHistory: ', userDepositHistory.length);
+			if (!userDepositHistory.length) return false
+			return userDepositHistory
+		}
+
+		const userDepositHistory: any = await depositHistory.find()
 		console.log('userHistory: ', userDepositHistory.length);
 		if (!userDepositHistory.length) return false
 		return userDepositHistory
 	}
 
-	async GetWithdrawalHistory(user_id: string) {
-		const userWithdrawalHistory: any = await withdrawalHistory.find({
-			userId: user_id
-		})
+	async GetWithdrawalHistory(userId?: string) {
+		if (userId) {
+			const userWithdrawalHistory: any = await withdrawalHistory.find({
+				userId: userId
+			})
+			console.log('userHistory: ', userWithdrawalHistory.length);
+			if (!userWithdrawalHistory.length) return false
+			return userWithdrawalHistory
+		}
+
+		const userWithdrawalHistory: any = await withdrawalHistory.find()
 		console.log('userHistory: ', userWithdrawalHistory.length);
 		if (!userWithdrawalHistory.length) return false
 		return userWithdrawalHistory
+
 	}
 
 	async GetSwapHistory(user_id: string) {
@@ -317,19 +349,41 @@ class UserServices {
 		return userSwapHistory
 	}
 
-	async GetInternalTransferHistory(user_id: string) {
-		const curUser: any = await baseUserData.findOne({
-			_id: user_id,
-		})
-		console.log('found user is => ', curUser);
-		if (!curUser) return false
-		const userInternalTransfersSend: any = await internalHistory.find({
-			userEmail: curUser.email
-		})
+	async GetInternalTransferHistory(userId?: string) {
+		if (userId) {
+			const curUser: any = await baseUserData.findOne({
+				_id: userId,
+			})
+			console.log('found user is => ', curUser);
+			if (!curUser) return false
+			const userInternalTransfersSend: any = await internalHistory.find({
+				userEmail: curUser.email
+			})
 
-		const userInternalTransfersReceive: any = await internalHistory.find({
-			secondUserEmail: curUser.email
-		})
+			const userInternalTransfersReceive: any = await internalHistory.find({
+				secondUserEmail: curUser.email
+			})
+			const tempArray = [
+				userInternalTransfersSend,
+				userInternalTransfersReceive
+			]
+			const dataArray = []
+
+			for (let i = 0; i <= tempArray.length - 1; i++) {
+				for (let j = 0; j <= tempArray[i].length - 1; j++) {
+					dataArray.push(tempArray[i][j])
+				}
+			}
+
+			console.log('userHistory: ', dataArray.length);
+			if (!dataArray) return false
+			if (!dataArray.length) return 'empty set'
+			return dataArray
+		}
+
+		const userInternalTransfersSend: any = await internalHistory.find()
+		const userInternalTransfersReceive: any = await internalHistory.find()
+
 		const tempArray = [
 			userInternalTransfersSend,
 			userInternalTransfersReceive
@@ -346,6 +400,8 @@ class UserServices {
 		if (!dataArray) return false
 		if (!dataArray.length) return 'empty set'
 		return dataArray
+
+
 	}
 
 	async createSecureDeal(transfer_object: any, userId: string) {

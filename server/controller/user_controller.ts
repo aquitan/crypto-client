@@ -148,11 +148,24 @@ class UserController {
       code: code
     }
 
-    const validData: boolean = await bodyValidator(req.body, 6)
+
+    const validData: boolean = await bodyValidator(req.body, 7)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {
-      const result: any = await UserServices.enableTwoStepVerification(transferObject)
+      const result: boolean = await UserServices.enableTwoStepVerification(transferObject)
+      if (!result) throw ApiError.ServerError()
+
+      return res.status(202).json({ message: '2fa was enabled', userCode: code })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async validateTwoStepCodeAtEnable2fa(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const code: string = req.params.code
+    try {
+      const result: boolean = await UserServices.validateTwoStepCodeAtEnable2fa(code)
       if (!result) throw ApiError.ServerError()
 
       return res.status(202).json({ message: '2fa was enabled', userCode: code })
@@ -179,11 +192,13 @@ class UserController {
       logTime: req.body.logTime,
     }
 
+    const telegramId: string = req.body.telegramId
+
     const validData: boolean = await bodyValidator(req.body, 12)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
 
-      const result: boolean = await UserServices.enableTwoStepVerificationStatus(transferObject)
+      const result: boolean = await UserServices.enableTwoStepVerificationStatus(transferObject, telegramId)
       if (!result) throw ApiError.ServerError()
       await saveUserLogs(transferObject.userEmail, logObject.ipAddress, logObject.city, logObject.countryName, logObject.coordinates, logObject.browser, logObject.logTime, ` включил 2fa по ${transferObject.twoFaType} на `, transferObject.domainName)
       await telegram.sendMessageByUserActions(transferObject.userEmail, ` включит 2fa по ${transferObject.twoFaType} `, transferObject.domainName)

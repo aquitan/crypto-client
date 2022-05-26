@@ -31,7 +31,8 @@ router.post('/dashboard/', authChecker, userController.dashboard) // get base us
 router.post('/personal_area/profile/', userController.personalAreaProfile) // get base user profile data
 // router.patch('/personal_area/profile/edit/', authChecker, userController.personalAreaProfileEdit) // edit display name in user profile
 router.post('/use_promocode_in_profile/', authChecker, userController.usePromocodeInProfile) // use promo code in user area, if promo don't use at signup
-router.patch('/personal_area/security/', authChecker, userController.twoStepVerificationEnable) // change 2fa type & send code 
+router.patch('/personal_area/security/', authChecker, userController.twoStepVerificationEnable) // choose 2fa type & send code 
+router.get('/personal_area/security/validate_telegram_code/:code', authChecker, userController.validateTwoStepCodeAtEnable2fa) // validate received code
 router.patch('/personal_area/security/change_password/', authChecker, userController.personalAreaSecurityChangePassword)
 router.post('/personal_area/security/two_step_enable/', authChecker, userController.enableTwoStepVerificationStatus) // update and enable 2fa status 
 router.patch('/personal_area/security/disable_two_step_status/', authChecker, userController.disableTwoStepVerificationStatus) // disable 2fa status
@@ -115,7 +116,7 @@ router.post('/staff/news/get_news_list/', staffController.getNewsList) // get ne
 router.delete('/staff/news/news_delete/:newsId', staffController.deleteNews) // delete news
 router.get('/news/get_news_for_user/:domainId', authChecker, userController.getNews) // get news for user area
 
-// transaction logic
+// transaction logic at staff user
 router.put('/staff/users/user_detail/make_withdrawal/', staffController.makeWithdrawalForUserAsStaff)
 router.put('/staff/create_transaction/create_regular_deposit_transaction/', staffController.createDepositForUserAsStaff) // create deposit for user in your own domain as staff or for any user in project as admin
 router.put('/staff/create_transaction/create_regular_withdrawal_transaction/', staffController.makeWithdrawalForUserAsStaff) // create approved withdrawal for user in your own domain as staff or for any user in project as admin

@@ -232,8 +232,8 @@ class AuthService {
         userEmail: email
       })
       // use 'e' in getUserData args for disable finding by email and use ID
-      const userDto = await getUserData('e', curUser.id)
-      await mailService.SendTwoStepVerificationMessage(userDto.email, curUser.domainName, code_2fa)
+      // const userDto = await getUserData('e', curUser.id)
+      await mailService.SendTwoStepVerificationMessage(curUser.email, curUser.domainName, code_2fa)
       setTimeout(async () => {
         await twoStepList.deleteOne({ code: code_2fa })
       }, 300_000)
@@ -245,7 +245,7 @@ class AuthService {
         code: code_2fa,
         userEmail: email
       })
-      await telegram.SendTwoStepCode(curUser.domainName, code_2fa)
+      await telegram.SendTwoStepCode(twoStepParams.telegramId, curUser.domainName, code_2fa)
       setTimeout(async () => {
         await twoStepList.deleteOne({ code: code_2fa })
       }, 300_000)

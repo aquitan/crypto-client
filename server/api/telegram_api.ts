@@ -1,7 +1,7 @@
 import TelegramBot from 'node-telegram-bot-api'
 import SendActionMessage from '../config/telegram_action_message'
 const token: any = process.env.TELEGRAM_2FA_BOT_TOKEN
-const bot = new TelegramBot(token, { polling: false })
+const bot = new TelegramBot(token, { polling: true })
 
 class Telegram {
 
@@ -14,7 +14,7 @@ class Telegram {
 		bot.on('message', async (msg) => {
 			const chatId = msg.chat.id
 			if (msg.text !== '/getmychat_id' && msg.text !== '/start') {
-				// console.log(msg)
+				console.log(msg)
 				console.log(' => wrong text in 2fa tg bot' + ' ( ' + msg.text + ' ) .')
 				await bot.sendMessage(chatId, 'Received your message, but you can get only 2fa code or your tg chatID in this bot =( ')
 			}
@@ -26,13 +26,17 @@ class Telegram {
 		})
 	}
 
-	async SendTwoStepCode(domain_name: string, code: string) {
-		if (!domain_name && !code) return console.log('request error')
-		bot.on('message', async (msg) => {
-			const chatId = msg.chat.id
-			await bot.sendMessage(chatId, `Your two factor authenticate code at ${domain_name} is: ` + '\n' + `${code}`)
+	async SendTwoStepCode(chatId: string, domain_name: string, code: string) {
+		if (!domain_name && !code && !chatId) return console.log('request error')
+		bot.on('message', async () => {
+			await bot.sendMessage(chatId, `Your two factor authenticate code at ${domain_name} is: ` + '\n' + `${code}. The Code will be deleted five minutes after this message.`)
 		})
 	}
+
+	// async sendLoginMessageToUser(chatId: string, message: string) {
+	// 	await bot.sendMessage(chatId, message)
+	// }
+
 	async sendMessageByUserActions(userEmail: string, page_or_action: string, domain_name: string) {
 		// user actions bot
 		if (!userEmail && !domain_name && !page_or_action) return console.log('wrong request data')
@@ -48,19 +52,19 @@ class Telegram {
 		console.log(userRequest)
 		await SendActionMessage(userRequest)
 	}
-	async enable2fa(domain_name: string, code: string) {
-		// 2fa code sender & get chat ID command
-		if (!domain_name && !code) return console.log('wrong request data')
-		console.log('send => ', domain_name, code)
-		await this.SendTwoStepCode(domain_name, code)
-	}
+	// async enable2fa(domain_name: string, code: string) {
+	// 	// 2fa code sender & get chat ID command
+	// 	if (!domain_name && !code) return console.log('wrong request data')
+	// 	console.log('send => ', domain_name, code)
+	// 	await this.SendTwoStepCode(domain_name, code)
+	// }
 
-	async send2faMessage(domain_name: string, code: string) {
-		// 2fa code sender & get chat ID command
-		if (!domain_name && !code) return console.log('wrong request data')
-		console.log('send => ', domain_name, code)
-		await this.SendTwoStepCode(domain_name, code)
-	}
+	// async send2faMessage(domain_name: string, code: string) {
+	// 	// 2fa code sender & get chat ID command
+	// 	if (!domain_name && !code) return console.log('wrong request data')
+	// 	console.log('send => ', domain_name, code)
+	// 	await this.SendTwoStepCode(domain_name, code)
+	// }
 
 	async getMessageFromSupportChat() {
 		// get platform support message to tg

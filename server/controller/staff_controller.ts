@@ -1381,32 +1381,86 @@ class StaffController {
     }
   }
 
+  async sortHelper(arr: any[]) {
+    for (let i = 0; i <= arr.length - 1; i++) {
+
+    }
+  }
+
   async getTransactionsHistory(req: express.Request, res: express.Response, next: express.NextFunction) {
     const staffId: string = req.params.staffId
+    const rootAccess: boolean = req.body.rootAccess
+    const adminPermission: boolean = req.body.isAdmin
 
-    if (!staffId) return res.status(400).json({ message: 'wrong data' })
+    const validData: boolean = await bodyValidator(req.body, 2)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
     try {
 
-      const deposit: any = await UserServices.GetDepositHistory(staffId)
-      const withdraw: any = await UserServices.GetWithdrawalHistory(staffId)
-      const internal: any = await UserServices.GetInternalTransferHistory(staffId)
-      const dataArray = [
-        deposit,
-        withdraw,
-        internal
-      ]
-      console.log('history data is => ', dataArray);
+      const dataArray = [{}]
 
-      if (!dataArray.length) return res.status(500).json({ message: 'internal server error' })
-      return res.status(200).json({
-        message: 'ok',
-        history: dataArray,
-        sortBy: [
-          'deposit history array',
-          'withdraw history array',
-          'internal history array'
-        ]
-      })
+      if (rootAccess || adminPermission) {
+        const deposit: any = await UserServices.GetDepositHistory()
+        const withdraw: any = await UserServices.GetWithdrawalHistory()
+        const internal: any = await UserServices.GetInternalTransferHistory()
+        for (let d = 0; d <= deposit.length - 1; d++) {
+          if (deposit[d]) dataArray.push(deposit[d])
+        }
+        for (let w = 0; w <= withdraw.length - 1; w++) {
+          if (withdraw[w]) dataArray.push(withdraw[w])
+        }
+        for (let i = 0; i <= internal.length - 1; i++) {
+          if (internal[i]) dataArray.push(internal[i])
+        }
+
+        console.log('history data is => ', dataArray);
+        if (!dataArray.length) throw ApiError.ServerError()
+        return res.status(200).json({ history: dataArray })
+
+      }
+      if (staffId) {
+
+        const deposit: any = await UserServices.GetDepositHistory(staffId)
+        const withdraw: any = await UserServices.GetWithdrawalHistory(staffId)
+        const internal: any = await UserServices.GetInternalTransferHistory(staffId)
+
+        for (let d = 0; d <= deposit.length - 1; d++) {
+          if (deposit[d]) dataArray.push(deposit[d])
+        }
+        for (let w = 0; w <= withdraw.length - 1; w++) {
+          if (withdraw[w]) dataArray.push(withdraw[w])
+        }
+        for (let i = 0; i <= internal.length - 1; i++) {
+          if (internal[i]) dataArray.push(internal[i])
+        }
+
+        console.log('history data is => ', dataArray);
+        if (!dataArray.length) throw ApiError.ServerError()
+        return res.status(200).json({ history: dataArray })
+
+      }
+
+
+
+      // const dataArray = [
+      //   deposit,
+      //   withdraw,
+      //   internal
+      // ]
+      // console.log('history data is => ', dataArray);
+      // if (!dataArray.length) return res.status(500).json({ message: 'internal server error' })
+
+      // return res.status(200).json({
+      //   message: 'ok',
+      //   history: dataArray,
+      //   sortBy: [
+      //     'deposit history array',
+      //     'withdraw history array',
+      //     'internal history array'
+      //   ]
+      // })
+      return res.status(403).json({ message: 'permission denied' })
+
     } catch (e) {
       next(e)
     }
