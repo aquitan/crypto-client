@@ -289,7 +289,7 @@ export const textareaTerms = (domainSmall, domainBig, domainSupport) => {
 }
 
 export const transTableHeader = [
-    'Currency', 'Type', 'Date & time', 'Amount'
+    'Currency', 'Status', 'Date', 'Amount Crypto', 'Amount USD'
 ]
 export const transInnerTableHeader = [
     'Currency', 'from-to', 'Date & time', 'Amount'

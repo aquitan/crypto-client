@@ -18,6 +18,7 @@ import TableItem from "../../../../../components/UI/Table/components/TableItem/T
 import {postData, putData} from "../../../../../services/StaffServices";
 import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
 import {store} from "../../../../../index";
+import {getCurrentDate} from "../../../../../utils/getCurrentDate";
 
 const MakeTransactionOuter = ({history}) => {
     const [startDate, setStartDate] = useState()
@@ -160,7 +161,22 @@ const MakeTransactionOuter = ({history}) => {
                                 history ?
                                     history.map(item => {
                                         return(
-                                            <Row>
+                                            <Row style={{padding: '10px 0', borderBottom: '1px solid #fff', marginBottom: 10}}>
+                                                <Col className={'text-center'}>
+                                                    {item.coinName}
+                                                </Col>
+                                                <Col className={'text-center'}>
+                                                    {item.status}
+                                                </Col>
+                                                <Col className={'text-center'}>
+                                                    {getCurrentDate(item.date)}
+                                                </Col>
+                                                <Col className={'text-center'}>
+                                                    {item.cryptoAmount}
+                                                </Col>
+                                                <Col className={'text-center'}>
+                                                    {item.usdAmount}
+                                                </Col>
 
                                             </Row>
                                         )

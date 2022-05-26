@@ -1,15 +1,14 @@
 import React, {useState} from 'react'
+import PropTypes from 'prop-types'
+import cls from "../../../StaffWallets/StaffWallets.module.scss";
 import {Col, Row} from "react-bootstrap";
-import cls from '../../StaffWallets.module.scss'
-import {useNavigate} from "react-router-dom";
 import AdminInput from "../../../../../components/UI/AdminInput/AdminInput";
-import {useForm} from "react-hook-form";
-import AdminButton from "../../../../../components/UI/AdminButton/AdminButton";
-import {patchData} from "../../../../../services/StaffServices";
 import {store} from "../../../../../index";
+import AdminButton from "../../../../../components/UI/AdminButton/AdminButton";
+import {useForm} from "react-hook-form";
+import {patchData} from "../../../../../services/StaffServices";
 
-
-const StaffWalletsItem = (props) => {
+const RecruiterWallet = (props) => {
     const [state, setState] = useState(true)
     const {register, handleSubmit} = useForm({
         defaultValues: {
@@ -23,28 +22,17 @@ const StaffWalletsItem = (props) => {
 
     const onSubmit = async (data) => {
         console.log('wallet data', data)
-        let id = store.fullAccess ? 'root' : store.user.id
+        let id = store.fullAccess ? '1' : store.user.id
 
 
-        // const obj = {
-        //     staffId: props.id,
-        //     rootAccess: store.fullAccess,
-        //     wallet: data.currentWallet,
-        //     coinName: props.currency
-        // }
         const obj = {
-            recruiterId: props.id,
+            staffId: props.id,
             rootAccess: store.fullAccess,
-            isAdmin: store.isAdmin,
             wallet: data.currentWallet,
             coinName: props.currency
         }
-
-
-        const res = await patchData('/staff/recruiter/update_recruiter_wallet/', obj)
+        const res = await patchData('/staff/staff_wallets/edit_staff_wallets/', obj)
     }
-
-
     return (
         <div>
             <Row className={`${cls.wallet_item} mb-3`}>
@@ -61,14 +49,21 @@ const StaffWalletsItem = (props) => {
                                 <AdminButton onClick={onEdit} classname={['orange','medium_btn']}>Редактировать</AdminButton>
                             </Col>
                             <Col className='d-none d-md-block'>
-                                <AdminButton classname={['green', 'medium_btn']} onClick={(currency, wallet) => props.onClick(currency, wallet)}>Сохранить</AdminButton>
+                                <AdminButton classname={['green', 'medium_btn']} onClick={handleSubmit(onSubmit)}>Сохранить</AdminButton>
                             </Col>
                         </>
-                    :null
+                        :null
                 }
             </Row>
         </div>
     )
 }
 
-export default StaffWalletsItem
+RecruiterWallet.propTypes = {
+    
+}
+RecruiterWallet.defaultProps = {
+    
+}
+
+export default RecruiterWallet
