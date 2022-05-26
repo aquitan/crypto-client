@@ -51,7 +51,14 @@ import {
     PREMIUM_BENEFITS,
     GROUP_DETAILS,
     SECURE_DEAL,
-    ADMINSECURE_DEAL, ADMINSECURE_DEAL_DETAIL, NEWS_DETAIL, USER_NEWS, TRADING, ERROR_500
+    ADMINSECURE_DEAL,
+    ADMINSECURE_DEAL_DETAIL,
+    NEWS_DETAIL,
+    USER_NEWS,
+    TRADING,
+    ERROR_500,
+    RECRUITER_LIST,
+    RECRUITER_DETAIL
 } from "../utils/constants"
 import SignUp from '../pages/NonAuthPages/SignUp/SignUp'
 import SignIn from '../pages/NonAuthPages/SignIn/SignIn'
@@ -108,6 +115,8 @@ import NewsDetail from "../pages/AdminPages/CreateNews/components/NewsDetail/New
 import UserNews from "../pages/AuthPages/UserNews/UserNews";
 import Trading from "../pages/AuthPages/Trading/Trading";
 import Error500 from "../pages/Error/Error500";
+import RecruiterList from "../pages/AdminPages/RecruiterList/RecruiterList";
+import RecruiterDetail from "../pages/AdminPages/RecruiterList/components/RecruiterDetail/RecruiterDetail";
 
 export const authRoutes = [
     {
@@ -287,6 +296,14 @@ export const adminRoutes = [
     {
         path: NEWS_DETAIL,
         component: <NewsDetail/>
+    },
+    {
+        path: RECRUITER_LIST,
+        component: <RecruiterList/>
+    },
+    {
+        path: RECRUITER_DETAIL,
+        component: <RecruiterDetail/>
     },
 ]
 

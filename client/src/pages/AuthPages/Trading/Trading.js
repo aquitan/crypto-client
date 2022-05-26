@@ -73,139 +73,144 @@ const Trading = () => {
     return (
         <Container>
             <h1 className={'mb-3'}>Trading</h1>
-            <Row className={'mb-4'}>
-                <Col className={'col-12 col-md-9'}>
-                    <div className="tradingview-widget-container">
-                        <div id="chartdiv"/>
-                    </div>
-                </Col>
-                <Col className={'col-12 col-md-3'}>
-                    <Col>
-                        <p className={'text-center'}>Click Button to Quick Amount</p>
-                        <Row className="d-flex justify-content-between flex-wrap trading">
-                           <Col>
-                               <Row className={'d-flex justify-content-around'}>
-                                   <Button classname={['mb-3', 'logout']} onClick={() => setValue(500)}>500</Button>
-                                   <Button classname={['mb-3', 'logout']} onClick={() => setValue(1000)}>1000</Button>
-                                   <Button classname={['mb-3', 'logout']} onClick={() => setValue(2500)}>2500</Button>
-                                   <Button classname={['mb-3', 'logout']} onClick={() => setValue(5000)}>5000</Button>
-                               </Row>
-                               <Row>
-                                   <Form>
-                                       <Row className={'mb-3'}>
-                                           <Input
-                                               label='Amount in USD'
-                                               type="number"
-                                               placeholder='Enter amount'
-                                               onChange={onChangeText}
-                                               value={textVal.text}
+            {/*<Row className={'mb-4'}>*/}
+            {/*    <Col className={'col-12 col-md-9'}>*/}
+            {/*        <div className="tradingview-widget-container">*/}
+            {/*            <div id="chartdiv"/>*/}
+            {/*        </div>*/}
+            {/*    </Col>*/}
+            {/*    <Col className={'col-12 col-md-3'}>*/}
+            {/*        <Col>*/}
+            {/*            <p className={'text-center'}>Click Button to Quick Amount</p>*/}
+            {/*            <Row className="d-flex justify-content-between flex-wrap trading">*/}
+            {/*               <Col>*/}
+            {/*                   <Row className={'d-flex justify-content-around'}>*/}
+            {/*                       <Button classname={['mb-3', 'logout']} onClick={() => setValue(500)}>500</Button>*/}
+            {/*                       <Button classname={['mb-3', 'logout']} onClick={() => setValue(1000)}>1000</Button>*/}
+            {/*                       <Button classname={['mb-3', 'logout']} onClick={() => setValue(2500)}>2500</Button>*/}
+            {/*                       <Button classname={['mb-3', 'logout']} onClick={() => setValue(5000)}>5000</Button>*/}
+            {/*                   </Row>*/}
+            {/*                   <Row>*/}
+            {/*                       <Form>*/}
+            {/*                           <Row className={'mb-3'}>*/}
+            {/*                               <Input*/}
+            {/*                                   label='Amount in USD'*/}
+            {/*                                   type="number"*/}
+            {/*                                   placeholder='Enter amount'*/}
+            {/*                                   onChange={onChangeText}*/}
+            {/*                                   value={textVal.text}*/}
 
-                                           />
-                                       </Row>
-                                       <Row className={'mb-3'}>
-                                           <Input
-                                               label="Amount in Crypto"
-                                               type="number"
-                                               value={textVal.mail}
-                                               disabled
-                                           />
-                                       </Row>
-                                       <Row className={'mb-3'}>
-                                           <Col>
-                                               <Button classname={['red_btn']} >Sell</Button>
-                                           </Col>
-                                           <Col>
-                                               <Button classname={['green_btn']} >Buy</Button>
-                                           </Col>
-                                       </Row>
-                                   </Form>
-                               </Row>
-                           </Col>
+            {/*                               />*/}
+            {/*                           </Row>*/}
+            {/*                           <Row className={'mb-3'}>*/}
+            {/*                               <Input*/}
+            {/*                                   label="Amount in Crypto"*/}
+            {/*                                   type="number"*/}
+            {/*                                   value={textVal.mail}*/}
+            {/*                                   disabled*/}
+            {/*                               />*/}
+            {/*                           </Row>*/}
+            {/*                           <Row className={'mb-3'}>*/}
+            {/*                               <Col>*/}
+            {/*                                   <Button classname={['red_btn']} >Sell</Button>*/}
+            {/*                               </Col>*/}
+            {/*                               <Col>*/}
+            {/*                                   <Button classname={['green_btn']} >Buy</Button>*/}
+            {/*                               </Col>*/}
+            {/*                           </Row>*/}
+            {/*                       </Form>*/}
+            {/*                   </Row>*/}
+            {/*               </Col>*/}
+            {/*            </Row>*/}
+            {/*        </Col>*/}
+            {/*    </Col>*/}
+            {/*</Row>*/}
+            <ButtonCard>
+                <div className="tradingview-widget-container">
+                    <div id="chartdiv"/>
+                </div>
+            </ButtonCard>
+            <ButtonCard>
+                <Row>
+                    <Col>
+                        <p>Click Button to Quick Amount</p>
+                        <Row className="d-flex justify-content-between flex-wrap trading">
+                            <Col className={'col-12 col-md-6'}>
+                                <Form>
+                                    <Row className={'mb-3'}>
+                                        <Input
+                                            label='Amount in USD'
+                                            type="number"
+                                            placeholder='Enter amount'
+                                            onChange={onChangeText}
+                                            value={textVal.text}
+
+                                        />
+                                    </Row>
+                                    <Row className={'mb-3'}>
+                                        <Input
+                                            label="Amount in Crypto"
+                                            type="number"
+                                            value={textVal.mail}
+                                            disabled
+                                        />
+                                    </Row>
+                                    <Row className={'mb-3'}>
+                                        <Col>
+                                            <Button classname={['red_btn']} >Sell</Button>
+                                        </Col>
+                                    </Row>
+                                </Form>
+                            </Col>
+                            <Col className={'col-12 col-md-6'}>
+                                <Button classname={['mb-3']} onClick={() => setValue(500)}>500</Button>
+                                <Button classname={['mb-3']} onClick={() => setValue(1000)}>1000</Button>
+                                <Button classname={['mb-3']} onClick={() => setValue(2500)}>2500</Button>
+                                <Button classname={['mb-3']} onClick={() => setValue(5000)}>5000</Button>
+                            </Col>
                         </Row>
                     </Col>
-                </Col>
-            </Row>
-            {/*<ButtonCard>*/}
-            {/*    <Row>*/}
-            {/*        <Col>*/}
-            {/*            <p>Click Button to Quick Amount</p>*/}
-            {/*            <Row className="d-flex justify-content-between flex-wrap trading">*/}
-            {/*                <Col className={'col-12 col-md-6'}>*/}
-            {/*                    <Form>*/}
-            {/*                        <Row className={'mb-3'}>*/}
-            {/*                            <Input*/}
-            {/*                                label='Amount in USD'*/}
-            {/*                                type="number"*/}
-            {/*                                placeholder='Enter amount'*/}
-            {/*                                onChange={onChangeText}*/}
-            {/*                                value={textVal.text}*/}
+                    <Col>
+                        <p>Click Button to Quick Amount</p>
+                        <Row className="d-flex justify-content-between flex-wrap trading">
+                            <Col className={'col-12 col-md-6'}>
+                                <Form>
+                                    <Row className={'mb-3'}>
+                                        <Input
+                                            label='Amount in USD'
+                                            type="number"
+                                            placeholder='Enter amount'
+                                            onChange={onChangeSecondText}
+                                            value={textValTwo.text}
 
-            {/*                            />*/}
-            {/*                        </Row>*/}
-            {/*                        <Row className={'mb-3'}>*/}
-            {/*                            <Input*/}
-            {/*                                label="Amount in Crypto"*/}
-            {/*                                type="number"*/}
-            {/*                                value={textVal.mail}*/}
-            {/*                                disabled*/}
-            {/*                            />*/}
-            {/*                        </Row>*/}
-            {/*                        <Row className={'mb-3'}>*/}
-            {/*                            <Col>*/}
-            {/*                                <Button classname={['red_btn']} >Sell</Button>*/}
-            {/*                            </Col>*/}
-            {/*                        </Row>*/}
-            {/*                    </Form>*/}
-            {/*                </Col>*/}
-            {/*                <Col className={'col-12 col-md-6'}>*/}
-            {/*                    <Button classname={['mb-3']} onClick={() => setValue(500)}>500</Button>*/}
-            {/*                    <Button classname={['mb-3']} onClick={() => setValue(1000)}>1000</Button>*/}
-            {/*                    <Button classname={['mb-3']} onClick={() => setValue(2500)}>2500</Button>*/}
-            {/*                    <Button classname={['mb-3']} onClick={() => setValue(5000)}>5000</Button>*/}
-            {/*                </Col>*/}
-            {/*            </Row>*/}
-            {/*        </Col>*/}
-            {/*        <Col>*/}
-            {/*            <p>Click Button to Quick Amount</p>*/}
-            {/*            <Row className="d-flex justify-content-between flex-wrap trading">*/}
-            {/*                <Col className={'col-12 col-md-6'}>*/}
-            {/*                    <Form>*/}
-            {/*                        <Row className={'mb-3'}>*/}
-            {/*                            <Input*/}
-            {/*                                label='Amount in USD'*/}
-            {/*                                type="number"*/}
-            {/*                                placeholder='Enter amount'*/}
-            {/*                                onChange={onChangeSecondText}*/}
-            {/*                                value={textValTwo.text}*/}
+                                        />
+                                    </Row>
+                                    <Row className={'mb-3'}>
+                                        <Input
+                                            label="Amount in Crypto"
+                                            type="number"
+                                            value={textValTwo.mail}
+                                            disabled
+                                        />
+                                    </Row>
+                                    <Row className={'mb-3'}>
+                                        <Col>
+                                            <Button classname={['green_btn']} >Buy</Button>
+                                        </Col>
+                                    </Row>
+                                </Form>
+                            </Col>
+                            <Col className={'col-12 col-md-6'}>
+                                <Button classname={['mb-3']} onClick={() => setValueBuy(500)}>500</Button>
+                                <Button classname={['mb-3']} onClick={() => setValueBuy(1000)}>1000</Button>
+                                <Button classname={['mb-3']} onClick={() => setValueBuy(2500)}>2500</Button>
+                                <Button classname={['mb-3']} onClick={() => setValueBuy(5000)}>5000</Button>
+                            </Col>
+                        </Row>
+                    </Col>
 
-            {/*                            />*/}
-            {/*                        </Row>*/}
-            {/*                        <Row className={'mb-3'}>*/}
-            {/*                            <Input*/}
-            {/*                                label="Amount in Crypto"*/}
-            {/*                                type="number"*/}
-            {/*                                value={textValTwo.mail}*/}
-            {/*                                disabled*/}
-            {/*                            />*/}
-            {/*                        </Row>*/}
-            {/*                        <Row className={'mb-3'}>*/}
-            {/*                            <Col>*/}
-            {/*                                <Button classname={['green_btn']} >Buy</Button>*/}
-            {/*                            </Col>*/}
-            {/*                        </Row>*/}
-            {/*                    </Form>*/}
-            {/*                </Col>*/}
-            {/*                <Col className={'col-12 col-md-6'}>*/}
-            {/*                    <Button classname={['mb-3']} onClick={() => setValueBuy(500)}>500</Button>*/}
-            {/*                    <Button classname={['mb-3']} onClick={() => setValueBuy(1000)}>1000</Button>*/}
-            {/*                    <Button classname={['mb-3']} onClick={() => setValueBuy(2500)}>2500</Button>*/}
-            {/*                    <Button classname={['mb-3']} onClick={() => setValueBuy(5000)}>5000</Button>*/}
-            {/*                </Col>*/}
-            {/*            </Row>*/}
-            {/*        </Col>*/}
-
-            {/*    </Row>*/}
-            {/*</ButtonCard>*/}
+                </Row>
+            </ButtonCard>
             <ButtonCard title={'History'}>
 
             </ButtonCard>
