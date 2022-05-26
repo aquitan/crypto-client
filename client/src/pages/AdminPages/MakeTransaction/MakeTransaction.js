@@ -14,6 +14,7 @@ const MakeTransaction = () => {
     const [history, setHistory] = useState()
     const [startDate, setStartDate] = useState()
     const [timeDate, setTimeDate] = useState()
+    const [totalCount, setTotalCount] = useState(0)
     const {register, handleSubmit} = useForm()
     const trsType = [
         {value: 'Deposit', text: 'Депозит'},
@@ -36,8 +37,13 @@ const MakeTransaction = () => {
     }, [])
 
     const getTransactionHistory = async () => {
-        const res = await getData(`/staff/create_transaction/get_transaction_history/${store.user.id}`)
-        console.log('history', res.data)
+        let obj = {
+            staffId: store.fullAccess? '1' : store.user.id,
+            isAdmin: store.isAdmin,
+            rootAccess: store.fullAccess
+        }
+        const res = await postData(`/staff/create_transaction/get_transaction_history/`, obj)
+        console.log('history', res.data.history.length)
         setHistory(res.data.history)
     }
 
@@ -49,7 +55,7 @@ const MakeTransaction = () => {
 
             <Tabs defaultActiveKey="outer" id="uncontrolled-tab-example" className="mb-3 mt-3">
                 <Tab eventKey='outer' title='Regular transactions'>
-                    <MakeTransactionOuter history={null} />
+                    <MakeTransactionOuter history={history} />
                 </Tab>
                 <Tab eventKey='inner' title='Internal transactions'>
                     <MakeTransactionInner history={null}  />

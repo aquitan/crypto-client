@@ -14,7 +14,7 @@ const TableHeader = ({elems, classname}) => {
         <Row className={classes}>
             {elems.map(element => {
                 return(
-                    <Col className='table_header_item' key={uuid()}>{element}</Col>
+                    <Col className='table_header_item text-center' key={uuid()}>{element}</Col>
                 )
             })}
         </Row>

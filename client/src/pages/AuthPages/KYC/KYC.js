@@ -38,7 +38,6 @@ const KYC = ({status}) => {
     })
 
     const onSubmit = async (data) => {
-        console.log('status---', data)
         let geodata =  await getGeoData()
         data.phoneNumber = parseInt(data.phoneNumber.split(/[.,()\/ -]/).join('')).toString()
         data.ipAddress = geodata.ipAddress
@@ -50,10 +49,16 @@ const KYC = ({status}) => {
         data.zipCode = +data.zipCode
         data.domainName = window.location.host
         data.documentType = 'Passport'
-        data.documents = {}
+        data.documents = {
+            frontDocumentPhoto: data.frontDocumentPhoto,
+            backDocumentPhoto: data.frontDocumentPhoto,
+            selfieDocumentPhoto: data.selfieDocumentPhoto,
+        }
+        delete data.frontDocumentPhoto
+        delete data.selfieDocumentPhoto
         delete data.terms
         delete data.privacy
-        // const res = await putData('/personal_area/verification/', data)
+        const res = await putData('/personal_area/verification/', data)
 
         console.log('kyc data', data)
     }
@@ -228,6 +233,13 @@ const KYC = ({status}) => {
                             <ErrorMessage  name='documentType' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
                         </Col>
                     </Row>
+                    <Row className='' style={{justifyContent: 'center', margin: '30px 0'}}>
+                        <Col>
+                            {/*<FileUpload {...register('doc')} name={'doc'} id={'doc'}/>*/}
+                            <input {...register('frontDocumentPhoto')} name={'frontDocumentPhoto'} type="file" />
+                            <input {...register('selfieDocumentPhoto')} name={'selfieDocumentPhoto'} type="file" />
+                        </Col>
+                    </Row>
                     <Row className={'mb-5 mt-5'} style={{
                         padding: '10px 0'}}>
                         <div style={{fontWeight: 'bold', marginBottom: 10}}>
@@ -245,144 +257,6 @@ const KYC = ({status}) => {
                     </Row>
                 </Form>
             </ButtonCard>
-
-
-            {/*{*/}
-            {/*    status.kycStatus !== 'empty'*/}
-            {/*        ?*/}
-            {/*        checkKycStatus(status.kycStatus)*/}
-            {/*        :*/}
-            {/*        <ButtonCard>*/}
-
-            {/*            <Form classnames='form_big' onSubmit={handleSubmit(onSubmit)}>*/}
-            {/*                <Row className={'mb-3'}>*/}
-            {/*                    <Col>*/}
-            {/*                        <Input {...register('firstName', {*/}
-            {/*                            required: true,*/}
-            {/*                            pattern: /^[^а-яё]+$/iu*/}
-            {/*                        })} name='firstName' placeholder='first name'/>*/}
-            {/*                        <ErrorMessage  name='firstName' errors={errors} render={() => <p className={cls.error}>this field is required</p>} />*/}
-            {/*                    </Col>*/}
-            {/*                    <Col>*/}
-            {/*                        <Input {...register('lastName', {*/}
-            {/*                            required: true,*/}
-            {/*                            pattern: /^[^а-яё]+$/iu*/}
-            {/*                        })} name='lastName' placeholder='last name'/>*/}
-            {/*                        <ErrorMessage  name='lastName' errors={errors} render={() => <p className={cls.error}>this field is required</p>} />*/}
-            {/*                    </Col>*/}
-            {/*                </Row>*/}
-            {/*                <Row className={'mb-3'}>*/}
-            {/*                    <Col>*/}
-            {/*                        <DatePickert required*/}
-            {/*                                     customInput={<DatePickerCustom classname={'user-datepicker'}/>}*/}
-            {/*                                     placeholderText='date'*/}
-            {/*                                     selected={startDate}*/}
-            {/*                                     dateFormat='yyyy/MM/dd'*/}
-            {/*                                     onChange={(date) => setStartDate(date)} />*/}
-            {/*                    </Col>*/}
-            {/*                    <Col>*/}
-            {/*                        <Input {...register('userEmail', {*/}
-            {/*                            required: 'This field is required',*/}
-            {/*                            validate: emailValidate,*/}
-            {/*                        })} name='email' placeholder='email'/>*/}
-            {/*                        <ErrorMessage  name='email' errors={errors} render={() => <p className={cls.error}>email is invalid</p>} />*/}
-            {/*                    </Col>*/}
-            {/*                </Row>*/}
-            {/*                <br/>*/}
-            {/*                <Row className={'mb-3'}>*/}
-            {/*                    <Col>*/}
-            {/*                        <InputMask mask='9-(999)-999-99-99' {...register('phoneNumber')}>*/}
-            {/*                            {(inputProps) => <Input {...inputProps} name='phoneNumber' placeholder='phone number' type='tel'/>}*/}
-            {/*                        </InputMask>*/}
-            {/*                        <ErrorMessage  name='phoneNumber' errors={errors} render={() => <p className={cls.error}>this field is required</p>} />*/}
-            {/*                    </Col>*/}
-            {/*                    <Col>*/}
-            {/*                        <Input {...register('documentNumber', {*/}
-            {/*                            required: true,*/}
-            {/*                            pattern: /^[^а-яё]+$/iu*/}
-            {/*                        })} name='documentNumber' placeholder='ID Number'/>*/}
-            {/*                        <ErrorMessage  name='documentNumber' errors={errors} render={() => <p className={cls.error}>this field is required</p>} />*/}
-            {/*                    </Col>*/}
-            {/*                </Row>*/}
-            {/*                <Row className={'mb-3'}>*/}
-            {/*                    <Col>*/}
-            {/*                        <Input {...register('mainAddress', {*/}
-            {/*                            required: true,*/}
-            {/*                            pattern: /^[^а-яё]+$/iu*/}
-            {/*                        })} name='mainAddress' placeholder='main address'/>*/}
-            {/*                        <ErrorMessage  name='mainAddress' errors={errors} render={() => <p className={cls.error}>this field is required</p>} />*/}
-            {/*                    </Col>*/}
-            {/*                    <Col>*/}
-            {/*                        <Input {...register('subAddress', {*/}
-            {/*                            pattern: /^[^а-яё]+$/iu*/}
-            {/*                        })} name='subAddress' placeholder='additional address'/>*/}
-            {/*                        <ErrorMessage  name='subAddress' errors={errors} render={() => <p className={cls.error}>this field is required</p>} />*/}
-            {/*                    </Col>*/}
-            {/*                </Row>*/}
-            {/*                <Row className={'mb-3'}>*/}
-            {/*                    <Col>*/}
-            {/*                        <Input {...register('city', {*/}
-            {/*                            required: true,*/}
-            {/*                            pattern: /^[^а-яё]+$/iu*/}
-            {/*                        })} name='city' placeholder='city'/>*/}
-            {/*                        <ErrorMessage  name='mainAddress' errors={errors} render={() => <p className={cls.error}>this field is required</p>} />*/}
-            {/*                    </Col>*/}
-            {/*                    <Col>*/}
-            {/*                        <Input {...register('zipCode', {*/}
-            {/*                            required: true,*/}
-            {/*                            pattern: /^[^а-яё]+$/iu*/}
-            {/*                        })} name='zipCode' placeholder='zip code'/>*/}
-            {/*                        <ErrorMessage  name='zipCode' errors={errors} render={() => <p className={cls.error}>this field is required</p>} />*/}
-            {/*                    </Col>*/}
-            {/*                </Row>*/}
-            {/*                <Row className={'mb-3'}>*/}
-            {/*                    <Col className='col-6'>*/}
-            {/*                        <Input {...register('state')} name='state' placeholder='state'/>*/}
-            {/*                    </Col>*/}
-            {/*                </Row>*/}
-            {/*                <Row className='mt-4'>*/}
-            {/*                    <Col>*/}
-            {/*                        <InputRadio {...register('documentType', {*/}
-            {/*                            pattern: /^[^а-яё]+$/iu*/}
-            {/*                        })} value='Passport' type='radio' label='Passport' />*/}
-            {/*                    </Col>*/}
-            {/*                    <Col>*/}
-            {/*                        <InputRadio {...register('documentType', {*/}
-            {/*                            pattern: /^[^а-яё]+$/iu*/}
-            {/*                        })} value='National ID' type='radio' label='National ID' />*/}
-            {/*                    </Col>*/}
-            {/*                    <Col>*/}
-            {/*                        <InputRadio {...register('documentType', {*/}
-            {/*                            pattern: /^[^а-яё]+$/iu*/}
-            {/*                        })} value='Driving License' type='radio' label='Driving License' />*/}
-            {/*                    </Col>*/}
-            {/*                    <ErrorMessage  name='zipCode' errors={errors} render={() => <p className={cls.error}>you have to accept terms and conditions</p>} />*/}
-            {/*                </Row>*/}
-            {/*                <Row className='mt-4'>*/}
-            {/*                    <Col className={'col-12 col-md-3'}>*/}
-            {/*                        <input {...register('terms', {*/}
-            {/*                            required: true*/}
-            {/*                        })} type='checkbox' />*/}
-            {/*                        <Link to={'/terms-and-conditions'}>Terms and conditions</Link>*/}
-            {/*                        <ErrorMessage  name='terms' errors={errors} render={() => <p className={cls.error}>you have to accept terms and conditions</p>} />*/}
-            {/*                    </Col>*/}
-            {/*                    <Col className={'col-12 col-md-3'}>*/}
-            {/*                        <input {...register('privacy', {*/}
-            {/*                            required: true*/}
-            {/*                        })} type='checkbox' />*/}
-            {/*                        <Link to={'/privacy-policy'}>Privacy policy</Link>*/}
-            {/*                        <ErrorMessage  name='privacy' errors={errors} render={() => <p className={cls.error}>you have to accept terms and conditions</p>} />*/}
-            {/*                    </Col>*/}
-            {/*                </Row>*/}
-            {/*                <Row className='mt-4'>*/}
-            {/*                    <Col className='col-sm-12 col-lg-3 m-auto'>*/}
-            {/*                        <Button type='submit'>Verify</Button>*/}
-            {/*                    </Col>*/}
-            {/*                </Row>*/}
-
-            {/*            </Form>*/}
-            {/*        </ButtonCard>*/}
-            {/*}*/}
         </Container>
     )
 }
