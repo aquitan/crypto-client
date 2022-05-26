@@ -50,7 +50,7 @@ const Withdraw = () => {
     }, [])
 
     const getHistoryDeposit = async () => {
-        const res = await postData('/withdraw/get_withdrawal_history/', {userId: store.user.id})
+        const res = await getData(`/withdraw/get_withdrawal_history/${store.user.id}`)
         if (res.status === 500) {
             navigate('/error-500')
         }

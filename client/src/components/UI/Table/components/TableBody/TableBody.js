@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 const TableBody = ({children}) => {
     return (
-        <div>
+        <div style={{maxHeight: 400, overflowY: 'auto'}}>
             {children}
         </div>
     )

@@ -10,7 +10,6 @@
   font-size: 14px;
   min-height: 46px;
   margin: 0 10px;
-  min-width: 100px;
   &:hover {
     transition: all .2s linear;
     filter: opacity(80%)
@@ -34,10 +33,10 @@
   margin: 0;
 }
 .xs {
-  padding: 5px 10px;
+  padding: 5px;
   font-size: 14px;
   min-height: 30px;
-  max-width: 150px;
+  max-width: 80px;
 }
 .xxl {
   max-width: 400px;

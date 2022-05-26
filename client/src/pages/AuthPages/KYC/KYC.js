@@ -25,6 +25,8 @@ import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 import {putData} from "../../../services/StaffServices";
 import cls from './KYC.modules.scss'
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faCheckCircle} from "@fortawesome/free-solid-svg-icons";
 
 
 const KYC = ({status}) => {
@@ -51,7 +53,9 @@ const KYC = ({status}) => {
         data.documents = {}
         delete data.terms
         delete data.privacy
-       const res = await putData('/personal_area/verification/', data)
+        // const res = await putData('/personal_area/verification/', data)
+
+        console.log('kyc data', data)
     }
 
     const checkKycStatus = (status) => {
@@ -77,69 +81,172 @@ const KYC = ({status}) => {
             <ButtonCard>
 
                 <Form classnames={'form_big'} onSubmit={handleSubmit(onSubmit)}>
+                    <Row className={'mb-3 text-center'}>
+                        <h2 className={'mb-3'} style={{fontWeight: 'bold'}}>Begin your ID-Verification</h2>
+                        <p style={{maxWidth: 520, margin: '0 auto'}}>To comply with regulation each participant will have to go through identity verification
+                            (KYC/AML) to prevent fraud cases and illegal financial activity.</p>
+                    </Row>
+                    <Row className={'mb-5 mt-5'} style={{
+                        borderBottom: '1px solid #cecece',
+                        borderTop: '1px solid #cecece',
+                        padding: '10px 0'}}>
+                        <div style={{fontWeight: 'bold'}}>
+                            Personal Details
+                        </div>
+                        <div>
+                            Your personal information is required for identification.
+                        </div>
+                    </Row>
                     <Row className={'mb-3'}>
-                        <Col>
-                            <Input {...register('firstName')} placeholder='first name' />
+                        <Col className={'mb-2'}>
+                            <Input {...register('firstName', {
+                                required: true,
+                                pattern: /^[^а-яё]+$/iu
+                            })} placeholder='First name*' />
+                            <ErrorMessage  name='firstName' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
                         </Col>
-                        <Col>
-                            <Input {...register('lastName')} placeholder='last name'/>
+                        <Col className={'mb-2'}>
+                            <Input {...register('lastName', {
+                                required: true,
+                                pattern: /^[^а-яё]+$/iu
+                            })} placeholder='Last name*'/>
+                            <ErrorMessage  name='lastName' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
                         </Col>
                     </Row>
                     <Row className={'mb-3'}>
-                        <Col>
-                            <Input {...register('userEmail')} placeholder='email' />
+                        <Col className={'mb-2 col-12 col-sm-6'}>
+                            <Input {...register('userEmail', {
+                                required: 'This field is required',
+                                validate: emailValidate,
+                            })} placeholder='Email address*' />
+                            <ErrorMessage  name='userEmail' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
                         </Col>
-                        <Col>
-                            <Input {...register('dateOfBirth')} placeholder='date of birth'/>
-                        </Col>
-                    </Row>
-                    <Row className={'mb-3'}>
-                        <Col>
-                            <Input {...register('phoneNumber')} placeholder='phoneNumber' />
-                        </Col>
-                        <Col>
-                            <Input {...register('documentNumber')} placeholder='document number'/>
-                        </Col>
-                    </Row>
-                    <Row className={'mb-3'}>
-                        <Col>
-                            <Input {...register('mainAddress')} placeholder='main address' />
-                        </Col>
-                        <Col>
-                            <Input {...register('subAddress')} placeholder='sub address'/>
+                        <Col className={'mb-2 col-12 col-sm-6'}>
+                            <DatePickert required
+                                         customInput={<DatePickerCustom classname={'user-datepicker'}/>}
+                                         placeholderText='Date of Birth*'
+                                         selected={startDate}
+                                         dateFormat='yyyy/MM/dd'
+                                         onChange={(date) => setStartDate(date)} />
                         </Col>
                     </Row>
                     <Row className={'mb-3'}>
-                        <Col>
-                            <Input {...register('city')} placeholder='city' />
+                        <Col className={'mb-2'}>
+                            <InputMask mask='9-(999)-999-99-99' {...register('phoneNumber')}>
+                                {(inputProps) => <Input {...inputProps} name='phoneNumber' placeholder='Phone number*' type='tel'/>}
+                            </InputMask>
+                            <ErrorMessage  name='phoneNumber' errors={errors} render={() => <p className={cls.error}>Check the field</p>} />
                         </Col>
-                        <Col>
-                            <Input {...register('zipCode')} placeholder='zip code'/>
+                        <Col className={'mb-2'}>
+                            <Input {...register('documentNumber', {
+                                required: true,
+                                pattern: /^[^а-яё]+$/iu
+                            })} placeholder='ID/Document Nr.*'/>
+                            <ErrorMessage  name='documentNumber' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
+                        </Col>
+                    </Row>
+                    <Row className={'mb-5 mt-5'} style={{
+                        borderBottom: '1px solid #cecece',
+                        borderTop: '1px solid #cecece',
+                        padding: '10px 0'}}>
+                        <div style={{fontWeight: 'bold'}}>
+                            Personal Details
+                        </div>
+                        <div>
+                            Your personal information is required for identification.
+                        </div>
+                    </Row>
+                    <Row className={'mb-3'}>
+                        <Col className={'mb-2'}>
+                            <Input {...register('mainAddress', {
+                                required: true,
+                                pattern: /^[^а-яё]+$/iu
+                            })} placeholder='Address line 1*' />
+                            <ErrorMessage  name='mainAddress' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
+                        </Col>
+                        <Col className={'mb-2'}>
+                            <Input {...register('subAddress', {
+                                pattern: /^[^а-яё]+$/iu
+                            })} placeholder='Address line 2'/>
+                            <ErrorMessage  name='subAddress' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
                         </Col>
                     </Row>
                     <Row className={'mb-3'}>
-                        <Col>
-                            <Input {...register('state')} placeholder='state' />
+                        <Col className={'mb-2'}>
+                            <Input {...register('city', {
+                                required: true,
+                                pattern: /^[^а-яё]+$/iu
+                            })} placeholder='City*' />
+                            <ErrorMessage  name='city' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
+                        </Col>
+                        <Col className={'mb-2'}>
+                            <Input {...register('zipCode', {
+                                required: true,
+                                pattern: /^[^а-яё]+$/iu
+                            })} placeholder='Zip*'/>
+                            <ErrorMessage  name='zipCode' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
+                        </Col>
+                    </Row>
+                    <Row className={'mb-3'}>
+                        <Col className={'mb-2'}>
+                            <Input {...register('state', {
+                                pattern: /^[^а-яё]+$/iu
+                            })} placeholder='State' />
+                            <ErrorMessage  name='state' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
                         </Col>
                     </Row>
 
-                    <Row className='mt-4'>
-                        <Col>
-                            <InputRadio {...register('documentType')} value='Passport' type='radio' label='Passport' />
-                        </Col>
-                        <Col>
-                            <InputRadio {...register('documentType')} value='National ID' type='radio' label='National ID' />
-                        </Col>
-                        <Col>
-                            <InputRadio {...register('documentType')} value='Driving License' type='radio' label='Driving License' />
-                        </Col>
+                    <Row className={'mb-5 mt-5'} style={{
+                        borderBottom: '1px solid #cecece',
+                        borderTop: '1px solid #cecece',
+                        padding: '10px 0'}}>
+                        <div style={{fontWeight: 'bold'}}>
+                            Document Upload
+                        </div>
+                        <div>
+                            To verify your identity, please upload at least one of the required documents.
+                        </div>
                     </Row>
 
-                    <Row>
-                        <Button>Submit</Button>
+                    <Row className='' style={{maxWidth: 600, justifyContent: 'center', margin: '30px 0'}}>
+                        <Col className={'mb-2'}>
+                            <InputRadio {...register('documentType', {
+                                required: true,
+                            })} id={'passport'} name={'documentType'} classname={'radio_btn'} value='Passport' type='radio' label='Passport' />
+                            <ErrorMessage  name='documentType' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
+                        </Col>
+                        <Col className={'mb-2'}>
+                            <InputRadio {...register('documentType', {
+                                required: true,
+                            })} id={'id'} name={'documentType'} classname={'radio_btn'} value='National ID' type='radio' label='National ID' />
+                            <ErrorMessage  name='documentType' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
+                        </Col>
+                        <Col className={'mb-2'}>
+                            <InputRadio {...register('documentType', {
+                                required: true,
+                            })} id={'license'} name={'documentType'} classname={'radio_btn'} value='Driving License' type='radio' label='Driving License' />
+                            <ErrorMessage  name='documentType' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
+                        </Col>
+                    </Row>
+                    <Row className={'mb-5 mt-5'} style={{
+                        padding: '10px 0'}}>
+                        <div style={{fontWeight: 'bold', marginBottom: 10}}>
+                            To avoid delays with identity verification, please make sure that:
+                        </div>
+                        <div>
+                            <div><FontAwesomeIcon icon={faCheckCircle} /> Chosen credentials must not be expired.</div>
+                            <div><FontAwesomeIcon icon={faCheckCircle} /> Documents should be at good condition and clearly visible.</div>
+                            <div><FontAwesomeIcon icon={faCheckCircle} /> Make sure that there is no light glare visible on the documents.</div>
+                        </div>
+                    </Row>
+
+                    <Row className={'justify-content-center'} style={{marginTop: 50}}>
+                        <Button classname={'small'}>Submit</Button>
                     </Row>
                 </Form>
             </ButtonCard>
+
+
             {/*{*/}
             {/*    status.kycStatus !== 'empty'*/}
             {/*        ?*/}
@@ -184,10 +291,10 @@ const KYC = ({status}) => {
             {/*                <br/>*/}
             {/*                <Row className={'mb-3'}>*/}
             {/*                    <Col>*/}
-            {/*                        /!*<InputMask mask='9-(999)-999-99-99' {...register('phoneNumber')}>*!/*/}
-            {/*                        /!*    {(inputProps) => <Input {...inputProps} name='phoneNumber' placeholder='phone number' type='tel'/>}*!/*/}
-            {/*                        /!*</InputMask>*!/*/}
-            {/*                        /!*<ErrorMessage  name='phoneNumber' errors={errors} render={() => <p className={cls.error}>this field is required</p>} />*!/*/}
+            {/*                        <InputMask mask='9-(999)-999-99-99' {...register('phoneNumber')}>*/}
+            {/*                            {(inputProps) => <Input {...inputProps} name='phoneNumber' placeholder='phone number' type='tel'/>}*/}
+            {/*                        </InputMask>*/}
+            {/*                        <ErrorMessage  name='phoneNumber' errors={errors} render={() => <p className={cls.error}>this field is required</p>} />*/}
             {/*                    </Col>*/}
             {/*                    <Col>*/}
             {/*                        <Input {...register('documentNumber', {*/}

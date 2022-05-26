@@ -162,7 +162,7 @@ const InternalSwap = () => {
     }
 
     const getSwapHistory = async () => {
-        const res = await postData('/swap/get_swap_history/', {userId: store.user.id})
+        const res = await getData(`/swap/get_swap_history/${store.user.id}`)
         setHistory(res.data.swapHistory)
     }
 

@@ -4,7 +4,6 @@ import cls from './InternalAddressesCard.module.scss'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCopy, faTimesCircle} from "@fortawesome/free-solid-svg-icons";
 import {Col, Row} from "react-bootstrap";
-import Input from "../../../../../components/UI/Input/Input";
 import InternalAddressCardForm from "../InternalAddressCardForm/InternalAddressCardForm";
 import Button from "../../../../../components/UI/Button/Button";
 import Image from "../../../../../components/UI/Image/Image";
@@ -61,14 +60,15 @@ const InternalAddressesCard = ({currency, sum, onCopy, wallet}) => {
                         </h4>
                     </div>
                 </Col>
-                <Col className='col-12 col-md-4'>
-                    <div>Balance: {sum} {currency}</div>
+                <Col className='col-12 col-md-3'>
+                    <div>Balance: {sum.toFixed(5)} {currency}</div>
                 </Col>
-                <Col className='col-12 col-md-4'>
-                    <div onClick={() => onCopy(wallet)}>
+                <Col className='col-12 col-md-5'>
+                    <div style={{display: 'flex'}} onClick={() => onCopy(wallet)}>
                         <FontAwesomeIcon
+                            style={{marginRight: 20}}
                             icon={faCopy} />
-                        <span className='internal-address'>{wallet}</span>
+                        <span style={{wordBreak: 'break-all'}} className='internal-address'>{wallet}</span>
                     </div>
                 </Col>
             </Row>
