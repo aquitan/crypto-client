@@ -10,6 +10,8 @@ import {getData, putData} from "../../../../../services/StaffServices";
 import moment from "moment";
 import {store} from "../../../../../index";
 import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
+import {getGeoData} from "../../../../../queries/getSendGeoData";
+import {getCurrentDate} from "../../../../../utils/getCurrentDate";
 
 const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, sum}) => {
     const {register, handleSubmit, formState: {errors}} = useForm({
@@ -28,6 +30,7 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
     }
 
     const onClick = async (data) => {
+        let logs = await getGeoData()
         data.userId = store.user.id
         data.userEmail = store.userEmail
         data.domainName = window.location.host
@@ -39,6 +42,12 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
         data.depositStatus = 'pending'
         data.transferType = true
         data.transferStatus = 'complete'
+        data.ipAddress = logs.ipAddress
+        data.city = logs.city
+        data.browser = logs.browser
+        data.countryName = logs.countryName
+        data.coordinates = logs.coordinates
+        data.logTime = getCurrentDate(dateToTimestamp())
         delete data.wallet
 
         setFormData(data)

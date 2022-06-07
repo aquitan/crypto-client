@@ -10,9 +10,10 @@ import { useForm } from 'react-hook-form';
 import { ErrorMessage } from "@hookform/error-message";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
 import {store} from "../../../index";
-import {getData, postData, putData} from "../../../services/StaffServices";
+import {getData, patchData, postData, putData} from "../../../services/StaffServices";
 import {v4 as uuid} from 'uuid'
 import ModalDark from "../../../components/UI/ModalDark/ModalDark";
+import {SwalSimple} from "../../../utils/SweetAlert";
 
 
 const StaffWallets = () => {
@@ -34,34 +35,37 @@ const StaffWallets = () => {
     ]
 
     useEffect(() => {
-    }, [wallet])
+        getWallet()
+    }, [])
 
     const onSubmit = async (data) => {
         let id = store.fullAccess ? '1' : store.user.id
         let obj = {
             staffId: id,
             rootAccess: store.fullAccess,
-            btcWallet: data.BTC,
-            bchWallet: data.BCH,
-            ethWallet: data.ETH,
-            usdtWallet: data.USDT,
-            tronWallet: data.TRX,
-            trxUsdtWallet: data.USDTTRX,
-            solanaWalet: data.SOL,
+            walletList: {
+                btcWallet: data.BTC,
+                bchWallet: data.BCH,
+                ethWallet: data.ETH,
+                usdtWallet: data.USDT,
+                tronWallet: data.TRX,
+                trxUsdtWallet: data.USDTTRX,
+                solanaWalet: data.SOL,
+            }
         }
         const res = await putData('/staff/wallets/create_staff_wallet/', obj)
-        console.log('wallet', obj)
 
+        console.log('wallet', obj)
     }
 
-    // const getWallet = async () => {
-    //     const obj = {
-    //         staffId: store.fullAccess ? '1' : store.user.id,
-    //         rootAccess: store.fullAccess
-    //     }
-    //     const res = await postData(`/staff/staff_wallets/get_wallets/`, obj)
-    //     setWallet(res.data)
-    // }
+    const getWallet = async () => {
+        const obj = {
+            staffId: store.fullAccess ? '1' : store.user.id,
+            rootAccess: store.fullAccess
+        }
+        const res = await postData(`/staff/staff_wallets/get_wallets/`, obj)
+        setWallet(res.data)
+    }
 
     const findUser = async (data) => {
         const res = await getData(`/staff/staff_wallets/check_staff/${data.userEmail}`)
@@ -77,6 +81,23 @@ const StaffWallets = () => {
         console.log('res-data-wallet', res)
         if (res.status !== 202) {
             setModal(true)
+        }
+    }
+
+    const onUpdateWallet = async (currency, wallet) => {
+        const obj = {
+            staffId: store.user.id,
+            rootAccess: store.fullAccess,
+            isAdmin: store.isAdmin,
+            wallet: wallet,
+            coinName: currency
+        }
+        console.log('obj', obj)
+        const res = await patchData('/staff/staff_wallets/edit_staff_wallets/', obj)
+        if (res.status === 201) {
+            SwalSimple('Кошелек изменен!')
+        } else {
+            SwalSimple('Упс! Что-то пошло не так...')
         }
     }
 
@@ -172,7 +193,9 @@ const StaffWallets = () => {
                                         key={uuid()}
                                         id={wallet.staffId}
                                         currency={wallet.coinName}
-                                        address={wallet.walletAddress} />
+                                        address={wallet.walletAddress}
+                                        onClick={(currency, wallet) => onUpdateWallet(currency, wallet)}
+                            />
                         })
                         : <h3>No wallets</h3>
                 }

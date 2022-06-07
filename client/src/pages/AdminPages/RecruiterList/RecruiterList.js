@@ -116,17 +116,17 @@ const RecruiterList = () => {
                                 <Row style={{padding: '20px 0', borderBottom: '1px solid #fff'}}>
                                     <Col className={'text-center'}>
                                         <span
-                                            style={{cursor: 'pointer'}}
-                                            onClick={() => navigate(`/staff/recruiter-detail${user.recruiterId}`)}>
+                                            style={{cursor: 'pointer'}}>
                                             {user.recruiterEmail}
                                         </span>
                                     </Col>
                                     <Col className={'text-center'}>{user.currentFee}</Col>
                                     <Col className={'text-center'}>
                                         <Row>
-                                            <Col><AdminButton classname={['orange', 'xs']}>Ban</AdminButton></Col>
-                                            <Col><AdminButton onClick={() => deletRecruiter(user.recruiterId)} classname={['red', 'xs']}>Delete</AdminButton></Col>
-                                            <Col><AdminButton classname={['green', 'xs']}>Unbind</AdminButton></Col>
+                                            <Col><AdminButton onClick={() => deletRecruiter(user.recruiterId)} classname={['red', 'xs']}>Удалить</AdminButton></Col>
+                                            <Col><AdminButton
+                                                onClick={() => navigate(`/staff/recruiter-detail${user.recruiterId}`)}
+                                                classname={['green', 'xs']}>Детали</AdminButton></Col>
                                         </Row>
                                     </Col>
                                 </Row>

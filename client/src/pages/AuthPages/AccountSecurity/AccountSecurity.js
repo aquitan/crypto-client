@@ -74,7 +74,7 @@ const AccountSecurity = (props) => {
             domainName: window.location.host,
             userEmail: store.userEmail,
             userId: store.user.id,
-            twoFaType: 'email',
+            twoFaType: 'telegram',
             twoFaStatus: true,
             currentTime: dateToTimestamp()
         }
@@ -95,7 +95,7 @@ const AccountSecurity = (props) => {
             geodata.userEmail = store.userEmail
             geodata.domainName = window.location.host
             geodata.twoFaStatus = true
-            geodata.twoFaType = 'email'
+            geodata.twoFaType = 'telegram'
             geodata.enableDate = dateToTimestamp()
 
             console.log('2fa----', data)

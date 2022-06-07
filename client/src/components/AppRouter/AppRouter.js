@@ -39,9 +39,7 @@ const AppRouter = () => {
         }
         sendDomainName()
         getRates()
-        if (store.isAuth) {
 
-        }
     }, [])
 
     const countTotalBalance = () => {

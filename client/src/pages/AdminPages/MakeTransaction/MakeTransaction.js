@@ -40,7 +40,9 @@ const MakeTransaction = () => {
         let obj = {
             staffId: store.fullAccess? '1' : store.user.id,
             isAdmin: store.isAdmin,
-            rootAccess: store.fullAccess
+            rootAccess: store.fullAccess,
+            skipValue: 3,
+            limitValue: 10
         }
         const res = await postData(`/staff/create_transaction/get_transaction_history/`, obj)
         console.log('history', res.data.history.length)

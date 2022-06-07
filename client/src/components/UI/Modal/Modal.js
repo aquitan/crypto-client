@@ -10,7 +10,7 @@ const Modal = ({children, active, setActive, title}) => {
     }
 
     return (
-        <div className={classes.join(' ')} onClick={() => setActive(false)}>
+        <div className={classes.join(' ')}  onClick={() => setActive(false)}>
             <div className={cls.modal_content} onClick={(e) => e.stopPropagation()}>
                 <Row className='mt-3 mb-3'>
                     <h4>{title}</h4>

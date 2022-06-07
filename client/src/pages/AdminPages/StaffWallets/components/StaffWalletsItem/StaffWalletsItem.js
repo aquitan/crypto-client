@@ -9,59 +9,35 @@ import {patchData} from "../../../../../services/StaffServices";
 import {store} from "../../../../../index";
 
 
-const StaffWalletsItem = (props) => {
+const StaffWalletsItem = ({currency, address, onClick, }) => {
     const [state, setState] = useState(true)
-    const {register, handleSubmit} = useForm({
-        defaultValues: {
-            currentWallet: props.address
-        }
-    })
+    const [wallet, setWallet] = useState(address)
 
     const onEdit = () => {
         setState(!state)
     }
 
-    const onSubmit = async (data) => {
-        console.log('wallet data', data)
-        let id = store.fullAccess ? 'root' : store.user.id
-
-
-        // const obj = {
-        //     staffId: props.id,
-        //     rootAccess: store.fullAccess,
-        //     wallet: data.currentWallet,
-        //     coinName: props.currency
-        // }
-        const obj = {
-            recruiterId: props.id,
-            rootAccess: store.fullAccess,
-            isAdmin: store.isAdmin,
-            wallet: data.currentWallet,
-            coinName: props.currency
-        }
-
-
-        const res = await patchData('/staff/recruiter/update_recruiter_wallet/', obj)
+    const onChange = (e) => {
+        setWallet(e.target.value)
     }
-
 
     return (
         <div>
             <Row className={`${cls.wallet_item} mb-3`}>
                 <Col className='d-none d-md-block'>
-                    {props.currency}
+                    {currency}
                 </Col>
                 <Col>
-                    <AdminInput disabled={state}  name='currentWallet' {...register('currentWallet')} />
+                    <AdminInput onChange={onChange} disabled={state}  name='currentWallet' value={wallet} />
                 </Col>
                 {
-                    store.fullAccess ?
+                    store.fullAccess || store.isAdmin ?
                         <>
                             <Col className='d-none d-md-block'>
                                 <AdminButton onClick={onEdit} classname={['orange','medium_btn']}>Редактировать</AdminButton>
                             </Col>
                             <Col className='d-none d-md-block'>
-                                <AdminButton classname={['green', 'medium_btn']} onClick={(currency, wallet) => props.onClick(currency, wallet)}>Сохранить</AdminButton>
+                                <AdminButton classname={['green', 'medium_btn']} onClick={() => onClick(currency, wallet)}>Сохранить</AdminButton>
                             </Col>
                         </>
                     :null

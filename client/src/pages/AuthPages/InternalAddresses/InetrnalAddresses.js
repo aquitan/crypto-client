@@ -27,8 +27,16 @@ const InternalAddresses = () => {
         to: '',
         currency: ''
     })
+    const [counter, setCounter] = useState(0)
 
 
+    const onNext = () => {
+        setCounter((prevState => {
+            console.log('prevstate', prevState)
+            return prevState + 5
+        }))
+        getInternalHistory(counter+5)
+    }
 
     const onCopy = (text) => {
         copyTextToClipboard(text)
@@ -57,8 +65,8 @@ const InternalAddresses = () => {
         console.log('modal', obj)
     }
 
-    const getInternalHistory = async () => {
-        const res = await getData(`/internal_transfer/get_internal_transfer_history/${store.user.id}`)
+    const getInternalHistory = async (count) => {
+        const res = await getData(`/internal_transfer/get_internal_transfer_history/${store.user.id}/${count}/5`)
         setHistory(res.data.internalTransferHistory)
     }
 
@@ -119,7 +127,15 @@ const InternalAddresses = () => {
                             </TableBody>
                         </Col>
                     </Row>
+
                 </ButtonCard>
+                <Row>
+                    {
+                        history ?
+                            <span onClick={onNext}>Next...</span>
+                            : null
+                    }
+                </Row>
             </Row>
 
         </Container>

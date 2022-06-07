@@ -17,7 +17,8 @@ const AdminKYC = () => {
             isStaff: store.isStaff,
             domainName: window.location.host,
             rootAccess: store.fullAccess,
-            staffEmail: store.user.email
+            staffEmail: store.fullAccess ? 'root' : store.user.email,
+            staffId: store.fullAccess ? 'root' : store.user.id
         }
         const res = await postData('/staff/users/kyc/', userData)
         const data = await res.data
@@ -49,7 +50,7 @@ const AdminKYC = () => {
                 </Card>
             </Row>
             <Row>
-                <Card className={`${cls.bg_black} p-3 scrollable-table`}>
+                <Card className={`${cls.bg_black} p-3`}>
                     <Row className={cls.table_header}>
                         {/*<Col className={'col-1'}>Register date</Col>*/}
                         <Col className={'col-1'}>Name</Col>
