@@ -149,14 +149,14 @@ class UserController {
     }
 
 
-    const validData: boolean = await bodyValidator(req.body, 7)
+    const validData: boolean = await bodyValidator(req.body, 6)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {
-      const result: boolean = await UserServices.enableTwoStepVerification(transferObject)
+      const result: boolean | object = await UserServices.enableTwoStepVerification(transferObject)
       if (!result) throw ApiError.ServerError()
 
-      return res.status(202).json({ message: '2fa was enabled', userCode: code })
+      return res.status(202).json(result)
     } catch (e) {
       next(e)
     }

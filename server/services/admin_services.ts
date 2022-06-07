@@ -36,8 +36,12 @@ async function deleteHelper(modelName: any, paramValue: string) {
 
 class adminService {
 
-  async GetUsersList() {
-    const usersList: any = await baseUserData.find()
+  async GetUsersList(skipValue: number, limitValue: number) {
+    const usersList: any = await baseUserData.
+      find().
+      skip(skipValue).
+      limit(limitValue).
+      exec()
     console.log('user list: ', usersList);
 
     let dataArray: any = []
@@ -123,24 +127,36 @@ class adminService {
     return true
   }
 
-  async GetKycForAdmin() {
-    const kycList: any = await userKyc.find()
+  async GetKycForAdmin(skipValue: number, limitValue: number) {
+    const kycList: any = await userKyc.
+      find().
+      skip(skipValue).
+      limit(limitValue).
+      exec()
     console.log("list is: ", kycList.length)
     if (!kycList) return false
     if (!kycList.length) return 'empty set'
     return kycList
   }
 
-  async GetPromocodeListForAdmin() {
-    const promocodeList: any = await userPromocode.find()
+  async GetPromocodeListForAdmin(skipValue: number, limitValue: number) {
+    const promocodeList: any = await userPromocode.
+      find().
+      skip(skipValue).
+      limit(limitValue).
+      exec()
     console.log('service code list is: ', promocodeList);
     if (!promocodeList.length) return false
     return promocodeList
   }
 
 
-  async GetUsedPromocodeListForAdmin() {
-    const list: any = await usedPromoList.find()
+  async GetUsedPromocodeListForAdmin(skipValue: number, limitValue: number) {
+    const list: any = await usedPromoList.
+      find().
+      skip(skipValue).
+      limit(limitValue).
+      exec()
     console.log('service code list is: ', list);
     if (!list.length) return false
     return list
@@ -148,15 +164,19 @@ class adminService {
 
   async DeleteUsedPromocodesAsAdmin() {
     const codeList: any = await usedPromoList.find()
-    console.log('service code list is: ', codeList);
+    console.log('service code list is: ', codeList.length);
     if (!codeList.length) return false
     await usedPromoList.deleteMany()
     return true
   }
 
 
-  async GetDomainListForAdmin() {
-    const list: any = await domainList.find()
+  async GetDomainListForAdmin(skipValue: number, limitValue: number) {
+    const list: any = await domainList.
+      find().
+      skip(skipValue).
+      limit(limitValue).
+      exec()
     console.log('domainList is: ', list);
     if (!list.length) return 'empty list'
     if (!list) return false
@@ -174,8 +194,12 @@ class adminService {
     return domainListArray
   }
 
-  async GetNewsListForAdmin() {
-    const list: any = await newsList.find()
+  async GetNewsListForAdmin(skipValue: number, limitValue: number) {
+    const list: any = await newsList.
+      find().
+      skip(skipValue).
+      limit(limitValue).
+      exec()
     console.log('found news: ', newsList);
     if (!list) return false
     if (!list.length) return 'empty set'
@@ -298,8 +322,12 @@ class adminService {
     return true
   }
 
-  async getSecureDealHistoryAsAdmin() {
-    const history: any = await secureDeal.find()
+  async getSecureDealHistoryAsAdmin(skipValue: number, limitValue: number) {
+    const history: any = await secureDeal.
+      find().
+      skip(skipValue).
+      limit(limitValue).
+      exec()
     console.log('history is => ', history.length);
 
     if (!history) return false
@@ -307,16 +335,24 @@ class adminService {
     return history
   }
 
-  async getStaffWalletForAdmin() {
-    const getWallets: any = await staffWallet.find()
+  async getStaffWalletForAdmin(skipValue: number, limitValue: number) {
+    const getWallets: any = await staffWallet.
+      find().
+      skip(skipValue).
+      limit(limitValue).
+      exec()
     console.log('received getWallets is => ', getWallets.length);
     if (!getWallets) return false
     if (!getWallets.length) return 'empty set'
     return getWallets
   }
 
-  async getGroupListForAdmin() {
-    const getList: any = await staffGroupUserList.find()
+  async getGroupListForAdmin(skipValue: number, limitValue: number) {
+    const getList: any = await staffGroupUserList.
+      find().
+      skip(skipValue).
+      limit(limitValue).
+      exec()
     console.log('received getList => ', getList);
     if (!getList) return false
     if (!getList.length) return 'empty set'
@@ -415,8 +451,12 @@ class adminService {
     return true
   }
 
-  async getRecruiterList() {
-    const list: any = await recruiterModel.find()
+  async getRecruiterList(skipValue: number, limitValue: number) {
+    const list: any = await recruiterModel.
+      find().
+      skip(skipValue).
+      limit(limitValue).
+      exec()
     if (!list.length) return 'empty set'
     if (!list) return false
     return list

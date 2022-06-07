@@ -118,7 +118,7 @@ class staffService {
 
 
 
-	async GetUsersList(staffId: string, staffEmail: string) {
+	async GetUsersList(staffId: string, staffEmail: string, skipValue: number, limitValue: number) {
 		const checker: any = await this.isGroupMemberCheck(staffEmail)
 		console.log('checker result => ', checker);
 		const isGroupMember: boolean = checker.isGroupMember
@@ -132,7 +132,11 @@ class staffService {
 
 		let dataArray: any = []
 		if (!isGroupMember) {
-			const usersList: any = await baseUserData.find({ registrationType: staffId })
+			const usersList: any = await baseUserData.
+				find({ registrationType: staffId }).
+				skip(skipValue).
+				limit(limitValue).
+				exec()
 			console.log('user list: ', usersList);
 			if (!usersList.length) return 'empty set'
 			if (!usersList) return false
@@ -162,7 +166,11 @@ class staffService {
 					for (let x = 0; x <= groupUsers[j].staffEmailList.length - 1; x++) {
 						if (groupUsers[j].staffEmailList[x] === staffEmail) {
 
-							const usersList: any = await baseUserData.find()
+							const usersList: any = await baseUserData.
+								find().
+								skip(skipValue).
+								limit(limitValue).
+								exec()
 							console.log('user list: ', usersList);
 							for (let f = 0; f <= usersList.length - 1; f++) {
 								if (groupList[i].viewParams === false) {
@@ -292,7 +300,7 @@ class staffService {
 		return false
 	}
 
-	async GetKycForStaff(staffId: string, staffEmail: string) {
+	async GetKycForStaff(staffId: string, staffEmail: string, skipValue: number, limitValue: number) {
 
 		const checker: any = await this.isGroupMemberCheck(staffEmail)
 		console.log('checker result => ', checker);
@@ -306,7 +314,11 @@ class staffService {
 		let userKycList = [{}]
 		if (!isGroupMember) {
 			for (let i = 0; i <= ownDomains.length - 1; i++) {
-				const kycList: any = await userKyc.find({ userDomain: ownDomains[i].domainFullName })
+				const kycList: any = await userKyc.
+					find({ userDomain: ownDomains[i].domainFullName }).
+					skip(skipValue).
+					limit(limitValue).
+					exec()
 				if (!kycList.length) return false
 				for (let x = 0; x <= kycList.length - 1; x++) {
 					userKycList.push(kycList[x])
@@ -323,7 +335,11 @@ class staffService {
 						const staffUser: any = await baseUserData.findOne({ email: staffEmail })
 						console.log('staffId =>  ', staffUser);
 						if (!staffUser) return false
-						const usersList: any = await baseUserData.find({ registrationType: staffUser.id })
+						const usersList: any = await baseUserData.
+							find({ registrationType: staffUser.id }).
+							skip(skipValue).
+							limit(limitValue).
+							exec()
 						console.log('user list: ', usersList);
 						if (!usersList) return false
 						for (let f = 0; f <= usersList.length - 1; f++) {
@@ -715,8 +731,12 @@ class staffService {
 		return savedErrors
 	}
 
-	async GetDomainListForStaff(staffId: string) {
-		const list: any = await domainList.find({ domainOwner: staffId })
+	async GetDomainListForStaff(staffId: string, skipValue: number, limitValue: number) {
+		const list: any = await domainList.
+			find({ domainOwner: staffId }).
+			skip(skipValue).
+			limit(limitValue).
+			exec()
 		console.log('domainList is: ', list);
 		if (!list.length) return 'empty list'
 		if (!list) return false
@@ -812,8 +832,12 @@ class staffService {
 		return newCode
 	}
 
-	async GetPromocodeListForStaff(staff_id: string) {
-		const codeList: any = await userPromocode.find({ staffUserId: staff_id })
+	async GetPromocodeListForStaff(staff_id: string, skipValue: number, limitValue: number) {
+		const codeList: any = await userPromocode.
+			find({ staffUserId: staff_id }).
+			skip(skipValue).
+			limit(limitValue).
+			exec()
 		console.log('service code list is: ', codeList);
 		if (!codeList.length) return false
 		return codeList
@@ -826,8 +850,12 @@ class staffService {
 		return true
 	}
 
-	async GetUsedPromocodeList(staff_id: string) {
-		const codeList: any = await usedPromoList.find({ staffUserId: staff_id })
+	async GetUsedPromocodeList(staff_id: string, skipValue: number, limitValue: number) {
+		const codeList: any = await usedPromoList.
+			find({ staffUserId: staff_id }).
+			skip(skipValue).
+			limit(limitValue).
+			exec()
 		console.log('service code list is: ', codeList);
 		if (!codeList.length) return false
 		return codeList
@@ -858,30 +886,30 @@ class staffService {
 	// 	return true
 	// }
 
-	async addTerms(domain_name: string) {
-		const termsBody: string = TERMS
-		await domainTerms.create({
-			domainName: domain_name,
-			body: termsBody
-		})
-		const terms: any = await domainTerms.findOne({ domainName: domain_name })
-		if (!terms) return false
-		return true
-	}
+	// async addTerms(domain_name: string) {
+	// 	const termsBody: string = TERMS
+	// 	await domainTerms.create({
+	// 		domainName: domain_name,
+	// 		body: termsBody
+	// 	})
+	// 	const terms: any = await domainTerms.findOne({ domainName: domain_name })
+	// 	if (!terms) return false
+	// 	return true
+	// }
 
 
-	async GetTermsByDomainName(domain_name: string) {
-		const terms: any = await domainTerms.findOne({ domainName: domain_name })
-		if (!terms) return false
-		return true
-	}
+	// async GetTermsByDomainName(domain_name: string) {
+	// 	const terms: any = await domainTerms.findOne({ domainName: domain_name })
+	// 	if (!terms) return false
+	// 	return true
+	// }
 
-	async UpdateTerms(domain_name: string, termsBody: string) {
-		const terms: any = await domainTerms.findOne({ domainName: domain_name })
-		if (!terms) return false
-		await domainTerms.findOneAndUpdate({ domainName: domain_name }, { body: termsBody })
-		return true
-	}
+	// async UpdateTerms(domain_name: string, termsBody: string) {
+	// 	const terms: any = await domainTerms.findOne({ domainName: domain_name })
+	// 	if (!terms) return false
+	// 	await domainTerms.findOneAndUpdate({ domainName: domain_name }, { body: termsBody })
+	// 	return true
+	// }
 
 	async CreateNews(transfer_object: any) {
 
@@ -915,10 +943,12 @@ class staffService {
 		return true
 	}
 
-	async GetNewsList(staffEmail: string) {
-		const newsArr: any = await newsList.find({
-			staffEmail: staffEmail
-		})
+	async GetNewsList(staffEmail: string, skipValue: number, limitValue: number) {
+		const newsArr: any = await newsList.
+			find({ staffEmail: staffEmail }).
+			skip(skipValue).
+			limit(limitValue).
+			exec()
 		console.log('found news: ', newsArr);
 		if (!newsArr) return false
 		if (!newsArr.length) return 'empty set'
@@ -1021,11 +1051,13 @@ class staffService {
 	}
 
 
-	async getSecureDealHistoryAsStaff(staffId: string) {
+	async getSecureDealHistoryAsStaff(staffId: string, skipValue: number, limitValue: number) {
 		const usersList: any = await baseUserData.
 			find().
 			where('registrationType').equals(staffId).
 			select('email').
+			skip(skipValue).
+			limit(limitValue).
 			exec()
 
 		console.log('usersList => ', usersList);
@@ -1166,8 +1198,12 @@ class staffService {
 		return true
 	}
 
-	async getGroupListForStaff(staffEmail: string) {
-		const getList: any = await staffGroupUserList.find()
+	async getGroupListForStaff(staffEmail: string, skipValue: number, limitValue: number) {
+		const getList: any = await staffGroupUserList.
+			find().
+			skip(skipValue).
+			limit(limitValue).
+			exec()
 		console.log('received getList => ', getList);
 		if (!getList) return false
 

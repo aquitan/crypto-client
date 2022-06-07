@@ -130,7 +130,10 @@ class UserServices {
 					userEmail: transferObject.userEmail
 				})
 			}, 300_000)
-			return true
+			return {
+				message: 'done',
+				bod: process.env.TELEGRAM_2FA_CODE_SENDER
+			}
 		}
 
 		if (transferObject.twoFaType === 'google') {
@@ -213,51 +216,29 @@ class UserServices {
 		console.log('candidate is: ', candidate);
 		if (candidate) return false
 
-		// save photo in folder & get path to save it to databse **
-		if (transfer_object.documents[0]) {
-			await userKyc.create({
-				firstName: transfer_object.firstName,
-				lastName: transfer_object.lastName,
-				email: transfer_object.userEmail,
-				phoneNumber: transfer_object.phoneNumber,
-				dateOfBirth: transfer_object.dateOfBirth,
-				documentNumber: transfer_object.documentNumber,
-				documentType: transfer_object.documentType,
-				mainAddress: transfer_object.mainAddress,
-				subAddress: transfer_object.subAddress,
-				city: transfer_object.city,
-				countryName: transfer_object.countryName,
-				state: transfer_object.state,
-				zipCode: transfer_object.zipCode,
-				documents: {
-					// frontDocumentPhoto: =============,
-					// backDocumentPhoto: ==,
-					// selfieDocumentPhoto: === path to dir in project,
-				},
-				userDomain: transfer_object.domainName,
-				userId: transfer_object.userId,
-			})
-
-		} else {
-			await userKyc.create({
-				firstName: transfer_object.firstName,
-				lastName: transfer_object.lastName,
-				email: transfer_object.userEmail,
-				phoneNumber: transfer_object.phoneNumber,
-				dateOfBirth: transfer_object.dateOfBirth,
-				documentNumber: transfer_object.documentNumber,
-				documentType: transfer_object.documentType,
-				mainAddress: transfer_object.mainAddress,
-				subAddress: transfer_object.subAddress,
-				city: transfer_object.city,
-				countryName: transfer_object.countryName,
-				state: transfer_object.state,
-				zipCode: transfer_object.zipCode,
-				documents: {},
-				userDomain: transfer_object.domainName,
-				userId: transfer_object.userId,
-			})
-		}
+		// save photo in folder & get path to save it to database **
+		await userKyc.create({
+			firstName: transfer_object.firstName,
+			lastName: transfer_object.lastName,
+			email: transfer_object.userEmail,
+			phoneNumber: transfer_object.phoneNumber,
+			dateOfBirth: transfer_object.dateOfBirth,
+			documentNumber: transfer_object.documentNumber,
+			documentType: transfer_object.documentType,
+			mainAddress: transfer_object.mainAddress,
+			subAddress: transfer_object.subAddress,
+			city: transfer_object.city,
+			countryName: transfer_object.countryName,
+			state: transfer_object.state,
+			zipCode: transfer_object.zipCode,
+			documents: {
+				frontDocumentPhoto: 'path 1',
+				backDocumentPhoto: 'path 2',
+				selfieDocumentPhoto: 'path 3'
+			},
+			userDomain: transfer_object.domainName,
+			userId: transfer_object.userId,
+		})
 
 		const savedKyc: any = await userKyc.findOne({
 			userId: transfer_object.userId
@@ -265,9 +246,10 @@ class UserServices {
 		console.log('savedKyc => ', savedKyc);
 		if (!savedKyc) return false
 
-		await userParams.findOneAndUpdate({ userId: transfer_object.userId }, {
-			kycStatus: 'pending'
-		})
+		await userParams.findOneAndUpdate(
+			{ userId: transfer_object.userId },
+			{ kycStatus: 'pending' }
+		)
 
 		return true
 	}
@@ -319,7 +301,11 @@ class UserServices {
 			return userDepositHistory
 		}
 
-		const userDepositHistory: any = await depositHistory.find()
+		const userDepositHistory: any = await depositHistory.
+			find().
+			skip(skipValue).
+			limit(limitValue).
+			exec()
 		console.log('userHistory: ', userDepositHistory.length);
 		if (!userDepositHistory.length) return false
 		return userDepositHistory
@@ -337,7 +323,11 @@ class UserServices {
 			return userWithdrawalHistory
 		}
 
-		const userWithdrawalHistory: any = await withdrawalHistory.find()
+		const userWithdrawalHistory: any = await withdrawalHistory.
+			find().
+			skip(skipValue).
+			limit(limitValue).
+			exec()
 		console.log('userHistory: ', userWithdrawalHistory.length);
 		if (!userWithdrawalHistory.length) return false
 		return userWithdrawalHistory
@@ -389,8 +379,16 @@ class UserServices {
 			return dataArray
 		}
 
-		const userInternalTransfersSend: any = await internalHistory.find()
-		const userInternalTransfersReceive: any = await internalHistory.find()
+		const userInternalTransfersSend: any = await internalHistory.
+			find().
+			skip(skipValue).
+			limit(limitValue).
+			exec()
+		const userInternalTransfersReceive: any = await internalHistory.
+			find().
+			skip(skipValue).
+			limit(limitValue).
+			exec()
 
 		const tempArray = [
 			userInternalTransfersSend,

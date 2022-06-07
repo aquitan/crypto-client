@@ -55,16 +55,16 @@ router.delete('/personal_area/secure_deal/secure_deal_detail/delete_deal/:dealId
 // user money transfer logic
 router.get('/get_user_balance/:id/', authChecker, userController.getUserBalance) // get user balances for every coins
 router.put('/deposit/make_deposit/', authChecker, userController.makeDeposit) // create deposit as user
-router.get('/deposit/get_deposit_history/:userId/:skipValue/limitValue/', authChecker, userController.getDepositHistory) // get deposit history
+router.get('/deposit/get_deposit_history/:userId/:skipValue/:limitValue/', authChecker, userController.getDepositHistory) // get deposit history
 router.put('/withdraw/make_withdraw/', authChecker, userController.makeWithdrawal) // make withdrawal request as user
-router.get('/withdraw/get_withdrawal_history/:userId/:skipValue/limitValue/', authChecker, userController.getWithdrawalHistory) // get withdrawal history
+router.get('/withdraw/get_withdrawal_history/:userId/:skipValue/:limitValue/', authChecker, userController.getWithdrawalHistory) // get withdrawal history
 router.put('/swap/make_swap/', authChecker, userController.makeSwap) // swap currency to another currency with user fee*
 router.get('/swap/get_swap_history/:userId', authChecker, userController.getSwapHistory) // get swap history by user id
 router.get('/get_internal_data/:userId/', authChecker, userController.getInternalData) // get user internal wallets & coin balances
 router.get('/user_balance_checker/:userId/:coinName/', authChecker, userController.balanceChecker) // check balance before send internal transfer
 router.get('/internal_wallet_checker/:userWallet/:domainName/', authChecker, userController.checkInternalWallet) // verified internal wallet 
 router.put('/internal_transfer/make_internal_transfer/', authChecker, userController.makeInternalTransfer) // make internal domain transaction*
-router.get('/internal_transfer/get_internal_transfer_history/:userId/:skipValue/limitValue/', authChecker, userController.getInternalTransferHistory) // get internal transfer history bu user id
+router.get('/internal_transfer/get_internal_transfer_history/:userId/:skipValue/:limitValue/', authChecker, userController.getInternalTransferHistory) // get internal transfer history bu user id
 
 // admin + staff routes
 router.post('/staff/dashboard', staffController.staffDashboard)

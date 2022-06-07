@@ -53,19 +53,21 @@ class StaffController {
     const staffId: string = req.body.staffId
     const staffEmail: string = req.body.staffEmail
     const rootAccess: boolean = req.body.rootAccess
+    const skipValue: number = req.body.skipValue
+    const limitValue: number = req.body.limitValue
 
-    const validData: boolean = await bodyValidator(req.body, 5)
+    const validData: boolean = await bodyValidator(req.body, 7)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {
       if (rootAccess || adminPermission) {
-        const usersList: any = await adminService.GetUsersList()
+        const usersList: any = await adminService.GetUsersList(skipValue, limitValue)
         if (!usersList) throw ApiError.ServerError()
         return res.status(200).json({ usersList })
 
       }
       if (staffPermission) {
-        const usersList: any = await staffService.GetUsersList(staffId, staffEmail)
+        const usersList: any = await staffService.GetUsersList(staffId, staffEmail, skipValue, limitValue)
         if (!usersList) throw ApiError.ServerError()
         return res.status(200).json({ usersList })
       }
@@ -126,20 +128,22 @@ class StaffController {
     const staffEmail: string = req.body.staffEmail
     const staffId: string = req.body.staffId
     const rootAccess: boolean = req.body.rootAccess
+    const skipValue: number = req.body.skipValue
+    const limitValue: number = req.body.limitValue
 
-    const validData: boolean = await bodyValidator(req.body, 5)
+    const validData: boolean = await bodyValidator(req.body, 7)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {
 
       if (adminPermission || rootAccess) {
-        const usersKycList: any = await adminService.GetKycForAdmin()
+        const usersKycList: any = await adminService.GetKycForAdmin(skipValue, limitValue)
         if (!usersKycList) throw ApiError.ServerError()
         return res.status(200).json({ usersKycList: usersKycList })
 
       }
       if (staffPermission) {
-        const usersKycList: any = await staffService.GetKycForStaff(staffId, staffEmail)
+        const usersKycList: any = await staffService.GetKycForStaff(staffId, staffEmail, skipValue, limitValue)
         if (!usersKycList) throw ApiError.ServerError()
         return res.status(200).json({ usersKycList: usersKycList })
       }
@@ -735,20 +739,23 @@ class StaffController {
     const staffPermission: boolean = req.body.isStaff
     let staffId: string = req.body.staffId
     const rootAccess: boolean = req.body.rootAccess
+    const skipValue: number = req.body.skipValue
+    const limitValue: number = req.body.limitValue
 
-    const validData: boolean = await bodyValidator(req.body, 4)
+
+    const validData: boolean = await bodyValidator(req.body, 6)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
       if (rootAccess || adminPermission) {
         staffId = process.env.SUPER_ID
 
-        const result: any = await adminService.GetDomainListForAdmin()
+        const result: any = await adminService.GetDomainListForAdmin(skipValue, limitValue)
         if (!result) throw ApiError.ServerError()
         return res.status(200).json(result)
       }
 
       if (staffPermission) {
-        const result: any = await staffService.GetDomainListForStaff(staffId)
+        const result: any = await staffService.GetDomainListForStaff(staffId, skipValue, limitValue)
         if (!result) throw ApiError.ServerError()
         return res.status(200).json(result)
       }
@@ -963,19 +970,22 @@ class StaffController {
     const isStaff: boolean = req.body.isStaff
     const staffEmail: string = req.body.staffEmail
     const rootAccess: boolean = req.body.rootAccess
+    const skipValue: number = req.body.skipValue
+    const limitValue: number = req.body.limitValue
 
-    const validData: boolean = await bodyValidator(req.body, 4)
+
+    const validData: boolean = await bodyValidator(req.body, 6)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
 
       if (isStaff) {
-        const result: any = await staffService.GetNewsList(staffEmail)
+        const result: any = await staffService.GetNewsList(staffEmail, skipValue, limitValue)
         if (!result) throw ApiError.ServerError()
 
         return res.status(200).json(result)
       }
       if (rootAccess || isAdmin) {
-        const result: any = await adminService.GetNewsListForAdmin()
+        const result: any = await adminService.GetNewsListForAdmin(skipValue, limitValue)
         if (!result) throw ApiError.ServerError()
         return res.status(200).json(result)
       }
@@ -1075,9 +1085,11 @@ class StaffController {
     let staffId: string = req.body.id
     // let staffEmail: string = req.body.staffEmail
     const rootAccess: boolean = req.body.rootAccess
+    const skipValue: number = req.body.skipValue
+    const limitValue: number = req.body.limitValue
 
 
-    const validData: boolean = await bodyValidator(req.body, 4)
+    const validData: boolean = await bodyValidator(req.body, 6)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
 
@@ -1085,20 +1097,20 @@ class StaffController {
         staffId = process.env.SUPER_ID
         // staffEmail = process.env.SUPER_1_LOGIN
 
-        const codesList: any = await adminService.GetPromocodeListForAdmin()
+        const codesList: any = await adminService.GetPromocodeListForAdmin(skipValue, limitValue)
         if (codesList !== false) return res.status(200).json({ promocodeList: codesList })
         return res.status(200).json({ promocodeList: null })
 
       }
 
       if (adminPermission) {
-        const codesList: any = await adminService.GetPromocodeListForAdmin()
+        const codesList: any = await adminService.GetPromocodeListForAdmin(skipValue, limitValue)
         if (codesList !== false) return res.status(200).json({ promocodeList: codesList })
         return res.status(200).json({ promocodeList: null })
       }
 
       if (staffPremission) {
-        const codesList: any = await staffService.GetPromocodeListForStaff(staffId)
+        const codesList: any = await staffService.GetPromocodeListForStaff(staffId, skipValue, limitValue)
         if (codesList !== false) return res.status(200).json({ promocodeList: codesList })
         return res.status(200).json({ promocodeList: null })
       }
@@ -1128,27 +1140,30 @@ class StaffController {
     let staffId: string = req.body.id
     // let staffEmail: string = req.body.staffEmail
     const rootAccess: boolean = req.body.rootAccess
+    const skipValue: number = req.body.skipValue
+    const limitValue: number = req.body.limitValue
 
-    const validData: boolean = await bodyValidator(req.body, 4)
+
+    const validData: boolean = await bodyValidator(req.body, 6)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
       if (rootAccess === true) {
         staffId = process.env.SUPER_ID
         // staffEmail = process.env.SUPER_1_LOGIN
 
-        const codesList: any = await adminService.GetPromocodeListForAdmin()
+        const codesList: any = await adminService.GetPromocodeListForAdmin(skipValue, limitValue)
         if (codesList !== false) return res.status(200).json({ promocodeList: codesList })
         return res.status(200).json({ promocodeList: null })
 
       }
 
       if (adminPermission) {
-        const codesList: any = await adminService.GetUsedPromocodeListForAdmin()
+        const codesList: any = await adminService.GetUsedPromocodeListForAdmin(skipValue, limitValue)
         if (codesList !== false) return res.status(200).json({ promocodeList: codesList })
         return res.status(200).json({ promocodeList: null })
       }
       if (staffPermission) {
-        const codesList: any = await staffService.GetUsedPromocodeList(staffId)
+        const codesList: any = await staffService.GetUsedPromocodeList(staffId, skipValue, limitValue)
         if (codesList !== false) return res.status(200).json({ promocodeList: codesList })
         return res.status(200).json({ promocodeList: null })
 
@@ -1415,7 +1430,7 @@ class StaffController {
           if (internal[i]) dataArray.push(internal[i])
         }
 
-        console.log('history data is => ', dataArray);
+        // console.log('history data is => ', dataArray);
         if (!dataArray.length) throw ApiError.ServerError()
         return res.status(200).json({ history: dataArray })
 
@@ -1436,7 +1451,7 @@ class StaffController {
           if (internal[i]) dataArray.push(internal[i])
         }
 
-        console.log('history data is => ', dataArray);
+        // console.log('history data is => ', dataArray);
         if (!dataArray.length) throw ApiError.ServerError()
         return res.status(200).json({ history: dataArray })
 
@@ -1471,18 +1486,20 @@ class StaffController {
   async getSecureDealHistory(req: express.Request, res: express.Response, next: express.NextFunction) {
     const staffId: string = req.body.staffId
     const rootAccess: boolean = req.body.rootAccess
+    const skipValue: number = req.body.skipValue
+    const limitValue: number = req.body.limitValue
 
-    const validData: boolean = await bodyValidator(req.body, 2)
+    const validData: boolean = await bodyValidator(req.body, 4)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {
       if (rootAccess) {
-        const result: any = await adminService.getSecureDealHistoryAsAdmin()
+        const result: any = await adminService.getSecureDealHistoryAsAdmin(skipValue, limitValue)
         if (!result) throw ApiError.ServerError()
 
         return res.status(200).json({ message: 'ok', history: result })
       }
-      const result: any = await staffService.getSecureDealHistoryAsStaff(staffId)
+      const result: any = await staffService.getSecureDealHistoryAsStaff(staffId, skipValue, limitValue)
       if (!result) throw ApiError.ServerError()
 
       return res.status(200).json({ message: 'ok', history: result })
@@ -1559,10 +1576,14 @@ class StaffController {
   async getStaffWallet(req: express.Request, res: express.Response, next: express.NextFunction) {
     const staffId: string = req.body.staffId
     const rootAccess: boolean = req.body.rootAccess
-    if (!staffId) return res.status(400).json({ message: 'wrong data' })
+    const skipValue: number = req.body.skipValue
+    const limitValue: number = req.body.limitValue
+
+    const validData: boolean = await bodyValidator(req.body, 4)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
       if (rootAccess) {
-        const result: any = await adminService.getStaffWalletForAdmin()
+        const result: any = await adminService.getStaffWalletForAdmin(skipValue, limitValue)
         if (!result) throw ApiError.ServerError()
         return res.status(200).json(result)
       }
@@ -1686,19 +1707,22 @@ class StaffController {
     const adminPermission: boolean = req.body.isAdmin
     const staffPermission: boolean = req.body.isStaff
     const rootAccess: boolean = req.body.rootAccess
+    const skipValue: number = req.body.skipValue
+    const limitValue: number = req.body.limitValue
+
 
     const validData: boolean = await bodyValidator(req.body, 4)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {
       if (rootAccess || adminPermission) {
-        const result: any = await adminService.getGroupListForAdmin()
+        const result: any = await adminService.getGroupListForAdmin(skipValue, limitValue)
         if (!result) throw ApiError.ServerError()
         return res.status(200).json(result)
       }
 
       if (staffPermission) {
-        const result: any = await staffService.getGroupListForStaff(staffEmail)
+        const result: any = await staffService.getGroupListForStaff(staffEmail, skipValue, limitValue)
         if (!result) throw ApiError.ServerError()
         return res.status(200).json(result)
       }
@@ -1811,12 +1835,15 @@ class StaffController {
   async getRecruiterList(req: express.Request, res: express.Response, next: express.NextFunction) {
     const adminPermission: boolean = req.body.isAdmin
     const rootAccess: boolean = req.body.rootAccess
+    const skipValue: number = req.body.skipValue
+    const limitValue: number = req.body.limitValue
 
-    const validData: boolean = await bodyValidator(req.body, 2)
+
+    const validData: boolean = await bodyValidator(req.body, 4)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
       if (adminPermission || rootAccess) {
-        const result: any | string = await adminService.getRecruiterList()
+        const result: any | string = await adminService.getRecruiterList(skipValue, limitValue)
         if (!result) throw ApiError.ServerError()
         return res.status(200).json(result)
       }

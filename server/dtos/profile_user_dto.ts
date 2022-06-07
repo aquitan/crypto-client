@@ -8,7 +8,7 @@ export default async function ProfileUserDto(userId: string) {
   const userBase: any = await baseUserData.findById({ _id: userId })
   const userDetails: any = await userParams.findOne({ userId: userId })
   const kycParams: any = await userKyc.findOne({ userId: userId })
-  const loginInfo: any = await userLogs.find({ userId: userId })
+  // const loginInfo: any = await userLogs.find({ userId: userId })
 
   let UserDto: any = {
     name: userBase.name,
@@ -22,12 +22,12 @@ export default async function ProfileUserDto(userId: string) {
     swapBan: userDetails.swapBan,
     internalBan: userDetails.internalBan,
     depositFee: userDetails.depositFee,
-    logs: loginInfo
+    // logs: loginInfo
   }
   if (kycParams) {
-    UserDto.dateOfBitrh.kycParams.dateOfBirth
-    UserDto.phoneNumber.kycParams.phoneNumber
-    UserDto.mainAddress.kycParams.mainAddress
+    UserDto.dateOfBitrh = userDetails.dateOfBirth
+    UserDto.phoneNumber = userDetails.phoneNumber
+    UserDto.mainAddress = userDetails.mainAddress
   }
 
   return UserDto
