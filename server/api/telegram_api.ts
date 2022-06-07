@@ -1,4 +1,5 @@
 import TelegramBot from 'node-telegram-bot-api'
+import authServices from '../services/auth_services'
 import SendActionMessage from '../config/telegram_action_message'
 const token: any = process.env.TELEGRAM_2FA_BOT_TOKEN
 const bot = new TelegramBot(token, { polling: true })
@@ -11,19 +12,19 @@ class Telegram {
 			await bot.sendMessage(chatId, `Welcome, ${msg.chat.first_name}! Two factor authentication bot is activate.`)
 		})
 
-		bot.on('message', async (msg) => {
-			const chatId = msg.chat.id
-			if (msg.text !== '/getmychat_id' && msg.text !== '/start') {
-				console.log(msg)
-				console.log(' => wrong text in 2fa tg bot' + ' ( ' + msg.text + ' ) .')
-				await bot.sendMessage(chatId, 'Received your message, but you can get only 2fa code or your tg chatID in this bot =( ')
-			}
-		})
+		// bot.on('message', async (msg) => {
+		// 	const chatId = msg.chat.id
+		// 	if (msg.text !== '/getmychat_id' && msg.text !== '/start') {
+		// 		console.log(msg)
+		// 		console.log(' => wrong text in 2fa tg bot' + ' ( ' + msg.text + ' ) .')
+		// 		await bot.sendMessage(chatId, 'Received your message, but you can get only 2fa code or your tg chatID in this bot =( ')
+		// 	}
+		// })
 
-		bot.onText(/\/getmychat_id/, async (msg) => {
-			const chatId = msg.chat.id
-			await bot.sendMessage(chatId, `Your chat id is: ${chatId}`)
-		})
+		// bot.onText(/\/getmychat_id/, async (msg) => {
+		// 	const chatId = msg.chat.id
+		// 	await bot.sendMessage(chatId, `Your chat id is: ${chatId}`)
+		// })
 	}
 
 	async SendTwoStepCode(chatId: string, domain_name: string, code: string) {
@@ -32,6 +33,20 @@ class Telegram {
 			await bot.sendMessage(chatId, `Your two factor authenticate code at ${domain_name} is: ` + '\n' + `${code}. The Code will be deleted five minutes after this message.`)
 		})
 	}
+
+	async ValidateCode() {
+		bot.on('message', async (msg) => {
+			const result: boolean = await authServices.GetVerifiedTwoStepCode(msg.text)
+			if (!result) {
+				await bot.sendMessage(msg.chat.id, `two step code validation error.`)
+				return console.log('request error')
+			}
+
+			await bot.sendMessage(msg.chat.id, `Success! `)
+		})
+	}
+
+
 
 	// async sendLoginMessageToUser(chatId: string, message: string) {
 	// 	await bot.sendMessage(chatId, message)

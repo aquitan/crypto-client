@@ -171,12 +171,8 @@ class adminService {
   }
 
 
-  async GetDomainListForAdmin(skipValue: number, limitValue: number) {
-    const list: any = await domainList.
-      find().
-      skip(skipValue).
-      limit(limitValue).
-      exec()
+  async GetDomainListForAdmin() {
+    const list: any = await domainList.find()
     console.log('domainList is: ', list);
     if (!list.length) return 'empty list'
     if (!list) return false

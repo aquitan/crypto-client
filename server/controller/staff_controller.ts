@@ -13,6 +13,7 @@ import INTERNAL_HISTORY from '../interface/internal_history.interface'
 import ApiError from '../exeptions/api_error'
 import moneyService from '../services/money_service'
 import bodyValidator from '../api/body_validator'
+import TRADING_COIN_RATE_UPDATE from '../interface/trading_rate_update.interface'
 
 
 class StaffController {
@@ -560,7 +561,6 @@ class StaffController {
       showNews: req.body.showNews,
       doubleDeposit: req.body.doubleDeposit,
       depositFee: req.body.depositFee,
-      rateCorrectSum: req.body.rateCorrectSum,
       minDepositSum: req.body.minDepositSum,
       minWithdrawalSum: req.body.minWithdrawalSum,
       currencySwapFee: req.body.currencySwapFee,
@@ -605,6 +605,8 @@ class StaffController {
       staffId: req.body.staffId
     }
 
+    const coinList: string[] = req.body.coinList
+
     for (let index in req.body) {
       if (req.body[index] === null || req.body[index] === undefined) {
         if (typeof req.body[index] === 'object') {
@@ -624,7 +626,7 @@ class StaffController {
         object_to_send.staffEmail = process.env.SUPER_1_LOGIN
       }
 
-      const result: string | boolean = await staffService.CreateNewDomain(object_to_send)
+      const result: string | boolean = await staffService.CreateNewDomain(object_to_send, coinList)
 
       if (!result) return res.status(400).json({
         message: 'wrong data saving. please try one more time.'
@@ -739,23 +741,20 @@ class StaffController {
     const staffPermission: boolean = req.body.isStaff
     let staffId: string = req.body.staffId
     const rootAccess: boolean = req.body.rootAccess
-    const skipValue: number = req.body.skipValue
-    const limitValue: number = req.body.limitValue
 
-
-    const validData: boolean = await bodyValidator(req.body, 6)
+    const validData: boolean = await bodyValidator(req.body, 4)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
       if (rootAccess || adminPermission) {
         staffId = process.env.SUPER_ID
 
-        const result: any = await adminService.GetDomainListForAdmin(skipValue, limitValue)
+        const result: any = await adminService.GetDomainListForAdmin()
         if (!result) throw ApiError.ServerError()
         return res.status(200).json(result)
       }
 
       if (staffPermission) {
-        const result: any = await staffService.GetDomainListForStaff(staffId, skipValue, limitValue)
+        const result: any = await staffService.GetDomainListForStaff(staffId)
         if (!result) throw ApiError.ServerError()
         return res.status(200).json(result)
       }
@@ -780,7 +779,6 @@ class StaffController {
       showNews: req.body.showNews,
       doubleDeposit: req.body.doubleDeposit,
       depositFee: req.body.depositFee,
-      rateCorrectSum: req.body.rateCorrectSum,
       minDepositSum: req.body.minDepositSum,
       minWithdrawalSum: req.body.minWithdrawalSum,
       currencySwapFee: req.body.currencySwapFee,
@@ -1637,13 +1635,15 @@ class StaffController {
     const groupName: string = req.body.groupName
     const date: number = req.body.currentDate
     const viewParams: boolean = req.body.viewParams
-    const creatorId: string = req.body.creatorId
+    let creatorId: string = req.body.creatorId
     const staffEmail: string = req.body.staffEmail
 
     const validData: boolean = await bodyValidator(req.body, 5)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
+
     try {
+      if (creatorId === 'root') creatorId = process.env.SUPER_ID
       const result: boolean = await staffService.createNewStaffGroup(groupName, staffEmail, date, viewParams, creatorId)
       if (!result) throw ApiError.ServerError()
       return res.status(201).json({ message: 'ok' })
@@ -2035,6 +2035,59 @@ class StaffController {
       next(e)
     }
   }
+
+  async getTradingData(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    const domainName: string = req.params.domainName
+    if (!domainName) return res.status(400).json({ message: 'problem in received data' })
+
+    try {
+
+      const result: boolean | object = await staffService.getTradingParams(domainName)
+      if (!result) throw ApiError.ServerError()
+      return res.status(200).json(result)
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async updateCoinRate(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    let transferObject: TRADING_COIN_RATE_UPDATE = {
+      coinName: req.body.coinName,
+      valueInPercent: req.body.valueInPercent,
+      growthParams: req.body.growthParams,
+      staffId: req.body.staffId,
+      domainName: req.body.domainName,
+      currentDate: req.body.currentDate,
+      timeRangeInMs: req.body.timeRangeInMs
+    }
+
+    const rootAccess: boolean = req.body.rootAccess
+
+    const validData: boolean = await bodyValidator(req.body, 8)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
+    try {
+      if (rootAccess) transferObject.staffId = process.env.SUPER_ID
+
+      const result: any = await staffService.updateCoinRate(transferObject)
+      if (!result) throw ApiError.ServerError()
+      return res.status(200).json(result)
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  // async getTradingData(req: express.Request, res: express.Response, next: express.NextFunction) {
+  //   try {
+
+  //   } catch (e) {
+  //     next(e)
+  //   }
+  // }
 
 }
 
