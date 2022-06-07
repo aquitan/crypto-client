@@ -18,6 +18,8 @@ import {useParams} from "react-router-dom";
 import {store} from "../../../../../index";
 import Preloader from "../../../../../components/UI/Preloader/Preloader";
 import {getCurrentDate} from "../../../../../utils/getCurrentDate";
+import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
+import ChatMessege from "../../../../../components/UI/ChatMessege/ChatMessege";
 
 const SecureDealDetail = () => {
     const params = useParams()
@@ -36,6 +38,27 @@ const SecureDealDetail = () => {
     useEffect(() => {
         getSecureDealData()
     }, [])
+    const messeges = [
+        {type: 'user', text: 'hello support', date: getCurrentDate(dateToTimestamp(new Date()))},
+        {type: 'user', text: 'hello support', date: getCurrentDate(dateToTimestamp(new Date()))},
+        {type: 'support', text: 'hello user', date: getCurrentDate(dateToTimestamp(new Date()))},
+        {type: 'support', text: 'hello user', date: getCurrentDate(dateToTimestamp(new Date()))},
+        {type: 'user', text: 'hello support', date: getCurrentDate(dateToTimestamp(new Date()))},
+        {type: 'support', text: 'hello user', date: getCurrentDate(dateToTimestamp(new Date()))},
+    ]
+    const [msg, setMsg] = useState(messeges)
+
+    const onClick = (text) => {
+        let newPost = {
+            type: 'user',
+            text: text,
+            date: getCurrentDate(dateToTimestamp(new Date()))
+        }
+
+        setMsg(prevState => {
+            return [newPost, ...prevState]
+        })
+    }
 
     const getSecureDealData = async () => {
         const res = await getData(`/personal_area/secure_deal/secure_deal_detail/${params.id}/${store.user.email}`)
@@ -139,7 +162,19 @@ const SecureDealDetail = () => {
                             <h5 className={cls.card_header}>Chat</h5>
                             <Row className='mt-3'>
                                 <Col className='col-12 col-lg-8 mb-3'>
-                                    <ChatWindow />
+                                    <ChatWindow onClick={onClick}>
+                                        {
+                                            msg.length ?
+                                                msg.map(item => {
+                                                    return(
+                                                        <ChatMessege
+                                                            date={item.date}
+                                                            type={item.type}
+                                                            text={item.text} />
+                                                    )
+                                                }) : <h2>empty</h2>
+                                        }
+                                    </ChatWindow>
                                 </Col>
                                 <Col className='col-12 col-lg-4 mb-3'>
                                     <ChatRules rulesDisclamer={secureDealRulesText} />

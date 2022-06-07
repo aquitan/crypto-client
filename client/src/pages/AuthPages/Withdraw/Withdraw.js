@@ -31,6 +31,7 @@ const Withdraw = () => {
         value: '',
         text: ''
     })
+    const [counter, setCounter] = useState(0)
     const [balanceCoin, setBalanceCoin] = useState('BTC')
     const navigate = useNavigate()
     const [balance, setBalance] = useState(0)
@@ -39,7 +40,7 @@ const Withdraw = () => {
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
     })
-    const [history, setHistory] = useState()
+    const [history, setHistory] = useState([])
     const [modal, setModal] = useState(false)
     const [error, setError] = useState()
 
@@ -50,7 +51,7 @@ const Withdraw = () => {
     }, [])
 
     const getHistoryDeposit = async () => {
-        const res = await getData(`/withdraw/get_withdrawal_history/${store.user.id}`)
+        const res = await getData(`/withdraw/get_withdrawal_history/${store.user.id}/${counter}/10`)
         if (res.status === 500) {
             navigate('/error-500')
         }
@@ -78,7 +79,7 @@ const Withdraw = () => {
             userId: store.user.id,
             userEmail: store.user.email,
             domainName: window.location.host,
-            coinName: data.coinName,
+            coinName: balanceCoin,
             amountInCrypto: state.value,
             amountInUsd: state.text,
             currentDate: dateToTimestamp(),
@@ -128,6 +129,12 @@ const Withdraw = () => {
     }
 
 
+    const onNext = () => {
+        setCounter((prevState => {
+            return prevState + 10
+        }))
+        console.log('counter', counter)
+    }
 
 
 
@@ -144,7 +151,7 @@ const Withdraw = () => {
             />
 
             <Row>
-                <Col className='col-12 col-md-6 mb-3'>
+                <Col className='col-12 col-lg-6 mb-3'>
                     <ButtonCard>
                         <h2 className='mb-3'>Withdraw</h2>
                         <Form classnames='form_big'>
@@ -201,7 +208,7 @@ const Withdraw = () => {
                         </Form>
                     </ButtonCard>
                 </Col>
-                <Col className='col-12 col-md-6 mb-3'>
+                <Col className='col-12 col-lg-6 mb-3'>
                     <ButtonCard>
                         <h2 className='mb-3'>History</h2>
                         <Row style={{padding: '10px', borderBottom: '1px solid #fff' }}>
@@ -211,7 +218,7 @@ const Withdraw = () => {
                         </Row>
                         <div style={{maxHeight: 400, overflowY: 'auto', height: '100%'}}>
                             {
-                                history ?
+                                history.length ?
                                     history.map(item => {
                                         return (
                                             <TableItemUser
@@ -227,6 +234,13 @@ const Withdraw = () => {
 
                             }
                         </div>
+                        <Row>
+                            {
+                                history.length > 10 ?
+                                    <span onClick={onNext}>Next...</span>
+                                    : null
+                            }
+                        </Row>
                     </ButtonCard>
                 </Col>
             </Row>

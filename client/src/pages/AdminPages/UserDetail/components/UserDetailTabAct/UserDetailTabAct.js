@@ -20,6 +20,7 @@ import moment from "moment";
 import Select from "../../../../../components/UI/Select/Select";
 import {optionsCurrency} from "../../../../../utils/staffConstants";
 import {log} from "util";
+import {SwalSimple} from "../../../../../utils/SweetAlert";
 
 const UserDetailTabAct = (props) => {
 
@@ -44,6 +45,8 @@ const UserDetailTabAct = (props) => {
         userEmail: props.data.base_data.email,
         domainName: window.location.host,
         currentDate: dateToTimestamp(),
+        rootAccess: store.fullAccess,
+        staffId: store.fullAccess ? 'root' : store.user.id
     }
 
     const {register: balanceRegister, handleSubmit: handleBalanceSubmit, formState: {errors}} = useForm({
@@ -163,14 +166,13 @@ const UserDetailTabAct = (props) => {
 
     const sendPremStatus = async () => {
         delete dataObj.currentDate
-        if (store.fullAccess) {
-            dataObj.staffId = null
-        }
         const response = await patchData('/staff/users/user_detail/update_premium_status/',{
             ...dataObj,
             status: !btns.currentPrem,
         })
-        const premResp = response
+        if (response.status === 202) {
+            SwalSimple('Изменено!')
+        }
         setBtns({...btns, currentPrem: !btns.currentPrem})
         setState({isOpen: false, onClickConfirm: null})
         handleCloseModal()

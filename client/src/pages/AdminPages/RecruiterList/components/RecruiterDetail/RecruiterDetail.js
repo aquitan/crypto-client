@@ -14,6 +14,8 @@ import {useForm} from "react-hook-form";
 import err from "../../../../../styles/Error.module.scss";
 import {v4 as uuid} from 'uuid'
 import StaffWalletsItem from "../../../StaffWallets/components/StaffWalletsItem/StaffWalletsItem";
+import AdminForm from "../../../../../components/UI/AdminForm/AdminForm";
+import {SwalSimple} from "../../../../../utils/SweetAlert";
 
 const RecruiterDetail = () => {
     const [recruiter, setRecruiter] = useState()
@@ -21,7 +23,7 @@ const RecruiterDetail = () => {
         mode: 'onBlur'
     })
     const {register: comission, handleSubmit: submitComission} = useForm()
-    const {register: walletsRegister, handleSubmit: walletsSubmit} = useForm()
+    const {register: walletsRegister, handleSubmit: walletsSubmit, formState: {errors: error}} = useForm()
     const [staffList, setStaffList] = useState([])
     const [existingWallets, setExistingWallets] = useState([])
     const params = useParams()
@@ -48,7 +50,6 @@ const RecruiterDetail = () => {
             recruiterId: params.id
         }
         const res = await postData('/staff/recruiter/detail_page/', obj)
-        console.log('res.data.detail', res.data)
         setRecruiter(res.data.recruiter)
         setStaffList(res.data.staffList)
     }
@@ -62,6 +63,10 @@ const RecruiterDetail = () => {
             recruiterId: params.id
         }
         const res = await postData('/staff/recruiter/add_staff_user_to_current_recruiter/', obj)
+        if (res.status === 201) {
+            getRecruiterDetails()
+            SwalSimple('Пользователь добавлен!')
+        }
     }
 
     const updateUserFee = async (data) => {
@@ -72,7 +77,11 @@ const RecruiterDetail = () => {
             updatedFee: +data.updatedFee
         }
         const res = await patchData('/staff/recruiter/update_recruiter_fee/', obj)
-        getRecruiterDetails()
+        if (res.status === 202) {
+            SwalSimple('Комиссия изменена')
+            getRecruiterDetails()
+        }
+
     }
 
     const deleteUserFromRecruiterList = async (id, email) => {
@@ -85,6 +94,10 @@ const RecruiterDetail = () => {
 
         }
         const res = await deleteData('/staff/recruiter/delete_staff_user_from_recruiter/', {data: obj})
+        if (res.status === 200) {
+            SwalSimple('Пользователь удален!')
+            getRecruiterDetails()
+        }
     }
 
     const createWallets = async (data) => {
@@ -102,7 +115,10 @@ const RecruiterDetail = () => {
             }
         }
         const res = await postData('/staff/recruiter/add_recruiter_wallets/', obj)
-        console.log('wallet', obj)
+        if (res.status === 201) {
+            SwalSimple('Кошельки добавлены')
+            getWallets()
+        }
     }
 
     const getWallets = async () => {
@@ -124,10 +140,16 @@ const RecruiterDetail = () => {
             wallet: wallet,
             coinName: currency
         }
-
-
+        console.log('obj', obj)
         const res = await patchData('/staff/recruiter/update_recruiter_wallet/', obj)
+        if (res.status === 201) {
+            SwalSimple('Кошелек изменен!')
+            getWallets()
+        } else {
+            SwalSimple('Упс! Что-то пошло не так...')
+        }
     }
+
 
     return (
         <Container>
@@ -194,7 +216,7 @@ const RecruiterDetail = () => {
             <AdminButtonCard title={'Кошельки рекрутера'}>
                 {
                     !existingWallets.length ?
-                    <Form onSubmit={walletsSubmit(createWallets)}>
+                    <AdminForm onSubmit={walletsSubmit(createWallets)}>
                         {
                             wallets.map(currency => {
                                 return(
@@ -209,7 +231,7 @@ const RecruiterDetail = () => {
                                                 message: 'Максимальное кол-во символов 50'
                                             }
                                         })} placeholder={currency.currency}/>
-                                        <ErrorMessage name={currency.currency} errors={errors} render={({message}) => <p className={err.error}>{message}</p>} />
+                                        <ErrorMessage name={currency.currency} errors={error} render={({message}) => <p className={err.error}>{message}</p>} />
                                     </Row>
                                 )
                             })
@@ -219,7 +241,7 @@ const RecruiterDetail = () => {
                                 <AdminButton classname='green'>Подтвердить</AdminButton>
                             </Col>
                         </Row>
-                    </Form> :
+                    </AdminForm> :
                         existingWallets.map(item => {
                             return(
                                 <StaffWalletsItem
@@ -254,7 +276,7 @@ const RecruiterDetail = () => {
                     staffList.length ?
                         staffList.map(item => {
                             return(
-                                <Row style={{padding: '10px 0', marginBottom: 10, borderBottom: '1px solid #fff'}}>
+                                <Row key={uuid()} style={{padding: '10px 0', marginBottom: 10, borderBottom: '1px solid #fff'}}>
                                     <Col className={'text-center'}>{item.staffEmail}</Col>
                                     <Col className={'text-center'}>{item.staffFee}</Col>
                                     <Col className={'text-center'}>{item.recruiterFee}</Col>

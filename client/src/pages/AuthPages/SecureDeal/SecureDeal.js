@@ -59,8 +59,9 @@ const SecureDeal = () => {
         data.userId = store.user.id
         data.amountInCrypto = +data.amountInCrypto
         const res = await putData('/personal_area/secure_deal/create_secure_deal/', data)
-        if (res.status) {
+        if (res.status === 200) {
             setState(true)
+            getHistory()
         }
     }
 

@@ -10,6 +10,7 @@ import ModalDark from "../../../../../components/UI/ModalDark/ModalDark";
 import Select from '../../../../../components/UI/Select/Select';
 import { useForm } from 'react-hook-form';
 import {deleteData, patchData} from "../../../../../services/StaffServices";
+import {SwalSimple} from "../../../../../utils/SweetAlert";
 
 const AdminKycTableItem = (props) => {
     const [kycStatus, setKycStatus] = useState(props.kycStatus)
@@ -54,20 +55,24 @@ const AdminKycTableItem = (props) => {
 
     const onSendDelete = async () => {
         const data = {
-            staffEmail: store.userEmail,
+            staffEmail: store.fullAccess ? 'root' : store.user.email,
             userEmail: props.email,
             domainName: window.location.host,
-            staffId: store.user.id,
+            staffId: store.fullAccess ? 'root' : store.user.id,
             userId: props.userId,
             rootAccess: store.fullAccess
         }
-        if (store.fullAccess) {
-            delete data.staffEmail
-            delete data.staffId
-        }
+        // if (store.fullAccess) {
+        //     delete data.staffEmail
+        //     delete data.staffId
+        // }
         console.log('delete kyc', data)
         const res = await deleteData('/staff/kyc/delete_kyc/', {data})
-        handleCloseModal()
+        if (res.status === 202) {
+            SwalSimple('KYC удален!')
+            handleCloseModal()
+        }
+
     }
 
     const handleCloseModal = () => {
@@ -99,9 +104,16 @@ const AdminKycTableItem = (props) => {
     return (
         <>
 
-            <ModalDark active={state.isOpen} onClick={state.onClickConfirm} setActive={handleCloseModal}>
-                <h3>Подтвердить действие?</h3>
-            </ModalDark>
+            <Modal active={state.isOpen} title={'Подтвердить действие'} setActive={handleCloseModal}>
+                <Row>
+                    <Col className={'col-6'}>
+                        <AdminButton classname={'green'} onClick={state.onClickConfirm} >Подтвердить</AdminButton>
+                    </Col>
+                    <Col className={'col-6'}>
+                        <AdminButton classname={'red'} onClick={handleCloseModal} >Отмена</AdminButton>
+                    </Col>
+                </Row>
+            </Modal>
 
 
             <div className={'mt-3 mb-3'}>

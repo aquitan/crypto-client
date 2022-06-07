@@ -1,15 +1,14 @@
 import React, {useState} from 'react'
 import PropTypes from 'prop-types'
-import {Card, Col, Container, Row} from "react-bootstrap";
-import ChatWindow from "./components/ChatWindow/ChatWindow";
-import ChatRules from "./components/ChatRules/ChatRules";
-import {supportRulesText} from "../../../utils/userConstants";
+import {Container, Row} from "react-bootstrap";
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
+import ChatWindow from "../../AuthPages/Support/components/ChatWindow/ChatWindow";
 import ChatMessege from "../../../components/UI/ChatMessege/ChatMessege";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
+import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
 
-const Support = () => {
+const Chat = () => {
     const messeges = [
         {type: 'user', text: 'hello support', date: getCurrentDate(dateToTimestamp(new Date()))},
         {type: 'user', text: 'hello support', date: getCurrentDate(dateToTimestamp(new Date()))},
@@ -28,43 +27,43 @@ const Support = () => {
         }
 
         setMsg(prevState => {
-           return [newPost, ...prevState]
+            return [newPost, ...prevState]
         })
     }
 
+
     return (
         <Container>
-            <ButtonCard>
+            <AdminButtonCard>
+                <h1>Чат</h1>
+            </AdminButtonCard>
+            <AdminButtonCard>
                 <Row>
-                    <Col className='col-12 col-lg-8'>
-                        <ChatWindow onClick={onClick}>
-                            {
-                                msg.length ?
-                                    msg.map(item => {
-                                        return(
-                                            <ChatMessege
-                                                date={item.date}
-                                                type={item.type}
-                                                text={item.text} />
-                                        )
-                                    }) : <h2>empty</h2>
-                            }
-                        </ChatWindow>
-                    </Col>
-                    <Col className='col-12 col-lg-4'>
-                        <ChatRules rulesDisclamer={supportRulesText} />
-                    </Col>
+                    <ChatWindow onClick={onClick}>
+                        {
+                            msg.length ?
+                                msg.map(item => {
+                                    return(
+                                        <ChatMessege
+                                            date={item.date}
+                                            type={item.type}
+                                            text={item.text} />
+                                    )
+                                }) : <h2>empty</h2>
+                        }
+                    </ChatWindow>
                 </Row>
-            </ButtonCard>
+            </AdminButtonCard>
+            
         </Container>
     )
 }
 
-Support.propTypes = {
+Chat.propTypes = {
     
 }
-Support.defaultProps = {
+Chat.defaultProps = {
     
 }
 
-export default Support
+export default Chat

@@ -1,4 +1,5 @@
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2/dist/sweetalert2.js'
+
 import withReactContent from 'sweetalert2-react-content'
 
 const MySwal = withReactContent(Swal)

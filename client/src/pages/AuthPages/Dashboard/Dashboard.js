@@ -29,9 +29,14 @@ const Dashboard = () => {
     }
     const navigate = useNavigate()
     useEffect(() => {
+        const controller = new AbortController();
         getDashboard()
         getRates()
         getBalance()
+        return () => {
+            // cancel the request before component unmounts
+            controller.abort();
+        };
     }, [])
 
     if (store.isLoading) {
@@ -109,49 +114,61 @@ const Dashboard = () => {
                             {
                                 store.ratesChange.btc ?
                                     <SlickSlider>
-                                        <Col className='col-12 col-md-3 mb-3'>
-                                            <WalletInfoBlock
-                                                currency='BTC'
-                                                amount={store.ratesChange.btc?.toFixed()}
-                                                status={currencyRateChangeIndicator(store.ratesChange.btc.toFixed())}
-                                                color='BTC' />
-                                        </Col>
-                                        <Col className='col-12 col-md-3 mb-3'>
-                                            <WalletInfoBlock
-                                                currency='ETH'
-                                                amount={store.ratesChange.eth?.toFixed()}
-                                                status={currencyRateChangeIndicator(store.ratesChange.eth.toFixed())}
-                                                color='ETH' />
-                                        </Col>
-                                        <Col className='col-12 col-md-3 mb-3'>
-                                            <WalletInfoBlock
-                                                currency='BCH'
-                                                amount={store.ratesChange.bch?.toFixed()}
-                                                status={currencyRateChangeIndicator(store.ratesChange.bch.toFixed())}
-                                                color='BCH'
-                                            />
-                                        </Col>
-                                        <Col className='col-12 col-md-3 mb-3'>
-                                            <WalletInfoBlock
-                                                currency='USDT'
-                                                amount={store.ratesChange.usdt?.toFixed()}
-                                                status={currencyRateChangeIndicator(store.ratesChange.usdt.toFixed())}
-                                                color='BCH' />
-                                        </Col>
-                                        <Col className='col-12 col-md-3 mb-3'>
-                                            <WalletInfoBlock
-                                                currency='SOL'
-                                                amount={store.ratesChange.sol?.toFixed()}
-                                                status={currencyRateChangeIndicator(store.ratesChange.sol.toFixed())}
-                                                color='SOL' />
-                                        </Col>
-                                        <Col className='col-12 col-md-3 mb-3'>
-                                            <WalletInfoBlock
-                                                currency='TRX'
-                                                amount={store.ratesChange.trx?.toFixed()}
-                                                status={currencyRateChangeIndicator(store.ratesChange.trx.toFixed())}
-                                                color='TRX' />
-                                        </Col>
+                                        <div>
+                                            <div className='' style={{padding: '0 5px', margin: '0 5px'}}>
+                                                <WalletInfoBlock
+                                                    currency='BTC'
+                                                    amount={store.ratesChange.btc?.toFixed()}
+                                                    status={currencyRateChangeIndicator(store.ratesChange.btc.toFixed())}
+                                                    color='BTC' />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div className='' style={{padding: '0 5px'}}>
+                                                <WalletInfoBlock
+                                                    currency='ETH'
+                                                    amount={store.ratesChange.eth?.toFixed()}
+                                                    status={currencyRateChangeIndicator(store.ratesChange.eth.toFixed())}
+                                                    color='ETH' />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div className='' style={{padding: '0 5px'}}>
+                                                <WalletInfoBlock
+                                                    currency='BCH'
+                                                    amount={store.ratesChange.bch?.toFixed()}
+                                                    status={currencyRateChangeIndicator(store.ratesChange.bch.toFixed())}
+                                                    color='BCH'
+                                                />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div className='' style={{padding: '0 5px'}}>
+                                                <WalletInfoBlock
+                                                    currency='USDT'
+                                                    amount={store.ratesChange.usdt?.toFixed()}
+                                                    status={currencyRateChangeIndicator(store.ratesChange.usdt.toFixed())}
+                                                    color='BCH' />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div className='' style={{padding: '0 5px'}}>
+                                                <WalletInfoBlock
+                                                    currency='SOL'
+                                                    amount={store.ratesChange.sol?.toFixed()}
+                                                    status={currencyRateChangeIndicator(store.ratesChange.sol.toFixed())}
+                                                    color='SOL' />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div className='' style={{padding: '0 5px'}}>
+                                                <WalletInfoBlock
+                                                    currency='TRX'
+                                                    amount={store.ratesChange.trx?.toFixed()}
+                                                    status={currencyRateChangeIndicator(store.ratesChange.trx.toFixed())}
+                                                    color='TRX' />
+                                            </div>
+                                        </div>
                                     </SlickSlider>
                                     : <Preloader />
                             }
@@ -169,7 +186,7 @@ const Dashboard = () => {
                     <ButtonCard title={'Crypto Statistics'}>
                         <div className="tradingview-widget-container" id="dashboard-trading-widget"
                              style={{width: '100%', height: 320}}>
-                            <iframe scrolling="no" allowTransparency="true" frameBorder="0"
+                            <iframe scrolling="no" frameBorder="0"
                                     src="https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=en#%7B%22symbol%22%3A%22BINANCE%3ABTCUSDT%22%2C%22width%22%3A%22100%25%22%2C%22height%22%3A320%2C%22dateRange%22%3A%2212M%22%2C%22colorTheme%22%3A%22dark%22%2C%22trendLineColor%22%3A%22rgba(41%2C%2098%2C%20255%2C%201)%22%2C%22underLineColor%22%3A%22rgba(41%2C%2098%2C%20255%2C%200.3)%22%2C%22underLineBottomColor%22%3A%22rgba(41%2C%2098%2C%20255%2C%200)%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Afalse%2C%22largeChartUrl%22%3A%22%22%2C%22utm_source%22%3A%22bitluck.club%22%2C%22utm_medium%22%3A%22widget%22%2C%22utm_campaign%22%3A%22mini-symbol-overview%22%7D"
                                     style={{boxSizing: 'border-box', height: 320, width: '100%'}}></iframe>
                         </div>

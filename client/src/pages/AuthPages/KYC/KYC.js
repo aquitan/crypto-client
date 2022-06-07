@@ -27,17 +27,42 @@ import cls from './KYC.modules.scss'
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheckCircle} from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
+import {SwalSimple} from "../../../utils/SweetAlert";
+
+
 
 
 const KYC = ({status}) => {
+
+
     const [startDate, setStartDate] = useState()
     const [modal, setModal] = useState(false)
+    const [img, setImg] = useState('')
+    // const [img2, setImg2] = useState('')
     const location = useLocation()
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
     })
 
     const onSubmit = async (data) => {
+        // console.log('data-file', data.frontDocumentPhoto[0])
+        // let fData = new FormData()
+        //
+        // fData.append('frontDocumentPhoto', data.frontDocumentPhoto[0])
+        // console.log('files', fData)
+        let docs = {}
+        let formData = new FormData();
+
+        // let blob = new Blob([data], {type: 'application/json'})
+        // formData.append("data", blob);
+        formData.append("file", data.selfieDocumentPhoto[0]);
+        for (let value of formData.entries()) {
+            console.log('values', value)
+        }
+        console.log('file------', data.doc)
+
+
         let geodata =  await getGeoData()
         data.phoneNumber = parseInt(data.phoneNumber.split(/[.,()\/ -]/).join('')).toString()
         data.ipAddress = geodata.ipAddress
@@ -49,16 +74,25 @@ const KYC = ({status}) => {
         data.zipCode = +data.zipCode
         data.domainName = window.location.host
         data.documentType = 'Passport'
-        data.documents = {
-            frontDocumentPhoto: data.frontDocumentPhoto,
-            backDocumentPhoto: data.frontDocumentPhoto,
-            selfieDocumentPhoto: data.selfieDocumentPhoto,
-        }
-        delete data.frontDocumentPhoto
-        delete data.selfieDocumentPhoto
+        data.documents = formData
+
+        delete data.doc
+        delete data.doc
         delete data.terms
         delete data.privacy
-        const res = await putData('/personal_area/verification/', data)
+        delete data.selfieDocumentPhoto
+
+        const res = await putData('/personal_area/verification', data)
+
+        // let res = await axios.put('/api/personal_area/verification', data, {
+        //     headers: {
+        //         'Content-Type': 'multipart/form-data',
+        //         'Authorization': `Bearer ${localStorage.getItem('token')}`
+        //     }
+        // })
+        if (res.status === 201) {
+            SwalSimple('Verification is sent')
+        }
 
         console.log('kyc data', data)
     }
@@ -76,6 +110,12 @@ const KYC = ({status}) => {
     // }
     //
     // console.log('kyc', status)
+
+
+    // const onChange = (e) => {
+    //     console.log('files-----', e.target.files[0])
+    //     setImg(e.target.files[0])
+    // }
 
     return (
         <Container>
@@ -236,8 +276,8 @@ const KYC = ({status}) => {
                     <Row className='' style={{justifyContent: 'center', margin: '30px 0'}}>
                         <Col>
                             {/*<FileUpload {...register('doc')} name={'doc'} id={'doc'}/>*/}
-                            <input {...register('frontDocumentPhoto')} name={'frontDocumentPhoto'} type="file" />
-                            <input {...register('selfieDocumentPhoto')} name={'selfieDocumentPhoto'} type="file" />
+                            {/*<FileUpload {...register('frontDocumentPhoto')} id={'frontDocumentPhoto'} name={'frontDocumentPhoto'} />*/}
+                            <input {...register('selfieDocumentPhoto')} id={'selfieDocumentPhoto'} name={'selfieDocumentPhoto'} type="file" />
                         </Col>
                     </Row>
                     <Row className={'mb-5 mt-5'} style={{
