@@ -158,6 +158,16 @@ router.get('/staff/project_support/get_wallet/', staffController.projectSupport)
 router.post('/staff/project_support_form/', staffController.projectSupportRequest) // send question to platform developers
 
 
+// trading logic -----------------
+// staff usage
+router.get('/staff/trading/get_valid_trading_data/:domainName/', staffController.getTradingData) // get valid trading DATA (rates, currencies, rate correct, etc.)
+router.patch('/staff/trading/update_coin_rate/', staffController.updateCoinRate) // update cur coin rate & choose  + or - value of it
+
+// common usage
+router.get('/trading/get_valid_trading_data/:domainName/', authChecker, userController.getTradingData) // get trading data for user 
+router.put('/trading/make_order/', authChecker, userController.makeTradingOrder) // make new order to buy or sell crypto 
+router.get('/trading/order_history/:userId/:skipValue/:limitValue/', authChecker, userController.getOrderHistory) // get user orders history
+
 
 // only for root access 
 

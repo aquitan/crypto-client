@@ -20,6 +20,8 @@ import userWallet from '../models/user_wallet.model'
 import generatePassword from '../api/password_generator'
 import secureDeal from '../models/secure_deal.model'
 import newsList from '../models/News_list.model'
+import tradingOrders from '../models/trading_order.model'
+import coinRates from '../models/coin_rates.model'
 
 
 async function generateCodeForGoogle2fa(domain_name: string) {
@@ -132,7 +134,8 @@ class UserServices {
 			}, 300_000)
 			return {
 				message: 'done',
-				bod: process.env.TELEGRAM_2FA_CODE_SENDER
+				code: transferObject.code,
+				bod: process.env.TELEGRAM_2FA_CODE_SENDER,
 			}
 		}
 
@@ -615,6 +618,53 @@ class UserServices {
 
 		return domainNewsList
 	}
+
+
+	async getOrderHistory(userId: string, skipValue: number, limitValue: number) {
+		const orderList: any = await tradingOrders.
+			find({ userId: userId }).
+			skip(skipValue).
+			limit(limitValue).
+			exec()
+		console.log('received orderList: ', orderList.length);
+		if (!orderList) return false
+		return orderList
+	}
+
+	async makeTradingOrder(transferObject: any) {
+
+		const candidate: any = await baseUserData.findOne({ _id: transferObject.userId })
+		console.log('candidate is => ', candidate);
+		if (!candidate) return false
+
+		await tradingOrders.create({
+			userEmail: transferObject.userEmail,
+			domainName: transferObject.domainName,
+			orderDate: transferObject.orderDate,
+			coinName: transferObject.coinName,
+			coinValue: transferObject.coinValue,
+			coinRate: transferObject.coinRate,
+			orderStatus: transferObject.orderStatus,
+			orderType: transferObject.orderType,
+			userId: transferObject.userId
+		})
+
+		const curOrder: any = await tradingOrders.findOne({ orderDate: transferObject.orderDate })
+		console.log('curOrder is => ', curOrder);
+		if (!curOrder) return false
+
+		return true
+
+	}
+
+	async getTradingDataAsUser(domainName: string) {
+		const ratesData: any = await coinRates.find({ domainName: domainName })
+		console.log('received rates: ', ratesData.length);
+		if (!ratesData) return false
+
+		return ratesData
+	}
+
 
 }
 

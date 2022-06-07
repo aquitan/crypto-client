@@ -19,6 +19,7 @@ import INTERNAL_HISTORY from 'interface/internal_history.interface'
 import { DEAL_INTERFACE } from 'interface/secure_deal.interface'
 import bodyValidator from '../api/body_validator'
 import saveUserLogs from '../api/save_user_logs'
+import TRADING_ORDER_INTERFACE from '../interface/make_trading_order.interface'
 
 
 class UserController {
@@ -759,6 +760,74 @@ class UserController {
       next(e)
     }
   }
+
+  async getOrderHistory(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const userId: string = req.params.userId
+    const skip: string = req.params.skipValue
+    const skipValue: number = parseInt(skip)
+    const limit: string = req.params.limitValue
+    const limitValue: number = parseInt(limit)
+
+    console.log('received params => ', req.params);
+    if (!req.params) return res.status(400).json({ message: 'wrong data' })
+
+    try {
+
+      const result: boolean | object = await UserServices.getOrderHistory(userId, skipValue, limitValue)
+      console.log(' order list is: ', result)
+      if (!result) throw ApiError.ServerError()
+
+      return res.status(200).json(result)
+    } catch (e) {
+      next(e)
+    }
+  }
+
+
+  async makeTradingOrder(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const transferObject: TRADING_ORDER_INTERFACE = {
+      userEmail: req.body.userEmail,
+      domainName: req.body.domainName,
+      orderDate: req.body.orderDate,
+      coinName: req.body.coinName,
+      coinValue: req.body.coinValue,
+      coinRate: req.body.coinRate,
+      orderStatus: req.body.orderStatus,
+      orderType: req.body.orderType,
+      userId: req.body.userId
+    }
+
+    const validData: boolean = await bodyValidator(req.body, 9)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
+    try {
+
+      const result: boolean = await UserServices.makeTradingOrder(transferObject)
+      console.log(' order result is: ', result)
+      if (!result) throw ApiError.ServerError()
+
+      return res.status(201).json(result)
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async getTradingData(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    const domainName: string = req.params.domainName
+
+    try {
+      const result: boolean = await UserServices.getTradingDataAsUser(domainName)
+      console.log(' order result is: ', result)
+      if (!result) throw ApiError.ServerError()
+
+      return res.status(201).json(result)
+    } catch (e) {
+      next(e)
+    }
+  }
+
 
 }
 

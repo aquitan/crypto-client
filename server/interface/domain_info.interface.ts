@@ -11,7 +11,6 @@ export default interface DOMAIN_INFO {
   showNews: boolean
   doubleDeposit: boolean
   depositFee: number
-  rateCorrectSum: number
   minDepositSum: number
   minWithdrawalSum: number
   currencySwapFee: number

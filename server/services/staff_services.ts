@@ -25,6 +25,8 @@ import staffGroup from '../models/Staff_group.model'
 import staffGroupUserList from '../models/staff_group_user_list.model'
 import recruiterModel from '../models/recruiter.model'
 import recruiterOwnUsers from '../models/recruiter_own_users.model'
+import tradingOrders from '../models/trading_order.model'
+import coinRates from '../models/coin_rates.model'
 
 
 class staffService {
@@ -528,7 +530,7 @@ class staffService {
 		return true
 	}
 
-	async CreateNewDomain(data_object: any) {
+	async CreateNewDomain(data_object: any, coinList: string[]) {
 
 		console.log('received object: ', data_object);
 		const domains: any = await domainList.find({ domainOwner: data_object.staffId })
@@ -600,10 +602,55 @@ class staffService {
 		})
 		console.log('db errors: ', dbErrorList);
 
+
+
+		// export const COIN_RATES_SCHEMA = {
+		// 	coinName: {
+		// 		type: String,
+		// 		require: true
+		// 	},
+		// 	valueInPercent: {
+		// 		type: Number,
+		// 		require: true
+		// 	},
+		// 	rateCorrectType: {
+		// 		type: Boolean,
+		// 		require: true
+		// 	},
+		// 	timeRangeInMs: {
+		// 		type: Number,
+		// 		require: true
+		// 	},
+		// 	domainName: {
+		// 		type: String,
+		// 		require: true
+		// 	}
+		// }
+
+		for (let i = 0; i <= coinList.length - 1; i++) {
+			const dataToSave = {
+				coinName: coinList[i],
+				valueInPercent: 0,
+				rateCorrectType: false,
+				timeRangeInMs: 0,
+				domainName: data_object.fullDomainName,
+			}
+			console.log('cur rates data => ', dataToSave);
+
+			await coinRates.create(dataToSave)
+
+		}
+
+
+
 		if (dbErrorList.length < 5) {
 			console.log('some writing error in <save domain errors>');
 			return 'error'
 		}
+
+
+
+
 
 		return true
 	}
@@ -731,12 +778,9 @@ class staffService {
 		return savedErrors
 	}
 
-	async GetDomainListForStaff(staffId: string, skipValue: number, limitValue: number) {
+	async GetDomainListForStaff(staffId: string) {
 		const list: any = await domainList.
-			find({ domainOwner: staffId }).
-			skip(skipValue).
-			limit(limitValue).
-			exec()
+			find({ domainOwner: staffId })
 		console.log('domainList is: ', list);
 		if (!list.length) return 'empty list'
 		if (!list) return false
@@ -1260,6 +1304,83 @@ class staffService {
 		return true
 
 	}
+
+
+	async getTradingParams(domainName: string) {
+		const verifDomain: any = await domainList.findOne({ fullDomainName: domainName })
+		console.log('received domain: ', verifDomain);
+		if (!verifDomain) return false
+
+		const orderList: any = await tradingOrders.find({ domainName: domainName })
+		console.log('received orderList: ', orderList.length);
+		if (!orderList) return false
+
+		const ratesData: any = await coinRates.find({ domainName: domainName })
+		console.log('received rates: ', ratesData.length);
+		if (!ratesData) return false
+
+		let ordersForSale = []
+		let ordersForBuy = []
+
+		for (let i = 0; i <= orderList.length - 1; i++) {
+			if (orderList[i].orderType === false) {
+				ordersForSale.push(orderList[i])
+			}
+			if (orderList[i].orderType === true) {
+				ordersForBuy.push(orderList[i])
+			}
+		}
+
+
+		let dataObj: any = {
+			ratesData: ratesData,
+			ordersData: {
+				ordersForSale: ordersForSale,
+				ordersForBuy: ordersForBuy
+			}
+		}
+
+		return dataObj
+
+	}
+
+	async updateCoinRate(transferObject: any) {
+
+		const validRate: any = await coinRates.
+			findOne({
+				coinName: transferObject.coinName,
+				domainName: transferObject.domainName
+			})
+
+		console.log('received coin rate: ', validRate);
+		if (!validRate) return false
+
+		// const curValue = (validRate.coinRate / transferObject.valueInPercent) * 100
+		await coinRates.findOneAndUpdate(
+			{
+				coinName: transferObject.coinName,
+				domainName: transferObject.domainName
+			},
+			{
+				coinName: transferObject.coinName,
+				valueInPercent: transferObject.valueInPercent,
+				rateCorrectType: transferObject.growthParams,
+				domainName: transferObject.domainName,
+				timeRangeInMs: transferObject.timeRangeInMs
+			})
+
+		const updatedRateValue: any = await coinRates.findOne({
+			coinName: transferObject.coinName,
+			domainName: transferObject.domainName
+		})
+		console.log('updated rate is => ', updatedRateValue);
+		if (!updatedRateValue) return false
+
+		return updatedRateValue
+
+	}
+
+
 
 }
 
