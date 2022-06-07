@@ -27,6 +27,7 @@ const AdminSecureDeal = () => {
         mode: "onBlur"
     })
     const [history, setHistory] = useState([])
+    const [limit, setLimit] = useState(0)
 
     useEffect(() => {
         getHistory()
@@ -67,6 +68,9 @@ const AdminSecureDeal = () => {
         }
         data.rootAccess = store.fullAccess
         const res = await putData('/personal_area/secure_deal/create_secure_deal/', data)
+        if (res.status === 200) {
+            getHistory()
+        }
     }
     const onToday = () => {
         setStartDate(new Date())
@@ -79,10 +83,13 @@ const AdminSecureDeal = () => {
     const getHistory = async () => {
         const obj = {
             staffId: store.fullAccess ? '1' : store.user.id,
-            rootAccess: store.fullAccess
+            rootAccess: store.fullAccess,
+            skipValue: limit,
+            limitValue: 10
         }
         const res = await postData(`/staff/secure_deal/secure_deal_history/`, obj)
-        if (!res.data.history === 'empty set') {
+        console.log('res data history', res.data.history)
+        if (res.data.history !== 'empty list') {
             setHistory(res.data.history.filter(item => {
                 if (dateToTimestamp() < item.dealDedline) {
                     onMissDeadline(item._id, item.dealDedline)
@@ -104,6 +111,17 @@ const AdminSecureDeal = () => {
     const deleteSecureDeal = async (id) => {
         console.log('id', id)
         const res = await deleteData(`/personal_area/secure_deal/secure_deal_detail/delete_deal/${id}`)
+    }
+
+    useEffect(() => {
+        getHistory()
+    }, [limit])
+
+    const onMore = () => {
+        setLimit(prevState => prevState+1)
+    }
+    const onLess = () => {
+        setLimit(prevState => prevState-1)
     }
 
     return (
@@ -220,6 +238,18 @@ const AdminSecureDeal = () => {
                             : <h3 className={'mb-3 mt-3'}>Нет активных сделок</h3>
                     }
 
+                </Row>
+                <Row className={'mb-3 mt-3'}>
+                    {
+                        history.length >= 10 ?
+                            <AdminButton onClick={onMore} classname={['xs', 'green']}>Еще</AdminButton>
+                            : null
+                    }
+                    {
+                        limit > 0 ?
+                            <AdminButton onClick={onLess} classname={['xs', 'green']}>Назад</AdminButton>
+                            : null
+                    }
                 </Row>
             </AdminButtonCard>
 

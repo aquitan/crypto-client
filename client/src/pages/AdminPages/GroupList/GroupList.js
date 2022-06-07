@@ -23,12 +23,16 @@ const GroupList = () => {
     ]
     const [isModal, setIsModal] = useState(false)
     const [titleModal, setTitleModal] = useState('')
+    const [limit, setLimit] = useState(0)
 
     const onSubmit = async (data) => {
         data.currentDate = dateToTimestamp()
         data.creatorId = store.user.id
         data.staffEmail = store.user.email
         data.viewParams = data.viewParams === 'true' ? true : false
+        data.creatorId = store.fullAccess ? 'root' : store.user.id
+        data.staffEmail = store.fullAccess ? 'root' : store.user.email
+
         const res = await postData('/staff/groups/create_new_group/', data)
         if (res.status === 201) {
             SwalSimple('Группа создана!')
@@ -45,7 +49,10 @@ const GroupList = () => {
             staffEmail: store.user.email,
             isAdmin: store.isAdmin,
             isStaff: store.isStaff,
-            rootAccess: store.fullAccess
+            rootAccess: store.fullAccess,
+            skipValue: limit,
+            limitValue: 10
+
         }
         const res = await postData('/staff/groups/get_group_list/', obj)
         setList(res.data)
@@ -59,12 +66,23 @@ const GroupList = () => {
             groupId: id
         }
         const res = await deleteData('/staff/groups/delete_group/', {data: obj})
-        if (res.status === 200) {
+        if (res.status === 202) {
             SwalSimple('Группа удалена!')
         } else {
-            SwalSimple('Что то пошло не так! 8/')
+            SwalSimple('Что то пошло не так!')
         }
         getGroupList()
+    }
+
+    useEffect(() => {
+        getGroupList()
+    }, [limit])
+
+    const onMore = () => {
+        setLimit(prevState => prevState+1)
+    }
+    const onLess = () => {
+        setLimit(prevState => prevState-1)
     }
 
     return (
@@ -110,6 +128,18 @@ const GroupList = () => {
                         })
                         : <h3>No groups!</h3>
                 }
+                <Row className={'mb-3 mt-3'}>
+                    {
+                        list.length >= 10 ?
+                            <AdminButton onClick={onMore} classname={['xs', 'green']}>Еще</AdminButton>
+                            : null
+                    }
+                    {
+                        limit > 0 ?
+                            <AdminButton onClick={onLess} classname={['xs', 'green']}>Назад</AdminButton>
+                            : null
+                    }
+                </Row>
 
             </AdminButtonCard>
 

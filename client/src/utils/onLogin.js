@@ -1,5 +1,5 @@
 import {getGeoData} from "../queries/getSendGeoData";
-import {store} from "../index";
+import {store} from "../../index";
 
 export const onLogin = async (data) => {
     const geoData = await getGeoData()

@@ -32,6 +32,7 @@ const Promocodes = () => {
         isDelete: false
     })
     const [allDomains, setAllDomains] = useState([])
+    const [limit, setLimit] = useState(0)
 
     const options = [
         {value: 'BTC', text: 'BTC'},
@@ -94,7 +95,9 @@ const Promocodes = () => {
             isAdmin: store.isAdmin,
             id: store.user.id,
             rootAccess: store.fullAccess,
-            staffEmail: store.userEmail
+            staffEmail: store.userEmail,
+            skipValue: limit,
+            limitValue: 10
         }
         const res = await postData('/staff/get_promocode_list/', promoData)
         const data = await res.data
@@ -170,7 +173,6 @@ const Promocodes = () => {
         const obj = {
             isAdmin: store.isAdmin,
             isStaff: store.isStaff,
-            staffEmail: store.userEmail,
             rootAccess: store.fullAccess,
             staffId: store.user.id
         }
@@ -202,6 +204,17 @@ const Promocodes = () => {
         }
     }
 
+
+    useEffect(() => {
+        getAllPromocodes()
+    }, [limit])
+
+    const onMore = () => {
+        setLimit(prevState => prevState+1)
+    }
+    const onLess = () => {
+        setLimit(prevState => prevState-1)
+    }
 
 
     console.log('currentPromocodes', state.usedPromocodes)
@@ -313,6 +326,18 @@ const Promocodes = () => {
                             : null
                     }
                 </div>
+                <Row className={'mb-3 mt-3'}>
+                    {
+                        state.currentPromocodes.length >= 10 ?
+                            <AdminButton onClick={onMore} classname={['xs', 'green']}>Еще</AdminButton>
+                            : null
+                    }
+                    {
+                        limit > 0 ?
+                            <AdminButton onClick={onLess} classname={['xs', 'green']}>Назад</AdminButton>
+                            : null
+                    }
+                </Row>
             </AdminButtonCard>
             <AdminButtonCard>
                 <Row className='mb-4'>

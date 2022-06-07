@@ -1,4 +1,4 @@
-import {store} from "../index";
+import {store} from "../../index";
 import {findPercent} from "./findPercent";
 
 export function getValue(nameIn, nameOut, valIn) {
