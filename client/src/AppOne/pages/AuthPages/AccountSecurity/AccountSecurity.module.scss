@@ -1,0 +1,10 @@
+.security_table {
+  padding: 20px;
+  background-color: rgb(33, 37, 41);
+  &_row {
+    background-color: transparent;
+    color: #fff;
+    border-bottom: 1px solid #fff;
+    padding: 10px 0;
+  }
+}

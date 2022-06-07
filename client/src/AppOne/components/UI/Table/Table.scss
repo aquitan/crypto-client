@@ -1,0 +1,21 @@
+.table {
+  color: #fff;
+}
+.table_header {
+  padding: 10px 0;
+  border-bottom: 1px solid #fff;
+  &_item {
+    color: #fff;
+  }
+}
+.table_item {
+  padding: 20px 0;
+  color: #fff;
+}
+
+.table_header-dark {
+  .table_header_item {
+    color: #fff;
+  }
+  border-bottom: 1px solid #cecece;
+}

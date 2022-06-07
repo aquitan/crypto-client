@@ -1,0 +1,48 @@
+.input {
+    padding: 20px;
+    box-sizing: border-box;
+    width: 100%;
+    outline: none;
+    background-color: transparent;
+    color: #fff;
+    border: 1px solid #717579;
+    border-radius: 20px;
+    &_label {
+        position: absolute;
+        background-color: transparent;
+        color: #fff;
+        text-transform: uppercase;
+        font-size: 12px;
+        top: 20px;
+    }
+}
+
+.input_small {
+    height: 46px;
+    max-width: 250px;
+    width: 100%;
+    padding: 10px 20px;
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+.input_medium {
+    max-width: 400px;
+    width: 100%;
+    padding: 0 10px;
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+.input_wrap {
+    position: relative;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    min-width: 180px;
+    height: fit-content;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    background-color: transparent;
+}
