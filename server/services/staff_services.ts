@@ -570,6 +570,7 @@ class staffService {
 			minWithdrawalSum: data_object.minWithdrawalSum,
 			coinSwapFee: data_object.currencySwapFee,
 			dateOfDomainCreate: data_object.dateOfDomainCreate,
+			designName: data_object.designName,
 			domainId: curDomain.id
 		})
 		const detailCheck: any = await domainDetail.findOne({ domainId: curDomain.id })
@@ -601,31 +602,10 @@ class staffService {
 			domainId: curDomain.id
 		})
 		console.log('db errors: ', dbErrorList);
-
-
-
-		// export const COIN_RATES_SCHEMA = {
-		// 	coinName: {
-		// 		type: String,
-		// 		require: true
-		// 	},
-		// 	valueInPercent: {
-		// 		type: Number,
-		// 		require: true
-		// 	},
-		// 	rateCorrectType: {
-		// 		type: Boolean,
-		// 		require: true
-		// 	},
-		// 	timeRangeInMs: {
-		// 		type: Number,
-		// 		require: true
-		// 	},
-		// 	domainName: {
-		// 		type: String,
-		// 		require: true
-		// 	}
-		// }
+		if (dbErrorList.length < 5) {
+			console.log('some writing error in <save domain errors>');
+			return 'error'
+		}
 
 		for (let i = 0; i <= coinList.length - 1; i++) {
 			const dataToSave = {
@@ -641,16 +621,11 @@ class staffService {
 
 		}
 
-
-
-		if (dbErrorList.length < 5) {
-			console.log('some writing error in <save domain errors>');
-			return 'error'
-		}
-
-
-
-
+		const savedRates: any = await coinRates.find({
+			domainName: curDomain.fullDomainName
+		})
+		console.log('savedRates is: ', savedRates);
+		if (!savedRates) return false
 
 		return true
 	}
@@ -699,11 +674,11 @@ class staffService {
 			showNews: data_object.showNews,
 			double_deposit: data_object.doubleDeposit,
 			depositFee: data_object.depositFee,
-			rateCorrectSum: data_object.rateCorrectSum,
 			minDepositSum: data_object.minDepositSum,
 			minWithdrawalSum: data_object.minWithdrawalSum,
 			currencySwapFee: data_object.currencySwapFee,
 			dateOfDomainCreate: data_object.dateOfDomainCreate,
+			designName: data_object.designName,
 			domainId: curDomain.id
 		})
 		const detailCheck: any = await domainDetail.findOne({ domainId: curDomain.id })

@@ -564,6 +564,7 @@ class StaffController {
       minDepositSum: req.body.minDepositSum,
       minWithdrawalSum: req.body.minWithdrawalSum,
       currencySwapFee: req.body.currencySwapFee,
+      designName: req.body.designName,
       errorList: {
         verif_document: {
           domainName: req.body.fullDomainName,
@@ -782,6 +783,7 @@ class StaffController {
       minDepositSum: req.body.minDepositSum,
       minWithdrawalSum: req.body.minWithdrawalSum,
       currencySwapFee: req.body.currencySwapFee,
+      designName: req.body.designName,
       errorList: {
         verif_document: {
           domainName: req.body.fullDomainName,
