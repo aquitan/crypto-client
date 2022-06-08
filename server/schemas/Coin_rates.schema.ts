@@ -8,7 +8,7 @@ export const COIN_RATES_SCHEMA = {
     type: Number,
     require: true
   },
-  rateCorrectType: {
+  growthParams: {
     type: Boolean,
     require: true
   },

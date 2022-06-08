@@ -2060,20 +2060,15 @@ class StaffController {
       coinName: req.body.coinName,
       valueInPercent: req.body.valueInPercent,
       growthParams: req.body.growthParams,
-      staffId: req.body.staffId,
       domainName: req.body.domainName,
-      currentDate: req.body.currentDate,
       timeRangeInMs: req.body.timeRangeInMs
     }
 
-    const rootAccess: boolean = req.body.rootAccess
 
-    const validData: boolean = await bodyValidator(req.body, 8)
+    const validData: boolean = await bodyValidator(req.body, 5)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {
-      if (rootAccess) transferObject.staffId = process.env.SUPER_ID
-
       const result: any = await staffService.updateCoinRate(transferObject)
       if (!result) throw ApiError.ServerError()
       return res.status(200).json(result)

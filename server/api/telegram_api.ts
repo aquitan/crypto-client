@@ -1,5 +1,5 @@
 import TelegramBot from 'node-telegram-bot-api'
-import authServices from '../services/auth_services'
+import userService from '../services/user_services'
 import SendActionMessage from '../config/telegram_action_message'
 const token: any = process.env.TELEGRAM_2FA_BOT_TOKEN
 const bot = new TelegramBot(token, { polling: true })
@@ -36,12 +36,22 @@ class Telegram {
 
 	async ValidateCode() {
 		bot.on('message', async (msg) => {
-			const result: boolean = await authServices.GetVerifiedTwoStepCode(msg.text)
+			const result: boolean | any = await userService.validateTwoStepCodeAtEnable2fa(msg.text)
 			if (!result) {
 				await bot.sendMessage(msg.chat.id, `two step code validation error.`)
 				return console.log('request error')
 			}
 
+			let dataObj = {
+				twoFaType: 'telegram',
+				userId: result.userId,
+				userEmail: result.userEmail,
+				domainName: result.domainName,
+				twoFaStatus: true,
+				enableDate: new Date().getTime()
+			}
+
+			await userService.enableTwoStepVerificationStatus(dataObj, msg.chat.id)
 			await bot.sendMessage(msg.chat.id, `Success! `)
 		})
 	}

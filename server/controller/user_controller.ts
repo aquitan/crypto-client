@@ -166,10 +166,10 @@ class UserController {
   async validateTwoStepCodeAtEnable2fa(req: express.Request, res: express.Response, next: express.NextFunction) {
     const code: string = req.params.code
     try {
-      const result: boolean = await UserServices.validateTwoStepCodeAtEnable2fa(code)
+      const result: boolean | object = await UserServices.validateTwoStepCodeAtEnable2fa(code)
       if (!result) throw ApiError.ServerError()
 
-      return res.status(202).json({ message: '2fa was enabled', userCode: code })
+      return res.status(202).json({ message: 'success' })
     } catch (e) {
       next(e)
     }

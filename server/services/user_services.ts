@@ -101,7 +101,17 @@ class UserServices {
 			code: code
 		})
 		if (!validate) return false
-		return true
+
+		const getUser: any = await baseUserData.findOne({ email: validate.userEmail })
+		console.log('user data => ', getUser);
+		if (!getUser) return false
+		let obj = {
+			userEmail: getUser.email,
+			userId: getUser.id,
+			domainName: getUser.domainName
+		}
+
+		return obj
 	}
 
 	async enableTwoStepVerification(transferObject: any) {
@@ -153,7 +163,7 @@ class UserServices {
 		return false
 	}
 
-	async enableTwoStepVerificationStatus(transferObject: any, telegramId: string) {
+	async enableTwoStepVerificationStatus(transferObject: any, telegramId: any) {
 
 		let userToUpdate: any = await baseUserData.findById({ _id: transferObject.userId })
 		console.log('found user: ', userToUpdate);
