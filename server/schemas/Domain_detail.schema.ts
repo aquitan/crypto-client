@@ -15,12 +15,6 @@ export const DOMAIN_DETAIL_SCHEMA = {
     max: 5,
     require: true
   },
-  rateCorrectSum: {
-    type: Number,
-    min: 0,
-    max: 15,
-    require: true
-  },
   minDepositSum: {
     type: Number,
     require: true
@@ -37,6 +31,10 @@ export const DOMAIN_DETAIL_SCHEMA = {
   },
   dateOfCreate: {
     type: Number,
+    require: true
+  },
+  designName: {
+    type: String,
     require: true
   },
   domainId: {

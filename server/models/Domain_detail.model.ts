@@ -5,11 +5,11 @@ interface DomainParams {
   showNews: boolean
   doubleDeposit: boolean
   depositFee: number
-  rateCorrectSum: number
   minDepositSum: number
   minWithdrawalSum: number
   coinSwapFee: number
   dateOfCreate: number
+  designName: string
   domainId: Schema.Types.ObjectId
 }
 const DomainDetail = new Schema<DomainParams>(DOMAIN_DETAIL_SCHEMA)

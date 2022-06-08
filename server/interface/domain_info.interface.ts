@@ -14,6 +14,7 @@ export default interface DOMAIN_INFO {
   minDepositSum: number
   minWithdrawalSum: number
   currencySwapFee: number
+  designName: string
   errorList: {
     verif_document: {
       domainName: string
