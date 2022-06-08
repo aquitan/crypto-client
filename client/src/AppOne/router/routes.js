@@ -58,7 +58,7 @@ import {
     TRADING,
     ERROR_500,
     RECRUITER_LIST,
-    RECRUITER_DETAIL, CHAT, ADMIN_CHAT
+    RECRUITER_DETAIL, CHAT, ADMIN_CHAT, ADMIN_TRADING
 } from "../utils/constants"
 import SignUp from '../pages/NonAuthPages/SignUp/SignUp'
 import SignIn from '../pages/NonAuthPages/SignIn/SignIn'
@@ -118,6 +118,7 @@ import Error500 from "../pages/Error/Error500";
 import RecruiterList from "../pages/AdminPages/RecruiterList/RecruiterList";
 import RecruiterDetail from "../pages/AdminPages/RecruiterList/components/RecruiterDetail/RecruiterDetail";
 import Chat from "../pages/AdminPages/Chat/Chat";
+import StaffTrading from "../pages/AdminPages/StaffTrading/StaffTrading";
 
 export const authRoutes = [
     {
@@ -309,6 +310,10 @@ export const adminRoutes = [
     {
         path: ADMIN_CHAT,
         component: <Chat/>
+    },
+    {
+        path: ADMIN_TRADING,
+        component: <StaffTrading/>
     },
 ]
 

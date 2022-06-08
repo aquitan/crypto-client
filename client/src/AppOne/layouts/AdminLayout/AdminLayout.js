@@ -37,6 +37,7 @@ const AuthLayout = () => {
                     <NavigationLink to={'/staff/transactions'}>Создать транзакцию</NavigationLink>
                     <NavigationLink to={'/staff/domains'}>Домены</NavigationLink>
                     <NavigationLink to={'/staff/secure-deal'}>Защищенные сделки</NavigationLink>
+                    <NavigationLink to={'/staff/trading'}>Трейдинг</NavigationLink>
                     {
                         store.isAdmin || store.fullAccess ?
                             <NavigationLink to={'/staff/recruiter-list'}>Рекрутинг</NavigationLink>
