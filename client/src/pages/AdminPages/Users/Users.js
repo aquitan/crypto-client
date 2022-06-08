@@ -19,6 +19,7 @@ const Users = () => {
         users: '',
         search: ''
     })
+    const [value, setValue] = useState(0)
     const getProfile = async () => {
         const userData = {
             isAdmin: store.isAdmin,
@@ -26,7 +27,9 @@ const Users = () => {
             domainName: window.location.host,
             rootAccess: store.fullAccess,
             staffEmail: store.user.email,
-            staffId: store.user.id
+            staffId: store.user.id,
+            skipValue: value,
+            limitValue: 10
         }
         const res = await postData('/staff/users/', userData)
         if (typeof res.data.usersList !== 'string') {
@@ -107,6 +110,13 @@ const Users = () => {
                             }
 
                         </div>
+                        <Row>
+                            {
+                                state.users.length > 10 ?
+                                    <AdminButton onClick={() => setValue((prevState => prevState+1))} classname={['xs']}>Еще</AdminButton>
+                                    : null
+                            }
+                        </Row>
                     </div>
                 </Row>
             </AdminButtonCard>

@@ -1,0 +1,16 @@
+.layout {
+  height: 100%;
+  color: #fff;
+  position: relative;
+
+  &_inner {
+    overflow-y: auto;
+    display: flex;
+    height: 100%;
+  }
+}
+.content_wrap {
+  height: 100%;
+  overflow-y: auto;
+  width: 100%;
+}

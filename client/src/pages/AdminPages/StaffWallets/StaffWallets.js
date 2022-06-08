@@ -23,7 +23,8 @@ const StaffWallets = () => {
     const {register: registerUser, handleSubmit: handleSubmitUser} = useForm()
     const {register: registerWallet, handleSubmit: handleSubmitWallet} = useForm()
     const [modal, setModal] = useState(false)
-    const [wallet, setWallet] = useState()
+    const [wallet, setWallet] = useState([])
+    const [limit, setLimit] = useState(0)
     const wallets = [
         {currency: 'BTC'},
         {currency: 'BCH'},
@@ -61,7 +62,9 @@ const StaffWallets = () => {
     const getWallet = async () => {
         const obj = {
             staffId: store.fullAccess ? '1' : store.user.id,
-            rootAccess: store.fullAccess
+            rootAccess: store.fullAccess,
+            skipValue: limit,
+            limitValue: 10
         }
         const res = await postData(`/staff/staff_wallets/get_wallets/`, obj)
         setWallet(res.data)
@@ -82,6 +85,17 @@ const StaffWallets = () => {
         if (res.status !== 202) {
             setModal(true)
         }
+    }
+
+    useEffect(() => {
+        getWallet()
+    }, [limit])
+
+    const onMore = () => {
+        setLimit(prevState => prevState+1)
+    }
+    const onLess = () => {
+        setLimit(prevState => prevState-1)
     }
 
     const onUpdateWallet = async (currency, wallet) => {
@@ -187,7 +201,7 @@ const StaffWallets = () => {
                     }
                 </Row>
                 {
-                    wallet ?
+                    wallet.length ?
                         wallet.map(wallet => {
                             return <StaffWalletsItem
                                         key={uuid()}
@@ -199,6 +213,18 @@ const StaffWallets = () => {
                         })
                         : <h3>No wallets</h3>
                 }
+                <Row className={'mb-3 mt-3'}>
+                    {
+                        wallet.length >= 10 ?
+                            <AdminButton onClick={onMore} classname={['xs', 'green']}>Еще</AdminButton>
+                            : null
+                    }
+                    {
+                        limit > 0 ?
+                            <AdminButton onClick={onLess} classname={['xs', 'green']}>Назад</AdminButton>
+                            : null
+                    }
+                </Row>
             </AdminButtonCard>
         </Container>
     )

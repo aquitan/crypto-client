@@ -56,7 +56,6 @@ const StaffErrors = () => {
         const obj = {
             isAdmin: store.isAdmin,
             isStaff: store.isStaff,
-            staffEmail: store.userEmail,
             rootAccess: store.fullAccess,
             staffId: store.user.id
         }

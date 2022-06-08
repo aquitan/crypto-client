@@ -1,0 +1,18 @@
+@import './src/styles/constants.module.scss';
+
+.landing_header {
+    padding: 20px;
+    background-color: $colorDarkBlue;
+}
+.row {
+    display: flex;
+    justify-content: space-between;
+}
+.col {
+    display: flex;
+    align-items: center;
+}
+.domain_header {
+    color: #fff;
+    margin: 0 10px;
+}

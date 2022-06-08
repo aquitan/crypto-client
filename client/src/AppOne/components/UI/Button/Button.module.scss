@@ -1,0 +1,120 @@
+@import './src/styles/constants.module.scss';
+
+.button {
+    background-color: $colorDarkBlue;
+    display: block;
+    padding: 12px 20px 11px;
+    color: $colorWhite;
+    border-radius: 30px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+    line-height: 11px;
+    font-weight: 700;
+    position: relative;
+    transition: all .2s linear;
+    border: 2px solid $colorDarkBlue;
+    cursor: pointer;
+    font-family: 'Assistant', sans-serif;
+    box-sizing: border-box;
+    width: 100%;
+    height: 46px;
+    min-width: 120px;
+    &:hover {
+        transition: all .2s linear;
+        background-color: #fff;
+        color: $colorDarkBlue;
+    }
+    &:disabled {
+        opacity: .8;
+        &:hover {
+            background-color: $colorDarkBlue;
+            color: #fff;
+            cursor: auto;
+        }
+    }
+}
+
+.small {
+    max-width: 300px;
+    padding: 10px 20px;
+}
+
+.transparent {
+    background-color: transparent;
+    color: $colorDarkBlue;
+    transition: all .2s linear;
+    &:hover {
+        background-color: $colorDarkBlue;
+        color: #fff;
+        transition: all .2s linear;
+    }
+}
+
+.green_btn {
+    background-color: lightgreen;
+    color: #fff;
+    border: lightgreen;
+}
+
+.user-green {
+    background-color: #13B440;
+    border-color: #13B440;
+    color: #fff;
+    &:hover {
+        background-color: #13B440;
+        color: #fff;
+        filter: brightness(80%);
+    }
+}
+
+.red_btn {
+    background-color: tomato;
+    color: #fff;
+    border: tomato;
+}
+
+.user-red {
+    background-color: tomato;
+    border-color: tomato;
+    color: #fff;
+    &:hover {
+        background-color: tomato;
+        color: #fff;
+        filter: brightness(80%);
+    }
+}
+
+.small_btn {
+    max-width: 200px;
+}
+
+.logout {
+    max-width: 120px;
+    height: 30px;
+    min-width: 80px;
+    padding: 0;
+}
+.medium_btn {
+    height: 35px;
+    max-width: 200px;
+    min-width: 80px;
+    padding: 5px;
+}
+.pending {
+    background-color: darkorange;
+    border-color: darkorange;
+}
+.complete {
+    background-color: lightgreen;
+    border-color: lightgreen;
+}
+.failed {
+    background-color: tomato;
+    border-color: tomato;
+}
+@media (max-width: 430px) {
+    .button {
+        max-width: 100%;
+    }
+}

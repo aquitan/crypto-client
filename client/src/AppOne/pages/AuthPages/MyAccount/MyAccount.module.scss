@@ -1,0 +1,13 @@
+.account {
+  &_row {
+    padding: 10px;
+    border: 1px solid #717579;
+    border-radius: 30px;
+    margin-bottom: 30px;
+    height: 60px;
+    align-items: center;
+    @media (max-width: 860px) {
+      height: 100px;
+    }
+  }
+}

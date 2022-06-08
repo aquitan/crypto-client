@@ -36,6 +36,8 @@ const CreateDomains = () => {
     })
     const [activeDomains, setActiveDomains] = useState([])
     const navigate = useNavigate()
+    const [limit, setLimit] = useState(0)
+
     const [errorList, setErrorList] = useState({
         verif_document: {
             errorName: defaultErrors[0].errorName,
@@ -151,6 +153,17 @@ const CreateDomains = () => {
     //     setActiveDomains(res.data.domainsList)
     //     console.log('get domains', res.data)
     // }
+
+    useEffect(() => {
+        getDomains()
+    }, [limit])
+
+    const onMore = () => {
+        setLimit(prevState => prevState+1)
+    }
+    const onLess = () => {
+        setLimit(prevState => prevState-1)
+    }
 
     return (
         <Container>
@@ -403,6 +416,18 @@ const CreateDomains = () => {
                         })
                         : <h5>No data!</h5>
                 }
+                <Row className={'mb-3 mt-3'}>
+                    {
+                        activeDomains.length >= 10 ?
+                            <AdminButton onClick={onMore} classname={['xs', 'green']}>Еще</AdminButton>
+                            : null
+                    }
+                    {
+                        limit > 0 ?
+                            <AdminButton onClick={onLess} classname={['xs', 'green']}>Назад</AdminButton>
+                            : null
+                    }
+                </Row>
             </AdminButtonCard>
         </Container>
     )

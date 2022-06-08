@@ -18,6 +18,7 @@ import error from "../../../styles/Error.module.scss";
 import {ErrorMessage} from "@hookform/error-message";
 import FileUpload from "../../../components/UI/FileUpload/FileUpload";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
+import {v4 as uuid} from 'uuid'
 
 const CreateNews = () => {
     const [state, setState] = useState([])
@@ -29,6 +30,7 @@ const CreateNews = () => {
         mode: 'onBlur'
     })
     const [allDomains, setAllDomains] = useState([])
+    const [limit, setLimit] = useState(0)
 
     useEffect(() => {
         getAllNews()
@@ -82,8 +84,10 @@ const CreateNews = () => {
         const obj = {
             isAdmin: store.isAdmin,
             isStaff: store.isStaff,
-            staffEmail: store.user.email,
-            rootAccess: store.fullAccess
+            staffEmail: store.fullAccess ? 'root' : store.user.email,
+            rootAccess: store.fullAccess,
+            skipValue: limit,
+            limitValue: 10
         }
         if (store.fullAccess) {
             obj.staffId = store.fullAccess ? '1' : store.user.id
@@ -91,16 +95,14 @@ const CreateNews = () => {
         const res = await postData('/staff/news/get_news_list/', obj)
         console.log('news list', res.data)
         setState(res.data)
-
     }
 
     const getDomainList = async () => {
         const obj = {
             isAdmin: store.isAdmin,
             isStaff: store.isStaff,
-            staffEmail: store.userEmail,
             rootAccess: store.fullAccess,
-            staffId: store.user.id
+            staffId: store.fullAccess ? 'root' : store.user.id
         }
         const res = await postData('/staff/domains/get_active_domains/', obj)
         let arr = []
@@ -128,6 +130,17 @@ const CreateNews = () => {
             setCurSelect(arr[0].value)
             setOptionId(arr[0].id)
         }
+    }
+
+    useEffect(() => {
+        getAllNews()
+    }, [limit])
+
+    const onMore = () => {
+        setLimit(prevState => prevState+1)
+    }
+    const onLess = () => {
+        setLimit(prevState => prevState-1)
     }
 
 
@@ -196,13 +209,26 @@ const CreateNews = () => {
             <AdminButtonCard>
                 <h4>Все новости</h4>
                 {
-                    !state === 'empty list' ?
+                    state !== 'empty list' ?
                         state.map(news => {
-                            return <AllNews data={news} />
+                            return <AllNews key={uuid()} data={news} />
                         })
                         : <h4>No data!</h4>
                 }
+                <Row className={'mb-3 mt-3'}>
+                    {
+                        state.length >= 10 ?
+                            <AdminButton onClick={onMore} classname={['xs', 'green']}>Еще</AdminButton>
+                            : null
+                    }
+                    {
+                        limit > 0 ?
+                            <AdminButton onClick={onLess} classname={['xs', 'green']}>Назад</AdminButton>
+                            : null
+                    }
+                </Row>
             </AdminButtonCard>
+
         </Container>
     )
 }
