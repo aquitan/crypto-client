@@ -34,6 +34,7 @@ export default class Store {
     activeError = 0
 
 
+
     constructor() {
         makeAutoObservable(this)
     }
@@ -108,9 +109,6 @@ export default class Store {
     }
     setBalance(arr) {
         this.balance = arr
-    }
-    setTotal(num) {
-        this.total = num
     }
 
 

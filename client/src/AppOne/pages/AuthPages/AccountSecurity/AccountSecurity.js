@@ -22,7 +22,11 @@ import {useNavigate} from "react-router-dom";
 const AccountSecurity = (props) => {
     const navigate = useNavigate()
     const {register, handleSubmit} = useForm()
-    const {register: twoFaReg, handleSubmit: twoFaHandle} = useForm()
+    const {register: twoFaReg, handleSubmit: twoFaHandle} = useForm({
+        mode: "onChange"
+    })
+    const [faType, setFaType] = useState('email')
+    const [showBot, setShowBot] = useState(false)
     const [state, setState] = useState({
         isModal: false,
         isStatus: false,
@@ -74,18 +78,21 @@ const AccountSecurity = (props) => {
             domainName: window.location.host,
             userEmail: store.userEmail,
             userId: store.user.id,
-            twoFaType: 'telegram',
+            twoFaType: faType,
             twoFaStatus: true,
             currentTime: dateToTimestamp()
         }
         e.preventDefault()
         const res = await patchData('/personal_area/security/', obj)
-        const data = await res.data
-        setState({
-            ...state,
-            twoFaCode: data.userCode,
-            fieldShow: true
-        })
+        if (!res.data.bod) {
+            setState({
+                ...state,
+                twoFaCode: res.data.userCode,
+                fieldShow: true
+            })
+        } else {
+            setShowBot(true)
+        }
     }
 
     const onSubmit = async (data) => {
@@ -127,6 +134,11 @@ const AccountSecurity = (props) => {
         store.logout()
     }
 
+    // const onChangeVal = (e) => {
+    //     setFaType(e.target.value)
+    //     console.log('value',  e.target.value)
+    // }
+
     return (
         <Container>
             <Modal active={state.isModal} title='Change password' setActive={handleModalClose}>
@@ -148,7 +160,7 @@ const AccountSecurity = (props) => {
                 <Form>
                     <Row className={'mb-3'}>
                         <Col>
-                            <Select {...twoFaReg('twoFaType')} name='select2FA' options={twoFaElems} classname='' />
+                            <Select value={faType} onChange={(e) => setFaType(e.target.value)}  name='select2FA' options={twoFaElems} classname='' />
                         </Col>
 
                         <Col>
@@ -158,6 +170,9 @@ const AccountSecurity = (props) => {
                     <Row>
                         {
                             state.fieldShow ?  <Input {...twoFaReg('code')} placeholder='code'/> : null
+                        }
+                        {
+                            showBot ? <a href={'https://t.me/twoStepCodeSender_bot'} target='_blank'>t.me/twoStepCodeSender_bot</a> : null
                         }
                     </Row>
                     <Row className='mt-3'>

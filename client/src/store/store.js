@@ -32,6 +32,7 @@ export default class Store {
     balance = []
     total = 0
     activeError = 0
+    tfaBot = ''
 
 
     constructor() {
@@ -111,6 +112,9 @@ export default class Store {
     }
     setTotal(num) {
         this.total = num
+    }
+    setBot(str) {
+        this.tfaBot = str
     }
 
 

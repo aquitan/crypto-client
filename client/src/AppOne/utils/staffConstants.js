@@ -112,16 +112,16 @@ export const defaultErrors = [
 export const tableHeaderDomains = ['Domain', 'Action']
 export const twoFaElems = [
     {
-        value: 'Email',
-        text: 'Email'
+        value: 'email',
+        text: 'email'
     },
     {
-        value: 'Google',
-        text: 'Google'
+        value: 'google',
+        text: 'google'
     },
     {
-        value: 'Telegram',
-        text: 'Telegram'
+        value: 'telegram',
+        text: 'telegram'
     }
 ]
 

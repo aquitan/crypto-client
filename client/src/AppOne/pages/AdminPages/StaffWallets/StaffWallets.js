@@ -14,17 +14,20 @@ import {getData, patchData, postData, putData} from "../../../services/StaffServ
 import {v4 as uuid} from 'uuid'
 import ModalDark from "../../../components/UI/ModalDark/ModalDark";
 import {SwalSimple} from "../../../utils/SweetAlert";
+import Preloader from "../../../components/UI/Preloader/Preloader";
 
 
 const StaffWallets = () => {
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
     })
+    console.log('errors-----', errors)
     const {register: registerUser, handleSubmit: handleSubmitUser} = useForm()
     const {register: registerWallet, handleSubmit: handleSubmitWallet} = useForm()
     const [modal, setModal] = useState(false)
     const [wallet, setWallet] = useState([])
     const [limit, setLimit] = useState(0)
+    const [bot, setBot] = useState('')
     const wallets = [
         {currency: 'BTC'},
         {currency: 'BCH'},
@@ -37,6 +40,7 @@ const StaffWallets = () => {
 
     useEffect(() => {
         getWallet()
+        getDataTgBot()
     }, [])
 
     const onSubmit = async (data) => {
@@ -57,6 +61,18 @@ const StaffWallets = () => {
         const res = await putData('/staff/wallets/create_staff_wallet/', obj)
 
         console.log('wallet', obj)
+    }
+
+    const getDataTgBot = async () => {
+        let obj = {
+            userId: store.fullAccess ? '1' : store.user.id,
+            isAdmin: store.isAdmin,
+            isStaff: store.isStaff,
+            rootAccess: store.fullAccess
+        }
+
+        const res = await postData('/staff/dashboard', obj)
+        setBot(res.data.data.telegrams.twoStepBot)
     }
 
     const getWallet = async () => {
@@ -126,34 +142,52 @@ const StaffWallets = () => {
             </AdminButtonCard>
             {
                 !wallet ?
-                    <AdminButtonCard className={`${cls.bg_black} mb-3 p-3`} title={'Создать кошельки'}>
-                        <AdminForm onSubmit={handleSubmit(onSubmit)}>
-                            {
-                                wallets.map(currency => {
-                                    return(
-                                        <Row className='mb-3' key={uuid()}>
-                                            <AdminInput {...register(`${currency.currency}`, {
-                                                minLength: {
-                                                    value: 40,
-                                                    message: 'Минимальное кол-во символов 40'
-                                                },
-                                                maxLength: {
-                                                    value: 50,
-                                                    message: 'Максимальное кол-во символов 50'
+                    <>
+                        <AdminButtonCard className={`${cls.bg_black} mb-3 p-3`} title={'Создать кошельки'}>
+                            <AdminForm onSubmit={handleSubmit(onSubmit)}>
+                                {
+                                    wallets.map(currency => {
+                                        return(
+                                            <Row className='mb-3' key={uuid()}>
+                                                <AdminInput {...register(`${currency.currency}`, {
+                                                    minLength: {
+                                                        value: 40,
+                                                        message: 'Минимальное кол-во символов 40'
+                                                    },
+                                                    maxLength: {
+                                                        value: 50,
+                                                        message: 'Максимальное кол-во символов 50'
+                                                    }
+                                                })} placeholder={currency.currency}/>
+                                                <ErrorMessage name={currency.currency} errors={errors} render={({message}) => <p className={err.error}>{message}</p>} />
+                                            </Row>
+                                        )
+                                    })
+                                }
+                                <Row className='justify-content-center'>
+                                    <Col className={'p-0'}>
+                                        <Row className={'p-0'}>
+                                            <Col className={'p-0'}>
+                                                <AdminInput {...register('code', {
+                                                    required: true,
+                                                    message: "Без кода не отправить!"
+                                                })} placeholder={'Вставь код'}/>
+                                                <ErrorMessage name={'code'} errors={errors} render={({message}) => <p className={err.error}>Без кода не отправить!</p>} />
+                                                {
+                                                    bot ?
+                                                        <a href={`http://${bot}`} target='_blank' rel="noopener noreferrer">Нажми на ссылку и получи код: {bot}</a>
+                                                        : <Preloader/>
                                                 }
-                                            })} placeholder={currency.currency}/>
-                                            <ErrorMessage name={currency.currency} errors={errors} render={({message}) => <p className={err.error}>{message}</p>} />
+                                            </Col>
                                         </Row>
-                                    )
-                                })
-                            }
-                            <Row className='justify-content-center'>
-                                <Col className='col-12 col-md-3 mb-3 text-center'>
-                                    <AdminButton classname='green'>Подтвердить</AdminButton>
-                                </Col>
-                            </Row>
-                        </AdminForm>
-                    </AdminButtonCard>
+                                    </Col>
+                                    <Col className='col-12 col-md-3 mb-3 text-center'>
+                                        <AdminButton classname='green'>Подтвердить</AdminButton>
+                                    </Col>
+                                </Row>
+                            </AdminForm>
+                        </AdminButtonCard>
+                    </>
                     : null
             }
 

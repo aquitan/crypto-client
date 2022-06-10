@@ -71,6 +71,11 @@ const CreateDomains = () => {
         },
     })
 
+    const designs = [
+        {value: 'one', text: 'one'},
+        {value: 'two', text: 'two'},
+    ]
+
     const onSubmit = async (data) => {
         if (data.showNews === 'true') {
             data.showNews = true
@@ -261,6 +266,11 @@ const CreateDomains = () => {
                             )
                         })
                     }
+                    <Row className={'mb-3 relative'}>
+                        Дизайн
+                        <Select {...register('designName')} classname={'admin-square'} options={designs}/>
+                        <ErrorMessage  name={'designName'} errors={errors} render={() => <p className={cls.error}>This field is required</p>} />
+                    </Row>
                     <h2 className='mb-3'>Дефолтные ошибки</h2>
                     <Accordion className='mb-3' defaultActiveKey="0" flush>
                         <Accordion.Item className='bg-dark' eventKey='0'>
