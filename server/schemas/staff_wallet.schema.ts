@@ -11,6 +11,10 @@ export const STAFF_WALLET_SCHEMA = {
     maxlength: 50,
     require: true
   },
+  staffTelegramId: {
+    type: Number,
+    require: true
+  },
   staffId: {
     type: Schema.Types.ObjectId,
     require: true

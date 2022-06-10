@@ -4,7 +4,7 @@ export const TWO_FACTOR_CODE_LIST = {
     type: String,
     require: true
   },
-  email: {
+  userEmail: {
     type: String,
     require: true
   }

@@ -982,7 +982,7 @@ class staffService {
 		return true
 	}
 
-	async createStaffWallet(transfer_object: any, staffId: string) {
+	async createStaffWallet(transfer_object: any, staffId: string, staffTelegramId: number) {
 		const checkWallets: any = await staffWallet.find({
 			staffId: staffId
 		})
@@ -994,6 +994,7 @@ class staffService {
 			let dataObj = {
 				coinName: transfer_object[i].coinName,
 				walletAddress: transfer_object[i].coinAddress,
+				staffTelegramId: staffTelegramId,
 				staffId: staffId
 			}
 			console.log('cur data obj is => ', dataObj);
@@ -1014,7 +1015,9 @@ class staffService {
 			staffId: staffId
 		})
 		console.log('received getWallets is => ', getWallets.length);
+		if (!getWallets) return 'empty set'
 		if (!getWallets.length) return false
+
 		return getWallets
 	}
 

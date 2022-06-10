@@ -338,8 +338,8 @@ class adminService {
       limit(limitValue).
       exec()
     console.log('received getWallets is => ', getWallets.length);
-    if (!getWallets) return false
-    if (!getWallets.length) return 'empty set'
+    if (!getWallets) return 'empty set'
+    if (!getWallets.length) return false
     return getWallets
   }
 

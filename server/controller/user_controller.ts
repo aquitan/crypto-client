@@ -266,6 +266,9 @@ class UserController {
 
   async personalAreaKyc(req: express.Request, res: express.Response, next: express.NextFunction) {
 
+    console.log(' <==== received files => ', req.files);
+
+
     const transfer_object: KYC_DATA = {
       userId: req.body.userId,
       userEmail: req.body.userEmail,
@@ -819,7 +822,7 @@ class UserController {
 
     try {
       const result: boolean = await UserServices.getTradingDataAsUser(domainName)
-      console.log(' order result is: ', result)
+      console.log(' result is: ', result)
       if (!result) throw ApiError.ServerError()
 
       return res.status(201).json(result)

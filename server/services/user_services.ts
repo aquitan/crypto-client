@@ -142,10 +142,11 @@ class UserServices {
 					userEmail: transferObject.userEmail
 				})
 			}, 300_000)
+
 			return {
 				message: 'done',
 				code: transferObject.code,
-				bod: process.env.TELEGRAM_2FA_CODE_SENDER,
+				bot: process.env.TELEGRAM_2FA_CODE_SENDER,
 			}
 		}
 
@@ -176,12 +177,13 @@ class UserServices {
 				teleramId: telegramId,
 				userId: transferObject.userId
 			})
+			// await telegram.ValidateCode()
 		}
 
 		await twoStepParams.create({
 			twoStepType: transferObject.twoFaType,
 			enableDate: transferObject.enableDate,
-			teleramId: 'empty',
+			teleramId: null,
 			userId: transferObject.userId
 		})
 		await userParams.findOneAndUpdate({ userId: transferObject.userId }, {

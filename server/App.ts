@@ -9,6 +9,7 @@ import compression from 'compression'
 import Telegram from './api/telegram_api'
 // import { mysqlConnect } from './config/mysql_config'
 import { mongo } from './config/mongo_DB_config'
+import fileUpload from 'express-fileupload'
 import router from './routes/index'
 
 import CORS_OPTIONS from './config/cors_config'
@@ -20,6 +21,7 @@ app.use(cors(CORS_OPTIONS))
 app.use(express.json())
 app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }))
+app.use(fileUpload())
 app.use(compression())
 app.disable('x-powered-by')
 

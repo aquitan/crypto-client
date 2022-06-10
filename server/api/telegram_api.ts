@@ -21,21 +21,14 @@ class Telegram {
 		// 	}
 		// })
 
-		// bot.onText(/\/getmychat_id/, async (msg) => {
-		// 	const chatId = msg.chat.id
-		// 	await bot.sendMessage(chatId, `Your chat id is: ${chatId}`)
-		// })
-	}
-
-	async SendTwoStepCode(chatId: string, domain_name: string, code: string) {
-		if (!domain_name && !code && !chatId) return console.log('request error')
-		bot.on('message', async () => {
-			await bot.sendMessage(chatId, `Your two factor authenticate code at ${domain_name} is: ` + '\n' + `${code}. The Code will be deleted five minutes after this message.`)
+		bot.onText(/\/getmychat_id/, async (msg) => {
+			const chatId = msg.chat.id
+			await bot.sendMessage(chatId, `Your chat id is: ${chatId}`)
 		})
-	}
 
-	async ValidateCode() {
 		bot.on('message', async (msg) => {
+			console.log('message is => ', msg);
+
 			const result: boolean | any = await userService.validateTwoStepCodeAtEnable2fa(msg.text)
 			if (!result) {
 				await bot.sendMessage(msg.chat.id, `two step code validation error.`)
@@ -54,7 +47,19 @@ class Telegram {
 			await userService.enableTwoStepVerificationStatus(dataObj, msg.chat.id)
 			await bot.sendMessage(msg.chat.id, `Success! `)
 		})
+
 	}
+
+	async SendTwoStepCode(chatId: string, domain_name: string, code: string) {
+		if (!domain_name && !code && !chatId) return console.log('request error')
+		bot.on('message', async () => {
+			await bot.sendMessage(chatId, `Your two factor authenticate code at ${domain_name} is: ` + '\n' + `${code}. The Code will be deleted five minutes after this message.`)
+		})
+	}
+
+	// async ValidateCode() {
+
+	// }
 
 
 

@@ -104,6 +104,24 @@ router.put('/staff/errors/create_new_error/', staffController.createCustomError)
 router.get('/staff/errors/get_all_errors/:domainName/', staffController.getAllErrors) // get domain errors by domainName
 
 
+// support chat + secure deal chat logic => 
+// support chat -----------
+// // common usage
+// router.get('/support/get_chat_for_user/:userId/', authChecker, userController.getChatData) // get chat history for user
+// router.put('/support/send_text_message/', authChecker, userController.sendSupportMessage) // endpoitn for text messages from user
+// router.put('/support/send_images/', authChecker, userController.saveUploadImages) // save image from chat 
+// // staff usage
+// router.get('/staff/support/:staffId/', staffController.getSupportData) // get base support data (chats, unread messages counter, etc.)
+// router.put('/staff/support/send_message_to_user/', staffController.sendMessageAsSupportTeam) // send message to cur user 
+// router.patch('/staff/support/edit_message/', staffController.editChatMessageAsStaff) // edit user or self message as support chat
+// // end support chat routers ---------
+// // secure deal chat --------
+
+
+
+// end of secure deal chat ---------
+
+
 // news ligic => 
 router.put('/staff/news/news_create/', staffController.newsCreate) // create news for user 
 router.patch('/staff/news/news_edit/', staffController.editNews) // edit news 
@@ -144,13 +162,12 @@ router.post('/staff/groups/create_new_group/', staffController.createNewGroup) /
 router.patch('/staff/groups/add_new_group_member/', staffController.addNewStaffToGroup) // add staff to current group
 router.delete('/staff/groups/delete_user_from_group/', staffController.deleteUserFromGroup) // gelete user from group only if u r owner 
 router.post('/staff/groups/get_group_list/', staffController.getGroupList) // get all groups by staff id
-router.delete('/staff/groups/delete_group/', staffController.deleteGroup) // gelete active group only as owner 
+router.delete('/staff/groups/delete_group/', staffController.deleteGroup) // delete active group only as owner 
 
 // trading logic -----------------
 // staff usage
 router.get('/staff/trading/get_valid_trading_data/:domainName/', staffController.getTradingData) // get valid trading DATA (rates, currencies, rate correct, etc.)
 router.patch('/staff/trading/update_coin_rate/', staffController.updateCoinRate) // update cur coin rate & choose  + or - value of it
-
 // common usage
 router.get('/trading/get_valid_trading_data/:domainName/', authChecker, userController.getTradingData) // get trading data for user 
 router.put('/trading/make_order/', authChecker, userController.makeTradingOrder) // make new order to buy or sell crypto 

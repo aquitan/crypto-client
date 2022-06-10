@@ -1511,6 +1511,7 @@ class StaffController {
   async createStaffWallet(req: express.Request, res: express.Response, next: express.NextFunction) {
 
     const staffId: string = req.body.staffId
+    const staffTelegramId: number = req.body.staffTelegramId
     const walletList = [
       {
         coinName: 'BTC',
@@ -1542,11 +1543,11 @@ class StaffController {
       }
     ]
 
-    const validData: boolean = await bodyValidator(req.body, 8)
+    const validData: boolean = await bodyValidator(req.body, 9)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
 
-      const result: boolean = await staffService.createStaffWallet(walletList, staffId)
+      const result: boolean = await staffService.createStaffWallet(walletList, staffId, staffTelegramId)
       if (!result) throw ApiError.ServerError()
       return res.status(201).json({ message: 'ok' })
     } catch (e) {
