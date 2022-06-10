@@ -6,11 +6,11 @@ import AppOne from "../AppOne/components/App/App";
 const AppPicker = () => {
     const [state, setState] = useState(1)
     return (
-        <div>
+        <>
             {
                 state === 1 ? <AppOne /> :<AppTwo />
             }
-        </div>
+        </>
     )
 }
 

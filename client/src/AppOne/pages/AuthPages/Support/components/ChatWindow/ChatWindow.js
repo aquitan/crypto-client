@@ -6,7 +6,7 @@ import Input from "../../../../../components/UI/Input/Input";
 import Button from "../../../../../components/UI/Button/Button";
 import FileUpload from "../../../../../components/UI/FileUpload/FileUpload";
 
-const ChatWindow = ({children, onClick}) => {
+const ChatWindow = ({children, onClick, edited}) => {
     const [state, setState] = useState('')
 
     const onChange = (e) => {

@@ -17,23 +17,27 @@ import cls from './AccountSecurity.module.scss'
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import Preloader from "../../../components/UI/Preloader/Preloader";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 
 const AccountSecurity = (props) => {
+    const location = useLocation()
     const navigate = useNavigate()
     const {register, handleSubmit} = useForm()
-    const {register: twoFaReg, handleSubmit: twoFaHandle} = useForm()
+    const {register: twoFaReg, handleSubmit: twoFaHandle} = useForm({
+        mode: "onChange"
+    })
+    const [faType, setFaType] = useState('email')
+    const [showBot, setShowBot] = useState(false)
     const [state, setState] = useState({
         isModal: false,
         isStatus: false,
         type2FA: '',
         twoFaCode: '',
         fieldShow: false,
-        modal2FA: false
+        modal2FA: false,
     })
+    const [botCode, setBotCode] = useState('')
     const [status, setStatus] = useState(props.data.twoStepStatus)
-
-    console.log('two fa props', props.data)
 
     const showChangePass = () => {
         setState({...state, isModal: true})
@@ -74,18 +78,22 @@ const AccountSecurity = (props) => {
             domainName: window.location.host,
             userEmail: store.userEmail,
             userId: store.user.id,
-            twoFaType: 'telegram',
+            twoFaType: faType,
             twoFaStatus: true,
             currentTime: dateToTimestamp()
         }
         e.preventDefault()
         const res = await patchData('/personal_area/security/', obj)
-        const data = await res.data
-        setState({
-            ...state,
-            twoFaCode: data.userCode,
-            fieldShow: true
-        })
+        if (!res.data.bod) {
+            setState({
+                ...state,
+                twoFaCode: res.data.userCode,
+                fieldShow: true,
+            })
+        } else {
+            setShowBot(true)
+            setBotCode(res.data.code)
+        }
     }
 
     const onSubmit = async (data) => {
@@ -120,11 +128,33 @@ const AccountSecurity = (props) => {
             fieldShow: false,
             modal2FA: false
         })
+        checkTgTwoStep()
     }
 
     const onConfirmChange = () => {
         navigate('/')
         store.logout()
+    }
+
+    // const onChangeVal = (e) => {
+    //     setFaType(e.target.value)
+    //     console.log('value',  e.target.value)
+    // }
+
+    const checkTgTwoStep = async () => {
+        let geodata =  await getGeoData()
+        geodata.currentDate = getCurrentDate(dateToTimestamp())
+        geodata.domainName = window.location.host
+        delete geodata.id
+        delete geodata.email
+        geodata.userId = store.user.id
+        geodata.userEmail = store.userEmail
+        let userLocation = location.pathname.split(/[\\\/]/)
+        if (geodata) geodata.userAction = userLocation[userLocation.length - 1]
+
+        const res = await postData('/personal_area/profile/', geodata)
+        setStatus(res.data.user.twoStepStatus)
+        console.log('dataProfile', res.data)
     }
 
     return (
@@ -148,7 +178,7 @@ const AccountSecurity = (props) => {
                 <Form>
                     <Row className={'mb-3'}>
                         <Col>
-                            <Select {...twoFaReg('twoFaType')} name='select2FA' options={twoFaElems} classname='' />
+                            <Select value={faType} onChange={(e) => setFaType(e.target.value)}  name='select2FA' options={twoFaElems} classname='' />
                         </Col>
 
                         <Col>
@@ -158,6 +188,12 @@ const AccountSecurity = (props) => {
                     <Row>
                         {
                             state.fieldShow ?  <Input {...twoFaReg('code')} placeholder='code'/> : null
+                        }
+                        {
+                            showBot ? <>
+                                <a href={'https://t.me/twoStepCodeSender_bot'} target='_blank'>Click on bot: t.me/twoStepCodeSender_bot</a>
+                                <p>Paste this code: {botCode}</p>
+                            </> : null
                         }
                     </Row>
                     <Row className='mt-3'>

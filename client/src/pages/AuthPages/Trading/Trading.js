@@ -163,10 +163,10 @@ const Trading = () => {
                                 </Form>
                             </Col>
                             <Col className={'col-12 col-md-6'}>
-                                <Button classname={['mb-3']} onClick={() => setValue(500)}>500</Button>
-                                <Button classname={['mb-3']} onClick={() => setValue(1000)}>1000</Button>
-                                <Button classname={['mb-3']} onClick={() => setValue(2500)}>2500</Button>
-                                <Button classname={['mb-3']} onClick={() => setValue(5000)}>5000</Button>
+                                <Button classname={['mb-3', 'logout']} onClick={() => setValue(500)}>500</Button>
+                                <Button classname={['mb-3', 'logout']} onClick={() => setValue(1000)}>1000</Button>
+                                <Button classname={['mb-3', 'logout']} onClick={() => setValue(2500)}>2500</Button>
+                                <Button classname={['mb-3', 'logout']} onClick={() => setValue(5000)}>5000</Button>
                             </Col>
                         </Row>
                     </Col>

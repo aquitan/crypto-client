@@ -12,3 +12,13 @@
   background-color: #524ad0;
   align-self: end;
 }
+.chatInput {
+  background-color: transparent;
+  border: none;
+  color: #000;
+  border-bottom: 1px solid #000;
+  &:disabled {
+    color: #292b3c;
+    border-bottom: 1px solid transparent
+  }
+}

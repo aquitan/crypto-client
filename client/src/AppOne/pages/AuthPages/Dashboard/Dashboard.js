@@ -21,6 +21,7 @@ import MarketDepth from "../../../components/MarketDepth/MarketDepth";
 const Dashboard = () => {
     const [state, setState] = useState([])
     const [percent, setPercent] = useState([])
+
     const getDashboard = async () => {
         let geodata = await getGeoData()
         geodata.domainName = window.location.host
@@ -82,7 +83,7 @@ const Dashboard = () => {
     }
 
     console.log('store-total', store.total)
-
+    console.log('state--------', state)
     return (
         <Container>
             <Row>
@@ -99,8 +100,8 @@ const Dashboard = () => {
                 {/*</Row>*/}
                 <Row>
                     {
-                        state.length ?
-                            <b>Total balance: $ {state ? countTotalBalance() : <Preloader/>}</b>
+                        state ?
+                            <b>Total balance: ${state ? countTotalBalance() : <Preloader/>}</b>
                             : <Preloader />
                     }
 
