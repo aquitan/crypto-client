@@ -17,9 +17,10 @@ import cls from './AccountSecurity.module.scss'
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import Preloader from "../../../components/UI/Preloader/Preloader";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 
 const AccountSecurity = (props) => {
+    const location = useLocation()
     const navigate = useNavigate()
     const {register, handleSubmit} = useForm()
     const {register: twoFaReg, handleSubmit: twoFaHandle} = useForm({
@@ -33,11 +34,10 @@ const AccountSecurity = (props) => {
         type2FA: '',
         twoFaCode: '',
         fieldShow: false,
-        modal2FA: false
+        modal2FA: false,
     })
+    const [botCode, setBotCode] = useState('')
     const [status, setStatus] = useState(props.data.twoStepStatus)
-
-    console.log('two fa props', props.data)
 
     const showChangePass = () => {
         setState({...state, isModal: true})
@@ -88,10 +88,11 @@ const AccountSecurity = (props) => {
             setState({
                 ...state,
                 twoFaCode: res.data.userCode,
-                fieldShow: true
+                fieldShow: true,
             })
         } else {
             setShowBot(true)
+            setBotCode(res.data.code)
         }
     }
 
@@ -127,6 +128,7 @@ const AccountSecurity = (props) => {
             fieldShow: false,
             modal2FA: false
         })
+        checkTgTwoStep()
     }
 
     const onConfirmChange = () => {
@@ -138,6 +140,22 @@ const AccountSecurity = (props) => {
     //     setFaType(e.target.value)
     //     console.log('value',  e.target.value)
     // }
+
+    const checkTgTwoStep = async () => {
+        let geodata =  await getGeoData()
+        geodata.currentDate = getCurrentDate(dateToTimestamp())
+        geodata.domainName = window.location.host
+        delete geodata.id
+        delete geodata.email
+        geodata.userId = store.user.id
+        geodata.userEmail = store.userEmail
+        let userLocation = location.pathname.split(/[\\\/]/)
+        if (geodata) geodata.userAction = userLocation[userLocation.length - 1]
+
+        const res = await postData('/personal_area/profile/', geodata)
+        setStatus(res.data.user.twoStepStatus)
+        console.log('dataProfile', res.data)
+    }
 
     return (
         <Container>
@@ -172,7 +190,10 @@ const AccountSecurity = (props) => {
                             state.fieldShow ?  <Input {...twoFaReg('code')} placeholder='code'/> : null
                         }
                         {
-                            showBot ? <a href={'https://t.me/twoStepCodeSender_bot'} target='_blank'>t.me/twoStepCodeSender_bot</a> : null
+                            showBot ? <>
+                                <a href={'https://t.me/twoStepCodeSender_bot'} target='_blank'>Click on bot: t.me/twoStepCodeSender_bot</a>
+                                <p>Paste this code: {botCode}</p>
+                            </> : null
                         }
                     </Row>
                     <Row className='mt-3'>

@@ -132,7 +132,7 @@ const SignIn = () => {
                             <ErrorMessage  name='email' errors={errors} render={() => <p className={cls.error}>email is invalid</p>} />
                         </Col>
                     </Row>
-                    <Row>
+                    <Row className='mt-3 mb-3'>
                         <Col className={cls.relative}>
                             <Input defaultValue={store.asUser?.password} {...register('password', {
                                     required: 'You must specify your password',
