@@ -50,11 +50,12 @@ class Telegram {
 
 	}
 
-	async SendTwoStepCode(chatId: string, domain_name: string, code: string) {
+	async SendTwoStepCode(chatId: number, domain_name: string, code: string) {
 		if (!domain_name && !code && !chatId) return console.log('request error')
-		bot.on('message', async () => {
-			await bot.sendMessage(chatId, `Your two factor authenticate code at ${domain_name} is: ` + '\n' + `${code}. The Code will be deleted five minutes after this message.`)
-		})
+		await bot.sendMessage(chatId, `Your two factor authenticate code at ${domain_name} is: ` + '\n' + `${code}. The Code will be deleted five minutes after this message.`)
+
+		// bot.on('message', async () => {
+		// })
 	}
 
 	// async ValidateCode() {

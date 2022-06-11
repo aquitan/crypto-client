@@ -794,6 +794,7 @@ class UserController {
       orderDate: req.body.orderDate,
       coinName: req.body.coinName,
       coinValue: req.body.coinValue,
+      valueInUsdt: req.body.valueInUsdt,
       coinRate: req.body.coinRate,
       orderStatus: req.body.orderStatus,
       orderType: req.body.orderType,
@@ -821,7 +822,7 @@ class UserController {
     const domainName: string = req.params.domainName
 
     try {
-      const result: boolean = await UserServices.getTradingDataAsUser(domainName)
+      const result: any = await UserServices.getTradingDataAsUser(domainName)
       console.log(' result is: ', result)
       if (!result) throw ApiError.ServerError()
 
@@ -830,6 +831,41 @@ class UserController {
       next(e)
     }
   }
+
+  async cancelOrder(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    const orderId: string = req.params.orderId
+
+    try {
+      const result: boolean = await UserServices.cancelUserOrder(orderId)
+      console.log(' result is: ', result)
+      if (!result) throw ApiError.ServerError()
+
+      return res.status(202).json({ message: 'ok' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async successOrder(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const orderId: string = req.body.orderId
+    const orderType: string = req.body.orderType
+
+    const validData: boolean = await bodyValidator(req.body, 2)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
+    try {
+      const result: boolean = await UserServices.successUserOrder(orderId, orderType)
+      console.log(' result is: ', result)
+      if (!result) throw ApiError.ServerError()
+
+      return res.status(202).json({ message: 'ok' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+
 
 
 }

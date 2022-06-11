@@ -224,9 +224,12 @@ class AuthService {
     if (!userParamsInfo.twoStepStatus) return false
 
     const twoStepParams: any = await user2faParams.findOne({ userId: curUser.id })
+    console.log('cur params is => ', twoStepParams);
+
+
+    const code_2fa: string = await passwordGenerator(8)
 
     if (twoStepParams.twoStepType === 'email') {
-      const code_2fa: string = await passwordGenerator(8)
       await twoStepList.create({
         code: code_2fa,
         userEmail: email
@@ -240,11 +243,12 @@ class AuthService {
       return true
     }
     if (twoStepParams.twoStepType === 'telegram') {
-      const code_2fa: string = await passwordGenerator(8)
       await twoStepList.create({
         code: code_2fa,
         userEmail: email
       })
+      console.log('twoStepParams.telegramId => ', twoStepParams.telegramId);
+
       await telegram.SendTwoStepCode(twoStepParams.telegramId, curUser.domainName, code_2fa)
       setTimeout(async () => {
         await twoStepList.deleteOne({ code: code_2fa })

@@ -11,7 +11,7 @@ export const USER_2FA_PARAMS = {
     type: Number,
     require: true
   },
-  teleramId: {
+  telegramId: {
     type: Number || null,
     require: true
   },

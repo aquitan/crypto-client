@@ -6,8 +6,9 @@ export default interface TRADING_ORDER_INTERFACE {
   orderDate: number
   coinName: string
   coinValue: number
+  valueInUsdt: number
   coinRate: number
-  orderStatus: string
+  orderStatus: boolean | null
   orderType: boolean
   userId: Schema.Types.ObjectId
 }

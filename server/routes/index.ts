@@ -172,7 +172,10 @@ router.patch('/staff/trading/update_coin_rate/', staffController.updateCoinRate)
 router.get('/trading/get_valid_trading_data/:domainName/', authChecker, userController.getTradingData) // get trading data for user 
 router.put('/trading/make_order/', authChecker, userController.makeTradingOrder) // make new order to buy or sell crypto 
 router.get('/trading/order_history/:userId/:skipValue/:limitValue/', authChecker, userController.getOrderHistory) // get user orders history
-
+router.patch('/trading/cancel_order/:orderId/', authChecker, userController.cancelOrder) // calcel order
+router.patch('/trading/success_order/', authChecker, userController.successOrder) // success order at trading
+// add success order 
+// add remove order 
 
 
 // router.post('/staff/terms/get_term_by_domain/', staffController.getTermsByDomainName) // get terms by selected domain
