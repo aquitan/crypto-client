@@ -84,7 +84,7 @@ const AccountSecurity = (props) => {
         }
         e.preventDefault()
         const res = await patchData('/personal_area/security/', obj)
-        if (!res.data.bod) {
+        if (!res.data.bot) {
             setState({
                 ...state,
                 twoFaCode: res.data.userCode,
