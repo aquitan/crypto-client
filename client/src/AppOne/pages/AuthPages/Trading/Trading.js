@@ -7,17 +7,25 @@ import Button from "../../../components/UI/Button/Button";
 import Input from "../../../components/UI/Input/Input";
 import ApexCharts from 'apexcharts';
 import ReactApexChart from "react-apexcharts";
-import {getData} from "../../../services/StaffServices";
+import {getData, putData} from "../../../services/StaffServices";
 import Preloader from "../../../components/UI/Preloader/Preloader";
 import Order from "./components/Order/Order";
 import OrderItem from "./components/OrderItem/OrderItem";
 import {v4 as uuid} from 'uuid'
+import {store} from "../../../../index";
+import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 
 const Trading = () => {
-    const [textVal, setTextVal] = useState({text: '', mail: 0})
-    const [textValTwo, setTextValTwo] = useState({text: '', mail: 0})
-    const [series, setSeries] = useState([])
     const [curVal, setCurVal] = useState(0)
+    const [textVal, setTextVal] = useState({usd: 0, crypto: 0})
+    const [formValueFirst, setFromValueFirst] = useState(0)
+    const [formValueSecond, setFromValueSecond] = useState(0)
+    const [textValTwo, setTextValTwo] = useState({usd: 0, crypto: 0})
+    const [series, setSeries] = useState([])
+    const [history, setHistory] = useState([])
+    const [ask, setAsk] = useState([])
+    const [bid, setBid] = useState([])
+
     const [orderBuy, setOrderBuy] = useState([])
     const [orderSell, setOrderSell] = useState([])
     const [state, setState] = useState({
@@ -86,6 +94,10 @@ const Trading = () => {
     useEffect(() => {
         getOhlc()
         getSocket()
+        getHistory()
+        getTradingData()
+        getSocketOrder()
+        getBinanceCnadlestickApi()
     }, [])
 
 
@@ -102,7 +114,50 @@ const Trading = () => {
             setCurVal(stockObject.p)
         }
     }
+    const getSocketOrder = () => {
+        const socket = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@depth20@1000ms')
+        // socket.onopen = () => {
+        //     socket.send(JSON.stringify({
+        //         id: 1
+        //     }))
+        // }
+        let stockObject = null;
+        socket.onmessage = (e) => {
+            let stockObject = JSON.parse(e.data);
+            setAsk(stockObject.asks)
+            setBid(stockObject.bids)
+        }
+    }
 
+    const getHistory = async () => {
+        const res = await getData(`/trading/order_history/${store.user.id}/${0}/10/`)
+        console.log('history', res.data)
+    }
+    const getTradingData = async () => {
+        const res = await getData(`/trading/get_valid_trading_data/${window.location.host}`)
+        console.log('history', res.data)
+    }
+
+    const sendOrderData = async (coinRate, coinValue, orderStatus, orderType) => {
+        const obj = {
+            userEmail: store.user.email,
+            domainName: window.location.host,
+            orderDate: dateToTimestamp(new Date()),
+            coinName: 'BTC',
+            coinRate,
+            coinValue,
+            orderStatus,
+            orderType,
+            userId: store.user.id
+        }
+
+        const res = await putData('/trading/make_order/', obj)
+    }
+
+    const getBinanceCnadlestickApi = async () => {
+        const res = await fetch('https://api.binance.com/api/v3/ping')
+        console.log('res-binance', res.data)
+    }
 
     const getOhlc = async () => {
         const res = await fetch('https://api.coingecko.com/api/v3/coins/bitcoin/ohlc?vs_currency=usd&days=1')
@@ -124,14 +179,25 @@ const Trading = () => {
     }
 
     const onChangeText = (e) => {
-        let calc = +e.target.value / parseInt(curVal)
-        setTextVal({text: e.target.value, mail: calc})
-
+        let calc = +e.target.value * parseInt(textVal.crypto)
+        setTextVal({...textVal, usd: +e.target.value})
+        setFromValueFirst(calc)
+    }
+    const onChangeCrypto = (e) => {
+        let calc = parseInt(textVal.usd) * +e.target.value
+        setTextVal({...textVal, crypto: +e.target.value})
+        setFromValueFirst(calc)
     }
 
     const onChangeSecondText = (e) => {
-        let calc = +e.target.value / parseInt(curVal)
-        setTextValTwo({text: e.target.value, mail: calc})
+        let calc = +e.target.value * parseInt(textVal.crypto)
+        setTextValTwo({...textValTwo, usd: +e.target.value})
+        setFromValueSecond(calc)
+    }
+    const onChangeCryptoTwo = (e) => {
+        let calc = parseInt(textValTwo.usd) * +e.target.value
+        setTextValTwo({...textValTwo, crypto: +e.target.value})
+        setFromValueSecond(calc)
     }
 
     const onSubmitFirstForm = (e) => {
@@ -148,46 +214,85 @@ const Trading = () => {
     }
 
     const setValue = (val) => {
-        let calc = +val / parseInt(curVal)
-        setTextVal({text: val, mail: calc})
+        // let calc = +val / parseInt(curVal)
+        // setTextVal({text: val, mail: calc})
     }
     const setValueBuy = (val) => {
-        let calc = +val / parseInt(curVal)
-        setTextValTwo({text: val, mail: calc})
+        // let calc = +val / parseInt(curVal)
+        // setTextValTwo({text: val, mail: calc})
     }
 
 
 
-    const onSell = (e) => {
+    const onSell = async (e) => {
         e.preventDefault()
         let obj = {
-            type: 'sell', price: curVal, amount: textVal.mail, total: curVal
+            type: 'sell', price: textVal.usd, amount: textVal.crypto, total: textVal.usd
         }
-        console.log('obj', obj)
         setOrderSell([...orderSell, obj])
-        setTextVal({text: '', mail: 0})
+        setTextVal({usd: '', crypto: ''})
+        await sendOrderData(textVal.usd, textVal.crypto, true, false)
+        makeCandle()
     }
-    const onBuy = (e) => {
+
+    const makeCandle = () => {
+        let oldArr = state.series[0].data
+        console.log('oldArr', oldArr)
+        let object = {
+            x: new Date(),
+            y: [+curVal, +curVal+250, +curVal-120, +curVal+550]
+        }
+        setState({...state, series: [
+                {
+                    data: [...oldArr, object]
+                }
+            ]})
+
+        // setInterval(() => {
+        //     // setState({...state, series: [
+        //     //         {
+        //     //             data: [...state.series[0].data, +state.series[0].data[state.series[0].data.length-1].y[1]+10]
+        //     //         }
+        //     //     ]})
+        // }, 1000)
+    }
+
+    const onBuy = async (e) => {
         e.preventDefault()
         let obj = {
-            type: 'buy', price: curVal, amount: textValTwo.mail, total: curVal
+            type: 'buy', price: textValTwo.usd, amount: textValTwo.crypto, total: textValTwo.usd
         }
         console.log('obj', obj)
         setOrderBuy([...orderBuy, obj])
-        setTextValTwo({text: '', mail: 0})
+        setTextValTwo({crypto: '', mail: 0})
+        await sendOrderData(textValTwo.usd, textValTwo.crypto, true, true)
     }
 
+    const makeRandomOrder = (min, max) => {
+        let val = min - 10 + Math.random() * (max - min + 10);
+        let obj = {
+            price: val, amount: 0.0123, total: val
+        }
+        // setOrderBuy([...orderBuy, obj])
+        // if (orderBuy.length > 15) {
+        //     setOrderBuy(prevState => {
+        //         prevState.shift()
+        //     })
+        // }
+    }
+    makeRandomOrder(curVal, curVal)
+
     return (
-        <Container>
+        <Container style={{maxWidth: 1700, width: '100%'}}>
             <h1 className={'mb-3'}>Trading</h1>
 
             <Row>
-                <Col className={'col-12 col-lg-4'}>
+                <Col className={'container-fluid'}>
                     <ButtonCard title={'Sell Orders'}>
                         <Order>
-                            <Row className={'text-center mb-3'}>
+                            <Row style={{fontSize: 13}} className={'text-center mb-3'}>
                                 <Col>Price USD</Col>
-                                <Col>Amount BTC</Col>
+                                <Col>Amount Crypto</Col>
                                 <Col>Total Price</Col>
                             </Row>
                             {
@@ -197,11 +302,18 @@ const Trading = () => {
                                     })
                                     : null
                             }
+                            {
+                                bid.length ?
+                                    bid.map(order => {
+                                        return <OrderItem key={uuid()} type={'sell'} price={order[0]} amount={+order[1]} total={order[0] * +order[1]} />
+                                    })
+                                    : null
+                            }
                         </Order>
                     </ButtonCard>
                     <ButtonCard title={'Buy Orders'}>
                         <Order>
-                            <Row className={'text-center mb-3'}>
+                            <Row style={{fontSize: 13}} className={'text-center mb-3'}>
                                 <Col>Price USD</Col>
                                 <Col>Amount BTC</Col>
                                 <Col>Total Price</Col>
@@ -213,11 +325,18 @@ const Trading = () => {
                                     })
                                     : null
                             }
+                            {
+                                ask.length ?
+                                    ask.map(order => {
+                                        return <OrderItem key={uuid()} type={'buy'} price={order[0]} amount={+order[1]} total={order[0] * +order[1]} />
+                                    })
+                                    : null
+                            }
                         </Order>
                     </ButtonCard>
                 </Col>
-                <Col className={'col-12 col-lg-8'}>
-                    <ButtonCard title={`${parseInt(curVal).toFixed(5)} $`}>
+                <Col className={'col-12 col-lg-9'}>
+                    <ButtonCard title={`BTC: ${parseInt(curVal).toFixed(5)} $`}>
                         {
                             series ?
                                 <ReactApexChart options={state.options} series={state.series} type="candlestick" height={350} />
@@ -230,30 +349,40 @@ const Trading = () => {
                     {/*        <div id="chartdiv"/>*/}
                     {/*    </div>*/}
                     {/*</ButtonCard>*/}
-                    <ButtonCard>
+                    <ButtonCard title={'Make order'}>
                         <Row>
                             <Col>
-                                <p>Click Button to Quick Amount</p>
                                 <Row className="d-flex justify-content-between flex-wrap trading">
-                                    <Col className={'col-12 col-md-6'}>
+                                    <Col className={'col-12'}>
                                         <Form>
                                             <Row className={'mb-3'}>
                                                 <Input
                                                     label='Amount in USD'
-                                                    type="number"
-                                                    placeholder='Enter amount'
+                                                    type="text"
+                                                    placeholder='Enter your price'
                                                     onChange={onChangeText}
                                                     value={textVal.text}
-
                                                 />
                                             </Row>
                                             <Row className={'mb-3'}>
                                                 <Input
                                                     label="Amount in Crypto"
-                                                    type="number"
+                                                    type="text"
+                                                    placeholder={'Enter your amount in crypto'}
+                                                    onChange={onChangeCrypto}
                                                     value={textVal.mail}
-                                                    disabled
                                                 />
+                                            </Row>
+                                            <Row>
+                                                <Col style={{padding: '0 15px'}} className={'d-flex justify-content-between'}>
+                                                    <Button classname={['mb-3', 'round']} onClick={() => setValue(25)}>25%</Button>
+                                                    <Button classname={['mb-3', 'round']} onClick={() => setValue(50)}>50%</Button>
+                                                    <Button classname={['mb-3', 'round']} onClick={() => setValue(75)}>75%</Button>
+                                                    <Button classname={['mb-3', 'round']} onClick={() => setValue(100)}>100%</Button>
+                                                </Col>
+                                            </Row>
+                                            <Row className={'mb-3'}>
+                                                <Input value={formValueFirst} disabled placeholder={'Total in USD'}/>
                                             </Row>
                                             <Row className={'mb-3'}>
                                                 <Col>
@@ -261,25 +390,19 @@ const Trading = () => {
                                                 </Col>
                                             </Row>
                                         </Form>
-                                    </Col>
-                                    <Col className={'col-12 col-md-6'}>
-                                        <Button classname={['mb-3', 'logout']} onClick={() => setValue(500)}>500</Button>
-                                        <Button classname={['mb-3', 'logout']} onClick={() => setValue(1000)}>1000</Button>
-                                        <Button classname={['mb-3', 'logout']} onClick={() => setValue(2500)}>2500</Button>
-                                        <Button classname={['mb-3', 'logout']} onClick={() => setValue(5000)}>5000</Button>
+
                                     </Col>
                                 </Row>
                             </Col>
                             <Col>
-                                <p>Click Button to Quick Amount</p>
                                 <Row className="d-flex justify-content-between flex-wrap trading">
-                                    <Col className={'col-12 col-md-6'}>
+                                    <Col className={'col-12'}>
                                         <Form>
                                             <Row className={'mb-3'}>
                                                 <Input
                                                     label='Amount in USD'
-                                                    type="number"
-                                                    placeholder='Enter amount'
+                                                    type="text"
+                                                    placeholder='Enter your price'
                                                     onChange={onChangeSecondText}
                                                     value={textValTwo.text}
 
@@ -288,23 +411,31 @@ const Trading = () => {
                                             <Row className={'mb-3'}>
                                                 <Input
                                                     label="Amount in Crypto"
-                                                    type="number"
-                                                    value={textValTwo.mail}
-                                                    disabled
+                                                    type="text"
+                                                    onChange={onChangeCryptoTwo}
+                                                    placeholder={'Enter your amount in crypto'}
                                                 />
                                             </Row>
+
+                                            <Row>
+                                                <Col style={{padding: '0 15px'}} className={'d-flex justify-content-between'}>
+                                                    <Button classname={['mb-3', 'round']} onClick={() => setValueBuy(25)}>25%</Button>
+                                                    <Button classname={['mb-3', 'round']} onClick={() => setValueBuy(50)}>50%</Button>
+                                                    <Button classname={['mb-3', 'round']} onClick={() => setValueBuy(75)}>75%</Button>
+                                                    <Button classname={['mb-3', 'round']} onClick={() => setValueBuy(100)}>100%</Button>
+                                                </Col>
+                                            </Row>
+
+                                            <Row className={'mb-3'}>
+                                                <Input value={formValueSecond} placeholder={'Total in USD'} />
+                                            </Row>
+
                                             <Row className={'mb-3'}>
                                                 <Col>
                                                     <Button onClick={onBuy} classname={['green_btn']} >Buy</Button>
                                                 </Col>
                                             </Row>
                                         </Form>
-                                    </Col>
-                                    <Col className={'col-12 col-md-6'}>
-                                        <Button classname={['mb-3', 'logout']} onClick={() => setValueBuy(500)}>500</Button>
-                                        <Button classname={['mb-3', 'logout']} onClick={() => setValueBuy(1000)}>1000</Button>
-                                        <Button classname={['mb-3', 'logout']} onClick={() => setValueBuy(2500)}>2500</Button>
-                                        <Button classname={['mb-3', 'logout']} onClick={() => setValueBuy(5000)}>5000</Button>
                                     </Col>
                                 </Row>
                             </Col>
@@ -316,6 +447,24 @@ const Trading = () => {
             <Row>
                 <Col>
                     <ButtonCard title={'History'}>
+                        <Row style={{borderBottom: '1px solid #fff', marginBottom: 10, paddingBottom: 10}}>
+                            <Col>Date</Col>
+                            <Col>Type</Col>
+                            <Col>Coin</Col>
+                            <Col>Price</Col>
+                            <Col>Amount</Col>
+                            <Col>Action</Col>
+                        </Row>
+                        <Row style={{borderBottom: '1px solid #fff', marginBottom: 10, paddingBottom: 10, color: 'lightgreen'}}>
+                            <Col>2020/06/10</Col>
+                            <Col>Buy</Col>
+                            <Col>BTC</Col>
+                            <Col>30110</Col>
+                            <Col>0.23526</Col>
+                            <Col>
+                                <Button classname={['round', 'green']}>Abort</Button>
+                            </Col>
+                        </Row>
 
                     </ButtonCard>
                 </Col>

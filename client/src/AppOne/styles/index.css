@@ -22,7 +22,7 @@ body {
 .container {
   overflow-y: auto;
   position: relative;
-  max-width: 1540px;
+  max-width: 1700px;
 }
 
 body *::-webkit-scrollbar {

@@ -55,6 +55,7 @@
     background-color: lightgreen;
     color: #fff;
     border: lightgreen;
+    border-radius: 15px;
 }
 
 .user-green {
@@ -72,6 +73,7 @@
     background-color: tomato;
     color: #fff;
     border: tomato;
+    border-radius: 15px;
 }
 
 .user-red {
@@ -113,6 +115,15 @@
     background-color: tomato;
     border-color: tomato;
 }
+
+.round {
+    height: 40px;
+    border-radius: 5px;
+    padding: 0;
+    max-width: 80px;
+    min-width: 50px;
+}
+
 @media (max-width: 430px) {
     .button {
         max-width: 100%;
