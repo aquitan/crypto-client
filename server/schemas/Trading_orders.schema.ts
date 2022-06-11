@@ -21,12 +21,16 @@ export const TRADING_ORDER_SCHEMA = {
     type: Number,
     require: true
   },
+  valueInUsdt: {
+    type: Number,
+    require: true
+  },
   coinRate: {
     type: Number,
     require: true
   },
   orderStatus: {
-    type: String,
+    type: Boolean || null,
     require: true
   },
   orterType: {

@@ -5,7 +5,7 @@ interface BalanceParams {
   coinName: string
   coinFullName: string
   coinBalance: number
-  staffId: Schema.Types.ObjectId
+  userId: Schema.Types.ObjectId
 }
 const UserBalance = new Schema<BalanceParams>(USER_BALANCE_SCHEMA)
 

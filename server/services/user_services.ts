@@ -177,15 +177,18 @@ class UserServices {
 				teleramId: telegramId,
 				userId: transferObject.userId
 			})
-			// await telegram.ValidateCode()
+
 		}
 
-		await twoStepParams.create({
-			twoStepType: transferObject.twoFaType,
-			enableDate: transferObject.enableDate,
-			teleramId: null,
-			userId: transferObject.userId
-		})
+		if (transferObject.twoFaType === 'email') {
+			await twoStepParams.create({
+				twoStepType: transferObject.twoFaType,
+				enableDate: transferObject.enableDate,
+				teleramId: null,
+				userId: transferObject.userId
+			})
+		}
+
 		await userParams.findOneAndUpdate({ userId: transferObject.userId }, {
 			twoStepStatus: true
 		})
@@ -649,6 +652,27 @@ class UserServices {
 		console.log('candidate is => ', candidate);
 		if (!candidate) return false
 
+		const coinBalance: any = await userBalance.findOne({
+			coinName: transferObject.coinName,
+			userId: transferObject.userId
+		})
+		console.log('coinBalance is => ', coinBalance);
+		if (!coinBalance) return false
+
+		const orderPermission: number = coinBalance.coinBalance - transferObject.coinValue
+		console.log('orderPermission => ', orderPermission);
+		if (orderPermission < 0) return false
+
+		await userBalance.findOneAndUpdate(
+			{
+				coinName: transferObject.coinName,
+				userId: transferObject.userId
+			},
+			{
+				coinBalance: orderPermission
+			}
+		)
+
 		await tradingOrders.create({
 			userEmail: transferObject.userEmail,
 			domainName: transferObject.domainName,
@@ -656,7 +680,7 @@ class UserServices {
 			coinName: transferObject.coinName,
 			coinValue: transferObject.coinValue,
 			coinRate: transferObject.coinRate,
-			orderStatus: transferObject.orderStatus,
+			orderStatus: null,
 			orderType: transferObject.orderType,
 			userId: transferObject.userId
 		})
@@ -675,6 +699,166 @@ class UserServices {
 		if (!ratesData) return false
 
 		return ratesData
+	}
+
+	async cancelUserOrder(orderId: string) {
+
+		const curOrder: any = await tradingOrders.findOne({ _id: orderId })
+		console.log('curOrder => ', curOrder);
+		if (!curOrder) return false
+
+		const getBalance: any = await userBalance.findOne({
+			userId: curOrder.userId,
+			coinName: curOrder.coinName
+		})
+		console.log('getBalance => ', getBalance);
+		if (!getBalance) return false
+
+		const getFee: number = (curOrder.coinValue / 100) * 1
+		const newBalance: number = getBalance.coinBalance + (curOrder.coinValue - getFee)
+
+		await userBalance.findOneAndUpdate({
+			userId: curOrder.userId,
+			coinName: curOrder.cionName,
+			coinBalance: newBalance
+		})
+
+		const updatedBalance: any = await userBalance.findOne({
+			userId: curOrder.userId,
+			coinName: curOrder.coinName
+		})
+
+		console.log('updatedBalance => ', updatedBalance);
+		if (!updatedBalance || updatedBalance.coinBalance === getBalance.coinBalance) return false
+		await tradingOrders.findOneAndUpdate({ _id: orderId, orderStatus: false })
+
+		const updatedOrder: any = await tradingOrders.findOne({ _id: orderId })
+		console.log('updatedOrder => ', updatedOrder);
+		if (updatedOrder.orderStatus !== false) return false
+
+		return true
+	}
+
+	async successUserOrder(orderId: string, orderType: string) {
+
+		const curOrder: any = await tradingOrders.findOne({ _id: orderId })
+		console.log('curOrder => ', curOrder);
+		if (!curOrder) return false
+
+		// if user buy crypto 
+		if (orderType === 'true') {
+
+			const getCoinBalance: any = await userBalance.findOne({
+				userId: curOrder.userId,
+				coinName: curOrder.coinName
+			})
+			console.log('getCoinBalance => ', getCoinBalance);
+			if (!getCoinBalance) return false
+
+			const getUsdtBalance: any = await userBalance.findOne({
+				userId: curOrder.userId,
+				coinName: 'USDT'
+			})
+			console.log('getUsdtBalance => ', getUsdtBalance);
+			if (!getUsdtBalance) return false
+
+			const getFee: number = (curOrder.coinValue / 100) * 1
+			const newUsdtBalance: number = getUsdtBalance.coinBalance - curOrder.valueInUsdt
+			const newCryptoBalance: number = getUsdtBalance.coinBalance + (curOrder.coinValue - getFee)
+
+			// update usdt balance =>
+			await userBalance.findOneAndUpdate({
+				userId: curOrder.userId,
+				coinName: 'USDT',
+				coinBalance: newUsdtBalance
+			})
+
+			// update crypto balance
+			await userBalance.findOneAndUpdate({
+				userId: curOrder.userId,
+				coinName: curOrder.coinName,
+				coinBalance: newCryptoBalance
+			})
+
+			const updatedCryptoBalance: any = await userBalance.findOne({
+				userId: curOrder.userId,
+				coinName: curOrder.coinName
+			})
+			console.log('updatedCryptoBalance => ', updatedCryptoBalance);
+			if (!updatedCryptoBalance || updatedCryptoBalance.coinBalance === getCoinBalance.coinBalance) return false
+
+			const updatedUsdtBalance: any = await userBalance.findOne({
+				userId: curOrder.userId,
+				coinName: 'USDT'
+			})
+			console.log('updatedUsdtBalance => ', updatedUsdtBalance);
+			if (!updatedUsdtBalance || updatedUsdtBalance.coinBalance === getUsdtBalance.coinBalance) return false
+
+			await tradingOrders.findOneAndUpdate({ _id: orderId, orderStatus: true })
+
+			const updatedOrder: any = await tradingOrders.findOne({ _id: orderId })
+			console.log('updatedOrder => ', updatedOrder);
+			if (updatedOrder.orderStatus !== true) return false
+
+			return true
+		}
+
+		if (orderType === 'false') {
+
+			const getCoinBalance: any = await userBalance.findOne({
+				userId: curOrder.userId,
+				coinName: curOrder.coinName
+			})
+			console.log('getCoinBalance => ', getCoinBalance);
+			if (!getCoinBalance) return false
+
+			const getUsdtBalance: any = await userBalance.findOne({
+				userId: curOrder.userId,
+				coinName: 'USDT'
+			})
+			console.log('getUsdtBalance => ', getUsdtBalance);
+			if (!getUsdtBalance) return false
+
+			const getFee: number = (curOrder.coinValue / 100) * 1
+			const newUsdtBalance: number = getUsdtBalance.coinBalance + curOrder.valueInUsdt
+			const newCryptoBalance: number = getUsdtBalance.coinBalance - (curOrder.coinValue - getFee)
+
+			await userBalance.findOneAndUpdate({
+				userId: curOrder.userId,
+				coinName: 'USDT',
+				coinBalance: newUsdtBalance
+			})
+
+			// update crypto balance
+			await userBalance.findOneAndUpdate({
+				userId: curOrder.userId,
+				coinName: curOrder.coinName,
+				coinBalance: newCryptoBalance
+			})
+
+			const updatedCryptoBalance: any = await userBalance.findOne({
+				userId: curOrder.userId,
+				coinName: curOrder.coinName
+			})
+			console.log('updatedCryptoBalance => ', updatedCryptoBalance);
+			if (!updatedCryptoBalance || updatedCryptoBalance.coinBalance === getCoinBalance.coinBalance) return false
+
+			const updatedUsdtBalance: any = await userBalance.findOne({
+				userId: curOrder.userId,
+				coinName: 'USDT'
+			})
+			console.log('updatedUsdtBalance => ', updatedUsdtBalance);
+			if (!updatedUsdtBalance || updatedUsdtBalance.coinBalance === getUsdtBalance.coinBalance) return false
+
+			await tradingOrders.findOneAndUpdate({ _id: orderId, orderStatus: true })
+
+			const updatedOrder: any = await tradingOrders.findOne({ _id: orderId })
+			console.log('updatedOrder => ', updatedOrder);
+			if (updatedOrder.orderStatus !== true) return false
+
+
+			return true
+		}
 	}
 
 
