@@ -33,7 +33,7 @@ export const TRADING_ORDER_SCHEMA = {
     type: Boolean || null,
     require: true
   },
-  orterType: {
+  orderType: {
     type: Boolean,
     require: true
   },

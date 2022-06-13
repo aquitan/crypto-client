@@ -10,6 +10,7 @@ interface UserParams {
   isBanned: boolean
   swapBan: boolean
   internalBan: boolean
+  chatBan: boolean
   isActivated: boolean
   premiumStatus: boolean
   twoStepStatus: boolean

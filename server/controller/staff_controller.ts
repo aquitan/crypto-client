@@ -93,6 +93,21 @@ class StaffController {
     }
   }
 
+
+  // async changeUserDomain(req: express.Request, res: express.Response, next: express.NextFunction) {
+  //   const user_id: string = req.body.
+  //   try {
+  //     const user: any = await staffService.GetUserDetail(user_id)
+  //     console.log('found user: ', user)
+  //     if (!user) return res.status(400).json({ message: 'wrong data' })
+
+  //     return res.status(200).json({ user: user, message: 'ok' })
+  //   } catch (e) {
+  //     next(e)
+  //   }
+  // }
+
+
   async getIpForMatch(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       const { ipAddress } = req.body
@@ -214,6 +229,53 @@ class StaffController {
       await staffService.saveStaffLogs(staffEmail, ` удалил KYC юзера ${userEmail} `, domainName, staffId)
 
       return res.status(202).json({ message: 'kyc was delete' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async changeUserDomain(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const { adminPermission, newDomain, userEmail } = req.body
+    const rootAccess: boolean = req.body.rootAccess
+
+    const validData: boolean = await bodyValidator(req.body, 4)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
+    try {
+      if (rootAccess || adminPermission) {
+        const result: boolean = await staffService.changeUserDomain(userEmail, newDomain)
+        if (!result) throw ApiError.ServerError()
+
+        return res.status(202).json(result)
+      }
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async updateChatBan(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const { staffId, staffEmail, chatStatus, userEmail, domainName } = req.body
+    const rootAccess: boolean = req.body.rootAccess
+
+    const validData: boolean = await bodyValidator(req.body, 6)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
+    try {
+      if (rootAccess) {
+        const result: boolean | string = await staffService.updateChatBanForUser(userEmail, chatStatus)
+        if (!result) throw ApiError.ServerError()
+
+        return res.status(202).json(result)
+      }
+      const result: boolean | string = await staffService.updateChatBanForUser(userEmail, chatStatus)
+      if (!result) throw ApiError.ServerError()
+
+      await staffService.saveStaffLogs(staffEmail, ` поменял статус чата юзера ${userEmail} на ${chatStatus}`, domainName, staffId)
+      await telegram.sendMessageByStaffActions(staffEmail, ` поменял статус чата юзера ${userEmail} на ${chatStatus}`, domainName)
+      return res.status(202).json(result)
+
+
     } catch (e) {
       next(e)
     }
@@ -637,7 +699,7 @@ class StaffController {
       // if (!checkTerms) await staffService.addTerms(req.body.fullDomainName)
 
       if (!rootAccess) {
-        await telegram.sendMessageByStaffActions(req.body.staffEmail, ` создал новый домен ${req.body.fullDomainName}} `, req.body.domainName)
+        await telegram.sendMessageByStaffActions(req.body.staffEmail, ` создал новый домен ${req.body.fullDomainName} `, req.body.domainName)
         await staffService.saveStaffLogs(req.body.staffEmail, ` создал новый домен ${req.body.fullDomainName} `, '', req.body.staffId)
       }
       return res.status(201).json({ message: 'ok' })

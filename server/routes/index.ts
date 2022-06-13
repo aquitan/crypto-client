@@ -64,6 +64,8 @@ router.post('/staff/dashboard', staffController.staffDashboard) // base tg chann
 // action with user => 
 router.post('/staff/users/', staffController.usersList) // get all users (if staff => when staff is domain owner) (if admin & other => all users )
 router.get('/staff/users/user_detail/:id/', staffController.userDetail) // selected user detail info
+router.patch('/staff/users/user_detail/change_user_domain/', staffController.changeUserDomain) // // change user domain
+router.patch('/staff/users/user_detail/update_chat_ban/', staffController.updateChatBan) // update suppot chat ban for user
 router.patch('/staff/users/user_detail/update_error_for_user/', staffController.updateUserError) // update active withdrawal error for user
 router.patch('/staff/users/user_detail/update_user_deposit_fee/', staffController.updateDepositFee) // update deposit fee for user by staff
 router.patch('/staff/users/user_detail/update_premium_status/', staffController.updatePremiumStatus) // update premium status for user
@@ -106,7 +108,7 @@ router.get('/staff/errors/get_all_errors/:domainName/', staffController.getAllEr
 
 // support chat + secure deal chat logic => 
 // support chat -----------
-// // common usage
+// common usage
 // router.get('/support/get_chat_for_user/:userId/', authChecker, userController.getChatData) // get chat history for user
 // router.put('/support/send_text_message/', authChecker, userController.sendSupportMessage) // endpoitn for text messages from user
 // router.put('/support/send_images/', authChecker, userController.saveUploadImages) // save image from chat 
@@ -172,7 +174,7 @@ router.patch('/staff/trading/update_coin_rate/', staffController.updateCoinRate)
 router.get('/trading/get_valid_trading_data/:domainName/', authChecker, userController.getTradingData) // get trading data for user 
 router.put('/trading/make_order/', authChecker, userController.makeTradingOrder) // make new order to buy or sell crypto 
 router.get('/trading/order_history/:userId/:skipValue/:limitValue/', authChecker, userController.getOrderHistory) // get user orders history
-router.patch('/trading/cancel_order/:orderId/', authChecker, userController.cancelOrder) // calcel order
+router.patch('/trading/cancel_order/:orderId/', authChecker, userController.cancelOrder) // cancel order
 router.patch('/trading/success_order/', authChecker, userController.successOrder) // success order at trading
 // add success order 
 // add remove order 
@@ -185,6 +187,8 @@ router.post('/staff/project_support_form/', staffController.projectSupportReques
 
 
 // only for root access 
+
+
 
 
 

@@ -106,6 +106,7 @@ class AuthService {
       isBanned: false,
       swapBan: false,
       internalBan: false,
+      chatBan: false,
       isActivated: false,
       premiumStatus: false,
       twoStepStatus: false,
@@ -270,6 +271,9 @@ class AuthService {
 
   async login(email: string, password: string, user_domain: string) {
     const user: any = await baseUserData.findOne({ email: email })
+    const isStaff: any = await userParams.findOne({ userId: user.id })
+    console.log('isStaff =>  ', isStaff);
+
     console.log('found user: ', user);
 
     if (!user || user.password !== password) return false
@@ -281,6 +285,16 @@ class AuthService {
     console.log('domainInfo => ', domainInfo);
 
     if (!domainInfo) {
+      if (isStaff) {
+        const userDto: any = await getUserData(email)
+        const tokens: any = tokenService.generateTokens({ ...userDto })
+        await tokenService.saveToken(userDto.id, tokens.refreshToken)
+
+        return {
+          ...tokens,
+          user: userDto
+        }
+      }
       if (user.email !== email || user.domainName !== user_domain) {
         console.log('wrong user data');
         return false

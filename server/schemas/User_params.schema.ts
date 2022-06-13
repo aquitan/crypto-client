@@ -29,6 +29,10 @@ export const USER_PARAMS = {
     type: Boolean,
     require: true
   },
+  chatBan: {
+    type: Boolean,
+    require: true
+  },
   isActivated: {
     type: Boolean,
     require: true

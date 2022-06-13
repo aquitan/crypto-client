@@ -362,6 +362,45 @@ class staffService {
 	}
 
 
+	async changeUserDomain(userEmail: string, newDomain: string) {
+		const user: any = await baseUserData.findOne({ email: userEmail })
+		console.log('found user is: ', user);
+		if (!user) return false
+
+		await baseUserData.findOneAndUpdate(
+			{ email: userEmail },
+			{ domainName: newDomain }
+		)
+
+		const updatedDomain: any = await baseUserData.findOne({
+			email: userEmail
+		})
+		console.log('new user domain is  => ', updatedDomain.domainName);
+		if (!updatedDomain) return false
+		return true
+	}
+
+	async updateChatBanForUser(userEmail: string, chatStatus: boolean) {
+		const user: any = await baseUserData.findOne({ email: userEmail })
+		console.log('found user is: ', user);
+		if (!user) return false
+
+		await userParams.findOneAndUpdate(
+			{ userId: user.id },
+			{ chatBan: chatStatus }
+		)
+
+		const updatedStatus: any = await userParams.findOne({
+			userId: user.id
+		})
+		console.log('cur error => ', updatedStatus.chatBan);
+
+		if (!updatedStatus) return false
+		return updatedStatus.chatBan
+
+	}
+
+
 	async UpdateUserError(userEmail: string, curError: string) {
 		const user: any = await baseUserData.findOne({ email: userEmail })
 		console.log('found user is: ', user);
@@ -1289,6 +1328,8 @@ class staffService {
 		console.log('received domain: ', verifDomain);
 		if (!verifDomain) return false
 
+		// add all domains list & all trading data & orders by every domain 
+
 		const orderList: any = await tradingOrders.find({ domainName: domainName })
 		console.log('received orderList: ', orderList.length);
 		if (!orderList) return false
@@ -1331,7 +1372,7 @@ class staffService {
 			})
 
 		console.log('received coin rate: ', validRate);
-		if (!validRate) return false
+		if (validRate) return false
 
 		// const curValue = (validRate.coinRate / transferObject.valueInPercent) * 100
 		await coinRates.findOneAndUpdate(
@@ -1342,7 +1383,7 @@ class staffService {
 			{
 				coinName: transferObject.coinName,
 				valueInPercent: transferObject.valueInPercent,
-				rateCorrectType: transferObject.growthParams,
+				growthParams: transferObject.growthParams,
 				domainName: transferObject.domainName,
 				timeRangeInMs: transferObject.timeRangeInMs
 			})
