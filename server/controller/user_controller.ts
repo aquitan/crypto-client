@@ -865,6 +865,17 @@ class UserController {
     }
   }
 
+  async getChatData(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const userId: string = req.params.userId
+
+    try {
+      // get chatBan for user ===>
+
+
+    } catch (e) {
+      next(e)
+    }
+  }
 
 
 

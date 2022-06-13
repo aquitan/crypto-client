@@ -4,7 +4,7 @@ import { COIN_RATES_SCHEMA } from '../schemas/Coin_rates.schema'
 interface rate {
   coinName: string
   valueInPercent: number
-  rateCorrectType: boolean
+  growthParams: boolean
   timeRangeInMs: number
   domainName: string
 }
