@@ -7,13 +7,15 @@ import Button from "../../../components/UI/Button/Button";
 import Input from "../../../components/UI/Input/Input";
 import ApexCharts from 'apexcharts';
 import ReactApexChart from "react-apexcharts";
-import {getData, putData} from "../../../services/StaffServices";
+import {getData, patchData, putData} from "../../../services/StaffServices";
 import Preloader from "../../../components/UI/Preloader/Preloader";
 import Order from "./components/Order/Order";
 import OrderItem from "./components/OrderItem/OrderItem";
 import {v4 as uuid} from 'uuid'
 import {store} from "../../../../index";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
+import {getCurrentDate} from "../../../utils/getCurrentDate";
+import {SwalSimple} from "../../../utils/SweetAlert";
 
 const Trading = () => {
     const [curVal, setCurVal] = useState(0)
@@ -38,10 +40,6 @@ const Trading = () => {
             chart: {
                 type: 'candlestick',
                 height: 550
-            },
-            title: {
-                text: 'CandleStick Chart',
-                align: 'left'
             },
             xaxis: {
                 type: 'datetime'
@@ -131,7 +129,7 @@ const Trading = () => {
 
     const getHistory = async () => {
         const res = await getData(`/trading/order_history/${store.user.id}/${0}/10/`)
-        console.log('history', res.data)
+        setHistory(res.data)
     }
     const getTradingData = async () => {
         const res = await getData(`/trading/get_valid_trading_data/${window.location.host}`)
@@ -152,10 +150,15 @@ const Trading = () => {
         }
 
         const res = await putData('/trading/make_order/', obj)
+        if (res.status === 201) {
+            SwalSimple('Order is created!')
+        }
     }
 
     const getBinanceCnadlestickApi = async () => {
-        const res = await fetch('https://api.binance.com/api/v3/ping')
+        const res = await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1m', {
+            mode: 'cors'
+        })
         console.log('res-binance', res.data)
     }
 
@@ -230,17 +233,17 @@ const Trading = () => {
             type: 'sell', price: textVal.usd, amount: textVal.crypto, total: textVal.usd
         }
         setOrderSell([...orderSell, obj])
-        setTextVal({usd: '', crypto: ''})
-        await sendOrderData(textVal.usd, textVal.crypto, true, false)
+        await sendOrderData(textVal.usd, textVal.crypto, null, false)
         makeCandle()
+        setTextVal({usd: '', crypto: ''})
     }
 
     const makeCandle = () => {
         let oldArr = state.series[0].data
         console.log('oldArr', oldArr)
         let object = {
-            x: new Date(),
-            y: [+curVal, +curVal+250, +curVal-120, +curVal+550]
+            x: getCurrentDate(new Date()),
+            y: [+curVal, +curVal+10, +curVal-10, +curVal+50]
         }
         setState({...state, series: [
                 {
@@ -264,8 +267,8 @@ const Trading = () => {
         }
         console.log('obj', obj)
         setOrderBuy([...orderBuy, obj])
-        setTextValTwo({crypto: '', mail: 0})
-        await sendOrderData(textValTwo.usd, textValTwo.crypto, true, true)
+        await sendOrderData(textValTwo.usd, textValTwo.crypto, null, true)
+        setTextValTwo({crypto: '', usd: ''})
     }
 
     const makeRandomOrder = (min, max) => {
@@ -282,10 +285,16 @@ const Trading = () => {
     }
     makeRandomOrder(curVal, curVal)
 
+    const onAbort = async (id) => {
+        const res = await patchData(`/trading/cancel_order/${id}`)
+        if (res.status === 202) {
+            SwalSimple('Order deleted!')
+            getHistory()
+        }
+    }
+
     return (
         <Container style={{maxWidth: 1700, width: '100%'}}>
-            <h1 className={'mb-3'}>Trading</h1>
-
             <Row>
                 <Col className={'container-fluid'}>
                     <ButtonCard title={'Sell Orders'}>
@@ -384,6 +393,14 @@ const Trading = () => {
                                             <Row className={'mb-3'}>
                                                 <Input value={formValueFirst} disabled placeholder={'Total in USD'}/>
                                             </Row>
+                                            <Row>
+                                                <Col>
+                                                    <p style={{fontSize: 12}}>Transaction fee is 1%</p>
+                                                </Col>
+                                                <Col>
+                                                    <p style={{fontSize: 12}}>Balance is: 14124124</p>
+                                                </Col>
+                                            </Row>
                                             <Row className={'mb-3'}>
                                                 <Col>
                                                     <Button onClick={onSell} classname={['red_btn']} >Sell</Button>
@@ -429,6 +446,14 @@ const Trading = () => {
                                             <Row className={'mb-3'}>
                                                 <Input value={formValueSecond} placeholder={'Total in USD'} />
                                             </Row>
+                                            <Row>
+                                                <Col>
+                                                    <p style={{fontSize: 12}}>Transaction fee is 1%</p>
+                                                </Col>
+                                                <Col>
+                                                    <p style={{fontSize: 12}}>Balance is: 14124124 USDT</p>
+                                                </Col>
+                                            </Row>
 
                                             <Row className={'mb-3'}>
                                                 <Col>
@@ -455,16 +480,25 @@ const Trading = () => {
                             <Col>Amount</Col>
                             <Col>Action</Col>
                         </Row>
-                        <Row style={{borderBottom: '1px solid #fff', marginBottom: 10, paddingBottom: 10, color: 'lightgreen'}}>
-                            <Col>2020/06/10</Col>
-                            <Col>Buy</Col>
-                            <Col>BTC</Col>
-                            <Col>30110</Col>
-                            <Col>0.23526</Col>
-                            <Col>
-                                <Button classname={['round', 'green']}>Abort</Button>
-                            </Col>
-                        </Row>
+                        {
+                            history.length ?
+                                history.map(item => {
+                                    return(
+                                        <Row style={{borderBottom: '1px solid #fff', marginBottom: 10, paddingBottom: 10, color: 'lightgreen'}}>
+                                            <Col>{getCurrentDate(item.orderDate)}</Col>
+                                            <Col>{item.orderType ? 'Buy' : 'Sell'}</Col>
+                                            <Col>{item.coinName}</Col>
+                                            <Col>{item.coinRate}</Col>
+                                            <Col>{item.coinValue}</Col>
+                                            <Col>
+                                                <Button onClick={() => onAbort(item._id)} classname={['round', 'red']}>Abort</Button>
+                                            </Col>
+                                        </Row>
+                                    )
+                                })
+                                : <h3>No orders!</h3>
+                        }
+
 
                     </ButtonCard>
                 </Col>
