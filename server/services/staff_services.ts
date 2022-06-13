@@ -647,6 +647,9 @@ class staffService {
 		}
 
 		for (let i = 0; i <= coinList.length - 1; i++) {
+			console.log('coinList------', coinList)
+			console.log('coinList------', coinList[i])
+
 			const dataToSave = {
 				coinName: coinList[i],
 				valueInPercent: 0,
