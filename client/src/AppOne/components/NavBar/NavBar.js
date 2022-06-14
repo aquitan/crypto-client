@@ -109,8 +109,10 @@ const NavBar = () => {
                     <Navbar className={`${cls.right_nav} justify-content-end`}>
                         <Nav style={{width: '100%'}}>
                             <div className={cls.navbar_links} style={{width: '100%'}}>
-                                <Dropdown />
-                                <NavLink className={cls.link} to={'/'}>Dashboard</NavLink>
+                                {/*<Dropdown />*/}
+                                {/*<NavLink className={cls.link} to={'/'}>Dashboard</NavLink>*/}
+                                <NavLink className={cls.link} to={'/wallet'}>Wallet</NavLink>
+                                <NavLink className={cls.link} to={'/deposit'}>Deposit</NavLink>
                                 <NavLink className={cls.link} to={'/trading'}>Trading</NavLink>
                                 {/*<NavLink className={cls.link} to={'/profile'}>Profile</NavLink>*/}
                                 <NavLink className={cls.link} to={'/internal-swap'}>Currency Swap</NavLink>

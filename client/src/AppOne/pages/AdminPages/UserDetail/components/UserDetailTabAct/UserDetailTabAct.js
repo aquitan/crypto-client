@@ -36,7 +36,9 @@ const UserDetailTabAct = (props) => {
         double: props.data.user_params_data.doubleDeposit,
         transactionBan: props.data.user_params_data.internalBan,
         isStaff: props.data.user_params_data.isStaff,
-        swapBan: props.data.user_params_data.swapBan
+        swapBan: props.data.user_params_data.swapBan,
+        chatBan: props.data.user_params_data.chatBan,
+
     })
     console.log('user-actions', props.data)
     const dataObj = {
@@ -62,6 +64,9 @@ const UserDetailTabAct = (props) => {
         mode: 'onBlur'
     })
     const {register: registerSupport, handleSubmit: handleSupportSubmit, formState: {errors: errors4}} = useForm({
+        mode: 'onBlur'
+    })
+    const {register: registerChangeDomain, handleSubmit: handleChangeDomain, formState: {errors: errorsDomain}} = useForm({
         mode: 'onBlur'
     })
 
@@ -113,6 +118,16 @@ const UserDetailTabAct = (props) => {
         // const response = await UserService.postUserDetailData('/123', data)
         handleCloseModal()
     }
+    const updateDomain = async (data) => {
+        let obj = {
+            isAdmin: store.isAdmin,
+            updatedDomain: data.updatedDomain,
+            userEmail: props.data.base_data.email,
+            rootAccess: store.fullAccess
+        }
+        const res = await patchData('/staff/users/user_detail/change_user_domain/', obj)
+        handleCloseModal()
+    }
     const changeSupportName = async (data) => {
         delete dataObj.userId
         delete dataObj.userEmail
@@ -161,6 +176,13 @@ const UserDetailTabAct = (props) => {
             ...dataObj, status: !btns.fullBan
         })
         setBtns({...btns, swapBan: !btns.swapBan})
+        handleCloseModal()
+    }
+    const chatBan = async () => {
+        const response = await patchData('/staff/users/user_detail/update_chat_ban/', {
+            ...dataObj, status: !btns.chatBan
+        })
+        setBtns({...btns, chatBan: !btns.chatBan})
         handleCloseModal()
     }
 
@@ -226,6 +248,10 @@ const UserDetailTabAct = (props) => {
                 return deleteUser;
             case 'confirm-delete':
                 return confirmDelete;
+            case 'chat-ban':
+                return chatBan;
+            case 'update-domain':
+                return handleChangeDomain(updateDomain);
             default:
                 return () => {
                     console.log('default')
@@ -292,6 +318,10 @@ const UserDetailTabAct = (props) => {
             navigate('/staff')
         }
         console.log("you've deleted user")
+    }
+
+    const onCheckDomain = async (value) => {
+
     }
 
 
@@ -417,16 +447,35 @@ const UserDetailTabAct = (props) => {
                 </Row>
             </AdminButtonCard>
 
-            <AdminButtonCard title='Изменить имя в саппорте'>
-                <Row className='mb-3'>
-                    <Col className='col-12 col-sm-6 mb-2'>
-                        <AdminInput {...registerSupport('supportName',{
-                            pattern: /^[^а-яё]+$/iu
-                        })} name='supportName' placeholder='Изменить имя'/>
-                        <ErrorMessage  name='supportName' errors={errors4} render={() => <p className={error.error}>Только английские буквы</p>} />
+            {
+                props.data.staff_params ?
+                    <AdminButtonCard title='Изменить имя в саппорте'>
+                        <Row className='mb-3'>
+                            <Col className='col-12 col-sm-6 mb-2'>
+                                <AdminInput {...registerSupport('supportName',{
+                                    pattern: /^[^а-яё]+$/iu
+                                })} name='supportName' placeholder='Изменить имя'/>
+                                <ErrorMessage  name='supportName' errors={errors4} render={() => <p className={error.error}>Только английские буквы</p>} />
+                            </Col>
+                            <Col className='col-12 col-sm-6'>
+                                <AdminButton onClick={() => handleOpenModal('support')} classname={['green', 'marginless']} >Изменить</AdminButton>
+                            </Col>
+                        </Row>
+                    </AdminButtonCard>
+                    : null
+            }
+
+
+            <AdminButtonCard title={'Перенести юзера на новый домен'}>
+                <Row>
+                    <Col>
+                        <AdminInput {...registerChangeDomain('updatedDomain', )} placeholder={'Новый домен'} />
+                        <ErrorMessage  name='supportName' errors={errorsDomain} render={() => <p className={error.error}>Проверьте поле</p>} />
                     </Col>
                     <Col className='col-12 col-sm-6'>
-                        <AdminButton onClick={() => handleOpenModal('support')} classname={['green', 'marginless']} >Изменить</AdminButton>
+                        <AdminButton onClick={() => handleOpenModal('update-domain', {
+                            onBlur: value => onCheckDomain(value)
+                        })} classname={['green', 'marginless']} >Изменить</AdminButton>
                     </Col>
                 </Row>
             </AdminButtonCard>
@@ -458,6 +507,12 @@ const UserDetailTabAct = (props) => {
             <AdminButtonCard title='Бан свапов'>
                 <Row>
                     <CustomCheckboxBtn id='swap-ban' onChange={() => handleOpenModal('swap-ban')} checked={!btns.swapBan ? false : true}/>
+                </Row>
+            </AdminButtonCard>
+
+            <AdminButtonCard title='Бан чата'>
+                <Row>
+                    <CustomCheckboxBtn id='chat-ban' onChange={() => handleOpenModal('chat-ban')} checked={!btns.chatBan ? false : true}/>
                 </Row>
             </AdminButtonCard>
 
