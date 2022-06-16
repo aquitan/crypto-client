@@ -4,9 +4,10 @@ import {Col, Container, Row} from "react-bootstrap";
 import WalletItem from "./components/WalletItem/WalletItem";
 import {getData} from "../../../services/StaffServices";
 import {store} from "../../../../index";
+import Preloader from "../../../components/UI/Preloader/Preloader";
 
 const Wallet = () => {
-    const [state, setState] = useState()
+    const [state, setState] = useState([])
 
     useEffect(() => {
         getBalance()
@@ -22,15 +23,19 @@ const Wallet = () => {
     return (
         <Container>
             <Row>
-                <Col className={'col-4'}>
-                    <WalletItem balanceUsd={124124} coin={'BTC'} coinsBalance={123} />
-                </Col>
-                <Col className={'col-4'}>
-                    <WalletItem balanceUsd={124124} coin={'BTC'} coinsBalance={123}  />
-                </Col>
-                <Col className={'col-4'}>
-                    <WalletItem balanceUsd={124124} coin={'BTC'} coinsBalance={123}  />
-                </Col>
+                {
+                    state ?
+                        state.map(item => {
+                            return <Col className={'col-12 col-sm-6 col-lg-4 mb-5'}>
+                                <WalletItem
+                                    coinFullName={item.coinFullName}
+                                    balanceUsd={124124}
+                                    coin={item.coinName}
+                                    coinsBalance={item.coinBalance.toFixed(5)} />
+                            </Col>
+                        }) :
+                        <Preloader />
+                }
             </Row>
         </Container>
     )

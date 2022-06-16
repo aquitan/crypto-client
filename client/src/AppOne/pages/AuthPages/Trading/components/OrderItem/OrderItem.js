@@ -7,12 +7,11 @@ import classNames from "classnames/bind";
 const OrderItem = ({price, amount, total, type}) => {
     let cx = classNames.bind(cls)
     let classnames = cx('orderItem', type)
-
     return (
         <Row className={classnames}>
-            <Col>{parseInt(price).toFixed(5)}</Col>
-            <Col>{amount.toFixed(5)}</Col>
-            <Col>{parseInt(total).toFixed(5)}</Col>
+            <Col>{price}</Col>
+            <Col>{amount}</Col>
+            <Col>{total.toFixed(5)}</Col>
         </Row>
     )
 }
