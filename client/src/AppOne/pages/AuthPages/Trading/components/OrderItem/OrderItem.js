@@ -11,7 +11,7 @@ const OrderItem = ({price, amount, total, type}) => {
         <Row className={classnames}>
             <Col>{price}</Col>
             <Col>{amount}</Col>
-            <Col>{total.toFixed(5)}</Col>
+            <Col>{total}</Col>
         </Row>
     )
 }

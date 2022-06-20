@@ -113,13 +113,13 @@ import AdminSecureDeal from "../pages/AdminPages/AdminSecureDeal/AdminSecureDeal
 import AdminSecureDealDetail from "../pages/AdminPages/AdminSecureDeal/components/AdminSecureDealDetail";
 import NewsDetail from "../pages/AdminPages/CreateNews/components/NewsDetail/NewsDetail";
 import UserNews from "../pages/AuthPages/UserNews/UserNews";
-import Trading from "../pages/AuthPages/Trading/Trading";
 import Error500 from "../pages/Error/Error500";
 import RecruiterList from "../pages/AdminPages/RecruiterList/RecruiterList";
 import RecruiterDetail from "../pages/AdminPages/RecruiterList/components/RecruiterDetail/RecruiterDetail";
 import Chat from "../pages/AdminPages/Chat/Chat";
 import StaffTrading from "../pages/AdminPages/StaffTrading/StaffTrading";
 import Wallet from "../pages/AuthPages/Wallet/Wallet";
+import TradingTest from "../pages/AuthPages/TradingTest/TradingTest";
 
 export const authRoutes = [
     {
@@ -208,7 +208,7 @@ export const authRoutes = [
     },
     {
         path: TRADING,
-        component: <Trading/>
+        component: <TradingTest/>
     },
     {
         path: ERROR_500,
