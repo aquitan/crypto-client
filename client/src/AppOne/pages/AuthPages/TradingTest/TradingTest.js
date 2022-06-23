@@ -16,6 +16,9 @@ import {getData, patchData} from "../../../services/StaffServices";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
 import AdminButton from "../../../components/UI/AdminButton/AdminButton";
 import {SwalSimple} from "../../../utils/SweetAlert";
+import {generateRandomInt} from "../../../utils/generateRandomInt";
+import {shaffleData} from "../../../utils/shaffleData";
+import {sortDataArray} from "../../../utils/sortArr";
 
 const TradingTest = () => {
     const [stateBalance, setStateBalance] = useState([])
@@ -134,37 +137,6 @@ const TradingTest = () => {
         //   return finalRate
         // }
 
-        async function generateRandomInt(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min
-        }
-
-        async function shaffleData(from) {
-            // from val is => cur rate
-            // to val is => needed rate (rate + min% for order history emulating)
-            const cryptoValue = await generateRandomInt(0.006, 5.8372)
-
-            let obj = {
-                price: from,
-                amountInCrypto: cryptoValue.toFixed(3)
-            }
-
-            return obj
-        }
-
-        async function sortDataArray(arr) {
-
-            for (let i = 0; i < arr.length - 1; i++) {
-                for (let j = 0; j < arr.length - 1 - 1; j++) {
-                    if (arr[j].price > arr[j + 1].price) {
-                        let temp = arr[j].price
-                        arr[j].price = arr[j + 1].price
-                        arr[j + 1].price = temp
-                    }
-                }
-            }
-            // console.log('sorted arr => ', arr);
-            return arr
-        }
 
         let dataArray = []
         let validArray = []
@@ -207,14 +179,12 @@ const TradingTest = () => {
         async function moveRate(from, to) {
             let curTime = await generateRandomInt(1200, 3500)
             let randRate = await generateRandomInt(1, 30)
-            // console.log('rate from => ', from);
-            // console.log('rate to => ', to);
-            // console.log('cur time => ', curTime);
+
             emulateOrders(17, currentValue)
             if (counter <= to) {
                 setCurVal(prevState => prevState + randRate)
                 counter = counter + curTime
-                // console.log('updated => ', counter);
+
                 setTimeout(async () => {
                     await moveRate(from, to)
                     validArray.shift(validArray[0])
@@ -228,6 +198,9 @@ const TradingTest = () => {
         }
         moveRate(currentValue, period)
     }
+
+
+    ////////
     const generateOrdersBuy = (currentValue, timeLimit) => {
         async function generateRandomInt(min, max) {
             return Math.floor(Math.random() * (max - min + 1)) + min
