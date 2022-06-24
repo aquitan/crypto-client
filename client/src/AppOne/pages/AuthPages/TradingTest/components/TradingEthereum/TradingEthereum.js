@@ -1,26 +1,24 @@
 import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
+import {getData, patchData, postData} from "../../../../../services/StaffServices";
+import {store} from "../../../../../../index";
+import {generateRandomInt} from "../../../../../utils/generateRandomInt";
+import {shaffleData} from "../../../../../utils/shaffleData";
+import {sortDataArray} from "../../../../../utils/sortArr";
+import {SwalSimple} from "../../../../../utils/SweetAlert";
 import {Col, Container, Form, Row} from "react-bootstrap";
-import ButtonCard from "../../../components/ButtonCard/ButtonCard";
-import Order from "../Trading/components/Order/Order";
-import OrderItem from "../Trading/components/OrderItem/OrderItem";
+import ButtonCard from "../../../../../components/ButtonCard/ButtonCard";
+import Order from "../../../Trading/components/Order/Order";
+import OrderItem from "../../../Trading/components/OrderItem/OrderItem";
 import {v4 as uuid} from "uuid";
-import Preloader from "../../../components/UI/Preloader/Preloader";
-import {coins} from "../../../../utils/tradingArr";
-import ReactApexChart from "react-apexcharts";
-import Input from "../../../components/UI/Input/Input";
-import Button from "../../../components/UI/Button/Button";
-import {findPercent} from "../../../utils/findPercent";
-import {store} from "../../../../index";
-import {getData, patchData, postData} from "../../../services/StaffServices";
-import {getCurrentDate} from "../../../utils/getCurrentDate";
-import AdminButton from "../../../components/UI/AdminButton/AdminButton";
-import {SwalSimple} from "../../../utils/SweetAlert";
-import {generateRandomInt} from "../../../utils/generateRandomInt";
-import {shaffleData} from "../../../utils/shaffleData";
-import {sortDataArray} from "../../../utils/sortArr";
+import Preloader from "../../../../../components/UI/Preloader/Preloader";
+import {coins} from "../../../../../../utils/tradingArr";
+import Input from "../../../../../components/UI/Input/Input";
+import Button from "../../../../../components/UI/Button/Button";
+import {getCurrentDate} from "../../../../../utils/getCurrentDate";
+import AdminButton from "../../../../../components/UI/AdminButton/AdminButton";
 
-const TradingTest = () => {
+const TradingEthereum = () => {
     const [stateBalance, setStateBalance] = useState([])
     const [formValueFirst, setFromValueFirst] = useState(0)
     const [formValueSecond, setFromValueSecond] = useState(0)
@@ -103,7 +101,7 @@ const TradingTest = () => {
     }
 
     const getRateFromBinance = async () => {
-        const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${coinPair.toUpperCase()}USDT`)
+        const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=ETHUSDT`)
         const datas = await res.json()
         setInitialRate(+datas.lastPrice)
         setCurVal(+datas.lastPrice)
@@ -653,11 +651,11 @@ const TradingTest = () => {
     )
 }
 
-TradingTest.propTypes = {
+TradingEthereum.propTypes = {
     
 }
-TradingTest.defaultProps = {
+TradingEthereum.defaultProps = {
     
 }
 
-export default TradingTest
+export default TradingEthereum
