@@ -20,6 +20,7 @@ import { DEAL_INTERFACE } from 'interface/secure_deal.interface'
 import bodyValidator from '../api/body_validator'
 import saveUserLogs from '../api/save_user_logs'
 import TRADING_ORDER_INTERFACE from '../interface/make_trading_order.interface'
+import TRADING_COIN_RATE_UPDATE from '../interface/trading_rate_update.interface'
 
 
 class UserController {
@@ -787,6 +788,28 @@ class UserController {
   }
 
 
+  async resetTradingData(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    const coinName: string = req.body.coinName
+    const domainName: string = req.body.domainName
+
+    const validData: boolean = await bodyValidator(req.body, 2)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
+    try {
+      const result: any = await UserServices.updateCoinRate(domainName, coinName)
+      if (!result) throw ApiError.ServerError()
+      return res.status(200).json(result)
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
+
+
+
+
   async makeTradingOrder(req: express.Request, res: express.Response, next: express.NextFunction) {
     const transferObject: TRADING_ORDER_INTERFACE = {
       userEmail: req.body.userEmail,
@@ -849,7 +872,7 @@ class UserController {
 
   async successOrder(req: express.Request, res: express.Response, next: express.NextFunction) {
     const orderId: string = req.body.orderId
-    const orderType: string = req.body.orderType
+    const orderType: boolean = req.body.orderType
 
     const validData: boolean = await bodyValidator(req.body, 2)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })

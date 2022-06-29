@@ -634,7 +634,6 @@ class UserServices {
 		return domainNewsList
 	}
 
-
 	async getOrderHistory(userId: string, skipValue: number, limitValue: number) {
 		const orderList: any = await tradingOrders.
 			find({ userId: userId }).
@@ -680,6 +679,7 @@ class UserServices {
 			coinName: transferObject.coinName,
 			coinValue: transferObject.coinValue,
 			coinRate: transferObject.coinRate,
+			valueInUsdt: transferObject.valueInUsdt,
 			orderStatus: null,
 			orderType: transferObject.orderType,
 			userId: transferObject.userId
@@ -739,14 +739,14 @@ class UserServices {
 		return true
 	}
 
-	async successUserOrder(orderId: string, orderType: string) {
+	async successUserOrder(orderId: string, orderType: boolean) {
 
 		const curOrder: any = await tradingOrders.findOne({ _id: orderId })
 		console.log('curOrder => ', curOrder);
 		if (!curOrder) return false
 
 		// if user buy crypto 
-		if (orderType === 'true') {
+		if (orderType) {
 
 			const getCoinBalance: any = await userBalance.findOne({
 				userId: curOrder.userId,
@@ -764,21 +764,26 @@ class UserServices {
 
 			const getFee: number = (curOrder.coinValue / 100) * 1
 			const newUsdtBalance: number = getUsdtBalance.coinBalance - curOrder.valueInUsdt
-			const newCryptoBalance: number = getUsdtBalance.coinBalance + (curOrder.coinValue - getFee)
+			const newCryptoBalance: number = getCoinBalance.coinBalance + (curOrder.coinValue - getFee)
 
-			// update usdt balance =>
-			await userBalance.findOneAndUpdate({
-				userId: curOrder.userId,
-				coinName: 'USDT',
-				coinBalance: newUsdtBalance
-			})
+			await userBalance.findOneAndUpdate(
+				{
+					userId: curOrder.userId,
+					coinName: 'USDT'
+				},
+				{
+					coinBalance: newUsdtBalance
+				})
 
 			// update crypto balance
-			await userBalance.findOneAndUpdate({
-				userId: curOrder.userId,
-				coinName: curOrder.coinName,
-				coinBalance: newCryptoBalance
-			})
+			await userBalance.findOneAndUpdate(
+				{
+					userId: curOrder.userId,
+					coinName: curOrder.coinName
+				},
+				{
+					coinBalance: newCryptoBalance
+				})
 
 			const updatedCryptoBalance: any = await userBalance.findOne({
 				userId: curOrder.userId,
@@ -794,7 +799,10 @@ class UserServices {
 			console.log('updatedUsdtBalance => ', updatedUsdtBalance);
 			if (!updatedUsdtBalance || updatedUsdtBalance.coinBalance === getUsdtBalance.coinBalance) return false
 
-			await tradingOrders.findOneAndUpdate({ _id: orderId, orderStatus: true })
+			await tradingOrders.findOneAndUpdate(
+				{ _id: orderId, },
+				{ orderStatus: true }
+			)
 
 			const updatedOrder: any = await tradingOrders.findOne({ _id: orderId })
 			console.log('updatedOrder => ', updatedOrder);
@@ -803,7 +811,7 @@ class UserServices {
 			return true
 		}
 
-		if (orderType === 'false') {
+		if (!orderType) {
 
 			const getCoinBalance: any = await userBalance.findOne({
 				userId: curOrder.userId,
@@ -821,20 +829,26 @@ class UserServices {
 
 			const getFee: number = (curOrder.coinValue / 100) * 1
 			const newUsdtBalance: number = getUsdtBalance.coinBalance + curOrder.valueInUsdt
-			const newCryptoBalance: number = getUsdtBalance.coinBalance - (curOrder.coinValue - getFee)
+			const newCryptoBalance: number = getCoinBalance.coinBalance - (curOrder.coinValue - getFee)
 
-			await userBalance.findOneAndUpdate({
-				userId: curOrder.userId,
-				coinName: 'USDT',
-				coinBalance: newUsdtBalance
-			})
+			await userBalance.findOneAndUpdate(
+				{
+					userId: curOrder.userId,
+					coinName: 'USDT'
+				},
+				{
+					coinBalance: newUsdtBalance
+				})
 
 			// update crypto balance
-			await userBalance.findOneAndUpdate({
-				userId: curOrder.userId,
-				coinName: curOrder.coinName,
-				coinBalance: newCryptoBalance
-			})
+			await userBalance.findOneAndUpdate(
+				{
+					userId: curOrder.userId,
+					coinName: curOrder.coinName
+				},
+				{
+					coinBalance: newCryptoBalance
+				})
 
 			const updatedCryptoBalance: any = await userBalance.findOne({
 				userId: curOrder.userId,
@@ -850,7 +864,10 @@ class UserServices {
 			console.log('updatedUsdtBalance => ', updatedUsdtBalance);
 			if (!updatedUsdtBalance || updatedUsdtBalance.coinBalance === getUsdtBalance.coinBalance) return false
 
-			await tradingOrders.findOneAndUpdate({ _id: orderId, orderStatus: true })
+			await tradingOrders.findOneAndUpdate(
+				{ _id: orderId, },
+				{ orderStatus: true }
+			)
 
 			const updatedOrder: any = await tradingOrders.findOne({ _id: orderId })
 			console.log('updatedOrder => ', updatedOrder);
@@ -859,6 +876,30 @@ class UserServices {
 
 			return true
 		}
+	}
+
+	async updateCoinRate(domainName: string, coinName: string) {
+
+		const getRate: any = await coinRates.findOne({ coinName: coinName, domainName: domainName })
+		console.log('received rates => ', getRate);
+		if (!getRate) return false
+
+		await coinRates.findOneAndUpdate(
+			{
+				coinName: coinName,
+				domainName: domainName
+			},
+			{
+				valueInPercent: 0,
+				rateCorrectType: false,
+				timeRangeInMs: 0,
+			})
+
+		const updatedRate: any = await coinRates.findOne({ coinName: coinName, domainName: domainName })
+		console.log('received updatedRate  => ', updatedRate);
+		if (updatedRate.valueInPercent === getRate.valueInPercent || updatedRate.timeRangeInMs === getRate.timeRangeInMs) return false
+
+		return true
 	}
 
 
