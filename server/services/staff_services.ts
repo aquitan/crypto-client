@@ -362,21 +362,21 @@ class staffService {
 	}
 
 
-	async changeUserDomain(userEmail: string, newDomain: string) {
+	async changeUserDomain(userEmail: string, updatedDomain: string) {
 		const user: any = await baseUserData.findOne({ email: userEmail })
 		console.log('found user is: ', user);
 		if (!user) return false
 
 		await baseUserData.findOneAndUpdate(
 			{ email: userEmail },
-			{ domainName: newDomain }
+			{ domainName: updatedDomain }
 		)
 
-		const updatedDomain: any = await baseUserData.findOne({
+		const curDomain: any = await baseUserData.findOne({
 			email: userEmail
 		})
-		console.log('new user domain is  => ', updatedDomain.domainName);
-		if (!updatedDomain) return false
+		console.log('new user domain is  => ', curDomain.domainName);
+		if (!curDomain) return false
 		return true
 	}
 
@@ -393,7 +393,7 @@ class staffService {
 		const updatedStatus: any = await userParams.findOne({
 			userId: user.id
 		})
-		console.log('cur error => ', updatedStatus.chatBan);
+		console.log('updated user is  => ', updatedStatus.chatBan);
 
 		if (!updatedStatus) return false
 		return updatedStatus.chatBan

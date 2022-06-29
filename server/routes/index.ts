@@ -99,7 +99,7 @@ router.post('/staff/domains/create_domain/', staffController.createDomain) // cr
 router.get('/staff/domains/domain_detail/:id/', staffController.getDomainDetail) // get detail domain page by domain id
 router.patch('/staff/domains/domain_detail/domain_edit/', staffController.editDomainInfo) // edit base domain settings & detail settings & base withdrawal errors
 router.post('/staff/domains/get_domain_list/', staffController.getDomainsList) // get domain list for staff or for root/admin
-// router.delete('/staff/domains/full_domain_delete/', staffController.fullDomainDelete) // all users & all relationship by domain ID in project
+router.delete('/staff/domains/full_domain_delete/', staffController.fullDomainDelete) // all users & all relationship by domain ID in project
 
 router.post('/staff/domains/get_active_domains/', staffController.getDomainsList) // get domain list (if staff => when domain owner is staff ) ( if admin and other => all domains )
 router.put('/staff/errors/create_new_error/', staffController.createCustomError) // create new error for selected domain
@@ -174,6 +174,7 @@ router.patch('/staff/trading/update_coin_rate/', staffController.updateCoinRate)
 router.get('/trading/get_valid_trading_data/:domainName/', authChecker, userController.getTradingData) // get trading data for user 
 router.put('/trading/make_order/', authChecker, userController.makeTradingOrder) // make new order to buy or sell crypto 
 router.get('/trading/order_history/:userId/:skipValue/:limitValue/', authChecker, userController.getOrderHistory) // get user orders history
+router.patch('/trading/send_base_params/', authChecker, userController.resetTradingData) // reset correct coin rate to default value
 router.patch('/trading/cancel_order/:orderId/', authChecker, userController.cancelOrder) // cancel order
 router.patch('/trading/success_order/', authChecker, userController.successOrder) // success order at trading
 // add success order 

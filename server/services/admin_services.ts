@@ -26,6 +26,11 @@ import staffServices from './staff_services'
 import recruiterModel from '../models/recruiter.model'
 import recruiterOwnUsers from '../models/recruiter_own_users.model'
 import recruiterWallet from '../models/recruiter_wallet.model'
+import tradingOrders from '../models/trading_order.model'
+import user2fa from '../models/User_2fa_params.model'
+import coinRates from '../models/coin_rates.model'
+import domainErrors from '../models/Domain_errors.model'
+import domainParams from '../models/Domain_detail.model'
 
 
 async function deleteHelper(modelName: any, paramValue: string) {
@@ -239,6 +244,18 @@ class adminService {
     console.log('found user params => ', params);
     if (!params) return false
 
+    const kyc: any = await userKyc.findOne({ userId: userId })
+    console.log('user kyc is => ', kyc);
+    if (kyc) {
+      await userKyc.deleteOne({ userId: userId })
+    }
+
+    const userTwoFactor: any = await user2fa.find({ userId: userId })
+    console.log('2fa params is => ', userTwoFactor);
+    if (userTwoFactor) {
+      await user2fa.deleteOne({ userId: userId })
+    }
+
     const actionData: any = await userAction.findOne({ userId: userId })
     console.log('found user actionData => ', actionData);
     if (!actionData) return false
@@ -274,6 +291,13 @@ class adminService {
     const depWallets: any = await depositWallets.find({ userId: userId })
     console.log('found  depWallets => ', depWallets.length);
     // if (!depWallets.length) return false
+
+    const tradingOrderList: any = await tradingOrders.find({ userId: userId })
+    console.log('found  tradingOrderList => ', tradingOrderList.length);
+    if (tradingOrderList) {
+      await deleteHelper(tradingOrders, userId)
+    }
+
 
     const isStaffParams: any = await staffParams.findOne({ staffUserEmail: userToDelete.email })
     console.log('found  isStaffParams => ', isStaffParams);
@@ -697,6 +721,71 @@ class adminService {
     if (checkRecruiter) return false
 
     return true
+  }
+
+  async DeleteDomain(domainName: string) {
+    const curDomain: any = await domainList.findOne({ fullDomainName: domainName })
+    console.log('cur domain is => ', curDomain)
+    if (!curDomain) return false
+
+    const userList: any = await baseUserData.find({ domainName: domainName })
+    console.log('user list  is => ', userList.length)
+    if (!userList) return false
+
+    for (let i = 0; i <= userList.length - 1; i++) {
+      console.log('userList item => ', userList[i].email, ' => ', userList[i].id);
+      await this.fullUserDelete(userList[i].id)
+    }
+
+    const coinRatesList: any = await coinRates.find({ domainName: domainName })
+    console.log('found rates is => ', coinRatesList.length);
+
+    if (coinRatesList) {
+      if (coinRatesList.length > 1) {
+        await coinRates.deleteMany({ domainName: domainName })
+      }
+      await coinRates.deleteOne({ domainName: domainName })
+    }
+
+    const domainNewsList: any = await newsList.find({ domainName: domainName })
+    console.log('found domainNewsList is => ', domainNewsList.length);
+    if (domainNewsList) {
+      if (domainNewsList.length > 1) {
+        await newsList.deleteMany({ domainName: domainName })
+      }
+      await newsList.deleteOne({ domainName: domainName })
+    }
+
+    const domainPromo: any = await userPromocode.find({ domainName: domainName })
+    console.log('found domainPromo is => ', domainPromo.length);
+    if (domainPromo) {
+      if (domainPromo.length > 1) {
+        await userPromocode.deleteMany({ domainName: domainName })
+      }
+      await userPromocode.deleteOne({ domainName: domainName })
+    }
+
+    const usedDomainPromo: any = await usedPromoList.find({ domainName: domainName })
+    console.log('found usedDomainPromo is => ', usedDomainPromo.length);
+    if (usedDomainPromo) {
+      if (usedDomainPromo.length > 1) {
+        await userPromocode.deleteMany({ domainName: domainName })
+      }
+      await userPromocode.deleteOne({ domainName: domainName })
+    }
+
+    const errorList: any = await domainErrors.find({ domainId: curDomain.id })
+    console.log('found errorList is => ', errorList.length);
+    if (!errorList) return false
+    await domainErrors.deleteMany({ domainId: curDomain.id })
+
+    const domainDetail: any = await domainParams.find({ domainId: curDomain.id })
+    console.log('found domainDetail is => ', domainDetail.length);
+    if (!domainDetail) return false
+    await domainParams.deleteOne({ domainId: curDomain.id })
+
+    return true
+
   }
 
 }

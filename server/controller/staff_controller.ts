@@ -235,7 +235,9 @@ class StaffController {
   }
 
   async changeUserDomain(req: express.Request, res: express.Response, next: express.NextFunction) {
-    const { adminPermission, newDomain, userEmail } = req.body
+    const adminPermission: string = req.body.isAdmin
+    const updatedDomain: string = req.body.updatedDomain
+    const userEmail: string = req.body.userEmail
     const rootAccess: boolean = req.body.rootAccess
 
     const validData: boolean = await bodyValidator(req.body, 4)
@@ -243,11 +245,12 @@ class StaffController {
 
     try {
       if (rootAccess || adminPermission) {
-        const result: boolean = await staffService.changeUserDomain(userEmail, newDomain)
+        const result: boolean = await staffService.changeUserDomain(userEmail, updatedDomain)
         if (!result) throw ApiError.ServerError()
 
         return res.status(202).json(result)
       }
+      return res.status(403).json({ message: 'permission denied' })
 
     } catch (e) {
       next(e)
@@ -826,6 +829,26 @@ class StaffController {
       next(e)
     }
   }
+
+  async fullDomainDelete(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const adminPermission: boolean = req.body.isAdmin
+    const rootAccess: boolean = req.body.rootAccess
+    const domainName: string = req.body.domainName
+
+    const validData: boolean = await bodyValidator(req.body, 3)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
+    try {
+      if (!rootAccess || !adminPermission) return res.status(403).json({ message: 'permission denied' })
+
+      const result: boolean = await adminService.DeleteDomain(domainName)
+      if (!result) throw ApiError.ServerError()
+      return res.status(200).json(result)
+    } catch (e) {
+      next(e)
+    }
+  }
+
 
   async editDomainInfo(req: express.Request, res: express.Response, next: express.NextFunction) {
 
@@ -2140,6 +2163,7 @@ class StaffController {
       next(e)
     }
   }
+
 
   // async getTradingData(req: express.Request, res: express.Response, next: express.NextFunction) {
   //   try {
