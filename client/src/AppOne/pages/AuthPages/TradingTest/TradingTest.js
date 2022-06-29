@@ -1,51 +1,42 @@
 import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
-import './Trading.scss'
 import {Col, Container, Form, Row} from "react-bootstrap";
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
-import Button from "../../../components/UI/Button/Button";
-import Input from "../../../components/UI/Input/Input";
-import ApexCharts from 'apexcharts';
-import ReactApexChart from "react-apexcharts";
-import {getData, patchData, postData, putData} from "../../../services/StaffServices";
+import Order from "../Trading/components/Order/Order";
+import OrderItem from "../Trading/components/OrderItem/OrderItem";
+import {v4 as uuid} from "uuid";
 import Preloader from "../../../components/UI/Preloader/Preloader";
-import Order from "./components/Order/Order";
-import OrderItem from "./components/OrderItem/OrderItem";
-import {v4 as uuid} from 'uuid'
-import {store} from "../../../../index";
-import {dateToTimestamp} from "../../../utils/dateToTimestamp";
-import {getCurrentDate} from "../../../utils/getCurrentDate";
-import {SwalSimple} from "../../../utils/SweetAlert";
-import AdminButton from "../../../components/UI/AdminButton/AdminButton";
-import CurrencyRates from "../../../components/CurrencyRates/CurrencyRates";
-import {findPercent} from "../../../utils/findPercent";
-import Select from "../../../components/UI/Select/Select";
 import {coins} from "../../../../utils/tradingArr";
-import {cleanup} from "@testing-library/react";
+import ReactApexChart from "react-apexcharts";
+import Input from "../../../components/UI/Input/Input";
+import Button from "../../../components/UI/Button/Button";
+import {findPercent} from "../../../utils/findPercent";
+import {store} from "../../../../index";
+import {getData, patchData} from "../../../services/StaffServices";
+import {getCurrentDate} from "../../../utils/getCurrentDate";
+import AdminButton from "../../../components/UI/AdminButton/AdminButton";
+import {SwalSimple} from "../../../utils/SweetAlert";
 
-const Trading = () => {
+const TradingTest = () => {
     const [stateBalance, setStateBalance] = useState([])
-    const [curVal, setCurVal] = useState(0)
-    const [textVal, setTextVal] = useState({usd: '', crypto: ''})
     const [formValueFirst, setFromValueFirst] = useState(0)
     const [formValueSecond, setFromValueSecond] = useState(0)
-    const [textValTwo, setTextValTwo] = useState({usd: '', crypto: ''})
+    const [orderSell, setOrderSell] = useState([])
+    const [orderBuy, setOrderBuy] = useState([])
     const [series, setSeries] = useState([])
+    const [curVal, setCurVal] = useState(0)
+    const [initialRate, setInitialRate] = useState(0)
+    const [coinPair, setCoinPair] = useState('BTC')
+    const [textVal, setTextVal] = useState({usd: '', crypto: ''})
+    const [textValTwo, setTextValTwo] = useState({usd: '', crypto: ''})
     const [history, setHistory] = useState([])
     const [limit, setLimit] = useState(0)
     const [data, setData] = useState(0)
-    const [valCounter, setValCounter] = useState(0)
-    const [coinRateCounter, setCoinRateCounter] = useState(0)
-    const [curUserOrder, setCurUserOrder] = useState(0)
-    const [growthParam, setGrowthParam] = useState(true)
+    const [ratePercent, setRatePercent] = useState(5)
     const [priceVal, setPriceVal] = useState({
         sell: 0,
         buy: 0
     })
-
-    const [orderBuy, setOrderBuy] = useState([])
-    const [orderSell, setOrderSell] = useState([])
-    const [coinPair, setCoinPair] = useState('BTC')
     const [state, setState] = useState({
         series: [
             {
@@ -78,49 +69,16 @@ const Trading = () => {
         }
     })
 
-    useEffect(() => {
-        getOhlc()
-        getSocket()
-        getHistory()
-        getTradingData()
-        // getSocketOrder()
-        getRateFromBinance()
-        getBalance()
-        setNewRate()
-        // moveRate(24000, 22300)
-        return () => {
-            cleanup()
-        }
-    }, [])
 
-    const getSocket = () => {
-        const socket = new WebSocket(`wss://stream.binance.com:9443/ws/${coinPair}usdt@miniTicker`)
-        // socket.onopen = () => {
-        //     socket.send(JSON.stringify({
-        //         id: 1
-        //     }))
-        // }
-        let stockObject = null;
-        socket.onmessage = (e) => {
-            // console.log('socket====', socket)
-            // let stockObject = JSON.parse(e.data);
-            // setCurVal(stockObject.c)
-        }
-    }
-    // const getSocketOrder = () => {
-    //     const socket = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@depth20@1000ms')
-    //     // socket.onopen = () => {
-    //     //     socket.send(JSON.stringify({
-    //     //         id: 1
-    //     //     }))
-    //     // }
-    //     let stockObject = null;
-    //     socket.onmessage = (e) => {
-    //         let stockObject = JSON.parse(e.data);
-    //         setAsk(stockObject.asks)
-    //         setBid(stockObject.bids)
-    //     }
-    // }
+    useEffect(() => {
+        getRateFromBinance()
+        getOhlc()
+        getHistory()
+        getBalance()
+    }, [])
+    useEffect(() => {
+        getRateFromBinance()
+    }, [coinPair])
 
     const getHistory = async () => {
         const res = await getData(`/trading/order_history/${store.user.id}/${limit}/10/`)
@@ -130,38 +88,20 @@ const Trading = () => {
         const res = await getData(`/trading/get_valid_trading_data/${window.location.host}`)
         setData(res.data[0].timeRangeInMs)
     }
-
-    const sendOrderData = async (coinRate, coinValue, orderStatus, orderType) => {
-        const obj = {
-            userEmail: store.user.email,
-            domainName: window.location.host,
-            orderDate: dateToTimestamp(new Date()),
-            coinName: 'BTC',
-            coinRate,
-            coinValue,
-            orderStatus,
-            orderType,
-            valueInUsdt: +coinRate * +coinValue,
-            userId: store.user.id
-        }
-
-        const res = await putData('/trading/make_order/', obj)
-        if (res.status === 201) {
-            SwalSimple('Order is created!')
-        }
+    const getBalance = async () => {
+        const balance = await getData(`/get_user_balance/${store.user.id}`)
+        console.log('balance', balance.data)
+        setStateBalance(balance.data)
     }
 
     const getRateFromBinance = async () => {
         const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${coinPair.toUpperCase()}USDT`)
-        const data = await res.json()
-        setCurVal(+data.lastPrice)
-        console.log('res-binance', data)
-    }
-    const getBasicRate = async () => {
-        const res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin&order=market_cap_desc&per_page=100&page=1&sparkline=fals')
-        const data = await res.json()
-        console.log('res----', data)
-        // setCurVal(res.data)
+        const datas = await res.json()
+        setInitialRate(+datas.lastPrice)
+        setCurVal(+datas.lastPrice)
+        generateOrders(+datas.lastPrice, 300000, +datas.lastPrice)
+        generateOrdersBuy(+datas.lastPrice, 300000)
+        console.log('res-binance', datas)
     }
 
     const getOhlc = async () => {
@@ -182,6 +122,207 @@ const Trading = () => {
                 }
             ]})
     }
+
+    const generateOrders = (currentValue, timeLimit, initialRate) => {
+        console.log('start func')
+        console.log('timeLimit', timeLimit)
+        //  ================
+        // async function getRate(rate, val) {
+        //   // calc final rate =>
+        //   const growthTo = (rate / 100) * val
+        //   const finalRate = rate + growthTo
+        //   return finalRate
+        // }
+
+        async function generateRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min
+        }
+
+        async function shaffleData(from) {
+            // from val is => cur rate
+            // to val is => needed rate (rate + min% for order history emulating)
+            const cryptoValue = await generateRandomInt(0.006, 5.8372)
+
+            let obj = {
+                price: from,
+                amountInCrypto: cryptoValue.toFixed(3)
+            }
+
+            return obj
+        }
+
+        async function sortDataArray(arr) {
+
+            for (let i = 0; i < arr.length - 1; i++) {
+                for (let j = 0; j < arr.length - 1 - 1; j++) {
+                    if (arr[j].price > arr[j + 1].price) {
+                        let temp = arr[j].price
+                        arr[j].price = arr[j + 1].price
+                        arr[j + 1].price = temp
+                    }
+                }
+            }
+            // console.log('sorted arr => ', arr);
+            return arr
+        }
+
+        let dataArray = []
+        let validArray = []
+        async function emulateOrders(len, curRate) {
+            for (let x = 0; x <= len; x++) {
+                const rand = await generateRandomInt(0.5, 15)
+                const valueUp = await generateRandomInt(40, 130)
+                // console.log('rand is => ', rand);
+                let valueData = await shaffleData(curRate)
+                // console.log('cur value data => ', valueData);
+
+                let obj = {
+                    price: (+valueData.price + +rand).toFixed(3),
+                    amountInCrypto: valueData.amountInCrypto,
+                }
+                if (dataArray.length > 17) {
+                    dataArray.shift(dataArray[0])
+                    console.log('length------')
+                }
+                for (let n = 0; n <= dataArray.length - 1; n++) {
+                    // console.log('log elem => ', dataArray[n].price);
+                    if (dataArray[n].price === obj.price) {
+                        obj.price = obj.price + valueUp
+                    }
+                }
+                dataArray.push(obj)
+            }
+            // console.log('data arr len is', dataArray.length, 'elems => ', dataArray);
+            validArray = await sortDataArray(dataArray)
+
+            return validArray
+        }
+
+// ===================
+
+        let counter = 0
+        let percentOfRate = initialRate * ratePercent / 100
+        let period = parseInt((timeLimit / percentOfRate).toFixed(0)) * 1000
+        console.log('period', period)
+        async function moveRate(from, to) {
+            let curTime = await generateRandomInt(1200, 3500)
+            let randRate = await generateRandomInt(1, 30)
+            // console.log('rate from => ', from);
+            // console.log('rate to => ', to);
+            // console.log('cur time => ', curTime);
+            emulateOrders(17, currentValue)
+            if (counter <= to) {
+                setCurVal(prevState => prevState + randRate)
+                counter = counter + curTime
+                // console.log('updated => ', counter);
+                setTimeout(async () => {
+                    await moveRate(from, to)
+                    validArray.shift(validArray[0])
+                    let dataToOrderList = await shaffleData(from)
+                    // console.log('dataToOrderList => ', dataToOrderList);
+                    validArray.push(dataToOrderList)
+                    setOrderSell(validArray)
+                    // console.log('validArray => ', validArray);
+                }, curTime)
+            }
+        }
+        moveRate(currentValue, period)
+    }
+    const generateOrdersBuy = (currentValue, timeLimit) => {
+        async function generateRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min
+        }
+
+        async function shaffleData(from) {
+            // from val is => cur rate
+            // to val is => needed rate (rate + min% for order history emulating)
+            const cryptoValue = await generateRandomInt(0.006, 5.8372)
+            let obj = {
+                price: from,
+                amountInCrypto: cryptoValue.toFixed(3)
+            }
+            return obj
+        }
+
+        async function sortDataArray(arr) {
+            for (let i = 0; i < arr.length - 1; i++) {
+                for (let j = 0; j < arr.length - 1 - 1; j++) {
+                    if (arr[j].price > arr[j + 1].price) {
+                        let temp = arr[j].price
+                        arr[j].price = arr[j + 1].price
+                        arr[j + 1].price = temp
+                    }
+                }
+            }
+            // console.log('sorted arr => ', arr);
+            return arr
+        }
+
+        let dataArray = []
+        let validArray = []
+        async function emulateOrders(len, curRate) {
+            for (let x = 0; x <= len; x++) {
+                const rand = await generateRandomInt(0.5, 1.3)
+                const valueUp = await generateRandomInt(40, 130)
+                // console.log('rand is => ', rand);
+                let valueData = await shaffleData(curRate)
+                // console.log('cur value data => ', valueData);
+
+                let obj = {
+                    price: (+valueData.price + +rand).toFixed(3),
+                    amountInCrypto: valueData.amountInCrypto,
+                }
+                if (dataArray.length > 17) {
+                    dataArray.shift(dataArray[0])
+                }
+                for (let n = 0; n <= dataArray.length - 1; n++) {
+                    // console.log('log elem => ', dataArray[n].price);
+                    if (dataArray[n].price === obj.price) {
+                        obj.price = obj.price + valueUp
+                    }
+                }
+                dataArray.push(obj)
+            }
+            // console.log('data arr len is', dataArray.length, 'elems => ', dataArray);
+            validArray = await sortDataArray(dataArray)
+
+            return validArray
+        }
+
+// ===================
+
+        let counter = 0
+        async function moveRate(from, to) {
+            let curTime = await generateRandomInt(1200, 3500)
+            // console.log('rate from => ', from);
+            // console.log('rate to => ', to);
+            // console.log('cur time => ', curTime);
+            emulateOrders(17, currentValue)
+            if (counter <= to) {
+                counter = counter + curTime
+                // console.log('updated => ', counter);
+                setTimeout(async () => {
+                    await moveRate(from, to)
+                    validArray.shift(validArray[0])
+                    let dataToOrderList = await shaffleData(from)
+                    // console.log('dataToOrderList => ', dataToOrderList);
+                    validArray.push(dataToOrderList)
+                    setOrderBuy(validArray)
+                    console.log('timeout---')
+                    // console.log('validArray => ', validArray);
+                }, curTime)
+            }
+        }
+        moveRate(currentValue, timeLimit)
+    }
+
+    const onChangeCoinsPair = (e) => {
+        setCurVal(0)
+        setOrderSell([])
+        setCoinPair(e.target.value)
+    }
+
+    /// Make order forms
 
     const onChangeText = (e) => {
         setTextVal({...textVal, usd: e.target.value,})
@@ -210,6 +351,7 @@ const Trading = () => {
 
     const setValue = (val, e) => {
         e.preventDefault()
+
         let coinBal = stateBalance[0].coinBalance / curVal
         let calc = coinBal * +val / 100
         console.log('percent', calc)
@@ -222,17 +364,15 @@ const Trading = () => {
         let coinBal = stateBalance[0].coinBalance / curVal
         let calc = coinBal * +val / 100
         console.log('percent', calc)
-        let calcResult = +textValTwo.usd * +calc.toFixed(5)
+        let calcResult = +textVal.usd * +calc.toFixed(5)
         setFromValueSecond(calcResult)
         setTextValTwo({...textValTwo, crypto: calc.toFixed(5)})
     }
 
-
-
     const onSell = async (e) => {
         e.preventDefault()
         let obj = {
-            type: 'sell', price: textVal.usd, amount: textVal.crypto, total: textVal.usd
+            type: 'sell', price: textVal.usd, amountInCrypto: textVal.crypto, total: textVal.usd
         }
         let idx = orderSell.findIndex(item => {
             return item.price === obj.price
@@ -240,129 +380,36 @@ const Trading = () => {
         if (idx !== -1) {
             setOrderSell([
                 ...orderSell,
-                orderSell[idx].total = (obj.price * (orderSell[idx].amount += obj.amount)),
-                orderSell[idx].amount += obj.amount])
+                orderSell[idx].total = (obj.price * (orderSell[idx].amountInCrypto += obj.amount)),
+                orderSell[idx].amountInCrypto += obj.amount])
         }
         setOrderSell([obj, ...orderSell])
-        setPriceVal({...priceVal, sell: textVal.usd})
-        await sendOrderData(textVal.usd, textVal.crypto, null, false)
-        makeCandle()
+        setPriceVal({...priceVal, sell: +textVal.usd})
+        // await sendOrderData(textVal.usd, textVal.crypto, null, false)
+        // makeCandle()
         setTextVal({usd: '', crypto: ''})
-    }
-
-    const makeCandle = () => {
-        let oldArr = state.series[0].data
-        console.log('oldArr', oldArr)
-        let object = {
-            x: getCurrentDate(new Date()),
-            y: [+curVal, +curVal+10, +curVal-10, +curVal+50]
-        }
-        setState({...state, series: [
-                {
-                    data: [...oldArr, object]
-                }
-            ]})
-
-        // setInterval(() => {
-        //     // setState({...state, series: [
-        //     //         {
-        //     //             data: [...state.series[0].data, +state.series[0].data[state.series[0].data.length-1].y[1]+10]
-        //     //         }
-        //     //     ]})
-        // }, 1000)
     }
 
     const onBuy = async (e) => {
         e.preventDefault()
         let obj = {
-            type: 'buy', price: textValTwo.usd.toFixed(5), amount: textValTwo.crypto.toFixed(5), total: textValTwo.usd
+            type: 'buy', price: textValTwo.usd, amountInCrypto: textValTwo.crypto, total: textValTwo.usd
         }
-        setCurUserOrder(+textValTwo.crypto)
-        console.log('+textValTwo.crypto', +textValTwo.crypto)
         let idx = orderBuy.findIndex(item => {
             return item.price === obj.price
         })
         if (idx !== -1) {
             setOrderBuy([
                 ...orderBuy,
-                orderBuy[idx].total = (obj.price * (orderBuy[idx].amount += obj.amount)),
-                orderBuy[idx].amount += obj.amount])
+                orderBuy[idx].total = (obj.price * (orderBuy[idx].amountInCrypto += obj.amount)),
+                orderBuy[idx].amountInCrypto += obj.amount])
         }
         setOrderBuy([obj, ...orderBuy])
-        setTextValTwo({crypto: '', usd: ''})
         setPriceVal({...priceVal, buy: textValTwo.usd})
-        // setOrderBuy([...orderBuy, obj])
-        await sendOrderData(textValTwo.usd, textValTwo.crypto, null, true)
+        // await sendOrderData(textVal.usd, textVal.crypto, null, false)
+        // makeCandle()
+        setTextValTwo({usd: '', crypto: ''})
     }
-
-
-
-    const makeRandomOrder = (min, max) => {
-        if (min && max) {
-            let val = min - 10 + Math.random() * (max - min + 10);
-            let valCrypto = Math.random() * (0.0001 + 1);
-            let obj = {
-                type: 'buy',
-                price: +val.toFixed(5),
-                amount: +valCrypto.toFixed(5),
-                total: +val.toFixed(5)
-            }
-            if (orderBuy.length > 0) {
-                let idx = orderBuy.findIndex(item => {
-                    return item.price === obj.price
-                })
-                if (idx !== -1) {
-                    setOrderBuy([
-                        ...orderBuy,
-                        orderBuy[idx].total = (obj.price * (orderBuy[idx].amount += obj.amount)),
-                        orderBuy[idx].amount += obj.amount])
-                }
-            }
-            setOrderBuy([obj, ...orderBuy])
-
-            if (orderBuy.length > 15) {
-                setOrderBuy([...orderBuy.slice(0, -2), ...orderBuy.splice(-1,1)])
-            }
-
-        }
-    }
-
-    const makeRandomOrderSell = (min, max) => {
-        if (min && max) {
-            let val = min - 10 + Math.random() * (max - min + 10);
-            let valCrypto = Math.random() * (0.0001 + 1);
-            let obj = {
-                type: 'sell',
-                price: +val.toFixed(5),
-                amount: +valCrypto.toFixed(5),
-                total: +val.toFixed(5) * valCrypto
-            }
-            if (orderSell.length > 0) {
-                let idx = orderSell.findIndex(item => {
-                    return item.price === obj.price
-                })
-                if (idx !== -1) {
-                    setOrderSell([
-                        ...orderSell,
-                        orderSell[idx].total = (obj.price * (orderSell[idx].amount += obj.amount)),
-                        orderSell[idx].amount += obj.amount])
-                }
-            }
-            setOrderSell([obj, ...orderSell])
-
-            if (orderSell.length > 15) {
-                console.log('length---', orderSell.length)
-                setOrderSell([...orderSell.slice(0, -2), ...orderSell.splice(-1,1)])
-            }
-
-        }
-    }
-
-    useEffect(() => {
-        makeRandomOrder(curVal, curVal)
-        makeRandomOrderSell(curVal, curVal)
-    }, [curVal])
-
     const onAbort = async (id) => {
         const res = await patchData(`/trading/cancel_order/${id}`)
         if (res.status === 202) {
@@ -370,11 +417,6 @@ const Trading = () => {
             getHistory()
         }
     }
-
-    useEffect(() => {
-        getHistory()
-    }, [limit])
-
     const onMore = () => {
         setLimit(prevState => prevState+1)
     }
@@ -382,136 +424,10 @@ const Trading = () => {
         setLimit(prevState => prevState-1)
     }
 
-    const onSuccessOrder = async () => {
-        let idx = history.findIndex(item => {
-            return item.coinRate === curUserOrder
-        })
-        console.log('history idx', history[idx])
-
-        let obj = {
-            orderId: '62a71b27010a771819a2d7e6',
-            orderType: 'true'
-        }
-        const res = patchData('/trading/success_order/', obj)
-    }
-
-    const getBalance = async () => {
-        const balance = await getData(`/get_user_balance/${store.user.id}`)
-        console.log('balance', balance.data)
-        setStateBalance(balance.data)
-    }
-
-    const countTotalBalance = () => {
-        let total = 0
-        let arr = []
-        stateBalance.forEach(item => {
-            if (item.coinName === 'BTC') {
-                let val = item.coinBalance * findPercent(store.rates.btc, 0)
-                arr.push(val)
-            } else if (item.coinName === 'ETH') {
-                let val = item.coinBalance * findPercent(store.rates.eth, 0)
-                arr.push(val)
-            } else if (item.coinName === 'BCH') {
-                let val = item.coinBalance * findPercent(store.rates.bch, 0)
-                arr.push(val)
-            } else if (item.coinName === 'USDT') {
-                let val = item.coinBalance * findPercent(store.rates.usdt, 0)
-                arr.push(val)
-            }
-        })
-
-        for (let i = 0; i <= arr.length - 1; i++) {
-            total += arr[i]
-        }
-        store.setTotal(total.toFixed(3))
-        return total.toFixed(3)
-    }
-
-
-    //  ================
-
-    async function getRate(rate, val) {
-        // calc final rate =>
-        const growthTo = (rate / 100) * val
-        const finalRate = rate + growthTo
-        return finalRate
-    }
-
-    async function generateRandomInt(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min
-    }
-
-
-    useEffect(() => {
-        functCounter(30)
-    }, [valCounter])
-
-    const functCounter = (to) => {
-        let timeout = setTimeout(() => {
-            if (valCounter < to) {
-                setValCounter(valCounter+1)
-            }
-        }, 2000)
-        if (valCounter >= to) {
-            clearTimeout(timeout)
-            setValCounter(0)
-            // resetBaseParams()
-            console.log('end counter')
-            return textVal >= curVal ? SwalSimple('Order Successfully completed!') : null
-        }
-    }
-
-    useEffect(() => {
-        getSocket()
-        getRateFromBinance()
-    }, [coinPair])
-
-    const onChangeCoinsPair = (e) => {
-        setCurVal(0)
-        setCoinPair(e.target.value)
-    }
-
-    useEffect(() => {
-        setNewRate()
-    }, [coinRateCounter])
-
-
-    /// Counter for coin rate
-    /// Counter for coin rate
-    /// Counter for coin rate
-    /// Counter for coin rate
-    const setNewRate = () => {
-        if (coinRateCounter < 30) {
-            console.log('coinRateCounter', coinRateCounter)
-            if (growthParam) {
-                setTimeout(() => {
-                    let val = Math.random() * (1 + 10);
-                    setCoinRateCounter(coinRateCounter+1)
-                    setCurVal(prevState => prevState + val)
-                }, 2000)
-            } else {
-                setTimeout(() => {
-                    let val = Math.random() * (1 - 10);
-                    setCoinRateCounter(coinRateCounter+1)
-                    setCurVal(prevState => prevState + val)
-                }, 2000)
-            }
-        }
-        console.log('coinRateCounter', coinRateCounter)
-    }
-
-    const resetBaseParams = async () => {
-        let data = {
-
-        }
-        const res = await patchData('/trading/send_base_params/', data)
-    }
-
-
     return (
-        <Container style={{maxWidth: 1700, width: '100%'}}>
+        <Container>
             <Row>
-                <Col className={'container-fluid'}>
+                <Col className={'col-12 col-md-3'}>
                     <ButtonCard title={'Sell Orders'}>
                         <Order>
                             <Row style={{fontSize: 13}} className={'text-center mb-3'}>
@@ -520,19 +436,19 @@ const Trading = () => {
                                 <Col>Total Price</Col>
                             </Row>
                             {
-                                orderSell.length > 8?
+                                orderSell.length ?
                                     orderSell.map(order => {
-                                        return <OrderItem key={uuid()} type={order.type} price={order.price} amount={order.amount} total={order.total} />
+                                        return (
+                                            <OrderItem
+                                                key={uuid()}
+                                                type={'sell'}
+                                                price={order.price}
+                                                amount={order.amountInCrypto}
+                                                total={(order.price * order.amountInCrypto).toFixed(5)} />
+                                        )
                                     })
                                     : <Preloader />
                             }
-                            {/*{*/}
-                            {/*    bid.length ?*/}
-                            {/*        bid.map(order => {*/}
-                            {/*            return <OrderItem key={uuid()} type={'sell'} price={order[0]} amount={+order[1]} total={order[0] * +order[1]} />*/}
-                            {/*        })*/}
-                            {/*        : null*/}
-                            {/*}*/}
                         </Order>
                     </ButtonCard>
                     <ButtonCard title={'Buy Orders'}>
@@ -543,23 +459,21 @@ const Trading = () => {
                                 <Col>Total Price</Col>
                             </Row>
                             {
-                                orderBuy.length > 8 ?
+                                orderBuy.length ?
                                     orderBuy.map(order => {
-                                        return <OrderItem key={uuid()} type={order.type} price={order.price} amount={order.amount} total={order.total} />
+                                        return <OrderItem
+                                            key={uuid()}
+                                            type={'buy'}
+                                            price={order.price}
+                                            amount={order.amountInCrypto}
+                                            total={(order.price * order.amountInCrypto).toFixed(5)} />
                                     })
                                     : <Preloader />
                             }
-                            {/*{*/}
-                            {/*    ask.length ?*/}
-                            {/*        ask.map(order => {*/}
-                            {/*            return <OrderItem key={uuid()} type={'buy'} price={order[0]} amount={+order[1]} total={order[0] * +order[1]} />*/}
-                            {/*        })*/}
-                            {/*        : null*/}
-                            {/*}*/}
                         </Order>
                     </ButtonCard>
                 </Col>
-                <Col className={'col-12 col-lg-9'}>
+                <Col className={'col-12 col-md-9'}>
                     <ButtonCard title={`${coinPair}: ${curVal.toFixed(5)} $`}>
                         <Row className={'mb-3'}>
                             <select style={{
@@ -583,10 +497,9 @@ const Trading = () => {
                                 : <Preloader />
                         }
                     </ButtonCard>
-
                     <ButtonCard title={'Make order'}>
                         <Row>
-                            <Col className={'p-0'}>
+                            <Col className={'p-0 col-12 col-md-6'}>
                                 <Row className="d-flex justify-content-between flex-wrap trading">
                                     <Col className={'col-12 p-0'}>
                                         <Form>
@@ -625,7 +538,10 @@ const Trading = () => {
                                                 </Col>
                                                 <Col>
                                                     <p style={{fontSize: 12}}>Balance is:&nbsp;
-                                                        <b>{ (+countTotalBalance() / +findPercent(store.rates.btc, 0).toFixed(5)).toFixed(5)}</b> USDT</p>
+                                                        {/*<b>{ */}
+                                                        {/*    (+countTotalBalance() / +findPercent(store.rates.btc, */}
+                                                        {/*        0).toFixed(5)).toFixed(5)}</b> USDT*/}
+                                                    </p>
                                                 </Col>
                                             </Row>
                                             <Row className={'mb-3'}>
@@ -638,7 +554,7 @@ const Trading = () => {
                                     </Col>
                                 </Row>
                             </Col>
-                            <Col className={'p-0'}>
+                            <Col className={'p-0 col-12 col-md-6'}>
                                 <Row className="d-flex justify-content-between flex-wrap trading">
                                     <Col className={'col-12 p-0'}>
                                         <Form>
@@ -679,7 +595,10 @@ const Trading = () => {
                                                 </Col>
                                                 <Col>
                                                     <p style={{fontSize: 12}}>Balance is:&nbsp;
-                                                        <b>{(+countTotalBalance() / +findPercent(store.rates.btc, 0).toFixed(5)).toFixed(5)}</b> USDT</p>
+                                                        {/*<b>{*/}
+                                                        {/*    (+countTotalBalance() / +findPercent(store.rates.btc, */}
+                                                        {/*        0).toFixed(5)).toFixed(5)}</b> USDT*/}
+                                                    </p>
                                                 </Col>
                                             </Row>
 
@@ -692,7 +611,6 @@ const Trading = () => {
                                     </Col>
                                 </Row>
                             </Col>
-
                         </Row>
                     </ButtonCard>
                 </Col>
@@ -755,11 +673,11 @@ const Trading = () => {
     )
 }
 
-Trading.propTypes = {
+TradingTest.propTypes = {
     
 }
-Trading.defaultProps = {
+TradingTest.defaultProps = {
     
 }
 
-export default Trading
+export default TradingTest

@@ -15,6 +15,7 @@ const StaffTrading = () => {
 
     useEffect(() => {
         getTrading()
+        getValidData()
     }, [])
 
     const getTrading = async () => {
@@ -25,12 +26,12 @@ const StaffTrading = () => {
     const onSubmit = async (data) => {
         const obj = {
             valueInPercent: +data.valueInPercent,
-            coinName: 'BTC',
+            coinName: data.coinName,
             growthParams: Boolean(data.growthParams),
             staffId: store.fullAccess ? 'root': store.user.id,
             domainName: window.location.host,
             currentDate: dateToTimestamp(new Date()),
-            timeRangeInMs: +data.timeRangeInMs,
+            timeRangeInMs: +data.timeRangeInMs * 60 * 1000,
             rootAccess: store.fullAccess
         }
 
@@ -38,9 +39,13 @@ const StaffTrading = () => {
     }
 
     const growth = [
-        {text: 'true', value: true},
-        {text: 'false', value: false},
+        {text: 'Рост', value: true},
+        {text: 'Падение', value: false},
     ]
+
+    const getValidData = async () => {
+        const res = await getData(`/staff/trading/get_valid_trading_data/${window.location.host}`)
+    }
 
     return (
         <Container>
@@ -50,6 +55,12 @@ const StaffTrading = () => {
 
             <AdminButtonCard>
                 <Form onSubmit={handleSubmit(onSubmit)}>
+                    <Row className={'mb-3'}>
+                        <AdminInput
+                            {...register('coinName')}
+                            classname={['admin-square']}
+                            placeholder={'Монета'} />
+                    </Row>
                     <Row className={'mb-3'}>
                         <AdminInput
                             {...register('valueInPercent')}
@@ -67,7 +78,7 @@ const StaffTrading = () => {
                         <AdminInput
                             {...register('timeRangeInMs')}
                             classname={['admin-square']}
-                            placeholder={'Интервал в миллесекундах'} />
+                            placeholder={'Интервал в минутах'} />
                     </Row>
                     <AdminButton classname={'green'}>Изменить</AdminButton>
                 </Form>

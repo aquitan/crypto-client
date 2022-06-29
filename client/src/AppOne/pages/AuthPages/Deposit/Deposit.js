@@ -59,13 +59,16 @@ const Deposit = () => {
         data.value = state.value
         let geoData = await getGeoData()
 
+        console.log('state text', +state.text)
+        let stateVal = +state.text
+
         const obj = {
             userId: store.user.id,
             userEmail: store.userEmail,
             domainName: window.location.host,
             coinName: balanceCoin,
             amountInCrypto: +state.value.toFixed(5),
-            amountInUsd: +state.text.toFixed(5),
+            amountInUsd: stateVal.toFixed(5),
             currentDate: dateToTimestamp(),
             depositAddress: 'address',
             depositStatus: 'pending',
