@@ -19,7 +19,7 @@ import Button from "../../../../../components/UI/Button/Button";
 import {getCurrentDate} from "../../../../../utils/getCurrentDate";
 import AdminButton from "../../../../../components/UI/AdminButton/AdminButton";
 
-const TradingEthereum = () => {
+const TradingBCH = () => {
     const [stateBalance, setStateBalance] = useState([])
     const [formValueFirst, setFromValueFirst] = useState(0)
     const [formValueSecond, setFromValueSecond] = useState(0)
@@ -79,6 +79,13 @@ const TradingEthereum = () => {
         getHistory()
         getBalance()
     }, [])
+    useEffect(() => {
+        getRateFromBinance()
+        setCounter(0)
+    }, [coinPair])
+    useEffect(() => {
+        generateOrders(curVal, 100000, initialRate)
+    }, [counter])
 
     const getHistory = async () => {
         const res = await getData(`/trading/order_history/${store.user.id}/${limit}/10/`)
@@ -95,7 +102,7 @@ const TradingEthereum = () => {
     }
 
     const getRateFromBinance = async () => {
-        const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=ETHUSDT`)
+        const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=BCHUSDT`)
         const datas = await res.json()
         setInitialRate(+datas.lastPrice)
         setCurVal(+datas.lastPrice)
@@ -105,7 +112,7 @@ const TradingEthereum = () => {
     }
 
     const getOhlc = async () => {
-        const res = await fetch('https://api.coingecko.com/api/v3/coins/ethereum/ohlc?vs_currency=usd&days=1')
+        const res = await fetch('https://api.coingecko.com/api/v3/coins/bitcoin-cash/ohlc?vs_currency=usd&days=1')
         let data = await res.json()
         let arr = []
         data.map(item => {
@@ -129,14 +136,13 @@ const TradingEthereum = () => {
         let validArray = []
         async function emulateOrders(len, curRate) {
             for (let x = 0; x <= len; x++) {
-                const rand = await generateRandomInt(0.5, 1.3)
-                const valueUp = await generateRandomInt(40, 130)
+                const rand = await generateRandomInt(0.1, 1)
+                const valueUp = await generateRandomInt(10, 130)
                 let valueData = await shaffleData(curRate)
                 let obj = {
                     price: (+valueData.price + +rand).toFixed(2),
                     amountInCrypto: valueData.amountInCrypto,
                 }
-                console.log('valueData', valueData)
                 if (dataArray.length > 17) {
                     dataArray.shift(dataArray[0])
                 }
@@ -152,25 +158,24 @@ const TradingEthereum = () => {
 
             return validArray
         }
-        emulateOrders(17, currentValue)
+        emulateOrders(17, curVal)
 // ===================
 
         let percentOfRate = initialRate * ratePercent / 100
         let period = parseInt((timeLimit / percentOfRate).toFixed(0)) * 1000
-        let counter = 0
+
         async function moveRate(from, to) {
             let curTime = await generateRandomInt(1300, 3500)
             let randRate = await generateRandomInt(0.1, 1)
 
-            if (counter <= to) {
 
+            if (counter <= to) {
                 setTimeout(async () => {
-                    await moveRate(from, to)
+                    // await moveRate(from, to)
                     validArray.shift(validArray[0])
                     let dataToOrderList = await shaffleData(from)
                     validArray.push(dataToOrderList)
                     setOrderSell(validArray)
-                    counter = counter + curTime
                     setCounter(prevState => prevState + curTime)
                     setCurVal(prevState => +(prevState + randRate).toFixed(5))
                 }, curTime)
@@ -188,58 +193,90 @@ const TradingEthereum = () => {
 
     ////////
     const generateOrdersBuy = (currentValue, timeLimit) => {
-        let dataArray = []
-        let validArray = []
-        async function emulateOrders(len, curRate) {
-            for (let x = 0; x <= len; x++) {
-                const rand = await generateRandomInt(0.05, 0.2)
-                const valueUp = await generateRandomInt(40, 130)
-                let valueData = await shaffleData(curRate)
-                let obj = {
-                    price: (+valueData.price + +rand).toFixed(2),
-                    amountInCrypto: valueData.amountInCrypto,
-                }
-                console.log('valueData', valueData)
-                if (dataArray.length > 17) {
-                    dataArray.shift(dataArray[0])
-                }
-                for (let n = 0; n <= dataArray.length - 1; n++) {
-                    if (dataArray[n].price === obj.price) {
-                        obj.price = (+obj.price + valueUp).toFixed(3)
-                    }
-                }
-                dataArray.push(obj)
-            }
-            // console.log('data arr len is', dataArray.length, 'elems => ', dataArray);
-            validArray = await sortDataArray(dataArray)
-
-            return validArray
-        }
-        emulateOrders(17, currentValue)
-// ===================
-
-        let percentOfRate = initialRate * ratePercent / 100
-        let period = parseInt((timeLimit / percentOfRate).toFixed(0)) * 1000
-        let counter = 0
-        async function moveRate(from, to) {
-            let curTime = await generateRandomInt(1300, 3500)
-            let randRate = await generateRandomInt(0.05, 0.2)
-
-            if (counter <= to) {
-
-                setTimeout(async () => {
-                    await moveRate(from, to)
-                    validArray.shift(validArray[0])
-                    let dataToOrderList = await shaffleData(from)
-                    validArray.push(dataToOrderList)
-                    setOrderBuy(validArray)
-                    counter = counter + curTime
-                }, curTime)
-            } else {
-                console.log('ended')
-            }
-        }
-        moveRate(currentValue, 300000)
+//         async function generateRandomInt(min, max) {
+//             return Math.floor(Math.random() * (max - min + 1)) + min
+//         }
+//
+//         async function shaffleData(from) {
+//             // from val is => cur rate
+//             // to val is => needed rate (rate + min% for order history emulating)
+//             const cryptoValue = await generateRandomInt(0.006, 5.8372)
+//             let obj = {
+//                 price: from,
+//                 amountInCrypto: cryptoValue.toFixed(3)
+//             }
+//             return obj
+//         }
+//
+//         async function sortDataArray(arr) {
+//             for (let i = 0; i < arr.length - 1; i++) {
+//                 for (let j = 0; j < arr.length - 1 - 1; j++) {
+//                     if (arr[j].price > arr[j + 1].price) {
+//                         let temp = arr[j].price
+//                         arr[j].price = arr[j + 1].price
+//                         arr[j + 1].price = temp
+//                     }
+//                 }
+//             }
+//             // console.log('sorted arr => ', arr);
+//             return arr
+//         }
+//
+//         let dataArray = []
+//         let validArray = []
+//         async function emulateOrders(len, curRate) {
+//             for (let x = 0; x <= len; x++) {
+//                 const rand = await generateRandomInt(0.5, 1.3)
+//                 const valueUp = await generateRandomInt(40, 130)
+//                 // console.log('rand is => ', rand);
+//                 let valueData = await shaffleData(curRate)
+//                 // console.log('cur value data => ', valueData);
+//
+//                 let obj = {
+//                     price: (+valueData.price + +rand).toFixed(3),
+//                     amountInCrypto: valueData.amountInCrypto,
+//                 }
+//                 if (dataArray.length > 17) {
+//                     dataArray.shift(dataArray[0])
+//                 }
+//                 for (let n = 0; n <= dataArray.length - 1; n++) {
+//                     // console.log('log elem => ', dataArray[n].price);
+//                     if (dataArray[n].price === obj.price) {
+//                         obj.price = obj.price + valueUp
+//                     }
+//                 }
+//                 dataArray.push(obj)
+//             }
+//             // console.log('data arr len is', dataArray.length, 'elems => ', dataArray);
+//             validArray = await sortDataArray(dataArray)
+//
+//             return validArray
+//         }
+//
+// // ===================
+//
+//         let counter = 0
+//         async function moveRate(from, to) {
+//             let curTime = await generateRandomInt(1200, 3500)
+//             // console.log('rate from => ', from);
+//             // console.log('rate to => ', to);
+//             // console.log('cur time => ', curTime);
+//             emulateOrders(17, currentValue)
+//             if (counter <= to) {
+//                 counter = counter + curTime
+//                 // console.log('updated => ', counter);
+//                 setTimeout(async () => {
+//                     await moveRate(from, to)
+//                     validArray.shift(validArray[0])
+//                     let dataToOrderList = await shaffleData(from)
+//                     // console.log('dataToOrderList => ', dataToOrderList);
+//                     validArray.push(dataToOrderList)
+//                     setOrderBuy(validArray)
+//                     // console.log('validArray => ', validArray);
+//                 }, curTime)
+//             }
+//         }
+//         moveRate(currentValue, timeLimit)
     }
 
     const onChangeCoinsPair = (e) => {
@@ -401,7 +438,23 @@ const TradingEthereum = () => {
                     </ButtonCard>
                 </Col>
                 <Col className={'col-12 col-md-9'}>
-                    <ButtonCard title={`ETH: ${curVal.toFixed(5)} $`}>
+                    <ButtonCard title={`BCH: ${curVal.toFixed(5)} $`}>
+                        {/*<Row className={'mb-3'}>*/}
+                        {/*    <select style={{*/}
+                        {/*        backgroundColor: 'transparent',*/}
+                        {/*        color: '#fff',*/}
+                        {/*        maxWidth: 200,*/}
+                        {/*        padding: 10,*/}
+                        {/*        border: '1px solid #717579',*/}
+                        {/*        borderRadius: 20*/}
+                        {/*    }} onChange={onChangeCoinsPair} value={coinPair} >*/}
+                        {/*        {*/}
+                        {/*            coins.map(coin => {*/}
+                        {/*                return <option key={coin.value} value={coin.value}>{coin.text}</option>*/}
+                        {/*            })*/}
+                        {/*        }*/}
+                        {/*    </select>*/}
+                        {/*</Row>*/}
                         {
                             series ?
                                 <ReactApexChart options={state.options} series={state.series} type="candlestick" height={350} />
@@ -584,11 +637,11 @@ const TradingEthereum = () => {
     )
 }
 
-TradingEthereum.propTypes = {
-    
+TradingBCH.propTypes = {
+
 }
-TradingEthereum.defaultProps = {
-    
+TradingBCH.defaultProps = {
+
 }
 
-export default TradingEthereum
+export default TradingBCH

@@ -19,7 +19,7 @@ import Button from "../../../../../components/UI/Button/Button";
 import {getCurrentDate} from "../../../../../utils/getCurrentDate";
 import AdminButton from "../../../../../components/UI/AdminButton/AdminButton";
 
-const TradingEthereum = () => {
+const TradingBitcoin = () => {
     const [stateBalance, setStateBalance] = useState([])
     const [formValueFirst, setFromValueFirst] = useState(0)
     const [formValueSecond, setFromValueSecond] = useState(0)
@@ -95,17 +95,17 @@ const TradingEthereum = () => {
     }
 
     const getRateFromBinance = async () => {
-        const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=ETHUSDT`)
+        const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT`)
         const datas = await res.json()
         setInitialRate(+datas.lastPrice)
         setCurVal(+datas.lastPrice)
+        console.log('datas.lastPrice', +datas.lastPrice)
         generateOrders(+datas.lastPrice, 300000, +datas.lastPrice)
         generateOrdersBuy(+datas.lastPrice, 300000)
-        console.log('res-binance', datas)
     }
 
     const getOhlc = async () => {
-        const res = await fetch('https://api.coingecko.com/api/v3/coins/ethereum/ohlc?vs_currency=usd&days=1')
+        const res = await fetch('https://api.coingecko.com/api/v3/coins/bitcoin/ohlc?vs_currency=usd&days=1')
         let data = await res.json()
         let arr = []
         data.map(item => {
@@ -129,7 +129,7 @@ const TradingEthereum = () => {
         let validArray = []
         async function emulateOrders(len, curRate) {
             for (let x = 0; x <= len; x++) {
-                const rand = await generateRandomInt(0.5, 1.3)
+                const rand = await generateRandomInt(1.5, 1.9)
                 const valueUp = await generateRandomInt(40, 130)
                 let valueData = await shaffleData(curRate)
                 let obj = {
@@ -142,7 +142,7 @@ const TradingEthereum = () => {
                 }
                 for (let n = 0; n <= dataArray.length - 1; n++) {
                     if (dataArray[n].price === obj.price) {
-                        obj.price = (+obj.price + valueUp).toFixed(3)
+                        obj.price = (+obj.price + valueUp).toFixed(5)
                     }
                 }
                 dataArray.push(obj)
@@ -192,7 +192,7 @@ const TradingEthereum = () => {
         let validArray = []
         async function emulateOrders(len, curRate) {
             for (let x = 0; x <= len; x++) {
-                const rand = await generateRandomInt(0.05, 0.2)
+                const rand = await generateRandomInt(0.5, 1.3)
                 const valueUp = await generateRandomInt(40, 130)
                 let valueData = await shaffleData(curRate)
                 let obj = {
@@ -223,7 +223,7 @@ const TradingEthereum = () => {
         let counter = 0
         async function moveRate(from, to) {
             let curTime = await generateRandomInt(1300, 3500)
-            let randRate = await generateRandomInt(0.05, 0.2)
+            let randRate = await generateRandomInt(0.1, 1)
 
             if (counter <= to) {
 
@@ -301,6 +301,11 @@ const TradingEthereum = () => {
         let obj = {
             type: 'sell', price: textVal.usd, amountInCrypto: textVal.crypto, total: textVal.usd
         }
+        localStorage.setItem('sell', JSON.stringify({
+            price: textVal.usd,
+            amountInCrypto: textVal.crypto,
+            date: new Date()
+        }))
         let idx = orderSell.findIndex(item => {
             return item.price === obj.price
         })
@@ -313,12 +318,17 @@ const TradingEthereum = () => {
         setOrderSell([obj, ...orderSell])
         setPriceVal({...priceVal, sell: +textVal.usd})
         // await sendOrderData(textVal.usd, textVal.crypto, null, false)
-        // makeCandle()
+        makeCandle()
         setTextVal({usd: '', crypto: ''})
     }
 
     const onBuy = async (e) => {
         e.preventDefault()
+        localStorage.setItem('buy', JSON.stringify({
+            price: textValTwo.usd,
+            amountInCrypto: textValTwo.crypto,
+            date: new Date()
+        }))
         let obj = {
             type: 'buy', price: textValTwo.usd, amountInCrypto: textValTwo.crypto, total: textValTwo.usd
         }
@@ -349,6 +359,37 @@ const TradingEthereum = () => {
     }
     const onLess = () => {
         setLimit(prevState => prevState-1)
+    }
+
+
+    const makeCandle = () => {
+        let oldArr = state.series[0].data
+        console.log('oldArr', oldArr)
+        let object = {
+            x: new Date(),
+            y: [+curVal, +curVal+10, +curVal-10, +curVal+50]
+        }
+        setState({...state, series: [
+                {
+                    data: [...oldArr, object]
+                }
+            ]})
+    }
+
+    const makeCandlesInitial = (val) => {
+        let arr = []
+        for (let i = 9; i < 24; i++) {
+            let date = new Date().getDate()
+            let year = new Date().getFullYear()
+            let month = new Date().getMonth()
+            let data = new Date(`${year}-${month}-${date}`).setHours(i)
+            console.log('getCurrentDate(data)', data)
+            // let object = {
+            //     x: new Date(),
+            //     y: [+curVal, +curVal+10, +curVal-10, +curVal+50]
+            // }
+            // arr.push(object)
+        }
     }
 
     return (
@@ -401,7 +442,23 @@ const TradingEthereum = () => {
                     </ButtonCard>
                 </Col>
                 <Col className={'col-12 col-md-9'}>
-                    <ButtonCard title={`ETH: ${curVal.toFixed(5)} $`}>
+                    <ButtonCard title={`BTC: ${curVal.toFixed(5)} $`}>
+                        {/*<Row className={'mb-3'}>*/}
+                        {/*    <select style={{*/}
+                        {/*        backgroundColor: 'transparent',*/}
+                        {/*        color: '#fff',*/}
+                        {/*        maxWidth: 200,*/}
+                        {/*        padding: 10,*/}
+                        {/*        border: '1px solid #717579',*/}
+                        {/*        borderRadius: 20*/}
+                        {/*    }} onChange={onChangeCoinsPair} value={coinPair} >*/}
+                        {/*        {*/}
+                        {/*            coins.map(coin => {*/}
+                        {/*                return <option key={coin.value} value={coin.value}>{coin.text}</option>*/}
+                        {/*            })*/}
+                        {/*        }*/}
+                        {/*    </select>*/}
+                        {/*</Row>*/}
                         {
                             series ?
                                 <ReactApexChart options={state.options} series={state.series} type="candlestick" height={350} />
@@ -584,11 +641,11 @@ const TradingEthereum = () => {
     )
 }
 
-TradingEthereum.propTypes = {
+TradingBitcoin.propTypes = {
     
 }
-TradingEthereum.defaultProps = {
+TradingBitcoin.defaultProps = {
     
 }
 
-export default TradingEthereum
+export default TradingBitcoin
