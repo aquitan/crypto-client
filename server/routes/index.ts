@@ -79,6 +79,7 @@ router.patch('/staff/users/user_detail/update_staff_support_name/', staffControl
 router.delete('/staff/users/user_detail/delete_user_with_all_params/', staffController.deleteUser) // delete user params
 router.put('/staff/notifications/create_new_notification/', staffController.createNewNotification) // create new notification for user
 router.get('/staff/notifications/get_all_notifications/:userId', staffController.getNotificationList) // get notification request by user_id
+router.delete('/notification/remove_notification/:notifId/', authChecker, staffController.removeNotif) // remove notif from database if user already saw it
 
 router.post('/staff/users/kyc/', staffController.kycList) // get kyc list (if staff => when staff is domain owner) (if admin & other => all kyc )
 router.patch('/staff/kyc/update_kyc_status/', staffController.changeKycStatus) // change kyc status for user (in user verification page)

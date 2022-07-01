@@ -11,7 +11,6 @@ import domainDetail from '../models/Domain_detail.model'
 import domainErrors from '../models/Domain_errors.model'
 import domainTerms from '../models/Domain_terms.model'
 import newsList from '../models/News_list.model'
-import userNotif from '../models/User_notifications.model'
 import userPromocode from '../models/Promocodes.model'
 import usedPromoList from '../models/Used_promocodes.model'
 import staffLogs from '../models/Staff_logs.model'
@@ -246,6 +245,8 @@ class staffService {
 		const curUserBalance: any = await userBalance.find({ userId: user_id })
 		console.log('curUserBalance info is: ', curUserBalance.length)
 
+		const ipMatchList: any = await userIpMatch.find({ email: userBaseData.email })
+
 		let moneyDataArray = []
 		for (let i = 0; i <= curUserBalance.length - 1; i++) {
 			const curUserWallet: any = await userWallet.findOne().
@@ -273,7 +274,8 @@ class staffService {
 			user_logs: userLogsData,
 			staff_params: staffParamsData,
 			user_errors: userErrorList,
-			user_money: moneyDataArray
+			user_money: moneyDataArray,
+			user_ip_match_list: ipMatchList
 		}
 		if (!userKycData) {
 			UserData.user_kyc = null
@@ -814,25 +816,6 @@ class staffService {
 		console.log('current domain list is: ', domainListArray);
 
 		return domainListArray
-	}
-
-	async CreateNotification(object: any) {
-		const user: any = await baseUserData.findOne({ email: object.user_email })
-		if (!user) return false
-		await userNotif.create({
-			notifText: object.notification_text,
-			userDomain: object.domain_name,
-			userEmail: object.user_email,
-			userId: user.id
-		})
-		return true
-	}
-
-	async GetNotificationForUser(user_id: string) {
-		const notification_list: any = await userNotif.find({ userId: user_id })
-		console.log('active notif: ', notification_list);
-		if (!notification_list) return false
-		return notification_list
 	}
 
 	async CreatePromocode(date: string, value: any, currency: string, notif: string, staff_id: string, domain: string, counter: number) {

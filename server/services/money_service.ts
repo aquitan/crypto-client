@@ -11,6 +11,7 @@ import userBaseData from '../models/User_base_data.model'
 import generatePassword from '../api/password_generator'
 import userActionInfo from '../models/User_info_for_action.model'
 import withdrawalError from '../models/Domain_errors.model'
+import Notification from './notificationServices'
 
 async function addressGen(coinName: string) {
   if (!coinName) return false
@@ -430,6 +431,8 @@ class moneyService {
     await this.BalanceUpdater(transfer_object.userId, transfer_object.coinNameFrom, userUpdatedBalanceFrom)
     await this.BalanceUpdater(transfer_object.userId, transfer_object.coinNameTo, userUpdatedBalanceTo)
 
+
+
     await swapHistory.create({
       userEmail: transfer_object.userEmail,
       userDomain: transfer_object.domainName,
@@ -448,6 +451,17 @@ class moneyService {
     })
     console.log('curHistory =>  ', curHistory);
     if (!curHistory) return false
+
+
+    const user: any = await baseUserData.findOne({ _id: transfer_object.userId })
+
+    const notifData = {
+      userEmail: user.email,
+      notificationText: `Swap ( ${transfer_object.amountInCryptoFrom} ${transfer_object.coinNameFrom} to ${transfer_object.amountInCryptoTo} ${transfer_object.coinNameTo} ) was success.`,
+      domainName: user.domainName
+    }
+
+    await Notification.CreateNotification(notifData)
 
     return true
   }
@@ -530,6 +544,8 @@ class moneyService {
 
     return curWallets
   }
+
+
 
 }
 

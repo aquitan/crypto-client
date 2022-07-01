@@ -22,6 +22,8 @@ import secureDeal from '../models/secure_deal.model'
 import newsList from '../models/News_list.model'
 import tradingOrders from '../models/trading_order.model'
 import coinRates from '../models/coin_rates.model'
+import Notification from './notificationServices'
+
 
 
 async function generateCodeForGoogle2fa(domain_name: string) {
@@ -93,6 +95,16 @@ class UserServices {
 		let curUser: any = await baseUserData.findOne({ email: userEmail })
 		console.log('updated pass is: ', curUser.password);
 		if (curUser.password !== newPassword) return false
+
+		const notifDataOne = {
+			userEmail: user.email,
+			notificationText: `Password was changed.`,
+			domainName: user.domainName
+		}
+
+		await Notification.CreateNotification(notifDataOne)
+
+
 		return true
 	}
 
@@ -196,6 +208,15 @@ class UserServices {
 		const updatedStatus: any = await userParams.findOne({ userId: transferObject.userId })
 		console.log('2fa status is: ', updatedStatus.twoStepStatus);
 		if (updatedStatus.twoStepStatus !== true) return false
+
+		const notifDataOne = {
+			userEmail: userToUpdate.email,
+			notificationText: `Two step verification was enabled.`,
+			domainName: userToUpdate.domainName
+		}
+
+		await Notification.CreateNotification(notifDataOne)
+
 		return true
 
 	}
@@ -226,6 +247,18 @@ class UserServices {
 		const updatedStatus: any = await userParams.findOne({ userId: user_id })
 		console.log('2fa status is: ', updatedStatus.twoStepStatus);
 		if (updatedStatus.twoStepStatus !== false) return false
+
+
+		const userData: any = await baseUserData.findOne({ _id: user_id })
+
+		const notifDataOne = {
+			userEmail: userData.email,
+			notificationText: `Two step verification was disabled.`,
+			domainName: userData.domainName
+		}
+
+		await Notification.CreateNotification(notifDataOne)
+
 		return true
 	}
 
@@ -433,6 +466,13 @@ class UserServices {
 
 		const acceptCode: string = await generatePassword(8)
 
+		const validFirstUserDomain: any = await baseUserData.findOne({ email: transfer_object.userEmail })
+		console.log(' validFirstUserDomain is => ', validFirstUserDomain);
+
+		const validSecondUserDomain: any = await baseUserData.findOne({ email: transfer_object.secondPartyEmail })
+		console.log(' validSecondUserDomain is => ', validSecondUserDomain);
+		if (validFirstUserDomain.domainName !== validSecondUserDomain.domainName) return false
+
 		const getUserBalance: any = await userBalance.findOne({
 			coinName: transfer_object.coinName,
 			userId: userId
@@ -464,6 +504,14 @@ class UserServices {
 		})
 		console.log('found getDeal is => ', getDeal);
 		if (!getDeal) return false
+
+		const notifDataOne = {
+			userEmail: transfer_object.secondPartyEmail,
+			notificationText: `You was added to secure deal as second party user. Check your secure deal history.`,
+			domainName: validFirstUserDomain.domainName
+		}
+
+		await Notification.CreateNotification(notifDataOne)
 
 		return true
 	}
@@ -808,6 +856,17 @@ class UserServices {
 			console.log('updatedOrder => ', updatedOrder);
 			if (updatedOrder.orderStatus !== true) return false
 
+			const user: any = await baseUserData.findOne({ _id: getCoinBalance.userId })
+			if (!user) return false
+
+			const notifData = {
+				userEmail: user.email,
+				notificationText: `Congratulations! Your order was success.`,
+				domainName: user.domainName
+			}
+
+			await Notification.CreateNotification(notifData)
+
 			return true
 		}
 
@@ -873,6 +932,16 @@ class UserServices {
 			console.log('updatedOrder => ', updatedOrder);
 			if (updatedOrder.orderStatus !== true) return false
 
+			const user: any = await baseUserData.findOne({ _id: getCoinBalance.userId })
+			if (!user) return false
+
+			const notifData = {
+				userEmail: user.email,
+				notificationText: `Congratulations! Your order was success.`,
+				domainName: user.domainName
+			}
+
+			await Notification.CreateNotification(notifData)
 
 			return true
 		}
