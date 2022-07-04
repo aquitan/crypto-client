@@ -129,9 +129,10 @@ const TradingBitcoin = () => {
         let validArray = []
         async function emulateOrders(len, curRate) {
             for (let x = 0; x <= len; x++) {
-                const rand = await generateRandomInt(1.5, 1.9)
+                const rand = await generateRandomInt(1.1, 1.7)
                 const valueUp = await generateRandomInt(40, 130)
-                let valueData = await shaffleData(curRate)
+
+                let valueData = await shaffleData(currentValue)
                 let obj = {
                     price: (+valueData.price + +rand).toFixed(2),
                     amountInCrypto: valueData.amountInCrypto,

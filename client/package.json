@@ -22,7 +22,6 @@
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.34",
     "node": "^17.2.0",
-    "node-sass": "^6.0.1",
     "prop-types": "^15.8.1",
     "react": "^17.0.2",
     "react-bootstrap": "^2.0.3",
@@ -35,6 +34,7 @@
     "react-router-dom": "^6.1.1",
     "react-scripts": "4.0.3",
     "react-slick": "^0.29.0",
+    "sass": "^1.53.0",
     "slick-carousel": "^1.8.1",
     "socket.io": "^4.5.1",
     "sweetalert2": "^11.4.17",
@@ -51,7 +51,7 @@
   },
   "proxy": "http://localhost:8888",
   "scripts": {
-    "start": "PORT=3011 react-scripts --openssl-legacy-provider start",
+    "start": "PORT=3012 react-scripts --openssl-legacy-provider start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
