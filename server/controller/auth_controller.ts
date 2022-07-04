@@ -160,15 +160,11 @@ class AuthController {
 
       const ip_match: boolean = await authService.GetUserIpLogs(ipAddress)
       console.log('ip address in database: ', ip_match);
-      if (ip_match === true) {
-        console.log('ip was matched!');
-
-        await authService.SaveIpMatchLogs(email, ipAddress, currentDate, browser)
-      }
+      if (ip_match) await authService.SaveIpMatchLogs(email, ipAddress, currentDate, browser)
 
       console.log('req.body: ', req.body);
       const userData: any = await authService.login(email, password, domainName)
-      if (userData === false) return res.status(400).json({ message: 'wrong data' })
+      if (!userData) return res.status(400).json({ message: 'wrong data' })
 
       res.cookie('refreshToken', userData.refreshToken, {
         maxAge: 30 * 4 * 60 * 60 * 1000,

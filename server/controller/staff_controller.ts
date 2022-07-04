@@ -14,6 +14,7 @@ import ApiError from '../exeptions/api_error'
 import moneyService from '../services/money_service'
 import bodyValidator from '../api/body_validator'
 import TRADING_COIN_RATE_UPDATE from '../interface/trading_rate_update.interface'
+import Notification from '../services/notificationServices'
 
 
 class StaffController {
@@ -949,22 +950,21 @@ class StaffController {
 
   async createNewNotification(req: express.Request, res: express.Response, next: express.NextFunction) {
     interface request_object {
-      user_email: string
-      notification_text: string
-      domain_name: string
+      userEmail: string
+      notificationText: string
+      domainName: string
     }
     const obj_to_send: request_object = {
-      user_email: req.body.userEmail,
-      notification_text: req.body.notifText,
-      domain_name: req.body.domainName
+      userEmail: req.body.userEmail,
+      notificationText: req.body.notifText,
+      domainName: req.body.domainName
     }
-
 
     const validData: boolean = await bodyValidator(req.body, 3)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
 
-      const result: any = await staffService.CreateNotification(obj_to_send)
+      const result: any = await Notification.CreateNotification(obj_to_send)
       if (!result) throw ApiError.ServerError()
 
       return res.status(201).json({ message: 'ok' })
@@ -978,10 +978,23 @@ class StaffController {
     const userId: string = req.params.userId
     console.log('req body is: ', req.params);
     try {
-      const result: any = await staffService.GetNotificationForUser(userId)
+      const result: any = await Notification.GetNotificationForUser(userId)
       if (!result) return res.status(200).json({ listForUser: 'empty list' })
 
       return res.status(200).json({ listForUser: result })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async removeNotif(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const notifId: string = req.params.notifId
+    console.log('req is: ', req.params);
+    try {
+      const result: boolean = await Notification.deleteNotification(notifId)
+      if (!result) throw ApiError.ServerError()
+
+      return res.status(200).json({ message: 'ok' })
     } catch (e) {
       next(e)
     }
