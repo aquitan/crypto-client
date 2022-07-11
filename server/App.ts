@@ -59,3 +59,15 @@ server.listen(PORT, async () => {
 // https://github.com/sagivo/accept-bitcoin
 
 // https://www.npmjs.com/package/bitcoinjs-lib#examples
+
+// how to send btc nodejs 
+// https://morioh.com/p/72511327f19f
+// https://blog.logrocket.com/sending-bitcoin-with-javascript/
+
+
+// check btc balance https://chain.so/api/v2/address/BTC/{address}/
+
+// check trxustd balance https://api.trongrid.io/v1/accounts/{address}/transactions/trc20
+
+// crypto lib => 
+// npm install bip39 bip32 bitcoinjs-lib --save

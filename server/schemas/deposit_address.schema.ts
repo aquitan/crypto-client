@@ -15,11 +15,13 @@ export const DEPOSIT_WALLETS_SCHEMA = {
     maxlength: 50,
     require: true
   },
-  status: {
+  seedPhrase: {
     type: String,
-    enum: ['pending', 'complete', 'failed'],
     require: true,
-    default: 'pending'
+  },
+  key: {
+    type: String,
+    require: true,
   },
   expiredDate: {
     type: Number,

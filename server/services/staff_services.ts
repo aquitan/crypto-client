@@ -26,6 +26,7 @@ import recruiterModel from '../models/recruiter.model'
 import recruiterOwnUsers from '../models/recruiter_own_users.model'
 import tradingOrders from '../models/trading_order.model'
 import coinRates from '../models/coin_rates.model'
+import supportChat from '../models/Support_chat.model'
 
 
 class staffService {
@@ -1382,6 +1383,46 @@ class staffService {
 		if (!updatedRateValue) return false
 
 		return updatedRateValue
+
+	}
+	async getSupportDataByStaffId(staffId: string) {
+		const dataList: any = await supportChat.find({ staffId: staffId })
+		console.log('received dataList: ', dataList.length);
+		if (!dataList) return false
+
+		return dataList
+
+	}
+
+	async getChatData(staffId: string, skip: number, limit: number) {
+		const dataList: any = await supportChat.
+			find({ staffId: staffId }).
+			skip(skip).
+			limit(limit).
+			sort({ curDate: -1 }).
+			exec()
+		console.log('received dataList: ', dataList.length);
+		if (!dataList) return false
+		return dataList
+	}
+
+	async editChatMessage(messageId: string, updatedData: any) {
+
+		const baseChatData: any = await supportChat.findOne({ _id: messageId })
+		console.log('baseChatData => ', baseChatData);
+		if (!baseChatData) return false
+
+		await supportChat.findOneAndUpdate(
+			{ _id: messageId },
+			updatedData
+		)
+
+		const checkUpdate: any = await supportChat.findOne({ _id: messageId })
+		console.log('checkUpdate => ', checkUpdate);
+		if (!checkUpdate) return false
+
+		if (baseChatData === checkUpdate) return false
+		return true
 
 	}
 

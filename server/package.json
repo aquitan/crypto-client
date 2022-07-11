@@ -13,6 +13,9 @@
   "dependencies": {
     "@types/express-fileupload": "^1.2.2",
     "axios": "^0.24.0",
+    "bip32": "^2.0.6",
+    "bip39": "^3.0.4",
+    "bitcoinjs-lib": "^6.0.1",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
