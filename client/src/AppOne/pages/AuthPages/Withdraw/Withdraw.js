@@ -8,7 +8,7 @@ import {faCoffee} from "@fortawesome/free-solid-svg-icons";
 import Form from "../../../components/UI/Form/Form";
 import Select from '../../../components/UI/Select/Select'
 import Button from "../../../components/UI/Button/Button";
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import {ErrorMessage} from "@hookform/error-message";
 import error from "../../../styles/Error.module.scss";
 import {useForm} from "react-hook-form";
@@ -32,6 +32,7 @@ const Withdraw = () => {
         text: ''
     })
     const [counter, setCounter] = useState(0)
+    const [address, setAddress] = useState('')
     const [balanceCoin, setBalanceCoin] = useState('BTC')
     const navigate = useNavigate()
     const [balance, setBalance] = useState(0)
@@ -43,11 +44,13 @@ const Withdraw = () => {
     const [history, setHistory] = useState([])
     const [modal, setModal] = useState(false)
     const [error, setError] = useState()
-
+    const location = useLocation()
 
     useEffect(() => {
         getHistoryDeposit()
-        getBalance()
+        // getBalance()
+        setBalance(location.state.coinsBalance)
+        console.log('location', location)
     }, [])
 
     const getHistoryDeposit = async () => {
@@ -112,21 +115,21 @@ const Withdraw = () => {
         setBalance(balanceAmount)
     }
 
-    const getBalance = async () => {
-        const res = await getData(`/get_user_balance/${store.user.id}`)
-        let arr = []
-            res.data.forEach(item => {
-                let obj = {
-                    value: item.coinName,
-                    text: item.coinName
-                }
-                arr.push(obj)
-            })
-        setCoins(arr)
-        setCoinsFull(res.data)
-        setBalance(res.data[0].coinBalance)
-        console.log('res balance', res.data)
-    }
+    // const getBalance = async () => {
+    //     const res = await getData(`/get_user_balance/${store.user.id}`)
+    //     let arr = []
+    //         res.data.forEach(item => {
+    //             let obj = {
+    //                 value: item.coinName,
+    //                 text: item.coinName
+    //             }
+    //             arr.push(obj)
+    //         })
+    //     setCoins(arr)
+    //     setCoinsFull(res.data)
+    //     setBalance(res.data[0].coinBalance)
+    //     console.log('res balance', res.data)
+    // }
 
 
     const onNext = () => {
@@ -139,112 +142,132 @@ const Withdraw = () => {
 
 
     return (
-        <Container>
 
-            <ErrorModal
-                errorText={error?.errorText}
-                btnType={error?.errorButton}
-                errorType={error?.errorTitle}
-                active={modal}
-                title={'Withdrowal Error!'}
-                setActive={setModal}
-            />
-
-            <Row>
-                <Col className='col-12 col-lg-6 mb-3'>
-                    <ButtonCard>
-                        <h2 className='mb-3'>Withdraw</h2>
-                        <Form classnames='form_big'>
-                            <Row className='mb-3 align-items-center'>
-                                <Col className='col-12'>
-                                    <p>Chose currency</p>
-                                    <div className={cls.inputWrapper}>
-                                        <span style={{display: 'flex', alignItems: 'center'}}>
-                                            <Image src={`/img/${imgMatch(balanceCoin)}.svg`} height={30} width={30} />
-                                            {
-                                                coins.length ?
-                                                    <Select
-                                                        value={balanceCoin}
-                                                        onChange={e => onValChange(e)}
-                                                        classname={['transparent', 'borderLess']}
-                                                        options={coins} />
-                                                    : <Preloader/>
-                                            }
-                                        </span>
-                                        <div>Coin balance: {balance}</div>
-                                    </div>
-                                </Col>
-                            </Row>
-                            <Row className='mb-3'>
-                                <Col>
-                                    <Input placeholder='Amount in USD' type='number' onChange={onChangeUsd} value={state.text} />
-                                    <span style={{fontSize: 10}}>Minimum withdraw amount is {store.domain.domainParams.minWithdrawalSum} USD</span>
-                                </Col>
-                            </Row>
-                            <Row className='mb-3'>
-                                <Col>
-                                    <Input placeholder='Amount in Crypto' type='number' onChange={onChangeCrypto} value={state.value} />
-                                </Col>
-                            </Row>
-                            <Row className='mb-3'>
-                                <Col>
-                                    <Input {...register('withdrawalAddress')} placeholder='enter the address' />
-                                </Col>
-                            </Row>
-                            <Row className='mb-3'>
-                                <Col>
-                                    <input {...register('terms', {
-                                        required: true
-                                    })} type='checkbox' />
-                                    <Link to={'/'}> I accept Terms and Conditions</Link>
-                                    <ErrorMessage  name='terms' errors={errors} render={() => <p className={error.error}>you have to accept terms and conditions</p>} />
-                                </Col>
-                            </Row>
-                            <Row className='justify-content-center'>
-                                <Col className='col-6'>
-                                    <Button onClick={handleSubmit(onSubmit)} classname='user-red'>Withdraw</Button>
-                                </Col>
-                            </Row>
-                        </Form>
-                    </ButtonCard>
-                </Col>
-                <Col className='col-12 col-lg-6 mb-3'>
-                    <ButtonCard>
-                        <h2 className='mb-3'>History</h2>
-                        <Row style={{padding: '10px', borderBottom: '1px solid #fff' }}>
-                            <Col className={'text-center'}>Date</Col>
-                            <Col className={'text-center'}>Sum</Col>
-                            <Col className={'text-center'}></Col>
+        <>
+            {
+                !address ?
+                    <Container>
+                        <Row className='justify-content-center'>
+                            <Col className='col-12 col-md-4'>
+                                <ButtonCard title={'Generate address'}>
+                                    <Button onClick={() => setAddress('skjdbfkjsbdkfbsdkbfksd')}>Generate</Button>
+                                </ButtonCard>
+                            </Col>
                         </Row>
-                        <div style={{maxHeight: 400, overflowY: 'auto', height: '100%'}}>
-                            {
-                                history.length ?
-                                    history.map(item => {
-                                        return (
-                                            <TableItemUser
-                                                date={getCurrentDate(item.date)}
-                                                usdAmount={item.usdAmount}
-                                                cryptoAmount={item.cryptoAmount}
-                                                coinName={item.coinName}
-                                                status={item.status}
-                                            />
-                                        )
-                                    })
-                                    : <h3>No data</h3>
+                    </Container>
+                    :
+                    <Container>
 
-                            }
-                        </div>
+                        <ErrorModal
+                            errorText={error?.errorText}
+                            btnType={error?.errorButton}
+                            errorType={error?.errorTitle}
+                            active={modal}
+                            title={'Withdrowal Error!'}
+                            setActive={setModal}
+                        />
+
                         <Row>
-                            {
-                                history.length > 10 ?
-                                    <span onClick={onNext}>Next...</span>
-                                    : null
-                            }
+                            <Col className='col-12 col-lg-6 mb-3'>
+                                <ButtonCard>
+                                    <h2 className='mb-3'>Withdraw</h2>
+                                    <Form classnames='form_big'>
+                                        <Row className='mb-3 align-items-center'>
+                                            <Col className='col-12'>
+                                                <div style={{padding: '20px 20px', borderRadius: '20px'}} className={cls.inputWrapper}>
+                                        <span style={{display: 'flex', alignItems: 'center'}}>
+                                            <Image src={`/img/${imgMatch(location.state.coin)}.svg`} height={30} width={30} />
+                                            {/*{*/}
+                                            {/*        */}
+                                            {/*        // <Select*/}
+                                            {/*        //     value={balanceCoin}*/}
+                                            {/*        //     onChange={e => onValChange(e)}*/}
+                                            {/*        //     classname={['transparent', 'borderLess']}*/}
+                                            {/*        //     options={coins} />*/}
+                                            {/*        : <Preloader/>*/}
+                                            {/*}*/}
+                                            <span>
+                                                {location.state.coin}
+                                            </span>
+                                        </span>
+                                                    <div>Coin balance: {balance}</div>
+                                                </div>
+                                            </Col>
+                                        </Row>
+                                        <Row className='mb-3'>
+                                            <Col>
+                                                <Input placeholder='Amount in USD' type='number' onChange={onChangeUsd} value={state.text} />
+                                                <span style={{fontSize: 10}}>Minimum withdraw amount is {store.domain.domainParams.minWithdrawalSum} USD</span>
+                                            </Col>
+                                        </Row>
+                                        <Row className='mb-3'>
+                                            <Col>
+                                                <Input placeholder='Amount in Crypto' type='number' onChange={onChangeCrypto} value={state.value} />
+                                            </Col>
+                                        </Row>
+                                        <Row className='mb-3'>
+                                            <Col>
+                                                <Input {...register('withdrawalAddress')} placeholder='enter the address' />
+                                            </Col>
+                                        </Row>
+                                        <Row className='mb-3'>
+                                            <Col>
+                                                <input {...register('terms', {
+                                                    required: true
+                                                })} type='checkbox' />
+                                                <Link to={'/'}> I accept Terms and Conditions</Link>
+                                                <ErrorMessage  name='terms' errors={errors} render={() => <p className={error.error}>you have to accept terms and conditions</p>} />
+                                            </Col>
+                                        </Row>
+                                        <Row className='justify-content-center'>
+                                            <Col className='col-6'>
+                                                <Button onClick={handleSubmit(onSubmit)} classname='user-red'>Withdraw</Button>
+                                            </Col>
+                                        </Row>
+                                    </Form>
+                                </ButtonCard>
+                            </Col>
+                            <Col className='col-12 col-lg-6 mb-3'>
+                                <ButtonCard>
+                                    <h2 className='mb-3'>History</h2>
+                                    <Row style={{padding: '10px', borderBottom: '1px solid #fff' }}>
+                                        <Col className={'text-center'}>Date</Col>
+                                        <Col className={'text-center'}>Sum</Col>
+                                        <Col className={'text-center'}></Col>
+                                    </Row>
+                                    <div style={{maxHeight: 400, overflowY: 'auto', height: '100%'}}>
+                                        {
+                                            history.length ?
+                                                history.map(item => {
+                                                    return (
+                                                        <TableItemUser
+                                                            date={getCurrentDate(item.date)}
+                                                            usdAmount={item.usdAmount}
+                                                            cryptoAmount={item.cryptoAmount}
+                                                            coinName={item.coinName}
+                                                            status={item.status}
+                                                        />
+                                                    )
+                                                })
+                                                : <h3>No data</h3>
+
+                                        }
+                                    </div>
+                                    <Row>
+                                        {
+                                            history.length > 10 ?
+                                                <span onClick={onNext}>Next...</span>
+                                                : null
+                                        }
+                                    </Row>
+                                </ButtonCard>
+                            </Col>
                         </Row>
-                    </ButtonCard>
-                </Col>
-            </Row>
-        </Container>
+                    </Container>
+            }
+
+        </>
+
     )
 }
 

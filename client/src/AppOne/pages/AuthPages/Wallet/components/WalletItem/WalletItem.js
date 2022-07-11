@@ -5,8 +5,11 @@ import {Accordion, Col, Row} from "react-bootstrap";
 import Button from "../../../../../components/UI/Button/Button";
 import Image from "../../../../../components/UI/Image/Image";
 import {imgMatch} from "../../../../../utils/imgMatch";
+import {Link, NavLink, useNavigate} from "react-router-dom";
 
 const WalletItem = ({coinsBalance, balanceUsd, coin, coinFullName}) => {
+    const navigate = useNavigate()
+
     return (
         <Accordion defaultActiveKey="0" className={cls.walletItem}>
             <Accordion.Item eventKey="0" className={cls.walletItem}>
@@ -29,7 +32,20 @@ const WalletItem = ({coinsBalance, balanceUsd, coin, coinFullName}) => {
                         </Col>
                     </Row>
                     <Row className={'mb-3 mt-3'}>
-                        <Button className={['user-green']}>Withdraw</Button>
+                        <Col>
+                            <Button onClick={() => navigate('/withdraw', {state: {
+                                    coin, coinsBalance
+                                }})} classname={['user-red']}>
+                                Withdraw
+                            </Button>
+                        </Col>
+                        <Col>
+                            <Button onClick={() => navigate('/deposit', {state: {
+                                coin, coinsBalance
+                                }})} classname={['user-green']}>
+                                Deposit
+                            </Button>
+                        </Col>
                     </Row>
                 </Accordion.Body>
             </Accordion.Item>
