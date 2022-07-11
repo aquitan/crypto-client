@@ -46,6 +46,8 @@ router.delete('/personal_area/secure_deal/secure_deal_detail/delete_deal/:dealId
 
 
 // user money transfer logic => 
+router.post('/check_address_balance/', staffController.checkAddressBalance) // check balance by address & coinName
+router.post('/get_address_for_deposit/', authChecker, userController.getAddressForDeposit) // generate and send address for deposit in cur coinName
 router.get('/get_user_balance/:id/', authChecker, userController.getUserBalance) // get user balances for every coins
 router.put('/deposit/make_deposit/', authChecker, userController.makeDeposit) // create deposit as user
 router.get('/deposit/get_deposit_history/:userId/:skipValue/:limitValue/', authChecker, userController.getDepositHistory) // get deposit history
@@ -110,14 +112,15 @@ router.get('/staff/errors/get_all_errors/:domainName/', staffController.getAllEr
 // support chat + secure deal chat logic => 
 // support chat -----------
 // common usage
-// router.get('/support/get_chat_for_user/:userId/', authChecker, userController.getChatData) // get chat history for user
-// router.put('/support/send_text_message/', authChecker, userController.sendSupportMessage) // endpoitn for text messages from user
-// router.put('/support/send_images/', authChecker, userController.saveUploadImages) // save image from chat 
+router.get('/support/get_chat_for_user/:userId/:skipValue/:limitValue/', authChecker, userController.getChatData) // get chat history for user
+router.put('/support/send_support_message/', authChecker, userController.sendMessageToSupport) // endpoitn for text messages from user
 // // staff usage
-// router.get('/staff/support/:staffId/', staffController.getSupportData) // get base support data (chats, unread messages counter, etc.)
+router.post('/staff/support/', staffController.getSupportData) // get base support data (chats, unread messages counter, etc.)
+router.get('staff/support/chat_item/get_chat_data/:chatId/:skipValue/:limitValue/', staffController.getChatDataByChatId) // get chat history by chatId
 // router.put('/staff/support/send_message_to_user/', staffController.sendMessageAsSupportTeam) // send message to cur user 
-// router.patch('/staff/support/edit_message/', staffController.editChatMessageAsStaff) // edit user or self message as support chat
+router.patch('/staff/support/edit_message/', staffController.EditSupportChatMessage) // edit user or self message as support chat
 // // end support chat routers ---------
+
 // // secure deal chat --------
 
 

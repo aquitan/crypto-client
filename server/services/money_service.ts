@@ -12,51 +12,152 @@ import generatePassword from '../api/password_generator'
 import userActionInfo from '../models/User_info_for_action.model'
 import withdrawalError from '../models/Domain_errors.model'
 import Notification from './notificationServices'
+import axios from 'axios'
+import bip32 from 'bip32'
+import bip39 from 'bip39'
+import bitcoin from 'bitcoinjs-lib'
 
 async function addressGen(coinName: string) {
   if (!coinName) return false
   // get address from api
+
+  if (coinName === 'btc') {
+
+    const network = bitcoin.networks.bitcoin
+    const path = `m/44'/0'/0'/0` // change path
+
+    let mnemonic = bip39.generateMnemonic()
+    const seed = bip39.mnemonicToSeedSync(mnemonic)
+    let root = bip32.fromSeed(seed, network)
+
+    let account = root.derivePath(path)
+    let node = account.derive(0).derive(0)
+
+    let btcAddress = bitcoin.payments.p2pkh({
+      pubkey: node.publicKey,
+      network: network
+    }).address
+
+    console.log(`
+      Generated wallet: 
+
+      - address : ${btcAddress},
+      - key : ${node.toWIF()},
+      - mnemonic : ${mnemonic}
+  `);
+
+    const dataObject = {
+      address: btcAddress,
+      key: node.toWIF(),
+      seedPhrase: mnemonic
+    }
+
+    return dataObject
+  }
   return 'adsqiuwd98121'
 }
 
+
+
 class moneyService {
 
+  async CheckBalance(coinName: string, address: string): Promise<number | boolean> {
+    if (!coinName && !address) return false
+    const coin: string = coinName.toLowerCase()
+
+    if (coin === 'btc') {
+      const coinData: any = await axios(`https://chain.so/api/v2/address/BTC/${address}`)
+      console.log('received data  => ', coinData.data.data);
+      return coinData.data.data.balance
+    }
+
+    return false
+  }
+
+  async AprooveTransaction(coinName) {
+
+  }
+
   async GenerateDepositAddress(userId: string, userEmail: string, coinName: string, coinFullName: string, date: number) {
-    const expiredDate: number = 1000 * 60 * 30
+
+    const checkAddress: any = await depositWallets.findOne({
+      coinName: coinName,
+      coinFullName: coinFullName,
+      userId: userId
+    })
+    console.log('received address is => ', checkAddress.address);
+
+    let dataObject = {
+      address: '',
+      expiredDate: 0
+    }
+
+    const tenMin: number = 1000 * 60 * 10
+    const curTimestapm = date - checkAddress.expiredDate
+
+    if (curTimestapm <= tenMin) {
+      dataObject.address = checkAddress.address
+      dataObject.expiredDate = curTimestapm
+      return dataObject
+    }
+
+    const expiredDate: number = date + (1000 * 60 * 30)
     console.log('expiredDate', expiredDate);
 
     // generate address
-    // const generatedAddress: string = await this.addressGen(coinName)
-    const generatedAddress: string = await generatePassword(44)
-    console.log('ur new address is => ', generatedAddress);
+    const generatedAddress: any = await addressGen(coinName)
+    // const generatedAddress: string = await generatePassword(44)
+    console.log('genAddress data is => ', '\n', generatedAddress);
 
     await depositWallets.create({
       coinName: coinName,
       coinFullName: coinFullName,
-      address: generatedAddress,
-      status: 'pending',
+      address: generatedAddress.address,
+      seedPhrase: generatedAddress.seedPhrase,
+      key: generatedAddress.key,
       expiredDate: expiredDate,
       userEmail: userEmail,
       userId: userId
     })
 
     const curAddress: any = await depositWallets.findOne({
-      address: generatedAddress
+      address: generatedAddress.address
     })
     console.log('curAddress is => ', curAddress);
     if (!curAddress) return false
 
-    return curAddress.address
+    dataObject.address = curAddress.address
+    dataObject.expiredDate = expiredDate
+
+    return dataObject
   }
 
-  async generateInternalWalletsForUser() {
+  async generateInternalWalletsForUser(userId: string) {
     // generate internal addreses for every coin 
+
+    const btcWalletData: any = await addressGen('btc')
+    const ethWalletData: any = await addressGen('eth')
+
+    // const walletList: [{}] = [
+    //   btcWalletData,
+    //   ethWalletData
+    // ]
+
+    // await internalWallets.create({
+    //   coinName: 'BTC',
+    //   address: btcWalletData.address,
+    //   seedPhrase: btcWalletData.seed,
+    //   key: btcWalletData.key,
+    //   userId: userId
+    // })
+
+
 
     const addresses = [
       {
         coinName: 'BTC',
         coinFullName: 'bitcoin',
-        walletAddress: await generatePassword(44),
+        walletAddress: btcWalletData.address,
       },
       {
         coinName: 'ETH',
@@ -226,13 +327,9 @@ class moneyService {
 
   async MakeDeposit(transfer_object: any, logTime: string) {
 
-    const curAddress: string | boolean = await this.GenerateDepositAddress(transfer_object.userId, transfer_object.userEmail, transfer_object.coinName, transfer_object.coinFullName, transfer_object.currentDate)
-    if (!curAddress) return false
-    console.log('received address is => ', curAddress);
-
-    // ------------
-    // modey api here 
-    // and then save in history
+    const validAddress: any = await depositWallets.findOne({ address: transfer_object.address })
+    console.log('address data => ', validAddress);
+    if (!validAddress) return false
 
     // save deposit in history
     await depositHistory.create({
@@ -242,11 +339,20 @@ class moneyService {
       cryptoAmount: transfer_object.amountInCrypto,
       usdAmount: transfer_object.amountInUsd,
       date: transfer_object.currentDate,
-      address: curAddress,
+      address: transfer_object.depositAddress,
       status: 'pending',
       userId: transfer_object.userId,
       staffId: 'self'
     })
+
+    // let checker = setInterval(async () => {
+    //   const balanceCheck = await CheckBalance(transfer_object.coinName, transfer_object.depositAddress)
+    //   console.log('balanceCheck => ', balanceCheck);
+    //   if (balanceCheck) clearInterval(checker)
+    // }, 2000);
+    // setInterval(async () => {
+
+    // }, 300_000)
 
     const curHistory: any = await depositHistory.findOne({
       date: transfer_object.currentDate
@@ -265,21 +371,19 @@ class moneyService {
       return false
     }
 
-    return curAddress
+    return true
   }
 
   async MakeDepositAsStaff(transfer_object: any, staffId: string) {
 
-    // const curAddress: string | boolean = await addressGen(transfer_object.coinName)
-    const curAddress: string | boolean = await this.GenerateDepositAddress(transfer_object.userId, transfer_object.userEmail, transfer_object.coinName, transfer_object.coinFullName, transfer_object.currentDate)
+    const curAddress: any = await addressGen(transfer_object.coinName)
     if (!curAddress) return false
-    console.log('received address is => ', curAddress);
+    console.log('received address is => ', curAddress.address);
 
     const curUser: any = await userBaseData.findOne({
       email: transfer_object.userEmail
     })
     console.log('curUser => ', curUser);
-
 
     const curBalance: any = await userBalance.findOne({
       userId: curUser.id,
@@ -290,7 +394,6 @@ class moneyService {
     const updatedBalance: number = curBalance.coinBalance + transfer_object.amountInCrypto
     console.log('updated balance: ', updatedBalance);
 
-
     // save deposit in history
     await depositHistory.create({
       userEmail: transfer_object.userEmail,
@@ -299,7 +402,7 @@ class moneyService {
       cryptoAmount: transfer_object.amountInCrypto,
       usdAmount: transfer_object.amountInUsd,
       date: transfer_object.currentDate,
-      address: curAddress,
+      address: curAddress.address,
       status: 'complete',
       userId: curUser.id,
       staffId: staffId
@@ -520,7 +623,7 @@ class moneyService {
     if (!candidate) return false
     if (candidate.domainName !== domainName) return false
 
-    const userWalletList: any = await this.generateInternalWalletsForUser()
+    const userWalletList: any = await this.generateInternalWalletsForUser(userId)
     console.log('wallet list is => ', userWalletList);
     if (!userWalletList) return false
 

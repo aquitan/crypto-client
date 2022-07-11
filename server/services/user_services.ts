@@ -23,6 +23,8 @@ import newsList from '../models/News_list.model'
 import tradingOrders from '../models/trading_order.model'
 import coinRates from '../models/coin_rates.model'
 import Notification from './notificationServices'
+import supportChat from '../models/Support_chat.model'
+import domainList from '../models/Domain_list.model'
 
 
 
@@ -969,6 +971,54 @@ class UserServices {
 		if (updatedRate.valueInPercent === getRate.valueInPercent || updatedRate.timeRangeInMs === getRate.timeRangeInMs) return false
 
 		return true
+	}
+
+	async sendMessageToSupport(transferObject: any) {
+		// userId: string | Schema.Types.ObjectId
+		// domainName: string
+		// staffId: string | Schema.Types.ObjectId
+		// curDate: number
+		// messageBody: string
+		// imageLink: string | null
+		// chatId: string | null
+		let dataObj: any = transferObject
+
+		const staffData: any = await domainList.findOne({
+			fullDomainName: transferObject.domainName
+		})
+		if (!staffData) return false
+		dataObj.staffId = staffData.domainOwner
+
+		if (dataObj.chatId !== null) {
+			const chatCandidate: any = await supportChat.findOne({ chatId: dataObj.chatId })
+			console.log('candidate chat is => ', chatCandidate);
+			if (chatCandidate.chatId !== dataObj.chatId) return false
+		} else {
+			const chatId: string = await generatePassword(16)
+			dataObj.chatId = chatId
+		}
+
+		await supportChat.create(dataObj)
+		const checkSavedData: any = await supportChat.findOne({
+			messageBody: transferObject.messageBody
+		})
+		console.log('saved chat data is => ', checkSavedData);
+		if (!checkSavedData) return false
+		return true
+
+	}
+
+	async GetChatDataForUser(userId: string, skip: number, limit: number) {
+
+		const dataList: any = await supportChat.
+			find({ userId: userId }).
+			skip(skip).
+			limit(limit).
+			sort({ curDate: -1 }).
+			exec()
+		console.log('received dataList: ', dataList.length);
+		if (!dataList) return false
+		return dataList
 	}
 
 

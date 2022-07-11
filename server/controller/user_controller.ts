@@ -21,6 +21,7 @@ import bodyValidator from '../api/body_validator'
 import saveUserLogs from '../api/save_user_logs'
 import TRADING_ORDER_INTERFACE from '../interface/make_trading_order.interface'
 import TRADING_COIN_RATE_UPDATE from '../interface/trading_rate_update.interface'
+import CHAT_DATA from '../interface/chat_data.interface'
 
 
 class UserController {
@@ -361,6 +362,28 @@ class UserController {
     }
   }
 
+
+  async getAddressForDeposit(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const userId: string = req.body.userId
+    const coinName: string = req.body.coinName
+    const coinFullName: string = req.body.coinFullName
+    const expiredTime: number = req.body.expiredTime
+    const userEmail: string = req.body.userEmail
+
+    const validData: boolean = await bodyValidator(req.body, 5)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
+    try {
+      const result: any = await moneyService.GenerateDepositAddress(userId, userEmail, coinName, coinFullName, expiredTime)
+      if (!result) throw ApiError.ServerError()
+
+      return res.status(200).json(result)
+
+    } catch (e) {
+      next(e)
+    }
+  }
+
   async getUserBalance(req: express.Request, res: express.Response, next: express.NextFunction) {
     const userId: string = req.params.id
     console.log('userID => ', userId);
@@ -389,7 +412,7 @@ class UserController {
       amountInUsd: req.body.amountInUsd,
       currentDate: req.body.currentDate,
       depositAddress: req.body.depositAddress,
-      depositStatus: req.body.depositStatus
+      depositStatus: req.body.depositStatus,
     }
 
     const ipAddress: string = req.body.ipAddress
@@ -403,13 +426,13 @@ class UserController {
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {
-      const result: any = await moneyService.MakeDeposit(transfer_object, logTime)
+      const result: boolean = await moneyService.MakeDeposit(transfer_object, logTime)
       console.log('operation result is: ', result)
       if (!result) throw ApiError.ServerError()
 
       await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, logTime, ` создал заявку на вывод на сумму ${transfer_object.amountInCrypto} ${transfer_object.coinName}($ ${transfer_object.amountInUsd})`, transfer_object.domainName)
       await telegram.sendMessageByUserActions(transfer_object.userEmail, ` создал заявку на депозит на сумму ${transfer_object.amountInCrypto}(${transfer_object.amountInUsd}) ${transfer_object.coinName} `, transfer_object.domainName)
-      return res.status(201).json({ address: result })
+      return res.status(201).json({ message: 'ok' })
 
     } catch (e) {
       next(e)
@@ -806,10 +829,6 @@ class UserController {
     }
   }
 
-
-
-
-
   async makeTradingOrder(req: express.Request, res: express.Response, next: express.NextFunction) {
     const transferObject: TRADING_ORDER_INTERFACE = {
       userEmail: req.body.userEmail,
@@ -890,16 +909,48 @@ class UserController {
 
   async getChatData(req: express.Request, res: express.Response, next: express.NextFunction) {
     const userId: string = req.params.userId
+    let skip: string = req.params.skipValue
+    const skipValue: number = parseInt(skip)
+    let limit: string = req.params.limitValue
+    const limitValue: number = parseInt(limit)
 
     try {
-      // get chatBan for user ===>
+      const result: any = await UserServices.GetChatDataForUser(userId, skipValue, limitValue)
+      console.log(' result is: ', result)
+      if (!result) throw ApiError.ServerError()
 
-
+      return res.status(202).json(result)
     } catch (e) {
       next(e)
     }
   }
 
+
+  async sendMessageToSupport(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    const transferObject: CHAT_DATA = {
+      userId: req.body.userId,
+      domainName: req.body.domainName,
+      staffId: '',
+      curDate: req.body.curDate,
+      messageBody: req.body.messageBody,
+      imageLink: req.body.imageLink,
+      chatId: req.body.chatId
+    }
+
+    const validData: boolean = await bodyValidator(req.body, 5)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
+    try {
+      const result: boolean = await UserServices.sendMessageToSupport(transferObject)
+      console.log(' result is: ', result)
+      if (!result) throw ApiError.ServerError()
+
+      return res.status(202).json({ message: 'ok' })
+    } catch (e) {
+      next(e)
+    }
+  }
 
 
 }
