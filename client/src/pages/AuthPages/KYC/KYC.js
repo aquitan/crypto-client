@@ -56,11 +56,10 @@ const KYC = ({status}) => {
 
         // let blob = new Blob([data], {type: 'application/json'})
         // formData.append("data", blob);
-        formData.append("file", data.selfieDocumentPhoto[0]);
+        formData.append("file", img);
         for (let value of formData.entries()) {
             console.log('values', value)
         }
-        console.log('file------', data.doc)
 
 
         let geodata =  await getGeoData()
@@ -102,20 +101,6 @@ const KYC = ({status}) => {
             return <KycResults status={status} />
         }
     }
-
-    // const onClickCheck = () => {
-    //     if (!isValid) {
-    //         setModal(true)
-    //     }
-    // }
-    //
-    // console.log('kyc', status)
-
-
-    // const onChange = (e) => {
-    //     console.log('files-----', e.target.files[0])
-    //     setImg(e.target.files[0])
-    // }
 
     return (
         <Container>
@@ -277,7 +262,7 @@ const KYC = ({status}) => {
                         <Col>
                             {/*<FileUpload {...register('doc')} name={'doc'} id={'doc'}/>*/}
                             {/*<FileUpload {...register('frontDocumentPhoto')} id={'frontDocumentPhoto'} name={'frontDocumentPhoto'} />*/}
-                            <input {...register('selfieDocumentPhoto')} id={'selfieDocumentPhoto'} name={'selfieDocumentPhoto'} type="file" />
+                            <input onChange={(e) => setImg(e.target.files[0])} type="file" />
                         </Col>
                     </Row>
                     <Row className={'mb-5 mt-5'} style={{
