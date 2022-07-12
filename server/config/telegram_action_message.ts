@@ -4,12 +4,12 @@ import axios, {
   AxiosError,
 } from 'axios';
 
-export default async function SendMessage(userRequest: string, currentChatId?: string) {
-  if (!userRequest) return console.log ('request error')
-  
+export default async function SendMessage(userRequest: string, currentChatId?: number) {
+  if (!userRequest) return console.log('request error')
+
   const message: string = encodeURI(userRequest)
   const token: string | undefined = process.env.TELEGRAM_TOKEN
-  let chatId: string | undefined
+  let chatId: any
 
   if (currentChatId) {
     chatId = currentChatId
@@ -42,5 +42,5 @@ export default async function SendMessage(userRequest: string, currentChatId?: s
   await axios(url, config)
     .then(handleResponse)
     .catch(handleError)
-  
+
 }
