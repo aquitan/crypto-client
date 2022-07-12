@@ -2245,31 +2245,32 @@ class StaffController {
     }
   }
 
-  // async sendMessageAsSupportTeam(req: express.Request, res: express.Response, next: express.NextFunction) {
+  async sendMessageAsSupportTeam(req: express.Request, res: express.Response, next: express.NextFunction) {
 
-  //   const transferObject: CHAT_DATA = {
-  //     userId: req.body.userId,
-  //     domainName: req.body.domainName,
-  //     staffId: '',
-  //     curDate: req.body.curDate,
-  //     messageBody: req.body.messageBody,
-  //     imageLink: req.body.imageLink,
-  //     chatId: req.body.chatId
-  //   }
+    const transferObject: CHAT_DATA = {
+      userId: req.body.userId,
+      domainName: req.body.domainName,
+      staffId: req.body.staffId,
+      curDate: req.body.curDate,
+      isUser: req.body.isUser,
+      messageBody: req.body.messageBody,
+      imageLink: req.body.imageLink,
+      chatId: req.body.chatId
+    }
 
-  //   const validData: boolean = await bodyValidator(req.body, 5)
-  //   if (!validData) return res.status(400).json({ message: 'problem in received data' })
+    const validData: boolean = await bodyValidator(req.body, 5)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
-  //   try {
-  //     const result: boolean = await UserServices.sendMessageToSupport(transferObject)
-  //     console.log(' result is: ', result)
-  //     if (!result) throw ApiError.ServerError()
+    try {
+      const result: boolean = await UserServices.sendMessageToSupport(transferObject)
+      console.log(' result is: ', result)
+      if (!result) throw ApiError.ServerError()
 
-  //     return res.status(202).json({ message: 'ok' })
-  //   } catch (e) {
-  //     next(e)
-  //   }
-  // }
+      return res.status(202).json({ message: 'ok' })
+    } catch (e) {
+      next(e)
+    }
+  }
 
 
   async EditSupportChatMessage(req: express.Request, res: express.Response, next: express.NextFunction) {

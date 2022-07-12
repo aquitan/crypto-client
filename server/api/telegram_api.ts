@@ -97,8 +97,11 @@ class Telegram {
 	// 	await this.SendTwoStepCode(domain_name, code)
 	// }
 
-	async getMessageFromSupportChat() {
+	async getMessageFromSupportChat(chatId: number, messageBody: string) {
 		// get platform support message to tg
+
+		if (!chatId || !messageBody) return console.log('wrong request data');
+		await SendActionMessage(messageBody, chatId)
 	}
 
 	async sendMessageToSupportChat() {

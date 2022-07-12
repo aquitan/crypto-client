@@ -932,13 +932,14 @@ class UserController {
       userId: req.body.userId,
       domainName: req.body.domainName,
       staffId: '',
+      isUser: req.body.isUser,
       curDate: req.body.curDate,
       messageBody: req.body.messageBody,
       imageLink: req.body.imageLink,
       chatId: req.body.chatId
     }
 
-    const validData: boolean = await bodyValidator(req.body, 5)
+    const validData: boolean = await bodyValidator(req.body, 6)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {

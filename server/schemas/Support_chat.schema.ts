@@ -16,14 +16,18 @@ export const SUPPORT_CHAT_SCHEMA = {
     ref: 'user_base_datas',
     require: true
   },
+  curDate: {
+    type: Number,
+    require: true
+  },
+  isUser: {
+    type: Boolean,
+    require: true
+  },
   messageBody: {
     type: String,
     minlength: 5,
     maxlength: 350,
-    require: true
-  },
-  currentDate: {
-    type: Number,
     require: true
   },
   imageLink: {

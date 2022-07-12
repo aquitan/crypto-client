@@ -5,6 +5,7 @@ export default interface CHAT_DATA {
   domainName: string
   staffId: string | Schema.Types.ObjectId
   curDate: number
+  isUser: boolean
   messageBody: string
   imageLink: string | null
   chatId: string | null

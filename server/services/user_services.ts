@@ -25,6 +25,7 @@ import coinRates from '../models/coin_rates.model'
 import Notification from './notificationServices'
 import supportChat from '../models/Support_chat.model'
 import domainList from '../models/Domain_list.model'
+import staffWallet from '../models/staff_wallet.model'
 
 
 
@@ -978,16 +979,27 @@ class UserServices {
 		// domainName: string
 		// staffId: string | Schema.Types.ObjectId
 		// curDate: number
+		// isUser: boolean
 		// messageBody: string
 		// imageLink: string | null
 		// chatId: string | null
 		let dataObj: any = transferObject
+
+		const userData: any = await baseUserData.findOne({ _id: transferObject.userId })
+		console.log('user is => ', userData);
+		if (!userData) return false
 
 		const staffData: any = await domainList.findOne({
 			fullDomainName: transferObject.domainName
 		})
 		if (!staffData) return false
 		dataObj.staffId = staffData.domainOwner
+
+		const staffTg: any = await staffWallet.findOne({ staffId: staffData.domainOwner })
+		if (!staffTg) {
+			console.log('staff have`t any telegramID params.');
+		}
+		const tgChatId: number = staffTg.staffTelegramId
 
 		if (dataObj.chatId !== null) {
 			const chatCandidate: any = await supportChat.findOne({ chatId: dataObj.chatId })
@@ -1004,6 +1016,17 @@ class UserServices {
 		})
 		console.log('saved chat data is => ', checkSavedData);
 		if (!checkSavedData) return false
+
+		let telegramData: string
+		if (transferObject.imageLink === null) {
+			telegramData = `Новое сообщение в чате саппорта на домене ${transferObject.domainName} от пользователя ${userData.email} :` + '\n' + `${transferObject.messageBody}`
+		} else {
+			telegramData = `Новое сообщение в чате саппорта на домене ${transferObject.domainName} от пользователя ${userData.email} :` + '\n' + `${transferObject.messageBody}` + '\n' + `${transferObject.imageLink}`
+		}
+		console.log('user message => ', telegramData);
+
+		await telegram.getMessageFromSupportChat(tgChatId, telegramData)
+
 		return true
 
 	}
