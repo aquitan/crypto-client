@@ -24,13 +24,11 @@ const GroupDetails = () => {
 
     const addUser = async (data) => {
         data.groupId = location.state.item.groupData._id
-        console.log('data', data)
         const res = await patchData('/staff/groups/add_new_group_member/', data)
         if (res.status === 200 || res.status === 201) {
             SwalSimple('Пользователь добавлен')
             reset({data: ''})
             getGroupList(location.state.index)
-            console.log('location.state.index', location.state.index)
         } else {
             SwalSimple('Что-то пошло не так!')
         }

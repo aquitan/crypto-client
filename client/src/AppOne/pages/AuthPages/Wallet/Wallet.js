@@ -26,6 +26,7 @@ const Wallet = () => {
                 {
                     state ?
                         state.map(item => {
+                            console.log('item', item)
                             return <Col className={'col-12 col-sm-6 col-lg-4 mb-5'}>
                                 <WalletItem
                                     coinFullName={item.coinFullName}
