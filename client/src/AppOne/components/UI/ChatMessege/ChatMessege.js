@@ -3,25 +3,44 @@ import PropTypes from 'prop-types'
 import cls from './ChatMessage.module.scss'
 import classNames from "classnames/bind";
 import {Row} from "react-bootstrap";
+import {getCurrentDate} from "../../../utils/getCurrentDate";
+import {patchData} from "../../../services/StaffServices";
+import {store} from "../../../../index";
 
-const ChatMessege = ({text, date, type, allowEdit, id}) => {
+const ChatMessege = ({text, date, type, allowEdit, id, image}) => {
     const [textVal, setTextVal] = useState(text)
     const [disabled, setDisabled] = useState(true)
     let cx = classNames.bind(cls)
-    let classes = cx('chat-message', type)
+    let classes = ''
+    if (!allowEdit) {
+        classes  = cx('chat-message', type ? 'user' : 'support')
+    } else {
+        classes  = cx('chat-message', !type ? 'user' : 'support')
+    }
 
     const onTextChange = (e) => {
         setTextVal(e.target.value)
     }
 
-    const onEdit = (id) => {
+    const onEdit = async (id) => {
         console.log('id', id)
         setDisabled(!disabled)
+        if (!disabled) {
+            const obj = {
+                isAdmin: store.isAdmin,
+                isStaff: store.isStaff,
+                rootAccess: store.fullAccess,
+                messageId: id
+            }
+            console.log('disabled on')
+            const res = await patchData('/staff/support/edit_message/', obj)
+        }
     }
 
     return (
         <div className={classes}>
             <Row>
+                <img style={{width: 250}} src={image} alt=""/>
                 <span id={id} style={{fontWeight: 'bold'}}>
                     <input
                         className={cls.chatInput}
@@ -36,7 +55,7 @@ const ChatMessege = ({text, date, type, allowEdit, id}) => {
             </Row>
             <Row>
                 <span style={{fontSize: 10}}>
-                    {date}
+                    {getCurrentDate(date)}
                 </span>
             </Row>
         </div>

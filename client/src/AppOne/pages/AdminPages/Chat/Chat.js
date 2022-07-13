@@ -8,27 +8,33 @@ import {getCurrentDate} from "../../../utils/getCurrentDate";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
 import {v4 as uuid} from 'uuid'
-import {postData} from "../../../services/StaffServices";
+import {getData, postData} from "../../../services/StaffServices";
 import {store} from "../../../../index";
+import Select from "../../../components/UI/Select/Select";
 
 const Chat = () => {
     const [msg, setMsg] = useState([])
+    const [chats, setChats] = useState([])
+    const [currentChat, setCurrentChat] = useState('')
+    const [image, setImage] = useState()
 
     useEffect(() => {
         getBaseChatData()
     }, [])
 
-    const onClick = (text) => {
-        let newPost = {
-            id: uuid(),
-            type: 'user',
-            text: text,
-            date: getCurrentDate(dateToTimestamp(new Date()))
-        }
+    const onClick = async (text) => {
+        // let newPost = {
+        //     id: uuid(),
+        //     type: 'user',
+        //     text: text,
+        //     date: dateToTimestamp(new Date())
+        // }
+        //
+        // setMsg(prevState => {
+        //     return [newPost, ...prevState]
+        // })
 
-        setMsg(prevState => {
-            return [newPost, ...prevState]
-        })
+        await chooseChat()
 
     }
 
@@ -41,6 +47,32 @@ const Chat = () => {
 
         }
         const res = await postData('/staff/support/', data)
+        let arr = []
+        res.data.forEach((item) => {
+            let obj = {
+                value: item.chatId,
+                text: item.userEmail
+            }
+            arr.push(obj)
+        })
+        setChats(arr)
+    }
+
+    const onUploadImg =(img) => {
+        const formData = new FormData();
+        formData.append("image", img);
+        console.log("formData", formData);
+        fetch(
+            "https://api.imgbb.com/1/upload?key=68c3edcc904ee3e28d2e63ec81876e40",
+            { method: "POST", body: formData }
+        )
+            .then((response) => response.json())
+            .then((data) => setImage(data.data.display_url));
+    }
+
+    const chooseChat = async (e) => {
+        setCurrentChat(e.target.value)
+        const res = await getData(`/staff/support/chat_item/get_chat_data/${e.target.value}/0/20/`)
         setMsg(res.data)
     }
 
@@ -50,23 +82,32 @@ const Chat = () => {
             <AdminButtonCard>
                 <h1>Чат</h1>
             </AdminButtonCard>
+            <AdminButtonCard title={'Выбери чат'}>
+                <select value={currentChat} onChange={chooseChat}>
+                    <option>Выбери чат</option>
+                    {
+                        chats.map(item => <option key={item.text} value={item.value}>{item.text}</option>)
+                    }
+                </select>
+            </AdminButtonCard>
             <AdminButtonCard>
                 <Row>
-                    <ChatWindow onClick={onClick}>
+                    <ChatWindow onUploadImg={onUploadImg} onClick={onClick}>
                         {
                             msg.length ?
-                                msg.map(item => {
-                                    console.log('item---', item)
+                                msg.reverse().map(item => {
+                                    console.log('item item', item)
                                     return(
                                         <ChatMessege
-                                            key={item.id}
-                                            id={item.id}
+                                            key={item._id}
+                                            id={item._id}
                                             allowEdit={true}
-                                            date={item.date}
-                                            type={item.type}
-                                            text={item.text} />
+                                            date={item.curDate}
+                                            type={item.isUser}
+                                            image={item.imageLink}
+                                            text={item.messageBody} />
                                     )
-                                }) : null
+                                }) : <h3>Выбери чат</h3>
                         }
                     </ChatWindow>
                 </Row>

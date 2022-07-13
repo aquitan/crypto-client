@@ -30,7 +30,7 @@ const Wallet = () => {
                             return <Col className={'col-12 col-sm-6 col-lg-4 mb-5'}>
                                 <WalletItem
                                     coinFullName={item.coinFullName}
-                                    balanceUsd={124124}
+                                    balanceUsd={(item.coinBalance.toFixed(5) * store.rates[item.coinName.toLowerCase()]).toFixed(5)}
                                     coin={item.coinName}
                                     coinsBalance={item.coinBalance.toFixed(5)} />
                             </Col>
