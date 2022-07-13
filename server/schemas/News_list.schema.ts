@@ -22,7 +22,7 @@ export const NEWS_LIST_SCHEMA = {
     require: true
   },
   staffEmail: {
-    type: String,
+    type: String || null,
     require: true
   },
   staffId: {

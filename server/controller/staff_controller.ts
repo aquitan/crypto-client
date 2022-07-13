@@ -16,6 +16,7 @@ import bodyValidator from '../api/body_validator'
 import TRADING_COIN_RATE_UPDATE from '../interface/trading_rate_update.interface'
 import Notification from '../services/notificationServices'
 import CHAT_DATA from '../interface/chat_data.interface'
+import SECURE_CHAT_DATA from 'interface/secure_deal_chat.interface'
 
 
 class StaffController {
@@ -1300,13 +1301,6 @@ class StaffController {
     }
   }
 
-  async secureDeal(req: express.Request, res: express.Response, next: express.NextFunction) {
-    try {
-      // secure deal
-    } catch (e) {
-      next(e)
-    }
-  }
 
   async recruiterList(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
@@ -2228,7 +2222,7 @@ class StaffController {
   }
 
   async getChatDataByChatId(req: express.Request, res: express.Response, next: express.NextFunction) {
-    const staffId: string = req.params.staffId
+    const chatId: string = req.params.chatId
     let skip: string = req.params.skipValue
     const skipValue: number = parseInt(skip)
     let limit: string = req.params.limitValue
@@ -2236,7 +2230,7 @@ class StaffController {
 
     try {
 
-      const result: any = await staffService.getChatData(staffId, skipValue, limitValue)
+      const result: any = await staffService.getChatData(chatId, skipValue, limitValue)
       if (!result) throw ApiError.ServerError()
 
       return res.status(200).json(result)
@@ -2246,10 +2240,15 @@ class StaffController {
   }
 
   async sendMessageAsSupportTeam(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const staffPermission: boolean = req.body.isStaff
+    const adminPermission: boolean = req.body.isAdmin
+    const rootAccess: boolean = req.body.rootAccess
+
 
     const transferObject: CHAT_DATA = {
       userId: req.body.userId,
       domainName: req.body.domainName,
+      supportName: req.body.supportName,
       staffId: req.body.staffId,
       curDate: req.body.curDate,
       isUser: req.body.isUser,
@@ -2258,48 +2257,16 @@ class StaffController {
       chatId: req.body.chatId
     }
 
-    const validData: boolean = await bodyValidator(req.body, 5)
-    if (!validData) return res.status(400).json({ message: 'problem in received data' })
-
-    try {
-      const result: boolean = await UserServices.sendMessageToSupport(transferObject)
-      console.log(' result is: ', result)
-      if (!result) throw ApiError.ServerError()
-
-      return res.status(202).json({ message: 'ok' })
-    } catch (e) {
-      next(e)
-    }
-  }
-
-
-  async EditSupportChatMessage(req: express.Request, res: express.Response, next: express.NextFunction) {
-
-    const staffPermission: boolean = req.body.isStaff
-    const adminPermission: boolean = req.body.isAdmin
-    const rootAccess: boolean = req.body.rootAccess
-
-    const messageId: string = req.body.messageId
-
-    const transferObject = {
-      userId: req.body.userId,
-      domainName: req.body.domainName,
-      staffId: req.body.staffId,
-      curDate: req.body.curDate,
-      messageBody: req.body.messageBody,
-      imageLink: req.body.imageLink,
-      chatId: req.body.chatId
-    }
-
-    const validData: boolean = await bodyValidator(req.body, 11)
+    const validData: boolean = await bodyValidator(req.body, 12)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {
       if (rootAccess || adminPermission || staffPermission) {
-        const result: boolean = await staffService.editChatMessage(messageId, transferObject)
+        const result: boolean = await staffService.sendMessageToSupportChat(transferObject)
+        console.log(' result is: ', result)
         if (!result) throw ApiError.ServerError()
 
-        return res.status(200).json({ message: 'ok' })
+        return res.status(202).json({ message: 'ok' })
       }
 
       return res.status(403).json({ message: 'permission denied' })
@@ -2308,6 +2275,103 @@ class StaffController {
     }
   }
 
+
+  async EditChatMessage(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    const staffPermission: boolean = req.body.isStaff
+    const adminPermission: boolean = req.body.isAdmin
+    const rootAccess: boolean = req.body.rootAccess
+
+    const messageId: string = req.body.messageId
+
+    const transferObject = {
+      curDate: req.body.curDate,
+      messageBody: req.body.messageBody,
+      imageLink: req.body.imageLink
+    }
+
+    const validData: boolean = await bodyValidator(req.body, 7)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
+    try {
+      if (rootAccess || adminPermission || staffPermission) {
+        const result: any = await staffService.editChatMessage(messageId, transferObject)
+        if (!result) throw ApiError.ServerError()
+
+        return res.status(200).json(result)
+      }
+      return res.status(403).json({ message: 'permission denied' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+
+  async getSecureDealDetail(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    const adminPermission: boolean = req.body.isAdmin
+    const rootAccess: boolean = req.body.rootAccess
+    const staffPermission: boolean = req.body.isStaff
+    const dealId: string = req.body.dealId
+
+    const validData: boolean = await bodyValidator(req.body, 4)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
+    try {
+      if (rootAccess || adminPermission || staffPermission) {
+        const result: any = await staffService.getSecureDealDetail(dealId)
+        if (!result) throw ApiError.ServerError()
+
+        return res.status(200).json(result)
+      }
+
+      return res.status(403).json({ message: 'permission denied' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+
+  async sendMessageInSecureDealChat(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const staffPermission: boolean = req.body.isStaff
+    const adminPermission: boolean = req.body.isAdmin
+    const rootAccess: boolean = req.body.rootAccess
+
+    const transferObject: SECURE_CHAT_DATA = {
+      userId: req.body.userId,
+      domainName: req.body.domainName,
+      supportName: req.body.supportName,
+      staffId: req.body.staffId,
+      curDate: req.body.curDate,
+      isUser: req.body.isUser,
+      messageBody: req.body.messageBody,
+      imageLink: req.body.imageLink,
+      chatId: req.body.chatId,
+      userEmail: req.body.userEmail,
+      secondPartyEmail: req.body.secondPartyEmail
+    }
+
+    const validData: boolean = await bodyValidator(req.body, 14)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
+    try {
+      if (rootAccess || adminPermission || staffPermission) {
+        const result: boolean = await staffService.sendMessageInSecureDealChat(transferObject)
+        console.log(' result is: ', result)
+        if (!result) throw ApiError.ServerError()
+
+        return res.status(202).json({ message: 'ok' })
+      }
+
+      return res.status(403).json({ message: 'permission denied' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+
 }
+
+
 
 export default new StaffController()

@@ -931,6 +931,7 @@ class UserController {
     const transferObject: CHAT_DATA = {
       userId: req.body.userId,
       domainName: req.body.domainName,
+      supportName: null,
       staffId: '',
       isUser: req.body.isUser,
       curDate: req.body.curDate,
@@ -939,11 +940,60 @@ class UserController {
       chatId: req.body.chatId
     }
 
-    const validData: boolean = await bodyValidator(req.body, 6)
+    const validData: boolean = await bodyValidator(req.body, 9)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {
       const result: boolean = await UserServices.sendMessageToSupport(transferObject)
+      console.log(' result is: ', result)
+      if (!result) throw ApiError.ServerError()
+
+      return res.status(202).json({ message: 'ok' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+
+  async getSecureDealChatData(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const userId: string = req.params.userId
+    let skip: string = req.params.skipValue
+    const skipValue: number = parseInt(skip)
+    let limit: string = req.params.limitValue
+    const limitValue: number = parseInt(limit)
+
+    try {
+      const result: any = await UserServices.GetChatDataForUser(userId, skipValue, limitValue)
+      console.log(' result is: ', result)
+      if (!result) throw ApiError.ServerError()
+
+      return res.status(202).json(result)
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async sendMessageToSecureDealChat(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    const transferObject: CHAT_DATA = {
+      userId: req.body.userId,
+      domainName: req.body.domainName,
+      supportName: null,
+      staffId: '',
+      isUser: req.body.isUser,
+      curDate: req.body.curDate,
+      messageBody: req.body.messageBody,
+      imageLink: req.body.imageLink,
+      chatId: req.body.chatId
+    }
+
+    const dealId: string = req.body.dealId
+
+    const validData: boolean = await bodyValidator(req.body, 10)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
+    try {
+      const result: boolean = await UserServices.sendMessageToSecureDealChat(transferObject, dealId)
       console.log(' result is: ', result)
       if (!result) throw ApiError.ServerError()
 

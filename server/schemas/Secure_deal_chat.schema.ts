@@ -1,7 +1,7 @@
 
 import { Schema } from 'mongoose'
 
-export const SUPPORT_CHAT_SCHEMA = {
+export const SECURE_DEAL_CHAT_SCHEMA = {
   userId: {
     type: Schema.Types.ObjectId || String,
     ref: 'user_base_datas',
@@ -41,5 +41,13 @@ export const SUPPORT_CHAT_SCHEMA = {
   chatId: {
     type: String || null,
     require: false
+  },
+  userEmail: {
+    type: String,
+    require: true
+  },
+  secondPartyEmail: {
+    type: String,
+    require: true
   }
 }

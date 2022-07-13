@@ -108,25 +108,30 @@ router.post('/staff/domains/get_active_domains/', staffController.getDomainsList
 router.put('/staff/errors/create_new_error/', staffController.createCustomError) // create new error for selected domain
 router.get('/staff/errors/get_all_errors/:domainName/', staffController.getAllErrors) // get domain errors by domainName
 
-
 // support chat + secure deal chat logic => 
 // support chat -----------
 // common usage
 router.get('/support/get_chat_for_user/:userId/:skipValue/:limitValue/', authChecker, userController.getChatData) // get chat history for user
-router.put('/support/send_support_message/', authChecker, userController.sendMessageToSupport) // endpoitn for text messages from user
+router.put('/support/send_support_message/', authChecker, userController.sendMessageToSupport) // endpoitn for messages from user
 // // staff usage
 router.post('/staff/support/', staffController.getSupportData) // get base support data (chats, unread messages counter, etc.)
-router.get('staff/support/chat_item/get_chat_data/:chatId/:skipValue/:limitValue/', staffController.getChatDataByChatId) // get chat history by chatId
-// router.put('/staff/support/send_message_to_user/', staffController.sendMessageAsSupportTeam) // send message to cur user 
-router.patch('/staff/support/edit_message/', staffController.EditSupportChatMessage) // edit user or self message as support chat
-// // end support chat routers ---------
+router.get('/staff/support/chat_item/get_chat_data/:chatId/:skipValue/:limitValue/', staffController.getChatDataByChatId) // get chat history by chatId
+router.put('/staff/support/send_message_to_user/', staffController.sendMessageAsSupportTeam) // send message to cur user 
+router.patch('/staff/support/edit_message/', staffController.EditChatMessage) // edit user or self message as support chat
+// ---------------------  if you need to edit message in secure deal chat - use the same endpoit ------------
 
 // // secure deal chat --------
+// common usage
+router.get('/support/get_secure_deal_chat_for_user/:userId/:skipValue/:limitValue/', authChecker, userController.getSecureDealChatData) // get secure deal chat history for user
+router.put('/support/send_message_to_secure_deal_chat/', authChecker, userController.sendMessageToSecureDealChat) // endpoitn for messages from user
+// // staff usage
+router.post('/staff/secure_deal/detail_deal/', staffController.getSecureDealDetail) // get secure deal detail page + chat data
+router.get('/staff/secure_deal/detail_deal/get_chat_data/:chatId/:skipValue/:limitValue/', staffController.getChatDataByChatId) // get chat history by chatId
+router.patch('/staff/secure_deal/detail_deal/edit_message/', staffController.EditChatMessage) // edit user or self message as support chat
+// ------------ the same endpoit as support chat data for history and edit message----------------- 
+router.put('/staff/secure_deal/detail_deal/send_message_to_user/', staffController.sendMessageInSecureDealChat) // send message to cur secure deal chat
 
-
-
-// end of secure deal chat ---------
-
+// end chat endpoints ---
 
 // news ligic => 
 router.put('/staff/news/news_create/', staffController.newsCreate) // create news for user 

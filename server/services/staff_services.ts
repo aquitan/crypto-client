@@ -9,13 +9,13 @@ import userIpMatch from '../models/User_ip_match.model'
 import domainList from '../models/Domain_list.model'
 import domainDetail from '../models/Domain_detail.model'
 import domainErrors from '../models/Domain_errors.model'
-import domainTerms from '../models/Domain_terms.model'
+// import domainTerms from '../models/Domain_terms.model'
 import newsList from '../models/News_list.model'
 import userPromocode from '../models/Promocodes.model'
 import usedPromoList from '../models/Used_promocodes.model'
 import staffLogs from '../models/Staff_logs.model'
 import TokenModel from '../models/Token.model'
-import TERMS from '../config/terms.template'
+// import TERMS from '../config/terms.template'
 import staffWallet from '../models/staff_wallet.model'
 import secureDeal from '../models/secure_deal.model'
 import userBalance from '../models/User_balance.model'
@@ -27,6 +27,8 @@ import recruiterOwnUsers from '../models/recruiter_own_users.model'
 import tradingOrders from '../models/trading_order.model'
 import coinRates from '../models/coin_rates.model'
 import supportChat from '../models/Support_chat.model'
+import Notification from './notificationServices'
+import secureDealChat from '../models/secure_deal_chat.model'
 
 
 class staffService {
@@ -964,7 +966,8 @@ class staffService {
 			newsBody: transfer_object.newsBody,
 			newsImage: transfer_object.newsImage,
 			newsDomain: transfer_object.newsDomain,
-			staffEmail: transfer_object.staffEmail
+			staffEmail: transfer_object.staffEmail,
+			staffId: transfer_object.staffId
 		})
 		const getNews: any = await newsList.findOne({ newsDate: transfer_object.newsDate })
 		console.log('found news: ', getNews);
@@ -1390,13 +1393,25 @@ class staffService {
 		console.log('received dataList: ', dataList.length);
 		if (!dataList) return false
 
-		return dataList
+		let dataArray = []
+
+		for (let i = 0; i <= dataList.length - 1; i++) {
+			const userList: any = await baseUserData.findOne({ userId: dataList[i].userId })
+			const obj = {
+				chatId: dataList[i].chatId,
+				userEmail: userList.email
+			}
+			dataArray.push(obj)
+		}
+
+		console.log('dataArray is => ', dataArray);
+		return dataArray
 
 	}
 
-	async getChatData(staffId: string, skip: number, limit: number) {
+	async getChatData(chatId: string, skip: number, limit: number) {
 		const dataList: any = await supportChat.
-			find({ staffId: staffId }).
+			find({ chatId: chatId }).
 			skip(skip).
 			limit(limit).
 			sort({ curDate: -1 }).
@@ -1422,11 +1437,111 @@ class staffService {
 		if (!checkUpdate) return false
 
 		if (baseChatData === checkUpdate) return false
-		return true
+
+		return checkUpdate
 
 	}
 
 
+	async sendMessageToSupportChat(transferObject: any) {
+
+		let dataObj: any = transferObject
+
+		const userData: any = await baseUserData.findOne({ _id: transferObject.userId })
+		console.log('user is => ', userData);
+		if (!userData) return false
+
+		await supportChat.create(dataObj)
+
+		const checkSavedData: any = await supportChat.findOne({
+			messageBody: transferObject.messageBody
+		})
+		console.log('saved chat data is => ', checkSavedData);
+		if (!checkSavedData) return false
+
+		const notifData = {
+			userEmail: userData.email,
+			notificationText: `New message from ${dataObj.supportName}!`,
+			domainName: userData.domainName
+		}
+		await Notification.CreateNotification(notifData)
+
+		return true
+
+	}
+
+	async getSecureDealDetail(dealId: string) {
+
+		const dealData: any = await secureDeal.findOne({ _id: dealId })
+		console.log('dealData is => ', dealData);
+		if (!dealData) return false
+
+		let chatParams: any
+
+		chatParams = await secureDealChat.
+			distinct('chatId').
+			where({ userEmail: dealData.userEmail }).
+			exec()
+		if (chatParams === []) {
+			chatParams = await secureDealChat.
+				distinct('chatId').
+				where({ secondPartyEmail: dealData.secondPartyEmail }).
+				exec()
+		}
+		console.log('chatParams is => ', chatParams[0]);
+		const chatData: any = await secureDealChat.find({ chatId: chatParams[0] })
+		console.log('chatData is => ', chatData.length);
+		if (!chatData) return false
+
+		let dataArray: [{}, [{}]] = [
+			dealData,
+			chatData
+		]
+
+		console.log(`
+			data arr is :
+			deal data: ${dataArray[0]}
+			chat content is: ${dataArray[1].length}
+			`);
+
+
+		return dataArray
+	}
+
+
+	async sendMessageInSecureDealChat(transferObject: any) {
+
+		let dataObj: any = transferObject
+
+		const userData: any = await baseUserData.findOne({ _id: transferObject.userId })
+		console.log('user is => ', userData);
+		if (!userData) return false
+
+		await supportChat.create(dataObj)
+
+		const checkSavedData: any = await supportChat.findOne({
+			messageBody: transferObject.messageBody
+		})
+		console.log('saved chat data is => ', checkSavedData);
+		if (!checkSavedData) return false
+
+		const firstNotifData = {
+			userEmail: dataObj.userEmail,
+			notificationText: `New message from ${dataObj.supportName} in secure deal chat!`,
+			domainName: userData.domainName
+		}
+		const secNotifData = {
+			userEmail: dataObj.secondPartyEmail,
+			notificationText: `New message from ${dataObj.supportName} in secure deal chat!`,
+			domainName: userData.domainName
+		}
+
+		await Notification.CreateNotification(firstNotifData)
+		await Notification.CreateNotification(secNotifData)
+
+		return true
+
+	}
 
 }
 
