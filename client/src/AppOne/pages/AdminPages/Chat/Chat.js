@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import {Container, Row} from "react-bootstrap";
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
@@ -8,18 +8,15 @@ import {getCurrentDate} from "../../../utils/getCurrentDate";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
 import {v4 as uuid} from 'uuid'
+import {postData} from "../../../services/StaffServices";
+import {store} from "../../../../index";
 
 const Chat = () => {
-    const messeges = [
-        {type: 'user', text: 'hello support hello support hello support hello support hello support hello support hello support hello support hello support hello support hello support',
-            date: getCurrentDate(dateToTimestamp(new Date())), id: 1},
-        {type: 'user', text: 'hello support', date: getCurrentDate(dateToTimestamp(new Date())), id: 2},
-        {type: 'support', text: 'hello user', date: getCurrentDate(dateToTimestamp(new Date())), id: 3},
-        {type: 'support', text: 'hello user', date: getCurrentDate(dateToTimestamp(new Date())), id: 4},
-        {type: 'user', text: 'hello support', date: getCurrentDate(dateToTimestamp(new Date())), id: 5},
-        {type: 'support', text: 'hello user', date: getCurrentDate(dateToTimestamp(new Date())), id: 6},
-    ]
-    const [msg, setMsg] = useState(messeges)
+    const [msg, setMsg] = useState([])
+
+    useEffect(() => {
+        getBaseChatData()
+    }, [])
 
     const onClick = (text) => {
         let newPost = {
@@ -32,6 +29,19 @@ const Chat = () => {
         setMsg(prevState => {
             return [newPost, ...prevState]
         })
+
+    }
+
+    const getBaseChatData = async () => {
+        const data = {
+            isStaff: store.isStaff,
+            isAdmin: store.isAdmin,
+            rootAccess: store.fullAccess,
+            staffId: store.fullAccess ? 'root' : store.user.id
+
+        }
+        const res = await postData('/staff/support/', data)
+        setMsg(res.data)
     }
 
 
@@ -56,7 +66,7 @@ const Chat = () => {
                                             type={item.type}
                                             text={item.text} />
                                     )
-                                }) : <h2>empty</h2>
+                                }) : null
                         }
                     </ChatWindow>
                 </Row>

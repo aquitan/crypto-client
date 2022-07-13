@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import {Card, Col, Container, Row} from "react-bootstrap";
 import ChatWindow from "./components/ChatWindow/ChatWindow";
@@ -8,19 +8,17 @@ import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 import ChatMessege from "../../../components/UI/ChatMessege/ChatMessege";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
+import {getData, putData} from "../../../services/StaffServices";
+import {store} from "../../../../index";
 
 const Support = () => {
-    const messeges = [
-        {type: 'user', text: 'hello support', date: getCurrentDate(dateToTimestamp(new Date()))},
-        {type: 'user', text: 'hello support', date: getCurrentDate(dateToTimestamp(new Date()))},
-        {type: 'support', text: 'hello user', date: getCurrentDate(dateToTimestamp(new Date()))},
-        {type: 'support', text: 'hello user', date: getCurrentDate(dateToTimestamp(new Date()))},
-        {type: 'user', text: 'hello support', date: getCurrentDate(dateToTimestamp(new Date()))},
-        {type: 'support', text: 'hello user', date: getCurrentDate(dateToTimestamp(new Date()))},
-    ]
-    const [msg, setMsg] = useState(messeges)
+    const [msg, setMsg] = useState([])
 
-    const onClick = (text) => {
+    useEffect(() => {
+        getSupportMessages()
+    }, [])
+
+    const onClick = async (text) => {
         let newPost = {
             type: 'user',
             text: text,
@@ -30,6 +28,39 @@ const Support = () => {
         setMsg(prevState => {
            return [newPost, ...prevState]
         })
+
+        const obj = {
+            userId: store.user.id,
+            domainName: window.location.host,
+            staffId: '',
+            curDate: getCurrentDate(dateToTimestamp(new Date())),
+            messageBody: text,
+            imageLink: 'http://s2.fotokto.ru/photo/full/702/7021158.jpg',
+            chatId: null
+        }
+
+        const res = await putData('/support/send_support_message/', obj)
+
+        console.log('res msg', res)
+    }
+
+    const getSupportMessages = async () => {
+        const res = await getData(`/support/get_chat_for_user/${store.user.id}/${0}/${10}/`)
+        createMessagesOnLoad(res.data)
+    }
+
+    const createMessagesOnLoad = (arr) => {
+        let newArr = []
+        arr.forEach(item => {
+            let msg = {
+                type: 'user',
+                text: item.messageBody,
+                date: getCurrentDate(dateToTimestamp(new Date()))
+            }
+            newArr.push(msg)
+        })
+        setMsg([...msg, ...newArr])
+        console.log('new arr', newArr)
     }
 
     return (
@@ -47,7 +78,7 @@ const Support = () => {
                                                 type={item.type}
                                                 text={item.text} />
                                         )
-                                    }) : <h2>empty</h2>
+                                    }) : null
                             }
                         </ChatWindow>
                     </Col>
