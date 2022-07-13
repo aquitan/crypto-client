@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose'
 
-export default interface CHAT_DATA {
+export default interface SECURE_CHAT_DATA {
   userId: string | Schema.Types.ObjectId
   domainName: string
   supportName: string | null
@@ -10,4 +10,6 @@ export default interface CHAT_DATA {
   messageBody: string
   imageLink: string | null
   chatId: string | null
+  userEmail: string
+  secondPartyEmail: string
 }
