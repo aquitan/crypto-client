@@ -2228,7 +2228,7 @@ class StaffController {
   }
 
   async getChatDataByChatId(req: express.Request, res: express.Response, next: express.NextFunction) {
-    const staffId: string = req.params.staffId
+    const chatId: string = req.params.chatId
     let skip: string = req.params.skipValue
     const skipValue: number = parseInt(skip)
     let limit: string = req.params.limitValue
@@ -2236,7 +2236,7 @@ class StaffController {
 
     try {
 
-      const result: any = await staffService.getChatData(staffId, skipValue, limitValue)
+      const result: any = await staffService.getChatData(chatId, skipValue, limitValue)
       if (!result) throw ApiError.ServerError()
 
       return res.status(200).json(result)
@@ -2246,6 +2246,10 @@ class StaffController {
   }
 
   async sendMessageAsSupportTeam(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const staffPermission: boolean = req.body.isStaff
+    const adminPermission: boolean = req.body.isAdmin
+    const rootAccess: boolean = req.body.rootAccess
+
 
     const transferObject: CHAT_DATA = {
       userId: req.body.userId,
@@ -2258,15 +2262,19 @@ class StaffController {
       chatId: req.body.chatId
     }
 
-    const validData: boolean = await bodyValidator(req.body, 5)
+    const validData: boolean = await bodyValidator(req.body, 11)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {
-      const result: boolean = await UserServices.sendMessageToSupport(transferObject)
-      console.log(' result is: ', result)
-      if (!result) throw ApiError.ServerError()
+      if (rootAccess || adminPermission || staffPermission) {
+        const result: boolean = await staffService.sendMessageToSupportChat(transferObject)
+        console.log(' result is: ', result)
+        if (!result) throw ApiError.ServerError()
 
-      return res.status(202).json({ message: 'ok' })
+        return res.status(202).json({ message: 'ok' })
+      }
+
+      return res.status(403).json({ message: 'permission denied' })
     } catch (e) {
       next(e)
     }

@@ -116,8 +116,8 @@ router.get('/support/get_chat_for_user/:userId/:skipValue/:limitValue/', authChe
 router.put('/support/send_support_message/', authChecker, userController.sendMessageToSupport) // endpoitn for text messages from user
 // // staff usage
 router.post('/staff/support/', staffController.getSupportData) // get base support data (chats, unread messages counter, etc.)
-router.get('staff/support/chat_item/get_chat_data/:chatId/:skipValue/:limitValue/', staffController.getChatDataByChatId) // get chat history by chatId
-// router.put('/staff/support/send_message_to_user/', staffController.sendMessageAsSupportTeam) // send message to cur user 
+router.get('/staff/support/chat_item/get_chat_data/:chatId/:skipValue/:limitValue/', staffController.getChatDataByChatId) // get chat history by chatId
+router.put('/staff/support/send_message_to_user/', staffController.sendMessageAsSupportTeam) // send message to cur user 
 router.patch('/staff/support/edit_message/', staffController.EditSupportChatMessage) // edit user or self message as support chat
 // // end support chat routers ---------
 

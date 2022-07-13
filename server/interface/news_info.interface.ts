@@ -1,10 +1,11 @@
+import { Schema } from 'mongoose'
 
 export default interface NEWS_INFO {
-  staffEmail: string
-  staffId: string
   newsTitle: string
   newsDate: number
   newsBody: string
-  newsImage: any
+  newsImage: string | null
   newsDomain: string
+  staffEmail: string
+  staffId: string | Schema.Types.ObjectId
 }

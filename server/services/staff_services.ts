@@ -9,13 +9,13 @@ import userIpMatch from '../models/User_ip_match.model'
 import domainList from '../models/Domain_list.model'
 import domainDetail from '../models/Domain_detail.model'
 import domainErrors from '../models/Domain_errors.model'
-import domainTerms from '../models/Domain_terms.model'
+// import domainTerms from '../models/Domain_terms.model'
 import newsList from '../models/News_list.model'
 import userPromocode from '../models/Promocodes.model'
 import usedPromoList from '../models/Used_promocodes.model'
 import staffLogs from '../models/Staff_logs.model'
 import TokenModel from '../models/Token.model'
-import TERMS from '../config/terms.template'
+// import TERMS from '../config/terms.template'
 import staffWallet from '../models/staff_wallet.model'
 import secureDeal from '../models/secure_deal.model'
 import userBalance from '../models/User_balance.model'
@@ -27,6 +27,7 @@ import recruiterOwnUsers from '../models/recruiter_own_users.model'
 import tradingOrders from '../models/trading_order.model'
 import coinRates from '../models/coin_rates.model'
 import supportChat from '../models/Support_chat.model'
+import Notification from './notificationServices'
 
 
 class staffService {
@@ -964,7 +965,8 @@ class staffService {
 			newsBody: transfer_object.newsBody,
 			newsImage: transfer_object.newsImage,
 			newsDomain: transfer_object.newsDomain,
-			staffEmail: transfer_object.staffEmail
+			staffEmail: transfer_object.staffEmail,
+			staffId: transfer_object.staffId
 		})
 		const getNews: any = await newsList.findOne({ newsDate: transfer_object.newsDate })
 		console.log('found news: ', getNews);
@@ -1390,13 +1392,25 @@ class staffService {
 		console.log('received dataList: ', dataList.length);
 		if (!dataList) return false
 
-		return dataList
+		let dataArray = []
+
+		for (let i = 0; i <= dataList.length - 1; i++) {
+			const userList: any = await baseUserData.findOne({ userId: dataList[i].userId })
+			const obj = {
+				chatId: dataList[i].chatId,
+				userEmail: userList.email
+			}
+			dataArray.push(obj)
+		}
+
+		console.log('dataArray is => ', dataArray);
+		return dataArray
 
 	}
 
-	async getChatData(staffId: string, skip: number, limit: number) {
+	async getChatData(chatId: string, skip: number, limit: number) {
 		const dataList: any = await supportChat.
-			find({ staffId: staffId }).
+			find({ chatId: chatId }).
 			skip(skip).
 			limit(limit).
 			sort({ curDate: -1 }).
@@ -1427,6 +1441,39 @@ class staffService {
 	}
 
 
+	async sendMessageToSupportChat(transferObject: any) {
+		// userId: string | Schema.Types.ObjectId
+		// domainName: string
+		// staffId: string | Schema.Types.ObjectId
+		// curDate: number
+		// isUser: boolean
+		// messageBody: string
+		// imageLink: string | null
+		// chatId: string | null
+		let dataObj: any = transferObject
+
+		const userData: any = await baseUserData.findOne({ _id: transferObject.userId })
+		console.log('user is => ', userData);
+		if (!userData) return false
+
+		await supportChat.create(dataObj)
+
+		const checkSavedData: any = await supportChat.findOne({
+			messageBody: transferObject.messageBody
+		})
+		console.log('saved chat data is => ', checkSavedData);
+		if (!checkSavedData) return false
+
+		const notifData = {
+			userEmail: userData.email,
+			notificationText: `New message from support team!`,
+			domainName: userData.domainName
+		}
+		await Notification.CreateNotification(notifData)
+
+		return true
+
+	}
 
 }
 

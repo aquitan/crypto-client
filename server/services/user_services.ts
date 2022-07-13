@@ -1004,7 +1004,7 @@ class UserServices {
 		if (dataObj.chatId !== null) {
 			const chatCandidate: any = await supportChat.findOne({ chatId: dataObj.chatId })
 			console.log('candidate chat is => ', chatCandidate);
-			if (chatCandidate.chatId !== dataObj.chatId) return false
+			if (!chatCandidate.chatId) return false
 		} else {
 			const chatId: string = await generatePassword(16)
 			dataObj.chatId = chatId
