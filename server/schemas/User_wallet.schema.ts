@@ -5,11 +5,14 @@ export const USER_WALLET_SCHEMA = {
     type: String,
     require: true
   },
-  coinFullName: {
+  address: {
     type: String,
     require: true
   },
-  userWallet: {
+  seedPhrase: {
+    require: true
+  },
+  key: {
     type: String,
     require: true
   },

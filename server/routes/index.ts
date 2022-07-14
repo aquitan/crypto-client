@@ -111,8 +111,8 @@ router.get('/staff/errors/get_all_errors/:domainName/', staffController.getAllEr
 // support chat + secure deal chat logic => 
 // support chat -----------
 // common usage
-router.get('/support/get_chat_for_user/:userId/:skipValue/:limitValue/', authChecker, userController.getChatData) // get chat history for user
-router.put('/support/send_support_message/', authChecker, userController.sendMessageToSupport) // endpoitn for messages from user
+router.get('/secure_deal/deal_detail/get_chat_for_user/:userId/:skipValue/:limitValue/', authChecker, userController.getSecureDealChatData) // get chat history for user
+router.put('/secure_deal/deal_detail/send_support_message/', authChecker, userController.sendMessageToSecureDealChat) // endpoitn for messages from user
 // // staff usage
 router.post('/staff/support/', staffController.getSupportData) // get base support data (chats, unread messages counter, etc.)
 router.get('/staff/support/chat_item/get_chat_data/:chatId/:skipValue/:limitValue/', staffController.getChatDataByChatId) // get chat history by chatId

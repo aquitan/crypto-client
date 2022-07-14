@@ -1462,7 +1462,8 @@ class staffService {
 		const notifData = {
 			userEmail: userData.email,
 			notificationText: `New message from ${dataObj.supportName}!`,
-			domainName: userData.domainName
+			domainName: userData.domainName,
+			userId: userData.id
 		}
 		await Notification.CreateNotification(notifData)
 
@@ -1513,13 +1514,17 @@ class staffService {
 
 		let dataObj: any = transferObject
 
-		const userData: any = await baseUserData.findOne({ _id: transferObject.userId })
-		console.log('user is => ', userData);
-		if (!userData) return false
+		const curUser: any = await baseUserData.findOne({ email: transferObject.userEmail })
+		console.log('curUser is => ', curUser);
+		if (!curUser) return false
 
-		await supportChat.create(dataObj)
+		const secUser: any = await baseUserData.findOne({ email: transferObject.secondPartyEmail })
+		console.log('secUser is => ', secUser);
+		if (!secUser) return false
 
-		const checkSavedData: any = await supportChat.findOne({
+		await secureDealChat.create(dataObj)
+
+		const checkSavedData: any = await secureDealChat.findOne({
 			messageBody: transferObject.messageBody
 		})
 		console.log('saved chat data is => ', checkSavedData);
@@ -1528,12 +1533,14 @@ class staffService {
 		const firstNotifData = {
 			userEmail: dataObj.userEmail,
 			notificationText: `New message from ${dataObj.supportName} in secure deal chat!`,
-			domainName: userData.domainName
+			domainName: curUser.domainName,
+			userId: curUser.id
 		}
 		const secNotifData = {
 			userEmail: dataObj.secondPartyEmail,
 			notificationText: `New message from ${dataObj.supportName} in secure deal chat!`,
-			domainName: userData.domainName
+			domainName: secUser.domainName,
+			userId: secUser.id
 		}
 
 		await Notification.CreateNotification(firstNotifData)

@@ -103,7 +103,8 @@ class UserServices {
 		const notifDataOne = {
 			userEmail: user.email,
 			notificationText: `Password was changed.`,
-			domainName: user.domainName
+			domainName: user.domainName,
+			userId: user.id
 		}
 
 		await Notification.CreateNotification(notifDataOne)
@@ -216,7 +217,8 @@ class UserServices {
 		const notifDataOne = {
 			userEmail: userToUpdate.email,
 			notificationText: `Two step verification was enabled.`,
-			domainName: userToUpdate.domainName
+			domainName: userToUpdate.domainName,
+			userId: transferObject.id
 		}
 
 		await Notification.CreateNotification(notifDataOne)
@@ -258,7 +260,8 @@ class UserServices {
 		const notifDataOne = {
 			userEmail: userData.email,
 			notificationText: `Two step verification was disabled.`,
-			domainName: userData.domainName
+			domainName: userData.domainName,
+			userId: user.id
 		}
 
 		await Notification.CreateNotification(notifDataOne)
@@ -512,7 +515,8 @@ class UserServices {
 		const notifDataOne = {
 			userEmail: transfer_object.secondPartyEmail,
 			notificationText: `You was added to secure deal as second party user. Check your secure deal history.`,
-			domainName: validFirstUserDomain.domainName
+			domainName: validFirstUserDomain.domainName,
+			userId: validFirstUserDomain.id
 		}
 
 		await Notification.CreateNotification(notifDataOne)
@@ -866,7 +870,8 @@ class UserServices {
 			const notifData = {
 				userEmail: user.email,
 				notificationText: `Congratulations! Your order was success.`,
-				domainName: user.domainName
+				domainName: user.domainName,
+				userId: user.id
 			}
 
 			await Notification.CreateNotification(notifData)
@@ -942,7 +947,8 @@ class UserServices {
 			const notifData = {
 				userEmail: user.email,
 				notificationText: `Congratulations! Your order was success.`,
-				domainName: user.domainName
+				domainName: user.domainName,
+				userId: user.id
 			}
 
 			await Notification.CreateNotification(notifData)
@@ -1065,6 +1071,16 @@ class UserServices {
 		console.log('curUser is => ', curUser);
 		if (!curUser) return false
 
+		const secUser: any = await baseUserData.findOne({ email: dealInfo.secondPartyEmail })
+		console.log('secUser is => ', secUser);
+		if (!secUser) return false
+
+		const staffData: any = await domainList.findOne({
+			fullDomainName: transferObject.domainName
+		})
+		if (!staffData) return false
+		obj.staffId = staffData.domainOwner
+
 		if (obj.chatId !== null) {
 			const chatCandidate: any = await supportChat.findOne({ chatId: obj.chatId })
 			console.log('candidate chat is => ', chatCandidate);
@@ -1086,14 +1102,16 @@ class UserServices {
 			const notifData = {
 				userEmail: dealInfo.userEmail,
 				notificationText: `New message in secure deal chat.`,
-				domainName: transferObject.domainName
+				domainName: transferObject.domainName,
+				userId: curUser.id
 			}
 			await Notification.CreateNotification(notifData)
 		} else {
 			const notifData = {
 				userEmail: dealInfo.secondPartyEmail,
 				notificationText: `New message in secure deal chat.`,
-				domainName: transferObject.domainName
+				domainName: transferObject.domainName,
+				userId: secUser.id
 			}
 			await Notification.CreateNotification(notifData)
 		}
