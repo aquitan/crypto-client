@@ -21,55 +21,30 @@ const Support = () => {
     }, [])
 
     const onClick = async (text) => {
-        // let newPost = {
-        //     type: 'user',
-        //     text: text,
-        //     date: getCurrentDate(dateToTimestamp(new Date()))
-        // }
-        //
-        // setMsg(prevState => {
-        //     console.log('prevState', prevState)
-        //     console.log('newPost', newPost)
-        //    return [newPost, ...prevState]
-        // })
-
         const obj = {
             userId: store.user.id,
             domainName: window.location.host,
             staffId: '',
             curDate: dateToTimestamp(new Date()),
             messageBody: text,
-            imageLink: image,
+            imageLink: image ? image : null,
             chatId: msg.length > 0 ? msg[0].chatId : null,
-            isUser: true
+            isUser: true,
+            supportName: null
         }
 
         const res = await putData('/support/send_support_message/', obj)
         if (res.status === 202) {
             getSupportMessages()
         }
-        console.log('res msg', res)
     }
 
     const getSupportMessages = async () => {
-        const res = await getData(`/support/get_chat_for_user/${store.user.id}/${0}/${10}/`)
-        setMsg(res.data)
+        const res = await getData(`/support/get_chat_for_user/${store.user.id}/${0}/${50}/`)
+        setMsg(res.data.reverse())
         // createMessagesOnLoad(res.data)
     }
 
-    const createMessagesOnLoad = (arr) => {
-        let newArr = []
-        arr.forEach(item => {
-            let msg = {
-                type: 'user',
-                text: item.messageBody,
-                date: dateToTimestamp(new Date())
-            }
-            newArr.push(msg)
-        })
-        setMsg([...msg, ...newArr])
-        console.log('new arr', newArr)
-    }
 
     const onUploadImg =(img) => {
         const formData = new FormData();
@@ -91,7 +66,7 @@ const Support = () => {
                         <ChatWindow onUploadImg={onUploadImg} onClick={onClick}>
                             {
                                 msg.length ?
-                                    msg.reverse().map(item => {
+                                    msg.map(item => {
                                         console.log('item support', item)
                                         return(
                                             <ChatMessege
