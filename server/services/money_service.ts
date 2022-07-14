@@ -674,30 +674,37 @@ class moneyService {
     const addressList = [
       {
         coinName: 'BTC',
+        coinFullName: 'Bitcoin',
         walletAddress: btcWalletData.address
       },
       {
         coinName: 'ETH',
+        coinFullName: 'Ethereum',
         walletAddress: ethWalletData.address
       },
       {
         coinName: 'SOL',
+        coinFullName: 'Solana',
         walletAddress: solWalletData.address
       },
       {
         coinName: 'BCH',
+        coinFullName: 'BitcoinCash',
         walletAddress: await generatePassword(43)
       },
       {
         coinName: 'USDT',
+        coinFullName: 'Teaser',
         walletAddress: await generatePassword(42)
       },
       {
         coinName: 'TRX',
+        coinFullName: 'Tron',
         walletAddress: await generatePassword(42)
       },
       {
         coinName: 'TRX/USDT',
+        coinFullName: 'TronUsdt',
         walletAddress: await generatePassword(42)
       }
     ]
