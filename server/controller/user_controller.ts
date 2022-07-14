@@ -963,7 +963,7 @@ class UserController {
     const limitValue: number = parseInt(limit)
 
     try {
-      const result: any = await UserServices.GetChatDataForUser(userId, skipValue, limitValue)
+      const result: any = await UserServices.GetSecureDealChatDataForUser(userId, skipValue, limitValue)
       console.log(' result is: ', result)
       if (!result) throw ApiError.ServerError()
 

@@ -11,6 +11,7 @@
     "start": "./run_scripts/target/release/run_scripts"
   },
   "dependencies": {
+    "@solana/web3.js": "^1.48.0",
     "@types/express-fileupload": "^1.2.2",
     "axios": "^0.24.0",
     "bip32": "^2.0.6",
@@ -20,6 +21,7 @@
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
+    "ethers": "^5.6.9",
     "express": "^4.17.1",
     "express-fileupload": "^1.4.0",
     "express-validator": "^6.13.0",

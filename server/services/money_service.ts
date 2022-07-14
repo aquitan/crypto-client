@@ -16,6 +16,10 @@ import axios from 'axios'
 import bip32 from 'bip32'
 import bip39 from 'bip39'
 import bitcoin from 'bitcoinjs-lib'
+import { Buffer } from 'buffer'
+import ethers from 'ethers'
+import crypto from 'crypto'
+import web3 from '@solana/web3.js'
 
 async function addressGen(coinName: string) {
   if (!coinName) return false
@@ -47,6 +51,7 @@ async function addressGen(coinName: string) {
   `);
 
     const dataObject = {
+      coinName: 'BTC',
       address: btcAddress,
       key: node.toWIF(),
       seedPhrase: mnemonic
@@ -54,8 +59,76 @@ async function addressGen(coinName: string) {
 
     return dataObject
   }
-  return 'adsqiuwd98121'
+  if (coinName === 'etc') {
+    // https://www.quicknode.com/guides/web3-sdks/how-to-generate-a-new-ethereum-address-in-javascript
+    var id = crypto.randomBytes(32).toString('hex');
+    var privateKey = "0x" + id;
+
+    var wallet = new ethers.Wallet(privateKey);
+    // console.log("wallet : " + wallet.)
+
+    console.log(`
+      Generated wallet: 
+      - address : ${wallet.address},
+      - key : ${privateKey},
+  `);
+
+    const dataObject = {
+      coinName: 'ETH',
+      address: wallet.address,
+      key: privateKey,
+      seedPhrase: ''
+    }
+    return dataObject
+
+  }
+
+  if (coinName === 'trx') {
+
+  }
+
+  if (coinName === 'usdt') {
+
+  }
+
+  if (coinName === 'trxusdt') {
+
+  }
+  if (coinName === 'sol') {
+    // https://docs.solana.com/developing/clients/javascript-reference
+
+    // let keypair = web3.Keypair.generate()
+    // console.log('keypair => ', keypair.publicKey.toBase58());
+    // console.log('keypair => ', keypair.secretKey)
+
+    // Create a PublicKey with a base58 encoded string
+    const str: string = await generatePassword(44)
+    let base58publicKey = new web3.PublicKey(str);
+    console.log(base58publicKey.toBase58());
+
+
+    // Create an Address
+    let highEntropyBuffer = crypto.randomBytes(31);
+    let addressFromKey = await web3.PublicKey.createProgramAddress([highEntropyBuffer.slice(0, 31)], base58publicKey);
+    console.log(`Generated Program Address: ${addressFromKey.toBase58()}`);
+
+    // // Find address given a PublicKey
+    // let solAddress = await web3.PublicKey.findProgramAddress([Buffer.from('', 'utf8')], addressFromKey);
+    // console.log(`Valid Program Address: ${solAddress}`);
+
+    const dataObject = {
+      coinName: 'SOL',
+      address: addressFromKey.toBase58(),
+      key: base58publicKey,
+      seedPhrase: ''
+    }
+    return dataObject
+  };
+
+
+  return false
 }
+
 
 
 
@@ -130,67 +203,6 @@ class moneyService {
     dataObject.expiredDate = expiredDate
 
     return dataObject
-  }
-
-  async generateInternalWalletsForUser(userId: string) {
-    // generate internal addreses for every coin 
-
-    const btcWalletData: any = await addressGen('btc')
-    const ethWalletData: any = await addressGen('eth')
-
-    // const walletList: [{}] = [
-    //   btcWalletData,
-    //   ethWalletData
-    // ]
-
-    // await internalWallets.create({
-    //   coinName: 'BTC',
-    //   address: btcWalletData.address,
-    //   seedPhrase: btcWalletData.seed,
-    //   key: btcWalletData.key,
-    //   userId: userId
-    // })
-
-
-
-    const addresses = [
-      {
-        coinName: 'BTC',
-        coinFullName: 'bitcoin',
-        walletAddress: btcWalletData.address,
-      },
-      {
-        coinName: 'ETH',
-        coinFullName: 'ethereum',
-        walletAddress: await generatePassword(44)
-      },
-      {
-        coinName: 'BCH',
-        coinFullName: 'bitcoin cash',
-        walletAddress: await generatePassword(43)
-      },
-      {
-        coinName: 'SOL',
-        coinFullName: 'solana',
-        walletAddress: await generatePassword(44)
-      },
-      {
-        coinName: 'USDT',
-        coinFullName: 'tether',
-        walletAddress: await generatePassword(42)
-      },
-      {
-        coinName: 'TRX',
-        coinFullName: 'tron',
-        walletAddress: await generatePassword(42)
-      },
-      {
-        coinName: 'TRX/USDT',
-        coinFullName: 'usdt trc20',
-        walletAddress: await generatePassword(42)
-      }
-    ]
-    return addresses
   }
 
   async BalanceUpdater(userId: string, coinName: string, value: number,) {
@@ -370,6 +382,15 @@ class moneyService {
       console.log('wrond date was writed in DB');
       return false
     }
+
+    const notifData = {
+      userEmail: transfer_object.userEmail,
+      notificationText: `Deposit request ( ${transfer_object.amountInCryptoFrom} ${transfer_object.coinNameFrom} ) was create!`,
+      domainName: transfer_object.domainName,
+      userId: transfer_object.userId
+    }
+
+    await Notification.CreateNotification(notifData)
 
     return true
   }
@@ -561,7 +582,8 @@ class moneyService {
     const notifData = {
       userEmail: user.email,
       notificationText: `Swap ( ${transfer_object.amountInCryptoFrom} ${transfer_object.coinNameFrom} to ${transfer_object.amountInCryptoTo} ${transfer_object.coinNameTo} ) was success.`,
-      domainName: user.domainName
+      domainName: user.domainName,
+      userId: user.id
     }
 
     await Notification.CreateNotification(notifData)
@@ -623,29 +645,64 @@ class moneyService {
     if (!candidate) return false
     if (candidate.domainName !== domainName) return false
 
-    const userWalletList: any = await this.generateInternalWalletsForUser(userId)
-    console.log('wallet list is => ', userWalletList);
-    if (!userWalletList) return false
 
-    for (let i = 0; i <= userWalletList.length - 1; i++) {
-      const dataObject = {
-        coinName: userWalletList[i].coinName,
-        coinFullName: userWalletList[i].coinFullName,
-        userWallet: userWalletList[i].walletAddress,
-        userId: candidate.id
-      }
-      console.log('received data is => ', dataObject);
-      for (let index in dataObject) {
-        if (dataObject[index] === undefined || null) return false
-      }
-      await userWallet.create(dataObject)
+    // create and save wallets & keys
+    const btcWalletData: any = await addressGen('btc')
+    const ethWalletData: any = await addressGen('eth')
+    const solWalletData: any = await addressGen('sol')
+
+    const walletList = [
+      btcWalletData,
+      ethWalletData,
+      solWalletData
+    ]
+
+    for (let i = 0; i <= walletList.length - 1; i++) {
+      await userWallet.create({
+        coinName: walletList[i].coinName,
+        address: btcWalletData.address,
+        seedPhrase: btcWalletData.seed,
+        key: btcWalletData.key,
+        userId: userId
+      })
     }
 
-    const curWallets: any = await userWallet.find({ userId: candidate.id })
-    console.log('saved wallet is => ', curWallets);
-    if (!curWallets.length) return false
+    const checkWallets: any = await userWallet.find({ userId: candidate.id })
+    console.log('saved wallet is => ', checkWallets);
+    if (!checkWallets.length) return false
 
-    return curWallets
+    const addressList = [
+      {
+        coinName: 'BTC',
+        walletAddress: btcWalletData.address
+      },
+      {
+        coinName: 'ETH',
+        walletAddress: ethWalletData.address
+      },
+      {
+        coinName: 'SOL',
+        walletAddress: solWalletData.address
+      },
+      {
+        coinName: 'BCH',
+        walletAddress: await generatePassword(43)
+      },
+      {
+        coinName: 'USDT',
+        walletAddress: await generatePassword(42)
+      },
+      {
+        coinName: 'TRX',
+        walletAddress: await generatePassword(42)
+      },
+      {
+        coinName: 'TRX/USDT',
+        walletAddress: await generatePassword(42)
+      }
+    ]
+
+    return addressList
   }
 
 

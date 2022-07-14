@@ -53,8 +53,6 @@ server.listen(PORT, async () => {
 
 // autopayment + wallet generator + seed phrase generator
 
-// https://www.quicknode.com/guides/web3-sdks/how-to-send-a-transaction-on-solana-using-javascript
-// https://www.npmjs.com/package/node-ethereum-wallet
 
 // https://github.com/sagivo/accept-bitcoin
 
@@ -70,3 +68,9 @@ server.listen(PORT, async () => {
 
 // crypto lib => 
 // npm install bip39 bip32 bitcoinjs-lib --save
+
+
+
+// upload images --------
+// https://www.tech-wiki.online/ru/file-upload-using-ajax.html
+// https://www.npmjs.com/package/express-fileupload
