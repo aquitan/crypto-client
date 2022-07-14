@@ -6,7 +6,7 @@ import Input from "../../../../../components/UI/Input/Input";
 import Button from "../../../../../components/UI/Button/Button";
 import FileUpload from "../../../../../components/UI/FileUpload/FileUpload";
 
-const ChatWindow = ({children, onClick, edited}) => {
+const ChatWindow = ({children, onClick, edited, onUploadImg}) => {
     const [state, setState] = useState('')
 
     const onChange = (e) => {
@@ -28,8 +28,8 @@ const ChatWindow = ({children, onClick, edited}) => {
                 </Col>
             </Row>
             <Row className='mt-3 mb-3 p-2 align-items-center'>
-                <Col className='col-12 col-md-3 mb-2'><FileUpload id='file' /></Col>
-                <Col className='col-12 col-md-6 mb-2'><Input value={state} onChange={onChange} placeholder='type your message'/></Col>
+                <Col className='col-12 col-md-3 mb-2'><FileUpload onUploadImg={onUploadImg} id='file' /></Col>
+                <Col className='col-12 col-md-6 mb-2'><Input value={state} onChange={(e) => onChange(e)} placeholder='type your message'/></Col>
                 <Col className='col-12 col-md-3 mb-2'><Button onClick={onBtnClick} classname='small'>Send</Button></Col>
             </Row>
         </div>
