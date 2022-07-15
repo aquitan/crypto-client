@@ -39,8 +39,17 @@ const AppRouter = () => {
         }
         sendDomainName()
         getRates()
+        getNotification()
+
 
     }, [])
+
+    const getNotification = async () => {
+        if (store.fullAccess) {
+            console.log('notifications', store.fullAccess)
+            const res = await getData(`/staff/notifications/get_all_notifications/${store.user.id}`, {userId: store.user.id})
+        }
+    }
 
     const countTotalBalance = () => {
         console.log('blance state', state)

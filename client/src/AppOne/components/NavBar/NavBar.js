@@ -141,7 +141,7 @@ const NavBar = () => {
                                             </Col>
                                             <Col>
                                                 <div>
-                                                    {store.user.email}
+                                                    {store.fullAccess ? null : store.user.email}
                                                 </div>
                                             </Col>
                                         </NavLink>

@@ -94,7 +94,6 @@ const CreateDomains = () => {
         data.errorList = errorList
         data.dateOfDomainCreate = dateToTimestamp()
         data.depositFee = parseInt(data.depositFee)
-        data.rateCorrectSum = parseInt(data.rateCorrectSum)
         data.minDepositSum = parseInt(data.minDepositSum)
         data.minWithdrawalSum = parseInt(data.minWithdrawalSum)
         // data.internalSwapFee = parseInt(data.internalSwapFee)
@@ -247,16 +246,6 @@ const CreateDomains = () => {
                             max: 5
                         })} placeholder={'Комиссия при пополнении %'}/>
                         <ErrorMessage  name={'depositFee'} errors={errors} render={() => <p className={cls.error}>Check the value</p>} />
-                    </Row>
-                    <Row className={'mb-3 relative'}>
-                        Корректировка курса в %
-                        <AdminInput {...register('rateCorrectSum', {
-                            required: true,
-                            pattern: /^[0-9]+$/,
-                            min: 0,
-                            max: 15
-                        })} placeholder={'Корректировка курса в %'}/>
-                        <ErrorMessage  name={'rateCorrectSum'} errors={errors} render={() => <p className={cls.error}>Check the value</p>} />
                     </Row>
                     {
                         domainSelect.map(select => {

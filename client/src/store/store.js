@@ -158,6 +158,7 @@ export default class Store {
         }
     }
     async registration(obj) {
+        console.log('registration')
         try {
             this.setIsError(true)
             const response = await AuthService.registration(obj)

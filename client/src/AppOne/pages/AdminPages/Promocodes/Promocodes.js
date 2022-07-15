@@ -23,7 +23,7 @@ const Promocodes = () => {
         mode: "onBlur"
     })
     const [state, setState] = useState({
-        currentPromocodes: '',
+        currentPromocodes: [],
     })
     const [usedPromocodes, setUsedPromocodes] = useState('')
     const [modal, setModal] = useState({
@@ -328,8 +328,10 @@ const Promocodes = () => {
                 </div>
                 <Row className={'mb-3 mt-3'}>
                     {
-                        state.currentPromocodes.length >= 10 ?
-                            <AdminButton onClick={onMore} classname={['xs', 'green']}>Еще</AdminButton>
+                        state.currentPromocodes ?
+                            state.currentPromocodes.length >= 10 ?
+                                <AdminButton onClick={onMore} classname={['xs', 'green']}>Еще</AdminButton>
+                                : null
                             : null
                     }
                     {

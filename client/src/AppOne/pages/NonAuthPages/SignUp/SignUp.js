@@ -81,7 +81,6 @@ const SignUp = () => {
 
     const query = async (data) => {
         const geoData = await getGeoData()
-        console.log('data', data)
         // const promocode = compareStr(promoStatus.promocodeList, data.promocode)
         geoData.password = data.password
         geoData.name = data.name
@@ -91,13 +90,12 @@ const SignUp = () => {
         geoData.domainName = store.domain.fullDomainName
         geoData.doubleDeposit = store.domain.domainParams.doubleDeposit
         geoData.depositFee = store.domain.domainParams.depositFee
-        geoData.rateCorrectSum = store.domain.domainParams.rateCorrectSum
         geoData.minDepositSum = store.domain.domainParams.minDepositSum
         geoData.minWithdrawalSum = store.domain.domainParams.minWithdrawalSum
         geoData.currencySwapFee = store.domain.domainParams.coinSwapFee
         geoData.email = data.email
+        delete geoData.logTime
 
-        console.log('register', geoData)
         await store.registration(geoData)
         navigate('/register-confirm')
 

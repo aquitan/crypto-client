@@ -74,6 +74,7 @@ const SecureDeal = () => {
         const res = await getData(`/personal_area/secure_deal/secure_deal_history/${store.user.email}`)
         setHistory(res.data.history.filter(item => {
             if (dateToTimestamp() > item.dealDedline) {
+                console.log('dateToTimestamp() > item.dealDedline', dateToTimestamp() > item.dealDedline)
                 onMissDeadline(item._id, item.dealDedline)
             }
             return  dateToTimestamp() < item.dealDedline
