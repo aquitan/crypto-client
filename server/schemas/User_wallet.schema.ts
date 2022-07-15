@@ -10,6 +10,7 @@ export const USER_WALLET_SCHEMA = {
     require: true
   },
   seedPhrase: {
+    type: String,
     require: true
   },
   key: {

@@ -32,26 +32,22 @@ const Notification = () => {
                 <FontAwesomeIcon icon={faBell} color='#fff' />
                 {notification.length ? <div className={cls.notification_mark}></div> : null}
             </div>
-            {
-                open ?
-                    <div className={cls.notification_body}>
-                        <div>
-                            <Row className={cls.notification_body_top}>
-                                <Col>ID</Col>
-                                <Col>message</Col>
-                            </Row>
-                            {
-                                notification.length  ?
-                                    notification.map(notif => {
-                                        return <NotificationItem notif={notif} />
-                                    })
-                                    : <p>No messages</p>
-                            }
+            <div className={cls.notification_body}>
+                <div>
+                    <Row className={cls.notification_body_top}>
+                        <Col>ID</Col>
+                        <Col>message</Col>
+                    </Row>
+                    {
+                        notification.length  ?
+                            notification.map(notif => {
+                                return <NotificationItem notif={notif} />
+                            })
+                            : <p>No messages</p>
+                    }
 
-                        </div>
-                    </div>
-                    : null
-            }
+                </div>
+            </div>
         </div>
     )
 }

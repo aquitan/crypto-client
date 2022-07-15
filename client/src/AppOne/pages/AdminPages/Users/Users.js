@@ -26,8 +26,8 @@ const Users = () => {
             isStaff: store.isStaff,
             domainName: window.location.host,
             rootAccess: store.fullAccess,
-            staffEmail: store.user.email,
-            staffId: store.user.id,
+            staffEmail: store.fullAccess ? 'root': store.user.email,
+            staffId: store.fullAccess ? 'root': store.user.id,
             skipValue: value,
             limitValue: 10
         }

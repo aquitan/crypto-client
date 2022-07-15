@@ -137,11 +137,13 @@ const UserDetailTabAct = (props) => {
         handleCloseModal()
     }
     const makeStaff = async () => {
-        dataObj.status =  !btns.isStaff
+        dataObj.status = !btns.isStaff
         if (store.fullAccess) {
             dataObj.rootAccess = store.fullAccess
         }
         delete dataObj.userId
+        dataObj.isAdmin = store.isAdmin
+        dataObj.isStaff = store.isStaff
         const response = await patchData('/staff/users/user_detail/update_staff_status/', dataObj)
         setBtns({...btns, isStaff: !btns.isStaff})
         handleCloseModal()
