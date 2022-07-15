@@ -13,7 +13,6 @@ export default interface REGISTRATION_DATA {
   currentDate: number
   doubleDeposit: boolean
   depositFee: number
-  rateCorrectSum: number
   minDepositSum: number
   minWithdrawalSum: number
   currencySwapFee: number

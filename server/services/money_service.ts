@@ -13,31 +13,33 @@ import userActionInfo from '../models/User_info_for_action.model'
 import withdrawalError from '../models/Domain_errors.model'
 import Notification from './notificationServices'
 import axios from 'axios'
-import bip32 from 'bip32'
-import bip39 from 'bip39'
-import bitcoin from 'bitcoinjs-lib'
+import * as bip32 from 'bip32'
+import * as bip39 from 'bip39'
+import * as bitcoin from 'bitcoinjs-lib'
 import { Buffer } from 'buffer'
-import ethers from 'ethers'
+import * as ethers from 'ethers'
 import crypto from 'crypto'
-import web3 from '@solana/web3.js'
+import * as web3 from '@solana/web3.js'
+import { Keypair } from '@solana/web3.js'
 
 async function addressGen(coinName: string) {
   if (!coinName) return false
   // get address from api
 
   if (coinName === 'btc') {
+    // https://javascript.plainenglish.io/generate-your-own-bitcoin-wallet-within-5-minutes-3c36176b47ee?gi=c00ebff5e60f
 
     const network = bitcoin.networks.bitcoin
-    const path = `m/44'/0'/0'/0` // change path
+    const path = `m/44'/0'/0'/0` // use 'm/44'/1'/0'/0 for testnet
 
-    let mnemonic = bip39.generateMnemonic()
+    const mnemonic = bip39.generateMnemonic()
     const seed = bip39.mnemonicToSeedSync(mnemonic)
-    let root = bip32.fromSeed(seed, network)
+    const root = bip32.fromSeed(seed, network)
 
-    let account = root.derivePath(path)
-    let node = account.derive(0).derive(0)
+    const account = root.derivePath(path)
+    const node = account.derive(0).derive(0)
 
-    let btcAddress = bitcoin.payments.p2pkh({
+    const btcAddress = bitcoin.payments.p2pkh({
       pubkey: node.publicKey,
       network: network
     }).address
@@ -59,12 +61,12 @@ async function addressGen(coinName: string) {
 
     return dataObject
   }
-  if (coinName === 'etc') {
+  if (coinName === 'eth') {
     // https://www.quicknode.com/guides/web3-sdks/how-to-generate-a-new-ethereum-address-in-javascript
-    var id = crypto.randomBytes(32).toString('hex');
-    var privateKey = "0x" + id;
+    const id = crypto.randomBytes(32).toString('hex');
+    const privateKey = "0x" + id;
 
-    var wallet = new ethers.Wallet(privateKey);
+    const wallet = new ethers.Wallet(privateKey);
     // console.log("wallet : " + wallet.)
 
     console.log(`
@@ -97,19 +99,21 @@ async function addressGen(coinName: string) {
   if (coinName === 'sol') {
     // https://docs.solana.com/developing/clients/javascript-reference
 
-    // let keypair = web3.Keypair.generate()
+    // const keypair = Keypair.generate()
     // console.log('keypair => ', keypair.publicKey.toBase58());
     // console.log('keypair => ', keypair.secretKey)
 
     // Create a PublicKey with a base58 encoded string
     const str: string = await generatePassword(44)
-    let base58publicKey = new web3.PublicKey(str);
-    console.log(base58publicKey.toBase58());
+    console.log('pubKey 4 sol => ', str);
+
+    const base58publicKey: any = new web3.PublicKey(str);
+    console.log('base58publicKey => ', base58publicKey.toBase58());
 
 
     // Create an Address
-    let highEntropyBuffer = crypto.randomBytes(31);
-    let addressFromKey = await web3.PublicKey.createProgramAddress([highEntropyBuffer.slice(0, 31)], base58publicKey);
+    const highEntropyBuffer = crypto.randomBytes(31);
+    const addressFromKey = await web3.PublicKey.createProgramAddress([highEntropyBuffer.slice(0, 31)], base58publicKey);
     console.log(`Generated Program Address: ${addressFromKey.toBase58()}`);
 
     // // Find address given a PublicKey
@@ -127,6 +131,15 @@ async function addressGen(coinName: string) {
 
 
   return false
+}
+
+async function AprooveTransaction(coinName: string) {
+
+  if (coinName === 'btc') {
+
+  }
+
+  return true
 }
 
 
@@ -147,9 +160,6 @@ class moneyService {
     return false
   }
 
-  async AprooveTransaction(coinName) {
-
-  }
 
   async GenerateDepositAddress(userId: string, userEmail: string, coinName: string, coinFullName: string, date: number) {
 
@@ -649,12 +659,13 @@ class moneyService {
     // create and save wallets & keys
     const btcWalletData: any = await addressGen('btc')
     const ethWalletData: any = await addressGen('eth')
-    const solWalletData: any = await addressGen('sol')
+
+    // const solWalletData: any = await addressGen('sol')
 
     const walletList = [
       btcWalletData,
       ethWalletData,
-      solWalletData
+      // solWalletData
     ]
 
     for (let i = 0; i <= walletList.length - 1; i++) {
@@ -673,19 +684,19 @@ class moneyService {
 
     const addressList = [
       {
-        coinName: 'BTC',
+        coinName: btcWalletData.coinName,
         coinFullName: 'Bitcoin',
         walletAddress: btcWalletData.address
       },
       {
-        coinName: 'ETH',
+        coinName: ethWalletData.coinName,
         coinFullName: 'Ethereum',
         walletAddress: ethWalletData.address
       },
       {
         coinName: 'SOL',
         coinFullName: 'Solana',
-        walletAddress: solWalletData.address
+        walletAddress: await generatePassword(43)
       },
       {
         coinName: 'BCH',

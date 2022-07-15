@@ -1,6 +1,6 @@
 export default class ApiError extends Error {
-  status
-  errors
+  status: number
+  errors: string[]
 
   constructor(status: number, message: string, errors: string[] = []) {
     super(message)

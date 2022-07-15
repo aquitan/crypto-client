@@ -29,7 +29,8 @@ class AuthController {
 
       const promocodeList: any = await authService.GetPromocodeListBeforeSignup(domainName)
       console.log('promocodeList', promocodeList);
-      if (promocodeList === false) return res.status(200).json({ promocode: false })
+      if (!promocodeList) throw ApiError.ServerError()
+      if (!promocodeList.length) return res.status(200).json({ promocode: false })
 
       return res.status(200).json({ promocode: true })
 
@@ -58,13 +59,12 @@ class AuthController {
       currentDate: req.body.currentDate,
       doubleDeposit: req.body.doubleDeposit,
       depositFee: req.body.depositFee,
-      rateCorrectSum: req.body.rateCorrectSum,
       minDepositSum: req.body.minDepositSum,
       minWithdrawalSum: req.body.minWithdrawalSum,
       currencySwapFee: req.body.currencySwapFee
     }
 
-    const validData: boolean = await bodyValidator(req.body, 17)
+    const validData: boolean = await bodyValidator(req.body, 16)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
 
