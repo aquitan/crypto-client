@@ -660,9 +660,9 @@ class moneyService {
     for (let i = 0; i <= walletList.length - 1; i++) {
       await userWallet.create({
         coinName: walletList[i].coinName,
-        address: btcWalletData.address,
-        seedPhrase: btcWalletData.seed,
-        key: btcWalletData.key,
+        address: walletList[i].address,
+        seedPhrase: walletList[i].seed,
+        key: walletList[i].key,
         userId: userId
       })
     }

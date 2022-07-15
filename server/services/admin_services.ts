@@ -315,11 +315,9 @@ class adminService {
       console.log('received getWallets is => ', getStaffWallets.length);
       // if (!getStaffWallets.length) return false
 
-      await staffParams.findOneAndDelete({
-        staffUserEmail: userToDelete.email
-      })
-      await deleteHelper(getStaffWallets, userId)
-      await deleteHelper(staffLogs, userId)
+      await staffParams.findOneAndDelete({ staffUserEmail: userToDelete.email })
+      await staffWallet.deleteMany({ staffId: userId })
+      await staffLogs.deleteMany({ staffId: userId })
     }
     await deleteHelper(depositWallets, userId)
     await deleteHelper(internalHistory, userId)
@@ -329,16 +327,10 @@ class adminService {
     await deleteHelper(userWallet, userId)
     await deleteHelper(userBalance, userId)
     await deleteHelper(userLogs, userId)
+    await userAction.findOneAndDelete({ userId: userId })
+    await userParams.findOneAndDelete({ userId: userId })
+    await userBase.findOneAndDelete({ _id: userId })
 
-    await userAction.findOneAndDelete({
-      userId: userId
-    })
-    await userParams.findOneAndDelete({
-      userId: userId
-    })
-    await userBase.findOneAndDelete({
-      _id: userId
-    })
     return true
   }
 
