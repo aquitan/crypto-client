@@ -3,20 +3,25 @@
   padding: 5px 10px;
   border-radius: 5px;
   margin: 20px 0;
+  max-width: 300px;
+  font-size: 14px;
+  font-weight: normal;
 }
 .support {
   background-color: #8cdbf4;
   align-self: baseline;
+  color: #000;
 }
 .user {
   background-color: #524ad0;
   align-self: end;
+  color: #fff;
 }
 .chatInput {
   background-color: transparent;
   border: none;
-  color: #000;
   border-bottom: 1px solid #000;
+  padding: 10px 5px;
   &:disabled {
     color: #292b3c;
     border-bottom: 1px solid transparent

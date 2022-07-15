@@ -20,15 +20,18 @@ const UserNews = () => {
 
 
     return (
-        <Container>
+        <Container style={{maxHeight: 800}}>
             <h2>News</h2>
             {
                 state ?
                     state.slice(0).reverse().map(item => {
                         return (
                             <ButtonCard>
-                                <h3>{item.newsTitle}</h3>
-                                <div>
+                                <h3 className='mb-3'>{item.newsTitle}</h3>
+                                <div className='mb-3'>
+                                    <img style={{maxWidth: 450}} src={item.newsImage} alt=""/>
+                                </div>
+                                <div className='mb-3'>
                                     {item.newsBody}
                                 </div>
                                 <div>

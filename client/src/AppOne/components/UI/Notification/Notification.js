@@ -7,10 +7,12 @@ import cls from './Notification.module.scss'
 import {store} from "../../../../index";
 import {observer} from "mobx-react-lite";
 import {getData, postData} from "../../../services/StaffServices";
+import {useQuery} from "react-query";
 
 const Notification = () => {
     const [notification, setNotification] = useState(store.notifications)
     const [open, setOpen] = useState(false)
+
     let notif = JSON.parse(JSON.stringify(store.notifications))
 
     useEffect(() => {

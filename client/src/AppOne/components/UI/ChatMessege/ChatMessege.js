@@ -4,10 +4,8 @@ import cls from './ChatMessage.module.scss'
 import classNames from "classnames/bind";
 import {Row} from "react-bootstrap";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
-import {patchData} from "../../../services/StaffServices";
-import {store} from "../../../../index";
 
-const ChatMessege = ({text, date, type, allowEdit, id, image}) => {
+const ChatMessege = ({text, date, type, allowEdit, onEditChatMessage, id, image}) => {
     const [textVal, setTextVal] = useState(text)
     const [disabled, setDisabled] = useState(true)
     let cx = classNames.bind(cls)
@@ -26,14 +24,7 @@ const ChatMessege = ({text, date, type, allowEdit, id, image}) => {
         console.log('id', id)
         setDisabled(!disabled)
         if (!disabled) {
-            const obj = {
-                isAdmin: store.isAdmin,
-                isStaff: store.isStaff,
-                rootAccess: store.fullAccess,
-                messageId: id
-            }
-            console.log('disabled on')
-            const res = await patchData('/staff/support/edit_message/', obj)
+            onEditChatMessage(id, textVal, image)
         }
     }
 
@@ -42,12 +33,18 @@ const ChatMessege = ({text, date, type, allowEdit, id, image}) => {
             <Row>
                 <img style={{width: 250}} src={image} alt=""/>
                 <span id={id} style={{fontWeight: 'bold'}}>
-                    <input
-                        className={cls.chatInput}
-                        type="text"
-                        disabled={disabled}
-                        onChange={onTextChange}
-                        value={textVal}/>
+                    {
+                        disabled ?
+                            <div
+                                style={{resize: 'none', width: '100%'}}
+                                className={cls.chatInput}
+                            >{textVal}</div>
+                            : <textarea
+                                rows={10}
+                                style={{backgroundColor: 'transparent', width: '100%', border: 'none', borderBottom: '1px solid #000'}}
+                                onChange={onTextChange}
+                                value={textVal}/>
+                    }
                     {
                         allowEdit ? <div onClick={() => onEdit(id)} style={{fontSize: 10, cursor: 'pointer'}}>Edit</div> : null
                     }

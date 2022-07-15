@@ -8,7 +8,7 @@ import {getCurrentDate} from "../../../utils/getCurrentDate";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
 import {v4 as uuid} from 'uuid'
-import {getData, postData} from "../../../services/StaffServices";
+import {getData, patchData, postData} from "../../../services/StaffServices";
 import {store} from "../../../../index";
 import Select from "../../../components/UI/Select/Select";
 
@@ -23,16 +23,6 @@ const Chat = () => {
     }, [])
 
     const onClick = async (text) => {
-        // let newPost = {
-        //     id: uuid(),
-        //     type: 'user',
-        //     text: text,
-        //     date: dateToTimestamp(new Date())
-        // }
-        //
-        // setMsg(prevState => {
-        //     return [newPost, ...prevState]
-        // })
 
         await chooseChat()
 
@@ -76,6 +66,19 @@ const Chat = () => {
         setMsg(res.data)
     }
 
+    const onEditChatMessage = async (id, text, img) => {
+        const obj = {
+            isAdmin: store.isAdmin,
+            isStaff: store.isStaff,
+            rootAccess: store.fullAccess,
+            messageId: id,
+            messageBody: text,
+            imageLink: img,
+            curDate: dateToTimestamp(new Date())
+        }
+        console.log('disabled on')
+        const res = await patchData('/staff/support/edit_message/', obj)
+    }
 
     return (
         <Container>
@@ -105,6 +108,7 @@ const Chat = () => {
                                             date={item.curDate}
                                             type={item.isUser}
                                             image={item.imageLink}
+                                            onEditChatMessage={onEditChatMessage}
                                             text={item.messageBody} />
                                     )
                                 }) : <h3>Выбери чат</h3>

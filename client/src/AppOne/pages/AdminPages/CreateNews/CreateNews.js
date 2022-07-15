@@ -31,6 +31,7 @@ const CreateNews = () => {
     })
     const [allDomains, setAllDomains] = useState([])
     const [limit, setLimit] = useState(0)
+    const [image, setImage] = useState('')
 
     useEffect(() => {
         getAllNews()
@@ -67,7 +68,7 @@ const CreateNews = () => {
         data.newsDate = dateToTimestamp(newDate)
         data.staffId = store.user.id
         data.staffEmail = store.user.email
-        data.newsImage = 'img'
+        data.newsImage = image
         data.rootAccess = store.fullAccess
         data.newsDomain = curSelect
         if (store.fullAccess) {
@@ -143,6 +144,17 @@ const CreateNews = () => {
         setLimit(prevState => prevState-1)
     }
 
+    const onUploadImg =(img) => {
+        const formData = new FormData();
+        formData.append("image", img);
+        fetch(
+            "https://api.imgbb.com/1/upload?key=68c3edcc904ee3e28d2e63ec81876e40",
+            { method: "POST", body: formData }
+        )
+            .then((response) => response.json())
+            .then((data) => setImage(data.data.display_url));
+    }
+
 
     return (
         <Container>
@@ -193,7 +205,7 @@ const CreateNews = () => {
                     </Row>
                     <Row className='mb-3'>
                         <Col className='col-12 col-md-6 mb-3'>
-                            <FileUpload {...register('newsImage')} id='newsImg' />
+                            <FileUpload onUploadImg={onUploadImg} id='newsImg' />
                         </Col>
                         {/*<Col className='col-12 col-md-6 mb-3'>*/}
                         {/*    <AdminInput {...register('youtubeLink')} placeholder='Ссылка на Youtube' />*/}

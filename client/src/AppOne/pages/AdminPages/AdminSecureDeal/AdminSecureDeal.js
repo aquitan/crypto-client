@@ -205,6 +205,7 @@ const AdminSecureDeal = () => {
                     {
                         history.length ?
                             history.map(item => {
+                                console.log('history-item', item)
                                 return (
                                     <Row style={{borderBottom: '1px solid #fff', padding: '10px 0'}}>
                                         <Col>
@@ -227,7 +228,7 @@ const AdminSecureDeal = () => {
                                                 <Col>
                                                     <AdminButton
                                                         classname={'green'}
-                                                        onClick={() => navigate(`/staff/secure-deal/${1}`)}
+                                                        onClick={() => navigate(`/staff/secure-deal/${item._id}`)}
                                                     >Посмотреть</AdminButton>
                                                 </Col>
                                             </Row>

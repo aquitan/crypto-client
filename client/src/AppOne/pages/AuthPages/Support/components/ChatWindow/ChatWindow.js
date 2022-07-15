@@ -29,7 +29,7 @@ const ChatWindow = ({children, onClick, edited, onUploadImg}) => {
             </Row>
             <Row className='mt-3 mb-3 p-2 align-items-center'>
                 <Col className='col-12 col-md-3 mb-2'><FileUpload onUploadImg={onUploadImg} id='file' /></Col>
-                <Col className='col-12 col-md-6 mb-2'><Input value={state} onChange={(e) => onChange(e)} placeholder='type your message'/></Col>
+                <Col className='col-12 col-md-6 mb-2'><Input maxLength={350} minLength={5} value={state} onChange={(e) => onChange(e)} placeholder='type your message'/></Col>
                 <Col className='col-12 col-md-3 mb-2'><Button onClick={onBtnClick} classname='small'>Send</Button></Col>
             </Row>
         </div>

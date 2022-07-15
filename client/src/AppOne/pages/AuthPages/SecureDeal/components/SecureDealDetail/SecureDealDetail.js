@@ -9,7 +9,7 @@ import ChatRules from "../../../Support/components/ChatRules/ChatRules";
 import {secureDealRulesText} from "../../../../../utils/userConstants";
 import Input from "../../../../../components/UI/Input/Input";
 import Button from "../../../../../components/UI/Button/Button";
-import {getData, patchData, postData} from "../../../../../services/StaffServices";
+import {getData, patchData, postData, putData} from "../../../../../services/StaffServices";
 import SecureDealDetailConfirm from "../SecureDealDetailConfirm/SecureDealDetailConfirm";
 import {useForm} from "react-hook-form";
 import Modal from "../../../../../components/UI/Modal/Modal";
@@ -37,28 +37,11 @@ const SecureDealDetail = () => {
     const [result, setResult] = useState('')
     useEffect(() => {
         getSecureDealData()
+        getSupportMessages()
     }, [])
-    const messeges = [
-        {type: 'user', text: 'hello support', date: getCurrentDate(dateToTimestamp(new Date()))},
-        {type: 'user', text: 'hello support', date: getCurrentDate(dateToTimestamp(new Date()))},
-        {type: 'support', text: 'hello user', date: getCurrentDate(dateToTimestamp(new Date()))},
-        {type: 'support', text: 'hello user', date: getCurrentDate(dateToTimestamp(new Date()))},
-        {type: 'user', text: 'hello support', date: getCurrentDate(dateToTimestamp(new Date()))},
-        {type: 'support', text: 'hello user', date: getCurrentDate(dateToTimestamp(new Date()))},
-    ]
-    const [msg, setMsg] = useState(messeges)
 
-    const onClick = (text) => {
-        let newPost = {
-            type: 'user',
-            text: text,
-            date: getCurrentDate(dateToTimestamp(new Date()))
-        }
-
-        setMsg(prevState => {
-            return [newPost, ...prevState]
-        })
-    }
+    const [msg, setMsg] = useState([])
+    const [image, setImage] = useState()
 
     const getSecureDealData = async () => {
         const res = await getData(`/personal_area/secure_deal/secure_deal_detail/${params.id}/${store.user.email}`)
@@ -66,7 +49,6 @@ const SecureDealDetail = () => {
     }
     const sendRewardData = async (data) => {
         data.dealId = dealData._id
-        console.log('log----', data)
         const res = await patchData('/personal_area/secure_deal/secure_deal_detail/accept_deal/', data)
         checkResponse(201)
         setModal(true)
@@ -94,6 +76,45 @@ const SecureDealDetail = () => {
         setState({
             ...state, seller: true
         })
+    }
+
+    const onClick = async (text) => {
+        const obj = {
+            userId: store.user.id,
+            domainName: window.location.host,
+            staffId: store.user.id,
+            curDate: dateToTimestamp(new Date()),
+            messageBody: text,
+            imageLink: image ? image : null,
+            chatId: msg.length > 0 ? msg[0].chatId : null,
+            isUser: true,
+            supportName: null,
+            dealId: dealData._id
+        }
+
+        const res = await putData('/support/send_message_to_secure_deal_chat/', obj)
+        if (res.status === 202) {
+            getSupportMessages()
+        }
+        console.log('res msg', res)
+    }
+
+    const getSupportMessages = async () => {
+        const res = await getData(`/support/get_secure_deal_chat_for_user/${store.user.id}/0/20/`)
+        setMsg(res.data)
+        // createMessagesOnLoad(res.data)
+    }
+
+    const onUploadImg =(img) => {
+        const formData = new FormData();
+        formData.append("image", img);
+        console.log("formData", formData);
+        fetch(
+            "https://api.imgbb.com/1/upload?key=68c3edcc904ee3e28d2e63ec81876e40",
+            { method: "POST", body: formData }
+        )
+            .then((response) => response.json())
+            .then((data) => setImage(data.data.display_url));
     }
 
     return (
@@ -162,15 +183,17 @@ const SecureDealDetail = () => {
                             <h5 className={cls.card_header}>Chat</h5>
                             <Row className='mt-3'>
                                 <Col className='col-12 col-lg-8 mb-3'>
-                                    <ChatWindow onClick={onClick}>
+                                    <ChatWindow onUploadImg={onUploadImg} onClick={onClick}>
                                         {
                                             msg.length ?
                                                 msg.map(item => {
                                                     return(
                                                         <ChatMessege
-                                                            date={item.date}
-                                                            type={item.type}
-                                                            text={item.text} />
+                                                            key={item._id}
+                                                            date={item.curDate}
+                                                            type={item.isUser}
+                                                            image={item.imageLink}
+                                                            text={item.messageBody} />
                                                     )
                                                 }) : <h2>empty</h2>
                                         }
