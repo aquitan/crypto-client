@@ -18,7 +18,8 @@ import * as bip39 from 'bip39'
 import * as bitcoin from 'bitcoinjs-lib'
 import { Buffer } from 'buffer'
 import * as ethers from 'ethers'
-import crypto from 'crypto'
+// import crypto from 'crypto'
+import * as Wallet from 'ethereumjs-wallet'
 import * as web3 from '@solana/web3.js'
 import { Keypair } from '@solana/web3.js'
 
@@ -62,23 +63,20 @@ async function addressGen(coinName: string) {
     return dataObject
   }
   if (coinName === 'eth') {
-    // https://www.quicknode.com/guides/web3-sdks/how-to-generate-a-new-ethereum-address-in-javascript
-    const id = crypto.randomBytes(32).toString('hex');
-    const privateKey = "0x" + id;
+    // https://levelup.gitconnected.com/generate-ethereum-address-using-node-js-a6a73f42a4cf
 
-    const wallet = new ethers.Wallet(privateKey);
-    // console.log("wallet : " + wallet.)
+    const EthWallet = Wallet.default.generate();
 
     console.log(`
       Generated wallet: 
-      - address : ${wallet.address},
-      - key : ${privateKey},
+      - address : ${EthWallet.getAddressString()},
+      - key : ${EthWallet.getPrivateKeyString()},
   `);
 
     const dataObject = {
       coinName: 'ETH',
-      address: wallet.address,
-      key: privateKey,
+      address: EthWallet.getAddressString(),
+      key: EthWallet.getPrivateKeyString(),
       seedPhrase: ''
     }
     return dataObject
@@ -96,38 +94,38 @@ async function addressGen(coinName: string) {
   if (coinName === 'trxusdt') {
 
   }
-  if (coinName === 'sol') {
-    // https://docs.solana.com/developing/clients/javascript-reference
+  // if (coinName === 'sol') {
+  //   // https://docs.solana.com/developing/clients/javascript-reference
 
-    // const keypair = Keypair.generate()
-    // console.log('keypair => ', keypair.publicKey.toBase58());
-    // console.log('keypair => ', keypair.secretKey)
+  //   // const keypair = Keypair.generate()
+  //   // console.log('keypair => ', keypair.publicKey.toBase58());
+  //   // console.log('keypair => ', keypair.secretKey)
 
-    // Create a PublicKey with a base58 encoded string
-    const str: string = await generatePassword(44)
-    console.log('pubKey 4 sol => ', str);
+  //   // Create a PublicKey with a base58 encoded string
+  //   const str: string = await generatePassword(44)
+  //   console.log('pubKey 4 sol => ', str);
 
-    const base58publicKey: any = new web3.PublicKey(str);
-    console.log('base58publicKey => ', base58publicKey.toBase58());
+  //   const base58publicKey: any = new web3.PublicKey(str);
+  //   console.log('base58publicKey => ', base58publicKey.toBase58());
 
 
-    // Create an Address
-    const highEntropyBuffer = crypto.randomBytes(31);
-    const addressFromKey = await web3.PublicKey.createProgramAddress([highEntropyBuffer.slice(0, 31)], base58publicKey);
-    console.log(`Generated Program Address: ${addressFromKey.toBase58()}`);
+  //   // Create an Address
+  //   const highEntropyBuffer = crypto.randomBytes(31);
+  //   const addressFromKey = await web3.PublicKey.createProgramAddress([highEntropyBuffer.slice(0, 31)], base58publicKey);
+  //   console.log(`Generated Program Address: ${addressFromKey.toBase58()}`);
 
-    // // Find address given a PublicKey
-    // let solAddress = await web3.PublicKey.findProgramAddress([Buffer.from('', 'utf8')], addressFromKey);
-    // console.log(`Valid Program Address: ${solAddress}`);
+  //   // // Find address given a PublicKey
+  //   // let solAddress = await web3.PublicKey.findProgramAddress([Buffer.from('', 'utf8')], addressFromKey);
+  //   // console.log(`Valid Program Address: ${solAddress}`);
 
-    const dataObject = {
-      coinName: 'SOL',
-      address: addressFromKey.toBase58(),
-      key: base58publicKey,
-      seedPhrase: ''
-    }
-    return dataObject
-  };
+  //   const dataObject = {
+  //     coinName: 'SOL',
+  //     address: addressFromKey.toBase58(),
+  //     key: base58publicKey,
+  //     seedPhrase: ''
+  //   }
+  //   return dataObject
+  // };
 
 
   return false
