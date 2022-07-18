@@ -48,6 +48,8 @@ class adminService {
       limit(limitValue).
       exec()
     console.log('user list: ', usersList);
+    if (!usersList.length) return 'empty set'
+    if (!usersList) return false
 
     let dataArray: any = []
 

@@ -228,14 +228,18 @@ class AuthService {
   }
 
   async activate(activationLink: string) {
-    const link: any = await baseUserData.findOne({ activationLink: activationLink })
-    if (!link) throw ApiError.BadRequest()
-    await userParams.findOneAndUpdate({ userId: link.id }, {
-      isActivated: true
-    })
+    const userByLink: any = await baseUserData.findOne({ activationLink: activationLink })
+    console.log('found user -=> ', userByLink);
+    if (!userByLink) return false
 
-    const activatedStatus: any = await userParams.findOne({ activationLink: link.activationLink })
-    if (!activatedStatus.isActivated) throw ApiError.ServerError()
+    await userParams.findOneAndUpdate(
+      { userId: userByLink.id },
+      { isActivated: true }
+    )
+
+    const activatedStatus: any = await userParams.findOne({ userId: userByLink.id })
+    console.log('activatedStatus => ', activatedStatus.isActivated);
+    if (!activatedStatus.isActivated) return false
     return true
   }
 

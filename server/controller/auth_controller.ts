@@ -184,10 +184,12 @@ class AuthController {
   }
 
   async activate(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const activationLink: string = req.body.activationLink
     try {
-      const activationLink: string = req.body.activationLink
-      await authService.activate(activationLink)
-      return res.status(202).json({ message: 'ok' })
+      const isActivated: boolean = await authService.activate(activationLink)
+      if (!isActivated) return res.status(304).json({ message: isActivated })
+
+      return res.status(202).json({ message: isActivated })
     } catch (e) {
       next(e)
     }
