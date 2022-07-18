@@ -1,4 +1,6 @@
 
+import { Schema } from 'mongoose'
+
 export const USER_BASE = {
   name: {
     type: String,
@@ -17,7 +19,7 @@ export const USER_BASE = {
     required: true
   },
   registrationType: {
-    type: String,
+    type: String || Schema.Types.ObjectId,
     required: true
   },
   promocode: {

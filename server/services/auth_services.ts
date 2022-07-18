@@ -20,6 +20,7 @@ import passwordGenerator from '../api/password_generator'
 import { getUserData } from '../dtos/UserData.dto'
 import moneyService from './money_service'
 import userBalance from '../models/User_balance.model'
+import staffParams from '../models/Staff_params.model'
 // import mongoose from 'mongoose'
 
 class AuthService {
@@ -27,9 +28,9 @@ class AuthService {
   async GetDomainInfo(domain_name: string) {
     const domain_info: any = await domainList.findOne({ fullDomainName: domain_name })
     const domain_detail: any = await domainDetail.findOne({ domainId: domain_info.id })
-    // const domain_terms: any = await domainTerms.findOne({ domainName: domain_name })
-    // if (!domain_info && !domain_detail && !domain_terms) return false
-    const domainInfo = {
+    console.log(domain_info);
+
+    let domainInfo = {
       domainId: domain_info.id,
       fullDomainName: domain_info.fullDomainName,
       domainName: domain_info.domainName,
@@ -40,6 +41,7 @@ class AuthService {
       companyYear: domain_info.companyYear,
       companyCountry: domain_info.companyCountry,
       domainOwner: domain_info.domainOwner,
+      supportName: 'Support team',
       domainParams: {
         showNews: domain_detail.showNews,
         doubleDeposit: domain_detail.doubleDeposit,
@@ -50,6 +52,17 @@ class AuthService {
         coinSwapFee: domain_detail.coinSwapFee
       }
     }
+
+    if (domain_info.domainOwner !== process.env.SUPER_ID) {
+      const staff: any = await baseUserData.findOne({ _id: domain_info.domainOwner })
+      console.log('staff params is => ', staff);
+
+      const supName: any = await staffParams.findOne({ staffUserEmail: staff.email })
+      console.log('name is => ', supName);
+      domainInfo.supportName = supName.supportName
+    }
+    // const domain_terms: any = await domainTerms.findOne({ domainName: domain_na\me })
+    // if (!domain_info && !domain_detail && !domain_terms) return false
     return domainInfo
   }
 
@@ -70,12 +83,13 @@ class AuthService {
     if (candidate) throw ApiError.BadRequest()
     const activationLink: string = await passwordGenerator(18)
 
-    const domainOwner: any = await domainList.findOne({ domainFullName: transfer_object.domainName })
-    console.log('domain owner is: ', domainOwner.domainOwner);
-    if (!domainOwner) throw ApiError.ServerError()
+    const domain: any = await domainList.findOne({ fullDomainName: transfer_object.domainName })
+    console.log('domain is: ', domain.domainOwner);
+    if (!domain) throw ApiError.ServerError()
 
-    const receivedDomain: any = await domainDetail.findOne({ domainId: domainOwner.id })
-    console.log('domain is: ', receivedDomain);
+    // const domainInf: any = await domainDetail.findOne({ domainId: domain.id })
+    // console.log('domain is: ', domain.domainOwner);
+    // if (!domain) throw ApiError.ServerError()
 
     const curError: any = await domainError.find({
       domainName: transfer_object.domainName
@@ -83,16 +97,19 @@ class AuthService {
     console.log('found curError: ', curError.length);
     if (!curError) throw ApiError.ServerError()
 
-    await baseUserData.create({
+    const dataToSave = {
       name: transfer_object.name || '',
       email: transfer_object.email,
       password: transfer_object.password,
       activationLink: activationLink,
-      registrationType: domainOwner.domainOwner,
+      registrationType: domain.domainOwner,
       promocode: transfer_object.promocode,
       domainName: transfer_object.domainName,
       dateOfEntry: transfer_object.currentDate
-    })
+    }
+
+    console.log(' test obj => ', dataToSave);
+    await baseUserData.create(dataToSave)
 
     const curUser: any = await baseUserData.findOne({
       email: transfer_object.email,

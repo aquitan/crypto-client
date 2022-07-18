@@ -10,7 +10,7 @@ interface Domain {
   companyOwnerName: string
   companyYear: number
   companyCountry: string
-  domainOwner: Schema.Types.ObjectId | string
+  domainOwner: string
 }
 const DomainList = new Schema<Domain>(DOMAIN_SCHEMA)
 

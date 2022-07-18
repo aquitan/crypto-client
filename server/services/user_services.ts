@@ -392,12 +392,14 @@ class UserServices {
 
 	}
 
-	async GetSwapHistory(user_id: string) {
-		const userSwapHistory: any = await swapHistory.find({
-			userId: user_id
-		})
+	async GetSwapHistory(skipValue: number, limitValue: number, user_id: string) {
+		const userSwapHistory: any = await swapHistory.
+			find({ userId: user_id }).
+			skip(skipValue).
+			limit(limitValue).
+			exec()
 		console.log('userHistory: ', userSwapHistory.length);
-		if (!userSwapHistory.length) return false
+		if (userSwapHistory) return false
 		return userSwapHistory
 	}
 

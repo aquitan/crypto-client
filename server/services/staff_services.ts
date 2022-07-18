@@ -147,19 +147,23 @@ class staffService {
 			if (!usersList) return false
 
 			for (let i = 0; i <= usersList.length - 1; i++) {
-				const kycParams: any = await userParams.findOne({ userId: usersList[i].id })
-				if (!kycParams) return false
+
+				const params: any = await userParams.findOne({ userId: usersList[i].id })
+
+				console.log('iter => ', usersList[i]);
 				let dataObject = {
 					userId: usersList[i].id,
 					registerDate: usersList[i].dateOfEntry,
 					userName: usersList[i].name,
 					userEmail: usersList[i].email,
-					userStatus: kycParams.isStaff,
-					kycStatus: kycParams.kycStatus,
+					userStatus: params.isStaff,
+					kycStatus: params.kycStatus,
 					userDomain: usersList[i].domainName
 				}
 				dataArray.push(dataObject)
 			}
+			console.log('data arr => ', dataArray);
+
 			if (!dataArray.length) return 'empty set'
 			return dataArray
 		} else {
@@ -254,13 +258,13 @@ class staffService {
 		let moneyDataArray = []
 		for (let i = 0; i <= curUserBalance.length - 1; i++) {
 			const curUserWallet: any = await userWallet.findOne().
-				where('coinName').equals(curUserBalance[i].coinName).
+				where('coinName').equals(curUserBalance[i].coinName.toUpperCase()).
 				where('userId').equals(user_id).
 				exec()
 			let obj = {
 				coinName: curUserWallet.coinName,
 				coinBalance: curUserBalance[i].coinBalance,
-				internalWallet: curUserWallet.userWallet
+				internalWallet: curUserWallet.address
 			}
 			console.log('cur data before array: => ', obj);
 
@@ -640,7 +644,7 @@ class staffService {
 			}
 		}
 
-		await domainList.create({
+		const domainDataToSave = {
 			fullDomainName: data_object.fullDomainName,
 			domainName: data_object.domainName,
 			companyAddress: data_object.companyAddress,
@@ -650,7 +654,10 @@ class staffService {
 			companyYear: data_object.companyYear,
 			companyCountry: data_object.companyCountry,
 			domainOwner: data_object.staffId
-		})
+		}
+
+		console.log(' domainDataToSave => ', domainDataToSave);
+		await domainList.create(domainDataToSave)
 
 		const curDomain: any = await domainList.findOne({ fullDomainName: data_object.fullDomainName })
 		console.log('base domain info from db: ', curDomain);

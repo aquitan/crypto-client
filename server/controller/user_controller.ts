@@ -562,11 +562,15 @@ class UserController {
 
   async getSwapHistory(req: express.Request, res: express.Response, next: express.NextFunction) {
     const userId: string = req.params.userId
+    let skip: string = req.params.skipValue
+    const skipValue: number = parseInt(skip)
+    let limit: string = req.params.limitValue
+    const limitValue: number = parseInt(limit)
     console.log('user id is: ', userId)
 
     if (!userId) return res.status(400).json({ message: 'wrong data' })
     try {
-      const result: any = await UserServices.GetSwapHistory(userId)
+      const result: any = await UserServices.GetSwapHistory(skipValue, limitValue, userId)
       if (!result) throw ApiError.ServerError()
 
       return res.status(200).json({ message: 'ok', swapHistory: result })

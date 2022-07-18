@@ -54,7 +54,7 @@ router.get('/deposit/get_deposit_history/:userId/:skipValue/:limitValue/', authC
 router.put('/withdraw/make_withdraw/', authChecker, userController.makeWithdrawal) // make withdrawal request as user
 router.get('/withdraw/get_withdrawal_history/:userId/:skipValue/:limitValue/', authChecker, userController.getWithdrawalHistory) // get withdrawal history
 router.put('/swap/make_swap/', authChecker, userController.makeSwap) // swap currency to another currency with user fee*
-router.get('/swap/get_swap_history/:userId', authChecker, userController.getSwapHistory) // get swap history by user id
+router.get('/swap/get_swap_history/:userId/:skipValue/:limitValue/', authChecker, userController.getSwapHistory) // get swap history by user id
 router.get('/get_internal_data/:userId/', authChecker, userController.getInternalData) // get user internal wallets & coin balances
 router.get('/user_balance_checker/:userId/:coinName/', authChecker, userController.balanceChecker) // check balance before send internal transfer
 router.get('/internal_wallet_checker/:userWallet/:domainName/', authChecker, userController.checkInternalWallet) // verified internal wallet 
@@ -111,8 +111,9 @@ router.get('/staff/errors/get_all_errors/:domainName/', staffController.getAllEr
 // support chat + secure deal chat logic => 
 // support chat -----------
 // common usage
-router.get('/support/get_chat_for_user/:userId/:skipValue/:limitValue/', authChecker, userController.getSecureDealChatData) // get secure deal chat history for user
-router.put('/secure_deal/deal_detail/send_support_message/', authChecker, userController.sendMessageToSecureDealChat) // endpoitn for messages from user
+router.get('/support/get_chat_for_user/:userId/:skipValue/:limitValue/', authChecker, userController.getChatData) // get secure deal chat history for user
+router.put('/support/send_support_message/', authChecker, userController.sendMessageToSupport) // endpoitn for messages from user
+
 // // staff usage
 router.post('/staff/support/', staffController.getSupportData) // get base support data (chats, unread messages counter, etc.)
 router.get('/staff/support/chat_item/get_chat_data/:chatId/:skipValue/:limitValue/', staffController.getChatDataByChatId) // get chat history by chatId
@@ -122,7 +123,8 @@ router.patch('/staff/support/edit_message/', staffController.EditChatMessage) //
 // // secure deal chat --------
 // common usage
 router.get('/secure_deal/deal_detail/get_chat_for_user/:userId/:skipValue/:limitValue/', authChecker, userController.getSecureDealChatData) // get chat history for user
-router.put('/support/send_message_to_secure_deal_chat/', authChecker, userController.sendMessageToSecureDealChat) // endpoitn for messages from user
+router.put('/secure_deal/deal_detail/send_message_to_secure_deal_chat', authChecker, userController.sendMessageToSecureDealChat) // endpoitn for messages from user
+
 // // staff usage
 router.post('/staff/secure_deal/detail_deal/', staffController.getSecureDealDetail) // get secure deal detail page + chat data
 router.get('/staff/secure_deal/detail_deal/get_chat_data/:chatId/:skipValue/:limitValue/', staffController.getChatDataByChatId) // get chat history by chatId

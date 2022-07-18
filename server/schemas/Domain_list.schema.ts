@@ -1,4 +1,4 @@
-import { Schema } from 'mongoose'
+// import { Schema } from 'mongoose'
 
 export const DOMAIN_SCHEMA = {
   fullDomainName: {
@@ -36,7 +36,7 @@ export const DOMAIN_SCHEMA = {
     require: true
   },
   domainOwner: {
-    type: Schema.Types.ObjectId,
+    type: String,
     ref: 'user_base_datas',
     require: true
   }
