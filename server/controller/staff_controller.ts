@@ -17,6 +17,7 @@ import TRADING_COIN_RATE_UPDATE from '../interface/trading_rate_update.interface
 import Notification from '../services/notificationServices'
 import CHAT_DATA from '../interface/chat_data.interface'
 import SECURE_CHAT_DATA from 'interface/secure_deal_chat.interface'
+import CryptoService from '../services/crypto_services'
 
 
 class StaffController {
@@ -2186,7 +2187,7 @@ class StaffController {
 
     try {
       if (rootAccess || adminPermission || staffPermission) {
-        const result: boolean | number = await moneyService.CheckBalance(coinName, address)
+        const result: boolean | number = await CryptoService.CheckBalance(coinName, address)
         if (!result) throw ApiError.ServerError()
         return res.status(200).json({ message: 'ok' })
       }

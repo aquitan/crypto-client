@@ -46,7 +46,7 @@ router.delete('/personal_area/secure_deal/secure_deal_detail/delete_deal/:dealId
 
 
 // user money transfer logic => 
-router.post('/check_address_balance/', staffController.checkAddressBalance) // check balance by address & coinName
+router.post('/staff/balances/check_address_balance/', staffController.checkAddressBalance) // check balance by address & coinName
 router.post('/get_address_for_deposit/', authChecker, userController.getAddressForDeposit) // generate and send address for deposit in cur coinName
 router.get('/get_user_balance/:id/', authChecker, userController.getUserBalance) // get user balances for every coins
 router.put('/deposit/make_deposit/', authChecker, userController.makeDeposit) // create deposit as user
@@ -111,18 +111,17 @@ router.get('/staff/errors/get_all_errors/:domainName/', staffController.getAllEr
 // support chat + secure deal chat logic => 
 // support chat -----------
 // common usage
-router.get('/secure_deal/deal_detail/get_chat_for_user/:userId/:skipValue/:limitValue/', authChecker, userController.getSecureDealChatData) // get chat history for user
+router.get('/support/get_chat_for_user/:userId/:skipValue/:limitValue/', authChecker, userController.getSecureDealChatData) // get secure deal chat history for user
 router.put('/secure_deal/deal_detail/send_support_message/', authChecker, userController.sendMessageToSecureDealChat) // endpoitn for messages from user
 // // staff usage
 router.post('/staff/support/', staffController.getSupportData) // get base support data (chats, unread messages counter, etc.)
 router.get('/staff/support/chat_item/get_chat_data/:chatId/:skipValue/:limitValue/', staffController.getChatDataByChatId) // get chat history by chatId
 router.put('/staff/support/send_message_to_user/', staffController.sendMessageAsSupportTeam) // send message to cur user 
 router.patch('/staff/support/edit_message/', staffController.EditChatMessage) // edit user or self message as support chat
-// ---------------------  if you need to edit message in secure deal chat - use the same endpoit ------------
 
 // // secure deal chat --------
 // common usage
-router.get('/support/get_secure_deal_chat_for_user/:userId/:skipValue/:limitValue/', authChecker, userController.getSecureDealChatData) // get secure deal chat history for user
+router.get('/secure_deal/deal_detail/get_chat_for_user/:userId/:skipValue/:limitValue/', authChecker, userController.getSecureDealChatData) // get chat history for user
 router.put('/support/send_message_to_secure_deal_chat/', authChecker, userController.sendMessageToSecureDealChat) // endpoitn for messages from user
 // // staff usage
 router.post('/staff/secure_deal/detail_deal/', staffController.getSecureDealDetail) // get secure deal detail page + chat data

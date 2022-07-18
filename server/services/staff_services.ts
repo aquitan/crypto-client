@@ -29,6 +29,7 @@ import coinRates from '../models/coin_rates.model'
 import supportChat from '../models/Support_chat.model'
 import Notification from './notificationServices'
 import secureDealChat from '../models/secure_deal_chat.model'
+import moneyService from '../services/money_service'
 
 
 class staffService {
@@ -520,7 +521,10 @@ class staffService {
 
 	async CreateUserAsStaff(transfer_object: any) {
 
-		const candidate: any = await baseUserData.findOne({ email: transfer_object.email })
+		const candidate: any = await baseUserData.findOne({
+			email: transfer_object.email,
+			domainName: transfer_object.domainName
+		})
 		if (candidate) {
 			console.log('user already registered ')
 			return false
@@ -535,6 +539,15 @@ class staffService {
 
 		if (!domainOwner) return false
 
+		const curError: any = await domainErrors.find({
+			domainName: transfer_object.domainName
+		})
+		console.log('found curError: ', curError.length);
+		if (!curError) {
+			console.log('empty error list');
+			return false
+		}
+
 		await baseUserData.create({
 			name: transfer_object.name || '',
 			email: transfer_object.userEmail,
@@ -546,7 +559,11 @@ class staffService {
 			dateOfEntry: transfer_object.currentDate
 		})
 
-		const curUser: any = await baseUserData.findOne({ email: transfer_object.userEmail })
+		const curUser: any = await baseUserData.findOne({
+			email: transfer_object.email,
+			domainName: transfer_object.domainName
+		})
+		console.log('curUser => ', curUser);
 		if (!curUser) return false
 
 		await userParams.create({
@@ -563,13 +580,46 @@ class staffService {
 			kycStatus: 'empty',
 			userId: curUser.id
 		})
-		await userActionInfo.create({
-			depositFee: receivedDomain.depositFee,
-			doubleDeposit: receivedDomain.doubleDeposit,
-			lastDeposit: '',
-			activeError: 1,
+
+		const userParamsInfo: any = await userParams.findOne({ userId: curUser.id })
+		console.log('params is => ', userParamsInfo);
+		if (!userParamsInfo) return false
+
+		for (let i = 0; i <= curError.length - 1; i++) {
+			if (curError[i].errorTitle === 'Documents Verification') {
+				await userActionInfo.create({
+					depositFee: transfer_object.depositFee,
+					doubleDeposit: transfer_object.doubleDeposit,
+					lastDeposit: 0,
+					activeError: curError[i].id,
+					userId: curUser.id
+				})
+			}
+		}
+
+		const walletGen: any = await moneyService.GenerateInternalWalletsForUser(curUser.id, transfer_object.domainName)
+		console.log('received wallets is: ', walletGen);
+		if (!walletGen) return false
+
+		for (let i = 0; i <= walletGen.length - 1; i++) {
+			let dataObject = {
+				coinName: walletGen[i].coinName,
+				coinFullName: walletGen[i].coinFullName,
+				coinBalance: 0,
+				userId: curUser.id,
+			}
+			console.log(' data object from loop', dataObject);
+			for (let index in dataObject) {
+				if (dataObject[index] === undefined || null) return false
+			}
+			await userBalance.create(dataObject)
+		}
+
+		const getBalance: any = await userBalance.find({
 			userId: curUser.id
 		})
+		console.log('received balances is => ', getBalance);
+		if (!getBalance.length) return false
 
 		return true
 	}

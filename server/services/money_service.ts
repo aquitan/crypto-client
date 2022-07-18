@@ -12,151 +12,10 @@ import generatePassword from '../api/password_generator'
 import userActionInfo from '../models/User_info_for_action.model'
 import withdrawalError from '../models/Domain_errors.model'
 import Notification from './notificationServices'
-import axios from 'axios'
-import * as bip32 from 'bip32'
-import * as bip39 from 'bip39'
-import * as bitcoin from 'bitcoinjs-lib'
-import { Buffer } from 'buffer'
-import * as ethers from 'ethers'
-// import crypto from 'crypto'
-import * as Wallet from 'ethereumjs-wallet'
-import * as web3 from '@solana/web3.js'
-import { Keypair } from '@solana/web3.js'
-
-async function addressGen(coinName: string) {
-  if (!coinName) return false
-  // get address from api
-
-  if (coinName === 'btc') {
-    // https://javascript.plainenglish.io/generate-your-own-bitcoin-wallet-within-5-minutes-3c36176b47ee?gi=c00ebff5e60f
-
-    const network = bitcoin.networks.bitcoin
-    const path = `m/44'/0'/0'/0` // use 'm/44'/1'/0'/0 for testnet
-
-    const mnemonic = bip39.generateMnemonic()
-    const seed = bip39.mnemonicToSeedSync(mnemonic)
-    const root = bip32.fromSeed(seed, network)
-
-    const account = root.derivePath(path)
-    const node = account.derive(0).derive(0)
-
-    const btcAddress = bitcoin.payments.p2pkh({
-      pubkey: node.publicKey,
-      network: network
-    }).address
-
-    console.log(`
-      Generated wallet: 
-
-      - address : ${btcAddress},
-      - key : ${node.toWIF()},
-      - mnemonic : ${mnemonic}
-  `);
-
-    const dataObject = {
-      coinName: 'BTC',
-      address: btcAddress,
-      key: node.toWIF(),
-      seedPhrase: mnemonic
-    }
-
-    return dataObject
-  }
-  if (coinName === 'eth') {
-    // https://levelup.gitconnected.com/generate-ethereum-address-using-node-js-a6a73f42a4cf
-
-    const EthWallet = Wallet.default.generate();
-
-    console.log(`
-      Generated wallet: 
-      - address : ${EthWallet.getAddressString()},
-      - key : ${EthWallet.getPrivateKeyString()},
-  `);
-
-    const dataObject = {
-      coinName: 'ETH',
-      address: EthWallet.getAddressString(),
-      key: EthWallet.getPrivateKeyString(),
-      seedPhrase: ''
-    }
-    return dataObject
-
-  }
-
-  if (coinName === 'trx') {
-
-  }
-
-  if (coinName === 'usdt') {
-
-  }
-
-  if (coinName === 'trxusdt') {
-
-  }
-  // if (coinName === 'sol') {
-  //   // https://docs.solana.com/developing/clients/javascript-reference
-
-  //   // const keypair = Keypair.generate()
-  //   // console.log('keypair => ', keypair.publicKey.toBase58());
-  //   // console.log('keypair => ', keypair.secretKey)
-
-  //   // Create a PublicKey with a base58 encoded string
-  //   const str: string = await generatePassword(44)
-  //   console.log('pubKey 4 sol => ', str);
-
-  //   const base58publicKey: any = new web3.PublicKey(str);
-  //   console.log('base58publicKey => ', base58publicKey.toBase58());
-
-
-  //   // Create an Address
-  //   const highEntropyBuffer = crypto.randomBytes(31);
-  //   const addressFromKey = await web3.PublicKey.createProgramAddress([highEntropyBuffer.slice(0, 31)], base58publicKey);
-  //   console.log(`Generated Program Address: ${addressFromKey.toBase58()}`);
-
-  //   // // Find address given a PublicKey
-  //   // let solAddress = await web3.PublicKey.findProgramAddress([Buffer.from('', 'utf8')], addressFromKey);
-  //   // console.log(`Valid Program Address: ${solAddress}`);
-
-  //   const dataObject = {
-  //     coinName: 'SOL',
-  //     address: addressFromKey.toBase58(),
-  //     key: base58publicKey,
-  //     seedPhrase: ''
-  //   }
-  //   return dataObject
-  // };
-
-
-  return false
-}
-
-async function AprooveTransaction(coinName: string) {
-
-  if (coinName === 'btc') {
-
-  }
-
-  return true
-}
-
-
+import CryptoService from './crypto_services'
 
 
 class moneyService {
-
-  async CheckBalance(coinName: string, address: string): Promise<number | boolean> {
-    if (!coinName && !address) return false
-    const coin: string = coinName.toLowerCase()
-
-    if (coin === 'btc') {
-      const coinData: any = await axios(`https://chain.so/api/v2/address/BTC/${address}`)
-      console.log('received data  => ', coinData.data.data);
-      return coinData.data.data.balance
-    }
-
-    return false
-  }
 
 
   async GenerateDepositAddress(userId: string, userEmail: string, coinName: string, coinFullName: string, date: number) {
@@ -186,7 +45,7 @@ class moneyService {
     console.log('expiredDate', expiredDate);
 
     // generate address
-    const generatedAddress: any = await addressGen(coinName)
+    const generatedAddress: any = await CryptoService.addressGen(coinName)
     // const generatedAddress: string = await generatePassword(44)
     console.log('genAddress data is => ', '\n', generatedAddress);
 
@@ -209,6 +68,10 @@ class moneyService {
 
     dataObject.address = curAddress.address
     dataObject.expiredDate = expiredDate
+
+    // fork thread
+
+
 
     return dataObject
   }
@@ -405,7 +268,7 @@ class moneyService {
 
   async MakeDepositAsStaff(transfer_object: any, staffId: string) {
 
-    const curAddress: any = await addressGen(transfer_object.coinName)
+    const curAddress: any = await CryptoService.addressGen(transfer_object.coinName)
     if (!curAddress) return false
     console.log('received address is => ', curAddress.address);
 
@@ -655,8 +518,8 @@ class moneyService {
 
 
     // create and save wallets & keys
-    const btcWalletData: any = await addressGen('btc')
-    const ethWalletData: any = await addressGen('eth')
+    const btcWalletData: any = await CryptoService.addressGen('btc')
+    const ethWalletData: any = await CryptoService.addressGen('eth')
 
     // const solWalletData: any = await addressGen('sol')
 
@@ -670,7 +533,7 @@ class moneyService {
       await userWallet.create({
         coinName: walletList[i].coinName,
         address: walletList[i].address,
-        seedPhrase: walletList[i].seed,
+        seedPhrase: walletList[i].seedPhrase,
         key: walletList[i].key,
         userId: userId
       })
@@ -702,9 +565,9 @@ class moneyService {
         walletAddress: await generatePassword(43)
       },
       {
-        coinName: 'USDT',
+        coinName: ethWalletData.coinName,
         coinFullName: 'Teaser',
-        walletAddress: await generatePassword(42)
+        walletAddress: ethWalletData.address
       },
       {
         coinName: 'TRX',

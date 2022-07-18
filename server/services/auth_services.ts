@@ -74,6 +74,9 @@ class AuthService {
     console.log('domain owner is: ', domainOwner.domainOwner);
     if (!domainOwner) throw ApiError.ServerError()
 
+    const receivedDomain: any = await domainDetail.findOne({ domainId: domainOwner.id })
+    console.log('domain is: ', receivedDomain);
+
     const curError: any = await domainError.find({
       domainName: transfer_object.domainName
     })
