@@ -118,7 +118,6 @@ const CreateDomains = () => {
         }
         data.rootAccess = store.fullAccess
         const res = await postData('/staff/domains/create_domain/', data)
-        console.log('domains-data', data)
         const response = await res.data
         if (res.status === 201) {
             setModal(true)
@@ -146,7 +145,6 @@ const CreateDomains = () => {
             rootAccess: store.fullAccess
         }
         const res = await postData('/staff/domains/get_domain_list/', obj)
-        console.log('res data', res.data)
         setActiveDomains(res.data)
     }
 

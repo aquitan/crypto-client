@@ -94,7 +94,6 @@ const CreateNews = () => {
             obj.staffId = store.fullAccess ? '1' : store.user.id
         }
         const res = await postData('/staff/news/get_news_list/', obj)
-        console.log('news list', res.data)
         setState(res.data)
     }
 

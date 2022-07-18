@@ -23,14 +23,12 @@ const AdminKYC = () => {
         const res = await postData('/staff/users/kyc/', userData)
         const data = await res.data
         setUsersKyc(data.usersKycList)
-        console.log('dataProfile', data.usersKycList)
     }
 
     useEffect(() => {
         getStaffKyc()
     }, [])
 
-    console.log('user kyc------', usersKyc)
     return (
         <Container>
             <AdminButtonCard>

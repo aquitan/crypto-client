@@ -16,7 +16,6 @@ const Wallet = () => {
 
     const getBalance = async () => {
         const res = await getData(`/get_user_balance/${store.user.id}`)
-        console.log('balance', res.data)
         setState(res.data)
     }
 
@@ -26,7 +25,6 @@ const Wallet = () => {
                 {
                     state ?
                         state.map(item => {
-                            console.log('item', item)
                             return <Col className={'col-12 col-sm-6 col-lg-4 mb-5'}>
                                 <WalletItem
                                     coinFullName={item.coinFullName}

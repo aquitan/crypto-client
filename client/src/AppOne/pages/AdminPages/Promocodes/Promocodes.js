@@ -101,7 +101,6 @@ const Promocodes = () => {
         }
         const res = await postData('/staff/get_promocode_list/', promoData)
         const data = await res.data
-        console.log('current promos', res.data)
         setState({
             ...state, currentPromocodes: data.promocodeList
         })

@@ -63,7 +63,6 @@ const SignUp = () => {
     // }
 
     const onSubmit = async (data) => {
-        console.log('current', currentPromo)
         if (currentPromo.length) {
             if (promoStatus) {
                 const res = await postData('/promocode_validate', {code: currentPromo})
@@ -134,7 +133,6 @@ const SignUp = () => {
     }
 
     const onCheckPassword = (e) => {
-        console.log(e.target.value)
         setMatch({
             characters: e.target.value.length > 7,
             numbers: checkForNums(e.target.value),

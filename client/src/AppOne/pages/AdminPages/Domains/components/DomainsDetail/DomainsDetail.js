@@ -1,19 +1,17 @@
 import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
-import {Col, Container, Form, Row} from "react-bootstrap";
+import {Container, Form, Row} from "react-bootstrap";
 import AdminButtonCard from "../../../../../components/AdminButtonCard/AdminButtonCard";
 import {getData, patchData, putData} from "../../../../../services/StaffServices";
 import Preloader from "../../../../../components/UI/Preloader/Preloader";
 import DomainsDetailTableItem from "../DomainsDetailTableItem/DomainDetailTableItem";
 import {useForm} from "react-hook-form";
-import AdminForm from "../../../../../components/UI/AdminForm/AdminForm";
 import AdminInput from "../../../../../components/UI/AdminInput/AdminInput";
 import {ErrorMessage} from "@hookform/error-message";
 import cls from "../../../../NonAuthPages/SignIn/SignIn.module.scss";
-import {defaultErrors, domainSelect, domainsInputs, domainsInputsNums} from "../../../../../utils/staffConstants";
+import {domainSelect, domainsInputs, domainsInputsNums} from "../../../../../utils/staffConstants";
 import Select from "../../../../../components/UI/Select/Select";
 import AdminButton from "../../../../../components/UI/AdminButton/AdminButton";
-import {getCurrentDate} from "../../../../../utils/getCurrentDate";
 import {v4 as uuid} from 'uuid'
 import StaffErrorItem from "../../../StaffErrors/components/StaffErrorItem/StaffErrorItem";
 import TextArea from "../../../../../components/UI/TextArea/TextArea";
@@ -66,7 +64,6 @@ const DomainsDetail = () => {
         createErrorArr(res.data.domain_detail.domainErrors)
 
         setErrorsNames(arr)
-        console.log('detail data', arr)
     }
 
 
@@ -112,7 +109,6 @@ const DomainsDetail = () => {
                 errorList.multi_account.button = el.errorButton
             }
             setErrorList(errorList)
-            console.log('error list ------', errorList)
         })
     }
 
@@ -156,14 +152,10 @@ const DomainsDetail = () => {
         }
         data.rootAccess = store.fullAccess
         // const res = await patchData('/staff/domains/domain_detail/domain_edit/', data)
-        console.log('domains-data', data)
     }
 
     const onChangeError = (data) => {
-        console.log(data)
         for (let key in errorList) {
-            console.log('key', errorList[key].title)
-            console.log('error-list', data.error)
             if (errorList[key].title === data.error) {
                 let obj = {
                     errorName: data.error,
