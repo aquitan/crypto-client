@@ -1,3 +1,5 @@
+// import { Schema } from 'mongoose'
+
 export default interface DOMAIN_INFO {
   staffEmail: string
   fullDomainName: string

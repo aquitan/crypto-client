@@ -10,6 +10,7 @@ import Telegram from './api/telegram_api'
 import { mongo } from './config/mongo_DB_config'
 import fileUpload from 'express-fileupload'
 import router from './routes/index'
+import mongoose from 'mongoose'
 
 import CORS_OPTIONS from './config/cors_config'
 
@@ -22,6 +23,7 @@ app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }))
 app.use(fileUpload())
 app.use(compression())
+mongoose.set('debug', true)
 app.disable('x-powered-by')
 
 // routers

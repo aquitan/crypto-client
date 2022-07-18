@@ -6,7 +6,7 @@ interface UserAuth {
   email: string
   password: string
   activationLink: string
-  registrationType: string
+  registrationType: string | Schema.Types.ObjectId
   promocode: string
   domainName: string
   dateOfEntry: number
