@@ -36,6 +36,7 @@ const Deposit = () => {
     useEffect(() => {
         getHistoryDeposit()
         // getBalance()
+        getAddressForDeposit()
         setBalance(location.state.coinsBalance)
     }, [])
 
@@ -44,11 +45,32 @@ const Deposit = () => {
         const reversedLogs = res.data.depositHistory.slice(0).reverse()
         setHistory(reversedLogs)
     }
+    const getBalances = async () => {
+        const obj = {
+            isStaff: store.isStaff,
+            isAdmin: store.isAdmin,
+            rootAccess: store.fullAccess,
+            coinName: location.state.coin
+        }
+        const res = postData('/staff/balances/check_address_balance/', obj)
+    }
+
+    const getAddressForDeposit = async () => {
+        let d = new Date();
+        d.setMinutes(d.getMinutes() + 30 );
+
+        const obj = {
+            userId: store.user.id,
+            coinName: location.state.coin,
+            coinFullName: 'bitcoin',
+            expiredTime: dateToTimestamp(d),
+            userEmail: store.user.email
+        }
+        const res = await postData('/get_address_for_deposit/', obj)
+    }
 
 
     const setValue = (val) => {
-        console.log(val)
-        console.log(state)
         let calc = +val / btc
         setState({text: val, value: calc})
     }
@@ -57,7 +79,6 @@ const Deposit = () => {
         data.value = state.value
         let geoData = await getGeoData()
 
-        console.log('state text', +state.text)
         let stateVal = +state.text
 
         const obj = {
@@ -85,7 +106,6 @@ const Deposit = () => {
         }
     }
     const onChange = (e) => {
-        console.log(e.target.value)
         let calc = +e.target.value / btc
         setState({text: e.target.value, value: calc})
     }
