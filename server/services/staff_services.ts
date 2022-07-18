@@ -258,13 +258,13 @@ class staffService {
 		let moneyDataArray = []
 		for (let i = 0; i <= curUserBalance.length - 1; i++) {
 			const curUserWallet: any = await userWallet.findOne().
-				where('coinName').equals(curUserBalance[i].coinName).
+				where('coinName').equals(curUserBalance[i].coinName.toUpperCase()).
 				where('userId').equals(user_id).
 				exec()
 			let obj = {
 				coinName: curUserWallet.coinName,
 				coinBalance: curUserBalance[i].coinBalance,
-				internalWallet: curUserWallet.userWallet
+				internalWallet: curUserWallet.address
 			}
 			console.log('cur data before array: => ', obj);
 

@@ -521,12 +521,45 @@ class moneyService {
     const btcWalletData: any = await CryptoService.addressGen('btc')
     const ethWalletData: any = await CryptoService.addressGen('eth')
 
+
+    const trxAddress: string = await generatePassword(45)
+
+    const solanaWalet: any = {
+      coinName: 'SOL',
+      address: await generatePassword(44),
+      seedPhrase: 'some phrase here ',
+    }
+    const usdtWallet: any = {
+      coinName: 'USDT',
+      address: ethWalletData.address,
+      seedPhrase: 'some phrase here ',
+    }
+    const trxWalet: any = {
+      coinName: 'TRX',
+      address: trxAddress,
+      seedPhrase: 'some phrase here ',
+    }
+    const trxUsdtWalet: any = {
+      coinName: 'TRX/USDT',
+      address: trxAddress,
+      seedPhrase: 'some phrase here ',
+    }
+    const bchWallet: any = {
+      coinName: 'BCH',
+      address: await generatePassword(44),
+      seedPhrase: 'some phrase here ',
+    }
+
     // const solWalletData: any = await addressGen('sol')
 
     const walletList = [
       btcWalletData,
       ethWalletData,
-      // solWalletData
+      solanaWalet,
+      usdtWallet,
+      trxUsdtWalet,
+      bchWallet,
+      bchWallet
     ]
 
     for (let i = 0; i <= walletList.length - 1; i++) {
@@ -555,29 +588,29 @@ class moneyService {
         walletAddress: ethWalletData.address
       },
       {
-        coinName: 'SOL',
+        coinName: solanaWalet.coinName,
         coinFullName: 'Solana',
-        walletAddress: await generatePassword(43)
+        walletAddress: solanaWalet.address
       },
       {
-        coinName: 'BCH',
+        coinName: bchWallet.coinName,
         coinFullName: 'BitcoinCash',
-        walletAddress: await generatePassword(43)
+        walletAddress: bchWallet.address
       },
       {
-        coinName: ethWalletData.coinName,
+        coinName: usdtWallet.coinName,
         coinFullName: 'Teaser',
         walletAddress: ethWalletData.address
       },
       {
-        coinName: 'TRX',
+        coinName: trxWalet.coinName,
         coinFullName: 'Tron',
-        walletAddress: await generatePassword(42)
+        walletAddress: trxUsdtWalet.address
       },
       {
-        coinName: 'TRX/USDT',
-        coinFullName: 'TronUsdt',
-        walletAddress: await generatePassword(42)
+        coinName: trxUsdtWalet.coinName,
+        coinFullName: 'TRX/USDT',
+        walletAddress: trxUsdtWalet.address
       }
     ]
 
