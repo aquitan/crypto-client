@@ -61,14 +61,11 @@ const GroupDetails = () => {
             rootAccess: store.fullAccess
         }
         const res = await postData('/staff/groups/get_group_list/', obj)
-        console.log('group list', res.data.groupUsers)
         setList(res.data[index].groupUsers)
     }
 
-    console.log('location', location)
 
     const {groupData, groupUsers} = location.state.item
-    console.log('groupData', groupData.groupName)
     return (
         <Container>
             <Modal active={isModal} setActive={setIsModal} title={titleModal}>

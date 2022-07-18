@@ -20,7 +20,6 @@ const StaffTrading = () => {
 
     const getTrading = async () => {
         const res = await getData(`/staff/trading/get_valid_trading_data/${window.location.host}`)
-        console.log('res data', res.data)
     }
 
     const onSubmit = async (data) => {

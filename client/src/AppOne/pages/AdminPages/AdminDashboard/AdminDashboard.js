@@ -21,7 +21,6 @@ const AdminDashboard = () => {
         }
 
         const res = await postData('/staff/dashboard', obj)
-        console.log('res data', res.data)
         store.setBot(res.data.data.telegrams.twoStepBot)
         setState(res.data.data)
     }

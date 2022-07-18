@@ -28,7 +28,6 @@ const MakeTransaction = () => {
     const onSubmit = (data) => {
         data.date = moment(startDate).format('yyyy/MM/DD')
         data.time = moment(timeDate).format('hh:mm')
-        console.log('data', data)
     }
 
 
@@ -45,7 +44,6 @@ const MakeTransaction = () => {
             limitValue: 10
         }
         const res = await postData(`/staff/create_transaction/get_transaction_history/`, obj)
-        console.log('history', res.data.history.length)
         setHistory(res.data.history)
     }
 

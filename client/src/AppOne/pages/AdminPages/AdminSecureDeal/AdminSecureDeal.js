@@ -88,7 +88,6 @@ const AdminSecureDeal = () => {
             limitValue: 10
         }
         const res = await postData(`/staff/secure_deal/secure_deal_history/`, obj)
-        console.log('res data history', res.data.history)
         if (res.data.history !== 'empty list') {
             setHistory(res.data.history.filter(item => {
                 if (dateToTimestamp() < item.dealDedline) {
@@ -109,7 +108,6 @@ const AdminSecureDeal = () => {
     }
 
     const deleteSecureDeal = async (id) => {
-        console.log('id', id)
         const res = await deleteData(`/personal_area/secure_deal/secure_deal_detail/delete_deal/${id}`)
     }
 
@@ -205,7 +203,6 @@ const AdminSecureDeal = () => {
                     {
                         history.length ?
                             history.map(item => {
-                                console.log('history-item', item)
                                 return (
                                     <Row style={{borderBottom: '1px solid #fff', padding: '10px 0'}}>
                                         <Col>

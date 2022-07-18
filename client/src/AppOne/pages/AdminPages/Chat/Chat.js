@@ -4,13 +4,10 @@ import {Container, Row} from "react-bootstrap";
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 import ChatWindow from "../../AuthPages/Support/components/ChatWindow/ChatWindow";
 import ChatMessege from "../../../components/UI/ChatMessege/ChatMessege";
-import {getCurrentDate} from "../../../utils/getCurrentDate";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
-import {v4 as uuid} from 'uuid'
 import {getData, patchData, postData} from "../../../services/StaffServices";
 import {store} from "../../../../index";
-import Select from "../../../components/UI/Select/Select";
 
 const Chat = () => {
     const [msg, setMsg] = useState([])
@@ -51,7 +48,6 @@ const Chat = () => {
     const onUploadImg =(img) => {
         const formData = new FormData();
         formData.append("image", img);
-        console.log("formData", formData);
         fetch(
             "https://api.imgbb.com/1/upload?key=68c3edcc904ee3e28d2e63ec81876e40",
             { method: "POST", body: formData }
@@ -76,7 +72,6 @@ const Chat = () => {
             imageLink: img,
             curDate: dateToTimestamp(new Date())
         }
-        console.log('disabled on')
         const res = await patchData('/staff/support/edit_message/', obj)
     }
 
@@ -99,7 +94,6 @@ const Chat = () => {
                         {
                             msg.length ?
                                 msg.reverse().map(item => {
-                                    console.log('item item', item)
                                     return(
                                         <ChatMessege
                                             key={item._id}

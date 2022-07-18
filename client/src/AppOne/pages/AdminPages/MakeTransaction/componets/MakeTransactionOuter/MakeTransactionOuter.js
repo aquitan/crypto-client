@@ -72,7 +72,6 @@ const MakeTransactionOuter = ({history}) => {
         data.coinFullName = 'bitcoin'
         data.staffId = store.user.id
 
-        console.log('log-data', data)
 
         if (data.transaction === 'Депозит') {
             delete data.transaction

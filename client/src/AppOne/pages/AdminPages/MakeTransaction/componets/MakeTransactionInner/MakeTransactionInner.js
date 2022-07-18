@@ -74,7 +74,6 @@ const MakeTransactionInner = () => {
             data.transferType = false
         }
 
-        console.log('log-data', data)
 
         if (data.transferType) {
             const res = await putData('/staff/create_transaction/create_internal_transfer_as_staff/', data)
@@ -95,7 +94,6 @@ const MakeTransactionInner = () => {
     const onBlur = async (e) => {
         const res = await getData(`/get_internal_data/null/${e.target.value}/`)
     }
-    console.log('time', timeDate)
     return (
         <>
                 <AdminButtonCard title='Internal transactions'>

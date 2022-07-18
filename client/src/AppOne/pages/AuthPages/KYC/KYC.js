@@ -56,7 +56,7 @@ const KYC = ({status}) => {
 
         // let blob = new Blob([data], {type: 'application/json'})
         // formData.append("data", blob);
-        formData.append("file", data.selfieDocumentPhoto[0]);
+        formData.append("image", data.selfieDocumentPhoto[0]);
         for (let value of formData.entries()) {
             console.log('values', value)
         }

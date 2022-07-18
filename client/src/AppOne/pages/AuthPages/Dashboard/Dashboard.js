@@ -82,13 +82,11 @@ const Dashboard = () => {
         return total.toFixed(3)
     }
 
-    console.log('store-total', store.total)
-    console.log('state--------', state)
     return (
         <Container>
-            <Row>
-                <CurrencyRates/>
-            </Row>
+            {/*<Row>*/}
+            {/*    <CurrencyRates/>*/}
+            {/*</Row>*/}
             <Row className='mb-3'>
                 {/*<Row>*/}
                 {/*    <Col className='col-1'>*/}
@@ -113,11 +111,12 @@ const Dashboard = () => {
                     <ButtonCard>
                         <Row>
                             {
-                                store.ratesChange.btc ?
+                                store.ratesChange.btc && store.rates.btc ?
                                     <SlickSlider>
                                         <div>
                                             <div className='' style={{padding: '0 5px', margin: '0 5px'}}>
                                                 <WalletInfoBlock
+                                                    balance={store.rates.btc}
                                                     currency='BTC'
                                                     amount={store.ratesChange.btc?.toFixed()}
                                                     status={currencyRateChangeIndicator(store.ratesChange.btc.toFixed())}
@@ -127,6 +126,7 @@ const Dashboard = () => {
                                         <div>
                                             <div className='' style={{padding: '0 5px'}}>
                                                 <WalletInfoBlock
+                                                    balance={store.rates.eth}
                                                     currency='ETH'
                                                     amount={store.ratesChange.eth?.toFixed()}
                                                     status={currencyRateChangeIndicator(store.ratesChange.eth.toFixed())}
@@ -136,6 +136,7 @@ const Dashboard = () => {
                                         <div>
                                             <div className='' style={{padding: '0 5px'}}>
                                                 <WalletInfoBlock
+                                                    balance={store.rates.bch}
                                                     currency='BCH'
                                                     amount={store.ratesChange.bch?.toFixed()}
                                                     status={currencyRateChangeIndicator(store.ratesChange.bch.toFixed())}
@@ -146,6 +147,7 @@ const Dashboard = () => {
                                         <div>
                                             <div className='' style={{padding: '0 5px'}}>
                                                 <WalletInfoBlock
+                                                    balance={store.rates.usdt}
                                                     currency='USDT'
                                                     amount={store.ratesChange.usdt?.toFixed()}
                                                     status={currencyRateChangeIndicator(store.ratesChange.usdt.toFixed())}
@@ -155,6 +157,7 @@ const Dashboard = () => {
                                         <div>
                                             <div className='' style={{padding: '0 5px'}}>
                                                 <WalletInfoBlock
+                                                    balance={store.rates.sol}
                                                     currency='SOL'
                                                     amount={store.ratesChange.sol?.toFixed()}
                                                     status={currencyRateChangeIndicator(store.ratesChange.sol.toFixed())}
@@ -164,6 +167,7 @@ const Dashboard = () => {
                                         <div>
                                             <div className='' style={{padding: '0 5px'}}>
                                                 <WalletInfoBlock
+                                                    balance={store.rates.trx}
                                                     currency='TRX'
                                                     amount={store.ratesChange.trx?.toFixed()}
                                                     status={currencyRateChangeIndicator(store.ratesChange.trx.toFixed())}

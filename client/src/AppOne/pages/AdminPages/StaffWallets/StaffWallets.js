@@ -21,7 +21,6 @@ const StaffWallets = () => {
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
     })
-    console.log('errors-----', errors)
     const {register: registerUser, handleSubmit: handleSubmitUser} = useForm()
     const {register: registerWallet, handleSubmit: handleSubmitWallet} = useForm()
     const [modal, setModal] = useState(false)
@@ -60,7 +59,6 @@ const StaffWallets = () => {
         }
         const res = await putData('/staff/wallets/create_staff_wallet/', obj)
 
-        console.log('wallet', obj)
     }
 
     const getDataTgBot = async () => {
@@ -89,7 +87,6 @@ const StaffWallets = () => {
     const findUser = async (data) => {
         const res = await getData(`/staff/staff_wallets/check_staff/${data.userEmail}`)
         setWallet(res.data)
-        console.log('res-data-wallet', res)
         if (res.status !== 202) {
             setModal(true)
         }
@@ -97,7 +94,6 @@ const StaffWallets = () => {
     const findWallet = async (data) => {
         const res = await getData(`/staff/staff_wallets/check_staff_by_wallet/${data.userWallet}`)
         setWallet(res.data)
-        console.log('res-data-wallet', res)
         if (res.status !== 202) {
             setModal(true)
         }
@@ -122,7 +118,6 @@ const StaffWallets = () => {
             wallet: wallet,
             coinName: currency
         }
-        console.log('obj', obj)
         const res = await patchData('/staff/staff_wallets/edit_staff_wallets/', obj)
         if (res.status === 201) {
             SwalSimple('Кошелек изменен!')

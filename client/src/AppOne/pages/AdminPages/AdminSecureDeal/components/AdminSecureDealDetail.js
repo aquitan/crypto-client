@@ -30,7 +30,6 @@ const AdminSecureDealDetail = () => {
     const [dealDetail, setDealDetail] = useState()
     const [dealDetailChat, setDealDetailChat] = useState()
     const params = useParams()
-    console.log('params', params)
     const status = [
         {value: 'Pending', text: 'Pending'},
         {value: 'In progress', text: 'In progress'},
@@ -89,7 +88,6 @@ const AdminSecureDealDetail = () => {
     const onUploadImg =(img) => {
         const formData = new FormData();
         formData.append("image", img);
-        console.log("formData", formData);
         fetch(
             "https://api.imgbb.com/1/upload?key=68c3edcc904ee3e28d2e63ec81876e40",
             { method: "POST", body: formData }
@@ -113,7 +111,6 @@ const AdminSecureDealDetail = () => {
             messageBody: text,
             imageLink: img
         }
-        console.log('disabled on')
         const res = await patchData('/staff/secure_deal/detail_deal/edit_message/', obj)
     }
 
@@ -209,7 +206,6 @@ const AdminSecureDealDetail = () => {
                         {
                             msg.length ?
                                 msg.reverse().map(item => {
-                                    console.log('item item', item)
                                     return(
                                         <ChatMessege
                                             key={item._id}

@@ -66,7 +66,6 @@ const AdminKycTableItem = (props) => {
         //     delete data.staffEmail
         //     delete data.staffId
         // }
-        console.log('delete kyc', data)
         const res = await deleteData('/staff/kyc/delete_kyc/', {data})
         if (res.status === 202) {
             SwalSimple('KYC удален!')

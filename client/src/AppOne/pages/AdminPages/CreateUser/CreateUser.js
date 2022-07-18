@@ -11,7 +11,6 @@ import {emailValidate} from "../../../utils/checkEmail";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
 import {postData} from "../../../services/StaffServices";
 import Select from "../../../components/UI/Select/Select";
-import Preloader from "../../../components/UI/Preloader/Preloader";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import {SwalSimple} from "../../../utils/SweetAlert";
 
@@ -46,7 +45,6 @@ const CreateUser = () => {
                 arr.push(obj)
             })
             setDomains(arr)
-            console.log('log-res', arr)
         }
     }
 
@@ -57,13 +55,10 @@ const CreateUser = () => {
         data.staffEmail = store.user.email
         data.rootAccess = store.fullAccess
 
-        console.log('create-user', data)
         const res = await postData('/staff/create_user', data)
         if (res.status === 200) {
-            console.log('add user success', res)
             SwalSimple('Пользователь создан!')
         } else {
-            console.log('add user error', res)
             SwalSimple('Что то пошло не так!')
         }
     }

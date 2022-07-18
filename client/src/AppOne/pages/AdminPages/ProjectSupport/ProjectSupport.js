@@ -25,7 +25,6 @@ const ProjectSupport = () => {
     const getSupportData = async () => {
         const res = await getData('/staff/project_support/get_wallet/')
         setState(res.data.wallet)
-        console.log('data support', res.data.wallet)
     }
 
     const onSubmit = async (data) => {
