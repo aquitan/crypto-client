@@ -46,7 +46,6 @@ router.delete('/personal_area/secure_deal/secure_deal_detail/delete_deal/:dealId
 
 
 // user money transfer logic => 
-router.post('/staff/balances/check_address_balance/', staffController.checkAddressBalance) // check balance by address & coinName
 router.post('/get_address_for_deposit/', authChecker, userController.getAddressForDeposit) // generate and send address for deposit in cur coinName
 router.get('/get_user_balance/:id/', authChecker, userController.getUserBalance) // get user balances for every coins
 router.put('/deposit/make_deposit/', authChecker, userController.makeDeposit) // create deposit as user
@@ -60,6 +59,7 @@ router.get('/user_balance_checker/:userId/:coinName/', authChecker, userControll
 router.get('/internal_wallet_checker/:userWallet/:domainName/', authChecker, userController.checkInternalWallet) // verified internal wallet 
 router.put('/internal_transfer/make_internal_transfer/', authChecker, userController.makeInternalTransfer) // make internal domain transaction*
 router.get('/internal_transfer/get_internal_transfer_history/:userId/:skipValue/:limitValue/', authChecker, userController.getInternalTransferHistory) // get internal transfer history bu user id
+
 
 // admin + staff routes
 router.post('/staff/dashboard', staffController.staffDashboard) // base tg channels, user counter, user online, etc.
@@ -147,6 +147,11 @@ router.put('/staff/create_transaction/create_regular_deposit_transaction/', staf
 router.put('/staff/create_transaction/create_regular_withdrawal_transaction/', staffController.makeWithdrawalForUserAsStaff) // create approved withdrawal for user in your own domain as staff or for any user in project as admin
 router.put('/staff/create_transaction/create_internal_transfer_as_staff/', staffController.createInternalTransaction) // reate approved internal withdrawal OR create internal deposit for your account
 router.post('/staff/create_transaction/get_transaction_history/', staffController.getTransactionsHistory) // get history about all transaction in your account
+router.post('/staff/deposit_requests/', staffController.GetDepositRequests) // get all requests by domainName 
+router.patch('/staff/deposit_requests/update_deposit_status', staffController.UpdateDepositStatus) // update status by yourself as staff user (or admin or root)
+router.delete('/staff/deposit_requests/delete_request/', staffController.DeleteDepositRequest) // delete deposit request by yourself as staff user (or admin or root)
+router.post('/staff/balances/check_address_balance/', staffController.checkAddressBalance) // check balance by address & coinName
+router.post('/staff/balances/check_user_balances/', staffController.getUserAddresses) // get all addresses by userId
 
 // staff wallets => 
 router.put('/staff/wallets/create_staff_wallet/', staffController.createStaffWallet) // create staff wallet 

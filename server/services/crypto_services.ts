@@ -21,6 +21,7 @@ class CryptoService {
 
       const coinData: any = await axios(`https://chain.so/api/v2/address/BTC/${address}`)
       console.log('received data  => ', coinData.data.data);
+
       return coinData.data.data.balance
     }
     if (coinName === 'eth') {

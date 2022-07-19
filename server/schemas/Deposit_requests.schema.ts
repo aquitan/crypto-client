@@ -1,6 +1,6 @@
-import { Schema } from 'mongoose'
+import { Schema } from 'mongoose';
 
-export const DEPOSIT_HISTORY_SCHEMA = {
+export const DEPOSIT_REQUESTS = {
   userEmail: {
     type: String,
     require: true
@@ -40,10 +40,6 @@ export const DEPOSIT_HISTORY_SCHEMA = {
   userId: {
     type: Schema.Types.ObjectId,
     ref: 'user_base_datas',
-    require: true
-  },
-  staffId: {
-    type: String,
     require: true
   }
 }

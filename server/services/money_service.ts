@@ -13,6 +13,7 @@ import userActionInfo from '../models/User_info_for_action.model'
 import withdrawalError from '../models/Domain_errors.model'
 import Notification from './notificationServices'
 import CryptoService from './crypto_services'
+import depositRequest from '../models/Deposit_requests.model'
 
 
 class moneyService {
@@ -214,8 +215,8 @@ class moneyService {
     console.log('address data => ', validAddress);
     if (!validAddress) return false
 
-    // save deposit in history
-    await depositHistory.create({
+
+    let depObject = {
       userEmail: transfer_object.userEmail,
       userDomain: transfer_object.domainName,
       coinName: transfer_object.coinName,
@@ -224,9 +225,17 @@ class moneyService {
       date: transfer_object.currentDate,
       address: transfer_object.depositAddress,
       status: 'pending',
-      userId: transfer_object.userId,
-      staffId: 'self'
-    })
+      userId: transfer_object.userId
+    }
+
+    console.log('depObject for depositRequest => ', depObject);
+    await depositRequest.create(depObject)
+    // save deposit in history
+
+    depObject['staffId'] = 'self'
+    console.log('depObject for history => ', depObject);
+
+    await depositHistory.create(depObject)
 
     // let checker = setInterval(async () => {
     //   const balanceCheck = await CheckBalance(transfer_object.coinName, transfer_object.depositAddress)
@@ -295,7 +304,7 @@ class moneyService {
       usdAmount: transfer_object.amountInUsd,
       date: transfer_object.currentDate,
       address: curAddress.address,
-      status: 'complete',
+      status: 'success',
       userId: curUser.id,
       staffId: staffId
     })
@@ -554,12 +563,12 @@ class moneyService {
 
     const walletList = [
       btcWalletData,
-      ethWalletData,
-      solanaWalet,
-      usdtWallet,
-      trxUsdtWalet,
       bchWallet,
-      bchWallet
+      ethWalletData,
+      usdtWallet,
+      trxWalet,
+      trxUsdtWalet,
+      solanaWalet,
     ]
 
     for (let i = 0; i <= walletList.length - 1; i++) {

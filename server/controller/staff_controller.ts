@@ -2198,6 +2198,30 @@ class StaffController {
     }
   }
 
+
+  async getUserAddresses(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    const staffPermission: boolean = req.body.isStaff
+    const adminPermission: boolean = req.body.isAdmin
+    const rootAccess: boolean = req.body.rootAccess
+    const userId: string = req.body.userId
+
+    const validData: boolean = await bodyValidator(req.body, 4)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
+    try {
+      if (rootAccess || adminPermission || staffPermission) {
+        const result: boolean | string[] = await staffService.getUserAddressList(userId)
+        if (!result) throw ApiError.ServerError()
+        return res.status(200).json(result)
+      }
+
+      return res.status(403).json({ message: 'permission denied' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
   async getSupportData(req: express.Request, res: express.Response, next: express.NextFunction) {
 
     const staffPermission: boolean = req.body.isStaff
@@ -2362,6 +2386,85 @@ class StaffController {
         if (!result) throw ApiError.ServerError()
 
         return res.status(202).json({ message: 'ok' })
+      }
+
+      return res.status(403).json({ message: 'permission denied' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async GetDepositRequests(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    const adminPermission: boolean = req.body.isAdmin
+    const rootAccess: boolean = req.body.rootAccess
+    const staffPermission: boolean = req.body.isStaff
+    const staffId: string = req.body.staffId
+    const skip: number = req.body.skipValue
+    const limit: number = req.body.limitValue
+
+    const validData: boolean = await bodyValidator(req.body, 6)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
+    try {
+      if (rootAccess || adminPermission || staffPermission) {
+        const result: any = await staffService.getDepositRequestsList(staffId, skip, limit)
+        if (!result) throw ApiError.ServerError()
+
+        return res.status(200).json(result)
+      }
+
+      return res.status(403).json({ message: 'permission denied' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+
+  async UpdateDepositStatus(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    const adminPermission: boolean = req.body.isAdmin
+    const rootAccess: boolean = req.body.rootAccess
+    const staffPermission: boolean = req.body.isStaff
+    const depositId: string = req.body.depositId
+    const status: string = req.body.status
+
+    const validData: boolean = await bodyValidator(req.body, 5)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
+    try {
+      if (rootAccess || adminPermission || staffPermission) {
+
+        const result: boolean = await staffService.updateDepositStatus(depositId, status)
+        if (!result) return res.status(304).json(result)
+
+        return res.status(200).json(result)
+      }
+
+      return res.status(403).json({ message: 'permission denied' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+
+  async DeleteDepositRequest(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+    const adminPermission: boolean = req.body.isAdmin
+    const rootAccess: boolean = req.body.rootAccess
+    const staffPermission: boolean = req.body.isStaff
+    const depositId: string = req.body.depositId
+
+    const validData: boolean = await bodyValidator(req.body, 4)
+    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+
+    try {
+      if (rootAccess || adminPermission || staffPermission) {
+
+        const result: boolean = await staffService.deleteDepositRequest(depositId)
+        if (!result) throw ApiError.ServerError()
+
+        return res.status(200).json(result)
       }
 
       return res.status(403).json({ message: 'permission denied' })

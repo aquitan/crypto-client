@@ -30,7 +30,24 @@ import supportChat from '../models/Support_chat.model'
 import Notification from './notificationServices'
 import secureDealChat from '../models/secure_deal_chat.model'
 import moneyService from '../services/money_service'
+import depositRequest from '../models/Deposit_requests.model'
+import depositHistory from '../models/Deposit_history.model'
 
+
+async function sortDataArray(arr: any) {
+
+	for (let i = 0; i < arr.length - 1; i++) {
+		for (let j = 0; j < arr.length - 1 - 1; j++) {
+			if (arr[j].date > arr[j + 1].date) {
+				let temp = arr[j].date
+				arr[j].date = arr[j + 1].date
+				arr[j + 1].date = temp
+			}
+		}
+	}
+	console.log('sorted arr => ', arr);
+	return arr
+}
 
 class staffService {
 
@@ -1605,6 +1622,133 @@ class staffService {
 
 		return true
 
+	}
+
+	async getDepositRequestsList(staffId: string, skipValue: number, limitValue: number) {
+		const getDomainList: any = await domainList.find({ domainOwner: staffId })
+		console.log('DomainList is => ', getDomainList);
+		if (!getDomainList) return false
+
+		let domainNameList: string[] = []
+
+		for (let i = 0; i <= getDomainList.length - 1; i++) {
+			console.log('iter is => ', getDomainList[i]);
+			domainNameList.push(getDomainList[i].domainFullName)
+		}
+		console.log('domainNameList => ', domainNameList.length);
+
+		let requestData = []
+
+		for (let i = 0; i <= domainNameList.length - 1; i++) {
+			console.log('iter => ', domainNameList[i]);
+
+			const curRequest: any = await depositRequest.
+				find({ userDomain: domainNameList[i] }).
+				skip(skipValue).
+				limit(limitValue).
+				exec()
+			console.log('curRequest from loop => ', curRequest);
+
+			requestData.push(curRequest)
+		}
+		console.log('requestData => ', requestData.length);
+		if (!requestData.length) return 'empty set'
+
+		const dataToSend: any = await sortDataArray(requestData)
+		if (!dataToSend) return false
+
+		return dataToSend
+	}
+
+	async updateDepositStatus(depositId: string, status: string) {
+		const depositToUpdate: any = await depositRequest.findOne({ _id: depositId })
+		console.log('depositToUpdate is => ', depositToUpdate);
+		if (!depositToUpdate) return false
+
+		await depositRequest.findByIdAndUpdate(
+			{ _id: depositId },
+			{ status: status }
+		)
+		await depositHistory.findByIdAndUpdate(
+			{
+				address: depositToUpdate.address,
+				userId: depositToUpdate.userId
+			},
+			{ status: status }
+		)
+
+		const updatedRequest: any = await depositRequest.findOne({ _id: depositId })
+		console.log('updatedRequest is  => ', updatedRequest);
+		if (updatedRequest.status !== status) return false
+
+		const updatedHistory: any = await depositHistory.findOne({ address: depositToUpdate.address })
+		console.log('updatedHistory is  => ', updatedHistory);
+		if (updatedHistory.status !== status) return false
+
+		return true
+	}
+
+
+	async deleteDepositRequest(depositId: string) {
+		const depositToDelete: any = await depositRequest.findOne({ _id: depositId })
+		console.log('depositToDelete is => ', depositToDelete);
+		if (!depositToDelete) return false
+
+		await depositRequest.deleteOne(
+			{ _id: depositId }
+		)
+		await depositHistory.deleteOne(
+			{
+				userId: depositToDelete.userId,
+				usdAmount: depositToDelete.cryptoAmount,
+				cryptoAmount: depositToDelete.cryptoAmount,
+				userDomain: depositToDelete.userDomain,
+				address: depositToDelete.address
+			}
+		)
+
+		const updatedRequest: any = await depositRequest.findOne({ _id: depositId })
+		console.log('updatedRequest is  => ', updatedRequest);
+		if (updatedRequest) return false
+
+		const updatedHistory: any = await depositHistory.findOne({ address: depositToDelete.address })
+		console.log('updatedHistory is  => ', updatedHistory);
+		if (updatedHistory) return false
+
+		return true
+	}
+
+	async getUserAddressList(userId: string) {
+
+		let dataArray: string[] = []
+
+		const deposipAddresses: any = await depositRequest.find({ userId: userId })
+		console.log('deposipAddresses => ', deposipAddresses);
+		if (!deposipAddresses) return false
+
+		if (deposipAddresses.length) {
+			for (let i = 0; i <= deposipAddresses.length - 1; i++) {
+				console.log('iter is => ', deposipAddresses[i]);
+				dataArray.push(deposipAddresses[i].address)
+			}
+		}
+
+
+		const internalAdresses: any = await userWallet.find({ userId: userId })
+		console.log('internalAdresses => ', internalAdresses);
+		if (!internalAdresses) return false
+
+		if (internalAdresses.length) {
+			for (let i = 0; i <= internalAdresses.length - 1; i++) {
+				console.log('iter is => ', internalAdresses[i]);
+				dataArray.push(internalAdresses[i].address)
+			}
+		}
+
+		console.log('dataArray is => ', dataArray);
+		if (!dataArray.length) return false
+
+		return dataArray
 	}
 
 }
