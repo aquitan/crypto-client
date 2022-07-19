@@ -25,7 +25,8 @@ const Wallet = () => {
                 {
                     state ?
                         state.map(item => {
-                            return <Col className={'col-12 col-sm-6 col-lg-4 mb-5'}>
+                            console.log('wallet item', item)
+                            return <Col key={item._id} className={'col-12 col-sm-6 col-lg-4 mb-5'}>
                                 <WalletItem
                                     coinFullName={item.coinFullName}
                                     balanceUsd={(item.coinBalance.toFixed(5) * store.rates[item.coinName.toLowerCase()]).toFixed(5)}

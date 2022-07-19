@@ -39,120 +39,116 @@ const NavBar = () => {
 
     return (
         <Navbar className={cls.navbar} bg='dark'>
-            <Container style={{minHeight: 50}}>
+            <BurgerMenu onHandleClick={openMenu}/>
+            <UserSidebar active={state ? 'activeSidebar' : ''} onClick={onCloseMenu} >
+                <div style={{color: '#fff', fontWeight: 'bold', fontSize: 22, marginBottom: 30}} className={cls.top}>
+                    <NavLink to={'/'}>{store.domain.domainName}</NavLink>
+                </div>
+                <NavLink className={cls.link} to={'/'}>
+                    <FontAwesomeIcon icon={faColumns} />
+                    <span>Dashboard</span>
+                </NavLink>
 
-                <BurgerMenu onHandleClick={openMenu}/>
-                <UserSidebar active={state ? 'activeSidebar' : ''} onClick={onCloseMenu} >
-                    <div style={{color: '#fff', fontWeight: 'bold', fontSize: 22, marginBottom: 30}} className={cls.top}>
+                <NavLink className={cls.link} to={'/deposit'}>
+                    <FontAwesomeIcon icon={faDonate} />
+                    <span>Deposit</span>
+                </NavLink>
+                <NavLink className={cls.link} to={'/withdraw'}>
+                    <FontAwesomeIcon icon={faMoneyCheck} />
+                    <span>Withdraw</span>
+                </NavLink>
+                <NavLink className={cls.link} to={'/internal-addresses'}>
+                    <FontAwesomeIcon icon={faExchangeAlt} />
+                    <span>Internal Transfers</span>
+                </NavLink>
+
+                <NavLink className={cls.link} to={'/profile'}>
+                    <FontAwesomeIcon icon={faCreditCard} />
+                    <span>Profile</span>
+                </NavLink>
+                <NavLink className={cls.link} to={'/internal-swap'}>
+                    <FontAwesomeIcon icon={faSync} />
+                    <span>Currency Swap</span>
+                </NavLink>
+                <NavLink className={cls.link} to={'/support'}>
+                    <FontAwesomeIcon icon={faHeadset} />
+                    <span>Support</span>
+                </NavLink>
+                <NavLink className={cls.link} to={'/secure-deal'}>
+                    <FontAwesomeIcon icon={faShieldAlt} />
+                    <span>Secure Deal</span>
+                </NavLink>
+                <NavLink className={cls.link} to={'/news'}>
+                    <FontAwesomeIcon icon={faShieldAlt} />
+                    <span>News</span>
+                </NavLink>
+                <NavLink className={cls.link} to={'/trading'}>
+                    <FontAwesomeIcon icon={faShieldAlt} />
+                    <span>Trading</span>
+                </NavLink>
+                {
+                    store.isStaff || store.fullAccess || store.isAdmin ?
+                        <NavLink className={cls.link} to='/admin'>
+                            <FontAwesomeIcon icon={faUserLock} />
+                            <span>Staff</span>
+                        </NavLink>
+                        : null
+                }
+                <CurrencyRates />
+            </UserSidebar>
+
+            <div className={cls.navWrap}>
+                <Navbar>
+                    <div style={{color: '#fff', fontWeight: 'bold', fontSize: 22}} className={cls.top}>
                         <NavLink to={'/'}>{store.domain.domainName}</NavLink>
                     </div>
-                    <NavLink className={cls.link} to={'/'}>
-                        <FontAwesomeIcon icon={faColumns} />
-                        <span>Dashboard</span>
-                    </NavLink>
+                </Navbar>
 
-                    <NavLink className={cls.link} to={'/deposit'}>
-                        <FontAwesomeIcon icon={faDonate} />
-                        <span>Deposit</span>
-                    </NavLink>
-                    <NavLink className={cls.link} to={'/withdraw'}>
-                        <FontAwesomeIcon icon={faMoneyCheck} />
-                        <span>Withdraw</span>
-                    </NavLink>
-                    <NavLink className={cls.link} to={'/internal-addresses'}>
-                        <FontAwesomeIcon icon={faExchangeAlt} />
-                        <span>Internal Transfers</span>
-                    </NavLink>
+                <Navbar className={`${cls.right_nav} justify-content-end`}>
+                    <Nav style={{width: '100%'}}>
+                        <div className={cls.navbar_links} style={{width: '100%'}}>
+                            {/*<Dropdown />*/}
+                            {/*<NavLink className={cls.link} to={'/'}>Dashboard</NavLink>*/}
+                            <NavLink className={cls.link} to={'/wallet'}>Wallet</NavLink>
+                            {/*<NavLink className={cls.link} to={'/deposit'}>Deposit</NavLink>*/}
+                            <NavLink className={cls.link} to={'/trading'}>Trading</NavLink>
+                            {/*<NavLink className={cls.link} to={'/profile'}>Profile</NavLink>*/}
+                            <NavLink className={cls.link} to={'/internal-swap'}>Currency Swap</NavLink>
+                            <NavLink className={cls.link} to={'/support'}>Support</NavLink>
+                            <NavLink className={cls.link} to={'/secure-deal'}>Secure Deal</NavLink>
+                            <NavLink className={cls.link} to={'/news'}>News</NavLink>
 
-                    <NavLink className={cls.link} to={'/profile'}>
-                        <FontAwesomeIcon icon={faCreditCard} />
-                        <span>Profile</span>
-                    </NavLink>
-                    <NavLink className={cls.link} to={'/internal-swap'}>
-                        <FontAwesomeIcon icon={faSync} />
-                        <span>Currency Swap</span>
-                    </NavLink>
-                    <NavLink className={cls.link} to={'/support'}>
-                        <FontAwesomeIcon icon={faHeadset} />
-                        <span>Support</span>
-                    </NavLink>
-                    <NavLink className={cls.link} to={'/secure-deal'}>
-                        <FontAwesomeIcon icon={faShieldAlt} />
-                        <span>Secure Deal</span>
-                    </NavLink>
-                    <NavLink className={cls.link} to={'/news'}>
-                        <FontAwesomeIcon icon={faShieldAlt} />
-                        <span>News</span>
-                    </NavLink>
-                    <NavLink className={cls.link} to={'/trading'}>
-                        <FontAwesomeIcon icon={faShieldAlt} />
-                        <span>Trading</span>
-                    </NavLink>
-                    {
-                        store.isStaff || store.fullAccess || store.isAdmin ?
-                            <NavLink className={cls.link} to='/admin'>
-                                <FontAwesomeIcon icon={faUserLock} />
-                                <span>Staff</span>
-                            </NavLink>
-                            : null
-                    }
-                    <CurrencyRates />
-                </UserSidebar>
-
-                <div className={cls.navWrap}>
-                    <Navbar>
-                        <div style={{color: '#fff', fontWeight: 'bold', fontSize: 22}} className={cls.top}>
-                            <NavLink to={'/'}>{store.domain.domainName}</NavLink>
-                        </div>
-                    </Navbar>
-
-                    <Navbar className={`${cls.right_nav} justify-content-end`}>
-                        <Nav style={{width: '100%'}}>
-                            <div className={cls.navbar_links} style={{width: '100%'}}>
-                                {/*<Dropdown />*/}
-                                {/*<NavLink className={cls.link} to={'/'}>Dashboard</NavLink>*/}
-                                <NavLink className={cls.link} to={'/wallet'}>Wallet</NavLink>
-                                {/*<NavLink className={cls.link} to={'/deposit'}>Deposit</NavLink>*/}
-                                <NavLink className={cls.link} to={'/trading'}>Trading</NavLink>
-                                {/*<NavLink className={cls.link} to={'/profile'}>Profile</NavLink>*/}
-                                <NavLink className={cls.link} to={'/internal-swap'}>Currency Swap</NavLink>
-                                <NavLink className={cls.link} to={'/support'}>Support</NavLink>
-                                <NavLink className={cls.link} to={'/secure-deal'}>Secure Deal</NavLink>
-                                <NavLink className={cls.link} to={'/news'}>News</NavLink>
-
-                                {
-                                    store.isStaff || store.fullAccess || store.isAdmin ? <NavLink className={cls.link} to='/admin'>Staff</NavLink> : null
-                                }
-                                <div className='me-2'>
-                                    <Notification />
-                                </div>
-                                <div className='d-none d-md-block m-2'>
-                                    <NavLink to={'/contact-us'}>
-                                        <FontAwesomeIcon className={cls.navbar_icon} icon={faPhoneVolume} />
-                                    </NavLink>
-                                </div>
-                                <div>
-                                    <Row className={'flex-column align-items-center'} style={{color: '#fff', fontSize: 12}}>
-                                        <NavLink to={'/profile'}>
-                                            <Col>
-                                                <div className={'text-center'}>
-                                                    <FontAwesomeIcon style={{fontSize: 24}} icon={faUserCircle} color={'#444'} />
-                                                </div>
-                                            </Col>
-                                            <Col>
-                                                <div>
-                                                    {store.fullAccess ? null : store.user.email}
-                                                </div>
-                                            </Col>
-                                        </NavLink>
-                                    </Row>
-                                </div>
+                            {
+                                store.isStaff || store.fullAccess || store.isAdmin ? <NavLink className={cls.link} to='/admin'>Staff</NavLink> : null
+                            }
+                            <div className='me-2'>
+                                <Notification />
                             </div>
-                        </Nav>
-                    </Navbar>
-                </div>
-
-            </Container>
+                            <div className='d-none d-md-block m-2'>
+                                <NavLink to={'/contact-us'}>
+                                    <FontAwesomeIcon className={cls.navbar_icon} icon={faPhoneVolume} />
+                                </NavLink>
+                            </div>
+                            <div>
+                                <Row className={'flex-column align-items-center'} style={{color: '#fff', fontSize: 12}}>
+                                    <NavLink to={'/profile'}>
+                                        <Col>
+                                            <div className={'text-center'}>
+                                                <FontAwesomeIcon style={{fontSize: 24}} icon={faUserCircle} color={'#444'} />
+                                            </div>
+                                        </Col>
+                                        <Col>
+                                            <div>
+                                                {store.fullAccess ? null : store.user.email}
+                                            </div>
+                                        </Col>
+                                    </NavLink>
+                                </Row>
+                            </div>
+                        </div>
+                    </Nav>
+                </Navbar>
+            </div>
         </Navbar>
     )
 }

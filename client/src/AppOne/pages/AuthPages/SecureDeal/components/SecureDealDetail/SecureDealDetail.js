@@ -88,7 +88,7 @@ const SecureDealDetail = () => {
             imageLink: image ? image : null,
             chatId: msg.length > 0 ? msg[0].chatId : null,
             isUser: true,
-            supportName: null,
+            supportName: store.domain.supportName,
             dealId: dealData._id
         }
 

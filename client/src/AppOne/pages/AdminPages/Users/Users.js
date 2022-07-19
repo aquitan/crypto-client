@@ -9,7 +9,7 @@ import AdminButton from "../../../components/UI/AdminButton/AdminButton";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
 import AdminForm from "../../../components/UI/AdminForm/AdminForm";
 import {useForm} from "react-hook-form";
-import {postData} from "../../../services/StaffServices";
+import {deleteData, postData} from "../../../services/StaffServices";
 import {v4 as uuid} from 'uuid'
 import Preloader from "../../../components/UI/Preloader/Preloader";
 import {getSearchItems} from "../../../utils/searchFn";
@@ -41,11 +41,20 @@ const Users = () => {
     }
     useEffect(() => {
         getProfile()
+        // delUser()
     }, [])
 
     const onSearch = (e) => {
         setState({...state, search: e.target.value})
     }
+
+    // const delUser = async () => {
+    //     const res = await deleteData('/staff/users/user_detail/delete_user_with_all_params/', {data: {
+    //             userId: '62d6524567a932e48e089a20',
+    //             userEmail: 'aquitanfw@gmail.com',
+    //             rootAccess: true
+    //         }})
+    // }
 
     console.log('user-data', state.users)
 

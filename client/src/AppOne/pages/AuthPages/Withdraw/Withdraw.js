@@ -139,42 +139,33 @@ const Withdraw = () => {
         console.log('counter', counter)
     }
 
+    const getWithdrawAddress = async () => {
+
+    }
+
 
 
     return (
 
-        <>
-            {
-                !address ?
-                    <Container>
-                        <Row className='justify-content-center'>
-                            <Col className='col-12 col-md-4'>
-                                <ButtonCard title={'Generate address'}>
-                                    <Button onClick={() => setAddress('skjdbfkjsbdkfbsdkbfksd')}>Generate</Button>
-                                </ButtonCard>
-                            </Col>
-                        </Row>
-                    </Container>
-                    :
-                    <Container>
+        <Container>
 
-                        <ErrorModal
-                            errorText={error?.errorText}
-                            btnType={error?.errorButton}
-                            errorType={error?.errorTitle}
-                            active={modal}
-                            title={'Withdrowal Error!'}
-                            setActive={setModal}
-                        />
+            <ErrorModal
+                errorText={error?.errorText}
+                btnType={error?.errorButton}
+                errorType={error?.errorTitle}
+                active={modal}
+                title={'Withdrowal Error!'}
+                setActive={setModal}
+            />
 
-                        <Row>
-                            <Col className='col-12 col-lg-6 mb-3'>
-                                <ButtonCard>
-                                    <h2 className='mb-3'>Withdraw</h2>
-                                    <Form classnames='form_big'>
-                                        <Row className='mb-3 align-items-center'>
-                                            <Col className='col-12'>
-                                                <div style={{padding: '20px 20px', borderRadius: '20px'}} className={cls.inputWrapper}>
+            <Row>
+                <Col className='col-12 col-lg-6 mb-3'>
+                    <ButtonCard>
+                        <h2 className='mb-3'>Withdraw</h2>
+                        <Form classnames='form_big'>
+                            <Row className='mb-3 align-items-center'>
+                                <Col className='col-12'>
+                                    <div style={{padding: '20px 20px', borderRadius: '20px'}} className={cls.inputWrapper}>
                                         <span style={{display: 'flex', alignItems: 'center'}}>
                                             <Image src={`/img/${imgMatch(location.state.coin)}.svg`} height={30} width={30} />
                                             {/*{*/}
@@ -190,83 +181,80 @@ const Withdraw = () => {
                                                 {location.state.coin}
                                             </span>
                                         </span>
-                                                    <div>Coin balance: {balance}</div>
-                                                </div>
-                                            </Col>
-                                        </Row>
-                                        <Row className='mb-3'>
-                                            <Col>
-                                                <Input placeholder='Amount in USD' type='number' onChange={onChangeUsd} value={state.text} />
-                                                <span style={{fontSize: 10}}>Minimum withdraw amount is {store.domain.domainParams.minWithdrawalSum} USD</span>
-                                            </Col>
-                                        </Row>
-                                        <Row className='mb-3'>
-                                            <Col>
-                                                <Input placeholder='Amount in Crypto' type='number' onChange={onChangeCrypto} value={state.value} />
-                                            </Col>
-                                        </Row>
-                                        <Row className='mb-3'>
-                                            <Col>
-                                                <Input {...register('withdrawalAddress')} placeholder='enter the address' />
-                                            </Col>
-                                        </Row>
-                                        <Row className='mb-3'>
-                                            <Col>
-                                                <input {...register('terms', {
-                                                    required: true
-                                                })} type='checkbox' />
-                                                <Link to={'/'}> I accept Terms and Conditions</Link>
-                                                <ErrorMessage  name='terms' errors={errors} render={() => <p className={error.error}>you have to accept terms and conditions</p>} />
-                                            </Col>
-                                        </Row>
-                                        <Row className='justify-content-center'>
-                                            <Col className='col-6'>
-                                                <Button onClick={handleSubmit(onSubmit)} classname='user-red'>Withdraw</Button>
-                                            </Col>
-                                        </Row>
-                                    </Form>
-                                </ButtonCard>
-                            </Col>
-                            <Col className='col-12 col-lg-6 mb-3'>
-                                <ButtonCard>
-                                    <h2 className='mb-3'>History</h2>
-                                    <Row style={{padding: '10px', borderBottom: '1px solid #fff' }}>
-                                        <Col className={'text-center'}>Date</Col>
-                                        <Col className={'text-center'}>Sum</Col>
-                                        <Col className={'text-center'}></Col>
-                                    </Row>
-                                    <div style={{maxHeight: 400, overflowY: 'auto', height: '100%'}}>
-                                        {
-                                            history.length ?
-                                                history.map(item => {
-                                                    return (
-                                                        <TableItemUser
-                                                            date={getCurrentDate(item.date)}
-                                                            usdAmount={item.usdAmount}
-                                                            cryptoAmount={item.cryptoAmount}
-                                                            coinName={item.coinName}
-                                                            status={item.status}
-                                                        />
-                                                    )
-                                                })
-                                                : <h3>No data</h3>
-
-                                        }
+                                        <div>Coin balance: {balance}</div>
                                     </div>
-                                    <Row>
-                                        {
-                                            history.length > 10 ?
-                                                <span onClick={onNext}>Next...</span>
-                                                : null
-                                        }
-                                    </Row>
-                                </ButtonCard>
-                            </Col>
+                                </Col>
+                            </Row>
+                            <Row className='mb-3'>
+                                <Col>
+                                    <Input placeholder='Amount in USD' type='number' onChange={onChangeUsd} value={state.text} />
+                                    <span style={{fontSize: 10}}>Minimum withdraw amount is {store.domain.domainParams.minWithdrawalSum} USD</span>
+                                </Col>
+                            </Row>
+                            <Row className='mb-3'>
+                                <Col>
+                                    <Input placeholder='Amount in Crypto' type='number' onChange={onChangeCrypto} value={state.value} />
+                                </Col>
+                            </Row>
+                            <Row className='mb-3'>
+                                <Col>
+                                    <Input {...register('withdrawalAddress')} placeholder='enter the address' />
+                                </Col>
+                            </Row>
+                            <Row className='mb-3'>
+                                <Col>
+                                    <input {...register('terms', {
+                                        required: true
+                                    })} type='checkbox' />
+                                    <Link to={'/'}> I accept Terms and Conditions</Link>
+                                    <ErrorMessage  name='terms' errors={errors} render={() => <p className={error.error}>you have to accept terms and conditions</p>} />
+                                </Col>
+                            </Row>
+                            <Row className='justify-content-center'>
+                                <Col className='col-6'>
+                                    <Button onClick={handleSubmit(onSubmit)} classname='user-red'>Withdraw</Button>
+                                </Col>
+                            </Row>
+                        </Form>
+                    </ButtonCard>
+                </Col>
+                <Col className='col-12 col-lg-6 mb-3'>
+                    <ButtonCard>
+                        <h2 className='mb-3'>History</h2>
+                        <Row style={{padding: '10px', borderBottom: '1px solid #fff' }}>
+                            <Col className={'text-center'}>Date</Col>
+                            <Col className={'text-center'}>Sum</Col>
+                            <Col className={'text-center'}></Col>
                         </Row>
-                    </Container>
-            }
+                        <div style={{maxHeight: 400, overflowY: 'auto', height: '100%'}}>
+                            {
+                                typeof history !== 'string' ?
+                                    history.map(item => {
+                                        return (
+                                            <TableItemUser
+                                                date={getCurrentDate(item.date)}
+                                                usdAmount={item.usdAmount}
+                                                cryptoAmount={item.cryptoAmount}
+                                                coinName={item.coinName}
+                                                status={item.status}
+                                            />
+                                        )
+                                    })
+                                    : <h3>No data</h3>
 
-        </>
+                            }
+                        </div>
+                        <Row>
+                            {
+                                history.length > 10 ?
+                                    <span onClick={onNext}>Next...</span>
+                                    : null
+                            }
+                        </Row>
+                    </ButtonCard>
+                </Col>
+            </Row>
+        </Container>
 
     )
 }

@@ -35,15 +35,19 @@ const Deposit = () => {
 
     useEffect(() => {
         getHistoryDeposit()
-        // getBalance()
-        getAddressForDeposit()
+        getBalance()
         setBalance(location.state.coinsBalance)
     }, [])
 
     const getHistoryDeposit = async () => {
         const res = await getData(`/deposit/get_deposit_history/${store.user.id}/3/10`)
-        const reversedLogs = res.data.depositHistory.slice(0).reverse()
-        setHistory(reversedLogs)
+        if (typeof res.data.depositHistory !== 'string') {
+            const reversedLogs = res.data.depositHistory.slice(0).reverse()
+            setHistory(reversedLogs)
+        } else {
+            setHistory(res.data.depositHistory)
+        }
+
     }
     const getBalances = async () => {
         const obj = {
@@ -62,11 +66,12 @@ const Deposit = () => {
         const obj = {
             userId: store.user.id,
             coinName: location.state.coin,
-            coinFullName: 'bitcoin',
+            coinFullName: location.state.coinFullName,
             expiredTime: dateToTimestamp(d),
             userEmail: store.user.email
         }
         const res = await postData('/get_address_for_deposit/', obj)
+        setAddress(res.data.address)
     }
 
 
@@ -86,10 +91,11 @@ const Deposit = () => {
             userEmail: store.userEmail,
             domainName: window.location.host,
             coinName: balanceCoin,
+            coinFullName: location.state.coinFullName,
             amountInCrypto: +state.value.toFixed(5),
             amountInUsd: stateVal.toFixed(5),
             currentDate: dateToTimestamp(),
-            depositAddress: 'address',
+            depositAddress: address,
             depositStatus: 'pending',
             logTime: getCurrentDate(dateToTimestamp()),
             ipAddress: geoData.ipAddress,
@@ -101,30 +107,32 @@ const Deposit = () => {
         const res = await putData('/deposit/make_deposit/', obj)
         if (!res.status === 400) {
             getHistoryDeposit()
+            SwalSimple('Deposit was successful!')
         } else {
             SwalSimple('Something went wrong! Try again later...')
+            console.log('swal simple')
         }
     }
     const onChange = (e) => {
         let calc = +e.target.value / btc
         setState({text: e.target.value, value: calc})
     }
-    // const getBalance = async () => {
-    //     const res = await getData(`/get_user_balance/${store.user.id}`)
-    //     let arr = []
-    //     res.data.forEach(item => {
-    //         let obj = {
-    //             value: item.coinName,
-    //             text: item.coinName,
-    //             fullName: item.coinFullName
-    //         }
-    //         arr.push(obj)
-    //     })
-    //     setCoins(arr)
-    //     setCoinsFull(res.data)
-    //     setBalance(res.data[0].coinBalance)
-    //     console.log('res balance', res.data)
-    // }
+    const getBalance = async () => {
+        const res = await getData(`/get_user_balance/${store.user.id}`)
+        // let arr = []
+        // res.data.forEach(item => {
+        //     let obj = {
+        //         value: item.coinName,
+        //         text: item.coinName,
+        //         fullName: item.coinFullName
+        //     }
+        //     arr.push(obj)
+        // })
+        // setCoins(arr)
+        // setCoinsFull(res.data)
+        setBalance(res.data.filter(item => item.coinName === location.state.coin))
+        // console.log('res balance', res.data)
+    }
     const onValChange = (e) => {
         let target = e.target.value
         let balanceAmount = 0
@@ -147,7 +155,7 @@ const Deposit = () => {
                         <Row className='justify-content-center'>
                             <Col className='col-12 col-md-4'>
                                 <ButtonCard title={'Generate address'}>
-                                    <Button onClick={() => setAddress('skjdbfkjsbdkfbsdkbfksd')}>Generate</Button>
+                                    <Button onClick={getAddressForDeposit}>Generate</Button>
                                 </ButtonCard>
                             </Col>
                         </Row>
@@ -182,7 +190,7 @@ const Deposit = () => {
                                                 {location.state.coin}
                                             </span>
                                         </span>
-                                                <div>Coin balance: {balance}</div>
+                                                <div>Coin balance: {balance[0].coinBalance}</div>
                                             </div>
                                         </Col>
                                     </Row>
@@ -222,7 +230,7 @@ const Deposit = () => {
                                     <span style={{fontSize: 12}}>Note: Deposit fee is: {store.domain.domainParams.depositFee}%</span>
                                     <Row className='mb-3 mt-3 justify-content-center'>
                                         <Col className='col-6'>
-                                            <Button classname='user-green' onClick={handleSubmit(onSubmit)}>Submit</Button>
+                                            <Button classname='user-green' onClick={handleSubmit(onSubmit)}>Submit !!!</Button>
                                         </Col>
                                     </Row>
                                 </ButtonCard>
@@ -238,7 +246,7 @@ const Deposit = () => {
 
                                     <div style={{maxHeight: 400, overflowY: 'auto', height: '100%'}}>
                                         {
-                                            history ?
+                                           typeof history !== 'string' ?
                                                 history.map(item => {
                                                     return (
                                                         <TableItemUser
