@@ -30,7 +30,7 @@ const Support = () => {
             imageLink: image ? image : null,
             chatId: msg.length > 0 ? msg[0].chatId : null,
             isUser: true,
-            supportName: null
+            supportName: store.domain.supportName
         }
 
         const res = await putData('/support/send_support_message/', obj)

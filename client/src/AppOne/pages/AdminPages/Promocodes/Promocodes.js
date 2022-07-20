@@ -111,7 +111,9 @@ const Promocodes = () => {
             isStaff: store.isStaff,
             isAdmin: store.isAdmin,
             id: store.user.id,
-            rootAccess: store.fullAccess
+            rootAccess: store.fullAccess,
+            skipValue: 0,
+            limitValue: 20
         }
         const res = await postData('/staff/get_used_promocode_list/', promoData)
         const data = await res.data

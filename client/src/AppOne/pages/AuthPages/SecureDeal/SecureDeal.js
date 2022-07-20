@@ -188,7 +188,7 @@ const SecureDeal = () => {
                         <Col className='col-12 col-md-6 mb-3'>
                             <Select {...register('coinName', {
                                 required: 'This field is required',
-                            })} options={options} classname='light select-bordered' />
+                            })} options={options} classname={['select-bordered', 'user-big']} />
                             <ErrorMessage
                                 name='coinName'
                                 errors={errors}

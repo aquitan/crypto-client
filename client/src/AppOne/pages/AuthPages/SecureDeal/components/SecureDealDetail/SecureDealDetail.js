@@ -88,11 +88,11 @@ const SecureDealDetail = () => {
             imageLink: image ? image : null,
             chatId: msg.length > 0 ? msg[0].chatId : null,
             isUser: true,
-            supportName: null,
+            supportName: store.domain.supportName,
             dealId: dealData._id
         }
 
-        const res = await putData('/support/send_message_to_secure_deal_chat/', obj)
+        const res = await putData('/secure_deal/deal_detail/send_message_to_secure_deal_chat', obj)
         if (res.status === 202) {
             getSupportMessages()
         }
@@ -100,7 +100,7 @@ const SecureDealDetail = () => {
     }
 
     const getSupportMessages = async () => {
-        const res = await getData(`/support/get_secure_deal_chat_for_user/${store.user.id}/0/20/`)
+        const res = await getData(`/secure_deal/deal_detail/get_chat_for_user/${store.user.id}/0/50/`)
         setMsg(res.data)
         // createMessagesOnLoad(res.data)
     }

@@ -78,7 +78,9 @@ const AdminSecureDealDetail = () => {
         const res = await postData('/staff/secure_deal/detail_deal/', data)
         setDealDetail(res.data[0])
         setDealDetailChat(res.data[1][0])
-        getDealChatMessages(res.data[1][0].chatId)
+        if (res.data[1].length) {
+            getDealChatMessages(res.data[1][0].chatId)
+        }
     }
 
     const getDealChatMessages = async (id) => {

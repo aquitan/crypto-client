@@ -281,12 +281,13 @@ const UserDetailTabAct = (props) => {
     }
     const onUserEnter = () => {
         store.logout()
+        navigate('/')
+        store.setIsStaff(false)
         store.setAsUser({
             email: props.data.base_data.email,
             password: props.data.base_data.password
         })
         onLogin()
-        navigate('/')
     }
 
     const trsType = [

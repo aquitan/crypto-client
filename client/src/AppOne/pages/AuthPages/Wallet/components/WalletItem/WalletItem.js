@@ -34,14 +34,14 @@ const WalletItem = ({coinsBalance, balanceUsd, coin, coinFullName}) => {
                     <Row className={'mb-3 mt-3'}>
                         <Col>
                             <Button onClick={() => navigate('/withdraw', {state: {
-                                    coin, coinsBalance
+                                    coin, coinsBalance, coinFullName
                                 }})} classname={['user-red']}>
                                 Withdraw
                             </Button>
                         </Col>
                         <Col>
                             <Button onClick={() => navigate('/deposit', {state: {
-                                coin, coinsBalance
+                                coin, coinsBalance, coinFullName
                                 }})} classname={['user-green']}>
                                 Deposit
                             </Button>

@@ -7,7 +7,7 @@ import {store} from "../../../../index";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
 
 const UserNews = () => {
-    const [state, setState] = useState()
+    const [state, setState] = useState([])
 
     useEffect(() => {
         getNews()
@@ -23,8 +23,8 @@ const UserNews = () => {
         <Container style={{maxHeight: 800}}>
             <h2>News</h2>
             {
-                state ?
-                    state.slice(0).reverse().map(item => {
+                typeof state !== 'string' ?
+                    state.map(item => {
                         return (
                             <ButtonCard>
                                 <h3 className='mb-3'>{item.newsTitle}</h3>
@@ -40,7 +40,7 @@ const UserNews = () => {
                             </ButtonCard>
                         )
                     })
-                    : <h3>No news</h3>
+                    : <h2>No news</h2>
             }
 
         </Container>
