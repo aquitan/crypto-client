@@ -114,6 +114,7 @@ const DomainsDetail = () => {
 
 
     const onSubmit = async (data) => {
+        console.log('on submit error list', errorList)
         if (data.showNews === 'true') {
             data.showNews = true
         }
@@ -129,7 +130,6 @@ const DomainsDetail = () => {
         data.errorList = errorList
         data.dateOfDomainCreate = dateToTimestamp()
         data.depositFee = parseInt(data.depositFee)
-        data.rateCorrectSum = parseInt(data.rateCorrectSum)
         data.minDepositSum = parseInt(data.minDepositSum)
         data.minWithdrawalSum = parseInt(data.minWithdrawalSum)
         data.currencySwapFee = parseInt(data.currencySwapFee)
@@ -151,7 +151,8 @@ const DomainsDetail = () => {
             data.showNews = false
         }
         data.rootAccess = store.fullAccess
-        // const res = await patchData('/staff/domains/domain_detail/domain_edit/', data)
+        const res = await patchData('/staff/domains/domain_detail/domain_edit/', data)
+        console.log('domain edit', data)
     }
 
     const onChangeError = (data) => {
@@ -165,14 +166,19 @@ const DomainsDetail = () => {
                     button: data.button
                 }
                 if (errorList[key].title === 'Address Verification') {
+                    console.log('error-list', errorList)
                     setErrorList({...errorList, verif_address: obj})
                 } else if (errorList[key].title === 'Documents Verification') {
+                    console.log('error-list', errorList)
                     setErrorList({...errorList, verif_document: obj})
                 } else if (errorList[key].title === 'Premium') {
+                    console.log('error-list', errorList)
                     setErrorList({...errorList, premium: obj})
                 } else if (errorList[key].title === 'Insurance') {
+                    console.log('error-list', errorList)
                     setErrorList({...errorList, insurance: obj})
                 } else if (errorList[key].title === 'Multi-account') {
+                    console.log('error-list', errorList)
                     setErrorList({...errorList, multi_account: obj})
                 }
             }
@@ -256,16 +262,6 @@ const DomainsDetail = () => {
                             max: 5
                         })} placeholder={'Комиссия при пополнении %'}/>
                         <ErrorMessage  name={'depositFee'} errors={errors} render={() => <p className={cls.error}>Check the value</p>} />
-                    </Row>
-                    <Row className={'mb-3 relative'}>
-                        Корректировка курса в %
-                        <AdminInput {...register('rateCorrectSum', {
-                            required: true,
-                            pattern: /^[0-9]+$/,
-                            min: 0,
-                            max: 15
-                        })} placeholder={'Корректировка курса в %'}/>
-                        <ErrorMessage  name={'rateCorrectSum'} errors={errors} render={() => <p className={cls.error}>Check the value</p>} />
                     </Row>
                     {
                         domainSelect.map(select => {

@@ -171,10 +171,11 @@ export default class Store {
     }
     async logout() {
         try {
-            const response = await AuthService.logout()
             localStorage.removeItem('token')
+            const response = await AuthService.logout()
             this.setAuth(false)
             this.setIsAdmin(false)
+            this.setIsStaff(false)
             this.setUser({})
             this.setFullAccess(false)
         } catch(e) {

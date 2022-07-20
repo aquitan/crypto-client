@@ -18,7 +18,7 @@ const AllNews = ({data}) => {
                 <Col>{getCurrentDate(data.newsDate)}</Col>
                 <Col>{data.newsTitle}</Col>
                 <Col>{data.newsImage}</Col>
-                <Col>{data.newsBody}</Col>
+                <Col style={{height: 100, overflowY: "hidden"}}>{data.newsBody}</Col>
                 <Col><AdminButton classname={'green'} onClick={toComponent}>Редактировать</AdminButton></Col>
             </Row>
         </div>

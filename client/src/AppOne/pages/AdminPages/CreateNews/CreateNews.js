@@ -220,7 +220,7 @@ const CreateNews = () => {
             <AdminButtonCard>
                 <h4>Все новости</h4>
                 {
-                    state !== 'empty list' ?
+                    state !== 'empty set' ?
                         state.map(news => {
                             return <AllNews key={uuid()} data={news} />
                         })
