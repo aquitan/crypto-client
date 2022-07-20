@@ -248,15 +248,9 @@ class adminService {
 
     const kyc: any = await userKyc.findOne({ userId: userId })
     console.log('user kyc is => ', kyc);
-    if (kyc) {
-      await userKyc.deleteOne({ userId: userId })
-    }
 
     const userTwoFactor: any = await user2fa.find({ userId: userId })
     console.log('2fa params is => ', userTwoFactor);
-    if (userTwoFactor) {
-      await user2fa.deleteOne({ userId: userId })
-    }
 
     const actionData: any = await userAction.findOne({ userId: userId })
     console.log('found user actionData => ', actionData);
@@ -264,58 +258,50 @@ class adminService {
 
     const logInfo: any = await userLogs.find({ userEmail: userToDelete.email })
     console.log('found  logInfo => ', logInfo.length);
-    if (!logInfo.length) return false
+    if (!logInfo) return false
 
     const balanceList: any = await userBalance.find({ userId: userId })
     console.log('found  balances => ', balanceList.length);
-    // if (!balanceList.length) return false
+    if (!balanceList) return false
 
     const walletList: any = await userWallet.find({ userId: userId })
     console.log('found  walletList => ', walletList.length);
-    // if (!walletList.length) return false
+    if (!walletList) return false
 
     const withdrHist: any = await withdrawalHistory.find({ userId: userId })
     console.log('found  withdrHist => ', withdrHist.length);
-    // if (!withdrHist.length) return false
+    if (!withdrHist) return false
 
     const swapHist: any = await swapHistory.find({ userId: userId })
     console.log('found  swapHist => ', swapHist.length);
-    // if (!swapHist.length) return false
+    if (!swapHist) return false
 
     const depHistory: any = await depositHistory.find({ userId: userId })
     console.log('found  depoHistory => ', depHistory.length);
-    // if (!depHistory.length) return false
+    if (!depHistory) return false
 
     const intenrHistory: any = await internalHistory.find({ userId: userId })
     console.log('found  intenrnalHistory => ', intenrHistory.length);
-    // if (!intenrHistory.length) return false
+    if (!intenrHistory) return false
 
     const depWallets: any = await depositWallets.find({ userId: userId })
     console.log('found  depWallets => ', depWallets.length);
-    // if (!depWallets.length) return false
+    if (!depWallets) return false
 
     const tradingOrderList: any = await tradingOrders.find({ userId: userId })
     console.log('found  tradingOrderList => ', tradingOrderList.length);
-    if (tradingOrderList) {
-      await deleteHelper(tradingOrders, userId)
-    }
-
 
     const isStaffParams: any = await staffParams.findOne({ staffUserEmail: userToDelete.email })
     console.log('found  isStaffParams => ', isStaffParams);
 
     if (isStaffParams) {
-      const staffLogList: any = await staffLogs.find({
-        userId: userId
-      })
+      const staffLogList: any = await staffLogs.find({ userId: userId })
       console.log('found  isStaffParams => ', staffLogList.length);
-      if (!staffLogList.length) return false
+      if (!staffLogList) return false
 
-      const getStaffWallets: any = await staffWallet.find({
-        staffId: userId
-      })
+      const getStaffWallets: any = await staffWallet.find({ staffId: userId })
       console.log('received getWallets is => ', getStaffWallets.length);
-      // if (!getStaffWallets.length) return false
+      if (!getStaffWallets) return false
 
       await staffParams.findOneAndDelete({ staffUserEmail: userToDelete.email })
       await staffWallet.deleteMany({ staffId: userId })
@@ -329,9 +315,12 @@ class adminService {
     await deleteHelper(userWallet, userId)
     await deleteHelper(userBalance, userId)
     await deleteHelper(userLogs, userId)
-    await userAction.findOneAndDelete({ userId: userId })
-    await userParams.findOneAndDelete({ userId: userId })
-    await userBase.findOneAndDelete({ _id: userId })
+    if (tradingOrderList.length) await deleteHelper(tradingOrders, userId)
+    if (kyc.length) await userKyc.deleteOne({ userId: userId })
+    if (userTwoFactor.length) await user2fa.deleteOne({ userId: userId })
+    await userAction.deleteOne({ userId: userId })
+    await userParams.deleteOne({ userId: userId })
+    await userBase.deleteOne({ _id: userId })
 
     return true
   }

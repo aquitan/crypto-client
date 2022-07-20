@@ -11,7 +11,7 @@ export const DEPOSIT_WALLETS_SCHEMA = {
   },
   address: {
     type: String,
-    minlength: 40,
+    minlength: 30,
     maxlength: 50,
     require: true
   },

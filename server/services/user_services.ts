@@ -355,7 +355,9 @@ class UserServices {
 				limit(limitValue).
 				exec()
 			console.log('userHistory: ', userDepositHistory.length);
-			if (!userDepositHistory.length) return false
+			if (!userDepositHistory) return false
+			if (!userDepositHistory.length) return 'empty set'
+
 			return userDepositHistory
 		}
 
@@ -365,7 +367,9 @@ class UserServices {
 			limit(limitValue).
 			exec()
 		console.log('userHistory: ', userDepositHistory.length);
-		if (!userDepositHistory.length) return false
+		if (!userDepositHistory) return false
+		if (!userDepositHistory.length) return 'empty set'
+
 		return userDepositHistory
 	}
 
@@ -377,7 +381,8 @@ class UserServices {
 				limit(limitValue).
 				exec()
 			console.log('userHistory: ', userWithdrawalHistory.length);
-			if (!userWithdrawalHistory.length) return false
+			if (!userWithdrawalHistory) return false
+			if (!userWithdrawalHistory.length) return 'empty set'
 			return userWithdrawalHistory
 		}
 
@@ -400,6 +405,8 @@ class UserServices {
 			exec()
 		console.log('userHistory: ', userSwapHistory.length);
 		if (userSwapHistory) return false
+		if (!userSwapHistory.length) return 'empty set'
+
 		return userSwapHistory
 	}
 

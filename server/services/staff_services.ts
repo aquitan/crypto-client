@@ -216,7 +216,7 @@ class staffService {
 									dataArray.push(dataObject)
 								} else {
 									if (usersList[f].dateOfEntry > groupList[i].dateOfCreate) {
-										const kycParams: any = await userParams.findOne({ userId: usersList[f].id })
+										const kycParams: any = await userParams.findOne({ userId: usersList[f].id.toString() })
 										console.log('kycParams => ', kycParams);
 										if (!kycParams) return false
 										let dataObject = {
@@ -229,6 +229,16 @@ class staffService {
 											userDomain: usersList[f].domainName
 										}
 										dataArray.push(dataObject)
+									}
+									if (!dataArray.length) {
+										const usersList: any = await baseUserData.
+											find({ registrationType: staffId }).
+											skip(skipValue).
+											limit(limitValue).
+											exec()
+
+										dataArray = usersList
+
 									}
 								}
 							}
@@ -1118,8 +1128,8 @@ class staffService {
 			staffId: staffId
 		})
 		console.log('received getWallets is => ', getWallets.length);
-		if (!getWallets) return 'empty set'
-		if (!getWallets.length) return false
+		if (!getWallets.length) return 'empty set'
+		if (!getWallets) return false
 
 		return getWallets
 	}
@@ -1725,6 +1735,7 @@ class staffService {
 		const deposipAddresses: any = await depositRequest.find({ userId: userId })
 		console.log('deposipAddresses => ', deposipAddresses);
 		if (!deposipAddresses) return false
+		if (deposipAddresses.length === 0) return deposipAddresses
 
 		if (deposipAddresses.length) {
 			for (let i = 0; i <= deposipAddresses.length - 1; i++) {

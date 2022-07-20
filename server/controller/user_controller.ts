@@ -514,7 +514,7 @@ class UserController {
     try {
       const result: any = await UserServices.GetWithdrawalHistory(skipValue, limitValue, userId)
       console.log(' result is: ', result)
-      if (!result) return res.status(500).json({ message: 'internal server error' })
+      if (!result) throw ApiError.ServerError()
 
       return res.status(200).json({ message: 'ok', withdrawHistory: result })
     } catch (e) {

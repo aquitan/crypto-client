@@ -20,26 +20,28 @@ class moneyService {
 
 
   async GenerateDepositAddress(userId: string, userEmail: string, coinName: string, coinFullName: string, date: number) {
-
-    const checkAddress: any = await depositWallets.findOne({
-      coinName: coinName,
-      coinFullName: coinFullName,
-      userId: userId
-    })
-    console.log('received address is => ', checkAddress.address);
-
     let dataObject = {
       address: '',
       expiredDate: 0
     }
 
-    const tenMin: number = 1000 * 60 * 10
-    const curTimestapm = date - checkAddress.expiredDate
 
-    if (curTimestapm <= tenMin) {
-      dataObject.address = checkAddress.address
-      dataObject.expiredDate = curTimestapm
-      return dataObject
+    const checkAddress: any = await depositWallets.findOne({
+      coinName: coinName,
+      userId: userId
+    })
+    console.log('checkAddress => ', checkAddress);
+
+    if (checkAddress !== null) {
+      console.log('received address is => ', checkAddress.address);
+      const tenMin: number = 1000 * 60 * 10
+      const curTimestapm = date - checkAddress.expiredDate
+
+      if (curTimestapm <= tenMin) {
+        dataObject.address = checkAddress.address
+        dataObject.expiredDate = curTimestapm
+        return dataObject
+      }
     }
 
     const expiredDate: number = date + (1000 * 60 * 30)

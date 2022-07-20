@@ -2,8 +2,6 @@ import axios from 'axios'
 import * as bip32 from 'bip32'
 import * as bip39 from 'bip39'
 import * as bitcoin from 'bitcoinjs-lib'
-import { Buffer } from 'buffer'
-import * as ethers from 'ethers'
 // import crypto from 'crypto'
 import * as Wallet from 'ethereumjs-wallet'
 import * as web3 from '@solana/web3.js'
@@ -33,12 +31,11 @@ class CryptoService {
 
   async addressGen(coinName: string) {
     if (!coinName) return false
+    const coin: string = coinName.toLowerCase()
     // get address from api
 
-    if (coinName === 'btc') {
+    if (coin === 'btc') {
       // https://javascript.plainenglish.io/generate-your-own-bitcoin-wallet-within-5-minutes-3c36176b47ee?gi=c00ebff5e60f
-
-
 
       // https://github.com/bitpay/bitcore/tree/master/packages/bitcore-lib
       const network = bitcoin.networks.bitcoin
@@ -73,7 +70,7 @@ class CryptoService {
 
       return dataObject
     }
-    if (coinName === 'eth') {
+    if (coin === 'eth') {
       // https://levelup.gitconnected.com/generate-ethereum-address-using-node-js-a6a73f42a4cf
 
       const EthWallet = Wallet.default.generate();
@@ -95,18 +92,18 @@ class CryptoService {
 
     }
 
-    if (coinName === 'trx') {
+    if (coin === 'trx') {
 
     }
 
-    if (coinName === 'usdt') {
+    if (coin === 'usdt') {
 
     }
 
-    if (coinName === 'trxusdt') {
+    if (coin === 'trxusdt') {
 
     }
-    // if (coinName === 'sol') {
+    // if (coin === 'sol') {
     //   // https://docs.solana.com/developing/clients/javascript-reference
 
     //   // const keypair = Keypair.generate()

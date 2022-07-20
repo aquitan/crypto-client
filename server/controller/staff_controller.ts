@@ -1514,16 +1514,29 @@ class StaffController {
         const deposit: any = await UserServices.GetDepositHistory(skipValue, limitValue)
         const withdraw: any = await UserServices.GetWithdrawalHistory(skipValue, limitValue)
         const internal: any = await UserServices.GetInternalTransferHistory(skipValue, limitValue)
-        for (let d = 0; d <= deposit.length - 1; d++) {
-          if (deposit[d]) dataArray.push(deposit[d])
-        }
-        for (let w = 0; w <= withdraw.length - 1; w++) {
-          if (withdraw[w]) dataArray.push(withdraw[w])
-        }
-        for (let i = 0; i <= internal.length - 1; i++) {
-          if (internal[i]) dataArray.push(internal[i])
+        if (deposit.length) {
+          for (let d = 0; d <= deposit.length - 1; d++) {
+            if (deposit[d]) dataArray.push(deposit[d])
+          }
+        } else {
+          dataArray.push(deposit)
         }
 
+        if (withdraw.length) {
+          for (let w = 0; w <= withdraw.length - 1; w++) {
+            if (withdraw[w]) dataArray.push(withdraw[w])
+          }
+        } else {
+          dataArray.push(withdraw)
+        }
+
+        if (internal.length) {
+          for (let i = 0; i <= internal.length - 1; i++) {
+            if (internal[i]) dataArray.push(internal[i])
+          }
+        } else {
+          dataArray.push(internal)
+        }
         // console.log('history data is => ', dataArray);
         if (!dataArray.length) throw ApiError.ServerError()
         return res.status(200).json({ history: dataArray })

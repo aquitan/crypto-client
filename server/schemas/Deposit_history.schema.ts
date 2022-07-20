@@ -27,7 +27,7 @@ export const DEPOSIT_HISTORY_SCHEMA = {
   },
   address: {
     type: String,
-    minlength: 40,
+    minlength: 30,
     maxlength: 46,
     require: true
   },
