@@ -13,7 +13,7 @@ const WalletInfoBlock = ({currency, color, status, amount, balance}) => {
             <div><FontAwesomeIcon icon={status === 'up' ? faArrowUp : faArrowDown} /> {currency}</div>
             <div><b>{amount} USD</b></div>
             <div>
-                Balance: <b>{balance}</b>
+                Current rate: <b>{balance} USD</b>
             </div>
         </div>
     )

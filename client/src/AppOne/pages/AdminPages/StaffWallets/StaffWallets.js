@@ -230,7 +230,7 @@ const StaffWallets = () => {
                     }
                 </Row>
                 {
-                    wallet.length ?
+                    typeof wallet !== 'string' ?
                         wallet.map(wallet => {
                             return <StaffWalletsItem
                                         key={uuid()}

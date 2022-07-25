@@ -103,7 +103,7 @@ const CreateUser = () => {
                         </Row>
                             : <h4>No domains!</h4>
                     }
-                    <Row className='mb-3'>
+                    <Row className='mb-3 justify-content-center'>
                         <AdminButton classname='green'>Создать пользователя</AdminButton>
                     </Row>
                 </AdminForm>

@@ -65,6 +65,7 @@ const MyAccount = (props) => {
 
     const onLogout= () => {
         store.logout()
+        store.setIsStaff(false)
         navigate('/')
     }
 

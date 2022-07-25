@@ -28,6 +28,7 @@ import {ErrorMessage} from "@hookform/error-message";
 import {useNavigate} from "react-router-dom";
 import ModalDark from "../../../components/UI/ModalDark/ModalDark";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
+import {SwalSimple} from "../../../utils/SweetAlert";
 
 const CreateDomains = () => {
     const [modal, setModal] = useState(false)
@@ -120,7 +121,7 @@ const CreateDomains = () => {
         const res = await postData('/staff/domains/create_domain/', data)
         const response = await res.data
         if (res.status === 201) {
-            setModal(true)
+            SwalSimple('Домен успешно создан!')
             reset({data: ''})
         }
     }

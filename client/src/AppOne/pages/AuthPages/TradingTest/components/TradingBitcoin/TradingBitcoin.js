@@ -137,7 +137,6 @@ const TradingBitcoin = () => {
                     price: (+valueData.price + +rand).toFixed(2),
                     amountInCrypto: valueData.amountInCrypto,
                 }
-                console.log('valueData', valueData)
                 if (dataArray.length > 17) {
                     dataArray.shift(dataArray[0])
                 }
@@ -177,9 +176,10 @@ const TradingBitcoin = () => {
                 }, curTime)
             } else {
                 console.log('ended')
+                getRateFromBinance()
             }
         }
-        moveRate(currentValue, 300000)
+        moveRate(currentValue, 30000)
     }
 
     const sendResult = async () => {
@@ -200,7 +200,6 @@ const TradingBitcoin = () => {
                     price: (+valueData.price + +rand).toFixed(2),
                     amountInCrypto: valueData.amountInCrypto,
                 }
-                console.log('valueData', valueData)
                 if (dataArray.length > 17) {
                     dataArray.shift(dataArray[0])
                 }

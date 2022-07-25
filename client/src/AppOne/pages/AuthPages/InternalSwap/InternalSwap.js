@@ -23,6 +23,8 @@ import {emailValidate} from "../../../utils/checkEmail";
 import Preloader from "../../../components/UI/Preloader/Preloader";
 import {countCryptoTarget, getCurCoinName, getCurCoinVal, getCurValUsd, getValue} from "../../../utils/countCryptos";
 import {imgMatch} from "../../../utils/imgMatch";
+import {getGeoData} from "../../../queries/getSendGeoData";
+import {SwalSimple} from "../../../utils/SweetAlert";
 
 const InternalSwap = () => {
     const cx = classNames.bind(cls)
@@ -133,7 +135,7 @@ const InternalSwap = () => {
     }
 
     const onSubmit = async (data) => {
-
+        let geodata = await getGeoData()
         data.userId = store.user.id
         data.userEmail = store.userEmail
         data.domainName = window.location.host
@@ -141,10 +143,15 @@ const InternalSwap = () => {
         data.coinNameTo = state.target.currency
         data.amountInCryptoFrom = +data.amount + (+data.amount / 100 * chekPercent())
         data.amountInCryptoTo = getValue(state.initial.currency.toLowerCase(), state.target.currency.toLowerCase(), +data.amount)
-        data.amountInUsdFrom = getCurValUsd(state.initial.currency.toLowerCase(), +data.amount)
-        data.amountInUsdTo = getCurValUsd(state.target.currency.toLowerCase(), getValue(state.initial.currency.toLowerCase(), state.target.currency.toLowerCase(), +data.amount, ))
+        data.amountInUsd = getCurValUsd(state.initial.currency.toLowerCase(), +data.amount)
         data.currentDate = dateToTimestamp()
         data.swapStatus = 'pending'
+        data.ipAddress = geodata.ipAddress
+        data.city = geodata.city
+        data.browser = geodata.browser
+        data.countryName = geodata.countryName
+        data.coordinates = geodata.coordinates
+        data.logTime = getCurrentDate(new Date())
 
         delete data.amount
         delete data.initialValue
@@ -155,15 +162,16 @@ const InternalSwap = () => {
         console.log('sent', data)
         const res = await putData('/swap/make_swap/', data)
 
-        if (res.status) {
+        if (res.status === 201) {
             getSwapHistory()
+            SwalSimple('Swap completed successfully!')
         }
 
     }
 
     const getSwapHistory = async () => {
-        const res = await getData(`/swap/get_swap_history/${store.user.id}`)
-        setHistory(res.data.swapHistory)
+        // const res = await getData(`/swap/get_swap_history/${store.user.id}/0/20`)
+        // setHistory(res.data.swapHistory)
     }
 
     const chekPercent = () => {

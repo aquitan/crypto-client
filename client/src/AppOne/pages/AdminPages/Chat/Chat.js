@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
-import {Container, Row} from "react-bootstrap";
+import {Col, Container, Row} from "react-bootstrap";
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 import ChatWindow from "../../AuthPages/Support/components/ChatWindow/ChatWindow";
 import ChatMessege from "../../../components/UI/ChatMessege/ChatMessege";
@@ -81,12 +81,14 @@ const Chat = () => {
                 <h1>Чат</h1>
             </AdminButtonCard>
             <AdminButtonCard title={'Выбери чат'}>
-                <select value={currentChat} onChange={chooseChat}>
-                    <option>Выбери чат</option>
-                    {
-                        chats.map(item => <option key={item.text} value={item.value}>{item.text}</option>)
-                    }
-                </select>
+                <Row>
+                    <select style={{backgroundColor: 'transparent', color: '#fff', padding: 10, width: '100%'}} value={currentChat} onChange={chooseChat}>
+                        <option>Выбери чат</option>
+                        {
+                            chats.map(item => <option key={item.text} value={item.value}>{item.text}</option>)
+                        }
+                    </select>
+                </Row>
             </AdminButtonCard>
             <AdminButtonCard>
                 <Row>

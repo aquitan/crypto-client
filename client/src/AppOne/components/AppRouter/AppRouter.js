@@ -32,23 +32,17 @@ const AppRouter = () => {
     useEffect( () => {
         if (localStorage.getItem('token')) {
             store.checkAuth()
+            // getNotification()
         }
         if (!localStorage.getItem('token')) {
-            console.log('to landing')
             navigate('/')
         }
         sendDomainName()
         getRates()
-        getNotification()
-
-
     }, [])
 
     const getNotification = async () => {
-        if (store.fullAccess) {
-            console.log('notifications', store.fullAccess)
-            const res = await getData(`/staff/notifications/get_all_notifications/${store.user.id}`, {userId: store.user.id})
-        }
+        const res = await getData(`/staff/notifications/get_all_notifications/${store.user.id}`)
     }
 
     const countTotalBalance = () => {

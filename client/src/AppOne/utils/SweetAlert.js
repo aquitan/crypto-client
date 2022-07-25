@@ -15,3 +15,20 @@ export const SweetAlert = (icon, title, text) => {
 export const SwalSimple = (text) => {
     Swal.fire(text)
 }
+
+export const SwalConfirm = (title, confirmButtonText, denyButtonText, requestType) => {
+    Swal.fire({
+        title,
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText,
+        denyButtonText
+    }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+            Swal.fire('Saved!', '', 'success')
+        } else if (result.isDenied) {
+            Swal.fire('Changes are not saved', '', 'info')
+        }
+    })
+}

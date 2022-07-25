@@ -51,6 +51,7 @@ const Withdraw = () => {
         // getBalance()
         setBalance(location.state.coinsBalance)
         console.log('location', location)
+        getBalances()
     }, [])
 
     const getHistoryDeposit = async () => {
@@ -74,6 +75,10 @@ const Withdraw = () => {
         setState({text: +calc.toFixed(5), value: +e.target.value})
     }
 
+    const getBalances = async () => {
+        const res = await getData(`/get_internal_data/${store.user.id}/`)
+    }
+
     const onSubmit = async (data, e) => {
         e.preventDefault()
         data.value = state.value
@@ -88,8 +93,8 @@ const Withdraw = () => {
             currentDate: dateToTimestamp(),
             withdrawalAddress: data.withdrawalAddress,
             withdrawalStatus: 'failed',
-            logTime: getCurrentDate(dateToTimestamp()),
-            errorId: store.user.userError
+            coinFullName: location.state.coinFullName,
+            staffId: store.isStaff ? store.user.id : ''
         }
 
         const res = await putData('/withdraw/make_withdraw/', obj)

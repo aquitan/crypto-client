@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
-import {Container, Row} from "react-bootstrap";
+import {Col, Container, Row} from "react-bootstrap";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
 import AdminInput from "../../../components/UI/AdminInput/AdminInput";
 import TextArea from "../../../components/UI/TextArea/TextArea";
@@ -60,7 +60,11 @@ const ProjectSupport = () => {
                         })} classnames='dark textarea_square' placeholder='Текст'/>
                         <ErrorMessage  name='message' errors={errors} render={() => <p className={error.error}>Только английские буквы</p>} />
                     </Row>
-                    <AdminButton classname='green'>Отправить</AdminButton>
+                    <Row>
+                        <Col className='text-center'>
+                            <AdminButton classname='green'>Отправить</AdminButton>
+                        </Col>
+                    </Row>
                 </AdminForm>
             </AdminButtonCard>
         </Container>

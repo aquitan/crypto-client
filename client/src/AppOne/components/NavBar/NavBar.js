@@ -39,7 +39,9 @@ const NavBar = () => {
 
     return (
         <Navbar className={cls.navbar} bg='dark'>
-            <BurgerMenu onHandleClick={openMenu}/>
+            <div className='d-flex d-lg-none'>
+                <BurgerMenu onHandleClick={openMenu}/>
+            </div>
             <UserSidebar active={state ? 'activeSidebar' : ''} onClick={onCloseMenu} >
                 <div style={{color: '#fff', fontWeight: 'bold', fontSize: 22, marginBottom: 30}} className={cls.top}>
                     <NavLink to={'/'}>{store.domain.domainName}</NavLink>

@@ -100,7 +100,7 @@ const MakeTransactionOuter = ({history}) => {
         <>
                 <AdminButtonCard title='Regular transactions'>
                     <AdminForm onSubmit={handleSubmit(onSubmit)}>
-                        <Row className='mb-3 flex-items'>
+                        <Row className='flex-items'>
                             <Col className='col-12 col-lg-2 mb-3'>
                                 <Select {...register('transaction')} classname={'admin-square'} options={trsType}/>
                             </Col>
@@ -109,7 +109,7 @@ const MakeTransactionOuter = ({history}) => {
                                 <Select {...register('coinName')} classname={'admin-square'} options={optionsCurrency}/>
                             </Col>
 
-                            <Col className='col-12 col-lg-2'>
+                            <Col className='col-12 col-lg-2 mb-3'>
                                 <AdminInput {...register('amountInCrypto')} placeholder='Сумма' />
                             </Col>
                             <Col className='col-12 col-lg-3 mb-3' style={{position: 'relative'}}>
@@ -136,16 +136,16 @@ const MakeTransactionOuter = ({history}) => {
                                 <span style={styles.todayBtn} onClick={onNowTime}>Now</span>
                             </Col>
                         </Row>
-                        <Row className='mb-3'>
-                            <Col>
+                        <Row>
+                            <Col className='col-12 col-md-6 mb-3'>
                                 <AdminInput {...register('depositAddress')} placeholder='Адрес'/>
                             </Col>
-                            <Col>
+                            <Col className='col-12 col-md-6 mb-3'>
                                 <AdminInput {...register('userEmail')} placeholder='Почта'/>
                             </Col>
                         </Row>
                         <Row>
-                            <Col>
+                            <Col className='d-flex justify-content-center'>
                                 <AdminButton classname='green'>Создать</AdminButton>
                             </Col>
                         </Row>
