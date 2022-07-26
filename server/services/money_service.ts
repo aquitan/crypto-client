@@ -115,18 +115,33 @@ class moneyService {
         userEmail: transfer_object.userEmail,
         coinName: transfer_object.coinName,
       })
-
       console.log('curUserBalance is => ', curUserBalance);
       if (!curUserBalance) return false
-      if (curUserBalance.coinBalance < transfer_object.amountInCrypto) {
-        console.log('the value of received crypto amount is bigger than current user balance');
-        return false
-      }
+
       let userUpdatedBalance: number
       if (!transfer_object.transferType) {
+
+        if (curUserBalance.coinBalance < transfer_object.amountInCrypto) {
+          console.log('wrong user balance ');
+          return false
+        }
+
         userUpdatedBalance = curUserBalance.coinBalance - transfer_object.amountInCrypto
         console.log('cur user balance => ', userUpdatedBalance);
       } else {
+
+        const staffUserBalance: any = await userBalance.findOne({
+          userEmail: transfer_object.userEmail,
+          coinName: transfer_object.coinName,
+        })
+        console.log('staffUserBalance is => ', staffUserBalance);
+        if (!staffUserBalance) return false
+
+        if (staffUserBalance.coinBalance < transfer_object.amountInCrypto) {
+          console.log('wrong staff balance ');
+          return false
+        }
+
         userUpdatedBalance = curUserBalance.coinBalance + transfer_object.amountInCrypto
         console.log('cur user balance => ', userUpdatedBalance);
       }
