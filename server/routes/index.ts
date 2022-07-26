@@ -36,7 +36,7 @@ router.put('/personal_area/verification/', authChecker, userController.personalA
 
 // secure deal logic =>   (user logic = staff logic, & u can use the same routers for stafff and for userArea)
 router.put('/personal_area/secure_deal/create_secure_deal/', authChecker, userController.secureDealCreate) // create secure deal
-router.get('/second_party_user_checker/:userEmail/:domainName/', authChecker, userController.secondPartyChecker) // find second user for secure deal & internal transfers
+router.get('/second_party_user_checker/:userEmail/:domainName/:staffId/', authChecker, userController.secondPartyChecker) // find second user for secure deal & internal transfers
 router.get('/personal_area/secure_deal/secure_deal_detail/:dealId/:userEmail/', authChecker, userController.getSecureDealDetail) // get detail deal info by dealId
 router.get('/personal_area/secure_deal/secure_deal_history/:userEmail/', authChecker, userController.getSecureDealHistory) // get deal history for user by userEmail
 router.post('/staff/secure_deal/secure_deal_history/', staffController.getSecureDealHistory) // get deal history for staff 

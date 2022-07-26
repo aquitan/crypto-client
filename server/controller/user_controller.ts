@@ -334,11 +334,18 @@ class UserController {
     console.log('req: ', req.params);
     const userEmail: string = req.params.userEmail
     const domainName: string = req.params.domainName
+    const staffId: string = req.params.staffId
     if (!userEmail || !domainName) return res.status(400).json({ message: 'wrong data' })
 
     try {
-      const result: boolean = await UserServices.FindSecondPartyUser(userEmail, domainName)
-      if (!result) return res.status(400).json({ message: 'wrong data' })
+      if (!staffId) {
+        const result: boolean = await UserServices.FindSecondPartyUser(userEmail, domainName, staffId)
+        if (!result) return res.status(400).json({ message: result })
+
+        return res.status(200).json({ message: 'OK' })
+      }
+      const result: boolean = await UserServices.FindSecondPartyUser(userEmail, domainName,)
+      if (!result) return res.status(400).json({ message: result })
 
       return res.status(200).json({ message: 'OK' })
     } catch (e) {
@@ -717,10 +724,10 @@ class UserController {
     const validData: boolean = await bodyValidator(req.body, 11)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
-      const result: boolean = await UserServices.createSecureDeal(transferObject, userId)
+      const result: boolean | string = await UserServices.createSecureDeal(transferObject, userId)
       if (!result) throw ApiError.ServerError()
 
-      return res.status(200).json({ message: 'ok' })
+      return res.status(200).json({ message: result })
     } catch (e) {
       next(e)
     }
