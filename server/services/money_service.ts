@@ -97,6 +97,19 @@ class moneyService {
 
   async MakeInternalTransfer(transfer_object: any, staffId?: string) {
     if (staffId) {
+      console.log('staff id =>  ', staffId);
+
+      const userData: any = await baseUserData.findOne({ email: transfer_object.userEmail })
+      console.log('userData is => ', userData);
+      if (!userData) return false
+
+      const validStaffWallet: any = await userWallet.findOne({ userId: staffId, coinName: transfer_object.coinName })
+      console.log('validStaffWallet is => ', validStaffWallet);
+      if (!validStaffWallet) return false
+
+      const validUserWallet: any = await userWallet.findOne({ userId: userData.id, coinName: transfer_object.coinName })
+      console.log('validUserWallet is => ', validUserWallet);
+      if (!validUserWallet) return false
 
       const curUserBalance: any = await userBalance.findOne({
         userEmail: transfer_object.userEmail,
@@ -122,7 +135,7 @@ class moneyService {
         email: transfer_object.userEmail
       })
 
-      await this.BalanceUpdater(transfer_object.userId, transfer_object.coinName, userUpdatedBalance)
+      await this.BalanceUpdater(userData.id, transfer_object.coinName, userUpdatedBalance)
 
       await internalHistory.create({
         userEmail: transfer_object.userEmail,
@@ -132,10 +145,10 @@ class moneyService {
         cryptoAmount: transfer_object.amountInCrypto,
         usdAmount: transfer_object.amountInUsd,
         date: transfer_object.currentDate,
-        addressFrom: transfer_object.fromAddress,
-        addressTo: transfer_object.toAddress,
+        addressFrom: validStaffWallet.address,
+        addressTo: validUserWallet.address,
         transferType: transfer_object.transferType,
-        status: transfer_object.transferStatus,
+        status: 'complete',
         staffId: staffId
       })
 
@@ -145,7 +158,7 @@ class moneyService {
       console.log('history of cur transaction => ', curTransactionHistory);
       if (!curTransactionHistory) return false
 
-      return secondPartyEmail.email
+      return true
     }
 
     const secondPartyEmail: any = await userBaseData.findOne({
@@ -213,7 +226,7 @@ class moneyService {
 
   async MakeDeposit(transfer_object: any, logTime: string) {
 
-    const validAddress: any = await depositWallets.findOne({ address: transfer_object.address })
+    const validAddress: any = await depositWallets.findOne({ address: transfer_object.depositAddress })
     console.log('address data => ', validAddress);
     if (!validAddress) return false
 
@@ -492,7 +505,7 @@ class moneyService {
       let dataObject = {
         coinName: getUserWallets[i].coinName,
         balance: getUserBalance.coinBalance,
-        walletAddress: getUserWallets[i].userWallet
+        walletAddress: getUserWallets[i].address
       }
       console.log('prepared data => ', dataObject);
       for (let index in dataObject) {

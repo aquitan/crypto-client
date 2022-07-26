@@ -1463,27 +1463,27 @@ class StaffController {
   async createInternalTransaction(req: express.Request, res: express.Response, next: express.NextFunction) {
 
     const transfer_object: INTERNAL_HISTORY = {
-      userId: req.body.userId,
+      userId: '',
       userEmail: req.body.userEmail,
       domainName: req.body.domainName,
       coinName: req.body.coinName,
       amountInCrypto: req.body.amountInCrypto,
       amountInUsd: req.body.amountInUsd,
       currentDate: req.body.currentDate,
-      fromAddress: req.body.fromAddress,
-      toAddress: req.body.toAddress,
+      fromAddress: '',
+      toAddress: '',
       transferType: req.body.transferType,
       transferStatus: req.body.transferStatus
     }
     const staffId: string = req.body.staffId
 
-    const validData: boolean = await bodyValidator(req.body, 12)
+    const validData: boolean = await bodyValidator(req.body, 9)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
 
       const result: boolean | string = await moneyService.MakeInternalTransfer(transfer_object, staffId)
       if (!result) throw ApiError.ServerError()
-      return res.status(201).json({ message: 'ok' })
+      return res.status(201).json({ message: result })
 
     } catch (e) {
       next(e)

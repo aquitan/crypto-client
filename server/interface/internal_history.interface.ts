@@ -1,6 +1,6 @@
 
 export default interface INTERNAL_HISTORY {
-  userId: number
+  userId: string
   userEmail: string
   domainName: string
   coinName: string

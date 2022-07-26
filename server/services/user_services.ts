@@ -312,7 +312,31 @@ class UserServices {
 		return true
 	}
 
-	async FindSecondPartyUser(userEmail: string, domainName: string) {
+	async FindSecondPartyUser(userEmail: string, domainName: string, staffId?: string) {
+
+		if (staffId) {
+			const domains: any = await domainList.find({
+				domainOwner: staffId
+			})
+			console.log('domain list is => ', domains);
+			if (!domains) return false
+
+			let isValidate: boolean
+			for (let i = 0; i <= domains.length; i++) {
+				console.log('domains iter is => ', domains[i]);
+				if (domains[i].fullDomainName === domainName) {
+					isValidate = true
+					console.log('validate own domain => ', isValidate);
+					if (!isValidate) {
+						continue;
+					} else {
+						break;
+					}
+				}
+			}
+			return isValidate
+		}
+
 		const curUser: any = await baseUserData.findOne({
 			email: userEmail,
 			domainName: domainName
@@ -381,8 +405,8 @@ class UserServices {
 				limit(limitValue).
 				exec()
 			console.log('userHistory: ', userWithdrawalHistory.length);
-			if (!userWithdrawalHistory) return false
 			if (!userWithdrawalHistory.length) return 'empty set'
+			if (!userWithdrawalHistory) return false
 			return userWithdrawalHistory
 		}
 
@@ -392,20 +416,21 @@ class UserServices {
 			limit(limitValue).
 			exec()
 		console.log('userHistory: ', userWithdrawalHistory.length);
-		if (!userWithdrawalHistory.length) return false
+		if (!userWithdrawalHistory.length) return 'empty set'
+		if (!userWithdrawalHistory) return false
 		return userWithdrawalHistory
 
 	}
 
-	async GetSwapHistory(skipValue: number, limitValue: number, user_id: string) {
+	async GetSwapHistory(skipValue: number, limitValue: number, userId: string) {
 		const userSwapHistory: any = await swapHistory.
-			find({ userId: user_id }).
+			find({ userId: userId }).
 			skip(skipValue).
 			limit(limitValue).
 			exec()
 		console.log('userHistory: ', userSwapHistory.length);
-		if (userSwapHistory) return false
 		if (!userSwapHistory.length) return 'empty set'
+		if (!userSwapHistory) return false
 
 		return userSwapHistory
 	}
@@ -489,19 +514,37 @@ class UserServices {
 		console.log(' validSecondUserDomain is => ', validSecondUserDomain);
 		if (validFirstUserDomain.domainName !== validSecondUserDomain.domainName) return false
 
-		const getUserBalance: any = await userBalance.findOne({
-			coinName: transfer_object.coinName,
-			userId: userId
-		})
-		console.log('received balance => ', getUserBalance.coinBalance);
-		if (!getUserBalance) return false
-		if (getUserBalance < transfer_object.amountInCrypto) {
-			console.log('wrong balance value');
-			return false
+		if (validFirstUserDomain.email === transfer_object.buyer) {
+			const getUserBalance: any = await userBalance.findOne({
+				coinName: transfer_object.coinName,
+				userId: validFirstUserDomain.id
+			})
+			console.log('received balance => ', getUserBalance.coinBalance);
+			if (!getUserBalance) return false
+			if (getUserBalance < transfer_object.amountInCrypto) {
+				console.log('buyer balance value is wrong');
+				return 'buyer balance value is wrong'
+			}
 		}
+
+		if (validSecondUserDomain.email === transfer_object.buyer) {
+			const getUserBalance: any = await userBalance.findOne({
+				coinName: transfer_object.coinName,
+				userId: validSecondUserDomain.id
+			})
+			console.log('received balance => ', getUserBalance.coinBalance);
+			if (!getUserBalance) return false
+			if (getUserBalance < transfer_object.amountInCrypto) {
+				console.log('buyer balance value is wrong');
+				return 'buyer balance value is wrong'
+			}
+		}
+
+
+
 		const dataObject = {
 			userEmail: transfer_object.userEmail,
-			secoondPartyEmail: transfer_object.secondPartyEmail,
+			secondPartyEmail: transfer_object.secondPartyEmail,
 			dealCondition: transfer_object.dealCondition,
 			coinName: transfer_object.coinName,
 			amountInCrypto: transfer_object.amountInCrypto,
@@ -1131,20 +1174,15 @@ class UserServices {
 	async GetSecureDealChatDataForUser(userId: string, skip: number, limit: number) {
 
 		const chatData: any = await secureDealChat.
-			distinct('chatId').
-			where({ userId: userId }).
-			exec()
-		console.log('chatData is => ', chatData);
-
-		const dataList: any = await supportChat.
-			find({ chatId: chatData[0] }).
+			find({ userId: userId }).
 			skip(skip).
 			limit(limit).
 			exec()
-		console.log('received dataList: ', dataList.length);
-		if (!dataList) return false
+		console.log('chatData is => ', chatData);
+		if (!chatData.length) return 'empty set'
+		if (!chatData) return false
 
-		return dataList
+		return chatData
 	}
 
 

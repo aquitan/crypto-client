@@ -200,32 +200,32 @@ class staffService {
 							console.log('user list: ', usersList);
 							for (let f = 0; f <= usersList.length - 1; f++) {
 								if (groupList[i].viewParams === false) {
-									const kycParams: any = await userParams.findOne({ userId: usersList[f].id.toString() })
-									console.log('kycParams => ', kycParams);
-									// if (!kycParams.length)
-									if (!kycParams) return false
+									const params: any = await userParams.findOne({ userId: usersList[f].id.toString() })
+									console.log('params => ', params);
+									// if (!params.length)
+									if (!params) return false
 									let dataObject = {
 										userId: usersList[f].id,
 										registerDate: usersList[f].dateOfEntry,
 										userName: usersList[f].name,
 										userEmail: usersList[f].email,
-										userStatus: kycParams.isStaff,
-										kycStatus: kycParams.kycStatus,
+										userStatus: params.isStaff,
+										kycStatus: params.kycStatus,
 										userDomain: usersList[f].domainName
 									}
 									dataArray.push(dataObject)
 								} else {
 									if (usersList[f].dateOfEntry > groupList[i].dateOfCreate) {
-										const kycParams: any = await userParams.findOne({ userId: usersList[f].id.toString() })
-										console.log('kycParams => ', kycParams);
-										if (!kycParams) return false
+										const params: any = await userParams.findOne({ userId: usersList[f].id.toString() })
+										console.log('params => ', params);
+										if (!params) return false
 										let dataObject = {
 											userId: usersList[f].id,
 											registerDate: usersList[f].dateOfEntry,
 											userName: usersList[f].name,
 											userEmail: usersList[f].email,
-											userStatus: kycParams.isStaff,
-											kycStatus: kycParams.kycStatus,
+											userStatus: params.isStaff,
+											kycStatus: params.kycStatus,
 											userDomain: usersList[f].domainName
 										}
 										dataArray.push(dataObject)
