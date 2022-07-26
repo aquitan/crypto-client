@@ -36,6 +36,10 @@ const DomainsDetail = () => {
     const {register: registerError, handleSubmit: submitError} = useForm({
         mode: 'onBlur'
     })
+    const designs = [
+        {value: 'one', text: 'one'},
+        {value: 'two', text: 'two'},
+    ]
     useEffect(() => {
         getDomainData()
     }, [])
@@ -114,7 +118,9 @@ const DomainsDetail = () => {
 
 
     const onSubmit = async (data) => {
-        console.log('on submit error list', errorList)
+        for (let key in errorList) {
+            errorList[key].fullDomainName = data.fullDomainName
+        }
         if (data.showNews === 'true') {
             data.showNews = true
         }
@@ -128,7 +134,7 @@ const DomainsDetail = () => {
             data.doubleDeposit = false
         }
         data.errorList = errorList
-        data.dateOfDomainCreate = dateToTimestamp()
+        data.dateOfDomainCreate = new Date(dateToTimestamp())
         data.depositFee = parseInt(data.depositFee)
         data.minDepositSum = parseInt(data.minDepositSum)
         data.minWithdrawalSum = parseInt(data.minWithdrawalSum)
@@ -274,6 +280,11 @@ const DomainsDetail = () => {
                             )
                         })
                     }
+                    <Row className={'mb-3 relative'}>
+                        Дизайн
+                        <Select {...register('designName')} classname={'admin-square'} options={designs}/>
+                        <ErrorMessage  name={'designName'} errors={errors} render={() => <p className={cls.error}>This field is required</p>} />
+                    </Row>
                 </AdminButtonCard>
                 <AdminButtonCard>
                     {

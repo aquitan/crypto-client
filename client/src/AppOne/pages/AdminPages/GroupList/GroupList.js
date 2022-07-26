@@ -104,7 +104,7 @@ const GroupList = () => {
                         </Col>
                     </Row>
                     <Row>
-                        <Col>
+                        <Col className='text-center'>
                             <AdminButton classname='green'>Создать</AdminButton>
                         </Col>
                     </Row>

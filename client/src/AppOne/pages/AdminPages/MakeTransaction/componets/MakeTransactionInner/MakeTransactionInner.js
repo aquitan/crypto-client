@@ -64,9 +64,7 @@ const MakeTransactionInner = () => {
         data.domainName = window.location.host
         data.amountInUsd = getCurCoinName(data.coinName.toLowerCase(), data.amountInCrypto)
         data.currentDate = dateToTimestamp(newDate)
-        data.depositStatus = 'pending'
-        data.coinFullName = 'bitcoin'
-        data.toAddress = 'sdfsdfsdfsdf'
+        data.toAddress = data.userEmail
         data.transferStatus = 'complete'
         if (data.transferType === 'true') {
             data.transferType = true
@@ -98,7 +96,7 @@ const MakeTransactionInner = () => {
         <>
                 <AdminButtonCard title='Internal transactions'>
                     <AdminForm onSubmit={handleSubmit(onSubmit)}>
-                        <Row className='mb-3 flex-items'>
+                        <Row className='flex-items'>
                             <Col className='col-12 col-lg-2 mb-3'>
                                 <Select {...register('transferType')} classname={'admin-square'} options={actionType}/>
                             </Col>
@@ -107,7 +105,7 @@ const MakeTransactionInner = () => {
                                 <Select {...register('coinName')} classname={'admin-square'} options={optionsCurrency}/>
                             </Col>
 
-                            <Col className='col-12 col-lg-2'>
+                            <Col className='col-12 col-lg-2 mb-3'>
                                 <AdminInput {...register('amountInCrypto')} placeholder='Сумма' />
                             </Col>
                             <Col className='col-12 col-lg-3 mb-3' style={{position: 'relative'}}>
@@ -134,11 +132,11 @@ const MakeTransactionInner = () => {
                                 <span style={styles.todayBtn} onClick={onNowTime}>Now</span>
                             </Col>
                         </Row>
-                        <Row className='mb-3'>
-                            <Col>
+                        <Row>
+                            <Col className='col-12 col-md-6 mb-3'>
                                 <AdminInput {...register('toAddress' )} placeholder='Адрес'/>
                             </Col>
-                            <Col>
+                            <Col className='col-12 col-md-6 mb-3'>
                                 <AdminInput {...register('userEmail', {
                                     onBlur: (e) => onBlur(e)
                                 })} placeholder='Почта'/>

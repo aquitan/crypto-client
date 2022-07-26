@@ -163,7 +163,7 @@ const CreateNews = () => {
             <AdminButtonCard>
                 <AdminForm onSubmit={handleSubmit(onSubmit)}>
                     <Row>
-                        <Col className='col-12 col-md-3 mb-3'>
+                        <Col className='col-12 col-lg-3 mb-3'>
                             <AdminInput {...register('newsTitle', {
                                 required: true,
                                 pattern: /^[^а-яё]+$/iu
@@ -193,7 +193,7 @@ const CreateNews = () => {
                                          dateFormat="HH:mm"/>
                             <span style={styles.todayBtn} onClick={onNowTime}>Now</span>
                         </Col>
-                        <Col className='col-12 col-md-3 mb-3'>
+                        <Col className='col-12 col-lg-3 mb-3'>
                             <Select classname={['admin-square']} value={curSelect} options={allDomains} />
                         </Col>
                     </Row>
@@ -211,7 +211,7 @@ const CreateNews = () => {
                         {/*</Col>*/}
                     </Row>
                     <Row>
-                        <Col>
+                        <Col className='text-center'>
                             <AdminButton classname='green'>Создать</AdminButton>
                         </Col>
                     </Row>

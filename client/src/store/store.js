@@ -182,6 +182,7 @@ export default class Store {
             localStorage.removeItem('token')
             this.setAuth(false)
             this.setIsAdmin(false)
+            this.setIsStaff(false)
             this.setUser({})
             this.setFullAccess(false)
         } catch(e) {

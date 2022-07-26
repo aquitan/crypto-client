@@ -294,7 +294,7 @@ const Promocodes = () => {
                         </Col>
                     </Row>
                     <Row className='mb-4'>
-                        <Col>
+                        <Col className='d-flex justify-content-center'>
                             <AdminButton classname='green'>Сгенерировать</AdminButton>
                         </Col>
                     </Row>
@@ -350,7 +350,7 @@ const Promocodes = () => {
                     <Col className='col-12 col-sm-4'>
                         <AdminButton
                             onClick={deleteAllUsed}
-                            classname={['red', 'xs']}>Удалить все</AdminButton>
+                            classname={['red']}>Удалить все</AdminButton>
                     </Col>
                 </Row>
                 <Row className={cls.table_header}>

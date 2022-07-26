@@ -185,7 +185,7 @@ const SecureDealDetail = () => {
                                 <Col className='col-12 col-lg-8 mb-3'>
                                     <ChatWindow onUploadImg={onUploadImg} onClick={onClick}>
                                         {
-                                            msg.length ?
+                                           typeof msg !== 'string' ?
                                                 msg.map(item => {
                                                     return(
                                                         <ChatMessege

@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Container, Form, Row} from "react-bootstrap";
+import {Col, Container, Form, Row} from "react-bootstrap";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
 import {getData, patchData} from "../../../services/StaffServices";
 import AdminInput from "../../../components/UI/AdminInput/AdminInput";
@@ -79,7 +79,11 @@ const StaffTrading = () => {
                             classname={['admin-square']}
                             placeholder={'Интервал в минутах'} />
                     </Row>
-                    <AdminButton classname={'green'}>Изменить</AdminButton>
+                    <Row>
+                        <Col className='text-center'>
+                            <AdminButton classname={'green'}>Изменить</AdminButton>
+                        </Col>
+                    </Row>
                 </Form>
             </AdminButtonCard>
 

@@ -21,6 +21,7 @@ import Select from "../../../../../components/UI/Select/Select";
 import {optionsCurrency} from "../../../../../utils/staffConstants";
 import {log} from "util";
 import {SwalSimple} from "../../../../../utils/SweetAlert";
+import Swal from "sweetalert2";
 
 const UserDetailTabAct = (props) => {
 
@@ -152,8 +153,11 @@ const UserDetailTabAct = (props) => {
         const response = await patchData('/staff/users/user_detail/update_double_deposit/', {
             ...dataObj, status: !btns.double
         })
+        if (response.status === 202) {
+            SwalSimple('Изменено')
+        }
         setBtns({...btns, double: !btns.double})
-        handleCloseModal()
+        // handleCloseModal()
     }
     const makeFullBan = async () => {
         delete dataObj.currentDate
@@ -189,6 +193,7 @@ const UserDetailTabAct = (props) => {
     }
 
     const sendPremStatus = async () => {
+        console.log('clicked premium')
         delete dataObj.currentDate
         const response = await patchData('/staff/users/user_detail/update_premium_status/',{
             ...dataObj,
@@ -198,8 +203,8 @@ const UserDetailTabAct = (props) => {
             SwalSimple('Изменено!')
         }
         setBtns({...btns, currentPrem: !btns.currentPrem})
-        setState({isOpen: false, onClickConfirm: null})
-        handleCloseModal()
+        // setState({isOpen: false, onClickConfirm: null})
+        // handleCloseModal()
     }
 
     const makeIpClear = async () => {
@@ -223,15 +228,15 @@ const UserDetailTabAct = (props) => {
             case 'support':
                 return handleSupportSubmit(changeSupportName);
             case 'double':
-                return makeDouble;
+                return makeDouble();
             case 'premium':
-                return sendPremStatus;
+                return sendPremStatus();
             case 'full-ban':
-                return makeFullBan;
+                return makeFullBan();
             case 'internal-ban':
-                return makeTransactionBan;
+                return makeTransactionBan();
             case 'swap-ban':
-                return makeSwapBan;
+                return makeSwapBan();
             case 'staff-reqruiter':
                 return handleRecruiterSubmit(changeReqruiterName);
             case 'new-percent':
@@ -239,19 +244,19 @@ const UserDetailTabAct = (props) => {
             case 'notification':
                 return handleNotifSubmit(changeNotif);
             case 'make-staff':
-                return makeStaff;
+                return makeStaff();
             case 'balance':
                 return handleBalanceSubmit(changeBalance);
             case 'ip-clear':
-                return makeIpClear;
+                return makeIpClear();
             case 'email-clear':
-                return makeEmailClear;
+                return makeEmailClear();
             case 'delete-user':
-                return deleteUser;
+                return deleteUser();
             case 'confirm-delete':
-                return confirmDelete;
+                return confirmDelete();
             case 'chat-ban':
-                return chatBan;
+                return chatBan();
             case 'update-domain':
                 return handleChangeDomain(updateDomain);
             default:
@@ -264,17 +269,56 @@ const UserDetailTabAct = (props) => {
     const handleOpenModal = (requestType) => {
         if (requestType === 'confirm-delete') {
             const onClickConfirm = handleFindType(requestType)
-            setState({
-                isOpen: false,
-                onClickConfirm,
-                doubleConfirm: true
+            Swal.fire({
+                title: 'Изменить?',
+                showDenyButton: true,
+                confirmButtonText: 'Yes',
+                denyButtonText: `No`,
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Вы уверены?',
+                        showDenyButton: true,
+                        confirmButtonText: 'Yes',
+                        denyButtonText: `No`,
+                    }).then((result) => {
+                        /* Read more about isConfirmed, isDenied below */
+                        if (result.isConfirmed) {
+                            handleFindType(requestType)
+                        } else if (result.isDenied) {
+                            Swal.fire('Не сохранено!')
+                        }
+                    })
+                } else if (result.isDenied) {
+                    Swal.fire('Не сохранено!')
+                }
             })
         } else {
-            const onClickConfirm = handleFindType(requestType)
-            setState({
-                isOpen: true,
-                onClickConfirm,
-                doubleConfirm: false
+            Swal.fire({
+                title: 'Изменить?',
+                showDenyButton: true,
+                confirmButtonText: 'Yes',
+                denyButtonText: `No`,
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Вы уверены?',
+                        showDenyButton: true,
+                        confirmButtonText: 'Yes',
+                        denyButtonText: `No`,
+                    }).then((result) => {
+                        /* Read more about isConfirmed, isDenied below */
+                        if (result.isConfirmed) {
+                            handleFindType(requestType)
+                        } else if (result.isDenied) {
+                            Swal.fire('Не сохранено!')
+                        }
+                    })
+                } else if (result.isDenied) {
+                    Swal.fire('Не сохранено!')
+                }
             })
         }
 
@@ -354,57 +398,6 @@ const UserDetailTabAct = (props) => {
             </AdminButtonCard>
 
 
-
-
-            {/*<AdminButtonCard title='Изменение баланса'>*/}
-            {/*    <Row className='mb-3'>*/}
-            {/*        <Col className='col-12 col-md-2 col-lg-2'>*/}
-            {/*            Счёт пользователя:*/}
-            {/*        </Col>*/}
-            {/*        <Col className='col-12 col-md-6 col-lg-6'>*/}
-            {/*            <Select {...balanceRegister('coinName')} classname={'admin-square'} options={optionsCurrency}/>*/}
-            {/*        </Col>*/}
-            {/*    </Row>*/}
-            {/*    <Row className='mb-3'>*/}
-            {/*        <Col className='col-12 col-md-2 col-lg-2'>*/}
-            {/*            Баланс кошелька:*/}
-            {/*        </Col>*/}
-            {/*        /!*<Col className='col-12 col-md-6 col-lg-6'>*!/*/}
-            {/*        /!*    <AdminInput {...balanceRegister('balance')} placeholder='balance'/>*!/*/}
-            {/*        /!*</Col>*!/*/}
-            {/*    </Row>*/}
-            {/*    /!*<Row className='mb-3'>*!/*/}
-            {/*    /!*    <Col className='col-12 col-md-2 col-lg-2'>*!/*/}
-            {/*    /!*        Нотификация:*!/*/}
-            {/*    /!*    </Col>*!/*/}
-            {/*    /!*    <Col className='col-12 col-md-6 col-lg-6'>*!/*/}
-            {/*    /!*        <AdminInput {...balanceRegister('notification', {*!/*/}
-            {/*    /!*            required: false,*!/*/}
-            {/*    /!*            pattern: /^[^а-яё]+$/iu*!/*/}
-            {/*    /!*        })} name='notification' placeholder='This your notif text'/>*!/*/}
-            {/*    /!*    </Col>*!/*/}
-            {/*    /!*</Row>*!/*/}
-            {/*    <Row className='mb-3'>*/}
-            {/*        <Col className='col-12 col-md-2 col-lg-2'>*/}
-            {/*            Направление:*/}
-            {/*        </Col>*/}
-            {/*        <Col className='col-12 col-md-6 col-lg-6'>*/}
-            {/*            <Select {...balanceRegister('transaction')} classname={'admin-square'} options={trsType}/>*/}
-            {/*        </Col>*/}
-            {/*    </Row>*/}
-            {/*    <Row className='mb-3'>*/}
-            {/*        <Col className='col-12 col-md-2 col-lg-2'>*/}
-            {/*            Сумма:*/}
-            {/*        </Col>*/}
-            {/*        <Col className='col-12 col-md-6 col-lg-6'>*/}
-            {/*            <AdminInput {...balanceRegister('amountInCrypto')} placeholder='0' />*/}
-            {/*        </Col>*/}
-            {/*    </Row>*/}
-            {/*    <Row>*/}
-            {/*        <AdminButton onClick={() => handleOpenModal('balance')} classname={['green', 'marginless']} >Изменить</AdminButton>*/}
-            {/*    </Row>*/}
-
-            {/*</AdminButtonCard>*/}
 
 
 

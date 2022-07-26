@@ -231,7 +231,7 @@ const UserDetailTabInfo = ({data}) => {
 
                         <Row className={cls.users_detail_table_row}>
                             <p>Текущая ошибка</p>
-                            <Col>
+                            <Col className='mb-3'>
                                 <Select {...register('errorId')} classname={'admin-square'} options={toArr()}/>
                             </Col>
                             <Col>

@@ -230,7 +230,7 @@ const Deposit = () => {
                                     <span style={{fontSize: 12}}>Note: Deposit fee is: {store.domain.domainParams.depositFee}%</span>
                                     <Row className='mb-3 mt-3 justify-content-center'>
                                         <Col className='col-6'>
-                                            <Button classname='user-green' onClick={handleSubmit(onSubmit)}>Submit !!!</Button>
+                                            <Button classname='user-green' onClick={handleSubmit(onSubmit)}>Submit</Button>
                                         </Col>
                                     </Row>
                                 </ButtonCard>

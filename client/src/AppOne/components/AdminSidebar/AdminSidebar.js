@@ -11,9 +11,8 @@ const AdminSidebar = ({children, active, setInactive}) => {
     const navigate = useNavigate()
     const onLogout = async () => {
        await store.logout()
-        if (!store.isAuth) {
-            navigate('/')
-        }
+        store.setIsStaff(false)
+        navigate('/')
     }
     return (
         <>
