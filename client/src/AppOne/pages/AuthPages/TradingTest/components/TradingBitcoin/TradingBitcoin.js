@@ -98,7 +98,7 @@ const TradingBitcoin = () => {
         const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT`)
         const datas = await res.json()
         setInitialRate(+datas.lastPrice)
-        setCurVal(+datas.lastPrice)
+        setCurVal(+datas.lastPrice + await generateRandomInt(0.1123123, 0.2123123))
         console.log('datas.lastPrice', +datas.lastPrice)
         generateOrders(+datas.lastPrice, 300000, +datas.lastPrice)
         generateOrdersBuy(+datas.lastPrice, 300000)
@@ -129,12 +129,12 @@ const TradingBitcoin = () => {
         let validArray = []
         async function emulateOrders(len, curRate) {
             for (let x = 0; x <= len; x++) {
-                const rand = await generateRandomInt(1.1, 1.7)
+                const rand = await generateRandomInt(0.5123123, 1.3123123)
                 const valueUp = await generateRandomInt(40, 130)
 
                 let valueData = await shaffleData(currentValue)
                 let obj = {
-                    price: (+valueData.price + +rand).toFixed(2),
+                    price: (+valueData.price + +rand).toFixed(5),
                     amountInCrypto: valueData.amountInCrypto,
                 }
                 if (dataArray.length > 17) {
@@ -160,7 +160,7 @@ const TradingBitcoin = () => {
         let counter = 0
         async function moveRate(from, to) {
             let curTime = await generateRandomInt(1300, 3500)
-            let randRate = await generateRandomInt(0.1, 1)
+            let randRate = await generateRandomInt(0.1123123, 1.1123123)
 
             if (counter <= to) {
 
@@ -193,11 +193,11 @@ const TradingBitcoin = () => {
         let validArray = []
         async function emulateOrders(len, curRate) {
             for (let x = 0; x <= len; x++) {
-                const rand = await generateRandomInt(0.5, 1.3)
+                const rand = await generateRandomInt(0.5123123, 1.3123123)
                 const valueUp = await generateRandomInt(40, 130)
                 let valueData = await shaffleData(curRate)
                 let obj = {
-                    price: (+valueData.price + +rand).toFixed(2),
+                    price: (+valueData.price + +rand).toFixed(5),
                     amountInCrypto: valueData.amountInCrypto,
                 }
                 if (dataArray.length > 17) {
@@ -205,7 +205,7 @@ const TradingBitcoin = () => {
                 }
                 for (let n = 0; n <= dataArray.length - 1; n++) {
                     if (dataArray[n].price === obj.price) {
-                        obj.price = (+obj.price + valueUp).toFixed(3)
+                        obj.price = (+obj.price + valueUp).toFixed(5)
                     }
                 }
                 dataArray.push(obj)
@@ -223,7 +223,7 @@ const TradingBitcoin = () => {
         let counter = 0
         async function moveRate(from, to) {
             let curTime = await generateRandomInt(1300, 3500)
-            let randRate = await generateRandomInt(0.1, 1)
+            let randRate = await generateRandomInt(0.1123123, 1.123123)
 
             if (counter <= to) {
 

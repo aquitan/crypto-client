@@ -5,7 +5,7 @@ import classNames from "classnames/bind";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowDown, faArrowUp} from "@fortawesome/free-solid-svg-icons";
 
-const WalletInfoBlock = ({currency, color, status, amount, balance}) => {
+const WalletInfoBlock = ({currency, color, status, amount, balance, rate}) => {
     const cx = classNames.bind(cls)
     const classes = cx('wallet-block', color.toLowerCase(), status)
     return (
@@ -13,8 +13,9 @@ const WalletInfoBlock = ({currency, color, status, amount, balance}) => {
             <div><FontAwesomeIcon icon={status === 'up' ? faArrowUp : faArrowDown} /> {currency}</div>
             <div><b>{amount} USD</b></div>
             <div>
-                Current rate: <b>{balance} USD</b>
+                Current rate: <b>{rate} USD</b>
             </div>
+            <div>Balance: {balance.coinBalance} {currency}</div>
         </div>
     )
 }

@@ -170,8 +170,8 @@ const InternalSwap = () => {
     }
 
     const getSwapHistory = async () => {
-        // const res = await getData(`/swap/get_swap_history/${store.user.id}/0/20`)
-        // setHistory(res.data.swapHistory)
+        const res = await getData(`/swap/get_swap_history/${store.user.id}/0/20`)
+        setHistory(res.data.swapHistory)
     }
 
     const chekPercent = () => {
@@ -327,7 +327,7 @@ const InternalSwap = () => {
 
 
                                 {
-                                    history ?
+                                    typeof history !== 'string' ?
                                         history.map(item => {
                                             return <InternalSwapTableItem
                                                 date={getCurrentDate(item.date)}

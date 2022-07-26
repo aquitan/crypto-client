@@ -21,7 +21,11 @@ const InternalAddressesCard = ({currency, sum, onCopy, wallet}) => {
     }
 
     const makeTransaction = async (data) => {
-        const res = await postData('/123', data)
+        const obj = {
+
+        }
+
+        const res = await postData('/internal_transfer/make_internal_transfer/', data)
     }
 
     const makeOpen = (data) => {

@@ -40,7 +40,7 @@ const Deposit = () => {
     }, [])
 
     const getHistoryDeposit = async () => {
-        const res = await getData(`/deposit/get_deposit_history/${store.user.id}/3/10`)
+        const res = await getData(`/deposit/get_deposit_history/${store.user.id}/1/10`)
         if (typeof res.data.depositHistory !== 'string') {
             const reversedLogs = res.data.depositHistory.slice(0).reverse()
             setHistory(reversedLogs)
@@ -105,7 +105,7 @@ const Deposit = () => {
             coordinates: geoData.coordinates
         }
         const res = await putData('/deposit/make_deposit/', obj)
-        if (!res.status === 400) {
+        if (res.status === 201) {
             getHistoryDeposit()
             SwalSimple('Deposit was successful!')
         } else {

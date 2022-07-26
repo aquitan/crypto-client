@@ -51,7 +51,6 @@ const Withdraw = () => {
         // getBalance()
         setBalance(location.state.coinsBalance)
         console.log('location', location)
-        getBalances()
     }, [])
 
     const getHistoryDeposit = async () => {
@@ -73,10 +72,6 @@ const Withdraw = () => {
         console.log(e.target.value)
         let calc = +e.target.value * findPercent(store.rates.btc, store.domain.domainParams.rateCorrectSum).toFixed(5)
         setState({text: +calc.toFixed(5), value: +e.target.value})
-    }
-
-    const getBalances = async () => {
-        const res = await getData(`/get_internal_data/${store.user.id}/`)
     }
 
     const onSubmit = async (data, e) => {
