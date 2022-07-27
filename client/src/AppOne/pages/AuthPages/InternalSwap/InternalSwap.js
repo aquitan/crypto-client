@@ -123,11 +123,11 @@ const InternalSwap = () => {
         setBalance(res.data)
         setState({
             target: {
-                value: res.data[0].coinBalance,
+                value: res.data[0].coinBalance.toFixed(5),
                 currency: res.data[0].coinName
             },
             initial: {
-                value: res.data[0].coinBalance,
+                value: res.data[0].coinBalance.toFixed(5),
                 currency: res.data[0].coinName
             },
         })
@@ -160,12 +160,17 @@ const InternalSwap = () => {
         delete data.targetCurrency
 
         console.log('sent', data)
-        const res = await putData('/swap/make_swap/', data)
-
-        if (res.status === 201) {
-            getSwapHistory()
-            SwalSimple('Swap completed successfully!')
+        if (state.initial.value !== state.target.value) {
+            const res = await putData('/swap/make_swap/', data)
+            if (res.status === 201) {
+                getSwapHistory()
+                SwalSimple('Swap completed successfully!')
+            }
+        } else {
+            SwalSimple('You cant exchange identical currencies!')
         }
+
+
 
     }
 
@@ -196,7 +201,7 @@ const InternalSwap = () => {
             <Row>
                 <Col className='col-12 col-lg-6 mb-3'>
                     <ButtonCard>
-                        <h2>Internal swap</h2>
+                        <h2>Exchange</h2>
                         {
                             balance ?
                                 <Form classnames='form_big' onSubmit={handleSubmit(onSubmit)}>

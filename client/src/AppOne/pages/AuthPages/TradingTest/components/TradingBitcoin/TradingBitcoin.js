@@ -505,10 +505,8 @@ const TradingBitcoin = () => {
                                                     <p style={{fontSize: 12}}>Transaction fee is 1%</p>
                                                 </Col>
                                                 <Col>
-                                                    <p style={{fontSize: 12}}>Balance is:&nbsp;
-                                                        {/*<b>{ */}
-                                                        {/*    (+countTotalBalance() / +findPercent(store.rates.btc, */}
-                                                        {/*        0).toFixed(5)).toFixed(5)}</b> USDT*/}
+                                                    <p style={{fontSize: 12}}>Balance is: &nbsp;
+                                                        {stateBalance.length ? stateBalance.filter(el => el.coinName === 'BTC')[0].coinBalance.toFixed(5) : <Preloader/>}
                                                     </p>
                                                 </Col>
                                             </Row>
@@ -563,9 +561,7 @@ const TradingBitcoin = () => {
                                                 </Col>
                                                 <Col>
                                                     <p style={{fontSize: 12}}>Balance is:&nbsp;
-                                                        {/*<b>{*/}
-                                                        {/*    (+countTotalBalance() / +findPercent(store.rates.btc, */}
-                                                        {/*        0).toFixed(5)).toFixed(5)}</b> USDT*/}
+                                                        {stateBalance.length ? stateBalance.filter(el => el.coinName === 'BTC')[0].coinBalance.toFixed(5) : <Preloader />}
                                                     </p>
                                                 </Col>
                                             </Row>

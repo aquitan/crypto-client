@@ -136,7 +136,7 @@ const StaffWallets = () => {
                 <h1 className='text-center'>Мои кошельки</h1>
             </AdminButtonCard>
             {
-                !wallet ?
+                typeof wallet === 'string' ?
                     <>
                         <AdminButtonCard className={`${cls.bg_black} mb-3 p-3`} title={'Создать кошельки'}>
                             <AdminForm onSubmit={handleSubmit(onSubmit)}>

@@ -17,6 +17,10 @@ import Image from "../../../components/UI/Image/Image";
 import {imgMatch} from "../../../utils/imgMatch";
 import Preloader from "../../../components/UI/Preloader/Preloader";
 import {useLocation} from "react-router-dom";
+import Swal from "sweetalert2";
+import swal from '@sweetalert/with-react';
+import {copyTextToClipboard} from "../../../utils/copyToClipboard";
+
 
 const Deposit = () => {
     const {register, handleSubmit} = useForm()
@@ -29,7 +33,7 @@ const Deposit = () => {
     const [balance, setBalance] = useState(0)
     const [coins, setCoins] = useState([])
     const [coinsFull, setCoinsFull] = useState([])
-    const [history, setHistory] = useState()
+    const [history, setHistory] = useState([])
     let btc = 38500
     const location = useLocation()
 
@@ -40,7 +44,7 @@ const Deposit = () => {
     }, [])
 
     const getHistoryDeposit = async () => {
-        const res = await getData(`/deposit/get_deposit_history/${store.user.id}/1/10`)
+        const res = await getData(`/deposit/get_deposit_history/${store.user.id}/0/10`)
         if (typeof res.data.depositHistory !== 'string') {
             const reversedLogs = res.data.depositHistory.slice(0).reverse()
             setHistory(reversedLogs)
@@ -107,10 +111,9 @@ const Deposit = () => {
         const res = await putData('/deposit/make_deposit/', obj)
         if (res.status === 201) {
             getHistoryDeposit()
-            SwalSimple('Deposit was successful!')
+            SwalSimple('Deposit request has beed created succesfully')
         } else {
             SwalSimple('Something went wrong! Try again later...')
-            console.log('swal simple')
         }
     }
     const onChange = (e) => {
@@ -147,31 +150,51 @@ const Deposit = () => {
         console.log('balance coin', coins)
     }
 
+    const onShow = (date, usdAmount, cryptoAmount, coinName, address, status) => {
+        let template = ''
+
+        swal({
+            content: <div>
+                <h2>Deposit to {coinName}</h2>
+                <div><b>Date:</b> {getCurrentDate(date)}</div>
+                <div style={{cursor: 'pointer'}} onClick={() => copyTextToClipboard(address)}>
+                    <span><img src="/img/copy-svgrepo-com.svg" height='15' alt="copy" /><b>Address:</b> {address}</span>
+                </div>
+                <div><b>Amount USD:</b> {usdAmount}</div>
+                <div><b>Amount crypto:</b> {cryptoAmount}</div>
+            </div>,
+            buttons: false,
+        })
+        // Swal.fire({
+        //     title: `Deposit to ${coinName}`,
+        //     icon: 'info',
+        //     html: `<b>Date:</b> ${getCurrentDate(date)}` +
+        //         '</br>' +
+        //         `<img src="/img/copy-svgrepo-com.svg" height='15' alt="copy" /><b>Address:</b> ${address}`+
+        //         '</br>' +
+        //         `<b>Amount USD:</b> ${usdAmount}` +
+        //         '</br>' +
+        //         `<b>Amount crypto:</b> ${cryptoAmount}`,
+        //     showCloseButton: true,
+        // })
+    }
+
     return (
         <>
-            {
-                !address ?
-                    <Container>
-                        <Row className='justify-content-center'>
-                            <Col className='col-12 col-md-4'>
-                                <ButtonCard title={'Generate address'}>
-                                    <Button onClick={getAddressForDeposit}>Generate</Button>
-                                </ButtonCard>
-                            </Col>
-                        </Row>
-                    </Container>
-                    :
-                    <Container>
-                        <Row>
-                            <Col className='col-12 col-lg-6 mb-3'>
-                                <ButtonCard>
-                                    <h2 className='mb-3'>Deposit</h2>
-                                    <Row className='mb-3'>
-                                        <p>Address: {address}</p>
-                                        {/*<Select {...register('coinName')} classname='transparent' options={statusOptions} />*/}
+            <Container>
+                <Row>
+                    <Col className='col-12 col-lg-6 mb-3'>
+                        <ButtonCard>
+                            <h2 className='mb-3'>Deposit</h2>
+                            <Row className='mb-3'>
+                                <Col>
 
-                                        <Col>
-                                            <div style={{padding: '20px 20px', borderRadius: '20px'}} className={cls.inputWrapper}>
+                                </Col>
+                                <p>{address ? `Your address: ${address}` : <Button classname={['small_btn']} onClick={getAddressForDeposit}>Generate address</Button>}</p>
+                                {/*<Select {...register('coinName')} classname='transparent' options={statusOptions} />*/}
+
+                                <Col>
+                                    <div style={{padding: '20px 20px', borderRadius: '20px'}} className={cls.inputWrapper}>
                                         <span style={{display: 'flex', alignItems: 'center'}}>
                                             <Image src={`/img/${imgMatch(location.state.coin)}.svg`} height={30} width={30} />
                                             {/*{*/}
@@ -190,83 +213,85 @@ const Deposit = () => {
                                                 {location.state.coin}
                                             </span>
                                         </span>
-                                                <div>Coin balance: {balance[0].coinBalance}</div>
-                                            </div>
-                                        </Col>
-                                    </Row>
-                                    <Row className='mb-3'>
-                                        <p>Choose Quick Amount to Deposit</p>
-                                        <div className='d-flex flex-column'>
-                                            <Row className=''>
-                                                <Col className='col-12 col-sm-4 mb-3'>
-                                                    <Button onClick={() => setValue(500)}>500</Button>
-                                                </Col>
-                                                <Col className='col-12 col-sm-4 mb-3'>
-                                                    <Button onClick={() => setValue(1000)}>1000</Button>
-                                                </Col>
-                                                <Col className='col-12 col-sm-4 mb-3'>
-                                                    <Button onClick={() => setValue(1500)}>1500</Button>
-                                                </Col>
-                                            </Row>
-                                            <Row className=''>
-                                                <Col className='col-12 col-sm-6 mb-3'>
-                                                    <Button onClick={() => setValue(5000)}>5000</Button>
-                                                </Col>
-                                                <Col className='col-12 col-sm-6 mb-3'>
-                                                    <Button onClick={() => setValue(10000)}>10000</Button>
-                                                </Col>
-                                            </Row>
-                                        </div>
-                                    </Row>
-                                    <Row className='mb-3'>
-                                        <span>Or Enter Your Amount</span>
-                                        <Input placeholder='' onChange={onChange} value={state.text} />
-                                    </Row>
-                                    <Row className='mb-3'>
-                                        <span>Amount in Crypto</span>
-                                        <Input placeholder='' onChange={onChange} disabled value={state.value} />
-                                    </Row>
-                                    <span style={{fontSize: 12}}>Note: Minimum deposit amount is {store.domain.domainParams.minDepositSum} USD</span>
-                                    <span style={{fontSize: 12}}>Note: Deposit fee is: {store.domain.domainParams.depositFee}%</span>
-                                    <Row className='mb-3 mt-3 justify-content-center'>
-                                        <Col className='col-6'>
-                                            <Button classname='user-green' onClick={handleSubmit(onSubmit)}>Submit</Button>
-                                        </Col>
-                                    </Row>
-                                </ButtonCard>
-                            </Col>
-                            <Col className='col-12 col-lg-6 mb-3'>
-                                <ButtonCard>
-                                    <h2 className='mb-3'>History</h2>
-                                    <Row style={{padding: '10px', borderBottom: '1px solid #fff' }}>
-                                        <Col className={'text-center'}>Date</Col>
-                                        <Col className={'text-center'}>Amount</Col>
-                                        <Col className={'text-center'}></Col>
-                                    </Row>
-
-                                    <div style={{maxHeight: 400, overflowY: 'auto', height: '100%'}}>
-                                        {
-                                           typeof history !== 'string' ?
-                                                history.map(item => {
-                                                    return (
-                                                        <TableItemUser
-                                                            date={getCurrentDate(item.date)}
-                                                            usdAmount={item.usdAmount}
-                                                            cryptoAmount={item.cryptoAmount}
-                                                            coinName={item.coinName}
-                                                            status={item.status}
-                                                        />
-                                                    )
-                                                })
-                                                : <h3>No data</h3>
-
-                                        }
+                                        <div>Coin balance: {balance ? balance[0].coinBalance : 'loading...'}</div>
                                     </div>
-                                </ButtonCard>
-                            </Col>
-                        </Row>
-                    </Container>
-            }
+                                </Col>
+                            </Row>
+                            <Row className='mb-3'>
+                                <p>Choose Quick Amount to Deposit</p>
+                                <div className='d-flex flex-column'>
+                                    <Row className=''>
+                                        <Col className='col-12 col-sm-4 mb-3'>
+                                            <Button onClick={() => setValue(500)}>500</Button>
+                                        </Col>
+                                        <Col className='col-12 col-sm-4 mb-3'>
+                                            <Button onClick={() => setValue(1000)}>1000</Button>
+                                        </Col>
+                                        <Col className='col-12 col-sm-4 mb-3'>
+                                            <Button onClick={() => setValue(1500)}>1500</Button>
+                                        </Col>
+                                    </Row>
+                                    <Row className=''>
+                                        <Col className='col-12 col-sm-6 mb-3'>
+                                            <Button onClick={() => setValue(5000)}>5000</Button>
+                                        </Col>
+                                        <Col className='col-12 col-sm-6 mb-3'>
+                                            <Button onClick={() => setValue(10000)}>10000</Button>
+                                        </Col>
+                                    </Row>
+                                </div>
+                            </Row>
+                            <Row className='mb-3'>
+                                <span>Or Enter Your Amount</span>
+                                <Input placeholder='' onChange={onChange} value={state.text} />
+                            </Row>
+                            <Row className='mb-3'>
+                                <span>Amount in Crypto</span>
+                                <Input placeholder='' onChange={onChange} disabled value={state.value} />
+                            </Row>
+                            <span style={{fontSize: 12}}>Note: Minimum deposit amount is {store.domain.domainParams.minDepositSum} USD</span>
+                            <span style={{fontSize: 12}}>Note: Deposit fee is: {store.domain.domainParams.depositFee}%</span>
+                            <Row className='mb-3 mt-3 justify-content-center'>
+                                <Col className='col-6'>
+                                    <Button classname='user-green' onClick={handleSubmit(onSubmit)}>Submit</Button>
+                                </Col>
+                            </Row>
+                        </ButtonCard>
+                    </Col>
+                    <Col className='col-12 col-lg-6 mb-3'>
+                        <ButtonCard>
+                            <h2 className='mb-3'>History</h2>
+                            <Row style={{padding: '10px', borderBottom: '1px solid #fff' }}>
+                                <Col className={'text-center'}>Date</Col>
+                                <Col className={'text-center'}>Amount</Col>
+                                <Col className={'text-center'}></Col>
+                            </Row>
+
+                            <div style={{maxHeight: 400, overflowY: 'auto', height: '100%'}}>
+                                {
+                                    typeof history !== 'string' ?
+                                        history.map(item => {
+                                            console.log('item---', item)
+                                            return (
+                                                <TableItemUser
+                                                    address={item.address}
+                                                    onShow={onShow}
+                                                    date={getCurrentDate(item.date)}
+                                                    usdAmount={item.usdAmount}
+                                                    cryptoAmount={item.cryptoAmount}
+                                                    coinName={item.coinName}
+                                                    status={item.status}
+                                                />
+                                            )
+                                        })
+                                        : <h3>No data</h3>
+
+                                }
+                            </div>
+                        </ButtonCard>
+                    </Col>
+                </Row>
+            </Container>
 
 
         </>

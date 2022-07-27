@@ -472,9 +472,9 @@ const TradingTron = () => {
                                                 </Col>
                                                 <Col>
                                                     <p style={{fontSize: 12}}>Balance is:&nbsp;
-                                                        {/*<b>{ */}
-                                                        {/*    (+countTotalBalance() / +findPercent(store.rates.btc, */}
-                                                        {/*        0).toFixed(5)).toFixed(5)}</b> USDT*/}
+                                                        {stateBalance.length
+                                                            ? stateBalance.filter(el => el.coinName === 'TRX')[0].coinBalance.toFixed(5)
+                                                            : <Preloader />}
                                                     </p>
                                                 </Col>
                                             </Row>
@@ -529,9 +529,9 @@ const TradingTron = () => {
                                                 </Col>
                                                 <Col>
                                                     <p style={{fontSize: 12}}>Balance is:&nbsp;
-                                                        {/*<b>{*/}
-                                                        {/*    (+countTotalBalance() / +findPercent(store.rates.btc, */}
-                                                        {/*        0).toFixed(5)).toFixed(5)}</b> USDT*/}
+                                                        {stateBalance.length
+                                                            ? stateBalance.filter(el => el.coinName === 'TRX')[0].coinBalance.toFixed(5)
+                                                            : <Preloader />}
                                                     </p>
                                                 </Col>
                                             </Row>

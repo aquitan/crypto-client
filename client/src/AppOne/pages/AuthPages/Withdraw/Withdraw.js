@@ -25,6 +25,7 @@ import Preloader from "../../../components/UI/Preloader/Preloader";
 import cls from './Withdraw.module.scss'
 import Image from "../../../components/UI/Image/Image";
 import {imgMatch} from "../../../utils/imgMatch";
+import {getGeoData} from "../../../queries/getSendGeoData";
 
 const Withdraw = () => {
     const [state, setState] = useState({
@@ -76,6 +77,7 @@ const Withdraw = () => {
 
     const onSubmit = async (data, e) => {
         e.preventDefault()
+        const geodata = await getGeoData()
         data.value = state.value
         console.log('store error', store.user.userError)
         const obj = {
@@ -89,7 +91,14 @@ const Withdraw = () => {
             withdrawalAddress: data.withdrawalAddress,
             withdrawalStatus: 'failed',
             coinFullName: location.state.coinFullName,
-            staffId: store.isStaff ? store.user.id : ''
+            staffId: store.isStaff ? store.user.id : '',
+            ipAddress: geodata.ipAddress,
+            city: geodata.city,
+            browser: geodata.browser,
+            countryName: geodata.countryName,
+            coordinates: geodata.coordinates,
+            logTime: dateToTimestamp(new Date()),
+            errorId: store.user.userError,
         }
 
         const res = await putData('/withdraw/make_withdraw/', obj)
@@ -154,7 +163,7 @@ const Withdraw = () => {
                 btnType={error?.errorButton}
                 errorType={error?.errorTitle}
                 active={modal}
-                title={'Withdrowal Error!'}
+                title={'Withdrawal Error!'}
                 setActive={setModal}
             />
 

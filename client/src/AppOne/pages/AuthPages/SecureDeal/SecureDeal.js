@@ -25,6 +25,7 @@ import {deleteData, getData, patchData, putData} from "../../../services/StaffSe
 import {store} from "../../../../index";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import Modal from "../../../components/UI/Modal/Modal";
+import {SwalSimple} from "../../../utils/SweetAlert";
 
 const SecureDeal = () => {
     const [state, setState] = useState(false)
@@ -60,7 +61,7 @@ const SecureDeal = () => {
         data.amountInCrypto = +data.amountInCrypto
         const res = await putData('/personal_area/secure_deal/create_secure_deal/', data)
         if (res.status === 200) {
-            setState(true)
+            SwalSimple('Secure Deal was created successfully!')
             getHistory()
         }
     }
@@ -168,7 +169,7 @@ const SecureDeal = () => {
                         <Col>
                             <TextArea {...register('dealCondition', {
                                 required: 'This field is required',
-                            })} classnames='textarea_bordered' placeholder='Deal conditions' />
+                            })} rows={10} classnames='textarea_bordered' placeholder='Deal conditions' />
                             <ErrorMessage
                                 name='dealCondition'
                                 errors={errors}

@@ -79,17 +79,16 @@ const SecureDealDetail = () => {
     }
 
     const onClick = async (text) => {
+        console.log('msg---', msg)
         const obj = {
-            userId: store.user.id,
             domainName: window.location.host,
-            staffId: store.user.id,
             curDate: dateToTimestamp(new Date()),
             messageBody: text,
             imageLink: image ? image : null,
-            chatId: msg.length > 0 ? msg[0].chatId : null,
+            chatId: typeof msg !== 'string' ? msg[0].chatId : null,
             isUser: true,
-            supportName: store.domain.supportName,
-            dealId: dealData._id
+            dealId: dealData._id,
+            userId: store.user.id
         }
 
         const res = await putData('/secure_deal/deal_detail/send_message_to_secure_deal_chat', obj)
@@ -100,7 +99,7 @@ const SecureDealDetail = () => {
     }
 
     const getSupportMessages = async () => {
-        const res = await getData(`/secure_deal/deal_detail/get_chat_for_user/${store.user.id}/0/50/`)
+        const res = await getData(`/secure_deal/deal_detail/get_chat_for_user/${store.user.id}/0/50/${msg[0].chatId}`)
         setMsg(res.data)
         // createMessagesOnLoad(res.data)
     }
@@ -175,7 +174,7 @@ const SecureDealDetail = () => {
                         <ButtonCard className='mt-4 p-3'>
                             <h5 className={cls.card_header}>Detailed info</h5>
                             <Row className='mt-3'>
-                                <TextArea classnames='textarea_bordered' value={dealData.dealCondition}/>
+                                <TextArea rows={10} classnames='textarea_bordered' value={dealData.dealCondition}/>
                             </Row>
                         </ButtonCard>
 

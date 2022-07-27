@@ -174,7 +174,7 @@ const SignUp = () => {
                                         message: 'Minimal length must be over 5 characters'
                                     }
                                 })}  name='name' placeholder='display name' id='displayName' />
-                                <ErrorMessage name='displayName' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
+                                <ErrorMessage name='displayName' errors={errors} render={({message}) => <p className={cls.error}>Minimum 5 symbols</p>} />
                             </Col>
                         </Row>
                     </FormGroup>
