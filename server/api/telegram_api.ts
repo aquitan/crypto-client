@@ -40,11 +40,16 @@ class Telegram {
 				userId: result.userId,
 				userEmail: result.userEmail,
 				domainName: result.domainName,
+				telegramId: msg.chat.id,
 				twoFaStatus: true,
 				enableDate: new Date().getTime()
 			}
 
 			await userService.enableTwoStepVerificationStatus(dataObj, msg.chat.id)
+
+			// await saveUserLogs(transferObject.userEmail, logObject.ipAddress, logObject.city, logObject.countryName, logObject.coordinates, logObject.browser, logObject.logTime, ` включил 2fa по ${transferObject.twoFaType} на `, transferObject.domainName)
+			await this.sendMessageByUserActions(dataObj.userEmail, ` включит 2fa по ${dataObj.twoFaType} `, dataObj.domainName)
+
 			await bot.sendMessage(msg.chat.id, `Success! `)
 		})
 

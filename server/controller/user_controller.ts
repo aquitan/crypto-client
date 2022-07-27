@@ -151,8 +151,16 @@ class UserController {
       code: code
     }
 
+    // const logObject = {
+    //   ipAddress: req.body.ipAddress,
+    //   city: req.body.city,
+    //   browser: req.body.browser,
+    //   countryName: req.body.countryName,
+    //   coordinates: req.body.coordinates,
+    //   logTime: req.body.logTime,
+    // }
 
-    const validData: boolean = await bodyValidator(req.body, 6)
+    const validData: boolean = await bodyValidator(req.body, 12)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {
@@ -177,39 +185,29 @@ class UserController {
     }
   }
 
-  async enableTwoStepVerificationStatus(req: express.Request, res: express.Response, next: express.NextFunction) {
-    const transferObject: UPDATE_2FA_STATUS = {
-      twoFaType: req.body.twoFaType,
-      userId: req.body.userId,
-      userEmail: req.body.userEmail,
-      domainName: req.body.domainName,
-      twoFaStatus: req.body.twoFaStatus,
-      enableDate: req.body.enableDate
-    }
-    const logObject = {
-      ipAddress: req.body.ipAddress,
-      city: req.body.city,
-      browser: req.body.browser,
-      countryName: req.body.countryName,
-      coordinates: req.body.coordinates,
-      logTime: req.body.logTime,
-    }
+  // async enableTwoStepVerificationStatus(req: express.Request, res: express.Response, next: express.NextFunction) {
+  //   const transferObject: UPDATE_2FA_STATUS = {
+  //     twoFaType: req.body.twoFaType,
+  //     userId: req.body.userId,
+  //     userEmail: req.body.userEmail,
+  //     domainName: req.body.domainName,
+  //     twoFaStatus: req.body.twoFaStatus,
+  //     enableDate: req.body.enableDate
+  //   }
 
-    const telegramId: string = req.body.telegramId
 
-    const validData: boolean = await bodyValidator(req.body, 12)
-    if (!validData) return res.status(400).json({ message: 'problem in received data' })
-    try {
+  //   const validData: boolean = await bodyValidator(req.body, 12)
+  //   if (!validData) return res.status(400).json({ message: 'problem in received data' })
+  //   try {
 
-      const result: boolean = await UserServices.enableTwoStepVerificationStatus(transferObject, telegramId)
-      if (!result) throw ApiError.ServerError()
-      await saveUserLogs(transferObject.userEmail, logObject.ipAddress, logObject.city, logObject.countryName, logObject.coordinates, logObject.browser, logObject.logTime, ` включил 2fa по ${transferObject.twoFaType} на `, transferObject.domainName)
-      await telegram.sendMessageByUserActions(transferObject.userEmail, ` включит 2fa по ${transferObject.twoFaType} `, transferObject.domainName)
-      return res.status(200).json({ message: '2fa turned on' })
-    } catch (e) {
-      next(e)
-    }
-  }
+  //     const result: boolean = await UserServices.enableTwoStepVerificationStatus(transferObject, telegramId)
+  //     if (!result) throw ApiError.ServerError()
+
+  //     return res.status(200).json({ message: '2fa turned on' })
+  //   } catch (e) {
+  //     next(e)
+  //   }
+  // }
 
   // async deleteExpiredCode(req: express.Request, res: express.Response, next: express.NextFunction) {
   //   try {
@@ -555,12 +553,13 @@ class UserController {
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
 
-      const result: boolean = await moneyService.MakeSwap(transfer_object)
+      const result: boolean | string = await moneyService.MakeSwap(transfer_object)
+      if (typeof result === 'string') return res.status(400).json({ message: result })
       if (!result) throw ApiError.ServerError()
 
       await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, logTime, ` совершил свап(${transfer_object.amountInCryptoFrom} ${transfer_object.coinNameFrom} на ${transfer_object.amountInCryptoTo} ${transfer_object.coinNameTo}) на `, transfer_object.domainName)
       await telegram.sendMessageByUserActions(transfer_object.userEmail, ` совершил свап(${transfer_object.amountInCryptoFrom} ${transfer_object.coinNameFrom} на ${transfer_object.amountInCryptoTo}  ${transfer_object.coinNameTo}) `, transfer_object.domainName)
-      return res.status(201).json({ message: 'ok' })
+      return res.status(201).json({ message: result })
 
     } catch (e) {
       next(e)
@@ -967,14 +966,14 @@ class UserController {
 
 
   async getSecureDealChatData(req: express.Request, res: express.Response, next: express.NextFunction) {
-    const userId: string = req.params.userId
     let skip: string = req.params.skipValue
     const skipValue: number = parseInt(skip)
     let limit: string = req.params.limitValue
     const limitValue: number = parseInt(limit)
+    const dealId: string = req.params.dealId
 
     try {
-      const result: any = await UserServices.GetSecureDealChatDataForUser(userId, skipValue, limitValue)
+      const result: any = await UserServices.GetSecureDealChatDataForUser(dealId, skipValue, limitValue)
       console.log(' result is: ', result)
       if (!result) throw ApiError.ServerError()
 
@@ -1000,7 +999,7 @@ class UserController {
 
     const dealId: string = req.body.dealId
 
-    const validData: boolean = await bodyValidator(req.body, 10)
+    const validData: boolean = await bodyValidator(req.body, 8)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {

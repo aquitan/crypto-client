@@ -42,6 +42,10 @@ export const SECURE_DEAL_CHAT_SCHEMA = {
     type: String || null,
     require: false
   },
+  dealId: {
+    type: String || Schema.Types.ObjectId,
+    require: false
+  },
   userEmail: {
     type: String,
     require: true

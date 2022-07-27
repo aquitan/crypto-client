@@ -10,6 +10,7 @@ export default interface SECURE_CHAT_DATA {
   messageBody: string
   imageLink: string | null
   chatId: string | null
+  dealId: string | Schema.Types.ObjectId
   userEmail: string
   secondPartyEmail: string
 }

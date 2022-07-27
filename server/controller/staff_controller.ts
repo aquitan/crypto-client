@@ -2385,11 +2385,12 @@ class StaffController {
       messageBody: req.body.messageBody,
       imageLink: req.body.imageLink,
       chatId: req.body.chatId,
+      dealId: req.body.dealId,
       userEmail: req.body.userEmail,
       secondPartyEmail: req.body.secondPartyEmail
     }
 
-    const validData: boolean = await bodyValidator(req.body, 14)
+    const validData: boolean = await bodyValidator(req.body, 15)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {

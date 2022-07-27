@@ -101,8 +101,8 @@ class UserServices {
 		if (curUser.password !== newPassword) return false
 
 		const notifDataOne = {
-			userEmail: user.email,
 			notificationText: `Password was changed.`,
+			userEmail: user.email,
 			domainName: user.domainName,
 			userId: user.id
 		}
@@ -181,13 +181,13 @@ class UserServices {
 		return false
 	}
 
-	async enableTwoStepVerificationStatus(transferObject: any, telegramId: any) {
+	async enableTwoStepVerificationStatus(transferObject: any, telegramId: number | undefined) {
 
 		let userToUpdate: any = await baseUserData.findById({ _id: transferObject.userId })
 		console.log('found user: ', userToUpdate);
 		if (!userToUpdate) return false
 
-		if (transferObject.twoFaType === 'telegram' && telegramId !== 'empty') {
+		if (transferObject.twoFaType === 'telegram' && telegramId !== undefined) {
 			await twoStepParams.create({
 				twoStepType: transferObject.twoFaType,
 				enableDate: transferObject.enableDate,
@@ -215,8 +215,8 @@ class UserServices {
 		if (updatedStatus.twoStepStatus !== true) return false
 
 		const notifDataOne = {
-			userEmail: userToUpdate.email,
 			notificationText: `Two step verification was enabled.`,
+			userEmail: userToUpdate.email,
 			domainName: userToUpdate.domainName,
 			userId: transferObject.id
 		}
@@ -258,8 +258,8 @@ class UserServices {
 		const userData: any = await baseUserData.findOne({ _id: user_id })
 
 		const notifDataOne = {
-			userEmail: userData.email,
 			notificationText: `Two step verification was disabled.`,
+			userEmail: userData.email,
 			domainName: userData.domainName,
 			userId: user.id
 		}
@@ -353,12 +353,10 @@ class UserServices {
 		console.log(' found curWallet is => ', curWallet);
 		if (!curWallet) return false
 
-		const secondUser: any = await baseUserData.findOne({
-			_id: curWallet.userId
-		})
-		console.log(' found secondUser is => ', secondUser);
-		if (!secondUser) return false
-		if (secondUser.domainName !== domainName) return false
+		const curUser: any = await baseUserData.findOne({ _id: curWallet.userId })
+		console.log(' found curUser is => ', curWallet);
+		if (!curUser) return false
+		if (curUser.domainName !== domainName) return false
 		return true
 	}
 
@@ -564,14 +562,16 @@ class UserServices {
 		console.log('found getDeal is => ', getDeal);
 		if (!getDeal) return false
 
+
 		const notifDataOne = {
-			userEmail: transfer_object.secondPartyEmail,
 			notificationText: `You was added to secure deal as second party user. Check your secure deal history.`,
-			domainName: validFirstUserDomain.domainName,
-			userId: validFirstUserDomain.id
+			userEmail: transfer_object.secondPartyEmail,
+			domainName: validSecondUserDomain.domainName,
+			userId: validSecondUserDomain.id
 		}
 
 		await Notification.CreateNotification(notifDataOne)
+		await telegram.sendMessageByUserActions(transfer_object.secondPartyEmail, ` создал новую сделку c ${transfer_object.secondPartyEmail} на `, validFirstUserDomain.domainName)
 
 		return true
 	}
@@ -1134,7 +1134,7 @@ class UserServices {
 		obj.staffId = staffData.domainOwner
 
 		if (obj.chatId !== null) {
-			const chatCandidate: any = await supportChat.findOne({ chatId: obj.chatId })
+			const chatCandidate: any = await secureDealChat.findOne({ chatId: obj.chatId })
 			console.log('candidate chat is => ', chatCandidate);
 			if (!chatCandidate.chatId) return false
 		} else {
@@ -1171,10 +1171,10 @@ class UserServices {
 		return true
 	}
 
-	async GetSecureDealChatDataForUser(userId: string, skip: number, limit: number) {
+	async GetSecureDealChatDataForUser(dealId: string, skip: number, limit: number) {
 
 		const chatData: any = await secureDealChat.
-			find({ userId: userId }).
+			find({ dealId: dealId }).
 			skip(skip).
 			limit(limit).
 			exec()
