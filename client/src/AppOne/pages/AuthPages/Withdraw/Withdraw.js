@@ -26,6 +26,7 @@ import cls from './Withdraw.module.scss'
 import Image from "../../../components/UI/Image/Image";
 import {imgMatch} from "../../../utils/imgMatch";
 import {getGeoData} from "../../../queries/getSendGeoData";
+import swal from '@sweetalert/with-react';
 
 const Withdraw = () => {
     const [state, setState] = useState({
@@ -104,7 +105,8 @@ const Withdraw = () => {
         const res = await putData('/withdraw/make_withdraw/', obj)
         setError(res.data)
         if (res.status === 201) {
-            setModal(true)
+            // setModal(true)
+            onSendWithdraw()
         }
         console.log(data)
     }
@@ -150,6 +152,20 @@ const Withdraw = () => {
 
     const getWithdrawAddress = async () => {
 
+    }
+
+    const onSendWithdraw = () => {
+        swal({
+            content:
+                <div>
+                    <h2>Withdrawal Error!</h2>
+                    <h4>{error?.errorType}</h4>
+                    <div>
+                        <b>{error?.errorText}</b>
+                    </div>
+            </div>,
+            confirmButtonText: 'Close'
+            })
     }
 
 
