@@ -163,10 +163,10 @@ const AccountSecurity = (props) => {
                 <Form onSubmit={handleSubmit(onChangePassword)}>
                     <Row>
                         <Row className='mb-3'>
-                            <Input name='oldPassword' placeholder='old password'/>
+                            <Input name='oldPassword' placeholder='Old password'/>
                         </Row>
                         <Row className='mb-3'>
-                            <Input {...register('newPassword')} name='newPassword' placeholder='new password'/>
+                            <Input {...register('newPassword')} name='newPassword' placeholder='New password'/>
                         </Row>
                     </Row>
                     <Row>
@@ -187,7 +187,7 @@ const AccountSecurity = (props) => {
                     </Row>
                     <Row>
                         {
-                            state.fieldShow ?  <Input {...twoFaReg('code')} placeholder='code'/> : null
+                            state.fieldShow ?  <Input {...twoFaReg('code')} placeholder='Code'/> : null
                         }
                         {
                             showBot ? <>
@@ -217,7 +217,7 @@ const AccountSecurity = (props) => {
                         <h5>Change password</h5>
                         <Row className='justify-content-center'>
                             <Col className='col-12 col-md-6'>
-                                <Button onClick={showChangePass} type='filled'>change password</Button>
+                                <Button onClick={showChangePass} type='filled'>Change password</Button>
                             </Col>
                         </Row>
                     </Col>
@@ -225,7 +225,7 @@ const AccountSecurity = (props) => {
                         <h5>2FA</h5>
                         <Row className='justify-content-center'>
                             <Col className='col-12 col-md-6'>
-                                {!status ? <Button onClick={show2FA}>enable</Button> : <Button onClick={disable2FA}>Disable</Button>}
+                                {!status ? <Button onClick={show2FA}>Enable</Button> : <Button onClick={disable2FA}>Disable</Button>}
                             </Col>
                         </Row>
                     </Col>

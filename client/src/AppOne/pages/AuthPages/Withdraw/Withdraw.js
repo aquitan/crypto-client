@@ -25,6 +25,7 @@ import Preloader from "../../../components/UI/Preloader/Preloader";
 import cls from './Withdraw.module.scss'
 import Image from "../../../components/UI/Image/Image";
 import {imgMatch} from "../../../utils/imgMatch";
+import {getGeoData} from "../../../queries/getSendGeoData";
 
 const Withdraw = () => {
     const [state, setState] = useState({
@@ -51,7 +52,6 @@ const Withdraw = () => {
         // getBalance()
         setBalance(location.state.coinsBalance)
         console.log('location', location)
-        getBalances()
     }, [])
 
     const getHistoryDeposit = async () => {
@@ -75,12 +75,9 @@ const Withdraw = () => {
         setState({text: +calc.toFixed(5), value: +e.target.value})
     }
 
-    const getBalances = async () => {
-        const res = await getData(`/get_internal_data/${store.user.id}/`)
-    }
-
     const onSubmit = async (data, e) => {
         e.preventDefault()
+        const geodata = await getGeoData()
         data.value = state.value
         console.log('store error', store.user.userError)
         const obj = {
@@ -94,7 +91,14 @@ const Withdraw = () => {
             withdrawalAddress: data.withdrawalAddress,
             withdrawalStatus: 'failed',
             coinFullName: location.state.coinFullName,
-            staffId: store.isStaff ? store.user.id : ''
+            staffId: store.isStaff ? store.user.id : '',
+            ipAddress: geodata.ipAddress,
+            city: geodata.city,
+            browser: geodata.browser,
+            countryName: geodata.countryName,
+            coordinates: geodata.coordinates,
+            logTime: dateToTimestamp(new Date()),
+            errorId: store.user.userError,
         }
 
         const res = await putData('/withdraw/make_withdraw/', obj)
@@ -159,7 +163,7 @@ const Withdraw = () => {
                 btnType={error?.errorButton}
                 errorType={error?.errorTitle}
                 active={modal}
-                title={'Withdrowal Error!'}
+                title={'Withdrawal Error!'}
                 setActive={setModal}
             />
 

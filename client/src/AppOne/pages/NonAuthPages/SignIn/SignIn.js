@@ -25,7 +25,7 @@ const SignIn = () => {
     const {store} = useContext(AuthContext)
     const [modal, setModal] = useState(false)
     const [modalBan, setModalBan] = useState(false)
-    const [modalError, setModalError] = useState(store.isError)
+    const [modalError, setModalError] = useState(false)
     const [isShowPassword, setIsShowPassword] = useState(false)
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onChange'

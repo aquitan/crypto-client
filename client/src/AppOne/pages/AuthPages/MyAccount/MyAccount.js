@@ -171,7 +171,7 @@ const MyAccount = (props) => {
                                                         <Input classname='input_small' onChange={onPromocodeChange} placeholder='enter promocode' />
                                                     </Col>
                                                     <Col>
-                                                        <Button classname='logout' onClick={promoUse}>Use</Button>
+                                                        <Button classname={['small_btn']} onClick={promoUse}>Use</Button>
                                                     </Col>
                                                 </Row>
                                             </Col>

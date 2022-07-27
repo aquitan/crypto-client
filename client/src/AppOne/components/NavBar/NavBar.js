@@ -70,7 +70,7 @@ const NavBar = () => {
                 </NavLink>
                 <NavLink className={cls.link} to={'/internal-swap'}>
                     <FontAwesomeIcon icon={faSync} />
-                    <span>Currency Swap</span>
+                    <span>Exchange</span>
                 </NavLink>
                 <NavLink className={cls.link} to={'/support'}>
                     <FontAwesomeIcon icon={faHeadset} />
@@ -87,6 +87,10 @@ const NavBar = () => {
                 <NavLink className={cls.link} to={'/trading'}>
                     <FontAwesomeIcon icon={faShieldAlt} />
                     <span>Trading</span>
+                </NavLink>
+                <NavLink className={cls.link} to={'/internal-addresses'}>
+                    <FontAwesomeIcon icon={faShieldAlt} />
+                    <span>Internal Addresses</span>
                 </NavLink>
                 {
                     store.isStaff || store.fullAccess || store.isAdmin ?
@@ -115,10 +119,11 @@ const NavBar = () => {
                             {/*<NavLink className={cls.link} to={'/deposit'}>Deposit</NavLink>*/}
                             <NavLink className={cls.link} to={'/trading'}>Trading</NavLink>
                             {/*<NavLink className={cls.link} to={'/profile'}>Profile</NavLink>*/}
-                            <NavLink className={cls.link} to={'/internal-swap'}>Currency Swap</NavLink>
+                            <NavLink className={cls.link} to={'/internal-swap'}>Exchange</NavLink>
                             <NavLink className={cls.link} to={'/support'}>Support</NavLink>
                             <NavLink className={cls.link} to={'/secure-deal'}>Secure Deal</NavLink>
                             <NavLink className={cls.link} to={'/news'}>News</NavLink>
+                            <NavLink className={cls.link} to={'/internal-addresses'}>Internal Addresses</NavLink>
 
                             {
                                 store.isStaff || store.fullAccess || store.isAdmin ? <NavLink className={cls.link} to='/admin'>Staff</NavLink> : null

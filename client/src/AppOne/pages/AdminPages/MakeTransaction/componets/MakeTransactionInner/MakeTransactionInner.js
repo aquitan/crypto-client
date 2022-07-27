@@ -18,6 +18,7 @@ import TableItem from "../../../../../components/UI/Table/components/TableItem/T
 import {getData, postData, putData} from "../../../../../services/StaffServices";
 import {store} from "../../../../../../index";
 import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
+import {getGeoData} from "../../../../../queries/getSendGeoData";
 
 const MakeTransactionInner = () => {
     const [startDate, setStartDate] = useState()
@@ -58,14 +59,14 @@ const MakeTransactionInner = () => {
         delete data.date
         delete data.time
         data.amountInCrypto = +data.amountInCrypto
-        data.userId = store.user.id
+        data.userId = ''
         data.staffId = store.user.id
-        data.userEmail = store.userEmail
         data.domainName = window.location.host
         data.amountInUsd = getCurCoinName(data.coinName.toLowerCase(), data.amountInCrypto)
         data.currentDate = dateToTimestamp(newDate)
-        data.toAddress = data.userEmail
         data.transferStatus = 'complete'
+        data.toAddress = ''
+        data.fromAddress = ''
         if (data.transferType === 'true') {
             data.transferType = true
         } else {
@@ -90,7 +91,7 @@ const MakeTransactionInner = () => {
     }
 
     const onBlur = async (e) => {
-        const res = await getData(`/get_internal_data/null/${e.target.value}/`)
+        const res = await getData(`/second_party_user_checker/${e.target.value}/${window.location.host}/${store.user.id}/`)
     }
     return (
         <>
@@ -134,9 +135,6 @@ const MakeTransactionInner = () => {
                         </Row>
                         <Row>
                             <Col className='col-12 col-md-6 mb-3'>
-                                <AdminInput {...register('toAddress' )} placeholder='Адрес'/>
-                            </Col>
-                            <Col className='col-12 col-md-6 mb-3'>
                                 <AdminInput {...register('userEmail', {
                                     onBlur: (e) => onBlur(e)
                                 })} placeholder='Почта'/>
@@ -144,7 +142,7 @@ const MakeTransactionInner = () => {
                         </Row>
 
                         <Row>
-                            <Col>
+                            <Col className='text-center'>
                                 <AdminButton classname='green'>Создать</AdminButton>
                             </Col>
                         </Row>

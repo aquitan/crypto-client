@@ -12,11 +12,13 @@ import {store} from "../../../../../../index";
 import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
 import {getGeoData} from "../../../../../queries/getSendGeoData";
 import {getCurrentDate} from "../../../../../utils/getCurrentDate";
+import {useNavigate} from "react-router-dom";
 
 const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, sum}) => {
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
     })
+    const navigate = useNavigate()
 
     const getCurCoinName = (coin, bucs) => {
 
@@ -57,6 +59,12 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
     const onBlur = async (e) => {
         console.log('value', e.target.value)
         const res = await getData(`/internal_wallet_checker/${e.target.value}/${window.location.host}`)
+        // try {
+        //
+        // } catch(e) {
+        //     if (e.response.status === 500) navigate('/error-500')
+        // }
+
     }
     const onCheckAmount = async () => {
         const res = await getData(`/user_balance_checker/${store.user.id}/${currency}`)
