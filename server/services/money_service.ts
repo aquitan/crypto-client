@@ -440,6 +440,8 @@ class moneyService {
 
   async MakeSwap(transfer_object: any) {
 
+    if (transfer_object.coinNameFrom === transfer_object.coinNameTo) return 'wrong exchange data (coin)'
+
     const curUserBalanceFrom: any = await userBalance.findOne({
       userId: transfer_object.userId,
       coinName: transfer_object.coinNameFrom,

@@ -27,7 +27,7 @@ router.post('/use_promocode_in_profile/', authChecker, userController.usePromoco
 router.patch('/personal_area/security/', authChecker, userController.twoStepVerificationEnable) // choose 2fa type & send code 
 router.get('/personal_area/security/validate_telegram_code/:code', authChecker, userController.validateTwoStepCodeAtEnable2fa) // validate received code
 router.patch('/personal_area/security/change_password/', authChecker, userController.personalAreaSecurityChangePassword)
-router.post('/personal_area/security/two_step_enable/', authChecker, userController.enableTwoStepVerificationStatus) // update and enable 2fa status 
+// router.post('/personal_area/security/two_step_enable/', authChecker, userController.enableTwoStepVerificationStatus) // update and enable 2fa status 
 router.patch('/personal_area/security/disable_two_step_status/', authChecker, userController.disableTwoStepVerificationStatus) // disable 2fa status
 
 // router.delete('/user_two_step_code_list/delete_code/:userEmail', userController.deleteExpiredCode) // request to delete 2fa code if it's not used
@@ -122,7 +122,7 @@ router.patch('/staff/support/edit_message/', staffController.EditChatMessage) //
 
 // // secure deal chat --------
 // common usage
-router.get('/secure_deal/deal_detail/get_chat_for_user/:userId/:skipValue/:limitValue/', authChecker, userController.getSecureDealChatData) // get chat history for user
+router.get('/secure_deal/deal_detail/get_chat_for_user/:skipValue/:limitValue/:dealId/', authChecker, userController.getSecureDealChatData) // get chat history for user
 router.put('/secure_deal/deal_detail/send_message_to_secure_deal_chat', authChecker, userController.sendMessageToSecureDealChat) // endpoitn for messages from user
 
 // // staff usage
