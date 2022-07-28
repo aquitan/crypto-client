@@ -10,7 +10,7 @@ import ModalDark from "../../../../../components/UI/ModalDark/ModalDark";
 import Select from '../../../../../components/UI/Select/Select';
 import { useForm } from 'react-hook-form';
 import {deleteData, patchData} from "../../../../../services/StaffServices";
-import {SwalSimple} from "../../../../../utils/SweetAlert";
+// import {SwalSimple} from "../../../../../utils/SweetAlert";
 
 const AdminKycTableItem = (props) => {
     const [kycStatus, setKycStatus] = useState(props.kycStatus)
@@ -68,7 +68,7 @@ const AdminKycTableItem = (props) => {
         // }
         const res = await deleteData('/staff/kyc/delete_kyc/', {data})
         if (res.status === 202) {
-            SwalSimple('KYC удален!')
+            // SwalSimple('KYC удален!')
             handleCloseModal()
         }
 

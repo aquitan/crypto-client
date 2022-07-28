@@ -35,7 +35,7 @@ const GroupList = () => {
 
         const res = await postData('/staff/groups/create_new_group/', data)
         if (res.status === 201) {
-            SwalSimple('Группа создана!')
+            // SwalSimple('Группа создана!')
             getGroupList()
         }
     }
@@ -67,9 +67,9 @@ const GroupList = () => {
         }
         const res = await deleteData('/staff/groups/delete_group/', {data: obj})
         if (res.status === 202) {
-            SwalSimple('Группа удалена!')
+            // SwalSimple('Группа удалена!')
         } else {
-            SwalSimple('Что то пошло не так!')
+            // SwalSimple('Что то пошло не так!')
         }
         getGroupList()
     }

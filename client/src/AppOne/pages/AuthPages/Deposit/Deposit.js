@@ -10,7 +10,7 @@ import {getData, postData, putData} from "../../../services/StaffServices";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
 import TableItemUser from "../../../components/UI/TableItemUser/TableItemUser";
-import {SwalSimple} from "../../../utils/SweetAlert";
+// import {SwalSimple} from "../../../utils/SweetAlert";
 import {getGeoData} from "../../../queries/getSendGeoData";
 import cls from "../Withdraw/Withdraw.module.scss";
 import Image from "../../../components/UI/Image/Image";
@@ -111,19 +111,19 @@ const Deposit = () => {
             coordinates: geoData.coordinates
         }
         if (!address) {
-            SwalSimple('You have to generate address!')
+            // SwalSimple('You have to generate address!')
         } else {
             if (state.value > 0) {
                 const res = await putData('/deposit/make_deposit/', obj)
                 updateNotif()
                 if (res.status === 201) {
                     getHistoryDeposit()
-                    SwalSimple('Deposit request has beed created succesfully')
+                    // SwalSimple('Deposit request has beed created succesfully')
                 } else {
-                    SwalSimple('Something went wrong! Try again later...')
+                    // SwalSimple('Something went wrong! Try again later...')
                 }
             } else {
-                SwalSimple('All fields must be fulfilled!')
+                // SwalSimple('All fields must be fulfilled!')
             }
 
         }

@@ -13,7 +13,7 @@ import {store} from "../../../../index";
 import {getData, patchData, postData, putData} from "../../../services/StaffServices";
 import {v4 as uuid} from 'uuid'
 import ModalDark from "../../../components/UI/ModalDark/ModalDark";
-import {SwalSimple} from "../../../utils/SweetAlert";
+// import {SwalSimple} from "../../../utils/SweetAlert";
 import Preloader from "../../../components/UI/Preloader/Preloader";
 
 
@@ -120,9 +120,9 @@ const StaffWallets = () => {
         }
         const res = await patchData('/staff/staff_wallets/edit_staff_wallets/', obj)
         if (res.status === 201) {
-            SwalSimple('Кошелек изменен!')
+            // SwalSimple('Кошелек изменен!')
         } else {
-            SwalSimple('Упс! Что-то пошло не так...')
+            // SwalSimple('Упс! Что-то пошло не так...')
         }
     }
 

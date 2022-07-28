@@ -25,7 +25,7 @@ import {deleteData, getData, patchData, putData} from "../../../services/StaffSe
 import {store} from "../../../../index";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import Modal from "../../../components/UI/Modal/Modal";
-import {SwalSimple} from "../../../utils/SweetAlert";
+// import {SwalSimple} from "../../../utils/SweetAlert";
 import {NotifContext, useNotifContext} from "../../../context/notifContext";
 
 const SecureDeal = () => {
@@ -63,7 +63,7 @@ const SecureDeal = () => {
         data.amountInCrypto = +data.amountInCrypto
         const res = await putData('/personal_area/secure_deal/create_secure_deal/', data)
         if (res.status === 200) {
-            SwalSimple('Secure Deal was created successfully!')
+            // SwalSimple('Secure Deal was created successfully!')
             getHistory()
             updateNotif()
         }

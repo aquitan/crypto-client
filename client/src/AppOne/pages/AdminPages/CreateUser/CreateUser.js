@@ -12,7 +12,7 @@ import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard
 import {postData} from "../../../services/StaffServices";
 import Select from "../../../components/UI/Select/Select";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
-import {SwalSimple} from "../../../utils/SweetAlert";
+// import {SwalSimple} from "../../../utils/SweetAlert";
 
 const CreateUser = () => {
     const [domains, setDomains] = useState()
@@ -57,9 +57,9 @@ const CreateUser = () => {
 
         const res = await postData('/staff/create_user', data)
         if (res.status === 200) {
-            SwalSimple('Пользователь создан!')
+            // SwalSimple('Пользователь создан!')
         } else {
-            SwalSimple('Что то пошло не так!')
+            // SwalSimple('Что то пошло не так!')
         }
     }
 
