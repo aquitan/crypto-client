@@ -97,23 +97,24 @@ const AccountSecurity = (props) => {
     }
 
     const onSubmit = async (data) => {
-        if (data.code === state.twoFaCode) {
-            const geodata = await getGeoData()
-            geodata.userId = store.user.id
-            geodata.userEmail = store.userEmail
-            geodata.domainName = window.location.host
-            geodata.twoFaStatus = true
-            geodata.twoFaType = 'telegram'
-            geodata.enableDate = dateToTimestamp()
+        const geodata = await getGeoData()
+        geodata.userId = store.user.id
+        geodata.userEmail = store.userEmail
+        geodata.domainName = window.location.host
+        geodata.twoFaStatus = true
+        geodata.twoFaType = 'telegram'
+        geodata.enableDate = dateToTimestamp()
 
-            console.log('2fa----', data)
-            console.log('2fa geo----', geodata)
-            const res = await postData('/personal_area/security/two_step_enable/', geodata)
-            if (res.status === 200) {
-                setStatus(true)
-                store.setTwoFactor(true)
-            }
-            handleModalClose()
+        console.log('2fa----', data)
+        console.log('2fa geo----', geodata)
+        const res = await postData('/personal_area/security/two_step_enable/', geodata)
+        if (res.status === 200) {
+            setStatus(true)
+            store.setTwoFactor(true)
+        }
+        handleModalClose()
+        if (data.code === state.twoFaCode) {
+
         } else {
             console.log('lol')
         }

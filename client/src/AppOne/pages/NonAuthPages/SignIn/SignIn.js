@@ -54,16 +54,17 @@ const SignIn = () => {
 
     const checkFaStatus = async (data) => {
         let date = new Date()
-        const res = await postData('/check_two_step/', {
-            email: data.email,
-            time: date.getTime()
-        })
-        if (res.data.twoStepStatus) {
-            console.log('OK status')
-            setStateTwoFa({twoFaCode: true})
-        } else {
-            sendLoginData(data)
-        }
+        sendLoginData(data)
+        // const res = await postData('/check_two_step/', {
+        //     email: data.email,
+        //     time: date.getTime()
+        // })
+        // if (res.data.twoStepStatus) {
+        //     console.log('OK status')
+        //     setStateTwoFa({twoFaCode: true})
+        // } else {
+        //     sendLoginData(data)
+        // }
 
     }
 
