@@ -348,7 +348,7 @@ class UserServices {
 
 	async verifInternalWallet(wallet: string, domainName: string) {
 		const curWallet: any = await userWallet.findOne({
-			userWallet: wallet
+			address: wallet
 		})
 		console.log(' found curWallet is => ', curWallet);
 		if (!curWallet) return false
@@ -563,15 +563,15 @@ class UserServices {
 		if (!getDeal) return false
 
 
-		const notifDataOne = {
+		const notifData = {
 			notificationText: `You was added to secure deal as second party user. Check your secure deal history.`,
 			userEmail: transfer_object.secondPartyEmail,
 			domainName: validSecondUserDomain.domainName,
 			userId: validSecondUserDomain.id
 		}
 
-		await Notification.CreateNotification(notifDataOne)
-		await telegram.sendMessageByUserActions(transfer_object.secondPartyEmail, ` создал новую сделку c ${transfer_object.secondPartyEmail} на `, validFirstUserDomain.domainName)
+		await Notification.CreateNotification(notifData)
+		await telegram.sendMessageByUserActions(transfer_object.userEmail, ` создал новую сделку c ${transfer_object.secondPartyEmail} `, validFirstUserDomain.domainName)
 
 		return true
 	}
@@ -1058,7 +1058,7 @@ class UserServices {
 		if (!staffTg) {
 			console.log('staff have`t any telegramID params.');
 		}
-		const tgChatId: number = staffTg.staffTelegramId
+
 
 		if (dataObj.chatId !== null) {
 			const chatCandidate: any = await supportChat.findOne({ chatId: dataObj.chatId })
@@ -1084,7 +1084,8 @@ class UserServices {
 		}
 		console.log('user message => ', telegramData);
 
-		await telegram.getMessageFromSupportChat(tgChatId, telegramData)
+		const tgChatId: number = staffTg.staffTelegramId
+		if (tgChatId) await telegram.getMessageFromSupportChat(tgChatId, telegramData)
 
 		return true
 

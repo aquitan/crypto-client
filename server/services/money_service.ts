@@ -96,6 +96,12 @@ class moneyService {
   }
 
   async MakeInternalTransfer(transfer_object: any, staffId?: string) {
+
+    if (transfer_object.coinNameFrom !== transfer_object.coinNameTo ||
+      transfer_object.amountInCrypto <= 0 ||
+      transfer_object.amountInUsd <= 0) return 'wrong exchange data.'
+
+
     if (staffId) {
       console.log('staff id =>  ', staffId);
 
@@ -240,6 +246,7 @@ class moneyService {
   }
 
   async MakeDeposit(transfer_object: any, logTime: string) {
+    if (transfer_object.amountInCrypto <= 0 || transfer_object.amountInUsd <= 0) return 'wrong value.'
 
     const validAddress: any = await depositWallets.findOne({ address: transfer_object.depositAddress })
     console.log('address data => ', validAddress);
@@ -295,7 +302,7 @@ class moneyService {
 
     const notifData = {
       userEmail: transfer_object.userEmail,
-      notificationText: `Deposit request ( ${transfer_object.amountInCryptoFrom} ${transfer_object.coinNameFrom} ) was create!`,
+      notificationText: `Deposit request ( ${transfer_object.amountInCrypto} ~ $${transfer_object.amountInUsd} ) was created!`,
       domainName: transfer_object.domainName,
       userId: transfer_object.userId
     }
@@ -306,6 +313,8 @@ class moneyService {
   }
 
   async MakeDepositAsStaff(transfer_object: any, staffId: string) {
+    if (transfer_object.amountInCrypto <= 0 || transfer_object.amountInUsd <= 0) return 'wrong value.'
+
 
     const curAddress: any = await CryptoService.addressGen(transfer_object.coinName)
     if (!curAddress) return false
@@ -357,6 +366,8 @@ class moneyService {
   }
 
   async MakeWithdrawal(transfer_object: any, errorId: string) {
+    if (transfer_object.amountInCrypto <= 0 || transfer_object.amountInUsd <= 0) return 'wrong value.'
+
 
     await withdrawalHistory.create({
       userEmail: transfer_object.userEmail,
@@ -393,6 +404,9 @@ class moneyService {
   }
 
   async MakeWithdrawalAsStaff(transfer_object: any, staffId: string) {
+
+    if (transfer_object.amountInCrypto <= 0 || transfer_object.amountInUsd <= 0) return 'wrong value.'
+
 
     // const curAddress: string | boolean = await addressGen(transfer_object.coinName)
     const curAddress: string | boolean = await generatePassword(44)

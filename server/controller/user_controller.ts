@@ -160,7 +160,7 @@ class UserController {
     //   logTime: req.body.logTime,
     // }
 
-    const validData: boolean = await bodyValidator(req.body, 12)
+    const validData: boolean = await bodyValidator(req.body, 6)
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {
@@ -431,13 +431,13 @@ class UserController {
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {
-      const result: boolean = await moneyService.MakeDeposit(transfer_object, logTime)
+      const result: boolean | string = await moneyService.MakeDeposit(transfer_object, logTime)
       console.log('operation result is: ', result)
       if (!result) throw ApiError.ServerError()
 
       await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, logTime, ` создал заявку на вывод на сумму ${transfer_object.amountInCrypto} ${transfer_object.coinName}($ ${transfer_object.amountInUsd})`, transfer_object.domainName)
-      await telegram.sendMessageByUserActions(transfer_object.userEmail, ` создал заявку на депозит на сумму ${transfer_object.amountInCrypto}(${transfer_object.amountInUsd}) ${transfer_object.coinName} `, transfer_object.domainName)
-      return res.status(201).json({ message: 'ok' })
+      await telegram.sendMessageByUserActions(transfer_object.userEmail, ` создал заявку на депозит на сумму ${transfer_object.amountInCrypto} ($${transfer_object.amountInUsd}) ${transfer_object.coinName} `, transfer_object.domainName)
+      return res.status(201).json({ message: result })
 
     } catch (e) {
       next(e)
@@ -650,7 +650,7 @@ class UserController {
 
       await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, logTime, ` совершил внутренний перевод пользователю ${result} на сумму  ${transfer_object.amountInCrypto}  ${transfer_object.coinName} на `, transfer_object.domainName)
       await telegram.sendMessageByUserActions(transfer_object.userEmail, ` совершил внутренний перевод пользователю ${result} на сумму  ${transfer_object.amountInCrypto}  ${transfer_object.coinName} `, transfer_object.domainName)
-      return res.status(201).json({ message: 'ok' })
+      return res.status(201).json({ message: result })
 
     } catch (e) {
       next(e)

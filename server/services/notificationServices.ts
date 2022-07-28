@@ -6,7 +6,9 @@ import userNotif from '../models/User_notifications.model'
 class NotificationServices {
 
   async CreateNotification(object: any) {
-    const user: any = await baseUserData.findOne({ email: object.user_email })
+    console.log('notif obj => ', object);
+
+    const user: any = await baseUserData.findOne({ email: object.userEmail })
     if (!user) return false
     await userNotif.create({
       notifText: object.notificationText,
