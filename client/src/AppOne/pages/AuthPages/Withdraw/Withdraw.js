@@ -30,7 +30,6 @@ import swal from '@sweetalert/with-react';
 import {NotifContext, useNotifContext} from "../../../context/notifContext";
 
 const Withdraw = () => {
-    const {updateNotif} = useNotifContext(NotifContext)
     const [state, setState] = useState({
         value: '',
         text: ''
@@ -105,13 +104,11 @@ const Withdraw = () => {
         }
 
         const res = await putData('/withdraw/make_withdraw/', obj)
-        updateNotif()
         setError(res.data)
         if (res.status === 201) {
             // setModal(true)
-            onSendWithdraw()
+            onSendWithdraw(res.data)
         }
-        console.log(data)
     }
 
     const onValChange = (e) => {
@@ -153,15 +150,13 @@ const Withdraw = () => {
         console.log('counter', counter)
     }
 
-    const getWithdrawAddress = async () => {
 
-    }
-
-    const onSendWithdraw = () => {
+    const onSendWithdraw = (error) => {
+        console.log('withdraw error', error)
         swal({
             content:
                 <div>
-                    <h2>Withdrawal Error!</h2>
+                    <h2>{error?.errorTitle}</h2>
                     <h4>{error?.errorType}</h4>
                     <div>
                         <b>{error?.errorText}</b>
