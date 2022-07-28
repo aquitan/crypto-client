@@ -80,7 +80,7 @@ const AccountSecurity = (props) => {
             userId: store.user.id,
             twoFaType: faType,
             twoFaStatus: true,
-            currentTime: dateToTimestamp()
+            currentTime: dateToTimestamp(),
         }
         e.preventDefault()
         const res = await patchData('/personal_area/security/', obj)
@@ -90,6 +90,7 @@ const AccountSecurity = (props) => {
                 twoFaCode: res.data.userCode,
                 fieldShow: true,
             })
+            setShowBot(false)
         } else {
             setShowBot(true)
             setBotCode(res.data.code)
@@ -197,9 +198,9 @@ const AccountSecurity = (props) => {
                             </> : null
                         }
                     </Row>
-                    <Row className='mt-3'>
+                    { !showBot && <Row className='mt-3'>
                         <Button onClick={twoFaHandle(onSubmit)}>Confirm</Button>
-                    </Row>
+                    </Row> }
                 </Form>
             </Modal>
 

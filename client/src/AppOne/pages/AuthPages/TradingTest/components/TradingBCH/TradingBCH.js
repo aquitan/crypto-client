@@ -11,13 +11,13 @@ import ButtonCard from "../../../../../components/ButtonCard/ButtonCard";
 import Order from "../../../Trading/components/Order/Order";
 import OrderItem from "../../../Trading/components/OrderItem/OrderItem";
 import {v4 as uuid} from "uuid";
-import ReactApexChart from "react-apexcharts";
 import Preloader from "../../../../../components/UI/Preloader/Preloader";
 import {coins} from "../../../../../../utils/tradingArr";
 import Input from "../../../../../components/UI/Input/Input";
 import Button from "../../../../../components/UI/Button/Button";
 import {getCurrentDate} from "../../../../../utils/getCurrentDate";
 import AdminButton from "../../../../../components/UI/AdminButton/AdminButton";
+import Chart from 'react-apexcharts'
 
 const TradingBCH = () => {
     const [stateBalance, setStateBalance] = useState([])
@@ -457,7 +457,7 @@ const TradingBCH = () => {
                         {/*</Row>*/}
                         {
                             series ?
-                                <ReactApexChart options={state.options} series={state.series} type="candlestick" height={350} />
+                                <Chart options={state.options} series={state.series} type="candlestick" height={350} />
                                 : <Preloader />
                         }
                     </ButtonCard>

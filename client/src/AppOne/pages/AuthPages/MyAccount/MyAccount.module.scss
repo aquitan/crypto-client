@@ -11,3 +11,20 @@
     }
   }
 }
+.premiumHint {
+  display: none;
+  position: absolute;
+  border: 1px solid #fff;
+  background-color: #444;
+  padding: 10px;
+  border-radius: 5px;
+  transition: all .3s linear
+}
+.premiumInfoLine  {
+  position: relative;
+  cursor: pointer;
+}
+.premiumInfoLine:hover .premiumHint {
+  display: block;
+  transition: all .3s linear
+}

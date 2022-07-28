@@ -85,7 +85,7 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
                         required: 'Invalid wallet',
 
                         onBlur: e => onBlur(e)
-                    })} placeholder='address' />
+                    })} placeholder='Address' />
                     <ErrorMessage  name='toAddress' errors={errors} render={({message}) => <p className={error.error}>{message}</p>} />
                 </Col>
                 <Col className='col'>
@@ -94,7 +94,7 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
                         pattern: /(\d+(?:\.\d+)?)/,
                         onBlur: () => onCheckAmount(),
                         validate: value => checkValue(value)
-                    })} placeholder='amount' />
+                    })} placeholder='Amount' />
                     <ErrorMessage  name='amountInCrypto' errors={errors} render={() => <p className={error.error}>Check the value</p>} />
                 </Col>
             </Row>

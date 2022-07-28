@@ -26,8 +26,10 @@ import {store} from "../../../../index";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import Modal from "../../../components/UI/Modal/Modal";
 import {SwalSimple} from "../../../utils/SweetAlert";
+import {NotifContext, useNotifContext} from "../../../context/notifContext";
 
 const SecureDeal = () => {
+    const {updateNotif} = useNotifContext(NotifContext)
     const [state, setState] = useState(false)
     const [history, setHistory] = useState([])
     const [history2, setHistory2] = useState([])
@@ -63,6 +65,7 @@ const SecureDeal = () => {
         if (res.status === 200) {
             SwalSimple('Secure Deal was created successfully!')
             getHistory()
+            updateNotif()
         }
     }
 
@@ -201,7 +204,7 @@ const SecureDeal = () => {
                             <Input {...register('amountInCrypto', {
                                 required: 'This field is required',
                                 pattern: /(\d+(?:\.\d+)?)/
-                            })} placeholder='amount'/>
+                            })} placeholder='Amount'/>
                             <ErrorMessage
                                 name='amountInCrypto'
                                 errors={errors}
