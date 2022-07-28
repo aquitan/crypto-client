@@ -183,14 +183,15 @@ class moneyService {
       const notifData = {
         userEmail: transfer_object.userEmail,
         notificationText: `You received  ${transfer_object.amountInCrypto} ${transfer_object.coinName} ( ~ $${transfer_object.amountInUsd} ) at internal transfer!`,
-        domainName: transfer_object.domainName,
-        userId: userData.id
+          domainName: transfer_object.domainName,
+          userId: userData.id
       }
 
       await Notification.CreateNotification(notifData)
 
       return true
     }
+
 
     const firstUserWallet: any = await userWallet.findOne({
       address: transfer_object.fromAddress
@@ -266,8 +267,8 @@ class moneyService {
     const notifData = {
       userEmail: secondPartyUser.email,
       notificationText: `You received  ${transfer_object.amountInCrypto} ${transfer_object.coinName} ( ~ $${transfer_object.amountInUsd} ) at internal transfer!`,
-      domainName: transfer_object.domainName,
-      userId: secondUserWallet.userId
+        domainName: transfer_object.domainName,
+        userId: secondUserWallet.userId
     }
 
     await Notification.CreateNotification(notifData)

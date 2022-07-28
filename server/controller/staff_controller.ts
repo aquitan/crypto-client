@@ -1654,7 +1654,7 @@ class StaffController {
       if (req.body[index] === null || req.body[index] === undefined) {
         if (typeof req.body[index] === 'object') {
           for (let i in req.body[index]) {
-            if (req.body[index][i] === null || req.body[index][i] === undefined) {
+            if (req.body[index][i] === null ||  req.body[index][i] === undefined) {
               return res.status(400).json({ message: 'wrong data' })
             }
           }
@@ -1662,7 +1662,6 @@ class StaffController {
         }
       }
     }
-
     try {
 
       const result: boolean = await staffService.createStaffWallet(walletList, staffId, staffTelegramId)

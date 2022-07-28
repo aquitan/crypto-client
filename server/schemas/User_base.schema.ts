@@ -2,10 +2,6 @@
 import { Schema } from 'mongoose'
 
 export const USER_BASE = {
-  _id: {
-    type: Schema.Types.ObjectId,
-    unique: true
-  },
   name: {
     type: String,
   },
