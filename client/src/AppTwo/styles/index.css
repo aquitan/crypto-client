@@ -19,10 +19,13 @@ body {
     padding: 0 5px !important;
   }
 }
+h1 {
+  margin: 0 !important;
+}
 .container {
   overflow-y: auto;
   position: relative;
-  max-width: 1540px;
+  max-width: 1700px;
 }
 
 body *::-webkit-scrollbar {

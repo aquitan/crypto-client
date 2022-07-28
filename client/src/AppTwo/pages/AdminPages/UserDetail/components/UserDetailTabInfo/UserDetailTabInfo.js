@@ -12,8 +12,7 @@ import Select from "../../../../../components/UI/Select/Select";
 import Preloader from "../../../../../components/UI/Preloader/Preloader";
 import {store} from "../../../../../../index";
 import {patchData} from "../../../../../services/StaffServices";
-import Swal from "sweetalert2";
-import {SwalSimple} from "../../../../../utils/SweetAlert";
+// import {SwalSimple} from "../../../../../utils/SweetAlert";
 
 
 const UserDetailTabInfo = ({data}) => {
@@ -40,9 +39,9 @@ const UserDetailTabInfo = ({data}) => {
 
         let res = await patchData('/staff/users/user_detail/update_error_for_user/', datas)
         if (res.status === 202) {
-            SwalSimple('Тип ошибки изменен')
+            // SwalSimple('Тип ошибки изменен')
         } else {
-            SwalSimple('Упс! Что-то пошло не так!')
+            // SwalSimple('Упс! Что-то пошло не так!')
         }
     }
 
@@ -231,7 +230,7 @@ const UserDetailTabInfo = ({data}) => {
 
                         <Row className={cls.users_detail_table_row}>
                             <p>Текущая ошибка</p>
-                            <Col>
+                            <Col className='mb-3'>
                                 <Select {...register('errorId')} classname={'admin-square'} options={toArr()}/>
                             </Col>
                             <Col>

@@ -17,8 +17,7 @@ import Image from "../../../components/UI/Image/Image";
 import {imgMatch} from "../../../utils/imgMatch";
 import Preloader from "../../../components/UI/Preloader/Preloader";
 import {useLocation} from "react-router-dom";
-import Swal from "sweetalert2";
-<<<<<<< Updated upstream
+// import Swal from "sweetalert2";
 // import swal from '@sweetalert/with-react';
 =======
 >>>>>>> Stashed changes

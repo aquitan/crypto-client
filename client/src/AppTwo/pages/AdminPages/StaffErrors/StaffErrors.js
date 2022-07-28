@@ -168,7 +168,11 @@ const StaffErrors = () => {
                       Кнопка
                       <Select {...register('errorButton')} getAvalue={true} options={optionsButton} classname={'admin-square'} />
                   </Row>
-                  <AdminButton classname='green'>Добавить ошибку</AdminButton>
+                  <Row>
+                      <Col className='d-flex justify-content-center'>
+                          <AdminButton classname='green'>Добавить ошибку</AdminButton>
+                      </Col>
+                  </Row>
               </AdminForm>
            </AdminButtonCard>
 

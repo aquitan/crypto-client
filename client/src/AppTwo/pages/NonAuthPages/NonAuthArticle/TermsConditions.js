@@ -18,8 +18,6 @@ const TermsConditions = () => {
         return {__html: `${str}`};
     }
 
-    console.log('createMarkup()', createMarkup().__html)
-
     return (
         <Container>
             {

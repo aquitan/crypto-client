@@ -23,6 +23,8 @@ import {emailValidate} from "../../../utils/checkEmail";
 import Preloader from "../../../components/UI/Preloader/Preloader";
 import {countCryptoTarget, getCurCoinName, getCurCoinVal, getCurValUsd, getValue} from "../../../utils/countCryptos";
 import {imgMatch} from "../../../utils/imgMatch";
+import {getGeoData} from "../../../queries/getSendGeoData";
+// import {SwalSimple} from "../../../utils/SweetAlert";
 
 const InternalSwap = () => {
     const cx = classNames.bind(cls)
@@ -121,11 +123,11 @@ const InternalSwap = () => {
         setBalance(res.data)
         setState({
             target: {
-                value: res.data[0].coinBalance,
+                value: res.data[0].coinBalance.toFixed(5),
                 currency: res.data[0].coinName
             },
             initial: {
-                value: res.data[0].coinBalance,
+                value: res.data[0].coinBalance.toFixed(5),
                 currency: res.data[0].coinName
             },
         })
@@ -133,7 +135,7 @@ const InternalSwap = () => {
     }
 
     const onSubmit = async (data) => {
-
+        let geodata = await getGeoData()
         data.userId = store.user.id
         data.userEmail = store.userEmail
         data.domainName = window.location.host
@@ -141,10 +143,15 @@ const InternalSwap = () => {
         data.coinNameTo = state.target.currency
         data.amountInCryptoFrom = +data.amount + (+data.amount / 100 * chekPercent())
         data.amountInCryptoTo = getValue(state.initial.currency.toLowerCase(), state.target.currency.toLowerCase(), +data.amount)
-        data.amountInUsdFrom = getCurValUsd(state.initial.currency.toLowerCase(), +data.amount)
-        data.amountInUsdTo = getCurValUsd(state.target.currency.toLowerCase(), getValue(state.initial.currency.toLowerCase(), state.target.currency.toLowerCase(), +data.amount, ))
+        data.amountInUsd = getCurValUsd(state.initial.currency.toLowerCase(), +data.amount)
         data.currentDate = dateToTimestamp()
         data.swapStatus = 'pending'
+        data.ipAddress = geodata.ipAddress
+        data.city = geodata.city
+        data.browser = geodata.browser
+        data.countryName = geodata.countryName
+        data.coordinates = geodata.coordinates
+        data.logTime = getCurrentDate(new Date())
 
         delete data.amount
         delete data.initialValue
@@ -153,16 +160,22 @@ const InternalSwap = () => {
         delete data.targetCurrency
 
         console.log('sent', data)
-        const res = await putData('/swap/make_swap/', data)
-
-        if (res.status) {
-            getSwapHistory()
+        if (state.initial.value !== state.target.value) {
+            const res = await putData('/swap/make_swap/', data)
+            if (res.status === 201) {
+                getSwapHistory()
+                // SwalSimple('Swap completed successfully!')
+            }
+        } else {
+            // SwalSimple('You cant exchange identical currencies!')
         }
+
+
 
     }
 
     const getSwapHistory = async () => {
-        const res = await getData(`/swap/get_swap_history/${store.user.id}`)
+        const res = await getData(`/swap/get_swap_history/${store.user.id}/0/20`)
         setHistory(res.data.swapHistory)
     }
 
@@ -188,7 +201,7 @@ const InternalSwap = () => {
             <Row>
                 <Col className='col-12 col-lg-6 mb-3'>
                     <ButtonCard>
-                        <h2>Internal swap</h2>
+                        <h2>Exchange</h2>
                         {
                             balance ?
                                 <Form classnames='form_big' onSubmit={handleSubmit(onSubmit)}>
@@ -319,7 +332,7 @@ const InternalSwap = () => {
 
 
                                 {
-                                    history ?
+                                    typeof history !== 'string' ?
                                         history.map(item => {
                                             return <InternalSwapTableItem
                                                 date={getCurrentDate(item.date)}

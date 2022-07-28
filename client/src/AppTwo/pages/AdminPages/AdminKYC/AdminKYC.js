@@ -18,19 +18,19 @@ const AdminKYC = () => {
             domainName: window.location.host,
             rootAccess: store.fullAccess,
             staffEmail: store.fullAccess ? 'root' : store.user.email,
-            staffId: store.fullAccess ? 'root' : store.user.id
+            staffId: store.fullAccess ? 'root' : store.user.id,
+            skipValue: 0,
+            limitValue: 20
         }
         const res = await postData('/staff/users/kyc/', userData)
         const data = await res.data
         setUsersKyc(data.usersKycList)
-        console.log('dataProfile', data.usersKycList)
     }
 
     useEffect(() => {
         getStaffKyc()
     }, [])
 
-    console.log('user kyc------', usersKyc)
     return (
         <Container>
             <AdminButtonCard>
@@ -53,12 +53,12 @@ const AdminKYC = () => {
                 <Card className={`${cls.bg_black} p-3`}>
                     <Row className={cls.table_header}>
                         {/*<Col className={'col-1'}>Register date</Col>*/}
-                        <Col className={'col-1'}>Name</Col>
-                        <Col className={'col-2'}>Email</Col>
-                        <Col className={'col-2'}>Information</Col>
-                        <Col className={'col-2'}>Documents</Col>
-                        <Col className={'col-2'}>Status</Col>
-                        <Col className={'col-3'}>Action</Col>
+                        <Col className={'d-none d-md-block col-2 text-center'}>Name</Col>
+                        <Col className={'col-6 col-md-2 text-center'}>Email</Col>
+                        <Col className={'d-none d-md-block col-8 col-sm-2 text-center'}>Information</Col>
+                        <Col className={'d-none d-md-block col-4 col-sm-2 text-center'}>Documents</Col>
+                        <Col className={'d-none d-md-block col-4 col-sm-1 text-center'}>Status</Col>
+                        <Col className={'col-6 col-md-3 text-center'}>Action</Col>
                     </Row>
                     {
                         usersKyc &&  typeof usersKyc !== 'string'

@@ -1,19 +1,17 @@
 import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
-import {Col, Container, Form, Row} from "react-bootstrap";
+import {Container, Form, Row} from "react-bootstrap";
 import AdminButtonCard from "../../../../../components/AdminButtonCard/AdminButtonCard";
 import {getData, patchData, putData} from "../../../../../services/StaffServices";
 import Preloader from "../../../../../components/UI/Preloader/Preloader";
 import DomainsDetailTableItem from "../DomainsDetailTableItem/DomainDetailTableItem";
 import {useForm} from "react-hook-form";
-import AdminForm from "../../../../../components/UI/AdminForm/AdminForm";
 import AdminInput from "../../../../../components/UI/AdminInput/AdminInput";
 import {ErrorMessage} from "@hookform/error-message";
 import cls from "../../../../NonAuthPages/SignIn/SignIn.module.scss";
-import {defaultErrors, domainSelect, domainsInputs, domainsInputsNums} from "../../../../../utils/staffConstants";
+import {domainSelect, domainsInputs, domainsInputsNums} from "../../../../../utils/staffConstants";
 import Select from "../../../../../components/UI/Select/Select";
 import AdminButton from "../../../../../components/UI/AdminButton/AdminButton";
-import {getCurrentDate} from "../../../../../utils/getCurrentDate";
 import {v4 as uuid} from 'uuid'
 import StaffErrorItem from "../../../StaffErrors/components/StaffErrorItem/StaffErrorItem";
 import TextArea from "../../../../../components/UI/TextArea/TextArea";
@@ -38,6 +36,10 @@ const DomainsDetail = () => {
     const {register: registerError, handleSubmit: submitError} = useForm({
         mode: 'onBlur'
     })
+    const designs = [
+        {value: 'one', text: 'one'},
+        {value: 'two', text: 'two'},
+    ]
     useEffect(() => {
         getDomainData()
     }, [])
@@ -66,7 +68,6 @@ const DomainsDetail = () => {
         createErrorArr(res.data.domain_detail.domainErrors)
 
         setErrorsNames(arr)
-        console.log('detail data', arr)
     }
 
 
@@ -112,12 +113,14 @@ const DomainsDetail = () => {
                 errorList.multi_account.button = el.errorButton
             }
             setErrorList(errorList)
-            console.log('error list ------', errorList)
         })
     }
 
 
     const onSubmit = async (data) => {
+        for (let key in errorList) {
+            errorList[key].fullDomainName = data.fullDomainName
+        }
         if (data.showNews === 'true') {
             data.showNews = true
         }
@@ -131,9 +134,8 @@ const DomainsDetail = () => {
             data.doubleDeposit = false
         }
         data.errorList = errorList
-        data.dateOfDomainCreate = dateToTimestamp()
+        data.dateOfDomainCreate = new Date(dateToTimestamp())
         data.depositFee = parseInt(data.depositFee)
-        data.rateCorrectSum = parseInt(data.rateCorrectSum)
         data.minDepositSum = parseInt(data.minDepositSum)
         data.minWithdrawalSum = parseInt(data.minWithdrawalSum)
         data.currencySwapFee = parseInt(data.currencySwapFee)
@@ -155,15 +157,12 @@ const DomainsDetail = () => {
             data.showNews = false
         }
         data.rootAccess = store.fullAccess
-        // const res = await patchData('/staff/domains/domain_detail/domain_edit/', data)
-        console.log('domains-data', data)
+        const res = await patchData('/staff/domains/domain_detail/domain_edit/', data)
+        console.log('domain edit', data)
     }
 
     const onChangeError = (data) => {
-        console.log(data)
         for (let key in errorList) {
-            console.log('key', errorList[key].title)
-            console.log('error-list', data.error)
             if (errorList[key].title === data.error) {
                 let obj = {
                     errorName: data.error,
@@ -173,14 +172,19 @@ const DomainsDetail = () => {
                     button: data.button
                 }
                 if (errorList[key].title === 'Address Verification') {
+                    console.log('error-list', errorList)
                     setErrorList({...errorList, verif_address: obj})
                 } else if (errorList[key].title === 'Documents Verification') {
+                    console.log('error-list', errorList)
                     setErrorList({...errorList, verif_document: obj})
                 } else if (errorList[key].title === 'Premium') {
+                    console.log('error-list', errorList)
                     setErrorList({...errorList, premium: obj})
                 } else if (errorList[key].title === 'Insurance') {
+                    console.log('error-list', errorList)
                     setErrorList({...errorList, insurance: obj})
                 } else if (errorList[key].title === 'Multi-account') {
+                    console.log('error-list', errorList)
                     setErrorList({...errorList, multi_account: obj})
                 }
             }
@@ -265,16 +269,6 @@ const DomainsDetail = () => {
                         })} placeholder={'Комиссия при пополнении %'}/>
                         <ErrorMessage  name={'depositFee'} errors={errors} render={() => <p className={cls.error}>Check the value</p>} />
                     </Row>
-                    <Row className={'mb-3 relative'}>
-                        Корректировка курса в %
-                        <AdminInput {...register('rateCorrectSum', {
-                            required: true,
-                            pattern: /^[0-9]+$/,
-                            min: 0,
-                            max: 15
-                        })} placeholder={'Корректировка курса в %'}/>
-                        <ErrorMessage  name={'rateCorrectSum'} errors={errors} render={() => <p className={cls.error}>Check the value</p>} />
-                    </Row>
                     {
                         domainSelect.map(select => {
                             return (
@@ -286,6 +280,11 @@ const DomainsDetail = () => {
                             )
                         })
                     }
+                    <Row className={'mb-3 relative'}>
+                        Дизайн
+                        <Select {...register('designName')} classname={'admin-square'} options={designs}/>
+                        <ErrorMessage  name={'designName'} errors={errors} render={() => <p className={cls.error}>This field is required</p>} />
+                    </Row>
                 </AdminButtonCard>
                 <AdminButtonCard>
                     {

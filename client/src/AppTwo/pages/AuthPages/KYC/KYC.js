@@ -28,7 +28,7 @@ import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheckCircle} from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import {SwalSimple} from "../../../utils/SweetAlert";
+// import {SwalSimple} from "../../../utils/SweetAlert";
 
 
 
@@ -56,7 +56,7 @@ const KYC = ({status}) => {
 
         // let blob = new Blob([data], {type: 'application/json'})
         // formData.append("data", blob);
-        formData.append("file", data.selfieDocumentPhoto[0]);
+        formData.append("image", data.selfieDocumentPhoto[0]);
         for (let value of formData.entries()) {
             console.log('values', value)
         }
@@ -91,7 +91,7 @@ const KYC = ({status}) => {
         //     }
         // })
         if (res.status === 201) {
-            SwalSimple('Verification is sent')
+            // SwalSimple('Verification is sent')
         }
 
         console.log('kyc data', data)

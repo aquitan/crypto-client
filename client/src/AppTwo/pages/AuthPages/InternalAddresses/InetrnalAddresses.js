@@ -66,7 +66,7 @@ const InternalAddresses = () => {
     }
 
     const getInternalHistory = async (count) => {
-        const res = await getData(`/internal_transfer/get_internal_transfer_history/${store.user.id}/${count}/5`)
+        const res = await getData(`/internal_transfer/get_internal_transfer_history/${store.user.id}/${0}/20`)
         setHistory(res.data.internalTransferHistory)
     }
 

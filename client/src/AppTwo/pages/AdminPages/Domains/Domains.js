@@ -28,6 +28,7 @@ import {ErrorMessage} from "@hookform/error-message";
 import {useNavigate} from "react-router-dom";
 import ModalDark from "../../../components/UI/ModalDark/ModalDark";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
+// import {SwalSimple} from "../../../utils/SweetAlert";
 
 const CreateDomains = () => {
     const [modal, setModal] = useState(false)
@@ -71,7 +72,14 @@ const CreateDomains = () => {
         },
     })
 
+    const designs = [
+        {value: 'one', text: 'one'},
+        {value: 'two', text: 'two'},
+    ]
+    const list = ['BTC', 'ETH', 'USDT', 'TRX', 'TRX/USDT', 'SOL', 'BCH']
+
     const onSubmit = async (data) => {
+
         if (data.showNews === 'true') {
             data.showNews = true
         }
@@ -87,13 +95,13 @@ const CreateDomains = () => {
         data.errorList = errorList
         data.dateOfDomainCreate = dateToTimestamp()
         data.depositFee = parseInt(data.depositFee)
-        data.rateCorrectSum = parseInt(data.rateCorrectSum)
         data.minDepositSum = parseInt(data.minDepositSum)
         data.minWithdrawalSum = parseInt(data.minWithdrawalSum)
         // data.internalSwapFee = parseInt(data.internalSwapFee)
         data.currencySwapFee = parseInt(data.currencySwapFee)
         data.companyPhoneNumber = parseInt(data.companyPhoneNumber)
         data.companyYear = parseInt(data.companyYear)
+        data.coinList = list
         if (store.fullAccess) {
             data.staffId = 'dsfsdf'
         } else {
@@ -110,13 +118,12 @@ const CreateDomains = () => {
             data.showNews = false
         }
         data.rootAccess = store.fullAccess
-        // const res = await postData('/staff/domains/create_domain/', data)
-        console.log('domains-data', data)
-        // const response = await res.data
-        // if (res.status === 201) {
-        //     setModal(true)
-        //     reset({data: ''})
-        // }
+        const res = await postData('/staff/domains/create_domain/', data)
+        const response = await res.data
+        if (res.status === 201) {
+            // SwalSimple('Домен успешно создан!')
+            reset({data: ''})
+        }
     }
 
     const tableHeader = ['#001', '127.0.0.1:8000', 'super', 'Jan. 11, 2022, 10:21 a.m.']
@@ -139,7 +146,6 @@ const CreateDomains = () => {
             rootAccess: store.fullAccess
         }
         const res = await postData('/staff/domains/get_domain_list/', obj)
-        console.log('res data', res.data)
         setActiveDomains(res.data)
     }
 
@@ -240,16 +246,6 @@ const CreateDomains = () => {
                         })} placeholder={'Комиссия при пополнении %'}/>
                         <ErrorMessage  name={'depositFee'} errors={errors} render={() => <p className={cls.error}>Check the value</p>} />
                     </Row>
-                    <Row className={'mb-3 relative'}>
-                        Корректировка курса в %
-                        <AdminInput {...register('rateCorrectSum', {
-                            required: true,
-                            pattern: /^[0-9]+$/,
-                            min: 0,
-                            max: 15
-                        })} placeholder={'Корректировка курса в %'}/>
-                        <ErrorMessage  name={'rateCorrectSum'} errors={errors} render={() => <p className={cls.error}>Check the value</p>} />
-                    </Row>
                     {
                         domainSelect.map(select => {
                             return (
@@ -261,6 +257,11 @@ const CreateDomains = () => {
                             )
                         })
                     }
+                    <Row className={'mb-3 relative'}>
+                        Дизайн
+                        <Select {...register('designName')} classname={'admin-square'} options={designs}/>
+                        <ErrorMessage  name={'designName'} errors={errors} render={() => <p className={cls.error}>This field is required</p>} />
+                    </Row>
                     <h2 className='mb-3'>Дефолтные ошибки</h2>
                     <Accordion className='mb-3' defaultActiveKey="0" flush>
                         <Accordion.Item className='bg-dark' eventKey='0'>

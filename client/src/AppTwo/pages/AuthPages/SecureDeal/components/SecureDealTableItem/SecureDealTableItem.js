@@ -15,13 +15,13 @@ const SecureDealTableItem = ({amount, status, classname, onClick}) => {
     console.log('classes', classes)
     return (
         <Row key={uuid()} className={classes}>
-            <Col>
+            <Col className='text-center'>
                 {amount}
             </Col>
-            <Col>
+            <Col className='text-center'>
                 {status}
             </Col>
-            <Col>
+            <Col className='d-flex justify-content-center text-center'>
                 <Button onClick={onClick} classname='small'>View details</Button>
             </Col>
         </Row>

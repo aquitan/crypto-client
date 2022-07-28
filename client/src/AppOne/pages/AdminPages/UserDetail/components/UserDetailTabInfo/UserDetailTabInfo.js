@@ -12,7 +12,6 @@ import Select from "../../../../../components/UI/Select/Select";
 import Preloader from "../../../../../components/UI/Preloader/Preloader";
 import {store} from "../../../../../../index";
 import {patchData} from "../../../../../services/StaffServices";
-import Swal from "sweetalert2";
 // import {SwalSimple} from "../../../../../utils/SweetAlert";
 
 

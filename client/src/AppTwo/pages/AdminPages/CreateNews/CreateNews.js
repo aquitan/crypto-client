@@ -31,6 +31,7 @@ const CreateNews = () => {
     })
     const [allDomains, setAllDomains] = useState([])
     const [limit, setLimit] = useState(0)
+    const [image, setImage] = useState('')
 
     useEffect(() => {
         getAllNews()
@@ -67,7 +68,7 @@ const CreateNews = () => {
         data.newsDate = dateToTimestamp(newDate)
         data.staffId = store.user.id
         data.staffEmail = store.user.email
-        data.newsImage = 'img'
+        data.newsImage = image
         data.rootAccess = store.fullAccess
         data.newsDomain = curSelect
         if (store.fullAccess) {
@@ -93,7 +94,6 @@ const CreateNews = () => {
             obj.staffId = store.fullAccess ? '1' : store.user.id
         }
         const res = await postData('/staff/news/get_news_list/', obj)
-        console.log('news list', res.data)
         setState(res.data)
     }
 
@@ -143,6 +143,17 @@ const CreateNews = () => {
         setLimit(prevState => prevState-1)
     }
 
+    const onUploadImg =(img) => {
+        const formData = new FormData();
+        formData.append("image", img);
+        fetch(
+            "https://api.imgbb.com/1/upload?key=68c3edcc904ee3e28d2e63ec81876e40",
+            { method: "POST", body: formData }
+        )
+            .then((response) => response.json())
+            .then((data) => setImage(data.data.display_url));
+    }
+
 
     return (
         <Container>
@@ -152,7 +163,7 @@ const CreateNews = () => {
             <AdminButtonCard>
                 <AdminForm onSubmit={handleSubmit(onSubmit)}>
                     <Row>
-                        <Col className='col-12 col-md-3 mb-3'>
+                        <Col className='col-12 col-lg-3 mb-3'>
                             <AdminInput {...register('newsTitle', {
                                 required: true,
                                 pattern: /^[^а-яё]+$/iu
@@ -182,7 +193,7 @@ const CreateNews = () => {
                                          dateFormat="HH:mm"/>
                             <span style={styles.todayBtn} onClick={onNowTime}>Now</span>
                         </Col>
-                        <Col className='col-12 col-md-3 mb-3'>
+                        <Col className='col-12 col-lg-3 mb-3'>
                             <Select classname={['admin-square']} value={curSelect} options={allDomains} />
                         </Col>
                     </Row>
@@ -193,14 +204,14 @@ const CreateNews = () => {
                     </Row>
                     <Row className='mb-3'>
                         <Col className='col-12 col-md-6 mb-3'>
-                            <FileUpload {...register('newsImage')} id='newsImg' />
+                            <FileUpload onUploadImg={onUploadImg} id='newsImg' />
                         </Col>
                         {/*<Col className='col-12 col-md-6 mb-3'>*/}
                         {/*    <AdminInput {...register('youtubeLink')} placeholder='Ссылка на Youtube' />*/}
                         {/*</Col>*/}
                     </Row>
                     <Row>
-                        <Col>
+                        <Col className='text-center'>
                             <AdminButton classname='green'>Создать</AdminButton>
                         </Col>
                     </Row>
@@ -209,7 +220,7 @@ const CreateNews = () => {
             <AdminButtonCard>
                 <h4>Все новости</h4>
                 {
-                    state !== 'empty list' ?
+                    state !== 'empty set' ?
                         state.map(news => {
                             return <AllNews key={uuid()} data={news} />
                         })
