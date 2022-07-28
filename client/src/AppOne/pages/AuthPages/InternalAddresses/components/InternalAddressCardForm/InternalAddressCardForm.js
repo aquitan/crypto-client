@@ -14,7 +14,7 @@ import {getGeoData} from "../../../../../queries/getSendGeoData";
 import {getCurrentDate} from "../../../../../utils/getCurrentDate";
 import {useNavigate} from "react-router-dom";
 import {NotifContext, useNotifContext} from "../../../../../context/notifContext";
-import {SwalSimple} from "../../../../../utils/SweetAlert";
+// import {SwalSimple} from "../../../../../utils/SweetAlert";
 
 const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, sum}) => {
     const {updateNotif} = useNotifContext(NotifContext)
@@ -58,7 +58,7 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
         setFormData(data)
         const res = await putData('/internal_transfer/make_internal_transfer/', data)
         updateNotif()
-        SwalSimple('Transaction sent!')
+        // SwalSimple('Transaction sent!')
     }
 
     const onBlur = async (e) => {

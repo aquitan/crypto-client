@@ -24,7 +24,7 @@ import Preloader from "../../../components/UI/Preloader/Preloader";
 import {countCryptoTarget, getCurCoinName, getCurCoinVal, getCurValUsd, getValue} from "../../../utils/countCryptos";
 import {imgMatch} from "../../../utils/imgMatch";
 import {getGeoData} from "../../../queries/getSendGeoData";
-import {SwalSimple} from "../../../utils/SweetAlert";
+// import {SwalSimple} from "../../../utils/SweetAlert";
 
 const InternalSwap = () => {
     const cx = classNames.bind(cls)
@@ -164,10 +164,10 @@ const InternalSwap = () => {
             const res = await putData('/swap/make_swap/', data)
             if (res.status === 201) {
                 getSwapHistory()
-                SwalSimple('Swap completed successfully!')
+                // SwalSimple('Swap completed successfully!')
             }
         } else {
-            SwalSimple('You cant exchange identical currencies!')
+            // SwalSimple('You cant exchange identical currencies!')
         }
 
 

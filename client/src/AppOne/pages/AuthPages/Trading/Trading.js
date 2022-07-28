@@ -15,7 +15,7 @@ import {v4 as uuid} from 'uuid'
 import {store} from "../../../../index";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
-import {SwalSimple} from "../../../utils/SweetAlert";
+// import {SwalSimple} from "../../../utils/SweetAlert";
 import AdminButton from "../../../components/UI/AdminButton/AdminButton";
 import CurrencyRates from "../../../components/CurrencyRates/CurrencyRates";
 import {findPercent} from "../../../utils/findPercent";
@@ -147,7 +147,7 @@ const Trading = () => {
 
         const res = await putData('/trading/make_order/', obj)
         if (res.status === 201) {
-            SwalSimple('Order is created!')
+            // SwalSimple('Order is created!')
         }
     }
 
@@ -366,7 +366,7 @@ const Trading = () => {
     const onAbort = async (id) => {
         const res = await patchData(`/trading/cancel_order/${id}`)
         if (res.status === 202) {
-            SwalSimple('Order deleted!')
+            // SwalSimple('Order deleted!')
             getHistory()
         }
     }
@@ -457,7 +457,7 @@ const Trading = () => {
             setValCounter(0)
             // resetBaseParams()
             console.log('end counter')
-            return textVal >= curVal ? SwalSimple('Order Successfully completed!') : null
+            // return textVal >= curVal ? SwalSimple('Order Successfully completed!') : null
         }
     }
 

@@ -11,8 +11,7 @@ import {deleteData, patchData, postData} from "../../../../services/StaffService
 import {useForm} from "react-hook-form";
 import {store} from "../../../../../index";
 import Modal from "../../../../components/UI/Modal/Modal";
-import {log} from "util";
-import {SwalSimple} from "../../../../utils/SweetAlert";
+// import {SwalSimple} from "../../../../utils/SweetAlert";
 
 const GroupDetails = () => {
     const {register, handleSubmit, reset} = useForm()
@@ -26,11 +25,11 @@ const GroupDetails = () => {
         data.groupId = location.state.item.groupData._id
         const res = await patchData('/staff/groups/add_new_group_member/', data)
         if (res.status === 200 || res.status === 201) {
-            SwalSimple('Пользователь добавлен')
+            // SwalSimple('Пользователь добавлен')
             reset({data: ''})
             getGroupList(location.state.index)
         } else {
-            SwalSimple('Что-то пошло не так!')
+            // SwalSimple('Что-то пошло не так!')
         }
     }
     const deleteUser = async (data) => {
@@ -41,11 +40,11 @@ const GroupDetails = () => {
         data.isStaff = store.isStaff
         const res = await deleteData('/staff/groups/delete_user_from_group/', {data: data})
         if (res.status === 202) {
-            SwalSimple('Пользователь удален')
+            // SwalSimple('Пользователь удален')
             resetDelete({data: ''})
             getGroupList(location.state.index)
         } else if (res.status === 200) {
-            SwalSimple('Если вы не создатель группы, вы не можете удалить пользователя!')
+            // SwalSimple('Если вы не создатель группы, вы не можете удалить пользователя!')
         }
     }
 

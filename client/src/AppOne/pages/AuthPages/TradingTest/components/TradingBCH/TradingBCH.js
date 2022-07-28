@@ -5,7 +5,7 @@ import {store} from "../../../../../../index";
 import {generateRandomInt} from "../../../../../utils/generateRandomInt";
 import {shaffleData} from "../../../../../utils/shaffleData";
 import {sortDataArray} from "../../../../../utils/sortArr";
-import {SwalSimple} from "../../../../../utils/SweetAlert";
+// import {SwalSimple} from "../../../../../utils/SweetAlert";
 import {Col, Container, Form, Row} from "react-bootstrap";
 import ButtonCard from "../../../../../components/ButtonCard/ButtonCard";
 import Order from "../../../Trading/components/Order/Order";
@@ -377,7 +377,7 @@ const TradingBCH = () => {
     const onAbort = async (id) => {
         const res = await patchData(`/trading/cancel_order/${id}`)
         if (res.status === 202) {
-            SwalSimple('Order deleted!')
+            // SwalSimple('Order deleted!')
             getHistory()
         }
     }

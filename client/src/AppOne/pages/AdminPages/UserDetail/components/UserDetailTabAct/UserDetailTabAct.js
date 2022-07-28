@@ -19,9 +19,8 @@ import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
 import moment from "moment";
 import Select from "../../../../../components/UI/Select/Select";
 import {optionsCurrency} from "../../../../../utils/staffConstants";
-import {log} from "util";
-import {SwalSimple} from "../../../../../utils/SweetAlert";
-import Swal from "sweetalert2";
+// import {SwalSimple} from "../../../../../utils/SweetAlert";
+// import Swal from "sweetalert2";
 
 const UserDetailTabAct = (props) => {
 
@@ -154,7 +153,7 @@ const UserDetailTabAct = (props) => {
             ...dataObj, status: !btns.double
         })
         if (response.status === 202) {
-            SwalSimple('Изменено')
+            // SwalSimple('Изменено')
         }
         setBtns({...btns, double: !btns.double})
         // handleCloseModal()
@@ -200,7 +199,7 @@ const UserDetailTabAct = (props) => {
             status: !btns.currentPrem,
         })
         if (response.status === 202) {
-            SwalSimple('Изменено!')
+            // SwalSimple('Изменено!')
         }
         setBtns({...btns, currentPrem: !btns.currentPrem})
         // setState({isOpen: false, onClickConfirm: null})
@@ -228,15 +227,15 @@ const UserDetailTabAct = (props) => {
             case 'support':
                 return handleSupportSubmit(changeSupportName);
             case 'double':
-                return makeDouble();
+                return makeDouble;
             case 'premium':
-                return sendPremStatus();
+                return sendPremStatus;
             case 'full-ban':
-                return makeFullBan();
+                return makeFullBan;
             case 'internal-ban':
-                return makeTransactionBan();
+                return makeTransactionBan;
             case 'swap-ban':
-                return makeSwapBan();
+                return makeSwapBan;
             case 'staff-reqruiter':
                 return handleRecruiterSubmit(changeReqruiterName);
             case 'new-percent':
@@ -244,17 +243,17 @@ const UserDetailTabAct = (props) => {
             case 'notification':
                 return handleNotifSubmit(changeNotif);
             case 'make-staff':
-                return makeStaff();
+                return makeStaff;
             case 'balance':
                 return handleBalanceSubmit(changeBalance);
             case 'ip-clear':
-                return makeIpClear();
+                return makeIpClear;
             case 'email-clear':
-                return makeEmailClear();
+                return makeEmailClear;
             case 'delete-user':
-                return deleteUser();
+                return deleteUser;
             case 'confirm-delete':
-                return confirmDelete();
+                return confirmDelete;
             case 'chat-ban':
                 return chatBan();
             case 'update-domain':
@@ -269,59 +268,21 @@ const UserDetailTabAct = (props) => {
     const handleOpenModal = (requestType) => {
         if (requestType === 'confirm-delete') {
             const onClickConfirm = handleFindType(requestType)
-            Swal.fire({
-                title: 'Изменить?',
-                showDenyButton: true,
-                confirmButtonText: 'Yes',
-                denyButtonText: `No`,
-            }).then((result) => {
-                /* Read more about isConfirmed, isDenied below */
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        title: 'Вы уверены?',
-                        showDenyButton: true,
-                        confirmButtonText: 'Yes',
-                        denyButtonText: `No`,
-                    }).then((result) => {
-                        /* Read more about isConfirmed, isDenied below */
-                        if (result.isConfirmed) {
-                            handleFindType(requestType)
-                        } else if (result.isDenied) {
-                            Swal.fire('Не сохранено!')
-                        }
-                    })
-                } else if (result.isDenied) {
-                    Swal.fire('Не сохранено!')
+            setState({
+                    isOpen: false,
+                    onClickConfirm,
+                    doubleConfirm: true
                 }
-            })
+            )
         } else {
-            Swal.fire({
-                title: 'Изменить?',
-                showDenyButton: true,
-                confirmButtonText: 'Yes',
-                denyButtonText: `No`,
-            }).then((result) => {
-                /* Read more about isConfirmed, isDenied below */
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        title: 'Вы уверены?',
-                        showDenyButton: true,
-                        confirmButtonText: 'Yes',
-                        denyButtonText: `No`,
-                    }).then((result) => {
-                        /* Read more about isConfirmed, isDenied below */
-                        if (result.isConfirmed) {
-                            handleFindType(requestType)
-                        } else if (result.isDenied) {
-                            Swal.fire('Не сохранено!')
-                        }
-                    })
-                } else if (result.isDenied) {
-                    Swal.fire('Не сохранено!')
-                }
+            const onClickConfirm = handleFindType(requestType)
+            setState({
+                isOpen: true,
+                onClickConfirm,
+                doubleConfirm: false
+
             })
         }
-
     }
     const onUserEnter = () => {
         store.logout()
