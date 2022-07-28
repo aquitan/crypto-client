@@ -18,7 +18,10 @@ import {imgMatch} from "../../../utils/imgMatch";
 import Preloader from "../../../components/UI/Preloader/Preloader";
 import {useLocation} from "react-router-dom";
 import Swal from "sweetalert2";
+<<<<<<< Updated upstream
 // import swal from '@sweetalert/with-react';
+=======
+>>>>>>> Stashed changes
 import {copyTextToClipboard} from "../../../utils/copyToClipboard";
 import {NotifContext, useNotifContext} from "../../../context/notifContext";
 

@@ -26,7 +26,10 @@ import cls from './Withdraw.module.scss'
 import Image from "../../../components/UI/Image/Image";
 import {imgMatch} from "../../../utils/imgMatch";
 import {getGeoData} from "../../../queries/getSendGeoData";
+<<<<<<< Updated upstream
 // import swal from '@sweetalert/with-react';
+=======
+>>>>>>> Stashed changes
 import {NotifContext, useNotifContext} from "../../../context/notifContext";
 
 const Withdraw = () => {
