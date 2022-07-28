@@ -46,7 +46,7 @@ const StaffWallets = () => {
         let id = store.fullAccess ? '1' : store.user.id
         let obj = {
             staffId: id,
-            rootAccess: store.fullAccess,
+            staffTelegramId: +data.code,
             walletList: {
                 btcWallet: data.BTC,
                 bchWallet: data.BCH,
@@ -54,7 +54,7 @@ const StaffWallets = () => {
                 usdtWallet: data.USDT,
                 tronWallet: data.TRX,
                 trxUsdtWallet: data.USDTTRX,
-                solanaWalet: data.SOL,
+                solanaWallet: data.SOL,
             }
         }
         const res = await putData('/staff/wallets/create_staff_wallet/', obj)

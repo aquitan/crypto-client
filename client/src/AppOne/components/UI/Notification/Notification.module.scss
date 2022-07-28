@@ -27,13 +27,17 @@
 }
 .notification_mark {
   background-color: tomato;
-  width: 10px;
-  height: 10px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
   animation: bell 2s linear infinite;
   position: absolute;
   top: 2px;
   left: 5px;
+  font-size: 10px;
+  color: #fff;
+  display: flex;
+  justify-content: center;
 }
 
 @keyframes bell {

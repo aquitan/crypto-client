@@ -94,7 +94,7 @@ const SecureDealDetail = () => {
 
         const res = await putData('/secure_deal/deal_detail/send_message_to_secure_deal_chat', obj)
         if (res.status === 202) {
-            getSupportMessages()
+            getSupportMessages(dealData._id)
         }
         console.log('res msg', res)
     }

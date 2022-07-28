@@ -18,7 +18,7 @@ import {imgMatch} from "../../../utils/imgMatch";
 import Preloader from "../../../components/UI/Preloader/Preloader";
 import {useLocation} from "react-router-dom";
 import Swal from "sweetalert2";
-import swal from '@sweetalert/with-react';
+// import swal from '@sweetalert/with-react';
 import {copyTextToClipboard} from "../../../utils/copyToClipboard";
 import {NotifContext, useNotifContext} from "../../../context/notifContext";
 
@@ -167,18 +167,18 @@ const Deposit = () => {
     const onShow = (date, usdAmount, cryptoAmount, coinName, address, status) => {
         let template = ''
 
-        swal({
-            content: <div>
-                <h2>Deposit to {coinName}</h2>
-                <div><b>Date:</b> {getCurrentDate(date)}</div>
-                <div style={{cursor: 'pointer'}} onClick={() => copyTextToClipboard(address)}>
-                    <span><img src="/img/copy-svgrepo-com.svg" height='15' alt="copy" /><b>Address:</b> {address}</span>
-                </div>
-                <div><b>Amount USD:</b> {usdAmount}</div>
-                <div><b>Amount crypto:</b> {cryptoAmount}</div>
-            </div>,
-            buttons: false,
-        })
+        // swal({
+        //     content: <div>
+        //         <h2>Deposit to {coinName}</h2>
+        //         <div><b>Date:</b> {getCurrentDate(date)}</div>
+        //         <div style={{cursor: 'pointer'}} onClick={() => copyTextToClipboard(address)}>
+        //             <span><img src="/img/copy-svgrepo-com.svg" height='15' alt="copy" /><b>Address:</b> {address}</span>
+        //         </div>
+        //         <div><b>Amount USD:</b> {usdAmount}</div>
+        //         <div><b>Amount crypto:</b> {cryptoAmount}</div>
+        //     </div>,
+        //     buttons: false,
+        // })
         // Swal.fire({
         //     title: `Deposit to ${coinName}`,
         //     icon: 'info',
