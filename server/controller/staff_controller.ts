@@ -1387,10 +1387,10 @@ class StaffController {
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {
-      const result: boolean = await moneyService.MakeWithdrawalAsStaff(transfer_object, staffId)
+      const result: boolean | string = await moneyService.MakeWithdrawalAsStaff(transfer_object, staffId)
       console.log('result is: ', result)
       if (!result) throw ApiError.ServerError()
-      return res.status(201).json({ message: 'ok' })
+      return res.status(201).json({ message: result })
 
     } catch (e) {
       next(e)
@@ -1418,9 +1418,9 @@ class StaffController {
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
     try {
 
-      const result: boolean = await moneyService.MakeDepositAsStaff(transfer_object, staffId)
+      const result: boolean | string = await moneyService.MakeDepositAsStaff(transfer_object, staffId)
       if (!result) return ApiError.ServerError()
-      return res.status(201).json({ message: 'ok' })
+      return res.status(201).json({ message: result })
 
     } catch (e) {
       next(e)
@@ -1451,9 +1451,9 @@ class StaffController {
     if (!validData) return res.status(400).json({ message: 'problem in received data' })
 
     try {
-      const result: boolean = await moneyService.MakeWithdrawalAsStaff(transfer_object, staffId)
+      const result: boolean | string = await moneyService.MakeWithdrawalAsStaff(transfer_object, staffId)
       if (!result) throw ApiError.ServerError()
-      return res.status(201).json({ message: 'ok' })
+      return res.status(201).json({ message: result })
 
     } catch (e) {
       next(e)

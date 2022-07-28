@@ -1,3 +1,4 @@
+import { Schema } from 'mongoose';
 
 export const INTERNAL_HISTORY_SCHEMA = {
   userEmail: {
@@ -6,6 +7,14 @@ export const INTERNAL_HISTORY_SCHEMA = {
   },
   secondUserEmail: {
     type: String,
+    require: true
+  },
+  receiver: {
+    type: Schema.Types.ObjectId,
+    require: true
+  },
+  sender: {
+    type: Schema.Types.ObjectId,
     require: true
   },
   userDomain: {
