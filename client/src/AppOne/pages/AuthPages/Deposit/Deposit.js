@@ -20,9 +20,11 @@ import {useLocation} from "react-router-dom";
 import Swal from "sweetalert2";
 import swal from '@sweetalert/with-react';
 import {copyTextToClipboard} from "../../../utils/copyToClipboard";
+import {NotifContext, useNotifContext} from "../../../context/notifContext";
 
 
 const Deposit = () => {
+    const {notificationList, updateNotif} = useNotifContext(NotifContext)
     const {register, handleSubmit} = useForm()
     const [address, setAddress] = useState('')
     const [state, setState] = useState({
@@ -108,13 +110,25 @@ const Deposit = () => {
             countryName: geoData.countryName,
             coordinates: geoData.coordinates
         }
-        const res = await putData('/deposit/make_deposit/', obj)
-        if (res.status === 201) {
-            getHistoryDeposit()
-            SwalSimple('Deposit request has beed created succesfully')
+        if (!address) {
+            SwalSimple('You have to generate address!')
         } else {
-            SwalSimple('Something went wrong! Try again later...')
+            if (state.value > 0) {
+                const res = await putData('/deposit/make_deposit/', obj)
+                updateNotif()
+                if (res.status === 201) {
+                    getHistoryDeposit()
+                    SwalSimple('Deposit request has beed created succesfully')
+                } else {
+                    SwalSimple('Something went wrong! Try again later...')
+                }
+            } else {
+                SwalSimple('All fields must be fulfilled!')
+            }
+
         }
+
+
     }
     const onChange = (e) => {
         let calc = +e.target.value / btc
@@ -271,9 +285,9 @@ const Deposit = () => {
                                 {
                                     typeof history !== 'string' ?
                                         history.map(item => {
-                                            console.log('item---', item)
                                             return (
                                                 <TableItemUser
+                                                    key={item._id}
                                                     address={item.address}
                                                     onShow={onShow}
                                                     date={getCurrentDate(item.date)}

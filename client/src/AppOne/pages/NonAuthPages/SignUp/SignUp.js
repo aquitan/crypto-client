@@ -28,7 +28,7 @@ const SignUp = () => {
         password: false,
         repeatPassword: false
     })
-    const {register, handleSubmit, formState: {errors}, watch} = useForm({
+    const {register, handleSubmit, formState: {errors}, watch, setError} = useForm({
         mode: "onBlur",
     })
     const [match, setMatch] = useState({
@@ -144,6 +144,10 @@ const SignUp = () => {
         setMatch({...match, active: false})
     }
 
+    const onCheckError = (e) => {
+        if (e.target.value.length < 2) setError('name', {type: 'name', message: 'Minimum 2 symbols'})
+    }
+
     return (
         <Container>
             <Modal active={modalError} setActive={setModalError}>
@@ -170,11 +174,12 @@ const SignUp = () => {
                                 <Input {...register('name', {
                                     required: false,
                                     minLength: {
-                                        value: 5,
-                                        message: 'Minimal length must be over 5 characters'
-                                    }
+                                        value: 2,
+                                        message: 'Minimum 2 symbols'
+                                    },
+                                    onBlur: (e) => onCheckError(e)
                                 })}  name='name' placeholder='display name' id='displayName' />
-                                <ErrorMessage name='displayName' errors={errors} render={({message}) => <p className={cls.error}>Minimum 5 symbols</p>} />
+                                {errors.name && <p className={cls.error}>{errors.name.message}</p>}
                             </Col>
                         </Row>
                     </FormGroup>

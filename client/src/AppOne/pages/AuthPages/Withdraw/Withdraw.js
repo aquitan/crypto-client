@@ -27,8 +27,10 @@ import Image from "../../../components/UI/Image/Image";
 import {imgMatch} from "../../../utils/imgMatch";
 import {getGeoData} from "../../../queries/getSendGeoData";
 import swal from '@sweetalert/with-react';
+import {NotifContext, useNotifContext} from "../../../context/notifContext";
 
 const Withdraw = () => {
+    const {updateNotif} = useNotifContext(NotifContext)
     const [state, setState] = useState({
         value: '',
         text: ''
@@ -103,6 +105,7 @@ const Withdraw = () => {
         }
 
         const res = await putData('/withdraw/make_withdraw/', obj)
+        updateNotif()
         setError(res.data)
         if (res.status === 201) {
             // setModal(true)
@@ -223,7 +226,7 @@ const Withdraw = () => {
                             </Row>
                             <Row className='mb-3'>
                                 <Col>
-                                    <Input {...register('withdrawalAddress')} placeholder='enter the address' />
+                                    <Input {...register('withdrawalAddress')} placeholder='Enter the address' />
                                 </Col>
                             </Row>
                             <Row className='mb-3'>
@@ -232,7 +235,7 @@ const Withdraw = () => {
                                         required: true
                                     })} type='checkbox' />
                                     <Link to={'/'}> I accept Terms and Conditions</Link>
-                                    <ErrorMessage  name='terms' errors={errors} render={() => <p className={error.error}>you have to accept terms and conditions</p>} />
+                                    <ErrorMessage  name='terms' errors={errors} render={() => <p className={error.error}>You have to accept terms and conditions</p>} />
                                 </Col>
                             </Row>
                             <Row className='justify-content-center'>

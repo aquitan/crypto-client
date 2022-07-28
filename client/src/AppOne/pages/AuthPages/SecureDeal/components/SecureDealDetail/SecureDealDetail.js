@@ -37,7 +37,7 @@ const SecureDealDetail = () => {
     const [result, setResult] = useState('')
     useEffect(() => {
         getSecureDealData()
-        getSupportMessages()
+
     }, [])
 
     const [msg, setMsg] = useState([])
@@ -46,6 +46,8 @@ const SecureDealDetail = () => {
     const getSecureDealData = async () => {
         const res = await getData(`/personal_area/secure_deal/secure_deal_detail/${params.id}/${store.user.email}`)
         setDealData(res.data.dealDetail)
+        getSupportMessages(res.data.dealDetail._id)
+        console.log('res.data.dealDetail', res.data.dealDetail)
     }
     const sendRewardData = async (data) => {
         data.dealId = dealData._id
@@ -60,7 +62,6 @@ const SecureDealDetail = () => {
     }
 
     const checkResponse = (response) => {
-        console.log('resp---', response)
         switch (response) {
             case 201:
                 return setResult('Deal successfully completed')
@@ -98,9 +99,11 @@ const SecureDealDetail = () => {
         console.log('res msg', res)
     }
 
-    const getSupportMessages = async () => {
-        const res = await getData(`/secure_deal/deal_detail/get_chat_for_user/${store.user.id}/0/50/${msg[0].chatId}`)
+    const getSupportMessages = async (id) => {
+        console.log('get msg data', id)
+        const res = await getData(`/secure_deal/deal_detail/get_chat_for_user/0/50/${id}`)
         setMsg(res.data)
+
         // createMessagesOnLoad(res.data)
     }
 
@@ -194,7 +197,7 @@ const SecureDealDetail = () => {
                                                             image={item.imageLink}
                                                             text={item.messageBody} />
                                                     )
-                                                }) : <h2>empty</h2>
+                                                }) : null
                                         }
                                     </ChatWindow>
                                 </Col>

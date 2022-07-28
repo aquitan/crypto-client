@@ -168,7 +168,7 @@ const MyAccount = (props) => {
                                             <Col>
                                                 <Row>
                                                     <Col>
-                                                        <Input classname='input_small' onChange={onPromocodeChange} placeholder='enter promocode' />
+                                                        <Input classname='input_small' onChange={onPromocodeChange} placeholder='Enter promocode' />
                                                     </Col>
                                                     <Col>
                                                         <Button classname={['small_btn']} onClick={promoUse}>Use</Button>
@@ -180,7 +180,10 @@ const MyAccount = (props) => {
                                 }
                                 <Row className={cls.account_row}>
                                     <Col>
-                                        <div>Premium status</div>
+                                        <div className={cls.premiumInfoLine}>
+                                            <span>Account status</span>
+                                            <div className={cls.premiumHint}>Upgrade your account to get full features.</div>
+                                        </div>
                                     </Col>
                                     <Col>
                                         <div>{store.premiumStatus ? 'Premium' : 'Base'}</div>

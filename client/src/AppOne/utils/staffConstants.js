@@ -113,15 +113,15 @@ export const tableHeaderDomains = ['Domain', 'Action']
 export const twoFaElems = [
     {
         value: 'email',
-        text: 'email'
+        text: 'Email'
     },
     {
         value: 'google',
-        text: 'google'
+        text: 'Google'
     },
     {
         value: 'telegram',
-        text: 'telegram'
+        text: 'Telegram'
     }
 ]
 
