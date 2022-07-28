@@ -4,6 +4,8 @@ import { INTERNAL_HISTORY_SCHEMA } from '../schemas/Internal_history.schema'
 interface HistotyParams {
   userEmail: string
   secondUserEmail: string
+  receiver: Schema.Types.ObjectId
+  sender: Schema.Types.ObjectId
   userDomain: string
   coinName: string
   cryptoAmount: number

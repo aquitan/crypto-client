@@ -14,6 +14,7 @@ import withdrawalError from '../models/Domain_errors.model'
 import Notification from './notificationServices'
 import CryptoService from './crypto_services'
 import depositRequest from '../models/Deposit_requests.model'
+import { Schema } from 'mongoose'
 
 
 class moneyService {
@@ -182,44 +183,53 @@ class moneyService {
       return true
     }
 
-    const secondPartyEmail: any = await userBaseData.findOne({
-      email: transfer_object.userEmail
-    })
-
     const firstUserWallet: any = await userWallet.findOne({
-      userWallet: transfer_object.fromAddress
+      address: transfer_object.fromAddress
     })
     const firstUserBalance: any = await userBalance.findOne({
-      userEmail: transfer_object.userEmail,
+      userId: firstUserWallet.userId,
       coinName: transfer_object.coinName,
     })
     console.log('1st user wallet is => ', firstUserWallet);
     console.log('firstUserBalance is => ', firstUserBalance);
     if (!firstUserBalance || !firstUserWallet) return false
+
+    const secondUserWallet: any = await userWallet.findOne({
+      address: transfer_object.toAddress
+    })
+
+    const secondPartyUser: any = await userBaseData.findById({
+      _id: secondUserWallet.userId
+    })
+
+    const secondUserBalance: any = await userBalance.findOne({
+      userId: secondUserWallet.userId,
+      coinName: transfer_object.coinName,
+    })
+
+    console.log('2nd user wallet is => ', secondUserWallet);
+    console.log('secondUserBalance is => ', secondUserBalance);
+
+    if (!secondUserWallet || !secondUserBalance) return false
+
     if (firstUserBalance.coinBalance < transfer_object.amountInCrypto) {
       console.log('the value of received crypto amount is bigger than current user balance');
       return false
     }
 
-    const secondUserWallet: string = await userWallet.findOne({
-      addressTo: transfer_object.toAddress
-    })
-    const secondUserBalance: any = await userBalance.findOne({
-      userEmail: secondPartyEmail,
-      coinName: transfer_object.coinName,
-    })
     console.log('2nd user wallet is => ', secondUserWallet);
     console.log('secondUserBalance is => ', secondUserBalance);
-    if (!secondUserWallet || !secondUserBalance) return false
 
     const firstUserUpdatedBalance: number = firstUserBalance.coinBalance - transfer_object.amountInCrypto
     console.log('cur first user balance => ', firstUserUpdatedBalance);
 
     await this.BalanceUpdater(transfer_object.userId, transfer_object.coinName, firstUserUpdatedBalance)
 
-    await internalHistory.create({
+    let historyObject = {
       userEmail: transfer_object.userEmail,
-      secondUserEmail: secondPartyEmail.email,
+      receiver: secondPartyUser.id,
+      sender: firstUserWallet.userId,
+      secondUserEmail: secondPartyUser.email,
       userDomain: transfer_object.domainName,
       coinName: transfer_object.coinName,
       cryptoAmount: transfer_object.amountInCrypto,
@@ -227,14 +237,16 @@ class moneyService {
       date: transfer_object.currentDate,
       addressFrom: transfer_object.fromAddress,
       addressTo: transfer_object.toAddress,
-      transferType: transfer_object.transferType,
+      transferType: false,
       status: transfer_object.transferStatus,
       staffId: 'self'
-    })
+    }
+
+    await internalHistory.create(historyObject)
 
     const secondUserUpdatedBalance: number = secondUserBalance.coinBalance + transfer_object.amountInCrypto
     console.log('cur sec user balance => ', secondUserUpdatedBalance);
-    await this.BalanceUpdater(secondPartyEmail.id, transfer_object.coinName, secondUserUpdatedBalance)
+    await this.BalanceUpdater(secondPartyUser.id, transfer_object.coinName, secondUserUpdatedBalance)
 
     const curTransactionHistory: any = await internalHistory.findOne({
       date: transfer_object.currentDate
@@ -242,7 +254,7 @@ class moneyService {
     console.log('history of cur transaction => ', curTransactionHistory);
     if (!curTransactionHistory) return false
 
-    return secondPartyEmail.email
+    return secondPartyUser.email
   }
 
   async MakeDeposit(transfer_object: any, logTime: string) {
