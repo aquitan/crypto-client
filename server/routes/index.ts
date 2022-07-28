@@ -44,6 +44,7 @@ router.patch('/personal_area/secure_deal/secure_deal_detail/accept_deal/', authC
 router.patch('/personal_area/secure_deal/secure_deal_detail/miss_dedline/', authChecker, userController.killDealByMissDeadline) // if deal dedline > date.now => status failed 
 router.delete('/personal_area/secure_deal/secure_deal_detail/delete_deal/:dealId/', staffController.deleteSecureDeal) // delete secure deal by id
 
+router.delete('/clear_all_notification/:userId/', authChecker, userController.clearNotifications) // clear all notif by userId
 
 // user money transfer logic => 
 router.post('/get_address_for_deposit/', authChecker, userController.getAddressForDeposit) // generate and send address for deposit in cur coinName

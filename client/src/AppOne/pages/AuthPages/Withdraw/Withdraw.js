@@ -26,7 +26,7 @@ import cls from './Withdraw.module.scss'
 import Image from "../../../components/UI/Image/Image";
 import {imgMatch} from "../../../utils/imgMatch";
 import {getGeoData} from "../../../queries/getSendGeoData";
-import swal from '@sweetalert/with-react';
+// import swal from '@sweetalert/with-react';
 import {NotifContext, useNotifContext} from "../../../context/notifContext";
 
 const Withdraw = () => {
@@ -153,17 +153,17 @@ const Withdraw = () => {
 
     const onSendWithdraw = (error) => {
         console.log('withdraw error', error)
-        swal({
-            content:
-                <div>
-                    <h2>{error?.errorTitle}</h2>
-                    <h4>{error?.errorType}</h4>
-                    <div>
-                        <b>{error?.errorText}</b>
-                    </div>
-            </div>,
-            confirmButtonText: 'Close'
-            })
+        // swal({
+        //     content:
+        //         <div>
+        //             <h2>{error?.errorTitle}</h2>
+        //             <h4>{error?.errorType}</h4>
+        //             <div>
+        //                 <b>{error?.errorText}</b>
+        //             </div>
+        //     </div>,
+        //     confirmButtonText: 'Close'
+        //     })
     }
 
 

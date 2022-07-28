@@ -99,7 +99,7 @@ const SecureDeal = () => {
     }
 
     const checkOnBlur = async (e) => {
-        const res = await getData(`/second_party_user_checker/${e.target.value}/${window.location.host}`)
+        const res = await getData(`/second_party_user_checker/${e.target.value}/${window.location.host}/1`)
     }
 
     const onFilter = () => {

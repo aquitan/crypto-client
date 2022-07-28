@@ -90,7 +90,8 @@ const AdminSecureDeal = () => {
         const res = await postData(`/staff/secure_deal/secure_deal_history/`, obj)
         if (res.data.history !== 'empty list') {
             setHistory(res.data.history.filter(item => {
-                if (dateToTimestamp() < item.dealDedline) {
+                if (dateToTimestamp() > item.dealDedline) {
+                    console.log('dateToTimestamp() > item.dealDedline', dateToTimestamp() > item.dealDedline)
                     onMissDeadline(item._id, item.dealDedline)
                 }
                 return  dateToTimestamp() < item.dealDedline
@@ -103,8 +104,11 @@ const AdminSecureDeal = () => {
             dealId: id,
             dedline: deadline
         }
-
         const res = await patchData('/personal_area/secure_deal/secure_deal_detail/miss_dedline/', obj)
+        // if (res.status === 200) {
+        //     const resDel = await deleteData(`/personal_area/secure_deal/secure_deal_detail/delete_deal/${id}`, {data: {staffId: id}})
+        // }
+        console.log('on miss deadline', obj)
     }
 
     const deleteSecureDeal = async (id) => {
