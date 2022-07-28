@@ -82,6 +82,7 @@ router.delete('/staff/users/user_detail/delete_user_with_all_params/', staffCont
 router.put('/staff/notifications/create_new_notification/', staffController.createNewNotification) // create new notification for user
 router.get('/staff/notifications/get_all_notifications/:userId', staffController.getNotificationList) // get notification request by user_id
 router.delete('/notification/remove_notification/:notifId/', authChecker, staffController.removeNotif) // remove notif from database if user already saw it
+router.delete('/clear_all_notification/:userId/', authChecker, userController.clearNotifications) // clear all notif by userId
 
 router.post('/staff/users/kyc/', staffController.kycList) // get kyc list (if staff => when staff is domain owner) (if admin & other => all kyc )
 router.patch('/staff/kyc/update_kyc_status/', staffController.changeKycStatus) // change kyc status for user (in user verification page)
@@ -127,7 +128,7 @@ router.put('/secure_deal/deal_detail/send_message_to_secure_deal_chat', authChec
 
 // // staff usage
 router.post('/staff/secure_deal/detail_deal/', staffController.getSecureDealDetail) // get secure deal detail page + chat data
-router.get('/staff/secure_deal/detail_deal/get_chat_data/:chatId/:skipValue/:limitValue/', staffController.getChatDataByChatId) // get chat history by chatId
+router.get('/staff/secure_deal/detail_deal/get_chat_data/:chatId/:skipValue/:limitValue/', staffController.getSecureDealChatData) // get chat history by chatId
 router.patch('/staff/secure_deal/detail_deal/edit_message/', staffController.EditChatMessage) // edit user or self message as support chat
 // ------------ the same endpoit as support chat data for history and edit message----------------- 
 router.put('/staff/secure_deal/detail_deal/send_message_to_user/', staffController.sendMessageInSecureDealChat) // send message to cur secure deal chat

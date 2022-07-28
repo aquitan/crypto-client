@@ -22,6 +22,7 @@ import saveUserLogs from '../api/save_user_logs'
 import TRADING_ORDER_INTERFACE from '../interface/make_trading_order.interface'
 import TRADING_COIN_RATE_UPDATE from '../interface/trading_rate_update.interface'
 import CHAT_DATA from '../interface/chat_data.interface'
+import notificationServices from '../services/notificationServices'
 
 
 class UserController {
@@ -650,7 +651,7 @@ class UserController {
 
       await saveUserLogs(transfer_object.userEmail, ipAddress, city, countryName, coordinates, browser, logTime, ` совершил внутренний перевод пользователю ${result} на сумму  ${transfer_object.amountInCrypto}  ${transfer_object.coinName} на `, transfer_object.domainName)
       await telegram.sendMessageByUserActions(transfer_object.userEmail, ` совершил внутренний перевод пользователю ${result} на сумму  ${transfer_object.amountInCrypto}  ${transfer_object.coinName} `, transfer_object.domainName)
-      return res.status(201).json({ message: result })
+      return res.status(201).json({ message: 'ok' })
 
     } catch (e) {
       next(e)
@@ -672,6 +673,22 @@ class UserController {
       if (!result) throw ApiError.ServerError()
 
       return res.status(200).json({ message: 'ok', internalTransferHistory: result })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+
+  async clearNotifications(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const userId: string = req.params.userId
+    console.log('userId', userId);
+
+    if (!userId) return res.status(400).json({ message: 'wrong data' })
+    try {
+      const result: boolean = await notificationServices.deleteAllNotifByUserId(userId)
+      if (!result) throw ApiError.ServerError()
+
+      return res.status(200).json({ message: result })
     } catch (e) {
       next(e)
     }
@@ -788,8 +805,9 @@ class UserController {
 
     if (!dealId || !dedline) return res.status(400).json({ message: 'wrong data' })
     try {
-      const result: boolean = await UserServices.killDealByMissDeadline(dealId, dedline)
+      const result: boolean | string = await UserServices.killDealByMissDeadline(dealId, dedline)
       console.log(' result is: ', result)
+      if (typeof result === 'string') return res.status(304)
       if (!result) throw ApiError.ServerError()
 
       return res.status(200).json({ message: 'ok' })

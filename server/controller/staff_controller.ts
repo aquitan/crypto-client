@@ -1646,12 +1646,23 @@ class StaffController {
       },
       {
         coinName: 'SOL',
-        coinAddress: req.body.walletList.solanaWalet
+        coinAddress: req.body.walletList.solanaWallet
       }
     ]
 
-    const validData: boolean = await bodyValidator(req.body, 9)
-    if (!validData) return res.status(400).json({ message: 'problem in received data' })
+    for (let index in req.body) {
+      if (req.body[index] === null || req.body[index] === undefined) {
+        if (typeof req.body[index] === 'object') {
+          for (let i in req.body[index]) {
+            if (req.body[index][i] === null || req.body[index][i] === undefined) {
+              return res.status(400).json({ message: 'wrong data' })
+            }
+          }
+          return res.status(400).json({ message: 'wrong data' })
+        }
+      }
+    }
+
     try {
 
       const result: boolean = await staffService.createStaffWallet(walletList, staffId, staffTelegramId)
@@ -2269,6 +2280,24 @@ class StaffController {
     try {
 
       const result: any = await staffService.getChatData(chatId, skipValue, limitValue)
+      if (!result) throw ApiError.ServerError()
+
+      return res.status(200).json(result)
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async getSecureDealChatData(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const chatId: string = req.params.chatId
+    let skip: string = req.params.skipValue
+    const skipValue: number = parseInt(skip)
+    let limit: string = req.params.limitValue
+    const limitValue: number = parseInt(limit)
+
+    try {
+
+      const result: any = await staffService.getSecureDealChatData(chatId, skipValue, limitValue)
       if (!result) throw ApiError.ServerError()
 
       return res.status(200).json(result)

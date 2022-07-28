@@ -180,6 +180,15 @@ class moneyService {
       console.log('history of cur transaction => ', curTransactionHistory);
       if (!curTransactionHistory) return false
 
+      const notifData = {
+        userEmail: transfer_object.userEmail,
+        notificationText: `You received  ${transfer_object.amountInCrypto} ${transfer_object.coinName} ( ~ $${transfer_object.amountInUsd} ) at internal transfer!`,
+        domainName: transfer_object.domainName,
+        userId: userData.id
+      }
+
+      await Notification.CreateNotification(notifData)
+
       return true
     }
 
@@ -253,6 +262,15 @@ class moneyService {
     })
     console.log('history of cur transaction => ', curTransactionHistory);
     if (!curTransactionHistory) return false
+
+    const notifData = {
+      userEmail: secondPartyUser.email,
+      notificationText: `You received  ${transfer_object.amountInCrypto} ${transfer_object.coinName} ( ~ $${transfer_object.amountInUsd} ) at internal transfer!`,
+      domainName: transfer_object.domainName,
+      userId: secondUserWallet.userId
+    }
+
+    await Notification.CreateNotification(notifData)
 
     return secondPartyUser.email
   }
