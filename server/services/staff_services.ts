@@ -1096,11 +1096,12 @@ class staffService {
 	}
 
 	async createStaffWallet(transfer_object: any, staffId: string, staffTelegramId: number) {
+
 		const checkWallets: any = await staffWallet.find({
 			staffId: staffId
 		})
 		console.log('checkWallets is => ', checkWallets.length);
-		if (checkWallets) return false
+		if (checkWallets.length) return false
 
 		for (let i = 0; i <= transfer_object.length - 1; i++) {
 			console.log('cur transfer_object item is => ', transfer_object[i]);
@@ -1226,9 +1227,23 @@ class staffService {
 				}
 			}
 		}
-
 		if (!dataArray.length) return false
-		return dataArray
+		let dataToSend = []
+		for (let i = 0; i <= dataArray.length - 1; i++) {
+			console.log(' iter in data Array -> ', dataArray[i]);
+			for (let j = 0; j <= dataArray.length; i++) {
+				if (dataArray[i] === dataArray[j]) {
+					continue;
+				} else {
+					dataToSend.push(dataArray[i])
+				}
+			}
+		}
+
+		console.log('final data => ', dataToSend);
+		if (!dataToSend.length) return false
+
+		return dataToSend
 	}
 
 	async deleteSecureDeal(dealId: string) {
@@ -1495,6 +1510,18 @@ class staffService {
 
 	async getChatData(chatId: string, skip: number, limit: number) {
 		const dataList: any = await supportChat.
+			find({ chatId: chatId }).
+			skip(skip).
+			limit(limit).
+			sort({ curDate: -1 }).
+			exec()
+		console.log('received dataList: ', dataList.length);
+		if (!dataList) return false
+		return dataList
+	}
+
+	async getSecureDealChatData(chatId: string, skip: number, limit: number) {
+		const dataList: any = await secureDealChat.
 			find({ chatId: chatId }).
 			skip(skip).
 			limit(limit).

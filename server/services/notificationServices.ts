@@ -37,8 +37,21 @@ class NotificationServices {
     console.log('found notif is => ', checkNotif);
     if (checkNotif) return false
     return true
-
   }
+
+  async deleteAllNotifByUserId(userId: string) {
+    const notifList: any = await userNotif.find({ userId: userId })
+    console.log('notifList is => ', notifList);
+    if (!notifList) return false
+
+    await userNotif.deleteMany({ userId: userId })
+
+    const checkNotif: any = await userNotif.find({ userId: userId })
+    console.log('found notif is => ', checkNotif);
+    if (checkNotif.length) return false
+    return true
+  }
+
 
 
 }

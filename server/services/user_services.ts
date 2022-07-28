@@ -715,7 +715,8 @@ class UserServices {
 		const curDeal: any = await secureDeal.findById({ _id: dealId })
 		console.log('curDeal => ', curDeal);
 		if (!curDeal) return false
-		if (curDateTime < deadline) return false
+		const timeToDelete = curDateTime - deadline
+		if (curDateTime < deadline) return `to fast. try at +_ ${timeToDelete}`
 		const updateStatus: any = await secureDeal.findByIdAndUpdate(
 			{ _id: dealId },
 			{ status: 'failed' }
@@ -1119,6 +1120,7 @@ class UserServices {
 		let obj = transferObject
 		obj.userEmail = dealInfo.userEmail
 		obj.secondPartyEmail = dealInfo.secondPartyEmail
+		obj.dealId = dealId
 
 		const curUser: any = await baseUserData.findOne({ _id: transferObject.userId })
 		console.log('curUser is => ', curUser);
