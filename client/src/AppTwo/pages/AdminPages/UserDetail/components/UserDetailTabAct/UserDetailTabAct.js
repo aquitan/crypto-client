@@ -19,8 +19,8 @@ import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
 import moment from "moment";
 import Select from "../../../../../components/UI/Select/Select";
 import {optionsCurrency} from "../../../../../utils/staffConstants";
-import {log} from "util";
-import {SwalSimple} from "../../../../../utils/SweetAlert";
+// import {SwalSimple} from "../../../../../utils/SweetAlert";
+// import Swal from "sweetalert2";
 
 const UserDetailTabAct = (props) => {
 
@@ -36,7 +36,9 @@ const UserDetailTabAct = (props) => {
         double: props.data.user_params_data.doubleDeposit,
         transactionBan: props.data.user_params_data.internalBan,
         isStaff: props.data.user_params_data.isStaff,
-        swapBan: props.data.user_params_data.swapBan
+        swapBan: props.data.user_params_data.swapBan,
+        chatBan: props.data.user_params_data.chatBan,
+
     })
     console.log('user-actions', props.data)
     const dataObj = {
@@ -62,6 +64,9 @@ const UserDetailTabAct = (props) => {
         mode: 'onBlur'
     })
     const {register: registerSupport, handleSubmit: handleSupportSubmit, formState: {errors: errors4}} = useForm({
+        mode: 'onBlur'
+    })
+    const {register: registerChangeDomain, handleSubmit: handleChangeDomain, formState: {errors: errorsDomain}} = useForm({
         mode: 'onBlur'
     })
 
@@ -113,6 +118,16 @@ const UserDetailTabAct = (props) => {
         // const response = await UserService.postUserDetailData('/123', data)
         handleCloseModal()
     }
+    const updateDomain = async (data) => {
+        let obj = {
+            isAdmin: store.isAdmin,
+            updatedDomain: data.updatedDomain,
+            userEmail: props.data.base_data.email,
+            rootAccess: store.fullAccess
+        }
+        const res = await patchData('/staff/users/user_detail/change_user_domain/', obj)
+        handleCloseModal()
+    }
     const changeSupportName = async (data) => {
         delete dataObj.userId
         delete dataObj.userEmail
@@ -122,11 +137,13 @@ const UserDetailTabAct = (props) => {
         handleCloseModal()
     }
     const makeStaff = async () => {
-        dataObj.status =  !btns.isStaff
+        dataObj.status = !btns.isStaff
         if (store.fullAccess) {
             dataObj.rootAccess = store.fullAccess
         }
         delete dataObj.userId
+        dataObj.isAdmin = store.isAdmin
+        dataObj.isStaff = store.isStaff
         const response = await patchData('/staff/users/user_detail/update_staff_status/', dataObj)
         setBtns({...btns, isStaff: !btns.isStaff})
         handleCloseModal()
@@ -135,8 +152,11 @@ const UserDetailTabAct = (props) => {
         const response = await patchData('/staff/users/user_detail/update_double_deposit/', {
             ...dataObj, status: !btns.double
         })
+        if (response.status === 202) {
+            // SwalSimple('Изменено')
+        }
         setBtns({...btns, double: !btns.double})
-        handleCloseModal()
+        // handleCloseModal()
     }
     const makeFullBan = async () => {
         delete dataObj.currentDate
@@ -163,19 +183,27 @@ const UserDetailTabAct = (props) => {
         setBtns({...btns, swapBan: !btns.swapBan})
         handleCloseModal()
     }
+    const chatBan = async () => {
+        const response = await patchData('/staff/users/user_detail/update_chat_ban/', {
+            ...dataObj, status: !btns.chatBan
+        })
+        setBtns({...btns, chatBan: !btns.chatBan})
+        handleCloseModal()
+    }
 
     const sendPremStatus = async () => {
+        console.log('clicked premium')
         delete dataObj.currentDate
         const response = await patchData('/staff/users/user_detail/update_premium_status/',{
             ...dataObj,
             status: !btns.currentPrem,
         })
         if (response.status === 202) {
-            SwalSimple('Изменено!')
+            // SwalSimple('Изменено!')
         }
         setBtns({...btns, currentPrem: !btns.currentPrem})
-        setState({isOpen: false, onClickConfirm: null})
-        handleCloseModal()
+        // setState({isOpen: false, onClickConfirm: null})
+        // handleCloseModal()
     }
 
     const makeIpClear = async () => {
@@ -226,6 +254,10 @@ const UserDetailTabAct = (props) => {
                 return deleteUser;
             case 'confirm-delete':
                 return confirmDelete;
+            case 'chat-ban':
+                return chatBan();
+            case 'update-domain':
+                return handleChangeDomain(updateDomain);
             default:
                 return () => {
                     console.log('default')
@@ -237,28 +269,30 @@ const UserDetailTabAct = (props) => {
         if (requestType === 'confirm-delete') {
             const onClickConfirm = handleFindType(requestType)
             setState({
-                isOpen: false,
-                onClickConfirm,
-                doubleConfirm: true
-            })
+                    isOpen: false,
+                    onClickConfirm,
+                    doubleConfirm: true
+                }
+            )
         } else {
             const onClickConfirm = handleFindType(requestType)
             setState({
                 isOpen: true,
                 onClickConfirm,
                 doubleConfirm: false
+
             })
         }
-
     }
     const onUserEnter = () => {
         store.logout()
+        navigate('/')
+        store.setIsStaff(false)
         store.setAsUser({
             email: props.data.base_data.email,
             password: props.data.base_data.password
         })
         onLogin()
-        navigate('/')
     }
 
     const trsType = [
@@ -294,6 +328,10 @@ const UserDetailTabAct = (props) => {
         console.log("you've deleted user")
     }
 
+    const onCheckDomain = async (value) => {
+
+    }
+
 
     const {isOpen, onClickConfirm, doubleConfirm} = state
 
@@ -321,57 +359,6 @@ const UserDetailTabAct = (props) => {
             </AdminButtonCard>
 
 
-
-
-            {/*<AdminButtonCard title='Изменение баланса'>*/}
-            {/*    <Row className='mb-3'>*/}
-            {/*        <Col className='col-12 col-md-2 col-lg-2'>*/}
-            {/*            Счёт пользователя:*/}
-            {/*        </Col>*/}
-            {/*        <Col className='col-12 col-md-6 col-lg-6'>*/}
-            {/*            <Select {...balanceRegister('coinName')} classname={'admin-square'} options={optionsCurrency}/>*/}
-            {/*        </Col>*/}
-            {/*    </Row>*/}
-            {/*    <Row className='mb-3'>*/}
-            {/*        <Col className='col-12 col-md-2 col-lg-2'>*/}
-            {/*            Баланс кошелька:*/}
-            {/*        </Col>*/}
-            {/*        /!*<Col className='col-12 col-md-6 col-lg-6'>*!/*/}
-            {/*        /!*    <AdminInput {...balanceRegister('balance')} placeholder='balance'/>*!/*/}
-            {/*        /!*</Col>*!/*/}
-            {/*    </Row>*/}
-            {/*    /!*<Row className='mb-3'>*!/*/}
-            {/*    /!*    <Col className='col-12 col-md-2 col-lg-2'>*!/*/}
-            {/*    /!*        Нотификация:*!/*/}
-            {/*    /!*    </Col>*!/*/}
-            {/*    /!*    <Col className='col-12 col-md-6 col-lg-6'>*!/*/}
-            {/*    /!*        <AdminInput {...balanceRegister('notification', {*!/*/}
-            {/*    /!*            required: false,*!/*/}
-            {/*    /!*            pattern: /^[^а-яё]+$/iu*!/*/}
-            {/*    /!*        })} name='notification' placeholder='This your notif text'/>*!/*/}
-            {/*    /!*    </Col>*!/*/}
-            {/*    /!*</Row>*!/*/}
-            {/*    <Row className='mb-3'>*/}
-            {/*        <Col className='col-12 col-md-2 col-lg-2'>*/}
-            {/*            Направление:*/}
-            {/*        </Col>*/}
-            {/*        <Col className='col-12 col-md-6 col-lg-6'>*/}
-            {/*            <Select {...balanceRegister('transaction')} classname={'admin-square'} options={trsType}/>*/}
-            {/*        </Col>*/}
-            {/*    </Row>*/}
-            {/*    <Row className='mb-3'>*/}
-            {/*        <Col className='col-12 col-md-2 col-lg-2'>*/}
-            {/*            Сумма:*/}
-            {/*        </Col>*/}
-            {/*        <Col className='col-12 col-md-6 col-lg-6'>*/}
-            {/*            <AdminInput {...balanceRegister('amountInCrypto')} placeholder='0' />*/}
-            {/*        </Col>*/}
-            {/*    </Row>*/}
-            {/*    <Row>*/}
-            {/*        <AdminButton onClick={() => handleOpenModal('balance')} classname={['green', 'marginless']} >Изменить</AdminButton>*/}
-            {/*    </Row>*/}
-
-            {/*</AdminButtonCard>*/}
 
 
 
@@ -417,16 +404,35 @@ const UserDetailTabAct = (props) => {
                 </Row>
             </AdminButtonCard>
 
-            <AdminButtonCard title='Изменить имя в саппорте'>
-                <Row className='mb-3'>
-                    <Col className='col-12 col-sm-6 mb-2'>
-                        <AdminInput {...registerSupport('supportName',{
-                            pattern: /^[^а-яё]+$/iu
-                        })} name='supportName' placeholder='Изменить имя'/>
-                        <ErrorMessage  name='supportName' errors={errors4} render={() => <p className={error.error}>Только английские буквы</p>} />
+            {
+                props.data.staff_params ?
+                    <AdminButtonCard title='Изменить имя в саппорте'>
+                        <Row className='mb-3'>
+                            <Col className='col-12 col-sm-6 mb-2'>
+                                <AdminInput {...registerSupport('supportName',{
+                                    pattern: /^[^а-яё]+$/iu
+                                })} name='supportName' placeholder='Изменить имя'/>
+                                <ErrorMessage  name='supportName' errors={errors4} render={() => <p className={error.error}>Только английские буквы</p>} />
+                            </Col>
+                            <Col className='col-12 col-sm-6'>
+                                <AdminButton onClick={() => handleOpenModal('support')} classname={['green', 'marginless']} >Изменить</AdminButton>
+                            </Col>
+                        </Row>
+                    </AdminButtonCard>
+                    : null
+            }
+
+
+            <AdminButtonCard title={'Перенести юзера на новый домен'}>
+                <Row>
+                    <Col>
+                        <AdminInput {...registerChangeDomain('updatedDomain', )} placeholder={'Новый домен'} />
+                        <ErrorMessage  name='supportName' errors={errorsDomain} render={() => <p className={error.error}>Проверьте поле</p>} />
                     </Col>
                     <Col className='col-12 col-sm-6'>
-                        <AdminButton onClick={() => handleOpenModal('support')} classname={['green', 'marginless']} >Изменить</AdminButton>
+                        <AdminButton onClick={() => handleOpenModal('update-domain', {
+                            onBlur: value => onCheckDomain(value)
+                        })} classname={['green', 'marginless']} >Изменить</AdminButton>
                     </Col>
                 </Row>
             </AdminButtonCard>
@@ -458,6 +464,12 @@ const UserDetailTabAct = (props) => {
             <AdminButtonCard title='Бан свапов'>
                 <Row>
                     <CustomCheckboxBtn id='swap-ban' onChange={() => handleOpenModal('swap-ban')} checked={!btns.swapBan ? false : true}/>
+                </Row>
+            </AdminButtonCard>
+
+            <AdminButtonCard title='Бан чата'>
+                <Row>
+                    <CustomCheckboxBtn id='chat-ban' onChange={() => handleOpenModal('chat-ban')} checked={!btns.chatBan ? false : true}/>
                 </Row>
             </AdminButtonCard>
 

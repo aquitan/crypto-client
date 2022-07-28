@@ -11,9 +11,8 @@ import {emailValidate} from "../../../utils/checkEmail";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
 import {postData} from "../../../services/StaffServices";
 import Select from "../../../components/UI/Select/Select";
-import Preloader from "../../../components/UI/Preloader/Preloader";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
-import {SwalSimple} from "../../../utils/SweetAlert";
+// import {SwalSimple} from "../../../utils/SweetAlert";
 
 const CreateUser = () => {
     const [domains, setDomains] = useState()
@@ -46,7 +45,6 @@ const CreateUser = () => {
                 arr.push(obj)
             })
             setDomains(arr)
-            console.log('log-res', arr)
         }
     }
 
@@ -57,14 +55,11 @@ const CreateUser = () => {
         data.staffEmail = store.user.email
         data.rootAccess = store.fullAccess
 
-        console.log('create-user', data)
         const res = await postData('/staff/create_user', data)
         if (res.status === 200) {
-            console.log('add user success', res)
-            SwalSimple('Пользователь создан!')
+            // SwalSimple('Пользователь создан!')
         } else {
-            console.log('add user error', res)
-            SwalSimple('Что то пошло не так!')
+            // SwalSimple('Что то пошло не так!')
         }
     }
 
@@ -108,7 +103,7 @@ const CreateUser = () => {
                         </Row>
                             : <h4>No domains!</h4>
                     }
-                    <Row className='mb-3'>
+                    <Row className='mb-3 justify-content-center'>
                         <AdminButton classname='green'>Создать пользователя</AdminButton>
                     </Row>
                 </AdminForm>

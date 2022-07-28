@@ -12,11 +12,16 @@ import {store} from "../../../../../../index";
 import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
 import {getGeoData} from "../../../../../queries/getSendGeoData";
 import {getCurrentDate} from "../../../../../utils/getCurrentDate";
+import {useNavigate} from "react-router-dom";
+import {NotifContext, useNotifContext} from "../../../../../context/notifContext";
+// import {SwalSimple} from "../../../../../utils/SweetAlert";
 
 const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, sum}) => {
+    const {updateNotif} = useNotifContext(NotifContext)
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
     })
+    const navigate = useNavigate()
 
     const getCurCoinName = (coin, bucs) => {
 
@@ -52,11 +57,19 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
 
         setFormData(data)
         const res = await putData('/internal_transfer/make_internal_transfer/', data)
+        updateNotif()
+        // SwalSimple('Transaction sent!')
     }
 
     const onBlur = async (e) => {
         console.log('value', e.target.value)
         const res = await getData(`/internal_wallet_checker/${e.target.value}/${window.location.host}`)
+        // try {
+        //
+        // } catch(e) {
+        //     if (e.response.status === 500) navigate('/error-500')
+        // }
+
     }
     const onCheckAmount = async () => {
         const res = await getData(`/user_balance_checker/${store.user.id}/${currency}`)
@@ -77,7 +90,7 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
                         required: 'Invalid wallet',
 
                         onBlur: e => onBlur(e)
-                    })} placeholder='address' />
+                    })} placeholder='Address' />
                     <ErrorMessage  name='toAddress' errors={errors} render={({message}) => <p className={error.error}>{message}</p>} />
                 </Col>
                 <Col className='col'>
@@ -86,7 +99,7 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
                         pattern: /(\d+(?:\.\d+)?)/,
                         onBlur: () => onCheckAmount(),
                         validate: value => checkValue(value)
-                    })} placeholder='amount' />
+                    })} placeholder='Amount' />
                     <ErrorMessage  name='amountInCrypto' errors={errors} render={() => <p className={error.error}>Check the value</p>} />
                 </Col>
             </Row>

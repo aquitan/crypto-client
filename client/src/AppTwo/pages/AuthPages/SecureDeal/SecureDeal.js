@@ -25,8 +25,11 @@ import {deleteData, getData, patchData, putData} from "../../../services/StaffSe
 import {store} from "../../../../index";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import Modal from "../../../components/UI/Modal/Modal";
+// import {SwalSimple} from "../../../utils/SweetAlert";
+import {NotifContext, useNotifContext} from "../../../context/notifContext";
 
 const SecureDeal = () => {
+    const {updateNotif} = useNotifContext(NotifContext)
     const [state, setState] = useState(false)
     const [history, setHistory] = useState([])
     const [history2, setHistory2] = useState([])
@@ -60,8 +63,9 @@ const SecureDeal = () => {
         data.amountInCrypto = +data.amountInCrypto
         const res = await putData('/personal_area/secure_deal/create_secure_deal/', data)
         if (res.status === 200) {
-            setState(true)
+            // SwalSimple('Secure Deal was created successfully!')
             getHistory()
+            updateNotif()
         }
     }
 
@@ -74,6 +78,7 @@ const SecureDeal = () => {
         const res = await getData(`/personal_area/secure_deal/secure_deal_history/${store.user.email}`)
         setHistory(res.data.history.filter(item => {
             if (dateToTimestamp() > item.dealDedline) {
+                console.log('dateToTimestamp() > item.dealDedline', dateToTimestamp() > item.dealDedline)
                 onMissDeadline(item._id, item.dealDedline)
             }
             return  dateToTimestamp() < item.dealDedline
@@ -94,7 +99,7 @@ const SecureDeal = () => {
     }
 
     const checkOnBlur = async (e) => {
-        const res = await getData(`/second_party_user_checker/${e.target.value}/${window.location.host}`)
+        const res = await getData(`/second_party_user_checker/${e.target.value}/${window.location.host}/1`)
     }
 
     const onFilter = () => {
@@ -167,7 +172,7 @@ const SecureDeal = () => {
                         <Col>
                             <TextArea {...register('dealCondition', {
                                 required: 'This field is required',
-                            })} classnames='textarea_bordered' placeholder='Deal conditions' />
+                            })} rows={10} classnames='textarea_bordered' placeholder='Deal conditions' />
                             <ErrorMessage
                                 name='dealCondition'
                                 errors={errors}
@@ -187,7 +192,7 @@ const SecureDeal = () => {
                         <Col className='col-12 col-md-6 mb-3'>
                             <Select {...register('coinName', {
                                 required: 'This field is required',
-                            })} options={options} classname='light select-bordered' />
+                            })} options={options} classname={['select-bordered', 'user-big']} />
                             <ErrorMessage
                                 name='coinName'
                                 errors={errors}
@@ -199,7 +204,7 @@ const SecureDeal = () => {
                             <Input {...register('amountInCrypto', {
                                 required: 'This field is required',
                                 pattern: /(\d+(?:\.\d+)?)/
-                            })} placeholder='amount'/>
+                            })} placeholder='Amount'/>
                             <ErrorMessage
                                 name='amountInCrypto'
                                 errors={errors}

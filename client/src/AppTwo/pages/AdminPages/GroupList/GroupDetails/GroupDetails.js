@@ -11,8 +11,7 @@ import {deleteData, patchData, postData} from "../../../../services/StaffService
 import {useForm} from "react-hook-form";
 import {store} from "../../../../../index";
 import Modal from "../../../../components/UI/Modal/Modal";
-import {log} from "util";
-import {SwalSimple} from "../../../../utils/SweetAlert";
+// import {SwalSimple} from "../../../../utils/SweetAlert";
 
 const GroupDetails = () => {
     const {register, handleSubmit, reset} = useForm()
@@ -24,15 +23,13 @@ const GroupDetails = () => {
 
     const addUser = async (data) => {
         data.groupId = location.state.item.groupData._id
-        console.log('data', data)
         const res = await patchData('/staff/groups/add_new_group_member/', data)
         if (res.status === 200 || res.status === 201) {
-            SwalSimple('Пользователь добавлен')
+            // SwalSimple('Пользователь добавлен')
             reset({data: ''})
             getGroupList(location.state.index)
-            console.log('location.state.index', location.state.index)
         } else {
-            SwalSimple('Что-то пошло не так!')
+            // SwalSimple('Что-то пошло не так!')
         }
     }
     const deleteUser = async (data) => {
@@ -43,11 +40,11 @@ const GroupDetails = () => {
         data.isStaff = store.isStaff
         const res = await deleteData('/staff/groups/delete_user_from_group/', {data: data})
         if (res.status === 202) {
-            SwalSimple('Пользователь удален')
+            // SwalSimple('Пользователь удален')
             resetDelete({data: ''})
             getGroupList(location.state.index)
         } else if (res.status === 200) {
-            SwalSimple('Если вы не создатель группы, вы не можете удалить пользователя!')
+            // SwalSimple('Если вы не создатель группы, вы не можете удалить пользователя!')
         }
     }
 
@@ -63,14 +60,11 @@ const GroupDetails = () => {
             rootAccess: store.fullAccess
         }
         const res = await postData('/staff/groups/get_group_list/', obj)
-        console.log('group list', res.data.groupUsers)
         setList(res.data[index].groupUsers)
     }
 
-    console.log('location', location)
 
     const {groupData, groupUsers} = location.state.item
-    console.log('groupData', groupData.groupName)
     return (
         <Container>
             <Modal active={isModal} setActive={setIsModal} title={titleModal}>

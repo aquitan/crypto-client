@@ -28,7 +28,7 @@ const SignUp = () => {
         password: false,
         repeatPassword: false
     })
-    const {register, handleSubmit, formState: {errors}, watch} = useForm({
+    const {register, handleSubmit, formState: {errors}, watch, setError} = useForm({
         mode: "onBlur",
     })
     const [match, setMatch] = useState({
@@ -63,7 +63,6 @@ const SignUp = () => {
     // }
 
     const onSubmit = async (data) => {
-        console.log('current', currentPromo)
         if (currentPromo.length) {
             if (promoStatus) {
                 const res = await postData('/promocode_validate', {code: currentPromo})
@@ -81,7 +80,6 @@ const SignUp = () => {
 
     const query = async (data) => {
         const geoData = await getGeoData()
-        console.log('data', data)
         // const promocode = compareStr(promoStatus.promocodeList, data.promocode)
         geoData.password = data.password
         geoData.name = data.name
@@ -91,13 +89,12 @@ const SignUp = () => {
         geoData.domainName = store.domain.fullDomainName
         geoData.doubleDeposit = store.domain.domainParams.doubleDeposit
         geoData.depositFee = store.domain.domainParams.depositFee
-        geoData.rateCorrectSum = store.domain.domainParams.rateCorrectSum
         geoData.minDepositSum = store.domain.domainParams.minDepositSum
         geoData.minWithdrawalSum = store.domain.domainParams.minWithdrawalSum
         geoData.currencySwapFee = store.domain.domainParams.coinSwapFee
         geoData.email = data.email
+        delete geoData.logTime
 
-        console.log('register', geoData)
         await store.registration(geoData)
         navigate('/register-confirm')
 
@@ -136,7 +133,6 @@ const SignUp = () => {
     }
 
     const onCheckPassword = (e) => {
-        console.log(e.target.value)
         setMatch({
             characters: e.target.value.length > 7,
             numbers: checkForNums(e.target.value),
@@ -146,6 +142,10 @@ const SignUp = () => {
     }
     const showPasswordTip = () => {
         setMatch({...match, active: false})
+    }
+
+    const onCheckError = (e) => {
+        if (e.target.value.length < 2) setError('name', {type: 'name', message: 'Minimum 2 symbols'})
     }
 
     return (
@@ -174,11 +174,12 @@ const SignUp = () => {
                                 <Input {...register('name', {
                                     required: false,
                                     minLength: {
-                                        value: 5,
-                                        message: 'Minimal length must be over 5 characters'
-                                    }
+                                        value: 2,
+                                        message: 'Minimum 2 symbols'
+                                    },
+                                    onBlur: (e) => onCheckError(e)
                                 })}  name='name' placeholder='display name' id='displayName' />
-                                <ErrorMessage name='displayName' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
+                                {errors.name && <p className={cls.error}>{errors.name.message}</p>}
                             </Col>
                         </Row>
                     </FormGroup>

@@ -10,10 +10,10 @@ const ActiveGroups = ({dateOfCreate, groupName, item, index, onDelete, id}) => {
     const navigate = useNavigate()
     return (
         <Row className='active-group mt-3'>
-            <Col>
+            <Col className='d-none d-sm-block'>
                 {getCurrentDate(dateOfCreate)}
             </Col>
-            <Col className='d-none d-sm-block'>
+            <Col>
                 {groupName}
             </Col>
             <Col>

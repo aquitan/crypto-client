@@ -9,7 +9,7 @@ import AdminButton from "../../../components/UI/AdminButton/AdminButton";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
 import AdminForm from "../../../components/UI/AdminForm/AdminForm";
 import {useForm} from "react-hook-form";
-import {postData} from "../../../services/StaffServices";
+import {deleteData, postData} from "../../../services/StaffServices";
 import {v4 as uuid} from 'uuid'
 import Preloader from "../../../components/UI/Preloader/Preloader";
 import {getSearchItems} from "../../../utils/searchFn";
@@ -26,8 +26,8 @@ const Users = () => {
             isStaff: store.isStaff,
             domainName: window.location.host,
             rootAccess: store.fullAccess,
-            staffEmail: store.user.email,
-            staffId: store.user.id,
+            staffEmail: store.fullAccess ? 'root': store.user.email,
+            staffId: store.fullAccess ? 'root': store.user.id,
             skipValue: value,
             limitValue: 10
         }
@@ -41,11 +41,20 @@ const Users = () => {
     }
     useEffect(() => {
         getProfile()
+        // delUser()
     }, [])
 
     const onSearch = (e) => {
         setState({...state, search: e.target.value})
     }
+
+    // const delUser = async () => {
+    //     const res = await deleteData('/staff/users/user_detail/delete_user_with_all_params/', {data: {
+    //             userId: '62d6524567a932e48e089a20',
+    //             userEmail: 'aquitanfw@gmail.com',
+    //             rootAccess: true
+    //         }})
+    // }
 
     console.log('user-data', state.users)
 
@@ -81,25 +90,25 @@ const Users = () => {
                     <div className="users_table">
                         <div className={cls.users_table_inner}>
                             <Row className={cls.table_header}>
-                                <Col className='d-none d-md-block col-2'>Date of registration</Col>
-                                <Col className='d-none d-sm-block col-1'>Name</Col>
-                                <Col className='col-8 col-sm-2'>Email</Col>
-                                <Col className='col-8 col-sm-2'>Domain</Col>
-                                <Col className='col-4 col-sm-1'>KYC</Col>
-                                <Col className='col-4 col-sm-2'>Status</Col>
-                                <Col className='d-none d-sm-block col-2'>Action</Col>
+                                <Col className='d-none d-md-block col-2 text-center'>Register date</Col>
+                                <Col className='d-none d-md-block col-6 col-md-2 text-center'>Name</Col>
+                                <Col className='col-6 col-md-2 text-center'>Email</Col>
+                                <Col className='d-none d-md-block col-8 col-sm-2 text-center'>Domain</Col>
+                                <Col className='d-none d-md-block col-4 col-sm-1 text-center'>KYC</Col>
+                                <Col className='d-none d-md-block col-4 col-sm-1 text-center'>Status</Col>
+                                <Col className='col-6 col-md-2 text-center'>Action</Col>
                             </Row>
                             {
                                 state.users.length > 0
                                     ?
-                                    getSearchItems(state.users, state.search).map(user => {
+                                    state.users.slice(0).reverse().map(user => {
                                         return(
                                             <UsersTableItem
                                                 key={uuid()}
-                                                registerDate={user.registerDate}
-                                                name={user.userName}
-                                                email={user.userEmail}
-                                                id={user.userId}
+                                                registerDate={user.dateOfEntry}
+                                                name={user.name}
+                                                email={user.email}
+                                                id={user._id}
                                                 userStatus={user.userStatus}
                                                 kycStatus={user.kycStatus}
                                                 userDomain={user.userDomain}

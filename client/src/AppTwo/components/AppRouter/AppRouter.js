@@ -32,15 +32,18 @@ const AppRouter = () => {
     useEffect( () => {
         if (localStorage.getItem('token')) {
             store.checkAuth()
+            // getNotification()
         }
         if (!localStorage.getItem('token')) {
-            console.log('to landing')
             navigate('/')
         }
         sendDomainName()
         getRates()
-
     }, [])
+
+    const getNotification = async () => {
+        const res = await getData(`/staff/notifications/get_all_notifications/${store.user.id}`)
+    }
 
     const countTotalBalance = () => {
         console.log('blance state', state)

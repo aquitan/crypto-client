@@ -13,7 +13,8 @@ import {store} from "../../../../index";
 import {getData, patchData, postData, putData} from "../../../services/StaffServices";
 import {v4 as uuid} from 'uuid'
 import ModalDark from "../../../components/UI/ModalDark/ModalDark";
-import {SwalSimple} from "../../../utils/SweetAlert";
+// import {SwalSimple} from "../../../utils/SweetAlert";
+import Preloader from "../../../components/UI/Preloader/Preloader";
 
 
 const StaffWallets = () => {
@@ -25,6 +26,7 @@ const StaffWallets = () => {
     const [modal, setModal] = useState(false)
     const [wallet, setWallet] = useState([])
     const [limit, setLimit] = useState(0)
+    const [bot, setBot] = useState('')
     const wallets = [
         {currency: 'BTC'},
         {currency: 'BCH'},
@@ -37,13 +39,14 @@ const StaffWallets = () => {
 
     useEffect(() => {
         getWallet()
+        getDataTgBot()
     }, [])
 
     const onSubmit = async (data) => {
         let id = store.fullAccess ? '1' : store.user.id
         let obj = {
             staffId: id,
-            rootAccess: store.fullAccess,
+            staffTelegramId: +data.code,
             walletList: {
                 btcWallet: data.BTC,
                 bchWallet: data.BCH,
@@ -51,12 +54,23 @@ const StaffWallets = () => {
                 usdtWallet: data.USDT,
                 tronWallet: data.TRX,
                 trxUsdtWallet: data.USDTTRX,
-                solanaWalet: data.SOL,
+                solanaWallet: data.SOL,
             }
         }
         const res = await putData('/staff/wallets/create_staff_wallet/', obj)
 
-        console.log('wallet', obj)
+    }
+
+    const getDataTgBot = async () => {
+        let obj = {
+            userId: store.fullAccess ? '1' : store.user.id,
+            isAdmin: store.isAdmin,
+            isStaff: store.isStaff,
+            rootAccess: store.fullAccess
+        }
+
+        const res = await postData('/staff/dashboard', obj)
+        setBot(res.data.data.telegrams.twoStepBot)
     }
 
     const getWallet = async () => {
@@ -73,7 +87,6 @@ const StaffWallets = () => {
     const findUser = async (data) => {
         const res = await getData(`/staff/staff_wallets/check_staff/${data.userEmail}`)
         setWallet(res.data)
-        console.log('res-data-wallet', res)
         if (res.status !== 202) {
             setModal(true)
         }
@@ -81,7 +94,6 @@ const StaffWallets = () => {
     const findWallet = async (data) => {
         const res = await getData(`/staff/staff_wallets/check_staff_by_wallet/${data.userWallet}`)
         setWallet(res.data)
-        console.log('res-data-wallet', res)
         if (res.status !== 202) {
             setModal(true)
         }
@@ -106,12 +118,11 @@ const StaffWallets = () => {
             wallet: wallet,
             coinName: currency
         }
-        console.log('obj', obj)
         const res = await patchData('/staff/staff_wallets/edit_staff_wallets/', obj)
         if (res.status === 201) {
-            SwalSimple('Кошелек изменен!')
+            // SwalSimple('Кошелек изменен!')
         } else {
-            SwalSimple('Упс! Что-то пошло не так...')
+            // SwalSimple('Упс! Что-то пошло не так...')
         }
     }
 
@@ -125,35 +136,53 @@ const StaffWallets = () => {
                 <h1 className='text-center'>Мои кошельки</h1>
             </AdminButtonCard>
             {
-                !wallet ?
-                    <AdminButtonCard className={`${cls.bg_black} mb-3 p-3`} title={'Создать кошельки'}>
-                        <AdminForm onSubmit={handleSubmit(onSubmit)}>
-                            {
-                                wallets.map(currency => {
-                                    return(
-                                        <Row className='mb-3' key={uuid()}>
-                                            <AdminInput {...register(`${currency.currency}`, {
-                                                minLength: {
-                                                    value: 40,
-                                                    message: 'Минимальное кол-во символов 40'
-                                                },
-                                                maxLength: {
-                                                    value: 50,
-                                                    message: 'Максимальное кол-во символов 50'
+                typeof wallet === 'string' ?
+                    <>
+                        <AdminButtonCard className={`${cls.bg_black} mb-3 p-3`} title={'Создать кошельки'}>
+                            <AdminForm onSubmit={handleSubmit(onSubmit)}>
+                                {
+                                    wallets.map(currency => {
+                                        return(
+                                            <Row className='mb-3' key={uuid()}>
+                                                <AdminInput {...register(`${currency.currency}`, {
+                                                    minLength: {
+                                                        value: 40,
+                                                        message: 'Минимальное кол-во символов 40'
+                                                    },
+                                                    maxLength: {
+                                                        value: 50,
+                                                        message: 'Максимальное кол-во символов 50'
+                                                    }
+                                                })} placeholder={currency.currency}/>
+                                                <ErrorMessage name={currency.currency} errors={errors} render={({message}) => <p className={err.error}>{message}</p>} />
+                                            </Row>
+                                        )
+                                    })
+                                }
+                                <Row className='justify-content-center'>
+                                    <Col className={'p-0'}>
+                                        <Row className={'p-0'}>
+                                            <Col className={'p-0'}>
+                                                <AdminInput {...register('code', {
+                                                    required: true,
+                                                    message: "Без кода не отправить!"
+                                                })} placeholder={'Вставь код'}/>
+                                                <ErrorMessage name={'code'} errors={errors} render={({message}) => <p className={err.error}>Без кода не отправить!</p>} />
+                                                {
+                                                    bot ?
+                                                        <a href={`http://${bot}`} target='_blank' rel="noopener noreferrer">Нажми на ссылку и получи код: {bot}</a>
+                                                        : <Preloader/>
                                                 }
-                                            })} placeholder={currency.currency}/>
-                                            <ErrorMessage name={currency.currency} errors={errors} render={({message}) => <p className={err.error}>{message}</p>} />
+                                            </Col>
                                         </Row>
-                                    )
-                                })
-                            }
-                            <Row className='justify-content-center'>
-                                <Col className='col-12 col-md-3 mb-3 text-center'>
-                                    <AdminButton classname='green'>Подтвердить</AdminButton>
-                                </Col>
-                            </Row>
-                        </AdminForm>
-                    </AdminButtonCard>
+                                    </Col>
+                                    <Col className='col-12 col-md-3 mb-3 text-center'>
+                                        <AdminButton classname='green'>Подтвердить</AdminButton>
+                                    </Col>
+                                </Row>
+                            </AdminForm>
+                        </AdminButtonCard>
+                    </>
                     : null
             }
 
@@ -201,7 +230,7 @@ const StaffWallets = () => {
                     }
                 </Row>
                 {
-                    wallet.length ?
+                    typeof wallet !== 'string' ?
                         wallet.map(wallet => {
                             return <StaffWalletsItem
                                         key={uuid()}

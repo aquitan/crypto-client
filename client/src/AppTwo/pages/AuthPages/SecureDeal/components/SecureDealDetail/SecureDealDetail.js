@@ -9,7 +9,7 @@ import ChatRules from "../../../Support/components/ChatRules/ChatRules";
 import {secureDealRulesText} from "../../../../../utils/userConstants";
 import Input from "../../../../../components/UI/Input/Input";
 import Button from "../../../../../components/UI/Button/Button";
-import {getData, patchData, postData} from "../../../../../services/StaffServices";
+import {getData, patchData, postData, putData} from "../../../../../services/StaffServices";
 import SecureDealDetailConfirm from "../SecureDealDetailConfirm/SecureDealDetailConfirm";
 import {useForm} from "react-hook-form";
 import Modal from "../../../../../components/UI/Modal/Modal";
@@ -37,36 +37,20 @@ const SecureDealDetail = () => {
     const [result, setResult] = useState('')
     useEffect(() => {
         getSecureDealData()
+
     }, [])
-    const messeges = [
-        {type: 'user', text: 'hello support', date: getCurrentDate(dateToTimestamp(new Date()))},
-        {type: 'user', text: 'hello support', date: getCurrentDate(dateToTimestamp(new Date()))},
-        {type: 'support', text: 'hello user', date: getCurrentDate(dateToTimestamp(new Date()))},
-        {type: 'support', text: 'hello user', date: getCurrentDate(dateToTimestamp(new Date()))},
-        {type: 'user', text: 'hello support', date: getCurrentDate(dateToTimestamp(new Date()))},
-        {type: 'support', text: 'hello user', date: getCurrentDate(dateToTimestamp(new Date()))},
-    ]
-    const [msg, setMsg] = useState(messeges)
 
-    const onClick = (text) => {
-        let newPost = {
-            type: 'user',
-            text: text,
-            date: getCurrentDate(dateToTimestamp(new Date()))
-        }
-
-        setMsg(prevState => {
-            return [newPost, ...prevState]
-        })
-    }
+    const [msg, setMsg] = useState([])
+    const [image, setImage] = useState()
 
     const getSecureDealData = async () => {
         const res = await getData(`/personal_area/secure_deal/secure_deal_detail/${params.id}/${store.user.email}`)
         setDealData(res.data.dealDetail)
+        getSupportMessages(res.data.dealDetail._id)
+        console.log('res.data.dealDetail', res.data.dealDetail)
     }
     const sendRewardData = async (data) => {
         data.dealId = dealData._id
-        console.log('log----', data)
         const res = await patchData('/personal_area/secure_deal/secure_deal_detail/accept_deal/', data)
         checkResponse(201)
         setModal(true)
@@ -78,7 +62,6 @@ const SecureDealDetail = () => {
     }
 
     const checkResponse = (response) => {
-        console.log('resp---', response)
         switch (response) {
             case 201:
                 return setResult('Deal successfully completed')
@@ -94,6 +77,46 @@ const SecureDealDetail = () => {
         setState({
             ...state, seller: true
         })
+    }
+
+    const onClick = async (text) => {
+        console.log('msg---', msg)
+        const obj = {
+            domainName: window.location.host,
+            curDate: dateToTimestamp(new Date()),
+            messageBody: text,
+            imageLink: image ? image : null,
+            chatId: typeof msg !== 'string' ? msg[0].chatId : null,
+            isUser: true,
+            dealId: dealData._id,
+            userId: store.user.id
+        }
+
+        const res = await putData('/secure_deal/deal_detail/send_message_to_secure_deal_chat', obj)
+        if (res.status === 202) {
+            getSupportMessages(dealData._id)
+        }
+        console.log('res msg', res)
+    }
+
+    const getSupportMessages = async (id) => {
+        console.log('get msg data', id)
+        const res = await getData(`/secure_deal/deal_detail/get_chat_for_user/0/50/${id}`)
+        setMsg(res.data)
+
+        // createMessagesOnLoad(res.data)
+    }
+
+    const onUploadImg =(img) => {
+        const formData = new FormData();
+        formData.append("image", img);
+        console.log("formData", formData);
+        fetch(
+            "https://api.imgbb.com/1/upload?key=68c3edcc904ee3e28d2e63ec81876e40",
+            { method: "POST", body: formData }
+        )
+            .then((response) => response.json())
+            .then((data) => setImage(data.data.display_url));
     }
 
     return (
@@ -154,7 +177,7 @@ const SecureDealDetail = () => {
                         <ButtonCard className='mt-4 p-3'>
                             <h5 className={cls.card_header}>Detailed info</h5>
                             <Row className='mt-3'>
-                                <TextArea classnames='textarea_bordered' value={dealData.dealCondition}/>
+                                <TextArea rows={10} classnames='textarea_bordered' value={dealData.dealCondition}/>
                             </Row>
                         </ButtonCard>
 
@@ -162,17 +185,19 @@ const SecureDealDetail = () => {
                             <h5 className={cls.card_header}>Chat</h5>
                             <Row className='mt-3'>
                                 <Col className='col-12 col-lg-8 mb-3'>
-                                    <ChatWindow onClick={onClick}>
+                                    <ChatWindow onUploadImg={onUploadImg} onClick={onClick}>
                                         {
-                                            msg.length ?
+                                           typeof msg !== 'string' ?
                                                 msg.map(item => {
                                                     return(
                                                         <ChatMessege
-                                                            date={item.date}
-                                                            type={item.type}
-                                                            text={item.text} />
+                                                            key={item._id}
+                                                            date={item.curDate}
+                                                            type={item.isUser}
+                                                            image={item.imageLink}
+                                                            text={item.messageBody} />
                                                     )
-                                                }) : <h2>empty</h2>
+                                                }) : null
                                         }
                                     </ChatWindow>
                                 </Col>

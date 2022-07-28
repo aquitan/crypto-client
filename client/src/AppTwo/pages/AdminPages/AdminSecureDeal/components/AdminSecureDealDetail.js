@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import {Col, Container, Form, Row} from "react-bootstrap";
 import AdminButtonCard from "../../../../components/AdminButtonCard/AdminButtonCard";
@@ -9,6 +9,13 @@ import DatePickert from "react-datepicker";
 import DatePickerCustom from "../../../../components/UI/DatePickerCustom/DatePickerCustom";
 import AdminButton from "../../../../components/UI/AdminButton/AdminButton";
 import AdminChat from "../../../../components/AdminChat/AdminChat";
+import ChatMessege from "../../../../components/UI/ChatMessege/ChatMessege";
+import ChatWindow from "../../../AuthPages/Support/components/ChatWindow/ChatWindow";
+import {store} from "../../../../../index";
+import {getData, patchData, postData, putData} from "../../../../services/StaffServices";
+import {useParams} from "react-router-dom";
+import {getCurrentDate} from "../../../../utils/getCurrentDate";
+import Preloader from "../../../../components/UI/Preloader/Preloader";
 
 const AdminSecureDealDetail = () => {
     const {register, handleSubmit, formState: {errors}} = useForm({
@@ -16,6 +23,13 @@ const AdminSecureDealDetail = () => {
     })
     const [startDate, setStartDate] = useState()
     const [timeDate, setTimeDate] = useState()
+    const [msg, setMsg] = useState([])
+    const [chats, setChats] = useState([])
+    const [currentChat, setCurrentChat] = useState('')
+    const [image, setImage] = useState()
+    const [dealDetail, setDealDetail] = useState()
+    const [dealDetailChat, setDealDetailChat] = useState()
+    const params = useParams()
     const status = [
         {value: 'Pending', text: 'Pending'},
         {value: 'In progress', text: 'In progress'},
@@ -49,6 +63,58 @@ const AdminSecureDealDetail = () => {
         setTimeDate(time)
     }
 
+    useEffect(() => {
+        getDealDetails()
+    }, [])
+
+    const getDealDetails = async () => {
+        const data = {
+            isAdmin: store.isAdmin,
+            rootAccess: store.fullAccess,
+            isStaff: store.isStaff,
+            dealId: params.id
+        }
+
+        const res = await postData('/staff/secure_deal/detail_deal/', data)
+        setDealDetail(res.data[0])
+        setDealDetailChat(res.data[1][0])
+        if (res.data[1].length) {
+            getDealChatMessages(res.data[1][0].chatId)
+        }
+    }
+
+    const getDealChatMessages = async (id) => {
+        const res = await getData(`/staff/secure_deal/detail_deal/get_chat_data/${id}/0/50/`)
+    }
+
+    const onUploadImg =(img) => {
+        const formData = new FormData();
+        formData.append("image", img);
+        fetch(
+            "https://api.imgbb.com/1/upload?key=68c3edcc904ee3e28d2e63ec81876e40",
+            { method: "POST", body: formData }
+        )
+            .then((response) => response.json())
+            .then((data) => setImage(data.data.display_url));
+    }
+
+    if (!dealDetail) {
+        return <AdminButtonCard>
+            <Preloader/>
+        </AdminButtonCard>
+    }
+
+    const onEditChatMessage = async (id, text, img) => {
+        const obj = {
+            isAdmin: store.isAdmin,
+            isStaff: store.isStaff,
+            rootAccess: store.fullAccess,
+            messageId: id,
+            messageBody: text,
+            imageLink: img
+        }
+        const res = await patchData('/staff/secure_deal/detail_deal/edit_message/', obj)
+    }
 
     return (
         <Container>
@@ -56,52 +122,36 @@ const AdminSecureDealDetail = () => {
             <AdminButtonCard>
                 <h3 className={'mb-3'}>Инфо</h3>
                 <Row className={'mb-3'} style={{borderBottom: '1px solid #cecece', paddingBottom: '10px'}}>
-                    <Col>ID</Col>
-                    <Col>829</Col>
-                </Row>
-                <Row className={'mb-3'} style={{borderBottom: '1px solid #cecece', paddingBottom: '10px'}}>
                     <Col>Seller</Col>
-                    <Col>densipon</Col>
+                    <Col>{dealDetail.seller}</Col>
                 </Row>
                 <Row className={'mb-3'} style={{borderBottom: '1px solid #cecece', paddingBottom: '10px'}}>
                     <Col>Buyer</Col>
-                    <Col>Stephenkeith</Col>
-                </Row>
-                <Row className={'mb-3'} style={{borderBottom: '1px solid #cecece', paddingBottom: '10px'}}>
-                    <Col>Домен</Col>
-                    <Col>aerowallet.net</Col>
+                    <Col>{dealDetail.buyer}</Col>
                 </Row>
                 <Row className={'mb-3'} style={{borderBottom: '1px solid #cecece', paddingBottom: '10px'}}>
                     <Col>Награда</Col>
-                    <Col>0.001 BTC</Col>
+                    <Col>{dealDetail.amountInCrypto} {dealDetail.coinName}</Col>
                 </Row>
                 <Row className={'mb-3'} style={{borderBottom: '1px solid #cecece', paddingBottom: '10px'}}>
                     <Col>Пароль</Col>
-                    <Col>GuUNrnf6007053</Col>
-                </Row>
-                <Row className={'mb-3'} style={{borderBottom: '1px solid #cecece', paddingBottom: '10px'}}>
-                    <Col>Выплачен ли</Col>
-                    <Col>False</Col>
-                </Row>
-                <Row className={'mb-3'} style={{borderBottom: '1px solid #cecece', paddingBottom: '10px'}}>
-                    <Col>Выведена ли оплата</Col>
-                    <Col>False</Col>
-                </Row>
-                <Row className={'mb-3'} style={{borderBottom: '1px solid #cecece', paddingBottom: '10px'}}>
-                    <Col>Дедлайн</Col>
-                    <Col>May 10, 2022, midnight</Col>
+                    <Col>{dealDetail.acceptCode}</Col>
                 </Row>
                 <Row className={'mb-3'} style={{borderBottom: '1px solid #cecece', paddingBottom: '10px'}}>
                     <Col>Статус</Col>
-                    <Col>Pending</Col>
+                    <Col>{dealDetail.status}</Col>
+                </Row>
+                <Row className={'mb-3'} style={{borderBottom: '1px solid #cecece', paddingBottom: '10px'}}>
+                    <Col>Дедлайн</Col>
+                    <Col>{getCurrentDate(dealDetail.dealDedline)}</Col>
                 </Row>
                 <Row className={'mb-3'} style={{borderBottom: '1px solid #cecece', paddingBottom: '10px'}}>
                     <Col>Создатель</Col>
-                    <Col>Seller</Col>
+                    <Col>{dealDetail.userEmail}</Col>
                 </Row>
                 <Row className={'mb-3'} style={{borderBottom: '1px solid #cecece', paddingBottom: '10px'}}>
                     <Col>Дата создания</Col>
-                    <Col>May 9, 2022, 2:09 p.m.</Col>
+                    <Col>{getCurrentDate(dealDetail.dateOfCreate)}</Col>
                 </Row>
 
                 <Row className={'mb-3'}>
@@ -154,7 +204,24 @@ const AdminSecureDealDetail = () => {
                     <Select {...register('msgFrom')} classname={'admin-square'} options={messageFrom}/>
                 </Row>
                 <Row>
-                    <AdminChat />
+                    <ChatWindow onUploadImg={onUploadImg} >
+                        {
+                            msg.length ?
+                                msg.reverse().map(item => {
+                                    return(
+                                        <ChatMessege
+                                            key={item._id}
+                                            id={item._id}
+                                            allowEdit={true}
+                                            date={item.curDate}
+                                            type={item.isUser}
+                                            image={item.imageLink}
+                                            onEditChatMessage={onEditChatMessage}
+                                            text={item.messageBody} />
+                                    )
+                                }) : null
+                        }
+                    </ChatWindow>
                 </Row>
             </AdminButtonCard>
             

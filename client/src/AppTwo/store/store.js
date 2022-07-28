@@ -2,7 +2,6 @@ import {makeAutoObservable} from "mobx";
 import AuthService from "../services/AuthService";
 import axios from "axios";
 import {BASE_URL} from "../API";
-import {log} from "util";
 
 export default class Store {
     userId = ''
@@ -32,6 +31,7 @@ export default class Store {
     balance = []
     total = 0
     activeError = 0
+
 
 
     constructor() {
@@ -109,9 +109,6 @@ export default class Store {
     setBalance(arr) {
         this.balance = arr
     }
-    setTotal(num) {
-        this.total = num
-    }
 
 
 
@@ -173,10 +170,11 @@ export default class Store {
     }
     async logout() {
         try {
-            const response = await AuthService.logout()
             localStorage.removeItem('token')
+            const response = await AuthService.logout()
             this.setAuth(false)
             this.setIsAdmin(false)
+            this.setIsStaff(false)
             this.setUser({})
             this.setFullAccess(false)
         } catch(e) {

@@ -25,7 +25,7 @@ const SignIn = () => {
     const {store} = useContext(AuthContext)
     const [modal, setModal] = useState(false)
     const [modalBan, setModalBan] = useState(false)
-    const [modalError, setModalError] = useState(store.isError)
+    const [modalError, setModalError] = useState(false)
     const [isShowPassword, setIsShowPassword] = useState(false)
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onChange'
@@ -54,16 +54,17 @@ const SignIn = () => {
 
     const checkFaStatus = async (data) => {
         let date = new Date()
-        const res = await postData('/check_two_step/', {
-            email: data.email,
-            time: date.getTime()
-        })
-        if (res.data.twoStepStatus) {
-            console.log('OK status')
-            setStateTwoFa({twoFaCode: true})
-        } else {
-            sendLoginData(data)
-        }
+        sendLoginData(data)
+        // const res = await postData('/check_two_step/', {
+        //     email: data.email,
+        //     time: date.getTime()
+        // })
+        // if (res.data.twoStepStatus) {
+        //     console.log('OK status')
+        //     setStateTwoFa({twoFaCode: true})
+        // } else {
+        //     sendLoginData(data)
+        // }
 
     }
 
@@ -132,7 +133,7 @@ const SignIn = () => {
                             <ErrorMessage  name='email' errors={errors} render={() => <p className={cls.error}>email is invalid</p>} />
                         </Col>
                     </Row>
-                    <Row>
+                    <Row className='mt-3 mb-3'>
                         <Col className={cls.relative}>
                             <Input defaultValue={store.asUser?.password} {...register('password', {
                                     required: 'You must specify your password',

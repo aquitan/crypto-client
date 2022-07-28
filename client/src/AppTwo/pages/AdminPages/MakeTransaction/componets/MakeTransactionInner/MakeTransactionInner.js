@@ -18,6 +18,7 @@ import TableItem from "../../../../../components/UI/Table/components/TableItem/T
 import {getData, postData, putData} from "../../../../../services/StaffServices";
 import {store} from "../../../../../../index";
 import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
+import {getGeoData} from "../../../../../queries/getSendGeoData";
 
 const MakeTransactionInner = () => {
     const [startDate, setStartDate] = useState()
@@ -58,23 +59,20 @@ const MakeTransactionInner = () => {
         delete data.date
         delete data.time
         data.amountInCrypto = +data.amountInCrypto
-        data.userId = store.user.id
+        data.userId = ''
         data.staffId = store.user.id
-        data.userEmail = store.userEmail
         data.domainName = window.location.host
         data.amountInUsd = getCurCoinName(data.coinName.toLowerCase(), data.amountInCrypto)
         data.currentDate = dateToTimestamp(newDate)
-        data.depositStatus = 'pending'
-        data.coinFullName = 'bitcoin'
-        data.toAddress = 'sdfsdfsdfsdf'
         data.transferStatus = 'complete'
+        data.toAddress = ''
+        data.fromAddress = ''
         if (data.transferType === 'true') {
             data.transferType = true
         } else {
             data.transferType = false
         }
 
-        console.log('log-data', data)
 
         if (data.transferType) {
             const res = await putData('/staff/create_transaction/create_internal_transfer_as_staff/', data)
@@ -93,14 +91,13 @@ const MakeTransactionInner = () => {
     }
 
     const onBlur = async (e) => {
-        const res = await getData(`/get_internal_data/null/${e.target.value}/`)
+        const res = await getData(`/second_party_user_checker/${e.target.value}/${window.location.host}/${store.user.id}/`)
     }
-    console.log('time', timeDate)
     return (
         <>
                 <AdminButtonCard title='Internal transactions'>
                     <AdminForm onSubmit={handleSubmit(onSubmit)}>
-                        <Row className='mb-3 flex-items'>
+                        <Row className='flex-items'>
                             <Col className='col-12 col-lg-2 mb-3'>
                                 <Select {...register('transferType')} classname={'admin-square'} options={actionType}/>
                             </Col>
@@ -109,7 +106,7 @@ const MakeTransactionInner = () => {
                                 <Select {...register('coinName')} classname={'admin-square'} options={optionsCurrency}/>
                             </Col>
 
-                            <Col className='col-12 col-lg-2'>
+                            <Col className='col-12 col-lg-2 mb-3'>
                                 <AdminInput {...register('amountInCrypto')} placeholder='Сумма' />
                             </Col>
                             <Col className='col-12 col-lg-3 mb-3' style={{position: 'relative'}}>
@@ -136,11 +133,8 @@ const MakeTransactionInner = () => {
                                 <span style={styles.todayBtn} onClick={onNowTime}>Now</span>
                             </Col>
                         </Row>
-                        <Row className='mb-3'>
-                            <Col>
-                                <AdminInput {...register('toAddress' )} placeholder='Адрес'/>
-                            </Col>
-                            <Col>
+                        <Row>
+                            <Col className='col-12 col-md-6 mb-3'>
                                 <AdminInput {...register('userEmail', {
                                     onBlur: (e) => onBlur(e)
                                 })} placeholder='Почта'/>
@@ -148,7 +142,7 @@ const MakeTransactionInner = () => {
                         </Row>
 
                         <Row>
-                            <Col>
+                            <Col className='text-center'>
                                 <AdminButton classname='green'>Создать</AdminButton>
                             </Col>
                         </Row>
