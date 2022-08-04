@@ -13,7 +13,7 @@ import {store} from "../../../../index";
 import {getData, patchData, postData, putData} from "../../../services/StaffServices";
 import {v4 as uuid} from 'uuid'
 import ModalDark from "../../../components/UI/ModalDark/ModalDark";
-import {SwalSimple} from "../../../utils/SweetAlert";
+// import {SwalSimple} from "../../../utils/SweetAlert";
 import Preloader from "../../../components/UI/Preloader/Preloader";
 
 
@@ -46,7 +46,7 @@ const StaffWallets = () => {
         let id = store.fullAccess ? '1' : store.user.id
         let obj = {
             staffId: id,
-            rootAccess: store.fullAccess,
+            staffTelegramId: +data.code,
             walletList: {
                 btcWallet: data.BTC,
                 bchWallet: data.BCH,
@@ -54,7 +54,7 @@ const StaffWallets = () => {
                 usdtWallet: data.USDT,
                 tronWallet: data.TRX,
                 trxUsdtWallet: data.USDTTRX,
-                solanaWalet: data.SOL,
+                solanaWallet: data.SOL,
             }
         }
         const res = await putData('/staff/wallets/create_staff_wallet/', obj)
@@ -120,9 +120,9 @@ const StaffWallets = () => {
         }
         const res = await patchData('/staff/staff_wallets/edit_staff_wallets/', obj)
         if (res.status === 201) {
-            SwalSimple('Кошелек изменен!')
+            // SwalSimple('Кошелек изменен!')
         } else {
-            SwalSimple('Упс! Что-то пошло не так...')
+            // SwalSimple('Упс! Что-то пошло не так...')
         }
     }
 

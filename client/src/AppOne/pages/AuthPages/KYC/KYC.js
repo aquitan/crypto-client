@@ -28,7 +28,7 @@ import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheckCircle} from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import {SwalSimple} from "../../../utils/SweetAlert";
+// import {SwalSimple} from "../../../utils/SweetAlert";
 
 
 
@@ -91,7 +91,7 @@ const KYC = ({status}) => {
         //     }
         // })
         if (res.status === 201) {
-            SwalSimple('Verification is sent')
+            // SwalSimple('Verification is sent')
         }
 
         console.log('kyc data', data)

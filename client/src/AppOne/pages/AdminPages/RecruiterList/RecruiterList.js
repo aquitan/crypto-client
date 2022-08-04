@@ -14,7 +14,7 @@ import {deleteData, getData, postData} from "../../../services/StaffServices";
 import {emailValidate} from "../../../utils/checkEmail";
 import cls from "../../NonAuthPages/SignIn/SignIn.module.scss";
 import {ErrorMessage} from "@hookform/error-message";
-import {SwalSimple} from "../../../utils/SweetAlert";
+// import {SwalSimple} from "../../../utils/SweetAlert";
 
 const RecruiterList = () => {
     const navigate = useNavigate()
@@ -54,7 +54,7 @@ const RecruiterList = () => {
         const res = await postData('/staff/recruiter/add_new_recruiter', obj)
         if  (res.status === 201) {
             getRecruiterList()
-            SwalSimple('Пользователь добавлен в рекрутеры!')
+            // SwalSimple('Пользователь добавлен в рекрутеры!')
         }
     }
 

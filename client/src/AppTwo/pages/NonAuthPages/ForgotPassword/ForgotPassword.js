@@ -24,7 +24,6 @@ const ForgotPassword = () => {
         data.domainName = window.location.host
         const res = await patchData('/forgot_password/', data)
         const datas = await res.data
-        console.log('forgot', datas.status)
         setForgotStatus(datas.status)
         setModal(true)
         if (datas.status === 'rejected') {

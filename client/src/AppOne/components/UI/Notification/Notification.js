@@ -29,23 +29,28 @@ const Notification = () => {
         const res = deleteData(`/notification/remove_notification/${id}/`)
         getNotification()
     }
+    const onClearAll = async () => {
+        const res = await deleteData(`/clear_all_notification/${store.user.id}`)
+        updateNotif()
+    }
 
     return (
         <div className={cls.notification}>
             <div className={cls.notification_header} onClick={() => setOpen(!open)}>
                 <FontAwesomeIcon icon={faBell} color='#fff' />
-                {notificationList.length ? <div className={cls.notification_mark}></div> : null}
+                {notificationList.length ? <div className={cls.notification_mark}>{notificationList.length}</div> : null}
             </div>
             {
                 open ?
                     <div className={cls.notification_body}>
                         <div>
                             <Row className={cls.notification_body_top}>
-                                <Col>Notifications</Col>
+                                <Col style={{fontSize: 13}}>Notifications</Col>
+                                <Col style={{fontSize: 13, cursor: 'pointer'}} onClick={onClearAll}>Clear all</Col>
                             </Row>
                             {
                                 notificationList.length  ?
-                                    notificationList.map(notif => {
+                                    notificationList.slice(0).reverse().map(notif => {
                                         return <NotificationItem
                                             removeNotif={removeNotif}
                                             key={notif._id}

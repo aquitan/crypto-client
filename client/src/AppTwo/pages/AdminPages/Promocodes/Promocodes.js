@@ -14,7 +14,7 @@ import {deleteData, postData, putData} from '../../../services/StaffServices';
 import AdminButtonCard from '../../../components/AdminButtonCard/AdminButtonCard';
 import ModalDark from "../../../components/UI/ModalDark/ModalDark";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
-import {SwalSimple} from "../../../utils/SweetAlert";
+// import {SwalSimple} from "../../../utils/SweetAlert";
 
 const Promocodes = () => {
     const [curSelect, setCurSelect] = useState('')
@@ -23,7 +23,7 @@ const Promocodes = () => {
         mode: "onBlur"
     })
     const [state, setState] = useState({
-        currentPromocodes: '',
+        currentPromocodes: [],
     })
     const [usedPromocodes, setUsedPromocodes] = useState('')
     const [modal, setModal] = useState({
@@ -84,7 +84,7 @@ const Promocodes = () => {
         }
         const res = await putData('/staff/create_promocode/', promoData)
         if (res.status === 201) {
-            SwalSimple('Промокод создан!')
+            // SwalSimple('Промокод создан!')
             getAllPromocodes()
         }
     }
@@ -101,7 +101,6 @@ const Promocodes = () => {
         }
         const res = await postData('/staff/get_promocode_list/', promoData)
         const data = await res.data
-        console.log('current promos', res.data)
         setState({
             ...state, currentPromocodes: data.promocodeList
         })
@@ -112,7 +111,9 @@ const Promocodes = () => {
             isStaff: store.isStaff,
             isAdmin: store.isAdmin,
             id: store.user.id,
-            rootAccess: store.fullAccess
+            rootAccess: store.fullAccess,
+            skipValue: 0,
+            limitValue: 20
         }
         const res = await postData('/staff/get_used_promocode_list/', promoData)
         const data = await res.data
@@ -293,7 +294,7 @@ const Promocodes = () => {
                         </Col>
                     </Row>
                     <Row className='mb-4'>
-                        <Col>
+                        <Col className='d-flex justify-content-center'>
                             <AdminButton classname='green'>Сгенерировать</AdminButton>
                         </Col>
                     </Row>
@@ -328,8 +329,10 @@ const Promocodes = () => {
                 </div>
                 <Row className={'mb-3 mt-3'}>
                     {
-                        state.currentPromocodes.length >= 10 ?
-                            <AdminButton onClick={onMore} classname={['xs', 'green']}>Еще</AdminButton>
+                        state.currentPromocodes ?
+                            state.currentPromocodes.length >= 10 ?
+                                <AdminButton onClick={onMore} classname={['xs', 'green']}>Еще</AdminButton>
+                                : null
                             : null
                     }
                     {
@@ -347,7 +350,7 @@ const Promocodes = () => {
                     <Col className='col-12 col-sm-4'>
                         <AdminButton
                             onClick={deleteAllUsed}
-                            classname={['red', 'xs']}>Удалить все</AdminButton>
+                            classname={['red']}>Удалить все</AdminButton>
                     </Col>
                 </Row>
                 <Row className={cls.table_header}>

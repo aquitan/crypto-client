@@ -8,7 +8,7 @@ import {faCoffee} from "@fortawesome/free-solid-svg-icons";
 import Form from "../../../components/UI/Form/Form";
 import Select from '../../../components/UI/Select/Select'
 import Button from "../../../components/UI/Button/Button";
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import {ErrorMessage} from "@hookform/error-message";
 import error from "../../../styles/Error.module.scss";
 import {useForm} from "react-hook-form";
@@ -25,6 +25,9 @@ import Preloader from "../../../components/UI/Preloader/Preloader";
 import cls from './Withdraw.module.scss'
 import Image from "../../../components/UI/Image/Image";
 import {imgMatch} from "../../../utils/imgMatch";
+import {getGeoData} from "../../../queries/getSendGeoData";
+// import swal from '@sweetalert/with-react';
+import {NotifContext, useNotifContext} from "../../../context/notifContext";
 
 const Withdraw = () => {
     const [state, setState] = useState({
@@ -32,6 +35,7 @@ const Withdraw = () => {
         text: ''
     })
     const [counter, setCounter] = useState(0)
+    const [address, setAddress] = useState('')
     const [balanceCoin, setBalanceCoin] = useState('BTC')
     const navigate = useNavigate()
     const [balance, setBalance] = useState(0)
@@ -43,11 +47,13 @@ const Withdraw = () => {
     const [history, setHistory] = useState([])
     const [modal, setModal] = useState(false)
     const [error, setError] = useState()
-
+    const location = useLocation()
 
     useEffect(() => {
         getHistoryDeposit()
-        getBalance()
+        // getBalance()
+        setBalance(location.state.coinsBalance)
+        console.log('location', location)
     }, [])
 
     const getHistoryDeposit = async () => {
@@ -73,6 +79,7 @@ const Withdraw = () => {
 
     const onSubmit = async (data, e) => {
         e.preventDefault()
+        const geodata = await getGeoData()
         data.value = state.value
         console.log('store error', store.user.userError)
         const obj = {
@@ -85,16 +92,23 @@ const Withdraw = () => {
             currentDate: dateToTimestamp(),
             withdrawalAddress: data.withdrawalAddress,
             withdrawalStatus: 'failed',
-            logTime: getCurrentDate(dateToTimestamp()),
-            errorId: store.user.userError
+            coinFullName: location.state.coinFullName,
+            staffId: store.isStaff ? store.user.id : '',
+            ipAddress: geodata.ipAddress,
+            city: geodata.city,
+            browser: geodata.browser,
+            countryName: geodata.countryName,
+            coordinates: geodata.coordinates,
+            logTime: dateToTimestamp(new Date()),
+            errorId: store.user.userError,
         }
 
         const res = await putData('/withdraw/make_withdraw/', obj)
         setError(res.data)
         if (res.status === 201) {
-            setModal(true)
+            // setModal(true)
+            onSendWithdraw(res.data)
         }
-        console.log(data)
     }
 
     const onValChange = (e) => {
@@ -112,21 +126,21 @@ const Withdraw = () => {
         setBalance(balanceAmount)
     }
 
-    const getBalance = async () => {
-        const res = await getData(`/get_user_balance/${store.user.id}`)
-        let arr = []
-            res.data.forEach(item => {
-                let obj = {
-                    value: item.coinName,
-                    text: item.coinName
-                }
-                arr.push(obj)
-            })
-        setCoins(arr)
-        setCoinsFull(res.data)
-        setBalance(res.data[0].coinBalance)
-        console.log('res balance', res.data)
-    }
+    // const getBalance = async () => {
+    //     const res = await getData(`/get_user_balance/${store.user.id}`)
+    //     let arr = []
+    //         res.data.forEach(item => {
+    //             let obj = {
+    //                 value: item.coinName,
+    //                 text: item.coinName
+    //             }
+    //             arr.push(obj)
+    //         })
+    //     setCoins(arr)
+    //     setCoinsFull(res.data)
+    //     setBalance(res.data[0].coinBalance)
+    //     console.log('res balance', res.data)
+    // }
 
 
     const onNext = () => {
@@ -137,8 +151,25 @@ const Withdraw = () => {
     }
 
 
+    const onSendWithdraw = (error) => {
+        console.log('withdraw error', error)
+        // swal({
+        //     content:
+        //         <div>
+        //             <h2>{error?.errorTitle}</h2>
+        //             <h4>{error?.errorType}</h4>
+        //             <div>
+        //                 <b>{error?.errorText}</b>
+        //             </div>
+        //     </div>,
+        //     confirmButtonText: 'Close'
+        //     })
+    }
+
+
 
     return (
+
         <Container>
 
             <ErrorModal
@@ -146,7 +177,7 @@ const Withdraw = () => {
                 btnType={error?.errorButton}
                 errorType={error?.errorTitle}
                 active={modal}
-                title={'Withdrowal Error!'}
+                title={'Withdrawal Error!'}
                 setActive={setModal}
             />
 
@@ -157,19 +188,21 @@ const Withdraw = () => {
                         <Form classnames='form_big'>
                             <Row className='mb-3 align-items-center'>
                                 <Col className='col-12'>
-                                    <p>Chose currency</p>
-                                    <div className={cls.inputWrapper}>
+                                    <div style={{padding: '20px 20px', borderRadius: '20px'}} className={cls.inputWrapper}>
                                         <span style={{display: 'flex', alignItems: 'center'}}>
-                                            <Image src={`/img/${imgMatch(balanceCoin)}.svg`} height={30} width={30} />
-                                            {
-                                                coins.length ?
-                                                    <Select
-                                                        value={balanceCoin}
-                                                        onChange={e => onValChange(e)}
-                                                        classname={['transparent', 'borderLess']}
-                                                        options={coins} />
-                                                    : <Preloader/>
-                                            }
+                                            <Image src={`/img/${imgMatch(location.state.coin)}.svg`} height={30} width={30} />
+                                            {/*{*/}
+                                            {/*        */}
+                                            {/*        // <Select*/}
+                                            {/*        //     value={balanceCoin}*/}
+                                            {/*        //     onChange={e => onValChange(e)}*/}
+                                            {/*        //     classname={['transparent', 'borderLess']}*/}
+                                            {/*        //     options={coins} />*/}
+                                            {/*        : <Preloader/>*/}
+                                            {/*}*/}
+                                            <span>
+                                                {location.state.coin}
+                                            </span>
                                         </span>
                                         <div>Coin balance: {balance}</div>
                                     </div>
@@ -188,7 +221,7 @@ const Withdraw = () => {
                             </Row>
                             <Row className='mb-3'>
                                 <Col>
-                                    <Input {...register('withdrawalAddress')} placeholder='enter the address' />
+                                    <Input {...register('withdrawalAddress')} placeholder='Enter the address' />
                                 </Col>
                             </Row>
                             <Row className='mb-3'>
@@ -197,7 +230,7 @@ const Withdraw = () => {
                                         required: true
                                     })} type='checkbox' />
                                     <Link to={'/'}> I accept Terms and Conditions</Link>
-                                    <ErrorMessage  name='terms' errors={errors} render={() => <p className={error.error}>you have to accept terms and conditions</p>} />
+                                    <ErrorMessage  name='terms' errors={errors} render={() => <p className={error.error}>You have to accept terms and conditions</p>} />
                                 </Col>
                             </Row>
                             <Row className='justify-content-center'>
@@ -218,7 +251,7 @@ const Withdraw = () => {
                         </Row>
                         <div style={{maxHeight: 400, overflowY: 'auto', height: '100%'}}>
                             {
-                                history.length ?
+                                typeof history !== 'string' ?
                                     history.map(item => {
                                         return (
                                             <TableItemUser
@@ -245,6 +278,7 @@ const Withdraw = () => {
                 </Col>
             </Row>
         </Container>
+
     )
 }
 

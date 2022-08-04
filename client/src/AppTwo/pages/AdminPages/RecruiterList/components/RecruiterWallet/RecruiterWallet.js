@@ -21,7 +21,6 @@ const RecruiterWallet = (props) => {
     }
 
     const onSubmit = async (data) => {
-        console.log('wallet data', data)
         let id = store.fullAccess ? '1' : store.user.id
 
 

@@ -7,6 +7,7 @@ import {links} from "../../utils/staffConstants";
 import {v4 as uuid} from 'uuid'
 import BurgerMenu from "../../components/UI/BurgerMenu/BurgerMenu";
 import {store} from "../../../index";
+import {Container, Navbar} from "react-bootstrap";
 
 
 const AuthLayout = () => {
@@ -23,7 +24,11 @@ const AuthLayout = () => {
     return (
         <div className={`${cls.layout} bg-dark`}>
             <div className={cls.layout_inner}>
-                <BurgerMenu onHandleClick={onHandleClick} open={state} />
+                <Navbar className='d-flex d-xl-none' bg="black" variant="dark" style={{position: 'sticky'}}>
+                    <Container>
+                        <BurgerMenu onHandleClick={onHandleClick} open={state} />
+                    </Container>
+                </Navbar>
                 <AdminSidebar active={state} setInactive={setInactive}>
                     <NavigationLink to={'/'}>User Dashboard</NavigationLink>
                     <NavigationLink to={'/staff'}>Главная</NavigationLink>
@@ -37,6 +42,7 @@ const AuthLayout = () => {
                     <NavigationLink to={'/staff/transactions'}>Создать транзакцию</NavigationLink>
                     <NavigationLink to={'/staff/domains'}>Домены</NavigationLink>
                     <NavigationLink to={'/staff/secure-deal'}>Защищенные сделки</NavigationLink>
+                    <NavigationLink to={'/staff/trading'}>Трейдинг</NavigationLink>
                     {
                         store.isAdmin || store.fullAccess ?
                             <NavigationLink to={'/staff/recruiter-list'}>Рекрутинг</NavigationLink>

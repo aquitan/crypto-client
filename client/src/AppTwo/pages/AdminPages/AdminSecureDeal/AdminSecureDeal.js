@@ -88,10 +88,10 @@ const AdminSecureDeal = () => {
             limitValue: 10
         }
         const res = await postData(`/staff/secure_deal/secure_deal_history/`, obj)
-        console.log('res data history', res.data.history)
         if (res.data.history !== 'empty list') {
             setHistory(res.data.history.filter(item => {
-                if (dateToTimestamp() < item.dealDedline) {
+                if (dateToTimestamp() > item.dealDedline) {
+                    console.log('dateToTimestamp() > item.dealDedline', dateToTimestamp() > item.dealDedline)
                     onMissDeadline(item._id, item.dealDedline)
                 }
                 return  dateToTimestamp() < item.dealDedline
@@ -104,12 +104,14 @@ const AdminSecureDeal = () => {
             dealId: id,
             dedline: deadline
         }
-
         const res = await patchData('/personal_area/secure_deal/secure_deal_detail/miss_dedline/', obj)
+        // if (res.status === 200) {
+        //     const resDel = await deleteData(`/personal_area/secure_deal/secure_deal_detail/delete_deal/${id}`, {data: {staffId: id}})
+        // }
+        console.log('on miss deadline', obj)
     }
 
     const deleteSecureDeal = async (id) => {
-        console.log('id', id)
         const res = await deleteData(`/personal_area/secure_deal/secure_deal_detail/delete_deal/${id}`)
     }
 
@@ -160,7 +162,7 @@ const AdminSecureDeal = () => {
                             <Select {...register('coinName')} classname={'admin-square'} options={optionsCurrency}/>
                         </Col>
 
-                        <Col className='col-12 col-lg-3'>
+                        <Col className='col-12 col-lg-3 mb-3'>
                             <AdminInput {...register('amountInCrypto')} placeholder='Сумма' />
                         </Col>
                         <Col className='col-12 col-lg-3 mb-3' style={{position: 'relative'}}>
@@ -197,37 +199,37 @@ const AdminSecureDeal = () => {
                 <h2>История сделок</h2>
                 <Row>
                     <Row style={{borderBottom: '1px solid #fff', padding: '10px 0'}}>
-                        <Col>Time</Col>
-                        <Col>User</Col>
-                        <Col>Info</Col>
-                        <Col>Action</Col>
+                        <Col className='d-none d-md-block'>Time</Col>
+                        <Col className='d-none d-md-block'>User</Col>
+                        <Col className='d-none d-md-block'>Info</Col>
+                        <Col className='d-none d-md-block'>Action</Col>
                     </Row>
                     {
                         history.length ?
                             history.map(item => {
                                 return (
-                                    <Row style={{borderBottom: '1px solid #fff', padding: '10px 0'}}>
-                                        <Col>
-                                            Дата создания: {getCurrentDate(item.dateOfCreate)} <br/>
-                                            Дедлайн: {getCurrentDate(item.dealDedline)}
+                                    <Row className='flex-column flex-md-row' style={{borderBottom: '1px solid #fff', marginBottom: 10, padding: '10px 0'}}>
+                                        <Col className='mb-2 mb-md-0 text-center text-md-start'>
+                                            <b style={{fontSize: 16, textDecoration: 'underline'}}>Дата создания</b>: {getCurrentDate(item.dateOfCreate)} <br/>
+                                            <b style={{fontSize: 16, textDecoration: 'underline'}}>Дедлайн</b>: {getCurrentDate(item.dealDedline)}
+                                        </Col>
+                                        <Col className='mb-2 mb-md-0 text-center text-md-start'>
+                                            <b style={{fontSize: 16, textDecoration: 'underline'}}>Seller</b>: {item.seller} <br/>
+                                            <b style={{fontSize: 16, textDecoration: 'underline'}}>Buyer</b>: {item.buyer}
+                                        </Col>
+                                        <Col className='mb-2 mb-md-0 text-center text-md-start'>
+                                            <b style={{fontSize: 16, textDecoration: 'underline'}}>Amount</b>: {item.amountInCrypto} {item.coinName}<br/>
+                                            <b style={{fontSize: 16, textDecoration: 'underline'}}>Status</b>: {item.status ? 'Complete' : 'Pending'}<br/>
                                         </Col>
                                         <Col>
-                                            seller: {item.seller} <br/>
-                                            buyer: {item.buyer}
-                                        </Col>
-                                        <Col>
-                                            Amount: {item.amountInCrypto} {item.coinName}<br/>
-                                            Status: {item.status ? 'Complete' : 'Pending'}<br/>
-                                        </Col>
-                                        <Col>
-                                            <Row>
-                                                <Col>
+                                            <Row className='justify-content-center'>
+                                                <Col className='mb-1 text-center'>
                                                     <AdminButton classname={'red'} onClick={() => deleteSecureDeal(item._id)}>Удалить</AdminButton>
                                                 </Col>
-                                                <Col>
+                                                <Col className='mb-1 text-center'>
                                                     <AdminButton
                                                         classname={'green'}
-                                                        onClick={() => navigate(`/staff/secure-deal/${1}`)}
+                                                        onClick={() => navigate(`/staff/secure-deal/${item._id}`)}
                                                     >Посмотреть</AdminButton>
                                                 </Col>
                                             </Row>

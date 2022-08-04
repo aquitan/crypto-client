@@ -15,7 +15,7 @@ import err from "../../../../../styles/Error.module.scss";
 import {v4 as uuid} from 'uuid'
 import StaffWalletsItem from "../../../StaffWallets/components/StaffWalletsItem/StaffWalletsItem";
 import AdminForm from "../../../../../components/UI/AdminForm/AdminForm";
-import {SwalSimple} from "../../../../../utils/SweetAlert";
+// import {SwalSimple} from "../../../../../utils/SweetAlert";
 
 const RecruiterDetail = () => {
     const [recruiter, setRecruiter] = useState()
@@ -65,7 +65,7 @@ const RecruiterDetail = () => {
         const res = await postData('/staff/recruiter/add_staff_user_to_current_recruiter/', obj)
         if (res.status === 201) {
             getRecruiterDetails()
-            SwalSimple('Пользователь добавлен!')
+            // SwalSimple('Пользователь добавлен!')
         }
     }
 
@@ -78,7 +78,7 @@ const RecruiterDetail = () => {
         }
         const res = await patchData('/staff/recruiter/update_recruiter_fee/', obj)
         if (res.status === 202) {
-            SwalSimple('Комиссия изменена')
+            // SwalSimple('Комиссия изменена')
             getRecruiterDetails()
         }
 
@@ -95,7 +95,7 @@ const RecruiterDetail = () => {
         }
         const res = await deleteData('/staff/recruiter/delete_staff_user_from_recruiter/', {data: obj})
         if (res.status === 200) {
-            SwalSimple('Пользователь удален!')
+            // SwalSimple('Пользователь удален!')
             getRecruiterDetails()
         }
     }
@@ -116,7 +116,7 @@ const RecruiterDetail = () => {
         }
         const res = await postData('/staff/recruiter/add_recruiter_wallets/', obj)
         if (res.status === 201) {
-            SwalSimple('Кошельки добавлены')
+            // SwalSimple('Кошельки добавлены')
             getWallets()
         }
     }
@@ -143,10 +143,10 @@ const RecruiterDetail = () => {
         console.log('obj', obj)
         const res = await patchData('/staff/recruiter/update_recruiter_wallet/', obj)
         if (res.status === 201) {
-            SwalSimple('Кошелек изменен!')
+            // SwalSimple('Кошелек изменен!')
             getWallets()
         } else {
-            SwalSimple('Упс! Что-то пошло не так...')
+            // SwalSimple('Упс! Что-то пошло не так...')
         }
     }
 

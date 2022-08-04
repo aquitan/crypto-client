@@ -14,12 +14,12 @@ const AllNews = ({data}) => {
 
     return (
         <div className={'mb-3 mt-3'} style={{color: '#fff'}}>
-            <Row style={{borderBottom: '1px solid #fff', paddingBottom: 10}}>
-                <Col>{getCurrentDate(data.newsDate)}</Col>
-                <Col>{data.newsTitle}</Col>
-                <Col>{data.newsImage}</Col>
-                <Col>{data.newsBody}</Col>
-                <Col><AdminButton classname={'green'} onClick={toComponent}>Редактировать</AdminButton></Col>
+            <Row className='flex-column flex-md-row' style={{borderBottom: '1px solid #fff', paddingBottom: 10}}>
+                <Col className='mb-2'>{getCurrentDate(data.newsDate)}</Col>
+                <Col className='mb-2'>{data.newsTitle}</Col>
+                <Col className='mb-2'>{data.newsImage}</Col>
+                <Col className='mb-2' style={{height: 100, overflowY: "hidden"}}>{data.newsBody.length > 50 ? data.newsBody.slice(0, 50).concat('...') : data.newsBody}</Col>
+                <Col className='mb-2'><AdminButton classname={'green'} onClick={toComponent}>Редактировать</AdminButton></Col>
             </Row>
         </div>
     )

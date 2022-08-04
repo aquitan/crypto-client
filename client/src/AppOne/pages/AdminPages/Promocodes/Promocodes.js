@@ -14,7 +14,7 @@ import {deleteData, postData, putData} from '../../../services/StaffServices';
 import AdminButtonCard from '../../../components/AdminButtonCard/AdminButtonCard';
 import ModalDark from "../../../components/UI/ModalDark/ModalDark";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
-import {SwalSimple} from "../../../utils/SweetAlert";
+// import {SwalSimple} from "../../../utils/SweetAlert";
 
 const Promocodes = () => {
     const [curSelect, setCurSelect] = useState('')
@@ -84,7 +84,7 @@ const Promocodes = () => {
         }
         const res = await putData('/staff/create_promocode/', promoData)
         if (res.status === 201) {
-            SwalSimple('Промокод создан!')
+            // SwalSimple('Промокод создан!')
             getAllPromocodes()
         }
     }

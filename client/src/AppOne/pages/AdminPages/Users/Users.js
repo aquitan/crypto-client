@@ -101,7 +101,7 @@ const Users = () => {
                             {
                                 state.users.length > 0
                                     ?
-                                    getSearchItems(state.users, state.search).map(user => {
+                                    state.users.slice(0).reverse().map(user => {
                                         return(
                                             <UsersTableItem
                                                 key={uuid()}

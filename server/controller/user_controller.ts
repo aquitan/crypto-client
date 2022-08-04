@@ -24,7 +24,6 @@ import TRADING_COIN_RATE_UPDATE from '../interface/trading_rate_update.interface
 import CHAT_DATA from '../interface/chat_data.interface'
 import notificationServices from '../services/notificationServices'
 
-
 class UserController {
 
   async dashboard(req: express.Request, res: express.Response, next: express.NextFunction) {
@@ -1026,6 +1025,21 @@ class UserController {
       if (!result) throw ApiError.ServerError()
 
       return res.status(202).json({ message: 'ok' })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  async clearNotifications(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const userId: string = req.params.userId
+    console.log('userId', userId);
+
+    if (!userId) return res.status(400).json({ message: 'wrong data' })
+    try {
+      const result: boolean = await notificationServices.deleteAllNotifByUserId(userId)
+      if (!result) throw ApiError.ServerError()
+
+      return res.status(200).json({ message: result })
     } catch (e) {
       next(e)
     }

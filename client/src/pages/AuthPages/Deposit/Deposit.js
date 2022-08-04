@@ -16,6 +16,7 @@ import cls from "../Withdraw/Withdraw.module.scss";
 import Image from "../../../components/UI/Image/Image";
 import {imgMatch} from "../../../utils/imgMatch";
 import Preloader from "../../../components/UI/Preloader/Preloader";
+import swal from '@sweetalert/with-react';
 
 const Deposit = () => {
     const {register, handleSubmit} = useForm()

@@ -32,7 +32,6 @@ const NewsDetail = (props) => {
 
 
 
-    console.log('detail-props', location)
     const styles = {
         todayBtn: {
             position: 'absolute',

@@ -10,15 +10,15 @@ import {getData, postData, putData} from "../../../services/StaffServices";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
 import TableItemUser from "../../../components/UI/TableItemUser/TableItemUser";
-import {SwalSimple} from "../../../utils/SweetAlert";
+// import {SwalSimple} from "../../../utils/SweetAlert";
 import {getGeoData} from "../../../queries/getSendGeoData";
 import cls from "../Withdraw/Withdraw.module.scss";
 import Image from "../../../components/UI/Image/Image";
 import {imgMatch} from "../../../utils/imgMatch";
 import Preloader from "../../../components/UI/Preloader/Preloader";
 import {useLocation} from "react-router-dom";
-import Swal from "sweetalert2";
-import swal from '@sweetalert/with-react';
+// import Swal from "sweetalert2";
+// import swal from '@sweetalert/with-react';
 import {copyTextToClipboard} from "../../../utils/copyToClipboard";
 import {NotifContext, useNotifContext} from "../../../context/notifContext";
 
@@ -111,19 +111,19 @@ const Deposit = () => {
             coordinates: geoData.coordinates
         }
         if (!address) {
-            SwalSimple('You have to generate address!')
+            // SwalSimple('You have to generate address!')
         } else {
             if (state.value > 0) {
                 const res = await putData('/deposit/make_deposit/', obj)
                 updateNotif()
                 if (res.status === 201) {
                     getHistoryDeposit()
-                    SwalSimple('Deposit request has beed created succesfully')
+                    // SwalSimple('Deposit request has beed created succesfully')
                 } else {
-                    SwalSimple('Something went wrong! Try again later...')
+                    // SwalSimple('Something went wrong! Try again later...')
                 }
             } else {
-                SwalSimple('All fields must be fulfilled!')
+                // SwalSimple('All fields must be fulfilled!')
             }
 
         }
@@ -167,18 +167,18 @@ const Deposit = () => {
     const onShow = (date, usdAmount, cryptoAmount, coinName, address, status) => {
         let template = ''
 
-        swal({
-            content: <div>
-                <h2>Deposit to {coinName}</h2>
-                <div><b>Date:</b> {getCurrentDate(date)}</div>
-                <div style={{cursor: 'pointer'}} onClick={() => copyTextToClipboard(address)}>
-                    <span><img src="/img/copy-svgrepo-com.svg" height='15' alt="copy" /><b>Address:</b> {address}</span>
-                </div>
-                <div><b>Amount USD:</b> {usdAmount}</div>
-                <div><b>Amount crypto:</b> {cryptoAmount}</div>
-            </div>,
-            buttons: false,
-        })
+        // swal({
+        //     content: <div>
+        //         <h2>Deposit to {coinName}</h2>
+        //         <div><b>Date:</b> {getCurrentDate(date)}</div>
+        //         <div style={{cursor: 'pointer'}} onClick={() => copyTextToClipboard(address)}>
+        //             <span><img src="/img/copy-svgrepo-com.svg" height='15' alt="copy" /><b>Address:</b> {address}</span>
+        //         </div>
+        //         <div><b>Amount USD:</b> {usdAmount}</div>
+        //         <div><b>Amount crypto:</b> {cryptoAmount}</div>
+        //     </div>,
+        //     buttons: false,
+        // })
         // Swal.fire({
         //     title: `Deposit to ${coinName}`,
         //     icon: 'info',
