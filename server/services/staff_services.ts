@@ -32,22 +32,9 @@ import secureDealChat from '../models/secure_deal_chat.model'
 import moneyService from '../services/money_service'
 import depositRequest from '../models/Deposit_requests.model'
 import depositHistory from '../models/Deposit_history.model'
+import { isGroupMemberCheck, isRecruiterCheck } from './validHelper'
+import sortDataArray from '../api/sortHelper'
 
-
-async function sortDataArray(arr: any) {
-
-	for (let i = 0; i < arr.length - 1; i++) {
-		for (let j = 0; j < arr.length - 1 - 1; j++) {
-			if (arr[j].date > arr[j + 1].date) {
-				let temp = arr[j].date
-				arr[j].date = arr[j + 1].date
-				arr[j + 1].date = temp
-			}
-		}
-	}
-	console.log('sorted arr => ', arr);
-	return arr
-}
 
 class staffService {
 
@@ -100,53 +87,19 @@ class staffService {
 		return dataLIst
 	}
 
-	async isGroupMemberCheck(userEmail: string) {
-		let dataObj: any = {}
-		const checkGroupUsers: any = await staffGroupUserList.find()
-		for (let i = 0; i <= checkGroupUsers.length - 1; i++) {
-			for (let x = 0; x <= checkGroupUsers[i].staffEmailList.length - 1; x++) {
-				if (checkGroupUsers[i].staffEmailList[x] === userEmail) {
-					const curList: any = await staffGroup.find({ _id: checkGroupUsers[i].groupId })
-					dataObj.isGroupMember = true
-					dataObj.groupList = curList
-				}
-			}
-		}
-		return dataObj
-	}
-
-	async isRecruiterCheck(staffId: string) {
-		let dataObj: any = {}
-
-		const isRecruiter: any = await recruiterModel.findOne({ recruiterId: staffId })
-		if (!isRecruiter) {
-			dataObj.isRecruiter = false
-			dataObj.staffIdList = []
-			return dataObj
-		}
-
-		const getOwnUsers: any = await recruiterOwnUsers.find({ recruiterId: staffId })
-		let tempIdArray = []
-		for (let i = 0; i <= getOwnUsers.length - 1; i++) {
-			const staffUser: any = await baseUserData.findOne({ email: getOwnUsers[i].staffEmail })
-			tempIdArray.push(staffUser.id)
-		}
-		dataObj.isRecruiter = true
-		dataObj.staffIdList = tempIdArray
-
-		console.log('dataObj from isRecruiter checker => ', dataObj);
-		return dataObj
-	}
-
-
 
 	async GetUsersList(staffId: string, staffEmail: string, skipValue: number, limitValue: number) {
-		const checker: any = await this.isGroupMemberCheck(staffEmail)
+		const checker: any = await isGroupMemberCheck(staffEmail)
+		// checker will return an obj {
+		// isGroupMember: bool
+		// groupList: string[]
+		// }
 		console.log('checker result => ', checker);
+
 		const isGroupMember: boolean = checker.isGroupMember
 		const groupList: any = checker.groupList
 
-		const recruiterChecker: any = await this.isRecruiterCheck(staffId)
+		const recruiterChecker: any = await isRecruiterCheck(staffId)
 		console.log('recruiterChecker result => ', recruiterChecker);
 		const isRecruiter: boolean = recruiterChecker.isRecruiter
 		const staffIdList: string[] = recruiterChecker.staffIdList
@@ -158,6 +111,7 @@ class staffService {
 				find({ registrationType: staffId }).
 				skip(skipValue).
 				limit(limitValue).
+				sort({ dateOfEntry: -1 }).
 				exec()
 			console.log('user list: ', usersList);
 			if (!usersList.length) return 'empty set'
@@ -341,7 +295,7 @@ class staffService {
 
 	async GetKycForStaff(staffId: string, staffEmail: string, skipValue: number, limitValue: number) {
 
-		const checker: any = await this.isGroupMemberCheck(staffEmail)
+		const checker: any = await isGroupMemberCheck(staffEmail)
 		console.log('checker result => ', checker);
 		const isGroupMember: boolean = checker.isGroupMember
 		const groupList: any = checker.groupList
