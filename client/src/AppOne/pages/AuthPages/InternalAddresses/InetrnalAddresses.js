@@ -1,24 +1,20 @@
 import React, {useEffect, useState} from 'react'
-import {Card, Col, Container, Row} from "react-bootstrap";
+import {Col, Row} from "react-bootstrap";
 import InternalAddressesCard from "./components/InternalAddressesCard/InternalAddressesCard";
 import {copyTextToClipboard} from "../../../utils/copyToClipboard";
-import InternalAddressCardForm from "./components/InternalAddressCardForm/InternalAddressCardForm";
 import Preloader from "../../../components/UI/Preloader/Preloader";
-import TableHeader from "../../../components/UI/Table/components/TableHeader/TableHeader";
 import TableBody from "../../../components/UI/Table/components/TableBody/TableBody";
-import TableItem from "../../../components/UI/Table/components/TableItem/TableItem";
 import InternalAddressesTableItem from "./components/InternalAddressesTableItem/InternalAddressesTableItem";
-import Button from "../../../components/UI/Button/Button";
-import Modal from "../../../components/UI/Modal/Modal";
 import InternalAddressModal from "../../../components/UI/InternalAddressModal/InternalAddressModal";
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 import {getData} from "../../../services/StaffServices";
 import {store} from "../../../../index";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
+import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 
 const InternalAddresses = () => {
+    const {theme} = useThemeContext(ThemeContext)
     const [wallets, setWallets] = useState([])
-    const [state, setState] = useState([])
     const [history, setHistory] = useState([])
     const [modal, setModal] = useState({
         isOpen: false,
@@ -72,7 +68,7 @@ const InternalAddresses = () => {
 
 
     return (
-        <Container>
+        <>
             <InternalAddressModal
                 amount={modal?.amount}
                 currency={modal?.currency}
@@ -81,64 +77,68 @@ const InternalAddresses = () => {
                 from={modal?.from}
                 to={modal?.to}/>
 
-            <h1>Internal Addresses</h1>
             <Row>
-                <ButtonCard>
-                    {
-                        wallets.length ?
-                            wallets.map(wallet => {
-                                return (
-                                    <Row>
-                                        <Col className='col-12 mb-3'>
-                                            <InternalAddressesCard wallet={wallet.walletAddress} currency={wallet.coinName} onCopy={onCopy} sum={wallet.balance} />
-                                        </Col>
-                                    </Row>
-                                )
-                            })
-                            : <Preloader />
-                    }
-                </ButtonCard>
 
-                <ButtonCard>
+                <Col className='col-12 col-xl-8'>
+                    <ButtonCard theme={theme}>
+                        {
+                            wallets.length ?
+                                wallets.map(wallet => {
+                                    return (
+                                        <Row>
+                                            <Col className='col-12 mb-3'>
+                                                <InternalAddressesCard theme={theme} wallet={wallet.walletAddress} currency={wallet.coinName} onCopy={onCopy} sum={wallet.balance} />
+                                            </Col>
+                                        </Row>
+                                    )
+                                })
+                                : <Preloader />
+                        }
+                    </ButtonCard>
+                </Col>
+                <Col>
+                    <ButtonCard theme={theme}>
+                        <Row>
+                            <Col>
+                                <Row>
+                                    <Col className={'d-none d-md-block text-center'}>Date</Col>
+                                    <Col className={'text-center'}>Transaction details</Col>
+                                    <Col className={'text-center'}>Amount</Col>
+                                </Row>
+                                <TableBody>
+                                    {
+                                        history ?
+                                            history.map(item => {
+                                                return (
+                                                    <InternalAddressesTableItem
+                                                        onClick={onModalOpen}
+                                                        date={getCurrentDate(item.date)}
+                                                        currency={item.coinName}
+                                                        amount={item.usdAmount}
+                                                        cryptoAmount={item.cryptoAmount}
+                                                        id={item._id}
+                                                        status={item.status} />
+                                                )
+                                            })
+                                            : <h4>No data!</h4>
+                                    }
+                                </TableBody>
+                            </Col>
+                        </Row>
+
+                    </ButtonCard>
                     <Row>
-                        <Col>
-                            <Row>
-                                <Col className={'d-none d-md-block text-center'}>Date</Col>
-                                <Col className={'text-center'}>Transaction details</Col>
-                                <Col className={'text-center'}>Amount</Col>
-                            </Row>
-                            <TableBody>
-                                {
-                                    history ?
-                                        history.map(item => {
-                                            return (
-                                                <InternalAddressesTableItem
-                                                    onClick={onModalOpen}
-                                                    date={getCurrentDate(item.date)}
-                                                    currency={item.coinName}
-                                                    amount={item.usdAmount}
-                                                    cryptoAmount={item.cryptoAmount}
-                                                    id={item._id}
-                                                    status={item.status} />
-                                            )
-                                        })
-                                        : <h4>No data!</h4>
-                                }
-                            </TableBody>
-                        </Col>
+                        {
+                            history ?
+                                <span onClick={onNext}>Next...</span>
+                                : null
+                        }
                     </Row>
+                </Col>
 
-                </ButtonCard>
-                <Row>
-                    {
-                        history ?
-                            <span onClick={onNext}>Next...</span>
-                            : null
-                    }
-                </Row>
             </Row>
 
-        </Container>
+        </>
     )
 }
 

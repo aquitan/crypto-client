@@ -1,19 +1,20 @@
 import React, {useState} from 'react'
 import Button from "../../../components/UI/Button/Button";
 import Form from "../../../components/UI/Form/Form";
-import {Card, Col, Container, Row} from "react-bootstrap";
+import { Col, Container, Row} from "react-bootstrap";
 import cls from "../SignIn/SignIn.module.scss";
 import Input from "../../../components/UI/Input/Input";
 import {emailValidate} from "../../../utils/checkEmail";
 import {ErrorMessage} from "@hookform/error-message";
 import {useForm} from "react-hook-form";
-import API, {BASE_URL} from "../../../API";
 import Modal from "../../../components/UI/Modal/Modal";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {patchData} from "../../../services/StaffServices";
+import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 
 const ForgotPassword = () => {
     const navigate = useNavigate()
+    const {theme} = useThemeContext(ThemeContext)
     const [modal, setModal] = useState(false)
     const [forgotStatus, setForgotStatus] = useState('')
     const {register, handleSubmit, formState: {errors}} = useForm({
@@ -32,7 +33,7 @@ const ForgotPassword = () => {
      }
 
     return (
-        <Container>
+        <Container style={{maxWidth: '100%', backgroundColor: theme === 'light' ? '#fff' : '#121318'}} className='h-100 m-0 p-0'>
             <Modal active={modal} setActive={setModal}>
                 <Row className='mt-3 mb-3'>
                     {forgotStatus === 'complete' ? 'New password has been sent!' : 'Ooops! Wrong email address!'}
@@ -41,29 +42,42 @@ const ForgotPassword = () => {
                     {forgotStatus === 'complete' ? <Button onClick={() => navigate('/signin')}>OK</Button> : <Button onClick={() => setModal(false)}>OK</Button>}
                 </Row>
             </Modal>
-            <Card className='bg-dark' style={{maxWidth: 800, margin: '0px auto', marginTop: '5%'}}>
-                <Form onSubmit={handleSubmit(onSubmit)}>
-                    <Row className='mb-4'>
-                        <h2>Forgot password</h2>
-                    </Row>
-                    <Row className='mt-3'>
-                        <Col className={cls.relative}>
-                            <Input {...register('email', {
-                                required: 'You must specify email to SignIn',
-                                validate: emailValidate,
-                                message: 'Email is not valid'
-                            })} name='email' placeholder='Email' id='login' />
-                            <ErrorMessage  name='email' errors={errors} render={() => <p className={cls.error}>email is invalid</p>} />
-                        </Col>
-                    </Row>
 
-                    <Row className='mt-3 align-items-center'>
-                        <Col>
-                            <Button classname={['small']} type='filled'>Get new password</Button>
-                        </Col>
-                    </Row>
-                </Form>
-            </Card>
+            <Row className='h-100 p-0'>
+                <Col className={`d-flex p-0 justify-content-center align-items-baseline align-items-lg-center ${cls.gradient}`}>
+                    <div className='pt-5 pt-xl-0'>
+                        <img width='100%' src={'/img/pngfind_1.png'} alt=""/>
+                    </div>
+                </Col>
+                <Col className={`px-3 px-xl-0 ${cls.authFormItem}`} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                    <Form onSubmit={handleSubmit(onSubmit)}>
+                        <Row className='mb-4'>
+                            <h2 style={{color: theme === 'light' ? '#121318' : '#fff'}}>Forgot password</h2>
+                        </Row>
+                        <Row className='mt-3'>
+                            <Col className={cls.relative}>
+                                <Input {...register('email', {
+                                    required: 'You must specify email to SignIn',
+                                    validate: emailValidate,
+                                    message: 'Email is not valid'
+                                })} name='email' placeholder='Email' id='login' />
+                                <ErrorMessage  name='email' errors={errors} render={() => <p className={cls.error}>email is invalid</p>} />
+                            </Col>
+                            <Row className='mt-4 align-items-center'>
+                                <Button classname='btnBlue' type='filled'>Get new password</Button>
+                            </Row>
+                            <Row className='mt-3'>
+                                <Col className='text-start'>
+                                    <Link className={cls.link} to='/signup/'>Create an account</Link>
+                                </Col>
+                                <Col className='text-end'>
+                                    <Link className={cls.link} to='/signin/'>Sign in</Link>
+                                </Col>
+                            </Row>
+                        </Row>
+                    </Form>
+                </Col>
+            </Row>
         </Container>
     )
 }

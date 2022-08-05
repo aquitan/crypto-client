@@ -13,14 +13,14 @@
   color: #000;
 }
 .user {
-  background-color: #524ad0;
+  background-color: rgb(83, 103, 254);
   align-self: end;
   color: #fff;
 }
 .chatInput {
   background-color: transparent;
   border: none;
-  border-bottom: 1px solid #000;
+  border-bottom: 1px solid #fff;
   padding: 10px 5px;
   &:disabled {
     color: #292b3c;

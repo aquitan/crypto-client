@@ -6,28 +6,19 @@
   max-width: 330px;
 }
 
-.btc {
-  background-color: #717579;
-}
-
-.eth {
-  background-color: #f7ad02;
-}
-
-.bch {
-  background-color: #3693FF;
-}
-.sol {
-  background-color: #00FFA3;
-}
-.trx {
-  background-color: #ff401d;
-}
-
 .up svg {
   color: lightgreen;
 }
 
 .down svg{
   color: tomato;
+}
+
+.dark {
+  background-color: #121318;
+  color: #fff;
+}
+.light {
+  color: #121318;
+  background-color: rgb(226, 242, 255);
 }

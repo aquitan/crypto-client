@@ -1,5 +1,4 @@
 import React, {useState} from 'react'
-import PropTypes from 'prop-types'
 import cls from './InternalAddressesCard.module.scss'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCopy, faTimesCircle} from "@fortawesome/free-solid-svg-icons";
@@ -10,7 +9,7 @@ import Image from "../../../../../components/UI/Image/Image";
 import WAValidator from 'wallet-address-validator'
 import {postData} from "../../../../../services/StaffServices";
 
-const InternalAddressesCard = ({currency, sum, onCopy, wallet}) => {
+const InternalAddressesCard = ({currency, sum, onCopy, wallet, theme}) => {
     const [state, setState] = useState({
         isOpen: false,
         isValid: null
@@ -21,9 +20,6 @@ const InternalAddressesCard = ({currency, sum, onCopy, wallet}) => {
     }
 
     const makeTransaction = async (data) => {
-        const obj = {
-
-        }
 
         const res = await postData('/internal_transfer/make_internal_transfer/', data)
     }
@@ -55,38 +51,35 @@ const InternalAddressesCard = ({currency, sum, onCopy, wallet}) => {
                     style={{position: 'absolute', right: 20, top: 10, cursor: 'pointer'}}
                     icon={faTimesCircle} /> : null
             }
-            <Row className='mb-3'>
-                <Col className='col-12 col-md-4'>
-                    <div>
-                        <h4 className='d-flex align-items-center'>
-                            <Image src={`/img/${imgMatch(currency)}.svg`} height={20} width={20} alt={'crypto'} />
-                            {currency} Address
-                        </h4>
-                    </div>
+            <Row className='align-items-center'>
+                <Col className=''>
+                    <Image src={`/img/${imgMatch(currency)}.svg`} height={40} alt={'crypto'} />
+                    <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8'}} className='badge'>{currency}</div>
                 </Col>
-                <Col className='col-12 col-md-3'>
-                    <div>Balance: {sum.toFixed(5)} {currency}</div>
+                <Col className=''>
+                    <div>{sum.toFixed(5)} {currency}</div>
                 </Col>
-                <Col className='col-12 col-md-5'>
-                    <div style={{display: 'flex'}} onClick={() => onCopy(wallet)}>
+                <Col className=''>
+                    <div className='d-flex align-items-center' onClick={() => onCopy(wallet)}>
                         <FontAwesomeIcon
                             style={{marginRight: 20}}
                             icon={faCopy} />
                         <span style={{wordBreak: 'break-all'}} className='internal-address'>{wallet}</span>
                     </div>
                 </Col>
+                {
+                    state.isOpen ? null :
+                        <Col>
+                            <Button style={{marginBottom: 5}} classname={['btnLink', theme]} onClick={makeOpen} >Send</Button>
+                        </Col>
+                }
             </Row>
             {
                 state.isOpen ?
                     <InternalAddressCardForm setFormData={setFormData} sum={sum} wallet={wallet} currency={currency} valid={state.isValid} checkAddress={checkAddress} />
                     : null
             }
-            {
-                state.isOpen ? null :
-                    <Row>
-                        <Button onClick={makeOpen} classname='small_btn' >Send</Button>
-                    </Row>
-            }
+
         </div>
     )
 }

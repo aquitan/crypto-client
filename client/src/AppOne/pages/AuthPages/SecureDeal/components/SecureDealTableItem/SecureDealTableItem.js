@@ -22,7 +22,7 @@ const SecureDealTableItem = ({amount, status, classname, onClick}) => {
                 {status}
             </Col>
             <Col className='d-flex justify-content-center text-center'>
-                <Button onClick={onClick} classname='small'>View details</Button>
+                <Button onClick={onClick} classname='btnOrange'>View details</Button>
             </Col>
         </Row>
     )

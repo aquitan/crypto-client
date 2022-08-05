@@ -1,5 +1,4 @@
 import axios from "axios";
-import {config} from "@fortawesome/fontawesome-svg-core";
 
 export const BASE_URL = '/api'
 export const GEO_API = 'http://geolocation-db.com/json/'

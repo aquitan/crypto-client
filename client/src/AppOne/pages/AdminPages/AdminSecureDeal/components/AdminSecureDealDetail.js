@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react'
-import PropTypes from 'prop-types'
 import {Col, Container, Form, Row} from "react-bootstrap";
 import AdminButtonCard from "../../../../components/AdminButtonCard/AdminButtonCard";
 import TextArea from "../../../../components/UI/TextArea/TextArea";
@@ -8,11 +7,10 @@ import Select from "../../../../components/UI/Select/Select";
 import DatePickert from "react-datepicker";
 import DatePickerCustom from "../../../../components/UI/DatePickerCustom/DatePickerCustom";
 import AdminButton from "../../../../components/UI/AdminButton/AdminButton";
-import AdminChat from "../../../../components/AdminChat/AdminChat";
 import ChatMessege from "../../../../components/UI/ChatMessege/ChatMessege";
 import ChatWindow from "../../../AuthPages/Support/components/ChatWindow/ChatWindow";
 import {store} from "../../../../../index";
-import {getData, patchData, postData, putData} from "../../../../services/StaffServices";
+import {getData, patchData, postData} from "../../../../services/StaffServices";
 import {useParams} from "react-router-dom";
 import {getCurrentDate} from "../../../../utils/getCurrentDate";
 import Preloader from "../../../../components/UI/Preloader/Preloader";
@@ -24,8 +22,6 @@ const AdminSecureDealDetail = () => {
     const [startDate, setStartDate] = useState()
     const [timeDate, setTimeDate] = useState()
     const [msg, setMsg] = useState([])
-    const [chats, setChats] = useState([])
-    const [currentChat, setCurrentChat] = useState('')
     const [image, setImage] = useState()
     const [dealDetail, setDealDetail] = useState()
     const [dealDetailChat, setDealDetailChat] = useState()

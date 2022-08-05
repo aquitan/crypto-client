@@ -1,6 +1,5 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import {Card, Container} from "react-bootstrap";
+import {Container} from "react-bootstrap";
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 
 const PremiumBenefits = () => {

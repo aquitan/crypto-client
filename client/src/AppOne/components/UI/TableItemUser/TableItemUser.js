@@ -1,5 +1,3 @@
-import React from 'react'
-import PropTypes from 'prop-types'
 import {Col, Row} from "react-bootstrap";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
 import Button from "../Button/Button";
@@ -15,17 +13,10 @@ const TableitemUser = ({date, usdAmount, cryptoAmount, coinName, status, onShow,
             <Col className='text-center' style={{whiteSpace: 'pre-wrap'}}>{getCurrentDate(date)}</Col>
             <Col className='text-center'>${usdAmount}<br/> ({cryptoAmount.toFixed(5)} {coinName})</Col>
             <Col className=''>
-                <Button onClick={() => onShow(date, usdAmount, cryptoAmount, coinName, address)} classname={['green', status, 'medium_btn']}>Show</Button>
+                <Button onClick={() => onShow(date, usdAmount, cryptoAmount, coinName, address)} classname={'btnOrange'}>Show</Button>
             </Col>
         </Row>
     )
-}
-
-TableitemUser.propTypes = {
-
-}
-TableitemUser.defaultProps = {
-
 }
 
 export default TableitemUser

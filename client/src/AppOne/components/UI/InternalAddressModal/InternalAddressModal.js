@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import cls from "../Modal/Modal.module.scss";
 import {Col, Row} from "react-bootstrap";
 import Button from "../Button/Button";
@@ -28,13 +27,6 @@ const InternalAddressModal = ({active, setActive, from, to, amount, currency}) =
             </div>
         </div>
     )
-}
-
-InternalAddressModal.propTypes = {
-
-}
-InternalAddressModal.defaultProps = {
-
 }
 
 export default InternalAddressModal

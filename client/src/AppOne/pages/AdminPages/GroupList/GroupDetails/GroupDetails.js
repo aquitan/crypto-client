@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react'
-import PropTypes from 'prop-types'
 import {Col, Container, Row} from "react-bootstrap";
 import AdminButtonCard from "../../../../components/AdminButtonCard/AdminButtonCard";
 import AdminButton from "../../../../components/UI/AdminButton/AdminButton";
@@ -11,7 +10,6 @@ import {deleteData, patchData, postData} from "../../../../services/StaffService
 import {useForm} from "react-hook-form";
 import {store} from "../../../../../index";
 import Modal from "../../../../components/UI/Modal/Modal";
-// import {SwalSimple} from "../../../../utils/SweetAlert";
 
 const GroupDetails = () => {
     const {register, handleSubmit, reset} = useForm()

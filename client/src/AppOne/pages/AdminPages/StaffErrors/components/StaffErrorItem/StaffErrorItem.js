@@ -1,9 +1,7 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import {Col, Row} from "react-bootstrap";
-import AdminButton from "../../../../../components/UI/AdminButton/AdminButton";
-import {store} from "../../../../../../index";
 import '../../StaffErrors.scss'
+import AdminButton from "../../../../../components/UI/AdminButton/AdminButton";
 import {useNavigate} from "react-router-dom";
 
 const StaffErrorItem = ({data}) => {
@@ -36,7 +34,7 @@ const StaffErrorItem = ({data}) => {
 
                 <Col>
                     <p>{`"${data.errorButton}"`}</p>
-                    {/*<AdminButton onClick={onEditClick} classname={['orange', 'small']}>Edit</AdminButton>*/}
+                    <AdminButton onClick={onEditClick} classname={['orange', 'small']}>Edit</AdminButton>
                 </Col>
             </Row>
         </Row>

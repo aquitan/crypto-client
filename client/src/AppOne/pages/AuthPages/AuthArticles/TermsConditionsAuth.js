@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import {store} from "../../../../index";
 import Preloader from "../../../components/UI/Preloader/Preloader";
 import {Container} from "react-bootstrap";
@@ -13,11 +12,6 @@ const TermsConditionsAuth = () => {
     let generalBasics = '<a href="/general-basics">General Basics</a>'
     let percent = store.domain.domainParams.depositFee
     const str = TERMS(domain, domainBig, domainSupport, percent, generalBasics)
-
-
-    // let str = term.replaceAll(('${domainSmall}'), domain).replaceAll(('${domainBig}'), domainBig)
-    //     .replaceAll('${userFee}', percent+'%')
-    //     .replaceAll('${generalBasics}', '<a href="/general-basics">General Basics</a>')
 
     function createMarkup() {
         return {__html: `${str}`};

@@ -31,7 +31,7 @@ export default class Store {
     balance = []
     total = 0
     activeError = 0
-
+    tfaBot = ''
 
 
     constructor() {
@@ -109,6 +109,12 @@ export default class Store {
     setBalance(arr) {
         this.balance = arr
     }
+    setTotal(num) {
+        this.total = num
+    }
+    setBot(str) {
+        this.tfaBot = str
+    }
 
 
 
@@ -151,6 +157,7 @@ export default class Store {
         }
     }
     async registration(obj) {
+        console.log('registration')
         try {
             this.setIsError(true)
             const response = await AuthService.registration(obj)
@@ -170,8 +177,8 @@ export default class Store {
     }
     async logout() {
         try {
-            localStorage.removeItem('token')
             const response = await AuthService.logout()
+            localStorage.removeItem('token')
             this.setAuth(false)
             this.setIsAdmin(false)
             this.setIsStaff(false)
@@ -265,10 +272,9 @@ export default class Store {
     async sendPath(path) {
         try {
             this.setPath(path)
-            console.log('path----', path)
 
         } catch(e) {
-            console.log('path error', e)
+            console.log('error', e)
         }
     }
 }

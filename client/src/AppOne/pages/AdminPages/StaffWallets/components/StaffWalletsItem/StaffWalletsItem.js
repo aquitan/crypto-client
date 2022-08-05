@@ -1,11 +1,8 @@
 import React, {useState} from 'react'
 import {Col, Row} from "react-bootstrap";
 import cls from '../../StaffWallets.module.scss'
-import {useNavigate} from "react-router-dom";
 import AdminInput from "../../../../../components/UI/AdminInput/AdminInput";
-import {useForm} from "react-hook-form";
 import AdminButton from "../../../../../components/UI/AdminButton/AdminButton";
-import {patchData} from "../../../../../services/StaffServices";
 import {store} from "../../../../../../index";
 
 

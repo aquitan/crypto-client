@@ -1,6 +1,5 @@
 import React from 'react'
 import './PasswordStrength.scss'
-import PropTypes from 'prop-types'
 
 const PasswordStrength = ({characters, numbers, uppercase, active}) => {
 
@@ -12,13 +11,6 @@ const PasswordStrength = ({characters, numbers, uppercase, active}) => {
             {/*<div>password match</div>*/}
         </div>
     )
-}
-
-PasswordStrength.propTypes = {
-
-}
-PasswordStrength.defaultProps = {
-
 }
 
 export default PasswordStrength

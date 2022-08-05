@@ -6,13 +6,11 @@ import NotificationItem from "./components/NotificationItem/NotificationItem";
 import cls from './Notification.module.scss'
 import {store} from "../../../../index";
 import {observer} from "mobx-react-lite";
-import {deleteData, getData, postData} from "../../../services/StaffServices";
-import {useQuery} from "react-query";
+import {deleteData} from "../../../services/StaffServices";
 import {NotifContext, useNotifContext} from "../../../context/notifContext";
 
 const Notification = () => {
     const {notificationList, updateNotif} = useNotifContext(NotifContext)
-    const [notification, setNotification] = useState([])
     const [open, setOpen] = useState(false)
 
     useEffect(() => {

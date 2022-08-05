@@ -1,5 +1,4 @@
-import React, {useEffect, useState} from 'react'
-import PropTypes from 'prop-types'
+import React, {useState} from 'react'
 import {Col, Container, Form, Row} from "react-bootstrap";
 import AdminButtonCard from "../../../../../components/AdminButtonCard/AdminButtonCard";
 import AdminInput from "../../../../../components/UI/AdminInput/AdminInput";
@@ -13,11 +12,11 @@ import {useForm} from "react-hook-form";
 import moment from "moment";
 import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
 import {store} from "../../../../../../index";
-import {patchData, postData, putData} from "../../../../../services/StaffServices";
+import {patchData} from "../../../../../services/StaffServices";
 import AdminButton from "../../../../../components/UI/AdminButton/AdminButton";
 import {useLocation} from "react-router-dom";
 
-const NewsDetail = (props) => {
+const NewsDetail = () => {
     const location = useLocation()
     const [state, setState] = useState(location.state)
     const [startDate, setStartDate] = useState()

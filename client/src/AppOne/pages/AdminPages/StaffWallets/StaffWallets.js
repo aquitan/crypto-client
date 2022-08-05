@@ -13,7 +13,6 @@ import {store} from "../../../../index";
 import {getData, patchData, postData, putData} from "../../../services/StaffServices";
 import {v4 as uuid} from 'uuid'
 import ModalDark from "../../../components/UI/ModalDark/ModalDark";
-// import {SwalSimple} from "../../../utils/SweetAlert";
 import Preloader from "../../../components/UI/Preloader/Preloader";
 
 

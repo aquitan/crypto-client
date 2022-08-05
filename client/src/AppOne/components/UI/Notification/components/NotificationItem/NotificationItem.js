@@ -1,11 +1,10 @@
 import React from 'react'
-import {Button, Col, Row} from "react-bootstrap";
+import {Col, Row} from "react-bootstrap";
 import cls from '../../Notification.module.scss'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTimes} from "@fortawesome/free-solid-svg-icons";
 
 const NotificationItem = ({notif, removeNotif}) => {
-    console.log('asdasd', notif)
     return (
         <div className={cls.notification_item}>
             <Row>

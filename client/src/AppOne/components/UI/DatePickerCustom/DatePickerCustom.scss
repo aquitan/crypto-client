@@ -1,14 +1,22 @@
 .date_picker {
-  background-color: #444;
-  width: 100%;
+  padding: 20px;
   box-sizing: border-box;
-  height: 46px;
-  border: none;
-  color: #fff;
-  padding: 0 15px;
+  width: 100%;
+  outline: none;
+  background-color: #8AC8FF;
+  border: 1px solid #8AC8FF;
+  color: #6C7080;
+  border-radius: 8px;
+  transition: all .2s linear;
   &::placeholder {
     color: #717579;
   }
+}
+.inputTransparent {
+  background-color: transparent;
+  border-color: #CCCED9;
+  border-radius: 5px;
+  height: 50px;
 }
 .thick_datepicker {
   height: 66px;

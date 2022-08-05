@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import PropTypes from 'prop-types'
-import {Card, Col, Container, Row} from "react-bootstrap";
+import { Col, Container, Row} from "react-bootstrap";
 import classNames from "classnames/bind";
 import cls from './SecureDealDetail.module.scss'
 import TextArea from "../../../../../components/UI/TextArea/TextArea";
@@ -9,8 +8,7 @@ import ChatRules from "../../../Support/components/ChatRules/ChatRules";
 import {secureDealRulesText} from "../../../../../utils/userConstants";
 import Input from "../../../../../components/UI/Input/Input";
 import Button from "../../../../../components/UI/Button/Button";
-import {getData, patchData, postData, putData} from "../../../../../services/StaffServices";
-import SecureDealDetailConfirm from "../SecureDealDetailConfirm/SecureDealDetailConfirm";
+import {getData, patchData, putData} from "../../../../../services/StaffServices";
 import {useForm} from "react-hook-form";
 import Modal from "../../../../../components/UI/Modal/Modal";
 import ButtonCard from "../../../../../components/ButtonCard/ButtonCard";
@@ -20,11 +18,12 @@ import Preloader from "../../../../../components/UI/Preloader/Preloader";
 import {getCurrentDate} from "../../../../../utils/getCurrentDate";
 import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
 import ChatMessege from "../../../../../components/UI/ChatMessege/ChatMessege";
+import {ThemeContext, useThemeContext} from '../../../../../context/ThemeContext';
 
 const SecureDealDetail = () => {
+    const {theme} = useThemeContext(ThemeContext)
     const params = useParams()
     const cx = classNames.bind(cls)
-    let classes = cx()
     const {register, handleSubmit} = useForm()
     const [modal, setModal] = useState(false)
     const [dealData, setDealData] = useState()
@@ -120,96 +119,110 @@ const SecureDealDetail = () => {
     }
 
     return (
-        <Container>
+        <>
             <Modal active={modal} setActive={setModal}>
                 <h2>{result}</h2>
             </Modal>
 
-            <h1>Deal #15</h1>
-            <p>Full info about current secure deal</p>
+            <Row>
+                <Col>
+                    <h1>Deal #15</h1>
+                    <p>Full info about current secure deal</p>
+                </Col>
+            </Row>
             {/*{*/}
             {/*    acception ? <SecureDealDetailConfirm onClick={onAccept} onDecline={() => setAcception(false)}/> : null*/}
             {/*}*/}
             {
                 dealData ?
                     <>
-                        <ButtonCard>
-                            <h5 className={cls.card_header}>Base info</h5>
-                            <Row className='mb-3 mt-3'>
-                                <Col>Seller</Col>
-                                <Col>{dealData.seller}</Col>
-                            </Row>
-                            <Row className='mb-3'>
-                                <Col>Buyer</Col>
-                                <Col>{dealData.buyer}</Col>
-                            </Row>
-                            <Row className='mb-3'>
-                                <Col>Price</Col>
-                                <Col>{dealData.amountInCrypto} {dealData.coinName}</Col>
-                            </Row>
-                            <Row className='mb-3'>
-                                <Col>Deadline</Col>
-                                <Col>{getCurrentDate(dealData.dealDedline)}</Col>
-                            </Row>
-                            {
-                                dealData.acceptCode ?
-                                    <Row className='mb-3'>
-                                        <Col>Password (shown only for buyer)</Col>
-                                        <Col>{dealData.acceptCode}</Col>
+                        <Row>
+                            <Col className='col-12 col-xl-6'>
+                                <ButtonCard theme={theme}>
+                                    <h5 className={cls.card_header}>Base info</h5>
+                                    <Row className='mb-3 mt-3'>
+                                        <Col>Seller</Col>
+                                        <Col>{dealData.seller}</Col>
                                     </Row>
-                                    : null
-                            }
-                            {
-                                !dealData.acceptCode ?
                                     <Row className='mb-3'>
-                                        <Col>Enter password</Col>
-                                        <Col>
-                                            <Row className='align-items-center'>
-                                                <Col className='col-4'><Input {...register('acceptCode')} classname='input_small' placeholder='password' /></Col>
-                                                <Col><Button onClick={handleSubmit(sendRewardData)} classname='small'>Get reward</Button></Col>
-                                            </Row>
+                                        <Col>Buyer</Col>
+                                        <Col>{dealData.buyer}</Col>
+                                    </Row>
+                                    <Row className='mb-3'>
+                                        <Col>Price</Col>
+                                        <Col>{dealData.amountInCrypto} {dealData.coinName}</Col>
+                                    </Row>
+                                    <Row className='mb-3'>
+                                        <Col>Deadline</Col>
+                                        <Col>{getCurrentDate(dealData.dealDedline)}</Col>
+                                    </Row>
+                                    {
+                                        dealData.acceptCode ?
+                                          <Row className='mb-3'>
+                                              <Col>Password (shown only for buyer)</Col>
+                                              <Col>{dealData.acceptCode}</Col>
+                                          </Row>
+                                          : null
+                                    }
+                                    {
+                                        !dealData.acceptCode ?
+                                          <Row className='mb-3 py-1'>
+                                              <Col>Enter password</Col>
+                                              <Col>
+                                                  <Row className='align-items-center'>
+                                                      <Col className='col-12 col-md-4'><Input {...register('acceptCode')} classname='inputTransparent' placeholder='password' /></Col>
+                                                      <Col className='col-12 col-md-6'><Button style={{height: 50}} onClick={handleSubmit(sendRewardData)} classname='btnBlue'>Get reward</Button></Col>
+                                                  </Row>
+                                              </Col>
+                                          </Row>
+                                          : null
+                                    }
+                                </ButtonCard>
+                            </Col>
+
+                            <Col className='col-12 col-xl-6'>
+                                <ButtonCard theme={theme} className='mt-4 p-3'>
+                                    <h5 className={cls.card_header}>Detailed info</h5>
+                                    <Row className='mt-3'>
+                                        <TextArea rows={8} classnames='textareaTransparent' value={dealData.dealCondition}/>
+                                    </Row>
+                                </ButtonCard>
+                            </Col>
+                        </Row>
+
+                        <Row>
+                            <Col>
+                                <ButtonCard theme={theme} className='mt-4 p-3 mb-4'>
+                                    <h5 className={cls.card_header}>Chat</h5>
+                                    <Row className='mt-3'>
+                                        <Col className='col-12 col-lg-8 mb-3'>
+                                            <ChatWindow onUploadImg={onUploadImg} onClick={onClick}>
+                                                {
+                                                    typeof msg !== 'string' ?
+                                                      msg.map(item => {
+                                                          return(
+                                                            <ChatMessege
+                                                              key={item._id}
+                                                              date={item.curDate}
+                                                              type={item.isUser}
+                                                              image={item.imageLink}
+                                                              text={item.messageBody} />
+                                                          )
+                                                      }) : null
+                                                }
+                                            </ChatWindow>
+                                        </Col>
+                                        <Col className='col-12 col-lg-4 mb-3'>
+                                            <ChatRules rulesDisclamer={secureDealRulesText} />
                                         </Col>
                                     </Row>
-                                    : null
-                            }
-                        </ButtonCard>
-
-                        <ButtonCard className='mt-4 p-3'>
-                            <h5 className={cls.card_header}>Detailed info</h5>
-                            <Row className='mt-3'>
-                                <TextArea rows={10} classnames='textarea_bordered' value={dealData.dealCondition}/>
-                            </Row>
-                        </ButtonCard>
-
-                        <ButtonCard className='mt-4 p-3 mb-4'>
-                            <h5 className={cls.card_header}>Chat</h5>
-                            <Row className='mt-3'>
-                                <Col className='col-12 col-lg-8 mb-3'>
-                                    <ChatWindow onUploadImg={onUploadImg} onClick={onClick}>
-                                        {
-                                           typeof msg !== 'string' ?
-                                                msg.map(item => {
-                                                    return(
-                                                        <ChatMessege
-                                                            key={item._id}
-                                                            date={item.curDate}
-                                                            type={item.isUser}
-                                                            image={item.imageLink}
-                                                            text={item.messageBody} />
-                                                    )
-                                                }) : null
-                                        }
-                                    </ChatWindow>
-                                </Col>
-                                <Col className='col-12 col-lg-4 mb-3'>
-                                    <ChatRules rulesDisclamer={secureDealRulesText} />
-                                </Col>
-                            </Row>
-                        </ButtonCard>
+                                </ButtonCard>
+                            </Col>
+                        </Row>
                     </>
                     : <Preloader />
             }
-        </Container>
+        </>
     )
 }
 

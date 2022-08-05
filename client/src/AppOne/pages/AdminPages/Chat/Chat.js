@@ -1,7 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import PropTypes from 'prop-types'
-import {Col, Container, Row} from "react-bootstrap";
-import ButtonCard from "../../../components/ButtonCard/ButtonCard";
+import {Container, Row} from "react-bootstrap";
 import ChatWindow from "../../AuthPages/Support/components/ChatWindow/ChatWindow";
 import ChatMessege from "../../../components/UI/ChatMessege/ChatMessege";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";

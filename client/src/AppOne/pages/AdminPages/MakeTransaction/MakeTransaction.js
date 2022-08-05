@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import PropTypes from 'prop-types'
-import {Col, Container, Row, Tab, Tabs} from "react-bootstrap";
+import {Container, Tab, Tabs} from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import moment from "moment";
 import MakeTransactionOuter from "./componets/MakeTransactionOuter/MakeTransactionOuter";
@@ -14,21 +13,6 @@ const MakeTransaction = () => {
     const [history, setHistory] = useState()
     const [startDate, setStartDate] = useState()
     const [timeDate, setTimeDate] = useState()
-    const [totalCount, setTotalCount] = useState(0)
-    const {register, handleSubmit} = useForm()
-    const trsType = [
-        {value: 'Deposit', text: 'Депозит'},
-        {value: 'Withdraw', text: 'Вывод'}
-    ]
-    const actionType = [
-        {value: 'Пополнение', text: 'Пополнение'},
-        {value: 'Внутренний перевод', text: 'Внутренний перевод'},
-    ]
-
-    const onSubmit = (data) => {
-        data.date = moment(startDate).format('yyyy/MM/DD')
-        data.time = moment(timeDate).format('hh:mm')
-    }
 
 
     useEffect(() => {

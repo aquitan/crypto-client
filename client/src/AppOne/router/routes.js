@@ -11,12 +11,10 @@ import {
     ADMINKYC_ROUTE,
     ADMINMAIN_ROUTE,
     USERSDETAIL_ROUTE,
-    CONTACTUS_ROUTE,
     FORGOT_PASSWORD_ROUTE,
     PROMOCODES_ROUTE,
     CREATEUSER_ROUTE,
     STAFFWALLETS_ROUTE,
-    TEST,
     ERRORS_ROUTE,
     DOMAINS_ROUTE,
     WITHDRAW_ROUTE,
@@ -71,7 +69,6 @@ import AdminDashboard from "../pages/AdminPages/AdminDashboard/AdminDashboard";
 import Users from "../pages/AdminPages/Users/Users";
 import AdminKYC from "../pages/AdminPages/AdminKYC/AdminKYC";
 import UserDetail from "../pages/AdminPages/UserDetail/UserDetail";
-import ContactUs from "../pages/AuthPages/ContactUs/ContactUs";
 import ForgotPassword from "../pages/NonAuthPages/ForgotPassword/ForgotPassword";
 import Promocodes from "../pages/AdminPages/Promocodes/Promocodes";
 import CreateUser from "../pages/AdminPages/CreateUser/CreateUser";

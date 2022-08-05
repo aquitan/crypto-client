@@ -8,12 +8,18 @@ import AdminLayout from "../AdminLayout/AdminLayout";
 import Footer from "../../components/Footer/Footer";
 import {v4 as uuid} from 'uuid'
 import {AuthContext} from "../../../index";
-import Landing from "../../pages/NonAuthPages/Landing/Landing";
+import {ThemeContext, useThemeContext} from "../../context/ThemeContext";
+import classNames from "classnames/bind";
 
 const AuthWrap = () => {
+    const {theme} = useThemeContext(ThemeContext)
     const {store} = useContext(AuthContext)
     const location = useLocation()
     let userLocation = location.pathname.split(/[\\\/]/)
+
+
+    const cx = classNames.bind(cls)
+    const classes = cx('content', theme)
 
     const renderAdminRoutes = () => {
         if (store.isStaff || store.fullAccess || store.isAdmin) {
@@ -32,7 +38,7 @@ const AuthWrap = () => {
             {
                 userLocation[1] === 'staff' ? null : <NavBar/>
             }
-            <div className={cls.content}>
+            <div className={classes}>
 
                 <Routes>
                     {

@@ -1,5 +1,3 @@
-import React from 'react'
-import PropTypes from 'prop-types'
 import {Card, Col, Row} from "react-bootstrap";
 import './AdminButtonCard.scss'
 import classNames from "classnames";
@@ -24,15 +22,6 @@ const AdminButtonCard = ({children, title, classname}) => {
             </Row>
         </Card>
     )
-}
-
-AdminButtonCard.propTypes = {
-    title: PropTypes.string,
-    children: PropTypes.node,
-    classname: PropTypes.string
-}
-AdminButtonCard.defaultProps = {
-
 }
 
 export default AdminButtonCard

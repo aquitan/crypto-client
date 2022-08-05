@@ -8,7 +8,7 @@ export const useNotifContext = () => useContext(NotifContext)
 
 export const NotifProvider = ({children}) => {
     const [notificationList, setNotificationList] = useState([])
-    console.log('context working', notificationList)
+
     const updateNotif = async () => {
         const res = await getData(`/staff/notifications/get_all_notifications/${store.user.id}`)
         setNotificationList(res.data.listForUser)

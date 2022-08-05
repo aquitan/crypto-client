@@ -1,5 +1,3 @@
-import React from 'react'
-import PropTypes from 'prop-types'
 import cls from "./ErrorModal.module.scss";
 import {Row} from "react-bootstrap";
 import Button from "../UI/Button/Button";
@@ -28,13 +26,6 @@ const ErrorModal = ({title, errorText, btnType, errorType, setActive, active}) =
             </div>
         </div>
     )
-}
-
-ErrorModal.propTypes = {
-    
-}
-ErrorModal.defaultProps = {
-    
 }
 
 export default ErrorModal

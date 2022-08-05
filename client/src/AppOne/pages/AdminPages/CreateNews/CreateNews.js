@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react'
-import PropTypes from 'prop-types'
 import {Col, Container, Row} from "react-bootstrap";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
 import AdminInput from "../../../components/UI/AdminInput/AdminInput";

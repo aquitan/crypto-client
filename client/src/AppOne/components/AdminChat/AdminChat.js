@@ -1,5 +1,3 @@
-import React from 'react'
-import PropTypes from 'prop-types'
 import {Col, Row} from "react-bootstrap";
 import FileUpload from "../UI/FileUpload/FileUpload";
 import Input from "../UI/Input/Input";
@@ -23,13 +21,6 @@ const AdminChat = () => {
             </Row>
         </div>
     )
-}
-
-AdminChat.propTypes = {
-
-}
-AdminChat.defaultProps = {
-
 }
 
 export default AdminChat

@@ -1,5 +1,4 @@
-import React, {useState} from 'react'
-import PropTypes from 'prop-types'
+import {useState} from 'react'
 import cls from './ChatMessage.module.scss'
 import classNames from "classnames/bind";
 import {Row} from "react-bootstrap";
@@ -50,20 +49,13 @@ const ChatMessege = ({text, date, type, allowEdit, onEditChatMessage, id, image}
                     }
                 </span>
             </Row>
-            <Row>
+            <Row className='mt-2'>
                 <span style={{fontSize: 10}}>
                     {getCurrentDate(date)}
                 </span>
             </Row>
         </div>
     )
-}
-
-ChatMessege.propTypes = {
-    
-}
-ChatMessege.defaultProps = {
-    
 }
 
 export default ChatMessege

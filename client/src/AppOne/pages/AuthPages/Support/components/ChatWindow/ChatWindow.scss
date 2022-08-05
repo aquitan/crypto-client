@@ -1,11 +1,11 @@
 .chat {
-  border: 1px solid #717579;
-  border-radius: 20px;
+  border: 1px solid #CCCED9;
+  border-radius: 8px;
   &_message_area {
     background-color: transparent;
     max-width: 100%;
     width: 100%;
-    border-bottom: 1px solid #717579;
+    border-bottom: 1px solid #CCCED9;
     flex-direction: column-reverse;
     display: flex;
     max-height: 400px;

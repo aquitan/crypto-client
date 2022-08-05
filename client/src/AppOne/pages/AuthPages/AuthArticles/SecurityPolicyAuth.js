@@ -1,11 +1,9 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import {Container} from "react-bootstrap";
 import {store} from "../../../../index";
 
 const SecurityPolicyAuth = () => {
     let domain = store.domain.domain_name.toUpperCase()
-    let domainFull = store.domain.full_domain_name
     return (
         <Container>
             <div className="article footer_links_page">

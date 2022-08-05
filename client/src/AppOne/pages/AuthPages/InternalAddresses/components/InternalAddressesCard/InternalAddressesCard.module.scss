@@ -5,7 +5,13 @@
   box-sizing: border-box;
   outline: none;
   background-color: transparent;
-  color: #fff;
-  border: 1px solid #717579;
-  border-radius: 30px;
+  color: rgb(108, 112, 128);
+  border: 1px solid #CCCED9;
+  border-radius: 8px;
+  box-shadow: 0 0 10px 0 rgb(0, 0, 0, 10%);
+  transition: all .2s linear;
+  &:hover {
+    transform: scale(1.009);
+    transition: all .2s linear;
+  }
 }

@@ -10,7 +10,6 @@ import ModalDark from "../../../../../components/UI/ModalDark/ModalDark";
 import Select from '../../../../../components/UI/Select/Select';
 import { useForm } from 'react-hook-form';
 import {deleteData, patchData} from "../../../../../services/StaffServices";
-// import {SwalSimple} from "../../../../../utils/SweetAlert";
 
 const AdminKycTableItem = (props) => {
     const [kycStatus, setKycStatus] = useState(props.kycStatus)

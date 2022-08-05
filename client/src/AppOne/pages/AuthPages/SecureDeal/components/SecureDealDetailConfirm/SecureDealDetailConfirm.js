@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import cls from './SecureDealDetailConfirm.module.scss'
 import {Col, Row} from "react-bootstrap";
 import Button from "../../../../../components/UI/Button/Button";
@@ -22,13 +21,6 @@ const SecureDealDetailConfirm = ({onClick, onDecline}) => {
             </Row>
         </div>
     )
-}
-
-SecureDealDetailConfirm.propTypes = {
-
-}
-SecureDealDetailConfirm.defaultProps = {
-
 }
 
 export default SecureDealDetailConfirm

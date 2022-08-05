@@ -1,11 +1,8 @@
 import React, {useEffect, useState} from 'react'
-import PropTypes from 'prop-types'
 import {Col, Container, Form, Row} from "react-bootstrap";
-import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 import AdminButton from "../../../components/UI/AdminButton/AdminButton";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
 import {useNavigate} from "react-router-dom";
-import Input from "../../../components/UI/Input/Input";
 import {useForm} from "react-hook-form";
 import AdminInput from "../../../components/UI/AdminInput/AdminInput";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
@@ -14,7 +11,6 @@ import {deleteData, getData, postData} from "../../../services/StaffServices";
 import {emailValidate} from "../../../utils/checkEmail";
 import cls from "../../NonAuthPages/SignIn/SignIn.module.scss";
 import {ErrorMessage} from "@hookform/error-message";
-// import {SwalSimple} from "../../../utils/SweetAlert";
 
 const RecruiterList = () => {
     const navigate = useNavigate()

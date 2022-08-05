@@ -7,12 +7,8 @@ import {store} from "../../../../index";
 import AdminInput from "../../../components/UI/AdminInput/AdminInput";
 import AdminButton from "../../../components/UI/AdminButton/AdminButton";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
-import AdminForm from "../../../components/UI/AdminForm/AdminForm";
-import {useForm} from "react-hook-form";
-import {deleteData, postData} from "../../../services/StaffServices";
+import {postData} from "../../../services/StaffServices";
 import {v4 as uuid} from 'uuid'
-import Preloader from "../../../components/UI/Preloader/Preloader";
-import {getSearchItems} from "../../../utils/searchFn";
 
 const Users = () => {
     const [state, setState] = useState({

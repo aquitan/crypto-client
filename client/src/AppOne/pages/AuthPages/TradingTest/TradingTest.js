@@ -5,9 +5,7 @@ import TradingEthereum from "./components/TradingEthereum/TradingEthereum";
 import TradingBitcoin from "./components/TradingBitcoin/TradingBitcoin";
 import TradingTron from "./components/TradingTron/TradingTron";
 import TradingBCH from "./components/TradingBCH/TradingBCH";
-import {coins} from "../../../../utils/tradingArr";
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
-import {getCurrentDate} from "../../../utils/getCurrentDate";
 
 const TradingTest = () => {
     const [coinPair, setCoinPair] = useState('BTC')
@@ -25,6 +23,12 @@ const TradingTest = () => {
         if (coinPair === 'TRX') return <TradingTron />
         if (coinPair === 'BCH') return <TradingBCH />
     }
+    const coins = [
+        {value: 'BTC', text: 'BTC'},
+        {value: 'ETH', text: 'ETH'},
+        {value: 'TRX', text: 'TRX'},
+        {value: 'BCH', text: 'BCH'},
+    ]
 
 
     return(

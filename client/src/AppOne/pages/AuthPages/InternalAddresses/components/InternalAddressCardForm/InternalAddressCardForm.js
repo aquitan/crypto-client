@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import {Col, Row} from "react-bootstrap";
 import Input from "../../../../../components/UI/Input/Input";
 import Button from "../../../../../components/UI/Button/Button";
@@ -7,21 +6,18 @@ import {useForm} from "react-hook-form";
 import error from "../../../../../styles/Error.module.scss";
 import {ErrorMessage} from "@hookform/error-message";
 import {getData, putData} from "../../../../../services/StaffServices";
-import moment from "moment";
 import {store} from "../../../../../../index";
 import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
 import {getGeoData} from "../../../../../queries/getSendGeoData";
 import {getCurrentDate} from "../../../../../utils/getCurrentDate";
 import {useNavigate} from "react-router-dom";
 import {NotifContext, useNotifContext} from "../../../../../context/notifContext";
-// import {SwalSimple} from "../../../../../utils/SweetAlert";
 
 const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, sum}) => {
     const {updateNotif} = useNotifContext(NotifContext)
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
     })
-    const navigate = useNavigate()
 
     const getCurCoinName = (coin, bucs) => {
 
@@ -83,14 +79,14 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
     }
 
     return (
-        <div>
-            <Row className='mb-5'>
+        <>
+            <Row className='mb-3'>
                 <Col className='col mb-3'>
                     <Input {...register('toAddress', {
                         required: 'Invalid wallet',
 
                         onBlur: e => onBlur(e)
-                    })} placeholder='Address' />
+                    })} classname='inputTransparent' placeholder='Address' />
                     <ErrorMessage  name='toAddress' errors={errors} render={({message}) => <p className={error.error}>{message}</p>} />
                 </Col>
                 <Col className='col'>
@@ -99,16 +95,16 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
                         pattern: /(\d+(?:\.\d+)?)/,
                         onBlur: () => onCheckAmount(),
                         validate: value => checkValue(value)
-                    })} placeholder='Amount' />
+                    })} classname='inputTransparent' placeholder='Amount' />
                     <ErrorMessage  name='amountInCrypto' errors={errors} render={() => <p className={error.error}>Check the value</p>} />
                 </Col>
             </Row>
             <Row>
                 <Col>
-                    <Button onClick={handleSubmit(onClick)} classname={['small_btn']}>Send</Button>
+                    <Button onClick={handleSubmit(onClick)} classname='btnBlue'>Send</Button>
                 </Col>
             </Row>
-        </div>
+        </>
     )
 }
 

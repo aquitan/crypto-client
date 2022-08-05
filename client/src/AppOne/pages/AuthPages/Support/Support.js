@@ -1,20 +1,19 @@
-import React, {useEffect, useRef, useState} from 'react'
-import PropTypes from 'prop-types'
-import {Card, Col, Container, Row} from "react-bootstrap";
+import {useEffect, useState} from 'react'
+import {Col, Row} from "react-bootstrap";
 import ChatWindow from "./components/ChatWindow/ChatWindow";
 import ChatRules from "./components/ChatRules/ChatRules";
 import {supportRulesText} from "../../../utils/userConstants";
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 import ChatMessege from "../../../components/UI/ChatMessege/ChatMessege";
-import {getCurrentDate} from "../../../utils/getCurrentDate";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import {getData, putData} from "../../../services/StaffServices";
 import {store} from "../../../../index";
-import {reverseArray} from "../../../utils/reverseArray";
+import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 
 const Support = () => {
     const [msg, setMsg] = useState([])
     const [image, setImage] = useState()
+    const {theme} = useThemeContext(ThemeContext)
 
     useEffect(() => {
         getSupportMessages()
@@ -59,10 +58,10 @@ const Support = () => {
     }
 
     return (
-        <Container>
-            <ButtonCard>
-                <Row>
-                    <Col className='col-12 col-lg-8'>
+        <>
+            <Row>
+                <Col className='col-12 col-lg-8'>
+                    <ButtonCard theme={theme}>
                         <ChatWindow onUploadImg={onUploadImg} onClick={onClick}>
                             {
                                 msg.length ?
@@ -79,13 +78,16 @@ const Support = () => {
                                     }) : null
                             }
                         </ChatWindow>
-                    </Col>
-                    <Col className='col-12 col-lg-4'>
+                    </ButtonCard>
+                </Col>
+                <Col className='col-12 col-lg-4'>
+                    <ButtonCard theme={theme}>
                         <ChatRules rulesDisclamer={supportRulesText} />
-                    </Col>
-                </Row>
-            </ButtonCard>
-        </Container>
+                    </ButtonCard>
+                </Col>
+            </Row>
+
+        </>
     )
 }
 

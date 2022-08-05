@@ -1,10 +1,8 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import {Container} from "react-bootstrap";
 import {store} from "../../../../index";
 
 const ContactUsAuth = () => {
-    let domain = store.domain.fullDomainName
     return (
         <Container>
             <div className="article footer_links_page">

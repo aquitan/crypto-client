@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react'
-import PropTypes from 'prop-types'
 import {Col, Container, Form, Row, Table} from "react-bootstrap";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
 import AdminInput from "../../../components/UI/AdminInput/AdminInput";
@@ -10,8 +9,6 @@ import {useForm} from "react-hook-form";
 import {deleteData, postData} from "../../../services/StaffServices";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import {store} from "../../../../index";
-import Modal from "../../../components/UI/Modal/Modal";
-import {SwalSimple, SweetAlert} from "../../../utils/SweetAlert";
 
 
 const GroupList = () => {
@@ -21,8 +18,6 @@ const GroupList = () => {
         {value: true, text: 'Видны'},
         {value: false, text: 'Не видны'},
     ]
-    const [isModal, setIsModal] = useState(false)
-    const [titleModal, setTitleModal] = useState('')
     const [limit, setLimit] = useState(0)
 
     const onSubmit = async (data) => {

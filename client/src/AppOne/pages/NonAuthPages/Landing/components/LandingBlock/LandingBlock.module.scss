@@ -1,0 +1,47 @@
+.landingBlock {
+    margin: 0 50px;
+    height: fit-content;
+    border-radius: 15px;
+    padding: 88px 120px;
+    margin-bottom: 30px;
+    @media(max-width: 1024px) {
+        padding: 40px 20px 80px 20px;
+        margin-right: 20px;
+        margin-left: 20px;
+    }
+}
+.landingTransparentBlock {
+    margin: 0 50px;
+    border-radius: 30px;
+    padding: 88px 120px;
+    background-color: transparent !important;
+    @media(max-width: 1024px) {
+        padding: 40px 20px 80px 20px;
+        margin-right: 20px;
+        margin-left: 20px;
+    }
+}
+
+.landingAbsoluteBlock {
+    margin: 0 50px;
+    border-radius: 15px;
+    padding: 40px 120px;
+    background-color: #fff;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, .1);
+    margin-top: -80px;
+    z-index: 9999;
+    @media(max-width: 1024px) {
+        padding: 40px 20px 80px 20px;
+        margin-right: 20px;
+        margin-left: 20px;
+    }
+}
+
+.light {
+    background-color: rgb(244, 249, 252);
+    color: #000;
+}
+.dark {
+    background-color: #000;
+    color: #fff;
+}

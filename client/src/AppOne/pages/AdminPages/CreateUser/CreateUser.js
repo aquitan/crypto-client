@@ -12,7 +12,6 @@ import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard
 import {postData} from "../../../services/StaffServices";
 import Select from "../../../components/UI/Select/Select";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
-// import {SwalSimple} from "../../../utils/SweetAlert";
 
 const CreateUser = () => {
     const [domains, setDomains] = useState()

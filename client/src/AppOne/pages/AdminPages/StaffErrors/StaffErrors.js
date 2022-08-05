@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react'
-import PropTypes from 'prop-types'
 import {Col, Container, Row} from "react-bootstrap";
 import Select from "../../../components/UI/Select/Select";
 import AdminButton from "../../../components/UI/AdminButton/AdminButton";
@@ -12,7 +11,6 @@ import {useForm} from "react-hook-form";
 import {getData, postData, putData} from "../../../services/StaffServices";
 import {store} from "../../../../index";
 import StaffErrorItem from "./components/StaffErrorItem/StaffErrorItem";
-import {optionsCompiler} from "../../../utils/optionsCompiler";
 import Preloader from "../../../components/UI/Preloader/Preloader";
 import error from "../../../styles/Error.module.scss";
 import {ErrorMessage} from "@hookform/error-message";
@@ -45,9 +43,6 @@ const StaffErrors = () => {
     }, [])
 
     const getAllErrors = async () => {
-        const obj = {
-            domainName: curSelect
-        }
         const err = await getData(`/staff/errors/get_all_errors/${curSelect}`)
         setDomainErrors(err.data.errorList)
     }

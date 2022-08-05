@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import {store} from "../../../../index";
 import {Container} from "react-bootstrap";
 import Preloader from "../../../components/UI/Preloader/Preloader";
@@ -28,12 +27,4 @@ const TermsConditions = () => {
         </Container>
     )
 }
-
-TermsConditions.propTypes = {
-
-}
-TermsConditions.defaultProps = {
-
-}
-
 export default TermsConditions

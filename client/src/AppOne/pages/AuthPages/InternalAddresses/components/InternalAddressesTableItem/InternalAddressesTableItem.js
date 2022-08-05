@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import {Col, Row} from "react-bootstrap";
 import Button from "../../../../../components/UI/Button/Button";
 
@@ -10,7 +9,6 @@ const InternalAddressesTableItem = ({date, id, amount, currency, status, onClick
         currency,
         id
     }
-        // ['green_btn', 'small_btn']
     return (
         <Row className='mt-3 mb-3'>
             <Col className={'d-none d-md-block text-center'}>

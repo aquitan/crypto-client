@@ -1,5 +1,4 @@
-import React, {useEffect, useState} from 'react'
-import PropTypes from 'prop-types'
+import {useEffect, useState} from 'react'
 import {Col, Row} from "react-bootstrap";
 import {store} from "../../../index";
 import {findPercent} from "../../utils/findPercent";
@@ -26,13 +25,6 @@ const CurrencyRates = () => {
             <Col><b>USDT:</b> {store.rates.usdt}</Col>
         </Row>
     )
-}
-
-CurrencyRates.propTypes = {
-
-}
-CurrencyRates.defaultProps = {
-
 }
 
 export default CurrencyRates

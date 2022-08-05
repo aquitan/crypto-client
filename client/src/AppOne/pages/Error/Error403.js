@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 
 const Error403 = () => {
     return (
@@ -8,13 +7,6 @@ const Error403 = () => {
             <h2>Forbidden...</h2>
         </div>
     )
-}
-
-Error403.propTypes = {
-
-}
-Error403.defaultProps = {
-
 }
 
 export default Error403

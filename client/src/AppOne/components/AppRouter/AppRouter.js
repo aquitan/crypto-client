@@ -1,19 +1,16 @@
-import React, {useContext, useEffect, useState} from 'react'
-import {AuthContext, store} from "../../../index";
+import {useContext, useEffect} from 'react'
+import {AuthContext} from "../../../index";
 import {observer} from "mobx-react-lite";
 import AuthWrap from "../../layouts/AuthWrap/AuthWrap";
 import NonAuthWrap from "../../layouts/NonAuthWrap/NonAuthWrap";
-import {getData, postData} from "../../services/StaffServices";
+import {postData} from "../../services/StaffServices";
 import {useNavigate} from "react-router-dom";
 import {getRate} from "../../services/CurrencyService";
-import {useQuery} from 'react-query'
-import {findPercent} from "../../utils/findPercent";
+import Preloader from "../UI/Preloader/Preloader";
 
 
 const AppRouter = () => {
     const {store} = useContext(AuthContext)
-    const [state, setState] = useState([])
-    const [percent, setPercent] = useState([])
     const navigate = useNavigate()
     // const {isLoading, data, error} = useQuery('notif query', async () => {
     //     if (store.isAuth) {
@@ -40,36 +37,6 @@ const AppRouter = () => {
         sendDomainName()
         getRates()
     }, [])
-
-    const getNotification = async () => {
-        const res = await getData(`/staff/notifications/get_all_notifications/${store.user.id}`)
-    }
-
-    const countTotalBalance = () => {
-        console.log('blance state', state)
-        let total = 0
-        let arr = []
-        state.forEach(item => {
-            if (item.coinName === 'BTC') {
-                let val = item.coinBalance * findPercent(store.rates.btc, percent)
-                arr.push(val)
-            } else if (item.coinName === 'ETH') {
-                let val = item.coinBalance * findPercent(store.rates.eth, percent)
-                arr.push(val)
-            } else if (item.coinName === 'BCH') {
-                let val = item.coinBalance * findPercent(store.rates.bch, percent)
-                arr.push(val)
-            } else if (item.coinName === 'USDT') {
-                let val = item.coinBalance * findPercent(store.rates.usdt, percent)
-                arr.push(val)
-            }
-        })
-
-        for (let i = 0; i <= arr.length - 1; i++) {
-            total += arr[i]
-        }
-        store.setTotal(total.toFixed(3))
-    }
 
     const getRates = async () => {
         const res = await getRate()
@@ -102,16 +69,10 @@ const AppRouter = () => {
 
     if (store.isLoading) {
         console.log('store is loading...')
-        return <h1>Loading...</h1>
+        return <Preloader />
     }
 
     const renderPages = () => {
-        // if (store.isAuth && store.showConfirmation) {
-        //     return <RegisterConfirm />
-        // }
-        // if (store.isAuth && store.isActivated || store.fullAccess || store.isAdmin) {
-        //     return <AuthWrap />
-        // }
         if (store.isAuth && store.isActivated || store.fullAccess || store.isAdmin) {
             return <AuthWrap />
         }
@@ -119,11 +80,11 @@ const AppRouter = () => {
     }
 
     return (
-        <div className={`wrapper` } >
+        <>
             {
                 renderPages()
             }
-        </div>
+        </>
     )
 }
 

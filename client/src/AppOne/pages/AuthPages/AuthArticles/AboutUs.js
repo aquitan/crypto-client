@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import {store} from "../../../../index";
 import {Container} from "react-bootstrap";
 

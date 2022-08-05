@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react'
-import PropTypes from 'prop-types'
 import {Container} from "react-bootstrap";
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 import {getData} from "../../../services/StaffServices";

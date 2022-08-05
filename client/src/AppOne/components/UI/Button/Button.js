@@ -1,6 +1,4 @@
-import React from 'react'
 import cls from './Button.module.scss'
-import PropTypes, {bool} from "prop-types";
 import classNames from "classnames/bind";
 
 const Button = ({children, onClick, classname, disabled, active, ...attrs}) => {
@@ -11,6 +9,8 @@ const Button = ({children, onClick, classname, disabled, active, ...attrs}) => {
     const onClickAction = (e) => {
         if (disabled) {
             e.preventDefault()
+        } else if (!onClick) {
+            return () => {}
         } else {
             return onClick(e)
         }
@@ -23,22 +23,6 @@ const Button = ({children, onClick, classname, disabled, active, ...attrs}) => {
             {children}
         </Tag>
     )
-}
-
-Button.propTypes = {
-    children: PropTypes.node,
-    onClick: PropTypes.func,
-    className: PropTypes.string,
-    disabled: bool,
-    active: bool
-}
-
-Button.defaultProps = {
-    children: 'Submit',
-    onClick: () => {},
-    className: '',
-    disabled: false,
-    active: false
 }
 
 export default Button

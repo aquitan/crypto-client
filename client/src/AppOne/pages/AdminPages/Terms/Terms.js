@@ -1,12 +1,10 @@
 import React, {useState} from 'react'
-import PropTypes from 'prop-types'
 import {Col, Container, Row} from "react-bootstrap";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
 import TextArea from "../../../components/UI/TextArea/TextArea";
 import AdminForm from "../../../components/UI/AdminForm/AdminForm";
 import AdminButton from "../../../components/UI/AdminButton/AdminButton";
 import {useForm} from "react-hook-form";
-import {textareaTerms} from "../../../utils/staffConstants";
 import ModalDark from "../../../components/UI/ModalDark/ModalDark";
 import {store} from "../../../../index";
 

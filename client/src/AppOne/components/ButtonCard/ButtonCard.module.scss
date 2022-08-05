@@ -3,6 +3,8 @@
   position: relative;
   margin-bottom: 30px;
   box-sizing: border-box;
+  padding: 40px 20px;
+  border-radius: 10px;
 }
 
 .scrollable-table {
@@ -23,4 +25,18 @@
 
 .fixed-height {
   min-height: 300px;
+}
+.dark {
+  background-color: rgb(8, 8, 8);
+  color: #fff;
+}
+.light {
+  background-color: #fff;
+  color: rgb(8, 8, 8);
+}
+h2 {
+  color: rgb(43, 48, 67);
+}
+h2.dark {
+  color: #fff;
 }

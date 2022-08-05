@@ -2,8 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {Container, Row} from "react-bootstrap";
 import cls from "../../../components/AppRouter/AppRouter.module.scss";
 import {store} from "../../../../index";
-import {getData, postData} from "../../../services/StaffServices";
-import {getGeoData} from "../../../queries/getSendGeoData";
+import {postData} from "../../../services/StaffServices";
 
 const AdminDashboard = () => {
     const [state, setState] = useState()

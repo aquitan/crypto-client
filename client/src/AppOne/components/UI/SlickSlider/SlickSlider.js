@@ -1,22 +1,19 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import Slider from "react-slick";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faAngleLeft, faAngleRight} from "@fortawesome/free-solid-svg-icons";
 
 
 const SlickSlider = ({children}) => {
     const settings = {
         dots: false,
         infinite: false,
-        arrows: true,
-        slidesToShow: 4,
+        arrows: false,
+        slidesToShow: 3,
         slidesToScroll: 1,
         responsive: [
             {
                 breakpoint: 1400,
                 settings: {
-                    slidesToShow: 4,
+                    slidesToShow: 2,
                     slidesToScroll: 1,
                     infinite: false,
                     dots: true
@@ -32,9 +29,9 @@ const SlickSlider = ({children}) => {
                 }
             },
             {
-                breakpoint: 600,
+                breakpoint: 768,
                 settings: {
-                    slidesToShow: 2,
+                    slidesToShow: 1,
                     slidesToScroll: 1
                 }
             },
@@ -42,7 +39,8 @@ const SlickSlider = ({children}) => {
                 breakpoint: 480,
                 settings: {
                     slidesToShow: 1,
-                    slidesToScroll: 1
+                    slidesToScroll: 1,
+                    variableWidth: true
                 }
             },
         ]
@@ -52,13 +50,6 @@ const SlickSlider = ({children}) => {
             {children}
         </Slider>
     )
-}
-
-SlickSlider.propTypes = {
-    children: PropTypes.node
-}
-SlickSlider.defaultProps = {
-    
 }
 
 export default SlickSlider

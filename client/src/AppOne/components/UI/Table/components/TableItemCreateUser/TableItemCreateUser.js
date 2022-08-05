@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import {Col, Row} from "react-bootstrap";
 import AdminButton from "../../../AdminButton/AdminButton";
 import {faCheck, faTimesCircle} from "@fortawesome/free-solid-svg-icons";
@@ -31,13 +30,6 @@ const TableItemCreateUser = ({users}) => {
             }
         </>
     )
-}
-
-TableItemCreateUser.propTypes = {
-    
-}
-TableItemCreateUser.defaultProps = {
-    
 }
 
 export default TableItemCreateUser

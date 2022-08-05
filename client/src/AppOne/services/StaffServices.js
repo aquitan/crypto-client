@@ -1,4 +1,4 @@
-import {$api, $usersApi} from "../API";
+import {$api} from "../API";
 
 export const postData = (path, data) => {
     return $api.post(path, data)

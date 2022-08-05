@@ -1,27 +1,31 @@
 import React, {useEffect, useState} from 'react'
-import {Col, Container, Row} from "react-bootstrap";
+import {Col, Modal, Row} from "react-bootstrap";
 import {getData, postData} from "../../../services/StaffServices";
 import {store} from "../../../../index";
-import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 import WalletInfoBlock from "../../../components/UI/WalletInfoBlock/WalletInfoBlock";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEnvelope} from "@fortawesome/free-solid-svg-icons";
 import Button from "../../../components/UI/Button/Button";
 import {useNavigate} from "react-router-dom";
 import {getGeoData} from "../../../queries/getSendGeoData";
 import {currencyRateChangeIndicator} from "../../../utils/currencyRateChangeIndicator";
-import CurrencyRates from "../../../components/CurrencyRates/CurrencyRates";
 import {findPercent} from "../../../utils/findPercent";
 import Preloader from "../../../components/UI/Preloader/Preloader";
 import SlickSlider from "../../../components/UI/SlickSlider/SlickSlider";
 import {observer} from "mobx-react-lite";
-import MarketDepth from "../../../components/MarketDepth/MarketDepth";
+import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
+import MarketOverviewItem from "../../../components/MarketOverviewItem/MarketOverviewItem";
+import Input from "../../../components/UI/Input/Input";
+import InternalSwap from "../InternalSwap/InternalSwap";
 
 const Dashboard = () => {
+    const {theme} = useThemeContext(ThemeContext)
+    const [search, setSearch] = useState('')
     const [state, setState] = useState([])
     const [balance, setBalance] = useState([])
     const [percent, setPercent] = useState([])
+    const [markets, setMarkets] = useState([])
+    const [show, setShow] = useState(false)
+    const coinsArr = ['btc', 'eth', 'bch', 'usdt', 'sol', 'trx']
 
     const getDashboard = async () => {
         let geodata = await getGeoData()
@@ -29,21 +33,28 @@ const Dashboard = () => {
         geodata.id = store.user.id
         const res = await postData('/dashboard/', geodata)
     }
-    const navigate = useNavigate()
     useEffect(() => {
         const controller = new AbortController();
         getDashboard()
         getRates()
         getBalance()
+        getMarketOverview()
         return () => {
             // cancel the request before component unmounts
             controller.abort();
         };
     }, [])
 
+    useEffect(() => {
+        let timeout = setTimeout(() => {
+            getMarketOverview()
+        }, 15000)
+        return () => clearTimeout(timeout)
+    }, [])
+
     if (store.isLoading) {
         return (
-            <h1>Loading...</h1>
+            <Preloader />
         )
     }
     const getRates = () => {
@@ -53,6 +64,12 @@ const Dashboard = () => {
     const getBalance = async () => {
         const res = await getData(`/get_user_balance/${store.user.id}`)
         setBalance(res.data)
+    }
+
+    const getMarketOverview = async () => {
+        const res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1&sparkline=false')
+        const data = await res.json()
+        setMarkets(data)
     }
 
 
@@ -82,144 +99,122 @@ const Dashboard = () => {
         store.setTotal(total.toFixed(3))
         return total.toFixed(3)
     }
-    console.log(balance)
+
+    const handleChange = (e) => {
+        setSearch(e.target.value)
+    }
+    const filteredCoins = markets.filter(coin => coin.name.toLowerCase().includes(search.toLowerCase()))
+
+    const handleClose = () => {
+        setShow(false)
+    }
+
     return (
-        <Container>
-            {/*<Row>*/}
-            {/*    <CurrencyRates/>*/}
-            {/*</Row>*/}
+        <>
+
+            <Modal
+                style={{opacity: 1, zIndex: 99999}}
+                show={show}
+                onHide={handleClose}
+                animation={false}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Exchange currencies</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <InternalSwap />
+                </Modal.Body>
+            </Modal>
+
             <Row className='mb-3'>
-                {/*<Row>*/}
-                {/*    <Col className='col-1'>*/}
-                {/*        <h5>Welcome!</h5>*/}
-                {/*    </Col>*/}
-                {/*    <Col>*/}
-                {/*        <span>{store.user.name ? store.user.name : store.userEmail}</span>*/}
-                {/*    </Col>*/}
-                {/*</Row>*/}
                 <Row>
                     {
                         balance.length ?
-                            <b>Total balance: ${balance.length ? countTotalBalance() : <Preloader/>}</b>
+                            <b>Total balance: ${balance.length ? countTotalBalance().toLocaleString() : <Preloader/>}</b>
                             : <Preloader />
                     }
 
                 </Row>
             </Row>
 
-            <Row>
-                <Col>
-                    <ButtonCard>
+            <Row className='p-0'>
+                <Col className='p-0 col-12 col-xl-8'>
+                    <Row className='p-0'>
+                        <Col>
+                            <ButtonCard theme={theme}>
+                                <Row>
+                                    <h2>Market coins</h2>
+                                    <p>Daily updated coins info</p>
+                                </Row>
+                                <Row>
+                                    {
+                                        store.ratesChange.btc && store.rates.btc && balance.length ?
+                                            <SlickSlider>
+                                                {
+                                                    coinsArr.map(item => {
+                                                        return (
+                                                            <div className='' style={{padding: '0 5px', margin: '0 5px'}}>
+                                                                <WalletInfoBlock
+                                                                    key={item}
+                                                                    rate={store.rates[item]}
+                                                                    balance={balance.filter(el => el.coinName === item.toUpperCase())[0]}
+                                                                    currency={item.toUpperCase()}
+                                                                    amount={store.ratesChange[item]?.toFixed()}
+                                                                    status={currencyRateChangeIndicator(store.ratesChange[item].toFixed())}
+                                                                    theme={theme}
+                                                                />
+                                                            </div>
+                                                        )
+                                                    })
+                                                }
+                                            </SlickSlider>
+                                            : <Preloader />
+                                    }
+                                </Row>
+                            </ButtonCard>
+                        </Col>
+                        <Row className='mb-4 d-block d-xl-none'>
+                            <Button classname='btnBlue' onClick={() => setShow(true)}>
+                                Exchange currencies
+                            </Button>
+                        </Row>
+                    </Row>
+                    <Row>
                         <Row>
-                            {
-                                store.ratesChange.btc && store.rates.btc && balance.length ?
-                                    <SlickSlider>
-                                        <div>
-                                            <div className='' style={{padding: '0 5px', margin: '0 5px'}}>
-                                                <WalletInfoBlock
-                                                    rate={store.rates.btc}
-                                                    balance={balance.filter(el => el.coinName === 'BTC')[0]}
-                                                    currency='BTC'
-                                                    amount={store.ratesChange.btc?.toFixed()}
-                                                    status={currencyRateChangeIndicator(store.ratesChange.btc.toFixed())}
-                                                    color='BTC' />
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div className='' style={{padding: '0 5px'}}>
-                                                <WalletInfoBlock
-                                                    rate={store.rates.eth}
-                                                    balance={balance.filter(el => el.coinName === 'ETH')[0]}
-                                                    currency='ETH'
-                                                    amount={store.ratesChange.eth?.toFixed()}
-                                                    status={currencyRateChangeIndicator(store.ratesChange.eth.toFixed())}
-                                                    color='ETH' />
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div className='' style={{padding: '0 5px'}}>
-                                                <WalletInfoBlock
-                                                    rate={store.rates.bch}
-                                                    balance={balance.filter(el => el.coinName === 'BCH')[0]}
-                                                    currency='BCH'
-                                                    amount={store.ratesChange.bch?.toFixed()}
-                                                    status={currencyRateChangeIndicator(store.ratesChange.bch.toFixed())}
-                                                    color='BCH'
-                                                />
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div className='' style={{padding: '0 5px'}}>
-                                                <WalletInfoBlock
-                                                    rate={store.rates.usdt}
-                                                    balance={balance.filter(el => el.coinName === 'USDT')[0]}
-                                                    currency='USDT'
-                                                    amount={store.ratesChange.usdt?.toFixed()}
-                                                    status={currencyRateChangeIndicator(store.ratesChange.usdt.toFixed())}
-                                                    color='BCH' />
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div className='' style={{padding: '0 5px'}}>
-                                                <WalletInfoBlock
-                                                    rate={store.rates.sol}
-                                                    balance={balance.filter(el => el.coinName === 'SOL')[0]}
-                                                    currency='SOL'
-                                                    amount={store.ratesChange.sol?.toFixed()}
-                                                    status={currencyRateChangeIndicator(store.ratesChange.sol.toFixed())}
-                                                    color='SOL' />
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div className='' style={{padding: '0 5px'}}>
-                                                <WalletInfoBlock
-                                                    rate={store.rates.trx}
-                                                    balance={balance.filter(el => el.coinName === 'TRX')[0]}
-                                                    currency='TRX'
-                                                    amount={store.ratesChange.trx?.toFixed()}
-                                                    status={currencyRateChangeIndicator(store.ratesChange.trx.toFixed())}
-                                                    color='TRX' />
-                                            </div>
-                                        </div>
-                                    </SlickSlider>
-                                    : <Preloader />
-                            }
+                            <ButtonCard theme={theme}>
+                                <Row className='mb-5'>
+                                    <Col>
+                                        <h2>Market overview</h2>
+                                    </Col>
+                                    <Col>
+                                        <Input classname='inputTransparent' placeholder='Search Coin Name' type="text" onChange={handleChange}/>
+                                    </Col>
+                                </Row>
+
+                                {filteredCoins.map(item => {
+                                    return (
+                                        <MarketOverviewItem
+                                            theme={theme}
+                                            key={item.name}
+                                            name={item.name}
+                                            image={item.image}
+                                            symbol={item.symbol}
+                                            price={item.current_price}
+                                            volume={item.market_cap}
+                                            priceChange={item.price_change_percentage_24h}
+                                        />
+                                    )
+                                })}
+                            </ButtonCard>
                         </Row>
-                    </ButtonCard>
+                    </Row>
+                </Col>
+                <Col className='d-none d-xl-block'>
+                    <Row>
+                        <InternalSwap />
+                    </Row>
                 </Col>
             </Row>
-            <Row>
-                <Col className={'col-12 col-md-6'}>
-                    <ButtonCard title={'Market depth'}>
-                        <MarketDepth />
-                    </ButtonCard>
-                </Col>
-                <Col className={'col-12 col-md-6'}>
-                    <ButtonCard title={'Crypto Statistics'}>
-                        <div className="tradingview-widget-container" id="dashboard-trading-widget"
-                             style={{width: '100%', height: 320}}>
-                            <iframe scrolling="no" frameBorder="0"
-                                    src="https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=en#%7B%22symbol%22%3A%22BINANCE%3ABTCUSDT%22%2C%22width%22%3A%22100%25%22%2C%22height%22%3A320%2C%22dateRange%22%3A%2212M%22%2C%22colorTheme%22%3A%22dark%22%2C%22trendLineColor%22%3A%22rgba(41%2C%2098%2C%20255%2C%201)%22%2C%22underLineColor%22%3A%22rgba(41%2C%2098%2C%20255%2C%200.3)%22%2C%22underLineBottomColor%22%3A%22rgba(41%2C%2098%2C%20255%2C%200)%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Afalse%2C%22largeChartUrl%22%3A%22%22%2C%22utm_source%22%3A%22bitluck.club%22%2C%22utm_medium%22%3A%22widget%22%2C%22utm_campaign%22%3A%22mini-symbol-overview%22%7D"
-                                    style={{boxSizing: 'border-box', height: 320, width: '100%'}}></iframe>
-                        </div>
-                    </ButtonCard>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <ButtonCard>
-                        <Row className={'justify-content-center'}>
-                            <Col className='col-12 col-md-8 mb-3'>
-                                <FontAwesomeIcon style={{marginRight: 20}} icon={faEnvelope} size='lg' />Ask a question or file a support ticket, manage requests or report an issues. Our Support team will get back to you by chat.
-                            </Col>
-                            <Col className='col-12 col-md-2'>
-                                <Button onClick={() => navigate('/support')}>Go to support</Button>
-                            </Col>
-                        </Row>
-                    </ButtonCard>
-                </Col>
-            </Row>
-        </Container>
+        </>
     )
 }
 

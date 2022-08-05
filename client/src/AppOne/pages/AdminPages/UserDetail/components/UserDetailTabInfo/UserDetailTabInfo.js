@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Col, Row, Form, Container} from "react-bootstrap";
+import {Col, Row, Container} from "react-bootstrap";
 import cls from '../../UserDetail.module.scss'
 import {Link} from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -20,7 +20,7 @@ const UserDetailTabInfo = ({data}) => {
     const [errorId, setErrorId] = useState(1)
 
     if (!data) {
-        return <h1>Loading</h1>
+        return <Preloader />
     }
 
     const renderUserType = () => {
@@ -69,7 +69,7 @@ const UserDetailTabInfo = ({data}) => {
     // }
 
     if (!data) {
-        return <h1>Loading</h1>
+        return <Preloader />
     }
 
     return (

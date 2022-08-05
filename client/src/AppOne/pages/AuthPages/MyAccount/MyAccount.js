@@ -1,6 +1,5 @@
 import React, {useState} from 'react'
-import {Col, Container, Row} from "react-bootstrap";
-import cls from './MyAccount.module.scss'
+import {Col, Row} from "react-bootstrap";
 import Button from "../../../components/UI/Button/Button";
 import UserService from "../../../services/UserService";
 import {store} from "../../../../index";
@@ -10,9 +9,7 @@ import {observer} from "mobx-react-lite";
 import Input from "../../../components/UI/Input/Input";
 import {postData} from "../../../services/StaffServices";
 import {useNavigate} from "react-router-dom";
-import ButtonCard from "../../../components/ButtonCard/ButtonCard";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faUserCircle} from "@fortawesome/free-solid-svg-icons";
+import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 
 const MyAccount = (props) => {
     const [name, setName] = useState(props.name)
@@ -20,6 +17,7 @@ const MyAccount = (props) => {
     const [changeName, setChangeName] = useState(false)
     const [learnMore, setLearnMore] = useState(false)
     const navigate = useNavigate()
+    const {theme} = useThemeContext(ThemeContext)
 
     const onChangeName = (e) => {
         setName(e.target.value)
@@ -63,12 +61,6 @@ const MyAccount = (props) => {
         const res = await postData('/use_promocode_in_profile/', geodata)
     }
 
-    const onLogout= () => {
-        store.logout()
-        store.setIsStaff(false)
-        navigate('/')
-    }
-
     console.log('props.data', props.data)
 
     return (
@@ -83,117 +75,65 @@ const MyAccount = (props) => {
                     </Col>
                 </Row>
             </Modal>
-            <h2 className='mt-3 mb-3'>My Account</h2>
-
-            <Row>
-                <Col className={'col-12 col-lg-6'}>
-                    <ButtonCard classname={'fixed-height'} style={{minHeight: 320, height: '100%'}}>
-                        <Row className={'justify-content-center'}>
-                            <FontAwesomeIcon
-                                style={{fontSize: '100px'}}
-                                color={'#fff'}
-                                icon={faUserCircle} />
-                            <div className={'text-center'}>
-                                <div>{props.data.name === '' ? '-' : props.data.name}</div>
-                                <div style={{fontSize: 14, color: '#ccc', marginBottom: 10 }}>{props.data.email === '' ? '-' : props.data.email}</div>
-                                <div style={{fontSize: 22, fontWeight: 'bold', marginBottom: 10 }}>01.01.2020</div>
-                                <Row className={'justify-content-center'}>
-                                    <Button classname={'logout'} onClick={onLogout}>Logout</Button>
-                                </Row>
-                            </div>
-                        </Row>
-                    </ButtonCard>
+            <Row className='mb-5'>
+                <h2>My Profile</h2>
+            </Row>
+            <Row style={{color: 'rgb(109, 112, 119)', fontWeight: 'bold'}} className='mb-2'>
+                <div>Personal information</div>
+            </Row>
+            <Row className=''>
+                <Col className='col-12 col-md-6 mb-4'>
+                    <div style={{color: theme === 'light' ? '#6C7080' : '#fff'}} className='mb-2'>Your Email</div>
+                    <Input classname={['inputTransparent', theme]} value={props.data.email} disabled/>
                 </Col>
-                <Col className={'col-12 col-lg-6'}>
-                    <ButtonCard classname={'fixed-height'} style={{minHeight: 320, height: '100%'}}>
-                        <Row className='mb-3 mt-3'>
-                            {
-                                !store.premiumStatus ?
-                                    <div className='d-flex flex-column align-items-center'>
-                                        <div style={{marginBottom: 10, textAlign: 'center'}}>Upgrade your account to unlock full features and increase your limit of transaction amount.&nbsp;</div>
-                                        <b style={{cursor: 'pointer', color: '#ccc', marginBottom: 10}} onClick={() => setLearnMore(true)}> Learn more &nbsp;</b>
-                                        <Button classname='small' onClick={() => navigate('/premium-benefits')}>Upgrade</Button>
-                                    </div>
-                                    : null
-                            }
-                        </Row>
-                    </ButtonCard>
+                <Col className='col-12 col-md-6 mb-4'>
+                    <div style={{color: theme === 'light' ? '#6C7080' : '#fff'}} className='mb-2'>Your Display Name</div>
+                    <Input classname={['inputTransparent', theme]} value={props.data.name ? props.data.name : '-'} disabled/>
                 </Col>
             </Row>
-
-            <Row>
+            <Row className='mb-4'>
                 <Col>
-                    <ButtonCard>
-                        <Row>
-                            <Col>
-                                {/*<Row className={cls.account_row}>*/}
-                                {/*    <Col>*/}
-                                {/*        <div>Name</div>*/}
-                                {/*    </Col>*/}
-                                {/*    <Col className='d-flex align-items-center'>*/}
-                                {/*        <span>{props.data.name === '' ? '-' : props.data.name}</span>*/}
-                                {/*        /!*<Button classname='small' onClick={setNewName}>{changeName ? 'Change' : 'Change name'}</Button>*!/*/}
-                                {/*    </Col>*/}
-                                {/*</Row>*/}
-                                {/*<Row className={cls.account_row}>*/}
-                                {/*    <Col>*/}
-                                {/*        <div>Email</div>*/}
-                                {/*    </Col>*/}
-                                {/*    <Col>*/}
-                                {/*        <div>{props.data.email === '' ? '-' : props.data.email}</div>*/}
-                                {/*    </Col>*/}
-                                {/*</Row>*/}
-                                <Row className={cls.account_row}>
-                                    <Col>
-                                        <div>Phone</div>
-                                    </Col>
-                                    <Col>
-                                        <div>{props.data.phoneNumber === null ? '-' : props.data.phoneNumber}</div>
-                                    </Col>
-                                </Row>
-                                {/*<Row className={cls.account_row}>*/}
-                                {/*    <Col>*/}
-                                {/*        <div>Registration date</div>*/}
-                                {/*    </Col>*/}
-                                {/*    <Col>*/}
-                                {/*        <div>01.01.2020</div>*/}
-                                {/*    </Col>*/}
-                                {/*</Row>*/}
-                                {
-                                    props.promocode ?
-                                        <Row className={cls.account_row}>
-                                            <Col>
-                                                <div>Use promocode</div>
-                                            </Col>
-                                            <Col>
-                                                <Row>
-                                                    <Col>
-                                                        <Input classname='input_small' onChange={onPromocodeChange} placeholder='Enter promocode' />
-                                                    </Col>
-                                                    <Col>
-                                                        <Button classname={['small_btn']} onClick={promoUse}>Use</Button>
-                                                    </Col>
-                                                </Row>
-                                            </Col>
-                                        </Row>
-                                        : null
-                                }
-                                <Row className={cls.account_row}>
-                                    <Col>
-                                        <div className={cls.premiumInfoLine}>
-                                            <span>Account status</span>
-                                            <div className={cls.premiumHint}>Upgrade your account to get full features.</div>
-                                        </div>
-                                    </Col>
-                                    <Col>
-                                        <div>{store.premiumStatus ? 'Premium' : 'Base'}</div>
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                    </ButtonCard>
+                    <div style={{color: theme === 'light' ? '#6C7080' : '#fff'}} className='mb-2'>Your Phone Number</div>
+                    <Input classname={['inputTransparent', theme]} value={props.data.phoneNumber ? props.data.phoneNumber : '-'} disabled/>
                 </Col>
             </Row>
+            <Row className='mt-5 mb-4'>
+                <hr />
+            </Row>
+            <Row style={{color: 'rgb(109, 112, 119)', fontWeight: 'bold'}} className='mb-4'>
+                <div>Account information</div>
+            </Row>
+            <Row className='mb-4'>
+                <Col className='d-flex align-items-center'>
+                    <div style={{fontSize: 18, fontWeight: 'bold'}}>Account status</div>
+                    <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8', marginLeft: 10}} className="badge d-none d-xl-flex">{store.premiumStatus ? 'Premium' : 'Base'}</div>
+                </Col>
+                <Col className='d-flex align-items-center'>
+
+                </Col>
+            </Row>
+            <Row className='mb-4'>
+                {
+                    !store.premiumStatus ?
+                        <Col className='mb-4 col-12 col-md-6'>
+                            <div style={{marginBottom: 10}}>Upgrade your account to unlock full features and increase your limit of transaction amount.&nbsp;
+                                <b style={{cursor: 'pointer', color: '#ccc', marginBottom: 10}} onClick={() => setLearnMore(true)}> Learn more &nbsp;</b>
+                            </div>
+                            <div>
+                                <Button style={{height: 50}} classname='btnBlue' onClick={() => navigate('/premium-benefits')}>Upgrade</Button>
+                            </div>
+
+                        </Col> : null
+                }
+                <Col className='d-flex col-12 col-md-6'>
+                    <div className='d-flex align-items-baseline flex-wrap'>
+                        <Input classname={['inputTransparent', theme]} onChange={onPromocodeChange} placeholder='Use promocode' />
+                        <Button onClick={promoUse}  style={{height: 50, marginLeft: 10, marginTop: 5}} classname='btnBlue'>Confirm</Button>
+                    </div>
+                </Col>
+
+            </Row>
+
         </>
     )
 }

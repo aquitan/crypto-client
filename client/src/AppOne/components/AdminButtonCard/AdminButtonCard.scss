@@ -1,6 +1,16 @@
+
+
 .bg_black {
   background-color: #000;
   position: relative;
+  color: #fff !important;
+  h2 {
+    color: #fff;
+  }
+}
+
+.adminButtonCard {
+  color: #fff !important;
 }
 
 .scrollable-table {

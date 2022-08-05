@@ -5,10 +5,11 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faMapMarkedAlt} from "@fortawesome/free-solid-svg-icons";
 import {getCurrentDate} from "../../../../../utils/getCurrentDate";
 import AdminButtonCard from "../../../../../components/AdminButtonCard/AdminButtonCard";
+import Preloader from "../../../../../components/UI/Preloader/Preloader";
 
 const UserDetailTabLogs = ({data}) => {
     if (!data) {
-        return <h1>Loading</h1>
+        return <Preloader />
     }
     const reversedLogs = data.user_logs.slice(0).reverse()
     return (

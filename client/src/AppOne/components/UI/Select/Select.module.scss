@@ -3,12 +3,20 @@
   width: 100%;
   box-sizing: border-box;
   min-height: 46px;
-  color: #fff;
+  color: #6C7080;
   border: 1px solid #717579;
   border-radius: 20px;
   padding: 0 20px;
   max-height: 66px;
 }
+
+.selectTransparent {
+  background-color: transparent;
+  border-color: #CCCED9;
+  border-radius: 5px;
+  height: 50px;
+}
+
 .light {
   background-color: #fff;
   border: none;

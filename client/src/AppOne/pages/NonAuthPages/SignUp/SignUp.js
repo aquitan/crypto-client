@@ -5,7 +5,7 @@ import Input from '../../../components/UI/Input/Input'
 import { useForm } from 'react-hook-form'
 import cls from './SignUp.module.scss'
 import '../../../styles/index.css'
-import {Card, Col, Container, FormCheck, FormGroup, FormText, Row} from 'react-bootstrap'
+import {Col, Container, FormCheck, FormGroup, FormText, Row} from 'react-bootstrap'
 import {AuthContext} from "../../../../index";
 import {Link, useNavigate} from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
@@ -17,9 +17,11 @@ import {getGeoData} from "../../../queries/getSendGeoData";
 import Modal from "../../../components/UI/Modal/Modal";
 import {postData} from "../../../services/StaffServices";
 import PasswordStrength from "../../../components/UI/PasswordStrength/PasswordStrength";
+import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 
 
 const SignUp = () => {
+    const {theme} = useThemeContext(ThemeContext)
     const navigate = useNavigate()
     const [promoStatus, setPromoStatus] = useState(false)
     const [modalError, setModalError] = useState(false)
@@ -149,17 +151,23 @@ const SignUp = () => {
     }
 
     return (
-        <Container>
+        <Container style={{maxWidth: '100%', backgroundColor: theme === 'light' ? '#fff' : '#121318'}}  className='h-100 m-0 p-0'>
             <Modal active={modalError} setActive={setModalError}>
                 <h2 className='mb-2'>Oops! Check your email</h2>
                 <Button onClick={() => setModalError(false)}>Ok</Button>
             </Modal>
-            <Card className='bg-dark' style={{maxWidth: 800, margin: '0px auto', marginTop: '5%'}}>
-                <Form onSubmit={handleSubmit(onSubmit)}>
-                    <Row>
-                        <h2 className='mb-4'>Sign Up</h2>
-                    </Row>
-                    <FormGroup>
+
+            <Row className='h-100 p-0'>
+                <Col className={`d-flex p-0 justify-content-center align-items-baseline align-items-lg-center ${cls.gradient}`}>
+                    <div className='pt-5 pt-xl-0'>
+                        <img width='100%' src={'/img/pngfind_1.png'} alt=""/>
+                    </div>
+                </Col>
+                <Col className={`px-3 px-xl-0 ${cls.authFormItem}`} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                    <Form onSubmit={handleSubmit(onSubmit)}>
+                        <Row>
+                            <h2 style={{color: theme === 'light' ? '#121318' : '#fff'}} className='mb-4'>Register to {store.domain.domainName}</h2>
+                        </Row>
                         <Row className=''>
                             <Col className={'mb-3 col-12 col-md-6'}>
                                 <Input {...register('email', {
@@ -182,8 +190,6 @@ const SignUp = () => {
                                 {errors.name && <p className={cls.error}>{errors.name.message}</p>}
                             </Col>
                         </Row>
-                    </FormGroup>
-                    <FormGroup>
                         <Row className=''>
                             <Col className={`${cls.relative} mb-3 col-12 col-md-6`}>
                                 <Input onChange={onCheckPassword} {...register('password', {
@@ -213,44 +219,33 @@ const SignUp = () => {
                                 <FontAwesomeIcon onClick={showRepeatPassword} className={cls.eye_icon} icon={visiblePass.repeatPassword ? faEye : faEyeSlash} />
                             </Col>
                         </Row>
-                    </FormGroup>
-                    {
-                        promoStatus ?
-                            <FormGroup>
+                        {
+                            promoStatus ?
                                 <Row className=''>
                                     <Col className={cls.relative}>
-                                        <Input onChange={(e) => setCurrentPromo(e.target.value)} placeholder='enter promocode'/>
+                                        <Input onChange={(e) => setCurrentPromo(e.target.value)} placeholder='Enter promocode'/>
                                         <ErrorMessage name='promocode' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
                                     </Col>
                                 </Row>
-                            </FormGroup>
-                            : null
-                    }
-                    <FormGroup>
+                                : null
+                        }
                         <Row className='mt-2'>
-                            <Col>
-                                <FormText className='d-flex'>
-                                    <FormCheck {...register('agreement', {
-                                        required: true
-                                    })} className={cls.checkbox} type='checkbox' /> I agree with <Link className={cls.link} to='#'>Terms and conditions.</Link>
-                                    <ErrorMessage name='agreement' errors={errors} render={({message}) => <p className={cls.error}>You have to agree with Terms</p>} />
-                                </FormText>
-                            </Col>
+                            <FormText className='d-flex'>
+                                <FormCheck {...register('agreement', {
+                                    required: true
+                                })} className={cls.checkbox} type='checkbox' />By register I agree with <Link className={cls.link} to='#'>Terms and conditions.</Link>
+                                <ErrorMessage name='agreement' errors={errors} render={({message}) => <p className={cls.error}>You have to agree with Terms</p>} />
+                            </FormText>
+                            <Row className='w-100 mt-4'>
+                                <Button type='submit' classname='btnBlue'>Sign Up</Button>
+                            </Row>
                         </Row>
-                    </FormGroup>
-                    <FormGroup>
-                        <Row className='mt-3 align-items-center'>
-                            <Col>
-                                <Link className={cls.link} to='/signin/'>Have an account?</Link>
-                            </Col>
-                            <Col className='justify-content-end'>
-                                <Button type='submit' >Sign Up</Button>
-                            </Col>
+                        <Row className='mt-5 align-items-center'>
+                            <p className='text-center' style={{color: '#6c757d'}}>Already have an account? <Link className={cls.link} to='/signin/'>Sign in</Link></p>
                         </Row>
-                    </FormGroup>
-
-                </Form>
-            </Card>
+                    </Form>
+                </Col>
+            </Row>
         </Container>
     )
 }

@@ -1,10 +1,8 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import {Container} from "react-bootstrap";
 import {store} from "../../../../index";
 
 const ContactUS = () => {
-    let domain = store.domain.fullDomainName
     return (
         <Container className="container">
 

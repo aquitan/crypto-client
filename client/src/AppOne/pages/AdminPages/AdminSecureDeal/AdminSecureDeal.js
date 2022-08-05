@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react'
-import PropTypes from 'prop-types'
 import {Col, Container, Form, Row} from "react-bootstrap";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
 import AdminInput from "../../../components/UI/AdminInput/AdminInput";
@@ -12,13 +11,10 @@ import {optionsCurrency} from "../../../utils/staffConstants";
 import DatePickert from "react-datepicker";
 import DatePickerCustom from "../../../components/UI/DatePickerCustom/DatePickerCustom";
 import AdminButton from "../../../components/UI/AdminButton/AdminButton";
-import moment from "moment";
 import {store} from "../../../../index";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
-import {deleteData, getData, patchData, postData, putData} from "../../../services/StaffServices";
-import {getCurCoinName} from "../../../utils/getCurCoinName";
+import {deleteData, patchData, postData, putData} from "../../../services/StaffServices";
 import {useNavigate} from "react-router-dom";
-import Preloader from "../../../components/UI/Preloader/Preloader";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
 
 const AdminSecureDeal = () => {

@@ -1,16 +1,15 @@
 import React, {useContext} from 'react'
-import {Link, Navigate, Route, Routes, useNavigate} from "react-router-dom";
+import {Route, Routes} from "react-router-dom";
 import {publicRoutes} from "../../router/routes";
-import Footer from "../../components/Footer/Footer";
 import {AuthContext} from "../../../index";
 import {v4 as uuid} from 'uuid'
 import {observer} from "mobx-react-lite";
+import Preloader from "../../components/UI/Preloader/Preloader";
 
 const NonAuthWrap = () => {
-    const navigate = useNavigate()
     const {store} = useContext(AuthContext)
     if (store.isLoading) {
-        return <h1>Loading...</h1>
+        return <Preloader />
     }
     return (
         <>

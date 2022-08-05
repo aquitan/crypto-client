@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react'
-import PropTypes from 'prop-types'
 import {Accordion, Col, Container, Row} from "react-bootstrap";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
 import AdminInput from "../../../components/UI/AdminInput/AdminInput";
@@ -8,7 +7,6 @@ import {
     domainSelect,
     domainsInputs, domainsInputsNums,
     optionsButton,
-    tableHeaderDomains
 } from "../../../utils/staffConstants";
 import Select from "../../../components/UI/Select/Select";
 import AdminButton from "../../../components/UI/AdminButton/AdminButton";
@@ -16,19 +14,14 @@ import './Domains.scss'
 import {useForm} from "react-hook-form";
 import AdminForm from "../../../components/UI/AdminForm/AdminForm";
 import {v4 as uuid} from 'uuid'
-import TableHeader from "../../../components/UI/Table/components/TableHeader/TableHeader";
-import Table from '../../../components/UI/Table/Table'
-import TableBody from "../../../components/UI/Table/components/TableBody/TableBody";
 import TextArea from "../../../components/UI/TextArea/TextArea";
-import {postData, putData} from "../../../services/StaffServices";
-import {getCurrentDate} from "../../../utils/getCurrentDate";
+import {postData} from "../../../services/StaffServices";
 import {store} from "../../../../index";
 import cls from "../../NonAuthPages/SignIn/SignIn.module.scss";
 import {ErrorMessage} from "@hookform/error-message";
 import {useNavigate} from "react-router-dom";
 import ModalDark from "../../../components/UI/ModalDark/ModalDark";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
-// import {SwalSimple} from "../../../utils/SweetAlert";
 
 const CreateDomains = () => {
     const [modal, setModal] = useState(false)

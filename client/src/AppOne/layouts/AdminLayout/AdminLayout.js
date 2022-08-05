@@ -3,8 +3,6 @@ import {Outlet} from "react-router-dom";
 import cls from './AdminLayout.module.scss'
 import AdminSidebar from "../../components/AdminSidebar/AdminSidebar";
 import NavigationLink from "../../components/UI/NavigationLink/NavigationLink";
-import {links} from "../../utils/staffConstants";
-import {v4 as uuid} from 'uuid'
 import BurgerMenu from "../../components/UI/BurgerMenu/BurgerMenu";
 import {store} from "../../../index";
 import {Container, Navbar} from "react-bootstrap";
@@ -40,7 +38,6 @@ const AuthLayout = () => {
                     <NavigationLink to={'/staff/staff-errors'}>Ошибки</NavigationLink>
                     <NavigationLink to={'/staff/domains'}>Домены</NavigationLink>
                     <NavigationLink to={'/staff/transactions'}>Создать транзакцию</NavigationLink>
-                    <NavigationLink to={'/staff/domains'}>Домены</NavigationLink>
                     <NavigationLink to={'/staff/secure-deal'}>Защищенные сделки</NavigationLink>
                     <NavigationLink to={'/staff/trading'}>Трейдинг</NavigationLink>
                     {

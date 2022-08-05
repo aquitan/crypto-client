@@ -1,0 +1,34 @@
+.landingHeaderLink {
+    display: inline-block;
+    padding: 0 10px;
+    position: relative;
+    text-align: center;
+    @media (max-width: 1200px) {
+        font-weight: bold;
+        padding-bottom: 10px;
+        font-size: 18px;
+    }
+}
+.landingHeaderLink:hover {
+    color: violet;
+}
+.landingHeaderLink:hover:after {
+    content: '';
+    display: block;
+    position: absolute;
+    height: 3px;
+    width: 100%;
+    bottom: -50px;
+    background-color: violet;
+    left: 0;
+    @media (max-width: 1200px) {
+        display: none;
+    }
+}
+
+.light {
+    color: #121318;
+}
+.dark {
+    color: #fff;
+}

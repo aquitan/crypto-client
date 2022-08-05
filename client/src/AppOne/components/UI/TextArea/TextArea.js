@@ -1,4 +1,4 @@
-import React, {forwardRef} from 'react'
+import {forwardRef} from 'react'
 import './TextArea.scss'
 import PropTypes from "prop-types";
 import classNames from "classnames";

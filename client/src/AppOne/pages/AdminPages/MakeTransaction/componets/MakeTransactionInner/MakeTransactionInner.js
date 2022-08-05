@@ -1,5 +1,4 @@
 import React, {useState} from 'react'
-import PropTypes from 'prop-types'
 import AdminForm from "../../../../../components/UI/AdminForm/AdminForm";
 import {Col, Row} from "react-bootstrap";
 import Select from "../../../../../components/UI/Select/Select";
@@ -18,7 +17,6 @@ import TableItem from "../../../../../components/UI/Table/components/TableItem/T
 import {getData, postData, putData} from "../../../../../services/StaffServices";
 import {store} from "../../../../../../index";
 import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
-import {getGeoData} from "../../../../../queries/getSendGeoData";
 
 const MakeTransactionInner = () => {
     const [startDate, setStartDate] = useState()

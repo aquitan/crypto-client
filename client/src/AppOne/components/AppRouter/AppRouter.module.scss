@@ -1,8 +1,6 @@
 .content {
   height: 100%;
   overflow-y: auto;
-  background-color: #292b3c;
-  color: #fff;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -20,4 +18,14 @@
     text-align: center;
     flex-direction: column;
   }
+}
+
+.dark {
+  background-color: rgb(18, 19, 24);
+  color: #fff;
+}
+
+.light {
+  background-color: rgb(230, 233, 242);
+  color: rgb(8, 8, 8);
 }

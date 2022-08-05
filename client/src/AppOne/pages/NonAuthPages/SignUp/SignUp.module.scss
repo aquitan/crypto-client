@@ -33,3 +33,24 @@
 .relative {
     position: relative;
 }
+.gradient {
+    background: rgb(167,184,226);
+    background: linear-gradient(90deg, rgba(167,184,226,1) 0%, rgba(174,218,238,1) 0%, rgba(148,187,233,1) 100%);
+}
+.authFormWrap {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+.authFormItem {
+    @media (max-width:1024px) {
+        position: absolute;
+        bottom: 5%;
+    }
+}
+.authItemImg {
+    @media (max-width:1024px) {
+        display: flex;
+        align-items: flex-start;
+    }
+}

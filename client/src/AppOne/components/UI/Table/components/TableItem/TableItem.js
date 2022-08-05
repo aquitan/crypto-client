@@ -4,7 +4,6 @@ import {Col, Row} from "react-bootstrap";
 import AdminButton from "../../../AdminButton/AdminButton";
 import '../../Table.scss'
 import {v4 as uuid} from 'uuid'
-import {useNavigate} from "react-router-dom";
 
 const TableItem = ({elems, btn, id, onClick}) => {
 

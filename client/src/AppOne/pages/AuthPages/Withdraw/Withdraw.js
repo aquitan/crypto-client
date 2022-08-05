@@ -1,45 +1,38 @@
 import React, {useEffect, useState} from 'react'
-import PropTypes from 'prop-types'
-import {Card, Col, Container, Row} from "react-bootstrap";
+import { Col, Row, Tab, Tabs} from "react-bootstrap";
 import Input from "../../../components/UI/Input/Input";
-import CurrencyDropdown from "../../../components/UI/CurrencyDropdown/CurrencyDropdown";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCoffee} from "@fortawesome/free-solid-svg-icons";
 import Form from "../../../components/UI/Form/Form";
-import Select from '../../../components/UI/Select/Select'
 import Button from "../../../components/UI/Button/Button";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import {ErrorMessage} from "@hookform/error-message";
-import error from "../../../styles/Error.module.scss";
 import {useForm} from "react-hook-form";
 import {store} from "../../../../index";
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
-import {getData, postData, putData} from "../../../services/StaffServices";
+import {getData, putData} from "../../../services/StaffServices";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import TableItemUser from "../../../components/UI/TableItemUser/TableItemUser";
 import ErrorModal from "../../../components/ErrorModal/ErrorModal";
 import {observer} from "mobx-react-lite";
 import {findPercent} from "../../../utils/findPercent";
-import Preloader from "../../../components/UI/Preloader/Preloader";
 import cls from './Withdraw.module.scss'
 import Image from "../../../components/UI/Image/Image";
 import {imgMatch} from "../../../utils/imgMatch";
 import {getGeoData} from "../../../queries/getSendGeoData";
-// import swal from '@sweetalert/with-react';
-import {NotifContext, useNotifContext} from "../../../context/notifContext";
+import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
+import '../InternalSwap/InternalSwapTabs.scss'
 
-const Withdraw = () => {
+const Withdraw = ({coin, coinsBalance, coinFullName}) => {
+    console.log('coins balance', coinsBalance)
+    const {theme} = useThemeContext(ThemeContext)
     const [state, setState] = useState({
         value: '',
         text: ''
     })
     const [counter, setCounter] = useState(0)
-    const [address, setAddress] = useState('')
     const [balanceCoin, setBalanceCoin] = useState('BTC')
     const navigate = useNavigate()
     const [balance, setBalance] = useState(0)
-    const [coins, setCoins] = useState([])
     const [coinsFull, setCoinsFull] = useState([])
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
@@ -52,8 +45,7 @@ const Withdraw = () => {
     useEffect(() => {
         getHistoryDeposit()
         // getBalance()
-        setBalance(location.state.coinsBalance)
-        console.log('location', location)
+        setBalance(coinsBalance)
     }, [])
 
     const getHistoryDeposit = async () => {
@@ -92,7 +84,7 @@ const Withdraw = () => {
             currentDate: dateToTimestamp(),
             withdrawalAddress: data.withdrawalAddress,
             withdrawalStatus: 'failed',
-            coinFullName: location.state.coinFullName,
+            coinFullName: coinFullName,
             staffId: store.isStaff ? store.user.id : '',
             ipAddress: geodata.ipAddress,
             city: geodata.city,
@@ -170,27 +162,22 @@ const Withdraw = () => {
 
     return (
 
-        <Container>
+        <>
 
-            <ErrorModal
-                errorText={error?.errorText}
-                btnType={error?.errorButton}
-                errorType={error?.errorTitle}
-                active={modal}
-                title={'Withdrawal Error!'}
-                setActive={setModal}
-            />
-
-            <Row>
-                <Col className='col-12 col-lg-6 mb-3'>
-                    <ButtonCard>
-                        <h2 className='mb-3'>Withdraw</h2>
-                        <Form classnames='form_big'>
-                            <Row className='mb-3 align-items-center'>
-                                <Col className='col-12'>
-                                    <div style={{padding: '20px 20px', borderRadius: '20px'}} className={cls.inputWrapper}>
+            <ButtonCard theme={theme} style={{padding: 0}}>
+                <Tabs
+                    variant='pills'
+                    defaultActiveKey='withdraw'>
+                        <Tab
+                            title='Withdraw'
+                            tabClassName='content-tab'
+                            eventKey='withdraw'
+                        >
+                            <Form classnames='form_big'>
+                                <Row className='mb-3 align-items-center'>
+                                    <div style={{padding: '20px 20px'}} className={cls.inputWrapper}>
                                         <span style={{display: 'flex', alignItems: 'center'}}>
-                                            <Image src={`/img/${imgMatch(location.state.coin)}.svg`} height={30} width={30} />
+                                            <Image src={`/img/${imgMatch(coin)}.svg`} height={30} width={30} />
                                             {/*{*/}
                                             {/*        */}
                                             {/*        // <Select*/}
@@ -201,49 +188,40 @@ const Withdraw = () => {
                                             {/*        : <Preloader/>*/}
                                             {/*}*/}
                                             <span>
-                                                {location.state.coin}
+                                                {coin}
                                             </span>
                                         </span>
-                                        <div>Coin balance: {balance}</div>
+                                        <div>Coin balance: {balance.toFixed(5)}</div>
                                     </div>
-                                </Col>
-                            </Row>
-                            <Row className='mb-3'>
-                                <Col>
-                                    <Input placeholder='Amount in USD' type='number' onChange={onChangeUsd} value={state.text} />
+                                </Row>
+                                <Row className='mb-3'>
+                                    <Input classname='inputTransparent' placeholder='Amount in USD' type='number' onChange={onChangeUsd} value={state.text} />
                                     <span style={{fontSize: 10}}>Minimum withdraw amount is {store.domain.domainParams.minWithdrawalSum} USD</span>
-                                </Col>
-                            </Row>
-                            <Row className='mb-3'>
-                                <Col>
-                                    <Input placeholder='Amount in Crypto' type='number' onChange={onChangeCrypto} value={state.value} />
-                                </Col>
-                            </Row>
-                            <Row className='mb-3'>
-                                <Col>
-                                    <Input {...register('withdrawalAddress')} placeholder='Enter the address' />
-                                </Col>
-                            </Row>
-                            <Row className='mb-3'>
-                                <Col>
-                                    <input {...register('terms', {
-                                        required: true
-                                    })} type='checkbox' />
-                                    <Link to={'/'}> I accept Terms and Conditions</Link>
-                                    <ErrorMessage  name='terms' errors={errors} render={() => <p className={error.error}>You have to accept terms and conditions</p>} />
-                                </Col>
-                            </Row>
-                            <Row className='justify-content-center'>
-                                <Col className='col-6'>
-                                    <Button onClick={handleSubmit(onSubmit)} classname='user-red'>Withdraw</Button>
-                                </Col>
-                            </Row>
-                        </Form>
-                    </ButtonCard>
-                </Col>
-                <Col className='col-12 col-lg-6 mb-3'>
-                    <ButtonCard>
-                        <h2 className='mb-3'>History</h2>
+                                </Row>
+                                <Row className='mb-3'>
+                                    <Input classname='inputTransparent' placeholder='Amount in Crypto' type='number' onChange={onChangeCrypto} value={state.value} />
+                                </Row>
+                                <Row className='mb-3'>
+                                    <Input classname='inputTransparent' {...register('withdrawalAddress')} placeholder='Enter the address' />
+                                </Row>
+                                <Row className='mb-3'>
+                                    <Col>
+                                        <input classname='inputTransparent' {...register('terms', {
+                                            required: true
+                                        })} type='checkbox' />
+                                        <Link style={{color: '#AEB1BF', marginLeft: 10}} to={'/'}> I accept Terms and Conditions</Link>
+                                        <ErrorMessage  name='terms' errors={errors} render={() => <p className={error.error}>You have to accept terms and conditions</p>} />
+                                    </Col>
+                                </Row>
+                                <Row className='justify-content-center'>
+                                    <Button onClick={handleSubmit(onSubmit)} classname='btnBlue'>Withdraw</Button>
+                                </Row>
+                            </Form>
+                        </Tab>
+                    <Tab
+                        title='History'
+                        tabClassName='history-tab'
+                        eventKey='history'>
                         <Row style={{padding: '10px', borderBottom: '1px solid #fff' }}>
                             <Col className={'text-center'}>Date</Col>
                             <Col className={'text-center'}>Sum</Col>
@@ -274,19 +252,20 @@ const Withdraw = () => {
                                     : null
                             }
                         </Row>
-                    </ButtonCard>
-                </Col>
-            </Row>
-        </Container>
+                    </Tab>
+                </Tabs>
+            </ButtonCard>
+
+            <ErrorModal
+                errorText={error?.errorText}
+                btnType={error?.errorButton}
+                errorType={error?.errorTitle}
+                active={modal}
+                title={'Withdrawal Error!'}
+                setActive={setModal}
+            />
+        </>
 
     )
 }
-
-Withdraw.propTypes = {
-
-}
-Withdraw.defaultProps = {
-
-}
-
 export default observer(Withdraw)

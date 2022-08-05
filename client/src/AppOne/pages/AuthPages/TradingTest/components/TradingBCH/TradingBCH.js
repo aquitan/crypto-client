@@ -1,18 +1,15 @@
 import React, {useEffect, useState} from 'react'
-import PropTypes from 'prop-types'
 import {getData, patchData, postData} from "../../../../../services/StaffServices";
 import {store} from "../../../../../../index";
 import {generateRandomInt} from "../../../../../utils/generateRandomInt";
 import {shaffleData} from "../../../../../utils/shaffleData";
 import {sortDataArray} from "../../../../../utils/sortArr";
-// import {SwalSimple} from "../../../../../utils/SweetAlert";
 import {Col, Container, Form, Row} from "react-bootstrap";
 import ButtonCard from "../../../../../components/ButtonCard/ButtonCard";
-import Order from "../../../Trading/components/Order/Order";
-import OrderItem from "../../../Trading/components/OrderItem/OrderItem";
+import Order from "../components/Order/Order";
+import OrderItem from "../components/OrderItem/OrderItem";
 import {v4 as uuid} from "uuid";
 import Preloader from "../../../../../components/UI/Preloader/Preloader";
-import {coins} from "../../../../../../utils/tradingArr";
 import Input from "../../../../../components/UI/Input/Input";
 import Button from "../../../../../components/UI/Button/Button";
 import {getCurrentDate} from "../../../../../utils/getCurrentDate";

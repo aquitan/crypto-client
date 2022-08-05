@@ -1,4 +1,4 @@
-import React, {forwardRef} from 'react'
+import {forwardRef} from 'react'
 import cls from './InputRadio.module.scss'
 import classNames from "classnames/bind";
 

@@ -1,7 +1,7 @@
 import {getGeoData} from "../queries/getSendGeoData";
 import {store} from "../../index";
 
-export const onLogin = async (data) => {
+export const onLogin = async () => {
     const geoData = await getGeoData()
     geoData.email = store.asUser.email
     geoData.password = store.asUser.password

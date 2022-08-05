@@ -1,4 +1,3 @@
-import React from 'react'
 import cls from './AdminSidebar.module.scss'
 import {Row} from "react-bootstrap";
 import {store} from "../../../index";

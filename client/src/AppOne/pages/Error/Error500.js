@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 
 const Error500 = () => {
     return (
@@ -8,13 +7,6 @@ const Error500 = () => {
             <h2>Internal server error...</h2>
         </div>
     )
-}
-
-Error500.propTypes = {
-
-}
-Error500.defaultProps = {
-
 }
 
 export default Error500

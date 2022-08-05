@@ -10,17 +10,12 @@ import {store} from "../../../../../../index";
 import AdminButtonCard from "../../../../../components/AdminButtonCard/AdminButtonCard";
 import error from "../../../../../styles/Error.module.scss";
 import {ErrorMessage} from "@hookform/error-message";
-import {deleteData, patchData, postData, putData} from "../../../../../services/StaffServices";
-import {getCurrentDate} from "../../../../../utils/getCurrentDate";
+import {deleteData, patchData, putData} from "../../../../../services/StaffServices";
 import CustomCheckboxBtn from "../../../../../components/UI/CustomCheckboxBtn/CustomCheckboxBtn";
 import {useNavigate} from "react-router-dom";
 import {onLogin} from "../../../../../utils/onLogin";
 import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
-import moment from "moment";
-import Select from "../../../../../components/UI/Select/Select";
-import {optionsCurrency} from "../../../../../utils/staffConstants";
-// import {SwalSimple} from "../../../../../utils/SweetAlert";
-// import Swal from "sweetalert2";
+import Preloader from "../../../../../components/UI/Preloader/Preloader";
 
 const UserDetailTabAct = (props) => {
 
@@ -305,7 +300,7 @@ const UserDetailTabAct = (props) => {
     ]
 
     if (!props) {
-        return <h1>Loading...</h1>
+        return <Preloader />
     }
 
     const deleteUser = () => {

@@ -26,18 +26,6 @@ const Dropdown = () => {
                     })
                 }
             </div>
-            {/*{*/}
-            {/*    dropdown*/}
-            {/*        ?*/}
-            {/*        <div className='dropdown_body'>*/}
-            {/*            {*/}
-            {/*                dropdownLinks.map(link => {*/}
-            {/*                    return <DropdownLink key={uuid()} onClick={() => setDropdown(!dropdown)} to={link.to} name={link.name} />*/}
-            {/*                })*/}
-            {/*            }*/}
-            {/*        </div>*/}
-            {/*        : null*/}
-            {/*}*/}
         </div>
     )
 }

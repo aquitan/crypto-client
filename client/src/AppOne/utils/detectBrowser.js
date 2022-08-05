@@ -7,7 +7,7 @@ export const detectBrowser = () => {
         return 'Safari';
     } else if(navigator.userAgent.indexOf("Firefox") !== -1 ){
         return 'Firefox';
-    } else if((navigator.userAgent.indexOf("MSIE") !== -1 ) || (!!document.documentMode == true )) {
+    } else if((navigator.userAgent.indexOf("MSIE") !== -1 ) || (!!document.documentMode === true )) {
         return 'IE';//crap
     } else {
         return 'Unknown';

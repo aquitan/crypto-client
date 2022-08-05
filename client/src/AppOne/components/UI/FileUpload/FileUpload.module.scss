@@ -25,3 +25,19 @@
   color: white;
   background: #333;
 }
+
+.fileBlue label {
+  background-color: rgb(83, 103, 254);
+  color: #fff;
+  transition: all .2s linear;
+  border-radius: 8px;
+  border: none;
+  &:hover {
+    transition: all .2s linear;
+    background-color: #8ac8ff;
+  }
+  @media(max-width: 768px) {
+    width: 100%;
+    max-width: 100%;
+  }
+}

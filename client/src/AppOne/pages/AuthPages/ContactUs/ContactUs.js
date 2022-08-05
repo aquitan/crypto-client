@@ -5,7 +5,6 @@ import TextArea from "../../../components/UI/TextArea/TextArea";
 import {Col, Row} from "react-bootstrap";
 import Button from "../../../components/UI/Button/Button";
 import {useForm} from "react-hook-form";
-import {store} from "../../../../index";
 
 const ContactUs = () => {
     const {register, handleSubmit} = useForm()

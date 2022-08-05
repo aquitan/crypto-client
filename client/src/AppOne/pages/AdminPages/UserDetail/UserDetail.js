@@ -1,11 +1,9 @@
 import React, {useEffect, useState} from 'react'
-import UserDetailTab from "./components/UserDetailTab/UserDetailTab";
 import {Container, Tab, Tabs} from "react-bootstrap";
 import UserDetailTabInfo from "./components/UserDetailTabInfo/UserDetailTabInfo";
 import cls from '../../../components/AppRouter/AppRouter.module.scss'
 import UserDetailTabLogs from "./components/UserDetailTabLogs/UserDetailTabLogs";
 import UserDetailTabAct from "./components/UserDetailTabAct/UserDetailTabAct";
-import {store} from "../../../../index";
 import {useParams} from "react-router-dom";
 import {getGeoData} from "../../../queries/getSendGeoData";
 import {getData, postData} from "../../../services/StaffServices";
