@@ -1,11 +1,18 @@
 import React from 'react'
 import {Container} from "react-bootstrap";
 import {store} from "../../../../index";
+import {ThemeContext, useThemeContext} from '../../../context/ThemeContext';
+import classNames from 'classnames/bind';
+import cls from './AuthArticlesStyles.module.scss';
+import ButtonCard from '../../../components/ButtonCard/ButtonCard';
 
 const ContactUsAuth = () => {
+    const {theme} = useThemeContext(ThemeContext)
+    const cx = classNames.bind(cls)
+    const classes = cx('article', theme)
     return (
-        <Container>
-            <div className="article footer_links_page">
+        <ButtonCard theme={theme}>
+            <div className={classes}>
                 <h1 className="article-title">Contact Us</h1>
                 <h4 className="article-subtitle">Technical Support Department:</h4>
                 <p className="article-text">
@@ -25,7 +32,7 @@ const ContactUsAuth = () => {
                     us via email or Support Desk.
                 </p>
             </div>
-        </Container>
+        </ButtonCard>
     )
 }
 

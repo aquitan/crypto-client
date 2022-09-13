@@ -25,27 +25,6 @@ const MyAccount = (props) => {
     const onPromocodeChange = (e) => {
         setPromo(e.target.value)
     }
-    const setNewName = async () => {
-        let geodata =  await getGeoData()
-        if (changeName) {
-            geodata.userName = name
-            delete geodata.id
-            delete geodata.email
-            geodata.userEmail = store.userEmail
-            geodata.userId = store.user.id
-            const response = await UserService.editUser(geodata)
-            setChangeName(false)
-            if (response.status === 200) {
-                store.setNotification({
-                    date: geodata.currentDate,
-                    message: 'name changed successfully'
-                })
-            }
-        } else {
-            setChangeName(true)
-        }
-
-    }
 
     const promoUse = async () => {
         let geodata =  await getGeoData()

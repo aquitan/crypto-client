@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import {useState} from 'react'
 import cls from './InternalAddressesCard.module.scss'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCopy, faTimesCircle} from "@fortawesome/free-solid-svg-icons";
@@ -6,17 +6,19 @@ import {Col, Row} from "react-bootstrap";
 import InternalAddressCardForm from "../InternalAddressCardForm/InternalAddressCardForm";
 import Button from "../../../../../components/UI/Button/Button";
 import Image from "../../../../../components/UI/Image/Image";
-import WAValidator from 'wallet-address-validator'
+// import WAValidator from 'wallet-address-validator'
 import {postData} from "../../../../../services/StaffServices";
+import addressValidator from '../../../../../utils/validateAddress';
 
 const InternalAddressesCard = ({currency, sum, onCopy, wallet, theme}) => {
     const [state, setState] = useState({
         isOpen: false,
         isValid: null
     })
-    const checkAddress = (value) => {
+    const checkAddress = async (value) => {
         if (currency === 'USDT') currency = 'ETH'
-        return WAValidator.validate(value, currency);
+        // return WAValidator.validate(value, currency);
+        console.log(await addressValidator(value, currency.toLowerCase()))
     }
 
     const makeTransaction = async (data) => {
@@ -51,7 +53,7 @@ const InternalAddressesCard = ({currency, sum, onCopy, wallet, theme}) => {
                     style={{position: 'absolute', right: 20, top: 10, cursor: 'pointer'}}
                     icon={faTimesCircle} /> : null
             }
-            <Row className='align-items-center'>
+            <Row className='align-items-center my-2'>
                 <Col className=''>
                     <Image src={`/img/${imgMatch(currency)}.svg`} height={40} alt={'crypto'} />
                     <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8'}} className='badge'>{currency}</div>
@@ -64,7 +66,7 @@ const InternalAddressesCard = ({currency, sum, onCopy, wallet, theme}) => {
                         <FontAwesomeIcon
                             style={{marginRight: 20}}
                             icon={faCopy} />
-                        <span style={{wordBreak: 'break-all'}} className='internal-address'>{wallet}</span>
+                        <span style={{wordBreak: 'break-all', display: 'inline-block', margin: '0 10px 0 0'}} className='internal-address'>{wallet}</span>
                     </div>
                 </Col>
                 {

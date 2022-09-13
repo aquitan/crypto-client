@@ -1,11 +1,14 @@
 import React from 'react'
 import {Container} from "react-bootstrap";
 import {store} from "../../../../index";
+import ButtonCard from '../../../components/ButtonCard/ButtonCard';
+import {useThemeContext} from '../../../context/ThemeContext';
 
 const SecurityPolicy = () => {
+    const {theme} = useThemeContext()
     let domain = store.domain.domainName.toUpperCase()
     return (
-        <Container>
+        <ButtonCard style={{height: '100%', borderRadius: 0}}  theme={theme}>
             <div className="article footer_links_page">
                 <h1 className="article-title">Security Policy</h1>
                 <h4 className="article-subtitle">User account protection</h4>
@@ -59,7 +62,7 @@ const SecurityPolicy = () => {
                     on the Internet.
                 </p>
             </div>
-        </Container>
+        </ButtonCard>
     )
 }
 

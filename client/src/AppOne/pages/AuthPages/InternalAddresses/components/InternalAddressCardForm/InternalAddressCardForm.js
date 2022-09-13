@@ -1,4 +1,3 @@
-import React from 'react'
 import {Col, Row} from "react-bootstrap";
 import Input from "../../../../../components/UI/Input/Input";
 import Button from "../../../../../components/UI/Button/Button";
@@ -10,7 +9,6 @@ import {store} from "../../../../../../index";
 import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
 import {getGeoData} from "../../../../../queries/getSendGeoData";
 import {getCurrentDate} from "../../../../../utils/getCurrentDate";
-import {useNavigate} from "react-router-dom";
 import {NotifContext, useNotifContext} from "../../../../../context/notifContext";
 
 const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, sum}) => {

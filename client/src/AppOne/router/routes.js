@@ -56,8 +56,8 @@ import {
     TRADING,
     ERROR_500,
     RECRUITER_LIST,
-    RECRUITER_DETAIL, CHAT, ADMIN_CHAT, ADMIN_TRADING, WALLET_ROUTE
-} from "../utils/constants"
+    RECRUITER_DETAIL, CHAT, ADMIN_CHAT, ADMIN_TRADING, WALLET_ROUTE, SUPPORT_US
+} from '../utils/constants';
 import SignUp from '../pages/NonAuthPages/SignUp/SignUp'
 import SignIn from '../pages/NonAuthPages/SignIn/SignIn'
 import Landing from '../pages/NonAuthPages/Landing/Landing'
@@ -117,6 +117,7 @@ import Chat from "../pages/AdminPages/Chat/Chat";
 import StaffTrading from "../pages/AdminPages/StaffTrading/StaffTrading";
 import Wallet from "../pages/AuthPages/Wallet/Wallet";
 import TradingTest from "../pages/AuthPages/TradingTest/TradingTest";
+import ContactUsDonate from '../pages/AuthPages/ContactUsDonate/ContactUsDonate';
 
 export const authRoutes = [
     {
@@ -215,7 +216,10 @@ export const authRoutes = [
         path: WALLET_ROUTE,
         component: <Wallet/>
     },
-
+    {
+        path: SUPPORT_US,
+        component: <ContactUsDonate/>
+    },
 
 ]
 
@@ -359,10 +363,6 @@ export const publicRoutes = [
     {
         path: ABOUT_US,
         component: <AboutUS/>
-    },
-    {
-        path: CONTACT_US,
-        component: <ContactUS/>
     },
     {
         path: ERROR,

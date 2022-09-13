@@ -1,16 +1,19 @@
 import React from 'react'
 import {Container} from "react-bootstrap";
 import {store} from "../../../../index";
+import ButtonCard from '../../../components/ButtonCard/ButtonCard';
+import {useThemeContext} from '../../../context/ThemeContext';
 
 const AboutUS = () => {
+    const {theme} = useThemeContext()
     let domain = store.domain.domainName.toUpperCase()
     return (
-        <Container>
+        <ButtonCard style={{height: '100%', borderRadius: 0}} theme={theme}>
             <div className="article footer_links_page">
                 <h1 className="article-title">ABOUT US</h1>
                 <h4 className="article-subtitle">ABOUT {domain}</h4>
                 <p className="article-text">
-                    Founded in 2015 by cybersecurity engineers, {domain} is the premier exchange and trading
+                    Founded in {store.domain.companyYear} by cybersecurity engineers, {domain} is the premier exchange and trading
                     platform, providing lightning-fast trade and exchange execution, dependable digital wallets and
                     industry-leading
                     security practices. Our mission is to help advance the exchange and trading industry by fostering
@@ -100,11 +103,11 @@ const AboutUS = () => {
 
                 <h4 className="article-subtitle">Our Founder: </h4>
                 <p className="article-text">
-                    Shultz David is Co-Founder and CEO of {domain}.
+                    {store.domain.companyOwnerName} is Co-Founder and CEO of {domain}.
                 </p>
             </div>
 
-        </Container>
+        </ButtonCard>
     )
 }
 

@@ -1,14 +1,21 @@
 import React from 'react'
 import {store} from "../../../../index";
 import {Container} from "react-bootstrap";
+import {ThemeContext, useThemeContext} from '../../../context/ThemeContext';
+import classNames from 'classnames/bind';
+import cls from './AuthArticlesStyles.module.scss';
+import ButtonCard from '../../../components/ButtonCard/ButtonCard';
 
 const AboutUs = () => {
-    let domain = store.domain.domain_name.toUpperCase()
-    let domainName = store.domain.company_owner_name
+    const {theme} = useThemeContext(ThemeContext)
+    const cx = classNames.bind(cls)
+    const classes = cx('article', theme)
+    let domain = store.domain.domainName.toUpperCase()
+    let domainName = store.domain.companyOwnerName
     console.log(store.domain)
     return (
-        <Container>
-            <div className="article footer_links_page">
+        <ButtonCard theme={theme}>
+            <div className={classes}>
                 <h1 className="article-title">ABOUT US</h1>
                 <h4 className="article-subtitle">ABOUT {domain}</h4>
                 <p className="article-text">
@@ -105,7 +112,7 @@ const AboutUs = () => {
                     {domainName} is Co-Founder and CEO of {domain}.
                 </p>
             </div>
-        </Container>
+        </ButtonCard>
     )
 }
 

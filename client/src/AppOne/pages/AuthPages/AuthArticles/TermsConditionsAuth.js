@@ -3,9 +3,15 @@ import {store} from "../../../../index";
 import Preloader from "../../../components/UI/Preloader/Preloader";
 import {Container} from "react-bootstrap";
 import TERMS from '../../../terms'
+import {ThemeContext, useThemeContext} from '../../../context/ThemeContext';
+import classNames from 'classnames/bind';
+import cls from './AuthArticlesStyles.module.scss';
+import ButtonCard from '../../../components/ButtonCard/ButtonCard';
 
 const TermsConditionsAuth = () => {
-
+    const {theme} = useThemeContext(ThemeContext)
+    const cx = classNames.bind(cls)
+    const classes = cx('article', theme)
     let domain = store.domain.domainName
     let domainBig = store.domain.fullDomainName
     let domainSupport = store.domain.companyEmail
@@ -17,13 +23,13 @@ const TermsConditionsAuth = () => {
         return {__html: `${str}`};
     }
     return (
-        <Container>
+        <ButtonCard theme={theme}>
             {
                 store.terms ?
                     <div dangerouslySetInnerHTML={createMarkup()}/>
                     : <Preloader />
             }
-        </Container>
+        </ButtonCard>
     )
 }
 

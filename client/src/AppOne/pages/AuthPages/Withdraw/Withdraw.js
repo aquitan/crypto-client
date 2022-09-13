@@ -214,7 +214,7 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
                                     </Col>
                                 </Row>
                                 <Row className='justify-content-center'>
-                                    <Button onClick={handleSubmit(onSubmit)} classname='btnBlue'>Withdraw</Button>
+                                    <Button style={{maxWidth: 200}} onClick={handleSubmit(onSubmit)} classname='btnBlue'>Withdraw</Button>
                                 </Row>
                             </Form>
                         </Tab>

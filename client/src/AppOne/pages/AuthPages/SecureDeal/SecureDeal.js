@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Col, Container, Row} from "react-bootstrap";
 import InputRadio from "../../../components/UI/InputRadio/InputRadio";
 import './SecureDeal.scss'
@@ -111,19 +111,20 @@ const SecureDeal = () => {
                 Secure Deal was created successfully!
             </Modal>
 
-
-            <h1 className='mb-4 mt-4'>Create new secure deal</h1>
             <Row>
                 <Col className='col-12 col-lg-7'>
                     <ButtonCard theme={theme}>
+                        <Row>
+                            <h2>Create new secure deal</h2>
+                        </Row>
                         <Form classnames='wide-form' onSubmit={handleSubmit(onSubmit)}>
                             <Row className='mb-3 pb-2 secure_deal_row'>
                                 <h4 className='mb-3'>
                                     <span className='step'>01</span>
                                     Step 1: Choose your role</h4>
                                 <p>You can buy or sell anything securely via our platform.</p>
-                                <Row className='mb-3'>
-                                    <Col className='secure_deal_col p-0 py-4'>
+                                <div className='secure_deal_col mb-3 d-flex'>
+                                    <div className='p-0 py-4'>
                                         <InputRadio {...register('role', {
                                             required: 'This field is required',
                                         })} classname='radio_btn' id='seller' label='Seller' value='seller' name='role' />
@@ -131,8 +132,8 @@ const SecureDeal = () => {
                                           name='role'
                                           errors={errors}
                                           render={({message}) => <p className={error.error}>{message}</p>} />
-                                    </Col>
-                                    <Col className='secure_deal_col p-0 py-4'>
+                                    </div>
+                                    <div className='p-0 py-4'>
                                         <InputRadio {...register('role', {
                                             required: 'This field is required',
                                         })} classname='radio_btn' label='Buyer' id='buyer' value='buyer' name='role' />
@@ -140,8 +141,8 @@ const SecureDeal = () => {
                                           name='role'
                                           errors={errors}
                                           render={({message}) => <p className={error.error}>{message}</p>} />
-                                    </Col>
-                                </Row>
+                                    </div>
+                                </div>
                             </Row>
                             <Row className='mb-3 pb-2'>
                                 <Col>
@@ -248,13 +249,6 @@ const SecureDeal = () => {
 
         </>
     )
-}
-
-SecureDeal.propTypes = {
-    
-}
-SecureDeal.defaultProps = {
-    
 }
 
 export default SecureDeal

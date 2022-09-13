@@ -1,12 +1,15 @@
 import React from 'react'
 import {Container} from "react-bootstrap";
 import {store} from "../../../../index";
+import {useThemeContext} from '../../../context/ThemeContext';
+import ButtonCard from '../../../components/ButtonCard/ButtonCard';
 
 const PrivacyPolicy = () => {
+    const {theme} = useThemeContext()
     let domain = store.domain.domainName.toUpperCase()
     let domainFull = store.domain.fullDomainName
     return (
-        <Container>
+        <ButtonCard theme={theme}>
             <div className="article footer_links_page">
                 <h1 className="article-title">Private Policy</h1>
                 <h4 className="article-subtitle">1. INTRODUCTION</h4>
@@ -269,7 +272,7 @@ const PrivacyPolicy = () => {
                     information in open sources on the Internet.</p>
             </div>
 
-        </Container>
+        </ButtonCard>
     )
 }
 

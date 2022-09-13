@@ -22,9 +22,12 @@ import {imgMatch} from "../../../utils/imgMatch";
 import {getGeoData} from "../../../queries/getSendGeoData";
 import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 import './InternalSwapTabs.scss'
+import CustomModal from '../../../components/CustomModal/CustomModal';
 
 const InternalSwap = () => {
     const {theme} = useThemeContext(ThemeContext)
+    const [showModal, setShowModal] = useState(false)
+    const [errorModal, setErrorModal] = useState(false)
     const [balance, setBalance] = useState([])
     const [history, setHistory] = useState([])
     const {register, handleSubmit, setError, formState: {errors, isValid, isDirty}} = useForm({
@@ -161,10 +164,10 @@ const InternalSwap = () => {
             const res = await putData('/swap/make_swap/', data)
             if (res.status === 201) {
                 getSwapHistory()
-                // SwalSimple('Swap completed successfully!')
+                setShowModal(true)
             }
         } else {
-            // SwalSimple('You cant exchange identical currencies!')
+            setErrorModal(true)
         }
 
 
@@ -191,11 +194,22 @@ const InternalSwap = () => {
         }
     }
 
-    console.log('chekPercent', chekPercent())
 
     return (
         <>
 
+            <CustomModal
+              title={'Success!'}
+              text={'Swap was completed successfully!'}
+              btnClose={'Close'}
+              show={showModal}
+              handleClose={() => setShowModal(false)} />
+            <CustomModal
+              title={'Error!'}
+              text={'You cant exchange identical currencies!'}
+              btnClose={'Close'}
+              show={errorModal}
+              handleClose={() => setErrorModal(false)} />
 
             <ButtonCard theme={theme} >
 

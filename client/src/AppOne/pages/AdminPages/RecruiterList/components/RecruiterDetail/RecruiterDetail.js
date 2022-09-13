@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react'
-import PropTypes from 'prop-types'
 import AdminButtonCard from "../../../../../components/AdminButtonCard/AdminButtonCard";
 import {Col, Container, Form, Row} from "react-bootstrap";
 import {deleteData, getData, patchData, postData, putData} from "../../../../../services/StaffServices";
@@ -15,7 +14,6 @@ import err from "../../../../../styles/Error.module.scss";
 import {v4 as uuid} from 'uuid'
 import StaffWalletsItem from "../../../StaffWallets/components/StaffWalletsItem/StaffWalletsItem";
 import AdminForm from "../../../../../components/UI/AdminForm/AdminForm";
-// import {SwalSimple} from "../../../../../utils/SweetAlert";
 
 const RecruiterDetail = () => {
     const [recruiter, setRecruiter] = useState()

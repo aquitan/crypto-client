@@ -1,10 +1,14 @@
 import React from 'react'
 import {Container} from "react-bootstrap";
 import {store} from "../../../../index";
+import ButtonCard from '../../../components/ButtonCard/ButtonCard';
+import {useThemeContext} from '../../../context/ThemeContext';
 
 const ContactUS = () => {
-    return (
-        <Container className="container">
+  const {theme} = useThemeContext()
+
+  return (
+        <ButtonCard style={{height: '100%', borderRadius: 0}} theme={theme}>
 
             <div className="article footer_links_page">
                 <h4 className="article-title">Technical Support Department:</h4>
@@ -21,7 +25,7 @@ const ContactUS = () => {
                             you. Feel free to contact us via email.</p>
             </div>
 
-        </Container>
+        </ButtonCard>
     )
 }
 

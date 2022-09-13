@@ -101,10 +101,10 @@ const Users = () => {
                                         return(
                                             <UsersTableItem
                                                 key={uuid()}
-                                                registerDate={user.dateOfEntry}
-                                                name={user.name}
-                                                email={user.email}
-                                                id={user._id}
+                                                registerDate={user.registerDate}
+                                                name={user.userName}
+                                                email={user.userEmail}
+                                                id={user.userId}
                                                 userStatus={user.userStatus}
                                                 kycStatus={user.kycStatus}
                                                 userDomain={user.userDomain}

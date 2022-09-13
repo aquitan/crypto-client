@@ -10,6 +10,7 @@ import Deposit from "../Deposit/Deposit";
 import Withdraw from "../Withdraw/Withdraw";
 import './Wallet.scss'
 import '../InternalSwap/InternalSwapTabs.scss'
+import Preloader from '../../../components/UI/Preloader/Preloader';
 
 const Wallet = () => {
     const [balances, setBalances] = useState([])
@@ -54,7 +55,6 @@ const Wallet = () => {
         setShowDeposit(true)
     }
     const onWithdrawOpen = (withdrawCoin, coinsBalance ,coinFullName) => {
-        console.log('withdraw', withdraw)
         setWithdraw({
             coin: withdrawCoin,
             coinsBalance,
@@ -66,6 +66,7 @@ const Wallet = () => {
     return (
         <>
             <Modal
+                size='xl'
                 animation={false}
                 style={{opacity: 1, zIndex: 9999}}
                 show={showDeposit}
@@ -82,6 +83,7 @@ const Wallet = () => {
                 </Modal.Body>
             </Modal>
             <Modal
+                size='xl'
                 animation={false}
                 style={{opacity: 1, zIndex: 9999}}
                 show={showWithdraw}
@@ -110,9 +112,11 @@ const Wallet = () => {
                             </Row>
                             <Row>
                                 <div style={{color: '#9295A6', fontSize: 16}}>Wallet balance:</div>
-                                <h2 className='mt-4' style={{fontWeight: 'bold', color: theme === 'light' ? '#9295A6' : '#fff'}}>${(balancesArr.reduce((prev, cur) => {
-                                    return prev + cur
-                                }, 0).toLocaleString())}</h2>
+                                {
+                                    balancesArr ? <h2 className='mt-4' style={{fontWeight: 'bold', color: theme === 'light' ? '#9295A6' : '#fff'}}>${(balancesArr.reduce((prev, cur) => {
+                                        return prev + cur
+                                    }, 0).toFixed(5))}</h2> : <Preloader />
+                                }
                             </Row>
                         </Col>
                         <Col>
@@ -143,8 +147,9 @@ const Wallet = () => {
                             </div>
                         </Col>
                     </Row>
-
                 </ButtonCard>
+
+
                 <ButtonCard theme={theme}>
                     <h2>Wallet list</h2>
                     {
@@ -158,7 +163,7 @@ const Wallet = () => {
                                     coinFullName={item.coinFullName}
                                     theme={theme}
                                     balanceUsd={(item.coinBalance.toFixed(5) * store.rates[item.coinName.toLowerCase()]).toFixed(5)}
-                                    coin={item.coinName} />
+                                    coin={item.coinName === 'TRX/USDT' ? 'TRC 20' : item.coinName} />
                             )) : <h2>No wallets</h2>
                     }
                 </ButtonCard>

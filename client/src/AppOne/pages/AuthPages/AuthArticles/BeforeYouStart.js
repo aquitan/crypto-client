@@ -1,12 +1,19 @@
 import React from 'react'
 import {Container} from "react-bootstrap";
 import {store} from "../../../../index";
+import {ThemeContext, useThemeContext} from '../../../context/ThemeContext';
+import classNames from 'classnames/bind';
+import cls from './AuthArticlesStyles.module.scss';
+import ButtonCard from '../../../components/ButtonCard/ButtonCard';
 
 const BeforeYouStart = () => {
-    let domain = store.domain.domain_name.toUpperCase()
+    const {theme} = useThemeContext(ThemeContext)
+    const cx = classNames.bind(cls)
+    const classes = cx('article', theme)
+    let domain = store.domain.domainName.toUpperCase()
     return (
-        <Container>
-            <div className="article footer_links_page">
+        <ButtonCard theme={theme}>
+            <div className={classes}>
                 <h1 className="article-title">Before You Start</h1>
                 <p className="article-text">Crypto Trading are all about making the right choice. That includes
                     predicting
@@ -47,7 +54,7 @@ const BeforeYouStart = () => {
                     information in open sources on the Internet.</p>
 
             </div>
-        </Container>
+        </ButtonCard>
     )
 }
 

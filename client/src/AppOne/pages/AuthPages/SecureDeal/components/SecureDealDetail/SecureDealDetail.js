@@ -19,6 +19,7 @@ import {getCurrentDate} from "../../../../../utils/getCurrentDate";
 import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
 import ChatMessege from "../../../../../components/UI/ChatMessege/ChatMessege";
 import {ThemeContext, useThemeContext} from '../../../../../context/ThemeContext';
+import CustomModal from '../../../../../components/CustomModal/CustomModal';
 
 const SecureDealDetail = () => {
     const {theme} = useThemeContext(ThemeContext)
@@ -120,9 +121,7 @@ const SecureDealDetail = () => {
 
     return (
         <>
-            <Modal active={modal} setActive={setModal}>
-                <h2>{result}</h2>
-            </Modal>
+            <CustomModal show={result} handleClose={() => setResult('')} title={result} />
 
             <Row>
                 <Col>
@@ -138,7 +137,7 @@ const SecureDealDetail = () => {
                     <>
                         <Row>
                             <Col className='col-12 col-xl-6'>
-                                <ButtonCard theme={theme}>
+                                <ButtonCard style={{minHeight: 400}} theme={theme}>
                                     <h5 className={cls.card_header}>Base info</h5>
                                     <Row className='mb-3 mt-3'>
                                         <Col>Seller</Col>
@@ -170,8 +169,8 @@ const SecureDealDetail = () => {
                                               <Col>Enter password</Col>
                                               <Col>
                                                   <Row className='align-items-center'>
-                                                      <Col className='col-12 col-md-4'><Input {...register('acceptCode')} classname='inputTransparent' placeholder='password' /></Col>
-                                                      <Col className='col-12 col-md-6'><Button style={{height: 50}} onClick={handleSubmit(sendRewardData)} classname='btnBlue'>Get reward</Button></Col>
+                                                      <Col className='col-12 col-md-4 p-0 py-1'><Input {...register('acceptCode')} classname='inputTransparent' placeholder='password' /></Col>
+                                                      <Col className='col-12 col-md-6 py-1'><Button style={{height: 50}} onClick={handleSubmit(sendRewardData)} classname='btnBlue'>Get reward</Button></Col>
                                                   </Row>
                                               </Col>
                                           </Row>
@@ -181,7 +180,7 @@ const SecureDealDetail = () => {
                             </Col>
 
                             <Col className='col-12 col-xl-6'>
-                                <ButtonCard theme={theme} className='mt-4 p-3'>
+                                <ButtonCard style={{minHeight: 400}} theme={theme} className='mt-4 p-3'>
                                     <h5 className={cls.card_header}>Detailed info</h5>
                                     <Row className='mt-3'>
                                         <TextArea rows={8} classnames='textareaTransparent' value={dealData.dealCondition}/>
@@ -199,13 +198,14 @@ const SecureDealDetail = () => {
                                             <ChatWindow onUploadImg={onUploadImg} onClick={onClick}>
                                                 {
                                                     typeof msg !== 'string' ?
-                                                      msg.map(item => {
+                                                      msg.slice(0).reverse().map(item => {
                                                           return(
                                                             <ChatMessege
                                                               key={item._id}
                                                               date={item.curDate}
                                                               type={item.isUser}
                                                               image={item.imageLink}
+                                                              userId={item.userId}
                                                               text={item.messageBody} />
                                                           )
                                                       }) : null

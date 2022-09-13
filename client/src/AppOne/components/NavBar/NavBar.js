@@ -7,12 +7,13 @@ import Button from "../UI/Button/Button";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
     faBars,
-    faChartBar, faWallet
-} from "@fortawesome/free-solid-svg-icons";
+    faChartBar, faMoon, faSun, faUserLock, faWallet
+} from '@fortawesome/free-solid-svg-icons';
 import Logo from "../UI/Logo/Logo";
 import ToggleCheckbox from "../UI/ToggleCheckbox/ToggleCheckbox";
 import {ThemeContext, useThemeContext} from "../../context/ThemeContext";
 import Preloader from "../UI/Preloader/Preloader";
+import Notification from '../UI/Notification/Notification';
 
 const NavBar = () => {
     const {theme, toggleTheme} = useThemeContext(ThemeContext)
@@ -77,13 +78,29 @@ const NavBar = () => {
                             <NavLink className='domain_header' style={{color: theme === 'light' ? '#121318' : '#fff', marginRight: 35}} to={'/'}>{store.domain.domainName}</NavLink>
                         </div>
                     </Navbar.Brand>
-                    <Nav className="d-none d-xl-flex me-auto">
+                    <Nav className="d-none d-xl-flex me-auto align-content-center">
                         <Nav.Link style={{color: theme === 'light' ? 'rgba(0, 0, 0, .55)' : '#fff'}} to={'/internal-addresses'} as={NavLink}>Internal Transactions</Nav.Link>
                         <Nav.Link style={{color: theme === 'light' ? 'rgba(0, 0, 0, .55)' : '#fff'}} to={'/profile'} as={NavLink}>Profile</Nav.Link>
                         <Nav.Link style={{color: theme === 'light' ? 'rgba(0, 0, 0, .55)' : '#fff'}} to={'/secure-deal'} as={NavLink}>Secure Deal</Nav.Link>
+                        <Nav.Link style={{color: theme === 'light' ? 'rgba(0, 0, 0, .55)' : '#fff'}} to={'/news'} as={NavLink}>News</Nav.Link>
+                        {
+                            store.isStaff || store.fullAccess || store.isAdmin ?
+                                <Nav.Link style={{color: theme === 'light' ? 'rgba(0, 0, 0, .55)' : '#fff'}} as={NavLink} to='/admin'>
+                                    <span>Staff</span>
+                                </Nav.Link>
+                                : null
+                        }
                     </Nav>
                     <div className='d-none d-xl-flex align-items-center'>
-                        <ToggleCheckbox onChange={toggleTheme}/>
+                        {/*<ToggleCheckbox onChange={toggleTheme}/>*/}
+                        <div onClick={toggleTheme} style={{cursor: 'pointer'}}>
+                            {
+                                theme === 'light' ? <FontAwesomeIcon icon={faMoon} size='lg' /> : <FontAwesomeIcon icon={faSun} size='lg' color={'orange'}/>
+                            }
+                        </div>
+                        <div style={{margin: '0 10px'}}>
+                            <Notification />
+                        </div>
                         <div style={{marginLeft: 15}}>
                             <Button classname={['btnGray', 'headerBtn', theme]} onClick={() => navigate('/trading')}>
                                 <FontAwesomeIcon icon={faChartBar}/> Trading

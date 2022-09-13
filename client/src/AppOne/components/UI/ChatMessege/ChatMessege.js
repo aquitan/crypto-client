@@ -3,16 +3,15 @@ import cls from './ChatMessage.module.scss'
 import classNames from "classnames/bind";
 import {Row} from "react-bootstrap";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
+import {store} from '../../../../index';
 
-const ChatMessege = ({text, date, type, allowEdit, onEditChatMessage, id, image}) => {
+const ChatMessege = ({text, date, type, allowEdit, onEditChatMessage, id, image, userId}) => {
     const [textVal, setTextVal] = useState(text)
     const [disabled, setDisabled] = useState(true)
     let cx = classNames.bind(cls)
     let classes = ''
     if (!allowEdit) {
-        classes  = cx('chat-message', type ? 'user' : 'support')
-    } else {
-        classes  = cx('chat-message', !type ? 'user' : 'support')
+        classes = cx('chat-message', type && store.user.id === userId ? 'user' : 'support')
     }
 
     const onTextChange = (e) => {
@@ -30,17 +29,19 @@ const ChatMessege = ({text, date, type, allowEdit, onEditChatMessage, id, image}
     return (
         <div className={classes}>
             <Row>
-                <img style={{width: 250}} src={image} alt=""/>
-                <span id={id} style={{fontWeight: 'bold'}}>
+                {
+                    image ? <img style={{width: 250}} src={image} alt=""/> : null
+                }
+                <span id={id} style={{fontWeight: 'bold', padding: 0}}>
                     {
                         disabled ?
                             <div
-                                style={{resize: 'none', width: '100%'}}
+                                style={{resize: 'none', wordBreak: 'break-all'}}
                                 className={cls.chatInput}
                             >{textVal}</div>
                             : <textarea
                                 rows={10}
-                                style={{backgroundColor: 'transparent', width: '100%', border: 'none', borderBottom: '1px solid #000'}}
+                                style={{backgroundColor: 'transparent', border: 'none', borderBottom: '1px solid #000'}}
                                 onChange={onTextChange}
                                 value={textVal}/>
                     }
@@ -50,7 +51,7 @@ const ChatMessege = ({text, date, type, allowEdit, onEditChatMessage, id, image}
                 </span>
             </Row>
             <Row className='mt-2'>
-                <span style={{fontSize: 10}}>
+                <span className={cls.time} style={{fontSize: 10}}>
                     {getCurrentDate(date)}
                 </span>
             </Row>

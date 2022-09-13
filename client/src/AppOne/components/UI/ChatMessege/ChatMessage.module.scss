@@ -1,29 +1,59 @@
+.user {
+  background-color: #007AFF;
+  align-self: end;
+  color: #fff;
+}
+
+
 .chat-message {
   display: inline-block;
   padding: 5px 10px;
   border-radius: 5px;
-  margin: 20px 0;
-  max-width: 300px;
+  margin: 20px;
+  width: fit-content;
   font-size: 14px;
   font-weight: normal;
+  position: relative;
+  max-width: 350px;
 }
 .support {
-  background-color: #8cdbf4;
+  background-color: #F2F2F7;
   align-self: baseline;
   color: #000;
-}
-.user {
-  background-color: rgb(83, 103, 254);
-  align-self: end;
-  color: #fff;
 }
 .chatInput {
   background-color: transparent;
   border: none;
-  border-bottom: 1px solid #fff;
-  padding: 10px 5px;
   &:disabled {
     color: #292b3c;
     border-bottom: 1px solid transparent
   }
+}
+
+.chat-message.support {
+  &:after {
+    content: '';
+    position: absolute;
+    left: -10px; top: 0;
+    border: 10px solid transparent;
+    border-top: 10px solid #F2F2F7;
+  }
+}
+
+.chat-message.user {
+  &:after {
+    content: '';
+    position: absolute;
+    right: -10px; top: 0;
+    border: 10px solid transparent;
+    border-top: 10px solid #007AFF;
+  }
+}
+
+.time {
+  text-align: left;
+}
+
+.user .time {
+  text-align: right;
 }

@@ -3,12 +3,10 @@ import {Col, Row} from "react-bootstrap";
 import Button from "../../../components/UI/Button/Button";
 import Form from "../../../components/UI/Form/Form";
 import Input from "../../../components/UI/Input/Input";
-import Select from '../../../components/UI/Select/Select';
 import {useForm} from 'react-hook-form'
 import {getGeoData} from "../../../queries/getSendGeoData";
 import {store} from "../../../../index";
 import {patchData, postData} from "../../../services/StaffServices";
-import {twoFaElems} from "../../../utils/staffConstants";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
 import {observer} from "mobx-react-lite";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
@@ -237,8 +235,8 @@ const AccountSecurity = (props) => {
                                 }
                             </Row>
                             { faType && faType !== 'telegram' ?
-                              !showBot && <Row className='mt-3'>
-                                  <Button classname='btnBlue' onClick={twoFaHandle(onSubmit)}>Confirm</Button>
+                              !showBot && <Row className='mt-3 px-2 justify-content-end'>
+                                  <Button style={{width: 140}} classname='btnBlue' onClick={twoFaHandle(onSubmit)}>Confirm</Button>
                               </Row> : null
                             }
                         </Form>

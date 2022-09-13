@@ -11,6 +11,7 @@ import {getData} from "../../../services/StaffServices";
 import {store} from "../../../../index";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
 import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
+import CustomModal from '../../../components/CustomModal/CustomModal';
 
 const InternalAddresses = () => {
     const {theme} = useThemeContext(ThemeContext)
@@ -69,15 +70,29 @@ const InternalAddresses = () => {
 
     return (
         <>
-            <InternalAddressModal
-                amount={modal?.amount}
-                currency={modal?.currency}
-                active={modal?.isOpen}
-                setActive={setModal}
-                from={modal?.from}
-                to={modal?.to}/>
+            {/*<InternalAddressModal*/}
+            {/*    amount={modal?.amount}*/}
+            {/*    currency={modal?.currency}*/}
+            {/*    active={modal?.isOpen}*/}
+            {/*    setActive={setModal}*/}
+            {/*    from={modal?.from}*/}
+            {/*    to={modal?.to}/>*/}
 
             <Row>
+
+                <CustomModal
+                  title='Transfer info'
+                  show={modal.isOpen}
+                  handleClose={() => setModal({...modal, isOpen: false})}
+                  btnClose={'Close'}>
+                    <Row>
+                        <Row className='text-center'><b>From:</b> <span>{modal?.from}</span></Row>
+                        <Row className='text-center'><b>To:</b> <span>{modal?.to}</span></Row>
+                    </Row>
+                    <Row>
+                        <Col className='text-center'><b>Amount:</b> {modal?.amount} USD]</Col>
+                    </Row>
+                </CustomModal>
 
                 <Col className='col-12 col-xl-8'>
                     <ButtonCard theme={theme}>
@@ -87,7 +102,13 @@ const InternalAddresses = () => {
                                     return (
                                         <Row>
                                             <Col className='col-12 mb-3'>
-                                                <InternalAddressesCard theme={theme} wallet={wallet.walletAddress} currency={wallet.coinName} onCopy={onCopy} sum={wallet.balance} />
+                                                <InternalAddressesCard
+                                                  key={wallet.walletAddress}
+                                                  theme={theme}
+                                                  wallet={wallet.walletAddress}
+                                                  currency={wallet.coinName}
+                                                  onCopy={onCopy}
+                                                  sum={wallet.balance} />
                                             </Col>
                                         </Row>
                                     )
@@ -111,6 +132,7 @@ const InternalAddresses = () => {
                                             history.map(item => {
                                                 return (
                                                     <InternalAddressesTableItem
+                                                        key={item._id}
                                                         onClick={onModalOpen}
                                                         date={getCurrentDate(item.date)}
                                                         currency={item.coinName}
@@ -127,13 +149,13 @@ const InternalAddresses = () => {
                         </Row>
 
                     </ButtonCard>
-                    <Row>
-                        {
-                            history ?
-                                <span onClick={onNext}>Next...</span>
-                                : null
-                        }
-                    </Row>
+                    {/*<Row>*/}
+                    {/*    {*/}
+                    {/*        history ?*/}
+                    {/*            <span onClick={onNext}>Next...</span>*/}
+                    {/*            : null*/}
+                    {/*    }*/}
+                    {/*</Row>*/}
                 </Col>
 
             </Row>

@@ -1,4 +1,3 @@
-import React from 'react'
 import {Col, Row} from "react-bootstrap";
 import Button from "../../../../../components/UI/Button/Button";
 
@@ -15,20 +14,13 @@ const InternalAddressesTableItem = ({date, id, amount, currency, status, onClick
                 {date}
             </Col>
             <Col className={'text-center align-items-center d-flex justify-content-center'}>
-                <Button onClick={() => onClick(obj)} classname={[`${status === 'complete' ? 'green_btn' : 'red_btn'}`, 'small_btn'] }>Show address</Button>
+                <Button style={{height: 40}} onClick={() => onClick(obj)} classname={[`${status === 'complete' ? 'btnBlue' : 'btnRed'}`, 'btnOrange'] }>Show address</Button>
             </Col>
             <Col className={'text-center'}>
                 {amount.toFixed(3)} USD <br/> {cryptoAmount.toFixed(5)} {currency}
             </Col>
         </Row>
     )
-}
-
-InternalAddressesTableItem.propTypes = {
-    
-}
-InternalAddressesTableItem.defaultProps = {
-    
 }
 
 export default InternalAddressesTableItem

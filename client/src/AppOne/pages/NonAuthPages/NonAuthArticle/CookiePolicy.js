@@ -1,11 +1,14 @@
 import React from 'react'
 import {Container} from "react-bootstrap";
 import {store} from "../../../../index";
+import {useThemeContext} from '../../../context/ThemeContext';
+import ButtonCard from '../../../components/ButtonCard/ButtonCard';
 
 const CookiePolicy = () => {
+    const {theme} = useThemeContext()
     let domain = store.domain.domainName.toUpperCase()
     return (
-        <Container>
+        <ButtonCard style={{height: '100%', borderRadius: 0}} theme={theme}>
             <div className="article footer_links_page">
                 <h1 className="article-title">Cookie Policy</h1>
                 <h4 className="article-subtitle">WHAT ARE COOKIES?</h4>
@@ -87,7 +90,7 @@ const CookiePolicy = () => {
                 </p>
             </div>
 
-        </Container>
+        </ButtonCard>
     )
 }
 

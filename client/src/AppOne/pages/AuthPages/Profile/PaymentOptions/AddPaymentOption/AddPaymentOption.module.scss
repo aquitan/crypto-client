@@ -1,0 +1,19 @@
+.addPayment {
+  background-color: rgb(226, 242, 255);
+  display: inline-block;
+  width: fit-content;
+  padding: 10px;
+  border-radius: 5px;
+  color: rgb(109, 112, 119);
+  cursor: pointer;
+  margin: 30px 10px;
+}
+.dark.addPayment {
+  background-color: rgb(18, 19, 24);
+  color: #0083f8;
+  transition: all .2s linear;
+  &:hover {
+    background-color: #F0F1F5;
+    transition: all .2s linear;
+  }
+}

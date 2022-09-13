@@ -4,9 +4,11 @@ import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 import {getData} from "../../../services/StaffServices";
 import {store} from "../../../../index";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
+import {ThemeContext, useThemeContext} from '../../../context/ThemeContext';
 
 const UserNews = () => {
     const [state, setState] = useState([])
+    const {theme} = useThemeContext(ThemeContext)
 
     useEffect(() => {
         getNews()
@@ -19,13 +21,12 @@ const UserNews = () => {
 
 
     return (
-        <Container style={{maxHeight: 800}}>
-            <h2>News</h2>
+        <>
             {
                 typeof state !== 'string' ?
                     state.map(item => {
                         return (
-                            <ButtonCard>
+                            <ButtonCard theme={theme}>
                                 <h3 className='mb-3'>{item.newsTitle}</h3>
                                 <div className='mb-3'>
                                     <img style={{maxWidth: 450}} src={item.newsImage} alt=""/>
@@ -42,7 +43,7 @@ const UserNews = () => {
                     : <h2>No news</h2>
             }
 
-        </Container>
+        </>
     )
 }
 

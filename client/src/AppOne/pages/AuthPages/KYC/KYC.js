@@ -23,6 +23,7 @@ import {putData} from "../../../services/StaffServices";
 import cls from './KYC.modules.scss'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheckCircle} from "@fortawesome/free-solid-svg-icons";
+import CustomModal from '../../../components/CustomModal/CustomModal';
 
 
 
@@ -112,9 +113,12 @@ const KYC = ({status}) => {
 
     return (
         <>
-            <Modal active={modal} setActive={setModal}>
-                <h2>Check Fields!</h2>
-            </Modal>
+            <CustomModal
+              title={'Error'}
+              text={'Check fields! Necessary fields must be fulfilled!'}
+              show={modal}
+              handleClose={() => setModal(false)}/>
+
             <Form classnames={'form_big'} onSubmit={handleSubmit(onSubmit)}>
                 <Row className={'mb-3 text-center'}>
                     <h2 className={'mb-3'} style={{fontWeight: 'bold'}}>Begin your ID-Verification</h2>

@@ -54,11 +54,11 @@
     padding: 0;
 }
 *:disabled {
-    background-color: rgb(241, 242, 244);
+    background-color: rgba(174, 173, 178, .4);
 }
 .dark:disabled {
-    background-color: #2B3144;
-    color: #AEB1BF;
+    background-color: rgba(43, 49, 68, .4);
+    color: rgba(43, 49, 68, .8);
 }
 
 

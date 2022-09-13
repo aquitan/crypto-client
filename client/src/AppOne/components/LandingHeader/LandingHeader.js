@@ -9,7 +9,7 @@ import {useNavigate} from "react-router-dom";
 import Link from "../UI/Link/Link";
 import ToggleCheckbox from "../UI/ToggleCheckbox/ToggleCheckbox";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faBars} from "@fortawesome/free-solid-svg-icons";
+import {faBars, faMoon, faSun} from '@fortawesome/free-solid-svg-icons';
 import Preloader from "../UI/Preloader/Preloader";
 
 
@@ -85,7 +85,11 @@ const LandingHeader = ({state, openSidebar}) => {
                 <Col className='d-none d-xl-flex justify-content-end'>
                     <div className='d-flex justify-content-end align-items-center'>
                         <div>
-                            <ToggleCheckbox onChange={toggleTheme}/>
+                            <div onClick={toggleTheme} style={{cursor: 'pointer'}}>
+                                {
+                                    theme === 'light' ? <FontAwesomeIcon icon={faMoon} size='lg' /> : <FontAwesomeIcon icon={faSun} size='lg' color={'orange'}/>
+                                }
+                            </div>
                         </div>
                         <div className='d-flex justify-content-end align-items-center'>
                             <Button style={{marginLeft: 20}} classname={'btnGray'} onClick={() => navigate('/signin')}>

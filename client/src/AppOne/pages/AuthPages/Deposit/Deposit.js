@@ -25,6 +25,9 @@ import '../InternalSwap/InternalSwapTabs.scss'
 const Deposit = ({coin, coinsBalance, coinFullName}) => {
     const {theme} = useThemeContext(ThemeContext)
     const [show, showModal, closeModal] = useModal()
+    const [success = show, showSuccess = showModal, closeSuccess = closeModal] = useModal()
+    const [depError = show, showError = showModal, closeError = closeModal] = useModal()
+    const [fieldError = show, showFieldError = showModal, closeFieldError = closeModal] = useModal()
     const {notificationList, updateNotif} = useNotifContext(NotifContext)
     const {register, handleSubmit} = useForm()
     const [address, setAddress] = useState('')
@@ -37,8 +40,9 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
     const [coins, setCoins] = useState([])
     const [coinsFull, setCoinsFull] = useState([])
     const [history, setHistory] = useState([])
-    let btc = 38500
-    const location = useLocation()
+    let btc = store.rates[coin.toLowerCase()]
+    console.log('rate', btc);
+
 
     useEffect(() => {
         getHistoryDeposit()
@@ -119,12 +123,12 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
                 updateNotif()
                 if (res.status === 201) {
                     getHistoryDeposit()
-                    // SwalSimple('Deposit request has beed created succesfully')
+                    showSuccess(true)
                 } else {
-                    // SwalSimple('Something went wrong! Try again later...')
+                    showError(true)
                 }
             } else {
-                // SwalSimple('All fields must be fulfilled!')
+                showFieldError(true)
             }
 
         }
@@ -137,19 +141,7 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
     }
     const getBalance = async () => {
         const res = await getData(`/get_user_balance/${store.user.id}`)
-        // let arr = []
-        // res.data.forEach(item => {
-        //     let obj = {
-        //         value: item.coinName,
-        //         text: item.coinName,
-        //         fullName: item.coinFullName
-        //     }
-        //     arr.push(obj)
-        // })
-        // setCoins(arr)
-        // setCoinsFull(res.data)
         setBalance(res.data.filter(item => item.coinName === coin))
-        // console.log('res balance', res.data)
     }
     const onValChange = (e) => {
         let target = e.target.value
@@ -169,14 +161,25 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
 
     }
 
+
     return (
         <>
 
             <CustomModal
-              title={'No address'}
-              text={'Please, generate address first before making deposit!'}
-              show={show}
-              handleClose={closeModal} />
+              title={'Success'}
+              text={'Deposit was successful!'}
+              show={success}
+              handleClose={closeSuccess} />
+            <CustomModal
+              title={'Error'}
+              text={'Something went wrong! Try again later...'}
+              show={depError}
+              handleClose={closeError} />
+            <CustomModal
+              title={'Error'}
+              text={'All fields must be fulfilled!'}
+              show={fieldError}
+              handleClose={closeFieldError} />
 
             <CustomModal
                 title={'No address'}
@@ -219,20 +222,6 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
                                 <div>Coin balance: {balance ? balance[0].coinBalance.toFixed(5) : <Preloader />}</div>
                             </div>
                         </Row>
-                        <Row className='mb-3'>
-                            <p>Choose Quick Amount to Deposit</p>
-                            <div className='d-flex flex-column'>
-                                <div className='d-flex justify-content-center mb-3'>
-                                    <Button style={{margin: '0 5px'}} classname={['btnBlue','btnSmall']} onClick={() => setValue(500)}>500</Button>
-                                    <Button style={{margin: '0 5px'}} classname={['btnBlue','btnSmall']} onClick={() => setValue(1000)}>1000</Button>
-                                    <Button style={{margin: '0 5px'}} classname={['btnBlue','btnSmall']} onClick={() => setValue(1500)}>1500</Button>
-                                </div>
-                                <div className='d-flex justify-content-center mb-3'>
-                                    <Button style={{margin: '0 5px'}} classname={['btnBlue','btnSmall']} onClick={() => setValue(5000)}>5000</Button>
-                                    <Button style={{margin: '0 5px'}} classname={['btnBlue','btnSmall']} onClick={() => setValue(10000)}>10000</Button>
-                                </div>
-                            </div>
-                        </Row>
                         <Row className='mb-3 p-0'>
                             <span>Or Enter Your Amount</span>
                             <Input classname='inputTransparent' placeholder='' onChange={onChange} value={state.text} />
@@ -244,7 +233,7 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
                         <span style={{fontSize: 12}}>Note: Minimum deposit amount is {store.domain.domainParams.minDepositSum} USD</span>
                         <span style={{fontSize: 12}}>Note: Deposit fee is: {store.domain.domainParams.depositFee}%</span>
                         <Row className='mb-3 mt-3 justify-content-center'>
-                            <Button classname='btnBlue' onClick={handleSubmit(onSubmit)}>Submit</Button>
+                            <Button style={{maxWidth: 200}} classname='btnBlue' onClick={handleSubmit(onSubmit)}>Submit</Button>
                         </Row>
                     </Tab>
                     <Tab

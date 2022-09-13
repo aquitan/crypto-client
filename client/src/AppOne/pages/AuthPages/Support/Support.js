@@ -59,34 +59,32 @@ const Support = () => {
 
     return (
         <>
-            <Row>
-                <Col className='col-12 col-lg-8'>
-                    <ButtonCard theme={theme}>
+            <ButtonCard style={{padding: 0}} theme={theme}>
+                <Row className='py-3 px-3'>
+                    <Col className='col-12 col-lg-10'>
                         <ChatWindow onUploadImg={onUploadImg} onClick={onClick}>
                             {
                                 msg.length ?
-                                    msg.map(item => {
-                                        console.log('item support', item)
-                                        return(
-                                            <ChatMessege
-                                                key={item._id}
-                                                date={item.curDate}
-                                                type={item.isUser}
-                                                image={item.imageLink}
-                                                text={item.messageBody} />
-                                        )
-                                    }) : null
+                                  msg.map(item => {
+                                      console.log('item support', item)
+                                      return(
+                                        <ChatMessege
+                                          key={item._id}
+                                          userId={item.userId}
+                                          date={item.curDate}
+                                          type={item.isUser}
+                                          image={item.imageLink}
+                                          text={item.messageBody} />
+                                      )
+                                  }) : null
                             }
                         </ChatWindow>
-                    </ButtonCard>
-                </Col>
-                <Col className='col-12 col-lg-4'>
-                    <ButtonCard theme={theme}>
+                    </Col>
+                    <Col className='col-12 col-lg-2'>
                         <ChatRules rulesDisclamer={supportRulesText} />
-                    </ButtonCard>
-                </Col>
-            </Row>
-
+                    </Col>
+                </Row>
+            </ButtonCard>
         </>
     )
 }

@@ -12,6 +12,11 @@ const WalletItem = ({coinsBalance, balanceUsd, coin, coinFullName, theme, onDepo
     const cx = classNames.bind(cls)
     const classes = cx('walletItem', theme)
 
+    const renderCoinNameInBadge = () => {
+      if (coinFullName === 'TRX/USDT') return 'TRC 20'
+    }
+
+
     return (
 
 
@@ -19,15 +24,17 @@ const WalletItem = ({coinsBalance, balanceUsd, coin, coinFullName, theme, onDepo
 
         <div className={`${classes} d-flex`}>
             <Col className='d-flex align-items-center'>
-                <img width={30} src={`/img/${imgMatch(coin)}.svg`} alt=""/>
-                <b className='mx-3 d-none d-md-flex'>{coinFullName}</b>
-                <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8'}} className="badge d-none d-xl-flex">{coin}</div>
+                <img width={30} src={`/img/${imgMatch(coin === 'TRC 20' ? 'USDT' : coin)}.svg`} alt=""/>
+                <b className='mx-3 d-none d-md-flex'>{coinFullName === 'TRX/USDT' ? 'Teaser' : coinFullName}</b>
+                <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8'}} className="badge d-none d-xl-flex">
+                  {coin === 'USDT' ? 'ERC 20' : coin}
+                </div>
             </Col>
             <Col className='d-none d-xl-flex align-items-center'>
                 ${balanceUsd.toLocaleString()}
             </Col>
             <Col className='d-flex align-items-center'>
-                <b>{coinsBalance.toFixed(5)}</b> <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8', marginLeft: 5}} className="badge d-none d-sm-flex">{coin}</div>
+                <b>{coinsBalance.toFixed(5)}</b>
             </Col>
             <Col className='d-flex align-items-center flex-column flex-md-row'>
                 <Button style={{marginBottom: 5}} classname={['btnLink', theme]} onClick={() => onDepositOpen(coin, coinsBalance ,coinFullName)}>

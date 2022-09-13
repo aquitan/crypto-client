@@ -16,14 +16,18 @@ import Button from "../../../components/UI/Button/Button";
 import PaymentOptions from "./PaymentOptions/PaymentOptions";
 import classNames from "classnames/bind";
 import Preloader from "../../../components/UI/Preloader/Preloader";
-import {faFile, faHeadset, faLock, faUser, faWallet} from '@fortawesome/free-solid-svg-icons';
+import {faFile, faHeadset, faLock, faPhone, faUser, faWallet} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import UserService from '../../../services/UserService';
 
 const Profile = () => {
     const [profileData, setProfileData] = useState()
     const [state, setState] = useState(false)
     const {theme} = useThemeContext(ThemeContext)
     const [currentLink, setCurrentLink] = useState('account')
+    const [nameEdit, setNameEdit] = useState(false)
+    const [changeName, setChangeName] = useState('')
+    const [newName, setNewName] = useState('')
     const location = useLocation()
     const navigate = useNavigate()
 
@@ -46,6 +50,7 @@ const Profile = () => {
         setProfileData(res.data)
         const data = await res.data
         setProfileData(data)
+        setChangeName(res.data.user.name)
 
     }
 
@@ -84,6 +89,20 @@ const Profile = () => {
         }
     }
 
+    const onEditNameHandler = async () => {
+        setNameEdit(!nameEdit)
+        if (newName.length > 3) {
+            let geodata =  await getGeoData()
+            geodata.userName = newName
+            delete geodata.id
+            delete geodata.email
+            geodata.userEmail = store.userEmail
+            geodata.userId = store.user.id
+            const response = await UserService.editUser(geodata)
+        }
+    }
+
+
     return (
         <>
             <Row>
@@ -96,7 +115,17 @@ const Profile = () => {
                                 </div>
                             </Row>
                             <Row className='mb-3'>
-                                <h3>{profileData?.user === '' ? '-' : profileData?.user.name}</h3>
+                                <div style={{display: 'flex', justifyContent: 'center', fontSize: 20, fontWeight: 'bold'}}>
+                                    <span style={{cursor: 'pointer'}} onClick={onEditNameHandler}>
+                                        <img src={'/img/edit.svg'} alt=""/>
+                                    </span>
+                                    <div>
+                                        {
+                                            !nameEdit ? profileData?.user === '' ? '-' : profileData?.user.name :
+                                              <input onChange={e => setNewName(e.target.value)} style={{backgroundColor: 'transparent', border: 'none'}} type="text" value={newName} />
+                                        }
+                                    </div>
+                                </div>
                                 <div>{profileData?.user === '' ? '-' : profileData?.user.email}</div>
                             </Row>
                             <Row className='mb-2'>
@@ -122,7 +151,11 @@ const Profile = () => {
                             </div>
                             <div className={classes}>
                                 <FontAwesomeIcon icon={faHeadset} />
-                                <Nav.Link className={classes} style={{padding: 0, marginLeft: 20}} to={'/support'} as={NavLink}>Support</Nav.Link>
+                                <Nav.Link className={classes} style={{padding: 0, marginLeft: 20}} to={'/support'} as={NavLink}>Profile Support</Nav.Link>
+                            </div>
+                            <div className={classes}>
+                                <FontAwesomeIcon icon={faPhone} />
+                                <Nav.Link className={classes} style={{padding: 0, marginLeft: 20}} to={'/support-us'} as={NavLink}>Support Us</Nav.Link>
                             </div>
                         </Row>
                     </ButtonCard>

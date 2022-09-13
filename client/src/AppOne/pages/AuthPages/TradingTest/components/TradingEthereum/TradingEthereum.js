@@ -96,9 +96,9 @@ const TradingEthereum = () => {
         const datas = await res.json()
         setInitialRate(+datas.lastPrice)
         setCurVal(+datas.lastPrice)
+
         generateOrders(+datas.lastPrice, 300000, +datas.lastPrice)
         generateOrdersBuy(+datas.lastPrice, 300000)
-        console.log('res-binance', datas)
     }
 
     const getOhlc = async () => {
@@ -287,7 +287,6 @@ const TradingEthereum = () => {
         e.preventDefault()
         let coinBal = stateBalance[0].coinBalance / curVal
         let calc = coinBal * +val / 100
-        console.log('percent', calc)
         let calcResult = +textVal.usd * +calc.toFixed(5)
         setFromValueSecond(calcResult)
         setTextValTwo({...textValTwo, crypto: calc.toFixed(5)})

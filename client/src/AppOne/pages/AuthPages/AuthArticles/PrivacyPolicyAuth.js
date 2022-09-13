@@ -1,16 +1,22 @@
 import React from 'react'
 import {store} from "../../../../index";
-import {Container} from "react-bootstrap";
+import {ThemeContext, useThemeContext} from '../../../context/ThemeContext';
+import ButtonCard from '../../../components/ButtonCard/ButtonCard';
+import cls from './AuthArticlesStyles.module.scss'
+import classNames from 'classnames/bind';
 
 const PrivacyPolicyAuth = () => {
-    let domain = store.domain.domain_name.toUpperCase()
-    let domainFull = store.domain.full_domain_name
+    const {theme} = useThemeContext(ThemeContext)
+    const cx = classNames.bind(cls)
+    const classes = cx('article', theme)
+    let domain = store.domain.domainName.toUpperCase()
+    let domainFull = store.domain.fullDomainName
     return (
-        <Container>
-            <div className="article footer_links_page">
+        <ButtonCard theme={theme}>
+            <div className={classes}>
                 <h1 className="article-title">Private Policy</h1>
                 <h4 className="article-subtitle">1. INTRODUCTION</h4>
-                <p className="article-text">TThank you for visiting {domain}, a digital asset trading website, which is
+                <p className="article-text">Thank you for visiting {domain}, a digital asset trading website, which is
                     provided by
                     {domain}. By visiting, accessing, or using {domain} and associated application program
                     interface
@@ -295,7 +301,7 @@ const PrivacyPolicyAuth = () => {
                     information
                     in open sources on the Internet.</p>
             </div>
-        </Container>
+        </ButtonCard>
     )
 }
 

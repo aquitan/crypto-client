@@ -1,17 +1,18 @@
-import React, {useEffect, useState} from 'react'
-import {faBell} from "@fortawesome/free-solid-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Col, Row} from "react-bootstrap";
+import React, {useEffect, useRef, useState} from 'react';
+import {Col, Overlay, Popover, Row} from 'react-bootstrap';
 import NotificationItem from "./components/NotificationItem/NotificationItem";
 import cls from './Notification.module.scss'
 import {store} from "../../../../index";
 import {observer} from "mobx-react-lite";
 import {deleteData} from "../../../services/StaffServices";
 import {NotifContext, useNotifContext} from "../../../context/notifContext";
+import {useThemeContext} from '../../../context/ThemeContext';
 
 const Notification = () => {
     const {notificationList, updateNotif} = useNotifContext(NotifContext)
     const [open, setOpen] = useState(false)
+    const target = useRef(null);
+    const {theme} = useThemeContext()
 
     useEffect(() => {
         if (!store.fullAccess) {
@@ -34,31 +35,42 @@ const Notification = () => {
 
     return (
         <div className={cls.notification}>
-            <div className={cls.notification_header} onClick={() => setOpen(!open)}>
-                <FontAwesomeIcon icon={faBell} color='#fff' />
+            <div style={{textAlign: 'center'}} ref={target} className={cls.notification_header} onClick={() => setOpen(!open)}>
+                <img src={'/img/notification.svg'} height={25} alt=""/>
                 {notificationList.length ? <div className={cls.notification_mark}>{notificationList.length}</div> : null}
             </div>
             {
                 open ?
-                    <div className={cls.notification_body}>
-                        <div>
-                            <Row className={cls.notification_body_top}>
-                                <Col style={{fontSize: 13}}>Notifications</Col>
-                                <Col style={{fontSize: 13, cursor: 'pointer'}} onClick={onClearAll}>Clear all</Col>
-                            </Row>
-                            {
-                                notificationList.length  ?
-                                    notificationList.slice(0).reverse().map(notif => {
-                                        return <NotificationItem
-                                            removeNotif={removeNotif}
-                                            key={notif._id}
-                                            notif={notif} />
-                                    })
-                                    : <p>No messages</p>
-                            }
+                  <Overlay id={theme} target={target.current} show={open} placement="right">
+                      {(props) => (
+                        <Popover placement='bottom' id="overlay-example" {...props}>
+                            <Popover.Header style={{backgroundColor: '#fff'}}>
+                                <Row>
+                                    <Col style={{fontSize: 13}}>Notifications</Col>
+                                    <Col style={{fontSize: 13, cursor: 'pointer'}} onClick={onClearAll}>Clear all</Col>
+                                </Row>
+                            </Popover.Header>
+                            <Popover.Body style={{overflowY: 'auto', height: 300}} >
+                                <div className={cls.notification_body}>
+                                    <div>
+                                        {
+                                            notificationList.length  ?
+                                              notificationList.slice(0).reverse().map(notif => {
+                                                  return <NotificationItem
+                                                    removeNotif={removeNotif}
+                                                    key={notif._id}
+                                                    notif={notif} />
+                                              })
+                                              : <p>No messages</p>
+                                        }
 
-                        </div>
-                    </div>
+                                    </div>
+                                </div>
+                            </Popover.Body>
+                        </Popover>
+                      )}
+                  </Overlay>
+
                     : null
             }
         </div>
