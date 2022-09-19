@@ -127,11 +127,11 @@ const AdminKycTableItem = (props) => {
                     </Col>
                     <Col className={'col-2'}>Фото</Col>
                     <Col className={'col-2'}>{props.kycStatus}</Col>
-                    <Col className={'col-3 d-flex'}>
-                        <Select {...register('status', {
+                    <Col className={'col-3 d-flex flex-column'}>
+                        <Select style={{marginBottom: 10}} {...register('status', {
                             onChange: (value) => handleOpenModal('edit')
                         })} classname='' options={kusStatuses} />
-                        <AdminButton onClick={() => handleOpenModal('delete')} classname={'red'} >Удалить</AdminButton>
+                        <AdminButton style={{width: '100%', maxWidth: '100%', margin: 0}} onClick={() => handleOpenModal('delete')} classname={'red'} >Удалить</AdminButton>
                     </Col>
 
                 </Row>

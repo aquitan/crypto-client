@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import { Col, Row, Tab, Tabs} from "react-bootstrap";
+import {Col, Modal, Row, Tab, Tabs} from 'react-bootstrap';
 import Input from "../../../components/UI/Input/Input";
 import Form from "../../../components/UI/Form/Form";
 import Button from "../../../components/UI/Button/Button";
@@ -39,7 +39,16 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
     })
     const [history, setHistory] = useState([])
     const [modal, setModal] = useState(false)
+    const [showError, setShowError] = useState(false)
     const [error, setError] = useState()
+    const [showHistoryItem, setShowHistoryItem] = useState(false)
+    const [historyItem, setHistoryItem] = useState({
+        date: '',
+        usdAmount: '',
+        cryptoAmount: '',
+        coinName: '',
+        address: ''
+    })
     const location = useLocation()
 
     useEffect(() => {
@@ -145,17 +154,14 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
 
     const onSendWithdraw = (error) => {
         console.log('withdraw error', error)
-        // swal({
-        //     content:
-        //         <div>
-        //             <h2>{error?.errorTitle}</h2>
-        //             <h4>{error?.errorType}</h4>
-        //             <div>
-        //                 <b>{error?.errorText}</b>
-        //             </div>
-        //     </div>,
-        //     confirmButtonText: 'Close'
-        //     })
+        setTimeout(() => {
+            setShowError(true)
+        }, 1500)
+    }
+
+    const onShowHistoryItem = (date, usdAmount, cryptoAmount, coinName, address) => {
+        setHistoryItem({date, usdAmount, cryptoAmount, coinName, address})
+        setShowHistoryItem(true)
     }
 
 
@@ -163,6 +169,50 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
     return (
 
         <>
+            <Modal
+              size='md'
+              animation={false}
+              style={{opacity: 1, zIndex: 9999}}
+              show={showHistoryItem}
+              onHide={() => setShowHistoryItem(false)}
+              dialogClassName={`modal-window ${theme}`}
+            >
+                <Modal.Header closeButton>
+                    <div style={{display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center'}}>
+                        <b>Transaction</b>
+                        <b>{historyItem.date}</b>
+                    </div>
+                </Modal.Header>
+                <Modal.Body>
+                    <div>
+
+                        <div style={{fontSize: 16, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                            <div>${historyItem.usdAmount}</div>
+                            <b>({historyItem.cryptoAmount} {historyItem.coinName})</b>
+                            <div>Address: {historyItem.address}</div>
+                        </div>
+                    </div>
+                </Modal.Body>
+            </Modal>
+
+            <Modal
+              size='md'
+              animation={false}
+              style={{opacity: 1, zIndex: 9999}}
+              show={showError}
+              onHide={() => setShowError(false)}
+              dialogClassName={`modal-window ${theme}`}
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title id="example-custom-modal-styling-title">
+                        {error?.errorTitle}
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <h4>{error?.errorType}</h4>
+                    <div><b>{error?.errorText}</b></div>
+                </Modal.Body>
+            </Modal>
 
             <ButtonCard theme={theme} style={{padding: 0}}>
                 <Tabs
@@ -238,6 +288,7 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
                                                 cryptoAmount={item.cryptoAmount}
                                                 coinName={item.coinName}
                                                 status={item.status}
+                                                onShow={onShowHistoryItem}
                                             />
                                         )
                                     })
@@ -255,15 +306,6 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
                     </Tab>
                 </Tabs>
             </ButtonCard>
-
-            <ErrorModal
-                errorText={error?.errorText}
-                btnType={error?.errorButton}
-                errorType={error?.errorTitle}
-                active={modal}
-                title={'Withdrawal Error!'}
-                setActive={setModal}
-            />
         </>
 
     )

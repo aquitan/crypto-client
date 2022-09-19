@@ -25,7 +25,7 @@ const AdminDashboard = () => {
     }
 
     return (
-        <Container className={cls.app_continer}>
+        <Container style={{color: '#fff'}} className={cls.app_continer}>
             <h1>Главная</h1>
             {
                 state ?

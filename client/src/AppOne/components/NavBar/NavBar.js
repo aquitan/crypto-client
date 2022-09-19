@@ -9,9 +9,7 @@ import {
     faBars,
     faChartBar, faMoon, faSun, faUserLock, faWallet
 } from '@fortawesome/free-solid-svg-icons';
-import Logo from "../UI/Logo/Logo";
-import ToggleCheckbox from "../UI/ToggleCheckbox/ToggleCheckbox";
-import {ThemeContext, useThemeContext} from "../../context/ThemeContext";
+import Logo from "../UI/Logo/Logo";import {ThemeContext, useThemeContext} from "../../context/ThemeContext";
 import Preloader from "../UI/Preloader/Preloader";
 import Notification from '../UI/Notification/Notification';
 
@@ -42,25 +40,30 @@ const NavBar = () => {
                     <Offcanvas.Body>
                         <Row className='flex-column text-start mb-3'>
 
-
                             <Col>
-                                <Nav.Link style={{color: theme === 'light' ? 'rgba(0, 0, 0, .55)' : '#fff'}} to={'/trading'} as={NavLink}>Trading</Nav.Link>
+                                <Nav.Link style={{color: theme === 'light' ? 'rgba(0, 0, 0, .55)' : '#fff'}} to={'/internal-addresses'} as={NavLink}>Internal Transactions</Nav.Link>
                             </Col>
                             <Col>
                                 <Nav.Link style={{color: theme === 'light' ? 'rgba(0, 0, 0, .55)' : '#fff'}} to={'/profile'} as={NavLink}>Profile</Nav.Link>
                             </Col>
+                            <Col>
+                                <Nav.Link style={{color: theme === 'light' ? 'rgba(0, 0, 0, .55)' : '#fff'}} to={'/secure-deal'} as={NavLink}>Secure Deal</Nav.Link>
+                            </Col>
+                            <Col>
+                                <Nav.Link style={{color: theme === 'light' ? 'rgba(0, 0, 0, .55)' : '#fff'}} to={'/news'} as={NavLink}>News</Nav.Link>
+                            </Col>
 
                         </Row>
                         <Row>
-                            <div className='d-flex'>
-                                <div className='d-flex'>
-                                    <div style={{marginLeft: 15}}>
-                                        <Button classname={['btnGray', 'headerBtn', theme]} onClick={() => navigate('/trading')}>
+                            <div className='d-flex' style={{width: '100%'}}>
+                                <div className='d-flex flex-column' style={{width: '100%'}}>
+                                    <div style={{marginBottom: 15, width: '100%'}}>
+                                        <Button style={{width: '100%'}} classname={['btnGray', 'headerBtn', theme]} onClick={() => navigate('/trading')}>
                                             <FontAwesomeIcon icon={faChartBar}/> Trading
                                         </Button>
                                     </div>
-                                    <div style={{marginLeft: 15}}>
-                                        <Button classname={['btnGray', 'headerBtn', theme]} onClick={() => navigate('/wallet')}>
+                                    <div style={{marginBottom: 15, width: '100%'}}>
+                                        <Button style={{width: '100%'}} classname={['btnGray', 'headerBtn', theme]} onClick={() => navigate('/wallet')}>
                                             <FontAwesomeIcon icon={faWallet}/> Wallet
                                         </Button>
                                     </div>
@@ -117,8 +120,12 @@ const NavBar = () => {
                             </Nav.Link>
                         </div>
                     </div>
-                    <div className='d-flex d-xl-none mx-3'>
-                        <ToggleCheckbox onChange={toggleTheme}/>
+                    <div className='d-flex d-xl-none mx-3 align-items-center'>
+                        <div onClick={toggleTheme} style={{cursor: 'pointer', marginRight: 10}}>
+                            {
+                                theme === 'light' ? <FontAwesomeIcon icon={faMoon} size='lg' /> : <FontAwesomeIcon icon={faSun} size='lg' color={'orange'}/>
+                            }
+                        </div>
                         <div className='d-block d-xl-none' onClick={handleOpen} style={{cursor: 'pointer'}}>
                             <FontAwesomeIcon size='2x' icon={faBars} color={theme === 'light' ? 'rgb(8, 8, 8)' : 'white'} />
                         </div>

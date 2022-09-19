@@ -12,7 +12,10 @@ const Orders = ({orders, type}) => {
             {
                 orders.map((item, index) => {
                     return (
-                      <Row key={index + Math.random()} style={{color: type === 'buy' ? 'green' : 'tomato'}}>
+                      <Row key={index + Math.random()} style={{
+                          color: type === 'buy' ? 'green' : 'tomato',
+                          backgroundColor: item.max && type === 'sell' ? 'rgba(255, 99, 71, .3)' : item.max && type === 'buy' ? 'rgba(0, 128, 0, .3)' : '',
+                      }}>
                           <Col>{item.price}</Col>
                           <Col>{item.crypto}</Col>
                           <Col>{item.total}</Col>

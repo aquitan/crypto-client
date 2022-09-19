@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const BASE_URL = '/api'
+export const BASE_URL = 'http://164.92.245.8:8888/api'
 export const GEO_API = 'http://geolocation-db.com/json/'
 export const COINS_API = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin%2C%20ethereum%2C%20bitcoin-cash%2C%20solana%2C%20tron%2C%20tether&order=market_cap_desc&per_page=100&page=1&sparkline=false'
 

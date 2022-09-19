@@ -32,7 +32,7 @@ const AdminKYC = () => {
     }, [])
 
     return (
-        <Container>
+        <Container style={{color: '#fff'}}>
             <AdminButtonCard>
                 <h1 className='text-center'>Kyc</h1>
             </AdminButtonCard>

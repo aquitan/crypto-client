@@ -47,7 +47,6 @@
     "workbox-routing": "^6.4.2",
     "workbox-strategies": "^6.4.2"
   },
-  "proxy": "http://localhost:8888",
   "scripts": {
     "start": "PORT=3002 react-scripts --openssl-legacy-provider start",
     "build": "react-scripts build",

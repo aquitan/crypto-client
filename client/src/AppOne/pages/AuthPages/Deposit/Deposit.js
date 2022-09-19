@@ -41,7 +41,6 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
     const [coinsFull, setCoinsFull] = useState([])
     const [history, setHistory] = useState([])
     let btc = store.rates[coin.toLowerCase()]
-    console.log('rate', btc);
 
 
     useEffect(() => {
@@ -76,8 +75,8 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
 
         const obj = {
             userId: store.user.id,
-            coinName: coin,
-            coinFullName: coinFullName,
+            coinName: coin.toLowerCase(),
+            coinFullName: coinFullName.toLowerCase(),
             expiredTime: dateToTimestamp(d),
             userEmail: store.user.email
         }
@@ -219,7 +218,7 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
                                                 {coin}
                                             </span>
                                         </span>
-                                <div>Coin balance: {balance ? balance[0].coinBalance.toFixed(5) : <Preloader />}</div>
+                                <div>Coin balance: {balance ? coinsBalance.toFixed(5) : <Preloader />}</div>
                             </div>
                         </Row>
                         <Row className='mb-3 p-0'>

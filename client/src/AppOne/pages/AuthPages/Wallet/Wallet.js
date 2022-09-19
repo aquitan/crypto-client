@@ -46,17 +46,17 @@ const Wallet = () => {
         setBalancesArr(arr)
     }
 
-    const onDepositOpen = (depositCoin, coinsBalance ,coinFullName) => {
+    const onDepositOpen = (coin, coinsBalance, coinFullName) => {
         setDeposit({
-            coin: depositCoin,
+            coin,
             coinsBalance,
             coinFullName
         })
         setShowDeposit(true)
     }
-    const onWithdrawOpen = (withdrawCoin, coinsBalance ,coinFullName) => {
+    const onWithdrawOpen = (coin, coinsBalance ,coinFullName) => {
         setWithdraw({
-            coin: withdrawCoin,
+            coin,
             coinsBalance,
             coinFullName
         })
@@ -79,7 +79,7 @@ const Wallet = () => {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Deposit coin={deposit.coin} coinsBalance={deposit.coinsFullName} coinFullName={deposit.coinsBalance} />
+                    <Deposit coin={deposit.coin} coinsBalance={deposit.coinsBalance} coinFullName={deposit.coinFullName} />
                 </Modal.Body>
             </Modal>
             <Modal
@@ -96,7 +96,7 @@ const Wallet = () => {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Withdraw coin={withdraw.coin} coinsBalance={withdraw.coinsBalance} coinFullName={withdraw.coinsFullName} />
+                    <Withdraw coin={withdraw.coin} coinsBalance={withdraw.coinsBalance} coinFullName={withdraw.coinFullName} />
                 </Modal.Body>
             </Modal>
 

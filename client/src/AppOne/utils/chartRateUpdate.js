@@ -7,10 +7,9 @@ export const countFunc = (targetCounter, val, prev, real, time) => {
         return prev + ((prev * val / 100) / ms)
     } else if (counter >= targetCounter) {
         counter2 = counter2 + 1000
-        if (counter2 < 10000) {
+        if (counter2 < 100000) {
             let returnVal = prev - real
             let c = returnVal / 10
-            console.log('returnVal---', c)
             return prev - c
         } else {
             return real

@@ -7,6 +7,7 @@ import {postData} from "../../services/StaffServices";
 import {useNavigate} from "react-router-dom";
 import {getRate} from "../../services/CurrencyService";
 import Preloader from "../UI/Preloader/Preloader";
+import {BASE_URL} from '../../API';
 
 
 const AppRouter = () => {
@@ -63,7 +64,7 @@ const AppRouter = () => {
     }
 
     const sendDomainName = async () => {
-        const res = await postData('/get_domain_params/', {domainName: window.location.host})
+        const res = await postData('/get_domain_params/', {domainName: 'localhost:3002'})
         store.setDomain(res.data.domainInfo)
     }
 

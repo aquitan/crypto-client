@@ -5,23 +5,21 @@ import am5themes_Animated from "@amcharts/amcharts5/themes/Animated"
 import * as am5stock from '@amcharts/amcharts5/stock';
 import {countFunc} from '../../../../../utils/chartRateUpdate';
 
-const Chart = ({rate}) => {
+const Chart = ({rate, initialData}) => {
     const [realRate, setRealRate] = useState(0)
 
 
-
-
-    const getRate = async () => {
-        const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT`)
-        const datas = await res.json()
-        setRealRate(Number(datas.lastPrice))
-    }
-    useEffect(() => {
-        getRate()
-        setInterval(() => {
-            getRate()
-        }, 1000)
-    }, [])
+    // const getRate = async () => {
+    //     const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT`)
+    //     const datas = await res.json()
+    //     setRealRate(Number(datas.lastPrice))
+    // }
+    // useEffect(() => {
+    //     getRate()
+    //     setInterval(() => {
+    //         getRate()
+    //     }, 1000)
+    // }, [])
 
     const createChart = async (val) => {
         let root = am5.Root.new("chartdiv");
@@ -83,19 +81,17 @@ const Chart = ({rate}) => {
         // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
         let valueSeries = mainPanel.series.push(
           am5xy.CandlestickSeries.new(root, {
-              name: "AMCH",
+              name: "sfsdf",
               clustered: false,
               valueXField: "Date",
               valueYField: "Close",
               highValueYField: "High",
               lowValueYField: "Low",
               openValueYField: "Open",
-              calculateAggregates: true,
+              calculateAggregates: false,
               xAxis: dateAxis,
               yAxis: valueAxis,
-              legendValueText:
-                "open: [bold]{openValueY}[/] high: [bold]{highValueY}[/] low: [bold]{lowValueY}[/] close: [bold]{valueY}[/]",
-              legendRangeValueText: ""
+
           })
         );
         // Set main value series
@@ -171,26 +167,48 @@ const Chart = ({rate}) => {
         function generateChartData() {
             let chartData = [];
 
-            for (let i = 0; i < 100; i++) {
+            initialData.forEach((item, index) => {
                 let newDate = new Date(firstDate);
-                newDate.setMinutes(newDate.getMinutes() - i);
+                newDate.setMinutes(newDate.getMinutes() - index);
 
-                value += Math.round((Math.random() < 0.49 ? 1 : -1) * Math.random() * 10);
 
-                let open = value + Math.round(Math.random() * 16 - 8);
-                let low = Math.min(value, open) - Math.round(Math.random() * 5);
-                let high = Math.max(value, open) + Math.round(Math.random() * 5);
+                let open = Number(item[1]);
+                let low = Number(item[3]);
+                let high = Number(item[2]);
+                let close = Number(item[4])
+                console.log('chartData', item);
 
                 chartData.unshift({
                     Date: newDate.getTime(),
-                    Close: value,
+                    Close: close,
                     Open: open,
                     Low: low,
                     High: high
                 });
-
                 lastDate = newDate;
-            }
+            })
+
+            // for (let i = 0; i < 100; i++) {
+            //     let newDate = new Date(firstDate);
+            //     newDate.setMinutes(newDate.getMinutes() - i);
+            //
+            //     value += Math.round((Math.random() < 0.49 ? 1 : -1) * Math.random() * 10);
+            //
+            //     let open = value + Math.round(Math.random() * 16 - 8);
+            //     let low = Math.min(value, open) - Math.round(Math.random() * 5);
+            //     let high = Math.max(value, open) + Math.round(Math.random() * 5);
+            //
+            //     chartData.unshift({
+            //         Date: newDate.getTime(),
+            //         Close: value,
+            //         Open: open,
+            //         Low: low,
+            //         High: high
+            //     });
+            //
+            //     lastDate = newDate;
+            //     console.log('chart data', chartData);
+            // }
             return chartData;
         }
         let data = generateChartData();
@@ -200,6 +218,7 @@ const Chart = ({rate}) => {
 
         // update data
         let previousDate;
+        let fnVal
 
         setInterval(async function() {
             let valueSeries = stockChart.get("stockSeries");
@@ -219,7 +238,7 @@ const Chart = ({rate}) => {
                 let previousValue = lastDataObject.Close;
 
                 value = am5.math.round(
-                  dataFromServer ? countFunc(600000, 3, previousValue, await getRate(), 10000) : await getRate());
+                  dataFromServer ? countFunc(60000, 1, previousValue, await getRate(), 100000) : await getRate());
 
                 let high = lastDataObject.High;
                 let low = lastDataObject.Low;
@@ -241,6 +260,7 @@ const Chart = ({rate}) => {
                     valueSeries.data.push(dObj1);
                     sbSeries.data.push(dObj1);
                     previousDate = date;
+                    valueSeries.data.shift()
                 } else {
                     if (value > high) {
                         high = value;

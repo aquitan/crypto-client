@@ -24,13 +24,20 @@ const TradingBitcoin = ({balance}) => {
   const [sellTotal, setSellTotal] = useState(0)
   const [sellCrypto, setSellCrypto] = useState(0)
   const [sellPrice, setSellPrice] = useState(0)
+  const [initialChartData, setInitialChartData] = useState([])
 
   useEffect(() => {
     getRate()
     getTradingData()
     getHistory()
-    setInterval(() => {
-      setOrders(generateOrders(21351))
+    getInitialChartData()
+    // setInterval(() => {
+    //   setOrders(generateOrders(rate))
+    // }, 1500)
+  }, [])
+  useEffect(async () => {
+    setInterval(async () => {
+      await setOrders(generateOrders(Number(rate)))
     }, 1500)
   }, [])
 
@@ -70,6 +77,11 @@ const TradingBitcoin = ({balance}) => {
     const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT`)
     const datas = await res.json()
     setRate(datas.lastPrice)
+  }
+  const getInitialChartData = async () => {
+    const res = await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1m&limit=100')
+    const data = await res.json()
+    setInitialChartData(data)
   }
 
   const getHistory = async () => {
@@ -159,7 +171,7 @@ const TradingBitcoin = ({balance}) => {
           <ButtonCard theme={theme}>
             <h3>Bitcoin Chart</h3>
             {
-              rate ? <Chart rate={Number(rate)} data={data} /> : <Preloader />
+              rate && initialChartData.length ? <Chart initialData={initialChartData} rate={Number(rate)} data={data} /> : <Preloader />
             }
           </ButtonCard>
           <Row>
@@ -200,8 +212,13 @@ const TradingBitcoin = ({balance}) => {
         <Col className='col-12 col-xl-3'>
           <Row>
             <ButtonCard theme={theme}>
-              <Orders type={'buy'} orders={orders} />
-              <Orders type={'sell'} orders={orders} />
+              {
+                rate > 0 ?
+                  <>
+                    <Orders type={'buy'} orders={generateOrders(rate)} />
+                    <Orders type={'sell'} orders={generateOrders(rate)} />
+                  </> : <Preloader/>
+              }
             </ButtonCard>
           </Row>
 

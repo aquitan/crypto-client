@@ -41,6 +41,7 @@ const Profile = () => {
         geodata.domainName = window.location.host
         delete geodata.id
         delete geodata.email
+        delete geodata.logTime
         geodata.userId = store.user.id
         geodata.userEmail = store.userEmail
         let userLocation = location.pathname.split(/[\\\/]/)
