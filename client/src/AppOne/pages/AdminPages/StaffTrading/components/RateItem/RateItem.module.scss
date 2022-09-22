@@ -1,0 +1,11 @@
+.rateItem {
+  box-shadow: 0 0 10px 0 rgb(255, 255, 255, .3);
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+  color: #fff;
+  &:hover {
+    transform: scale(1.008);
+    transition: all 0.2s linear;
+  }
+}

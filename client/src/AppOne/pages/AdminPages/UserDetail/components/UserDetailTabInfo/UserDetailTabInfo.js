@@ -230,12 +230,14 @@ const UserDetailTabInfo = ({data}) => {
 
                         <Row className={cls.users_detail_table_row}>
                             <p>Текущая ошибка</p>
-                            <Col className='mb-3'>
-                                <Select {...register('errorId')} classname={'admin-square'} options={toArr()}/>
-                            </Col>
-                            <Col>
-                                <AdminButton onClick={handleSubmit(onSubmit)} classname='green'>Использовать</AdminButton>
-                            </Col>
+                            <Row className=''>
+                                <Col className='mb-3'>
+                                    <Select {...register('errorId')} classname={'admin-square'} options={toArr()}/>
+                                </Col>
+                                <Col>
+                                    <AdminButton onClick={handleSubmit(onSubmit)} classname='green'>Использовать</AdminButton>
+                                </Col>
+                            </Row>
                         </Row>
                         <Row className={cls.users_detail_table_row}>
                             <Row>

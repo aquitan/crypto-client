@@ -87,10 +87,10 @@ const StaffErrors = () => {
 
     const onSubmit = async (data) => {
         data.domainId = optionId
-        data.staffEmail = store.userEmail
+        data.staffEmail = store.user.email
         data.staffId = store.user.id
-        data.adminPermission = store.isAdmin
-        data.staffPermission = store.isStaff
+        data.isAdmin = store.isAdmin
+        data.isStaff = store.isStaff
         data.rootAccess = store.fullAccess
         data.domainName = custSelect
         const res = await putData('/staff/errors/create_new_error/', data)
@@ -101,9 +101,9 @@ const StaffErrors = () => {
     }
 
     const onChangeDomain = async (e) => {
+        setCurSelect(e.target.value)
         const res = await getData(`/staff/errors/get_all_errors/${e.target.value}`)
         // setState({...state, domain: res.data.domain_detail})
-        setCurSelect(e.target.value)
     }
     const onChangeCustDomain = async (e) => {
         const index = e.target.selectedIndex;
@@ -234,13 +234,6 @@ const StaffErrors = () => {
             </AdminButtonCard>
         </Container>
     )
-}
-
-StaffErrors.propTypes = {
-    
-}
-StaffErrors.defaultProps = {
-    
 }
 
 export default StaffErrors

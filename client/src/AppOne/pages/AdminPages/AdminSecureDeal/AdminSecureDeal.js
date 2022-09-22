@@ -38,10 +38,11 @@ const AdminSecureDeal = () => {
             paddingLeft: 10,
             top: 0,
             right: 20,
-            height: '100%',
+            height: '45px',
             borderLeft: '1px solid #fff',
             display: 'flex',
-            alignItems: 'center'
+            alignItems: 'center',
+            boxSizing: 'border-box'
         }
     }
     const trsType = [
@@ -163,7 +164,7 @@ const AdminSecureDeal = () => {
                         </Col>
                         <Col className='col-12 col-lg-3 mb-3' style={{position: 'relative'}}>
                             <DatePickert required
-                                         customInput={<DatePickerCustom/>}
+                                         customInput={<DatePickerCustom classname='adminDatepicker' />}
                                          placeholderText={'Дата'}
                                          selected={startDate}
                                          dateFormat='yyyy/MM/dd'
@@ -173,7 +174,7 @@ const AdminSecureDeal = () => {
                         </Col>
                         <Col className='col-12 col-lg-3 mb-3' style={{position: 'relative'}}>
                             <DatePickert required
-                                         customInput={<DatePickerCustom/>}
+                                         customInput={<DatePickerCustom classname='adminDatepicker' />}
                                          placeholderText='Время'
                                          selected={timeDate}
                                          onChange={(date) => setTimeDate(date)}

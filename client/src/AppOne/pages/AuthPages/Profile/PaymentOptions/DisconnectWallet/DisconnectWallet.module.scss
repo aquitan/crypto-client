@@ -1,10 +1,11 @@
 .disconnectWallet {
   background-color: tomato;
   display: inline-block;
-  width: fit-content;
+  width: 100%;
   padding: 10px;
   border-radius: 5px;
   cursor: pointer;
   margin: 30px 10px;
   color: #fff;
+  box-sizing: border-box;
 }

@@ -44,6 +44,7 @@ const Users = () => {
         setState({...state, search: e.target.value})
     }
 
+    const filteredUsers = state.users.filter(user => user.userEmail.toLowerCase().includes(state.search.toLowerCase()))
     // const delUser = async () => {
     //     const res = await deleteData('/staff/users/user_detail/delete_user_with_all_params/', {data: {
     //             userId: '62d6524567a932e48e089a20',
@@ -97,7 +98,7 @@ const Users = () => {
                             {
                                 state.users.length > 0
                                     ?
-                                    state.users.slice(0).reverse().map(user => {
+                                  filteredUsers.slice(0).reverse().map(user => {
                                         return(
                                             <UsersTableItem
                                                 key={uuid()}

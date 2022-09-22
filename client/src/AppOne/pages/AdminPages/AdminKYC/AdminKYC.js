@@ -10,6 +10,7 @@ import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard
 
 const AdminKYC = () => {
     const [usersKyc, setUsersKyc] = useState()
+    const [search, setSearch] = useState()
 
     const getStaffKyc = async () => {
         const userData = {
@@ -24,12 +25,17 @@ const AdminKYC = () => {
         }
         const res = await postData('/staff/users/kyc/', userData)
         const data = await res.data
-        setUsersKyc(data.usersKycList)
+        const filteredCoins = data.usersKycList.filter(el => el.userEmail.toLowerCase().includes(search.toLowerCase()))
+        setUsersKyc(filteredCoins)
     }
 
     useEffect(() => {
         getStaffKyc()
     }, [])
+
+    const onSearch = (e) => {
+        setSearch(e.target.value)
+    }
 
     return (
         <Container style={{color: '#fff'}}>
@@ -46,7 +52,7 @@ const AdminKYC = () => {
             </AdminButtonCard>
             <Row>
                 <Card className={`${cls.bg_black} p-3 mb-3`}>
-                    <AdminInput placeholder='поиск'/>
+                    <AdminInput onChange={onSearch} placeholder='поиск'/>
                 </Card>
             </Row>
             <Row>
@@ -63,7 +69,7 @@ const AdminKYC = () => {
                     {
                         usersKyc &&  typeof usersKyc !== 'string'
                             ?
-                            usersKyc.map(user => {
+                          usersKyc.map(user => {
                                 return(
                                     <AdminKycTableItem
                                         key={user._id}

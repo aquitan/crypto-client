@@ -24,7 +24,6 @@ export const generateOrders = (rate) => {
   let max = arr.reduce((prev, cur) => {
     return prev.total > cur.total ? prev : cur
   }, 0)
-  console.log('order', arr);
   let idx = arr.findIndex(item => item.total === max.total)
   arr[idx].max = true
   return arr

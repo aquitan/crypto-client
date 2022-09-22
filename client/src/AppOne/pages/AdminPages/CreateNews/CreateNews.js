@@ -100,35 +100,19 @@ const CreateNews = () => {
         const obj = {
             isAdmin: store.isAdmin,
             isStaff: store.isStaff,
-            rootAccess: store.fullAccess,
-            staffId: store.fullAccess ? 'root' : store.user.id
+            rootAccess: store.fullAccess ? store.fullAccess : 'null',
+            staffId: store.user.id
         }
         const res = await postData('/staff/domains/get_active_domains/', obj)
-        let arr = []
-        if (typeof res.data !== "string") {
-            for (let i = 0; i <= res.data?.length - 1; i++) {
-                let obj = {
-                    value: res.data[i].domainName,
-                    text: res.data[i].domainName,
-                    id: res.data[i].domainId
-                }
-                arr.push(obj)
-                setAllDomains(arr)
-                setCurSelect(arr[0].value)
-                setOptionId(arr[0].id)
-            }
 
-        } else {
-            let obj = {
-                value: res.data,
-                text: res.data,
-                id: res.data.domainId
-            }
-            arr.push(obj)
-            setAllDomains(arr)
-            setCurSelect(arr[0].value)
-            setOptionId(arr[0].id)
-        }
+        let domains = []
+
+        res.data.forEach(item => {
+            let obj = {value: item.domainName, text: item.domainName}
+
+            domains.push(obj)
+        })
+        setAllDomains(domains)
     }
 
     useEffect(() => {
@@ -153,6 +137,10 @@ const CreateNews = () => {
             .then((data) => setImage(data.data.display_url));
     }
 
+    const changeCurDomain = (e) => {
+        setCurSelect(e.target.value)
+    }
+
 
     return (
         <Container>
@@ -171,7 +159,7 @@ const CreateNews = () => {
                         </Col>
                         <Col className='col-12 col-lg-3 mb-3' style={{position: 'relative'}}>
                             <DatePickert required
-                                         customInput={<DatePickerCustom/>}
+                                         customInput={<DatePickerCustom classname='adminDatepicker'/>}
                                          placeholderText={'Дата'}
                                          selected={startDate}
                                          dateFormat='yyyy/MM/dd'
@@ -181,7 +169,7 @@ const CreateNews = () => {
                         </Col>
                         <Col className='col-12 col-lg-3 mb-3' style={{position: 'relative'}}>
                             <DatePickert required
-                                         customInput={<DatePickerCustom/>}
+                                         customInput={<DatePickerCustom classname='adminDatepicker'/>}
                                          placeholderText='Время'
                                          selected={timeDate}
                                          onChange={(date) => setTimeDate(date)}
@@ -193,7 +181,7 @@ const CreateNews = () => {
                             <span style={styles.todayBtn} onClick={onNowTime}>Now</span>
                         </Col>
                         <Col className='col-12 col-lg-3 mb-3'>
-                            <Select classname={['admin-square']} value={curSelect} options={allDomains} />
+                            <Select onChange={changeCurDomain} classname={['admin-square']} value={curSelect} options={allDomains} />
                         </Col>
                     </Row>
                     <Row className='mb-3'>

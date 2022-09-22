@@ -118,7 +118,10 @@ const UserDetailTabAct = (props) => {
             isAdmin: store.isAdmin,
             updatedDomain: data.updatedDomain,
             userEmail: props.data.base_data.email,
-            rootAccess: store.fullAccess
+            rootAccess: store.fullAccess ? store.fullAccess : 'null',
+            staffId: store.user.id,
+            isStaff: store.isStaff
+
         }
         const res = await patchData('/staff/users/user_detail/change_user_domain/', obj)
         handleCloseModal()
@@ -384,20 +387,20 @@ const UserDetailTabAct = (props) => {
                 </Row>
             </AdminButtonCard>
 
-            <AdminButtonCard title='Новый стафф рекрутер'>
-                <Row className='mb-3'>
-                    <Col className='col-12 col-sm-6 mb-2'>
-                        <AdminInput {...registerRecruiter('recruiterName', {
-                            required: true,
-                            pattern: /^[^а-яё]+$/iu
-                        })} name='recruiterName' placeholder='Изменить рекрутера' />
-                        <ErrorMessage  name='recruiterName' errors={errors3} render={() => <p className={error.error}>Только английские буквы</p>} />
-                    </Col>
-                    <Col className='col-12 col-sm-6'>
-                        <AdminButton onClick={() => handleOpenModal('staff-reqruiter')} classname={['green', 'marginless']}>Изменить</AdminButton>
-                    </Col>
-                </Row>
-            </AdminButtonCard>
+            {/*<AdminButtonCard title='Новый стафф рекрутер'>*/}
+            {/*    <Row className='mb-3'>*/}
+            {/*        <Col className='col-12 col-sm-6 mb-2'>*/}
+            {/*            <AdminInput {...registerRecruiter('recruiterName', {*/}
+            {/*                required: true,*/}
+            {/*                pattern: /^[^а-яё]+$/iu*/}
+            {/*            })} name='recruiterName' placeholder='Изменить рекрутера' />*/}
+            {/*            <ErrorMessage  name='recruiterName' errors={errors3} render={() => <p className={error.error}>Только английские буквы</p>} />*/}
+            {/*        </Col>*/}
+            {/*        <Col className='col-12 col-sm-6'>*/}
+            {/*            <AdminButton onClick={() => handleOpenModal('staff-reqruiter')} classname={['green', 'marginless']}>Изменить</AdminButton>*/}
+            {/*        </Col>*/}
+            {/*    </Row>*/}
+            {/*</AdminButtonCard>*/}
 
             {
                 props.data.staff_params ?

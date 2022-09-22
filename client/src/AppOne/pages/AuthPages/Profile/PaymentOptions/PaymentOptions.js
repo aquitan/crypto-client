@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Row} from "react-bootstrap";
+import {Col, Row} from 'react-bootstrap';
 import AddPaymentOption from './AddPaymentOption/AddPaymentOption';
 import CoinBase from '../../CoinBase/CoinBase';
 import Modal from 'react-bootstrap/Modal';
@@ -10,6 +10,7 @@ import DisconnectWallet from './DisconnectWallet/DisconnectWallet';
 import Preloader from '../../../../components/UI/Preloader/Preloader';
 import './PaymentOptions.scss'
 import {useThemeContext} from '../../../../context/ThemeContext';
+import ConnectedWallet from './ConnectedWallet/ConnectedWallet';
 
 
 const PaymentOptions = () => {
@@ -50,7 +51,7 @@ const PaymentOptions = () => {
 
     const checkConnection = () => {
         if (localStorage.getItem('connected')) {
-            return <DisconnectWallet onClick={onDisconnect} />
+            return <ConnectedWallet onClick={onDisconnect} />
 
         }
         return <AddPaymentOption addOption={addOption} />
@@ -143,7 +144,7 @@ const PaymentOptions = () => {
           </Modal.Body>
         </Modal>
 
-          <Row>
+          <Row className='mb-3'>
               <h2>Payment Options</h2>
           </Row>
           <Row>

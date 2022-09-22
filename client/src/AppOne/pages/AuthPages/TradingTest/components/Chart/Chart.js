@@ -4,9 +4,11 @@ import * as am5xy from "@amcharts/amcharts5/xy";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated"
 import * as am5stock from '@amcharts/amcharts5/stock';
 import {countFunc} from '../../../../../utils/chartRateUpdate';
+import {useValueContext} from '../../../../../context/ValueContext';
 
-const Chart = ({rate, initialData}) => {
+const Chart = ({rate, initialData, tradingData}) => {
     const [realRate, setRealRate] = useState(0)
+    const {toggleValue} = useValueContext()
 
 
     // const getRate = async () => {
@@ -176,7 +178,7 @@ const Chart = ({rate, initialData}) => {
                 let low = Number(item[3]);
                 let high = Number(item[2]);
                 let close = Number(item[4])
-                console.log('chartData', item);
+                // console.log('chartData', item);
 
                 chartData.unshift({
                     Date: newDate.getTime(),
@@ -237,9 +239,11 @@ const Chart = ({rate, initialData}) => {
                 let previousDate = lastDataObject.Date;
                 let previousValue = lastDataObject.Close;
 
-                value = am5.math.round(
-                  dataFromServer ? countFunc(60000, 1, previousValue, await getRate(), 100000) : await getRate());
+                value = dataFromServer ?
+                  await countFunc(tradingData.timeRangeInMs, tradingData.valueInPercent, previousValue, await getRate(), tradingData.timeRangeInMs, tradingData.growthParams, 'bitcoin')
+                  : await getRate()
 
+                toggleValue(value.toFixed(2))
                 let high = lastDataObject.High;
                 let low = lastDataObject.Low;
                 let open = lastDataObject.Open;

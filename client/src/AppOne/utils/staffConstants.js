@@ -69,6 +69,9 @@ export const optionsCurrency = [
     {value: 'ETH', text: 'ETH'},
     {value: 'BCH', text: 'BCH'},
     {value: 'USDT', text: 'USDT'},
+    {value: 'TRX/USDT', text: 'TRX/USDT'},
+    {value: 'SOL', text: 'SOL'},
+    {value: 'TRX', text: 'TRX'},
 ]
 export const optionsUsers = [
     {value: 'super-user'},

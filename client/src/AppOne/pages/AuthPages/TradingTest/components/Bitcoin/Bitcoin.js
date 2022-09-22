@@ -10,9 +10,14 @@ import Orders from './components/Orders';
 import Chart from '../Chart/Chart';
 import {setTotalInUsd, setValueBuySell} from './utils/setValueBuySell';
 import OrderForm from '../components/OrderForm/OrderForm';
-import {getData, postData} from '../../../../../services/StaffServices';
+import {getData, patchData, postData, putData} from '../../../../../services/StaffServices';
 import {store} from '../../../../../../index';
 import Preloader from '../../../../../components/UI/Preloader/Preloader';
+import HistoryItem from '../../../../AdminPages/StaffTrading/components/HistoryItem/HistoryItem';
+import UserTradingHistory from './components/UserTradingHistory/UserTradingHistory';
+import {dateToTimestamp} from '../../../../../utils/dateToTimestamp';
+import {useValueContext} from '../../../../../context/ValueContext';
+import {checkOrderBuyToComplete} from '../../utils/checkOrderToComplete/checkOrderToComplete';
 
 const TradingBitcoin = ({balance}) => {
   const {theme} = useThemeContext()
@@ -24,13 +29,17 @@ const TradingBitcoin = ({balance}) => {
   const [sellTotal, setSellTotal] = useState(0)
   const [sellCrypto, setSellCrypto] = useState(0)
   const [sellPrice, setSellPrice] = useState(0)
+  const [tradingHistory, setTradingHistory] = useState([])
   const [initialChartData, setInitialChartData] = useState([])
+  const [tradingData, setTradingData] = useState([])
+  const {chartValue} = useValueContext()
 
   useEffect(() => {
     getRate()
     getTradingData()
     getHistory()
     getInitialChartData()
+    getTradingHistory()
     // setInterval(() => {
     //   setOrders(generateOrders(rate))
     // }, 1500)
@@ -47,16 +56,23 @@ const TradingBitcoin = ({balance}) => {
       window.removeEventListener("beforeunload", alertUser);
     };
   }, []);
+
+  const getTradingHistory = async () => {
+    const res = await getData(`/trading/order_history/${store.user.id}/0/20/`)
+    setTradingHistory(res.data)
+  }
+
+
   const alertUser = async (e) => {
     const obj = {
       domainName: store.domain.fullDomainName,
-      coin: 'bitcoin',
-      percent: 3,
-      direction: 'up',
-      timer: 600000,
-      currentTimer: 300000
+      coinName: 'bitcoin',
+      growthParams: true,
+      value: 19900,
+      timeToEnd: 150000,
+      userId: store.user.id
     }
-    const res = postData('/123', obj)
+    await putData('/trading/add_user_data/', obj)
     e.preventDefault();
     e.returnValue = "";
   };
@@ -71,6 +87,8 @@ const TradingBitcoin = ({balance}) => {
 
   const getTradingData = async () => {
     const res = await getData(`/staff/trading/get_valid_trading_data/${store.domain.fullDomainName}/`)
+    let validRate = res.data.ratesData.filter(el => el.coinName === 'BTC')
+    setTradingData(validRate[0])
   }
 
   const getRate = async () => {
@@ -81,7 +99,7 @@ const TradingBitcoin = ({balance}) => {
   const getInitialChartData = async () => {
     const res = await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1m&limit=100')
     const data = await res.json()
-    setInitialChartData(data)
+    setInitialChartData(data.slice(0).reverse())
   }
 
   const getHistory = async () => {
@@ -143,6 +161,15 @@ const TradingBitcoin = ({balance}) => {
     setSellCrypto(setValueBuySell(btn, balance.coinBalance))
   }
 
+  const onCancelOrder = async (id) => {
+    await patchData(`/trading/cancel_order/${id}`)
+  }
+
+  useEffect(() => {
+    checkOrderBuyToComplete(chartValue, tradingHistory)
+  }, [chartValue])
+
+
 
   return (
     <>
@@ -171,7 +198,7 @@ const TradingBitcoin = ({balance}) => {
           <ButtonCard theme={theme}>
             <h3>Bitcoin Chart</h3>
             {
-              rate && initialChartData.length ? <Chart initialData={initialChartData} rate={Number(rate)} data={data} /> : <Preloader />
+              rate && initialChartData.length && tradingData ? <Chart initialData={initialChartData} tradingData={tradingData} rate={Number(rate)} data={data} /> : <Preloader />
             }
           </ButtonCard>
           <Row>
@@ -186,7 +213,7 @@ const TradingBitcoin = ({balance}) => {
                     total={buyTotal}
                     price={buyPrice}
                     crypto={buyCrypto}
-                    coinName={'bitcoin'}
+                    coinName={'BTC'}
                   />
                 </Col>
                 <Col>
@@ -198,14 +225,35 @@ const TradingBitcoin = ({balance}) => {
                     total={sellTotal}
                     price={sellPrice}
                     crypto={sellCrypto}
+                    coinName={'BTC'}
                   />
                 </Col>
               </Row>
             </ButtonCard>
           </Row>
           <Row>
-            <ButtonCard theme={theme}>
+            <ButtonCard theme={theme} style={{minHeight: 300, overflowY: 'auto'}}>
                 <h2>History</h2>
+              {
+                tradingHistory.length ?
+                  tradingHistory.map((item, index) => {
+                    return(
+                      <UserTradingHistory
+                        key={index}
+                        id={item._id}
+                        email={item.userEmail}
+                        domain={item.domainName}
+                        coinName={item.coinName}
+                        coinValue={item.coinValue}
+                        valueInUsdt={item.valueInUsdt}
+                        coinRate={item.coinRate}
+                        orderType={item.orderType}
+                        orderStatus={item.orderStatus}
+                        onCancelOrder={onCancelOrder}
+                      />
+                    )
+                  }) : <h2>No trading data</h2>
+              }
             </ButtonCard>
           </Row>
         </Col>

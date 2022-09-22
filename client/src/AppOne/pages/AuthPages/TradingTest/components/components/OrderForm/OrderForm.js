@@ -20,7 +20,7 @@ const OrderForm = ({type, onChangePrice, onChangeCrypto, onHandlerPercent, total
             valueInUsdt: total,
             coinRate: price,
             orderStatus: null,
-            orderType: type,
+            orderType: type === 'Buy' ? true : false,
             userId: store.user.id
         }
 

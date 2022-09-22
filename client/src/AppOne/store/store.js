@@ -166,7 +166,6 @@ export default class Store {
             this.setUserId(response.data.user.ID)
             this.setShowConfirmation(true)
             this.setIsLoading(true)
-            this.setAuth(true)
             this.setUser(response.data.user)
         } catch(e) {
             this.setIsError(true)

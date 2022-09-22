@@ -69,6 +69,10 @@ const CreateDomains = () => {
         {value: 'one', text: 'one'},
         {value: 'two', text: 'two'},
     ]
+    const landings = [
+        {value: 'one', text: 'one'},
+        {value: 'two', text: 'two'},
+    ]
     const list = ['BTC', 'ETH', 'USDT', 'TRX', 'TRX/USDT', 'SOL', 'BCH']
 
     const onSubmit = async (data) => {
@@ -254,6 +258,11 @@ const CreateDomains = () => {
                         Дизайн
                         <Select {...register('designName')} classname={'admin-square'} options={designs}/>
                         <ErrorMessage  name={'designName'} errors={errors} render={() => <p className={cls.error}>This field is required</p>} />
+                    </Row>
+                    <Row className={'mb-3 relative'}>
+                        Лендинг
+                        <Select {...register('landingName')} classname={'admin-square'} options={landings}/>
+                        <ErrorMessage  name={'landingName'} errors={errors} render={() => <p className={cls.error}>This field is required</p>} />
                     </Row>
                     <h2 className='mb-3'>Дефолтные ошибки</h2>
                     <Accordion className='mb-3' defaultActiveKey="0" flush>

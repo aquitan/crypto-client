@@ -108,7 +108,7 @@ const MakeTransactionOuter = ({history}) => {
                             </Col>
                             <Col className='col-12 col-lg-3 mb-3' style={{position: 'relative'}}>
                                 <DatePickert required
-                                             customInput={<DatePickerCustom/>}
+                                             customInput={<DatePickerCustom classname='adminDatepicker'/>}
                                              placeholderText={'Дата'}
                                              selected={startDate}
                                              dateFormat='yyyy/MM/dd'
@@ -118,7 +118,7 @@ const MakeTransactionOuter = ({history}) => {
                             </Col>
                             <Col className='col-12 col-lg-3 mb-3' style={{position: 'relative'}}>
                                 <DatePickert required
-                                             customInput={<DatePickerCustom/>}
+                                             customInput={<DatePickerCustom classname='adminDatepicker'/>}
                                              placeholderText='Время'
                                              selected={timeDate}
                                              onChange={(date) => setTimeDate(date)}

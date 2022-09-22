@@ -11,10 +11,12 @@ import Bitcoin from './components/Bitcoin/Bitcoin';
 import {getData} from '../../../services/StaffServices';
 import {store} from '../../../../index';
 import Preloader from '../../../components/UI/Preloader/Preloader';
+import {ValueContextProvider} from '../../../context/ValueContext';
 
 const TradingTest = () => {
     const [coinPair, setCoinPair] = useState('BTC')
     const [balance, setBalance] = useState([])
+
 
 
     useEffect(() => {
@@ -46,6 +48,13 @@ const TradingTest = () => {
 
     return(
         <>
+            <ValueContextProvider>
+                {
+                    balance.length ?
+                      renderTrade()
+                      : <Preloader/>
+                }
+            </ValueContextProvider>
             {/*<ButtonCard theme={theme}>*/}
             {/*    <Row>*/}
             {/*        <Col className='col-12 col-sm-2'>*/}
@@ -70,11 +79,7 @@ const TradingTest = () => {
             {/*        </Col>*/}
             {/*    </Row>*/}
             {/*</ButtonCard>*/}
-            {
-                balance.length ?
-                  renderTrade()
-                  : <Preloader/>
-            }
+
 
         </>
         // <Tabs defaultActiveKey="0" id="uncontrolled-tab-example" className="mb-3">

@@ -18,6 +18,7 @@ const RegisterConfirm = () => {
 
     const toSignin = async (data) => {
         store.sendActivation(data.activationLink)
+        store.setAuth(true)
         navigate('/')
     }
 
@@ -40,9 +41,7 @@ const RegisterConfirm = () => {
                             <Input {...register('activationLink')} type='text' classname='text-center' name='activationLink' placeholder='Enter confirmation code here'/>
                         </Row>
                         <Row className='m-auto mt-4'>
-                            <Row>
-                                <Button classname={'btnBlue'}>Confirm Email</Button>
-                            </Row>
+                            <Button classname={'btnBlue'}>Confirm Email</Button>
                         </Row>
                     </Form>
                 </Col>

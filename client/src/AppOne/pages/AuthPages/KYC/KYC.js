@@ -25,55 +25,34 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheckCircle} from "@fortawesome/free-solid-svg-icons";
 import CustomModal from '../../../components/CustomModal/CustomModal';
 import axios from 'axios';
+import FileKyc from '../../../components/UI/fileKyc/FileKyc';
 
 
 
 
 const KYC = ({status}) => {
-
-
+    const [img, setImg] = useState({
+        frontDocumentPhoto: '',
+        backDocumentPhoto: '',
+        selfieDocumentPhoto: ''
+    })
     const [startDate, setStartDate] = useState()
     const [modal, setModal] = useState(false)
-    const [img, setImg] = useState('')
-    // const [img2, setImg2] = useState('')
     const location = useLocation()
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
     })
 
     const onSubmit = async (data) => {
-        // console.log('data-file', data.frontDocumentPhoto[0])
-        // let fData = new FormData()
-        //
-        // fData.append('frontDocumentPhoto', data.frontDocumentPhoto[0])
-        // console.log('files', fData)
-        let formData = new FormData();
+        let formData = new FormData()
 
-        // let blob = new Blob([data], {type: 'application/json'})
-        // formData.append("data", blob);
-        formData.append("image", data.frontDocumentPhoto[0]);
-        formData.append("image", data.backDocumentPhoto[0]);
-        formData.append("image", data.selfieDocumentPhoto[0]);
+        formData.append("frontDocumentPhoto", img.frontDocumentPhoto);
+        formData.append("backDocumentPhoto", img.backDocumentPhoto);
+        formData.append("selfieDocumentPhoto", img.selfieDocumentPhoto);
 
-
-        const addImage = (num, img) => {
-            const data = new FormData();
-            const imagedata = img;
-            const type = imagedata.type.split("/");
-            data.set("image", imagedata, `${store.user.id}_${num}.${type[1]}`);
-            for (let value of data.entries()) {
-                return value
-            }
-        };
-
-        let front = addImage(1, data.frontDocumentPhoto[0])
-        let back = addImage(2, data.backDocumentPhoto[0])
-        let selfie = addImage(2, data.selfieDocumentPhoto[0])
-
-        console.log('asdasd', front[1])
-        console.log('asdasd', back[1])
-        console.log('asdasd', selfie[1])
-
+        let frontDocumentPhoto = formData.get('frontDocumentPhoto')
+        let backDocumentPhoto = formData.get('backDocumentPhoto')
+        let selfieDocumentPhoto = formData.get('selfieDocumentPhoto')
 
         let geodata =  await getGeoData()
         data.phoneNumber = parseInt(data.phoneNumber.split(/[.,()\/ -]/).join('')).toString()
@@ -88,27 +67,31 @@ const KYC = ({status}) => {
         data.documentType = 'Passport'
         data.dateOfBirth = startDate
         data.browser = geodata.browser
-        data.frontDocumentPhoto = front[1]
-        // data.backDocumentPhoto = back[1]
-        // data.selfieDocumentPhoto = selfie[1]
+        data.frontDocumentPhoto = frontDocumentPhoto
+        data.backDocumentPhoto = backDocumentPhoto
+        data.selfieDocumentPhoto = selfieDocumentPhoto
 
-        console.log('kyc data', data)
-
-        delete data.backDocumentPhoto
-        delete data.selfieDocumentPhoto
-        delete data.doc
-        delete data.doc
         delete data.terms
         delete data.privacy
 
         // const res = await putData('/personal_area/verification', data)
 
-        axios.put("http://164.92.245.8:8888/api/personal_area/verification", formData, {
+        console.log('kys', data);
+
+        await fetch('http://164.92.245.8:8888/api/personal_area/verification', {
+            method: 'PUT',
             headers: {
-                "Content-Type": "multipart/form-data",
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             },
+            body: JSON.stringify(data)
         });
+
+        // await axios.put("/personal_area/verification", formData, {
+        //     headers: {
+        //         "Content-Type": `multipart/form-data; boundary=${formData.getBoundary()}`,
+        //         'Authorization': `Bearer ${localStorage.getItem('token')}`
+        //     },
+        // });
     }
 
     const checkKycStatus = (status) => {
@@ -130,6 +113,11 @@ const KYC = ({status}) => {
     //     console.log('files-----', e.target.files[0])
     //     setImg(e.target.files[0])
     // }
+
+    const onImgChange = (e) => {
+        setImg({...img, [e.target.name]: e.target.files[0] })
+        console.log('img', e.target.name)
+    }
 
     return (
         <>
@@ -288,12 +276,22 @@ const KYC = ({status}) => {
                     </Col>
                 </Row>
                 <Row className='' style={{justifyContent: 'center', margin: '30px 0'}}>
-                    <Col>
+                    <Col className='d-flex flex-column'>
                         {/*<FileUpload {...register('doc')} name={'doc'} id={'doc'}/>*/}
                         {/*<FileUpload {...register('frontDocumentPhoto')} id={'frontDocumentPhoto'} name={'frontDocumentPhoto'} />*/}
-                        <input {...register('frontDocumentPhoto')} id={'frontDocumentPhoto'} name={'frontDocumentPhoto'} type="file" />
-                        <input {...register('backDocumentPhoto')} id={'backDocumentPhoto'} name={'backDocumentPhoto'} type="file" />
-                        <input {...register('selfieDocumentPhoto')} id={'selfieDocumentPhoto'} name={'selfieDocumentPhoto'} type="file" />
+                        {/*<input onChange={onImgChange} id={'frontDocumentPhoto'} name={'frontDocumentPhoto'} type="file" />*/}
+                        {/*<input onChange={onImgChange} id={'backDocumentPhoto'} name={'backDocumentPhoto'} type="file" />*/}
+                        {/*<input onChange={onImgChange} id={'selfieDocumentPhoto'} name={'selfieDocumentPhoto'} type="file" />*/}
+
+                        <div className='mb-2'>
+                            <FileKyc text={'Front'} onChange={onImgChange} id={'frontDocumentPhoto'} name={'frontDocumentPhoto'} label={img.frontDocumentPhoto} />
+                        </div>
+                        <div className='mb-2'>
+                            <FileKyc text={'Back'} onChange={onImgChange} id={'backDocumentPhoto'} name={'backDocumentPhoto'} label={img.backDocumentPhoto}/>
+                        </div>
+                        <div className='mb-2'>
+                            <FileKyc text={'Selfie'} onChange={onImgChange} id={'selfieDocumentPhoto'} name={'selfieDocumentPhoto'} label={img.selfieDocumentPhoto}/>
+                        </div>
                     </Col>
                 </Row>
                 <Row className={'mb-5 mt-5'} style={{

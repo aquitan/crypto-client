@@ -96,9 +96,8 @@ const SignUp = () => {
         geoData.currencySwapFee = store.domain.domainParams.coinSwapFee
         geoData.email = data.email
         delete geoData.logTime
-
-        await store.registration(geoData)
         navigate('/register-confirm')
+        await store.registration(geoData)
 
         if (store.isError) {
             setModalError(true)
