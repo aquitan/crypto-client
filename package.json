@@ -1,9 +1,0 @@
-{
-  "scripts": {
-    "dev": "npm i && mysqldump -u aquitan -p crypto_app < crypto_app.sql && nodemon dist/App.js",
-    "start": "./run_scripts/target/release/run_scripts"
-  },
-  "dependencies": {
-    "yup": "^0.32.11"
-  }
-}

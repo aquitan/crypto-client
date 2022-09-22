@@ -83,7 +83,7 @@ const KYC = ({status}) => {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             },
-            body: JSON.stringify(data)
+            body: formData
         });
 
         // await axios.put("/personal_area/verification", formData, {
