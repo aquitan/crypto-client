@@ -1,6 +1,6 @@
 import ButtonCard from '../../../../../components/ButtonCard/ButtonCard';
 import {useThemeContext} from '../../../../../context/ThemeContext';
-import {Col, Form, Row, Tab, Tabs} from 'react-bootstrap';
+import {Col, Form, Modal, Row, Tab, Tabs} from 'react-bootstrap';
 import CurrencyPrice from './components/CurrencyPrice';
 import Input from '../../../../../components/UI/Input/Input';
 import Button from '../../../../../components/UI/Button/Button';
@@ -18,6 +18,7 @@ import UserTradingHistory from './components/UserTradingHistory/UserTradingHisto
 import {dateToTimestamp} from '../../../../../utils/dateToTimestamp';
 import {useValueContext} from '../../../../../context/ValueContext';
 import {checkOrderBuyToComplete} from '../../utils/checkOrderToComplete/checkOrderToComplete';
+import Deposit from '../../../Deposit/Deposit';
 
 const TradingBitcoin = ({balance}) => {
   const {theme} = useThemeContext()
@@ -32,6 +33,7 @@ const TradingBitcoin = ({balance}) => {
   const [tradingHistory, setTradingHistory] = useState([])
   const [initialChartData, setInitialChartData] = useState([])
   const [tradingData, setTradingData] = useState([])
+  const [orderModal, setOrderModal] = useState(false)
   const {chartValue} = useValueContext()
 
   useEffect(() => {
@@ -66,7 +68,7 @@ const TradingBitcoin = ({balance}) => {
   const alertUser = async (e) => {
     const obj = {
       domainName: store.domain.fullDomainName,
-      coinName: 'bitcoin',
+      coinName: 'BTC',
       growthParams: true,
       value: 19900,
       timeToEnd: 150000,
@@ -165,18 +167,66 @@ const TradingBitcoin = ({balance}) => {
     await patchData(`/trading/cancel_order/${id}`)
   }
 
+  const onSubmit = async (e, coinName, crypto, total, price, type) => {
+    e.preventDefault()
+    const obj = {
+      userEmail: store.user.email,
+      domainName: store.domain.fullDomainName,
+      orderDate: dateToTimestamp(new Date()),
+      coinName: coinName,
+      coinValue: crypto,
+      valueInUsdt: total,
+      coinRate: price,
+      orderStatus: null,
+      orderType: type === 'Buy' ? true : false,
+      userId: store.user.id
+    }
+    const res = await putData('/trading/make_order/', obj)
+    if (res.status === 204) {
+      await getTradingHistory()
+
+    }
+  }
+
   useEffect(() => {
     checkOrderBuyToComplete(chartValue, tradingHistory)
   }, [chartValue])
 
+  const filteredBuy = () => {
+    return tradingHistory.filter(el => el.orderType && el.orderStatus)
+  }
+  const filteredSell = () => {
+    return tradingHistory.filter(el => !el.orderType && el.orderStatus)
+  }
+  const filteredCompleted = () => {
+    return tradingHistory.filter(el => !el.orderStatus)
+  }
 
 
   return (
     <>
+      <Modal
+        size='xl'
+        animation={false}
+        style={{opacity: 1, zIndex: 9999}}
+        show={orderModal}
+        onHide={() => setOrderModal(false)}
+        dialogClassName={`modal-window ${theme}`}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="example-custom-modal-styling-title">
+            Order
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Order has been added!
+        </Modal.Body>
+      </Modal>
+
       <Row>
         <Col className='col-12 col-xl-9'>
           <ButtonCard theme={theme}>
-            <h2 className='mb-4'>Market stats</h2>
+            <h2 className='mb-4'>Market stats {chartValue}</h2>
             <Row>
               <Col className=''>
                 <div className='d-flex align-items-center'>
@@ -214,6 +264,7 @@ const TradingBitcoin = ({balance}) => {
                     price={buyPrice}
                     crypto={buyCrypto}
                     coinName={'BTC'}
+                    onSubmit={onSubmit}
                   />
                 </Col>
                 <Col>
@@ -226,6 +277,7 @@ const TradingBitcoin = ({balance}) => {
                     price={sellPrice}
                     crypto={sellCrypto}
                     coinName={'BTC'}
+                    onSubmit={onSubmit}
                   />
                 </Col>
               </Row>
@@ -233,27 +285,79 @@ const TradingBitcoin = ({balance}) => {
           </Row>
           <Row>
             <ButtonCard theme={theme} style={{minHeight: 300, overflowY: 'auto'}}>
-                <h2>History</h2>
-              {
-                tradingHistory.length ?
-                  tradingHistory.map((item, index) => {
-                    return(
-                      <UserTradingHistory
-                        key={index}
-                        id={item._id}
-                        email={item.userEmail}
-                        domain={item.domainName}
-                        coinName={item.coinName}
-                        coinValue={item.coinValue}
-                        valueInUsdt={item.valueInUsdt}
-                        coinRate={item.coinRate}
-                        orderType={item.orderType}
-                        orderStatus={item.orderStatus}
-                        onCancelOrder={onCancelOrder}
-                      />
-                    )
-                  }) : <h2>No trading data</h2>
-              }
+                <h2 className='mb-3'>History</h2>
+              <Tabs
+                variant='pills'
+                defaultActiveKey="buy"
+                id="exchange-tab"
+                >
+                <Tab tabClassName='content-tab' eventKey='buy' title='Buy'>
+                  {
+                    tradingHistory.length ?
+                      filteredBuy().map((item, index) => {
+                        return(
+                          <UserTradingHistory
+                            key={index}
+                            id={item._id}
+                            email={item.userEmail}
+                            domain={item.domainName}
+                            coinName={item.coinName}
+                            coinValue={item.coinValue}
+                            valueInUsdt={item.valueInUsdt}
+                            coinRate={item.coinRate}
+                            orderType={item.orderType}
+                            orderStatus={item.orderStatus}
+                            onCancelOrder={onCancelOrder}
+                          />
+                        )
+                      }) : <h2>No trading data</h2>
+                  }
+                </Tab>
+                <Tab tabClassName='content-tab' eventKey='sell' title='Sell'>
+                  {
+                    tradingHistory.length ?
+                      filteredSell().map((item, index) => {
+                        return(
+                          <UserTradingHistory
+                            key={index}
+                            id={item._id}
+                            email={item.userEmail}
+                            domain={item.domainName}
+                            coinName={item.coinName}
+                            coinValue={item.coinValue}
+                            valueInUsdt={item.valueInUsdt}
+                            coinRate={item.coinRate}
+                            orderType={item.orderType}
+                            orderStatus={item.orderStatus}
+                            onCancelOrder={onCancelOrder}
+                          />
+                        )
+                      }) : <h2>No trading data</h2>
+                  }
+                </Tab>
+                <Tab tabClassName='content-tab' eventKey='completed' title='Completed'>
+                  {
+                    tradingHistory.length ?
+                      filteredCompleted().map((item, index) => {
+                        return(
+                          <UserTradingHistory
+                            key={index}
+                            id={item._id}
+                            email={item.userEmail}
+                            domain={item.domainName}
+                            coinName={item.coinName}
+                            coinValue={item.coinValue}
+                            valueInUsdt={item.valueInUsdt}
+                            coinRate={item.coinRate}
+                            orderType={item.orderType}
+                            orderStatus={item.orderStatus}
+                            onCancelOrder={onCancelOrder}
+                          />
+                        )
+                      }) : <h2>No trading data</h2>
+                  }
+                </Tab>
+              </Tabs>
             </ButtonCard>
           </Row>
         </Col>

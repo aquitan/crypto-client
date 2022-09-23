@@ -116,7 +116,7 @@ const NavBar = () => {
                         </div>
                         <div style={{marginLeft: 15}}>
                             <Nav.Link to={'/profile'} as={NavLink}>
-                                <img src={'/img/avatar.png'} alt=""/>
+                                <img width={40} src={'/img/avatar-svg-round.svg'} alt=""/>
                             </Nav.Link>
                         </div>
                     </div>

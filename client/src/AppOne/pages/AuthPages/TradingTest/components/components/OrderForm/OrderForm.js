@@ -6,29 +6,11 @@ import {putData} from '../../../../../../services/StaffServices';
 import {store} from '../../../../../../../index';
 import {dateToTimestamp} from '../../../../../../utils/dateToTimestamp';
 
-const OrderForm = ({type, onChangePrice, onChangeCrypto, onHandlerPercent, total, price, crypto, coinName}) => {
+const OrderForm = ({type, onChangePrice, onChangeCrypto, onHandlerPercent, total, price, crypto, coinName, onSubmit}) => {
     const btns = [25, 50, 75, 100]
 
-    const onSubmit = async (e) => {
-        e.preventDefault()
-        const obj = {
-            userEmail: store.user.email,
-            domainName: store.domain.fullDomainName,
-            orderDate: dateToTimestamp(new Date()),
-            coinName: coinName,
-            coinValue: crypto,
-            valueInUsdt: total,
-            coinRate: price,
-            orderStatus: null,
-            orderType: type === 'Buy' ? true : false,
-            userId: store.user.id
-        }
-
-        const res = await putData('/trading/make_order/', obj)
-    }
-
     return (
-      <Form onSubmit={onSubmit} style={{padding: 0}}>
+      <Form onSubmit={(e) => onSubmit(e, coinName, crypto, total, price, type)} style={{padding: 0}}>
           <Row className={'mb-3'}>
               <div style={{color: 'grey', marginBottom: 10}}>
                   Enter your price

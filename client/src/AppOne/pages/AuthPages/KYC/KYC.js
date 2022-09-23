@@ -76,15 +76,16 @@ const KYC = ({status}) => {
 
         // const res = await putData('/personal_area/verification', data)
 
-        console.log('kys', data);
+        console.log('kys', JSON.stringify(formData));
+        console.log('kys json', data);
 
-        await fetch('http://164.92.245.8:8888/api/personal_area/verification', {
-            method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
-            body: formData
-        });
+        // await fetch('http://164.92.245.8:8888/api/personal_area/verification', {
+        //     method: 'PUT',
+        //     headers: {
+        //         'Authorization': `Bearer ${localStorage.getItem('token')}`
+        //     },
+        //     body: JSON.stringify(data)
+        // });
 
         // await axios.put("/personal_area/verification", formData, {
         //     headers: {

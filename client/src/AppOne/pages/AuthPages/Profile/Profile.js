@@ -112,7 +112,7 @@ const Profile = () => {
                         <Row className='text-center mb-5'>
                             <Row className='mb-3'>
                                 <div>
-                                    <img height={70} width={'auto'} src={'/img/avatar.png'} alt=""/>
+                                    <img height={70} width={'auto'} src={'/img/avatar-svg-round.svg'} alt=""/>
                                 </div>
                             </Row>
                             <Row className='mb-3'>
