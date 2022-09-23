@@ -64,7 +64,7 @@ const AppRouter = () => {
     }
 
     const sendDomainName = async () => {
-        const res = await postData('/get_domain_params/', {domainName: 'localhost:3002'})
+        const res = await postData('/get_domain_params/', {domainName: window.location.host})
         store.setDomain(res.data.domainInfo)
     }
 

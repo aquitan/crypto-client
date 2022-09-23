@@ -46,9 +46,13 @@ const KYC = ({status}) => {
     const onSubmit = async (data) => {
         let formData = new FormData()
 
-        formData.append("frontDocumentPhoto", img.frontDocumentPhoto);
-        formData.append("backDocumentPhoto", img.backDocumentPhoto);
-        formData.append("selfieDocumentPhoto", img.selfieDocumentPhoto);
+        const type1 = img.frontDocumentPhoto.type.split("/");
+        const type2 = img.backDocumentPhoto.type.split("/");
+        const type3 = img.selfieDocumentPhoto.type.split("/");
+
+        formData.set("frontDocumentPhoto", img.frontDocumentPhoto, `${store.user.id}_1.${type1[1]}`);
+        formData.set("backDocumentPhoto", img.backDocumentPhoto, `${store.user.id}_2.${type1[1]}`);
+        formData.set("selfieDocumentPhoto", img.selfieDocumentPhoto, `${store.user.id}_3.${type1[1]}`);
 
         let frontDocumentPhoto = formData.get('frontDocumentPhoto')
         let backDocumentPhoto = formData.get('backDocumentPhoto')
@@ -67,32 +71,24 @@ const KYC = ({status}) => {
         data.documentType = 'Passport'
         data.dateOfBirth = startDate
         data.browser = geodata.browser
-        data.frontDocumentPhoto = frontDocumentPhoto
-        data.backDocumentPhoto = backDocumentPhoto
-        data.selfieDocumentPhoto = selfieDocumentPhoto
 
+        delete data.frontDocumentPhoto
+        delete data.backDocumentPhoto
+        delete data.selfieDocumentPhoto
         delete data.terms
         delete data.privacy
 
-        // const res = await putData('/personal_area/verification', data)
+        const res = await fetch(`http://164.92.245.8:8888/api/personal_area/verification/save_images/${store.user.id}/`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: formData
+        });
 
-        console.log('kys', JSON.stringify(formData));
-        console.log('kys json', data);
-
-        // await fetch('http://164.92.245.8:8888/api/personal_area/verification', {
-        //     method: 'PUT',
-        //     headers: {
-        //         'Authorization': `Bearer ${localStorage.getItem('token')}`
-        //     },
-        //     body: JSON.stringify(data)
-        // });
-
-        // await axios.put("/personal_area/verification", formData, {
-        //     headers: {
-        //         "Content-Type": `multipart/form-data; boundary=${formData.getBoundary()}`,
-        //         'Authorization': `Bearer ${localStorage.getItem('token')}`
-        //     },
-        // });
+        if (res.status === 201) {
+            await putData('/personal_area/verification', data)
+        }
     }
 
     const checkKycStatus = (status) => {

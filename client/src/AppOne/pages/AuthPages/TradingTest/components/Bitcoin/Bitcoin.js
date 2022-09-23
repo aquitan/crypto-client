@@ -66,6 +66,7 @@ const TradingBitcoin = ({balance}) => {
 
 
   const alertUser = async (e) => {
+    e.preventDefault();
     const obj = {
       domainName: store.domain.fullDomainName,
       coinName: 'BTC',
@@ -75,7 +76,6 @@ const TradingBitcoin = ({balance}) => {
       userId: store.user.id
     }
     await putData('/trading/add_user_data/', obj)
-    e.preventDefault();
     e.returnValue = "";
   };
 
@@ -181,10 +181,12 @@ const TradingBitcoin = ({balance}) => {
       orderType: type === 'Buy' ? true : false,
       userId: store.user.id
     }
-    const res = await putData('/trading/make_order/', obj)
-    if (res.status === 204) {
+    if (price) {
+      const res = await putData('/trading/make_order/', obj)
+    }
+    if (res.status === 201) {
       await getTradingHistory()
-
+      setOrderModal(true)
     }
   }
 
@@ -206,7 +208,7 @@ const TradingBitcoin = ({balance}) => {
   return (
     <>
       <Modal
-        size='xl'
+        size='md'
         animation={false}
         style={{opacity: 1, zIndex: 9999}}
         show={orderModal}

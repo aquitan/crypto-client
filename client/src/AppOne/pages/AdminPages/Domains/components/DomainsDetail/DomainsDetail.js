@@ -194,7 +194,7 @@ const DomainsDetail = () => {
     return (
         <Container>
             <AdminButtonCard>
-                <h1 className='text-center'>Детальная информация о LocalHost</h1>
+                <h1 className='text-center'>Детальная информация о домене</h1>
             </AdminButtonCard>
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <AdminButtonCard>
@@ -203,7 +203,7 @@ const DomainsDetail = () => {
                     }
                 </AdminButtonCard>
                 <AdminButtonCard>
-                    <h2 className='mb-3 text-center'>Редактировать домен LocalHost</h2>
+                    <h2 className='mb-3 text-center'>Редактировать домен</h2>
                     <Row className='mb-3 relative'>
                         Никнейм или Email пользователя
                         <AdminInput {...register('staffEmail', {

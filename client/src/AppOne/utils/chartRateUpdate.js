@@ -11,10 +11,9 @@ export const countFunc = async (targetCounter, val, prev, real, time, growth, co
         console.log('number', number);
         return number
     } else if (counter >= targetCounter) {
-        if (!sendReq) {
+        if (!sendReq && targetCounter) {
             sendReq = true
             await patchData('/trading/send_base_params/', {domainName: window.location.host, coinName: 'BTC'})
-            console.log('reset------');
         }
         counter2 = counter2 + 1000
         if (counter2 < targetCounter + 10000) {

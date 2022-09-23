@@ -243,6 +243,7 @@ const Chart = ({rate, initialData, tradingData}) => {
                   await countFunc(tradingData.timeRangeInMs, tradingData.valueInPercent, previousValue, await getRate(), tradingData.timeRangeInMs, tradingData.growthParams, 'bitcoin')
                   : await getRate()
 
+                console.log('value', value);
                 toggleValue(value.toFixed(2))
                 let high = lastDataObject.High;
                 let low = lastDataObject.Low;
