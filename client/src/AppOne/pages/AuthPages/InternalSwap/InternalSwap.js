@@ -23,6 +23,7 @@ import {getGeoData} from "../../../queries/getSendGeoData";
 import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 import './InternalSwapTabs.scss'
 import CustomModal from '../../../components/CustomModal/CustomModal';
+import LandingSkeleton from '../../NonAuthPages/LandingSkeleton/LandingSkeleton';
 
 const InternalSwap = () => {
     const {theme} = useThemeContext(ThemeContext)
@@ -131,7 +132,6 @@ const InternalSwap = () => {
                 currency: res.data[0].coinName
             },
         })
-        console.log('state', state)
     }
 
     const onSubmit = async (data) => {
@@ -211,164 +211,169 @@ const InternalSwap = () => {
               show={errorModal}
               handleClose={() => setErrorModal(false)} />
 
-            <ButtonCard theme={theme} >
+            {
+                balance ?
+                  <ButtonCard theme={theme} >
 
-                <Tabs
-                    variant='pills'
-                    defaultActiveKey='exchange'
-                    id='exchange-tab'
-                >
-                    <Tab tabClassName='content-tab' title='Exchange' eventKey='exchange'>
-                        <Col className='col-12 p-0'>
-                            {
-                                balance ?
-                                    <Form style={{padding: 0}} classnames='form_big' onSubmit={handleSubmit(onSubmit)}>
-                                        <Row className='p-0'>
-                                            <Col
-                                                style={{position: 'relative'}}
-                                                className='col-12 mb-3 p-0'>
-                                                <h5 className='mb-3'>Choose address from</h5>
-                                                <div onClick={onOpenInitialList}
-                                                     style={{display: 'flex', justifyContent: 'space-between'}}
-                                                     className={cls.value_box}>
+                      <Tabs
+                        variant='pills'
+                        defaultActiveKey='exchange'
+                        id='exchange-tab'
+                      >
+                          <Tab tabClassName='content-tab' title='Exchange' eventKey='exchange'>
+                              <Col className='col-12 p-0'>
+                                  {
+                                      balance ?
+                                        <Form style={{padding: 0}} classnames='form_big' onSubmit={handleSubmit(onSubmit)}>
+                                            <Row className='p-0'>
+                                                <Col
+                                                  style={{position: 'relative'}}
+                                                  className='col-12 mb-3 p-0'>
+                                                    <h5 className='mb-3'>Choose address from</h5>
+                                                    <div onClick={onOpenInitialList}
+                                                         style={{display: 'flex', justifyContent: 'space-between'}}
+                                                         className={cls.value_box}>
                                                 <span style={{display: 'inline-block', marginRight: 10}}>
                                                     {state?.initial.value} {state.initial.currency}
                                                 </span>
-                                                    <Image
-                                                        src={`/img/${imgMatch(state?.initial.currency.toLowerCase())}.svg`}
-                                                        height={30}
-                                                        width={30}
-                                                        alt={'crypto'} />
-                                                </div>
-                                                {
-                                                    openList.initialList ?
-                                                        <ul className={cls.value_list}>
-                                                            {balance.map(option => <li
+                                                        <Image
+                                                          src={`/img/${imgMatch(state?.initial.currency.toLowerCase())}.svg`}
+                                                          height={30}
+                                                          width={30}
+                                                          alt={'crypto'} />
+                                                    </div>
+                                                    {
+                                                        openList.initialList ?
+                                                          <ul className={cls.value_list}>
+                                                              {balance.map(option => <li
                                                                 style={{display: 'flex', justifyContent: 'space-between'}}
                                                                 onClick={() => onChangeInitialValue(option.coinBalance.toFixed(3), option.coinName)}
                                                                 key={uuid()}>
                                                             <span>
                                                                 {option.coinBalance.toFixed(3)} <span>{option.coinName}</span>
                                                             </span>
-                                                                <Image
+                                                                  <Image
                                                                     src={`/img/${imgMatch(option.coinName.toLowerCase())}.svg`}
                                                                     height={30}
                                                                     width={30}
                                                                     alt={'crypto'} />
-                                                            </li>)}
-                                                        </ul>
-                                                        : null
-                                                }
-                                            </Col>
-                                            <Col
-                                                style={{position: 'relative'}}
-                                                className='col-12 mb-3 p-0'>
-                                                <h5 className='mb-3'>Choose address to</h5>
-                                                <div onClick={onOpenTargetList}
-                                                     style={{display: 'flex', justifyContent: 'space-between'}}
-                                                     className={cls.value_box}>
-                                                    <span>{state.target.value} {state.target.currency}</span>
-                                                    <Image
-                                                        src={`/img/${imgMatch(state?.target.currency.toLowerCase())}.svg`}
-                                                        height={30}
-                                                        width={30}
-                                                        alt={'crypto'} />
-                                                </div>
-                                                {
-                                                    openList.targetList ?
-                                                        <ul className={cls.value_list}>
-                                                            {balance.map(option => <li
+                                                              </li>)}
+                                                          </ul>
+                                                          : null
+                                                    }
+                                                </Col>
+                                                <Col
+                                                  style={{position: 'relative'}}
+                                                  className='col-12 mb-3 p-0'>
+                                                    <h5 className='mb-3'>Choose address to</h5>
+                                                    <div onClick={onOpenTargetList}
+                                                         style={{display: 'flex', justifyContent: 'space-between'}}
+                                                         className={cls.value_box}>
+                                                        <span>{state.target.value} {state.target.currency}</span>
+                                                        <Image
+                                                          src={`/img/${imgMatch(state?.target.currency.toLowerCase())}.svg`}
+                                                          height={30}
+                                                          width={30}
+                                                          alt={'crypto'} />
+                                                    </div>
+                                                    {
+                                                        openList.targetList ?
+                                                          <ul className={cls.value_list}>
+                                                              {balance.map(option => <li
                                                                 style={{display: 'flex', justifyContent: 'space-between'}}
                                                                 onClick={() => onChangeTargetValue(option.coinBalance.toFixed(3), option.coinName)}
                                                                 key={uuid()}>
                                                             <span>
                                                                 {option.coinBalance.toFixed(3)} <span>{option.coinName}</span>
                                                             </span>
-                                                                <Image
+                                                                  <Image
                                                                     src={`/img/${imgMatch(option.coinName.toLowerCase())}.svg`}
                                                                     height={30}
                                                                     width={30}
                                                                     alt={'crypto'} />
-                                                            </li>)}
-                                                        </ul>
-                                                        : null
+                                                              </li>)}
+                                                          </ul>
+                                                          : null
+                                                    }
+                                                </Col>
+                                            </Row>
+                                            {/*<Row className='mb-3'>*/}
+                                            {/*    <Col>*/}
+                                            {/*        <Input {...register('secondPartyEmail', {*/}
+                                            {/*            required: 'You must specify email to SignIn',*/}
+                                            {/*            validate: emailValidate,*/}
+                                            {/*            message: 'Email is not valid',*/}
+                                            {/*        })} placeholder='Specify your second party Email' />*/}
+                                            {/*        <ErrorMessage  name='secondPartyEmail' errors={errors} render={() => <p className={cls.error}>Email is not valid</p>} />*/}
+                                            {/*    </Col>*/}
+                                            {/*</Row>*/}
+                                            <Row className='mb-3 p-0'>
+                                                <Col className='p-0'>
+                                                    {/*<h5 className='mb-3' style={{fontSize: 12}}>Enter Amount (Fee {store.domain.domainParams.coinSwapFee}%)</h5>*/}
+                                                    <Input {...register('amount', {
+                                                        required: 'Check the value',
+                                                        pattern: /(\d+(?:\.\d+)?)/,
+                                                        message: 'Check the value',
+                                                        valueAsNumber: true,
+                                                        validate: {
+                                                            positive: v => parseFloat(v) > 0,
+                                                        },
+                                                        onChange: (e) => checkValue(e.target.value),
+                                                    })} placeholder='0' classname='inputTransparent' />
+                                                    {<p className={cls.error}>{errors.amount?.message}</p>}
+                                                    <ErrorMessage  name='amount' errors={errors} render={() => <p className={cls.error}>Check values</p>} />
+                                                </Col>
+                                                {
+                                                    isValid ? <span>you will pay {actions.percent.toFixed(7)}</span> : null
                                                 }
-                                            </Col>
-                                        </Row>
-                                        {/*<Row className='mb-3'>*/}
-                                        {/*    <Col>*/}
-                                        {/*        <Input {...register('secondPartyEmail', {*/}
-                                        {/*            required: 'You must specify email to SignIn',*/}
-                                        {/*            validate: emailValidate,*/}
-                                        {/*            message: 'Email is not valid',*/}
-                                        {/*        })} placeholder='Specify your second party Email' />*/}
-                                        {/*        <ErrorMessage  name='secondPartyEmail' errors={errors} render={() => <p className={cls.error}>Email is not valid</p>} />*/}
-                                        {/*    </Col>*/}
-                                        {/*</Row>*/}
-                                        <Row className='mb-3 p-0'>
-                                            <Col className='p-0'>
-                                                <h5 className='mb-3' style={{fontSize: 12}}>Enter Amount (Fee {store.domain.domainParams.coinSwapFee}%)</h5>
-                                                <Input {...register('amount', {
-                                                    required: 'Check the value',
-                                                    pattern: /(\d+(?:\.\d+)?)/,
-                                                    message: 'Check the value',
-                                                    valueAsNumber: true,
-                                                    validate: {
-                                                        positive: v => parseFloat(v) > 0,
-                                                    },
-                                                    onChange: (e) => checkValue(e.target.value),
-                                                })} placeholder='0' classname='inputTransparent' />
-                                                {<p className={cls.error}>{errors.amount?.message}</p>}
-                                                <ErrorMessage  name='amount' errors={errors} render={() => <p className={cls.error}>Check values</p>} />
-                                            </Col>
-                                            {
-                                                isValid ? <span>you will pay {actions.percent.toFixed(7)}</span> : null
-                                            }
-                                        </Row>
-                                        <Row>
-                                            <Col>
-                                                <input onChange={() => setChecked(!checked)} type='checkbox' />
-                                                <Link style={{color: '#AEB1BF', marginLeft: 10}} to={'/terms-and-conditions'}>I accept Terms and conditions</Link>
-                                            </Col>
-                                        </Row>
-                                        <Row className='mt-3 p-0'>
-                                            <Col className='justify-content-center p-0'>
-                                                <Button style={{width: '100%'}} classname='btnBlue' disabled={!isValid && !checked ? true : false}>Confirm</Button>
-                                            </Col>
-                                        </Row>
-                                    </Form>
-                                    : <Preloader />
-                            }
-                        </Col>
-                    </Tab>
-                    <Tab tabClassName='history-tab' title='History' eventKey='history'>
-                        <Col className='col-12 mb-3 p-0'>
-                            <Table>
-                                <TableHeader classname='table_header-dark' elems={['date', 'operation']} />
-                                <TableBody>
+                                            </Row>
+                                            <Row>
+                                                <Col>
+                                                    <input onChange={() => setChecked(!checked)} type='checkbox' />
+                                                    <Link style={{color: '#AEB1BF', marginLeft: 10}} to={'/terms-and-conditions'}>I accept Terms and conditions</Link>
+                                                </Col>
+                                            </Row>
+                                            <Row className='mt-3 p-0'>
+                                                <Col className='justify-content-center p-0'>
+                                                    <Button style={{width: '100%'}} classname='btnBlue' disabled={!isValid && !checked ? true : false}>Confirm</Button>
+                                                </Col>
+                                            </Row>
+                                        </Form>
+                                        : <Preloader />
+                                  }
+                              </Col>
+                          </Tab>
+                          <Tab tabClassName='history-tab' title='History' eventKey='history'>
+                              <Col className='col-12 mb-3 p-0'>
+                                  <Table>
+                                      <TableHeader classname='table_header-dark' elems={['date', 'operation']} />
+                                      <TableBody>
 
 
-                                    {
-                                        typeof history !== 'string' ?
-                                            history.map(item => {
-                                                return <InternalSwapTableItem
-                                                    key={item._id}
-                                                    theme={theme}
-                                                    date={getCurrentDate(item.date)}
-                                                    amountFrom={item.cryptoAmountFrom.toFixed(5)}
-                                                    amountTo={item.cryptoAmountTo.toFixed(5)}
-                                                    coinFrom={item.coinNameFrom}
-                                                    coinTo={item.coinNameTo}
-                                                />
-                                            })
-                                            : <h3>No data</h3>
-                                    }
-                                </TableBody>
-                            </Table>
-                        </Col>
-                    </Tab>
-                </Tabs>
-            </ButtonCard>
+                                          {
+                                              typeof history !== 'string' ?
+                                                history.map(item => {
+                                                    return <InternalSwapTableItem
+                                                      key={item._id}
+                                                      theme={theme}
+                                                      date={getCurrentDate(item.date)}
+                                                      amountFrom={item.cryptoAmountFrom.toFixed(5)}
+                                                      amountTo={item.cryptoAmountTo.toFixed(5)}
+                                                      coinFrom={item.coinNameFrom}
+                                                      coinTo={item.coinNameTo}
+                                                    />
+                                                })
+                                                : <h3>No data</h3>
+                                          }
+                                      </TableBody>
+                                  </Table>
+                              </Col>
+                          </Tab>
+                      </Tabs>
+                  </ButtonCard>
+                  : <LandingSkeleton />
+            }
+
 
 
         </>

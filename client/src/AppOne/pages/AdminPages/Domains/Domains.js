@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {Accordion, Col, Container, Row} from "react-bootstrap";
+import {Accordion, Col, Container, Modal, Row} from 'react-bootstrap';
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
 import AdminInput from "../../../components/UI/AdminInput/AdminInput";
 import {
@@ -24,7 +24,7 @@ import ModalDark from "../../../components/UI/ModalDark/ModalDark";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 
 const CreateDomains = () => {
-    const [modal, setModal] = useState(false)
+    const [showDomain, setShowDomain] = useState(false)
     const {register, handleSubmit, formState: {errors}, reset} = useForm({
         mode: "onBlur"
     })
@@ -118,7 +118,7 @@ const CreateDomains = () => {
         const res = await postData('/staff/domains/create_domain/', data)
         const response = await res.data
         if (res.status === 201) {
-            // SwalSimple('Домен успешно создан!')
+            setShowDomain(true)
             reset({data: ''})
         }
     }
@@ -170,9 +170,26 @@ const CreateDomains = () => {
 
     return (
         <Container>
-            <ModalDark active={modal} setActive={setModal} singleBtn={true}>
-                <h2>Домен создан успешно!</h2>
-            </ModalDark>
+            <Modal
+              size='md'
+              animation={false}
+              style={{opacity: 1, zIndex: 9999}}
+              show={showDomain}
+              onHide={() => setShowDomain(false)}
+              dialogClassName={`modal-window dark`}
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title id="example-custom-modal-styling-title">
+                        Domain
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Domain was created successfully!
+                </Modal.Body>
+            </Modal>
+
+
+
             <AdminButtonCard>
                 <h1 className='text-center'>Домены</h1>
             </AdminButtonCard>

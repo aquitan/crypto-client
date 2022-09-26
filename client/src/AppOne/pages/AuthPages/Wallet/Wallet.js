@@ -43,6 +43,7 @@ const Wallet = () => {
                 arr.push(Number((item.coinBalance * store.rates[item.coinName.toLowerCase()])))
             }
         })
+        console.log('arr---', arr);
         setBalancesArr(arr)
     }
 
