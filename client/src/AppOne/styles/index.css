@@ -35,6 +35,9 @@ body *::-webkit-scrollbar {
   z-index: 999;
   width: 30px;
 }
+.slick-list {margin: 0 -5px;}
+.slick-slide {padding: 0 5px;}
+
 .relative {
   position: relative;
 }

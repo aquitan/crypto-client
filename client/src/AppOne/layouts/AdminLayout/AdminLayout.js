@@ -28,27 +28,27 @@ const AuthLayout = () => {
                     </Container>
                 </Navbar>
                 <AdminSidebar active={state} setInactive={setInactive}>
-                    <NavigationLink to={'/'}>User Dashboard</NavigationLink>
-                    <NavigationLink to={'/staff'}>Главная</NavigationLink>
-                    <NavigationLink to={'/staff/users'}>Пользователи</NavigationLink>
-                    <NavigationLink to={'/staff/create-user'}>Создать пользователя</NavigationLink>
-                    <NavigationLink to={'/staff/staff-kyc'}>KYC</NavigationLink>
-                    <NavigationLink to={'/staff/promocodes'}>Промокоды</NavigationLink>
-                    <NavigationLink to={'/staff/wallets'}>Кошельки</NavigationLink>
-                    <NavigationLink to={'/staff/staff-errors'}>Ошибки</NavigationLink>
-                    <NavigationLink to={'/staff/domains'}>Домены</NavigationLink>
-                    <NavigationLink to={'/staff/transactions'}>Создать транзакцию</NavigationLink>
-                    <NavigationLink to={'/staff/secure-deal'}>Защищенные сделки</NavigationLink>
-                    <NavigationLink to={'/staff/trading'}>Трейдинг</NavigationLink>
+                    <NavigationLink onClick={() => setState(false)} to={'/'}>User Dashboard</NavigationLink>
+                    <NavigationLink onClick={() => setState(false)} to={'/staff'}>Главная</NavigationLink>
+                    <NavigationLink onClick={() => setState(false)} to={'/staff/users'}>Пользователи</NavigationLink>
+                    <NavigationLink onClick={() => setState(false)} to={'/staff/create-user'}>Создать пользователя</NavigationLink>
+                    <NavigationLink onClick={() => setState(false)} to={'/staff/staff-kyc'}>KYC</NavigationLink>
+                    <NavigationLink onClick={() => setState(false)} to={'/staff/promocodes'}>Промокоды</NavigationLink>
+                    <NavigationLink onClick={() => setState(false)} to={'/staff/wallets'}>Кошельки</NavigationLink>
+                    <NavigationLink onClick={() => setState(false)} to={'/staff/staff-errors'}>Ошибки</NavigationLink>
+                    <NavigationLink onClick={() => setState(false)} to={'/staff/domains'}>Домены</NavigationLink>
+                    <NavigationLink onClick={() => setState(false)} to={'/staff/transactions'}>Создать транзакцию</NavigationLink>
+                    <NavigationLink onClick={() => setState(false)} to={'/staff/secure-deal'}>Защищенные сделки</NavigationLink>
+                    <NavigationLink onClick={() => setState(false)} to={'/staff/trading'}>Трейдинг</NavigationLink>
                     {
                         store.isAdmin || store.fullAccess ?
-                            <NavigationLink to={'/staff/recruiter-list'}>Рекрутинг</NavigationLink>
+                            <NavigationLink onClick={() => setState(false)} to={'/staff/recruiter-list'}>Рекрутинг</NavigationLink>
                             : null
                     }
-                    <NavigationLink to={'/staff/create-news'}>Создать новости</NavigationLink>
-                    <NavigationLink to={'/staff/chat'}>Чат</NavigationLink>
-                    <NavigationLink to={'/staff/group-list'}>Список групп</NavigationLink>
-                    <NavigationLink to={'/staff/project-support'}>Поддержка</NavigationLink>
+                    <NavigationLink onClick={() => setState(false)} to={'/staff/create-news'}>Создать новости</NavigationLink>
+                    <NavigationLink onClick={() => setState(false)} to={'/staff/chat'}>Чат</NavigationLink>
+                    <NavigationLink onClick={() => setState(false)} to={'/staff/group-list'}>Список групп</NavigationLink>
+                    <NavigationLink onClick={() => setState(false)} to={'/staff/project-support'}>Поддержка</NavigationLink>
                 </AdminSidebar>
                 <div className={cls.content_wrap}>
                     <Outlet/>

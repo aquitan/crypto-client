@@ -34,24 +34,35 @@ const NavBar = () => {
             <Navbar style={{height: 123, backgroundColor: theme === 'light' ? '#fff' : 'rgb(8, 8, 8)'}}>
                 <Offcanvas placement='end' style={{backgroundColor: theme === 'light' ? '#fff' : '#121318'}} show={show} onHide={handleClose}>
                     <Offcanvas.Header closeVariant={theme === 'light' ? null : 'white'} closeButton>
-                        <Logo/>
-                        <span style={{color: theme === 'dark' ? '#fff' : '#121318'}}>{store.domain.domainName}</span>
+                        <Nav.Link onClick={handleClose} to={'/'} as={NavLink}>
+                            <Logo/>
+                        </Nav.Link>
+                        <Nav.Link onClick={handleClose} to={'/'} as={NavLink}>
+                            <span style={{color: theme === 'dark' ? '#fff' : '#121318'}}>{store.domain.domainName}</span>
+                        </Nav.Link>
                     </Offcanvas.Header>
                     <Offcanvas.Body>
                         <Row className='flex-column text-start mb-3'>
 
                             <Col>
-                                <Nav.Link style={{color: theme === 'light' ? 'rgba(0, 0, 0, .55)' : '#fff'}} to={'/internal-addresses'} as={NavLink}>Internal Transactions</Nav.Link>
+                                <Nav.Link style={{color: theme === 'light' ? 'rgba(0, 0, 0, .55)' : '#fff'}} onClick={handleClose} to={'/internal-addresses'} as={NavLink}>Internal Transactions</Nav.Link>
                             </Col>
                             <Col>
-                                <Nav.Link style={{color: theme === 'light' ? 'rgba(0, 0, 0, .55)' : '#fff'}} to={'/profile'} as={NavLink}>Profile</Nav.Link>
+                                <Nav.Link style={{color: theme === 'light' ? 'rgba(0, 0, 0, .55)' : '#fff'}} onClick={handleClose} to={'/profile'} as={NavLink}>Profile</Nav.Link>
                             </Col>
                             <Col>
-                                <Nav.Link style={{color: theme === 'light' ? 'rgba(0, 0, 0, .55)' : '#fff'}} to={'/secure-deal'} as={NavLink}>Secure Deal</Nav.Link>
+                                <Nav.Link style={{color: theme === 'light' ? 'rgba(0, 0, 0, .55)' : '#fff'}} onClick={handleClose} to={'/secure-deal'} as={NavLink}>Secure Deal</Nav.Link>
                             </Col>
                             <Col>
-                                <Nav.Link style={{color: theme === 'light' ? 'rgba(0, 0, 0, .55)' : '#fff'}} to={'/news'} as={NavLink}>News</Nav.Link>
+                                <Nav.Link style={{color: theme === 'light' ? 'rgba(0, 0, 0, .55)' : '#fff'}} onClick={handleClose} to={'/news'} as={NavLink}>News</Nav.Link>
                             </Col>
+                            {
+                                store.isStaff || store.fullAccess || store.isAdmin ?
+                                  <Nav.Link style={{color: theme === 'light' ? 'rgba(0, 0, 0, .55)' : '#fff'}} onClick={handleClose} as={NavLink} to='/admin'>
+                                      <span>Staff</span>
+                                  </Nav.Link>
+                                  : null
+                            }
 
                         </Row>
                         <Row>

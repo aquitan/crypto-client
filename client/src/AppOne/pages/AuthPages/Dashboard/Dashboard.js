@@ -140,29 +140,27 @@ const Dashboard = () => {
                 <Col className='p-0 col-12 col-xl-8'>
                     <Row className='p-0'>
                         <Col>
-                            <ButtonCard theme={theme}>
+                            <ButtonCard style={{paddingRight: 10, paddingLeft: 10}} theme={theme}>
                                 <Row>
                                     <h2>Market coins</h2>
                                     <p>Daily updated coins info</p>
                                 </Row>
-                                <Row>
+                                <Row style={{margin: 0, padding: 0}}>
                                     {
                                         store.ratesChange.btc && store.rates.btc && balance.length ?
                                             <SlickSlider>
                                                 {
                                                     coinsArr.map(item => {
                                                         return (
-                                                            <div className='' style={{padding: '0 5px', margin: '0 5px'}}>
-                                                                <WalletInfoBlock
-                                                                    key={item}
-                                                                    rate={store.rates[item]}
-                                                                    balance={balance.filter(el => el.coinName === item.toUpperCase())[0]}
-                                                                    currency={item.toUpperCase()}
-                                                                    amount={store.ratesChange[item]?.toFixed()}
-                                                                    status={currencyRateChangeIndicator(store.ratesChange[item].toFixed())}
-                                                                    theme={theme}
-                                                                />
-                                                            </div>
+                                                          <WalletInfoBlock
+                                                            key={item}
+                                                            rate={store.rates[item]}
+                                                            balance={balance.filter(el => el.coinName === item.toUpperCase())[0]}
+                                                            currency={item.toUpperCase()}
+                                                            amount={store.ratesChange[item]?.toFixed()}
+                                                            status={currencyRateChangeIndicator(store.ratesChange[item].toFixed())}
+                                                            theme={theme}
+                                                          />
                                                         )
                                                     })
                                                 }

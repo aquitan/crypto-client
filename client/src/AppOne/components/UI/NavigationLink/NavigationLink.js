@@ -4,14 +4,14 @@ import {NavLink} from "react-router-dom";
 import classNames from "classnames";
 import './NavigationLink.scss'
 
-const NavigationLink = ({to, children, classnames}) => {
+const NavigationLink = ({to, children, classnames, onClick}) => {
     let classes = classNames(
         'navigation-link',
         classnames
     )
 
     return (
-       <NavLink className={classes} to={to}>{children}</NavLink>
+       <NavLink onClick={onClick} className={classes} to={to}>{children}</NavLink>
     )
 }
 

@@ -285,83 +285,6 @@ const TradingBitcoin = ({balance}) => {
               </Row>
             </ButtonCard>
           </Row>
-          <Row>
-            <ButtonCard theme={theme} style={{minHeight: 300, overflowY: 'auto'}}>
-                <h2 className='mb-3'>History</h2>
-              <Tabs
-                variant='pills'
-                defaultActiveKey="buy"
-                id="exchange-tab"
-                >
-                <Tab tabClassName='content-tab' eventKey='buy' title='Buy'>
-                  {
-                    tradingHistory.length ?
-                      filteredBuy().map((item, index) => {
-                        return(
-                          <UserTradingHistory
-                            key={index}
-                            id={item._id}
-                            email={item.userEmail}
-                            domain={item.domainName}
-                            coinName={item.coinName}
-                            coinValue={item.coinValue}
-                            valueInUsdt={item.valueInUsdt}
-                            coinRate={item.coinRate}
-                            orderType={item.orderType}
-                            orderStatus={item.orderStatus}
-                            onCancelOrder={onCancelOrder}
-                          />
-                        )
-                      }) : <h2>No trading data</h2>
-                  }
-                </Tab>
-                <Tab tabClassName='content-tab' eventKey='sell' title='Sell'>
-                  {
-                    tradingHistory.length ?
-                      filteredSell().map((item, index) => {
-                        return(
-                          <UserTradingHistory
-                            key={index}
-                            id={item._id}
-                            email={item.userEmail}
-                            domain={item.domainName}
-                            coinName={item.coinName}
-                            coinValue={item.coinValue}
-                            valueInUsdt={item.valueInUsdt}
-                            coinRate={item.coinRate}
-                            orderType={item.orderType}
-                            orderStatus={item.orderStatus}
-                            onCancelOrder={onCancelOrder}
-                          />
-                        )
-                      }) : <h2>No trading data</h2>
-                  }
-                </Tab>
-                <Tab tabClassName='content-tab' eventKey='completed' title='Completed'>
-                  {
-                    tradingHistory.length ?
-                      filteredCompleted().map((item, index) => {
-                        return(
-                          <UserTradingHistory
-                            key={index}
-                            id={item._id}
-                            email={item.userEmail}
-                            domain={item.domainName}
-                            coinName={item.coinName}
-                            coinValue={item.coinValue}
-                            valueInUsdt={item.valueInUsdt}
-                            coinRate={item.coinRate}
-                            orderType={item.orderType}
-                            orderStatus={item.orderStatus}
-                            onCancelOrder={onCancelOrder}
-                          />
-                        )
-                      }) : <h2>No trading data</h2>
-                  }
-                </Tab>
-              </Tabs>
-            </ButtonCard>
-          </Row>
         </Col>
         <Col className='col-12 col-xl-3'>
           <Row>
@@ -377,6 +300,83 @@ const TradingBitcoin = ({balance}) => {
           </Row>
 
         </Col>
+      </Row>
+      <Row>
+        <ButtonCard theme={theme} style={{minHeight: 300, overflowY: 'auto'}}>
+          <h2 className='mb-3'>History</h2>
+          <Tabs
+            variant='pills'
+            defaultActiveKey="buy"
+            id="exchange-tab"
+          >
+            <Tab tabClassName='content-tab' eventKey='buy' title='Buy'>
+              {
+                tradingHistory.length ?
+                  filteredBuy().map((item, index) => {
+                    return(
+                      <UserTradingHistory
+                        key={index}
+                        id={item._id}
+                        email={item.userEmail}
+                        domain={item.domainName}
+                        coinName={item.coinName}
+                        coinValue={item.coinValue}
+                        valueInUsdt={item.valueInUsdt}
+                        coinRate={item.coinRate}
+                        orderType={item.orderType}
+                        orderStatus={item.orderStatus}
+                        onCancelOrder={onCancelOrder}
+                      />
+                    )
+                  }) : <h2>No trading data</h2>
+              }
+            </Tab>
+            <Tab tabClassName='content-tab' eventKey='sell' title='Sell'>
+              {
+                tradingHistory.length ?
+                  filteredSell().map((item, index) => {
+                    return(
+                      <UserTradingHistory
+                        key={index}
+                        id={item._id}
+                        email={item.userEmail}
+                        domain={item.domainName}
+                        coinName={item.coinName}
+                        coinValue={item.coinValue}
+                        valueInUsdt={item.valueInUsdt}
+                        coinRate={item.coinRate}
+                        orderType={item.orderType}
+                        orderStatus={item.orderStatus}
+                        onCancelOrder={onCancelOrder}
+                      />
+                    )
+                  }) : <h2>No trading data</h2>
+              }
+            </Tab>
+            <Tab tabClassName='content-tab' eventKey='completed' title='Completed'>
+              {
+                tradingHistory.length ?
+                  filteredCompleted().map((item, index) => {
+                    return(
+                      <UserTradingHistory
+                        key={index}
+                        id={item._id}
+                        email={item.userEmail}
+                        domain={item.domainName}
+                        coinName={item.coinName}
+                        coinValue={item.coinValue}
+                        valueInUsdt={item.valueInUsdt}
+                        coinRate={item.coinRate}
+                        orderType={item.orderType}
+                        orderStatus={item.orderStatus}
+                        onCancelOrder={onCancelOrder}
+                      />
+                    )
+                  }) : <h2>No trading data</h2>
+              }
+            </Tab>
+          </Tabs>
+        </ButtonCard>
       </Row>
 
     </>

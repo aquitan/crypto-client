@@ -1,9 +1,11 @@
 import {useEffect, useRef, useState} from 'react';
 import Preloader from '../../../../../../components/UI/Preloader/Preloader';
 import {Col, Row} from 'react-bootstrap';
+import {useValueContext} from '../../../../../../context/ValueContext';
 
 const CurrencyPrice = () => {
     const [rate, setRate] = useState(0)
+    const {chartValue} = useValueContext()
 
     useEffect(() => {
         getRate()
@@ -20,14 +22,14 @@ const CurrencyPrice = () => {
 
 
     return (
-        <Row className='align-items-center justify-content-end'>
-            <Col className='text-end' style={{fontSize: 28, fontWeight: 'bold'}}>
+        <Row className='align-items-center justify-content-end flex-column'>
+            <Col className='text-end' style={{fontSize: 22, fontWeight: 'bold'}}>
 
-                <span>
+                <div style={{whiteSpace: 'nowrap'}}>
                   {
-                    rate ? `$ ${Number(rate).toFixed(5).toLocaleString('en-US')}` : <Preloader/>
+                    rate ? `$ ${chartValue}` : <Preloader/>
                   }
-                </span>
+                </div>
             </Col>
             <Col className='text-end'>
                 Bitcoin Price (USD)

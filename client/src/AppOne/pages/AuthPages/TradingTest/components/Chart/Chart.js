@@ -83,7 +83,7 @@ const Chart = ({rate, initialData, tradingData}) => {
         // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
         let valueSeries = mainPanel.series.push(
           am5xy.CandlestickSeries.new(root, {
-              name: "sfsdf",
+              name: "Current movement",
               clustered: false,
               valueXField: "Date",
               valueYField: "Close",
@@ -244,7 +244,7 @@ const Chart = ({rate, initialData, tradingData}) => {
                   : await getRate()
 
                 console.log('value', value);
-                toggleValue(value.toFixed(2))
+                toggleValue(value.toFixed(5))
                 let high = lastDataObject.High;
                 let low = lastDataObject.Low;
                 let open = lastDataObject.Open;

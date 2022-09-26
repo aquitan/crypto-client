@@ -106,7 +106,7 @@ const MyAccount = (props) => {
                 }
                 <Col className='d-flex col-12 col-md-6'>
                     <div className='d-flex align-items-baseline flex-wrap'>
-                        <Input classname={['inputTransparent', theme]} onChange={onPromocodeChange} placeholder='Use promocode' />
+                        <Input style={{width: '100%'}} classname={['inputTransparent', theme]} onChange={onPromocodeChange} placeholder='Use promocode' />
                         <Button onClick={promoUse}  style={{height: 50, marginLeft: 10, marginTop: 5}} classname='btnBlue'>Confirm</Button>
                     </div>
                 </Col>

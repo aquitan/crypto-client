@@ -1,9 +1,13 @@
 .wallet-block {
   color: #fff;
-  padding: 12px;
   border-radius: 10px;
   width: 100%;
-  max-width: 330px;
+  margin: 0 20px;
+  box-sizing: border-box;
+  padding: 10px !important;
+  @media (max-width: 400px) {
+    max-width: 250px;
+  }
 }
 
 .up svg {
@@ -21,4 +25,5 @@
 .light {
   color: #121318;
   background-color: rgb(226, 242, 255);
+  padding: 20px;
 }

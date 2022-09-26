@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {Col, Container, Row} from "react-bootstrap";
+import {Col, Modal, Row} from "react-bootstrap";
 import InputRadio from "../../../components/UI/InputRadio/InputRadio";
 import './SecureDeal.scss'
 import Input from "../../../components/UI/Input/Input";
@@ -22,13 +22,14 @@ import {emailValidate} from "../../../utils/checkEmail";
 import {deleteData, getData, patchData, putData} from "../../../services/StaffServices";
 import {store} from "../../../../index";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
-import Modal from "../../../components/UI/Modal/Modal";
 import {NotifContext, useNotifContext} from "../../../context/notifContext";
 import {ThemeContext, useThemeContext} from '../../../context/ThemeContext';
+
 
 const SecureDeal = () => {
     const {theme} = useThemeContext(ThemeContext)
     const {updateNotif} = useNotifContext(NotifContext)
+    const [showSecure, setShowSecure] = useState(false)
     const [state, setState] = useState(false)
     const [history, setHistory] = useState([])
     const [startDate, setStartDate] = useState()
@@ -61,7 +62,7 @@ const SecureDeal = () => {
         data.amountInCrypto = +data.amountInCrypto
         const res = await putData('/personal_area/secure_deal/create_secure_deal/', data)
         if (res.status === 200) {
-            // SwalSimple('Secure Deal was created successfully!')
+            setShowSecure(true)
             getHistory()
             updateNotif()
         }
@@ -107,8 +108,23 @@ const SecureDeal = () => {
 
     return (
         <>
-            <Modal active={state} title={'Secure Deal created'} setActive={setState}>
-                Secure Deal was created successfully!
+            <Modal
+              size='md'
+              animation={false}
+              style={{opacity: 1, zIndex: 9999}}
+              show={showSecure}
+              onHide={() => setShowSecure(false)}
+              dialogClassName={`modal-window ${theme}`}
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title id="example-custom-modal-styling-title">
+                        Secure deal
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Secure deal was created successfully!
+                    Please visit detail page of your secure deal.
+                </Modal.Body>
             </Modal>
 
             <Row>
