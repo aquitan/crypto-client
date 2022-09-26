@@ -174,7 +174,7 @@ const SignUp = () => {
                                     validate: emailValidate,
                                     message: 'Email is not valid'
 
-                                })} name='email' placeholder='email' id='email' type='email'/>
+                                })} name='email' placeholder='Email' id='email' type='email'/>
                                 <ErrorMessage  name='email' errors={errors} render={() => <p className={cls.error}>email is invalid</p>} />
                             </Col>
                             <Col className={'mb-3 col-12 col-md-6'}>
@@ -185,7 +185,7 @@ const SignUp = () => {
                                         message: 'Minimum 2 symbols'
                                     },
                                     onBlur: (e) => onCheckError(e)
-                                })}  name='name' placeholder='display name' id='displayName' />
+                                })}  name='name' placeholder='Display name' id='displayName' />
                                 {errors.name && <p className={cls.error}>{errors.name.message}</p>}
                             </Col>
                         </Row>
@@ -203,7 +203,7 @@ const SignUp = () => {
                                     },
                                     onChange: (e) => onCheckPassword(e),
                                     onBlur: () => showPasswordTip()
-                                })} name='password' type={visiblePass.password ? 'text' : 'password'} placeholder='password' id='password' />
+                                })} name='password' type={visiblePass.password ? 'text' : 'password'} placeholder='Password' id='password' />
                                 <ErrorMessage name='password' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
                                 <FontAwesomeIcon onClick={showPassword} className={cls.eye_icon} icon={visiblePass.password ? faEye : faEyeSlash} />
                                 <PasswordStrength active={match.active} characters={match.characters} numbers={match.numbers} uppercase={match.uppercase} />
@@ -213,7 +213,7 @@ const SignUp = () => {
                                     required: 'You have to repeat your password',
                                     validate: value => value === password.current || 'Password is not the same',
                                     message: 'The password does not match'
-                                })} name='repeatPassword' type={visiblePass.repeatPassword ? 'text' : 'password'} placeholder='repeat password' id='repeatPassword' />
+                                })} name='repeatPassword' type={visiblePass.repeatPassword ? 'text' : 'password'} placeholder='Repeat password' id='repeatPassword' />
                                 <ErrorMessage name='repeatPassword' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
                                 <FontAwesomeIcon onClick={showRepeatPassword} className={cls.eye_icon} icon={visiblePass.repeatPassword ? faEye : faEyeSlash} />
                             </Col>

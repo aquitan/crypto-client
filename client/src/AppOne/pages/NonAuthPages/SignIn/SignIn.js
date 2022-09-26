@@ -151,7 +151,7 @@ const SignIn = () => {
                                             message: 'Your password must be less than 32 characters'
                                         },
                                     }
-                                )} classname='' type={isShowPassword ? 'text' : 'password'} name='password' placeholder='password' id='password' />
+                                )} classname='' type={isShowPassword ? 'text' : 'password'} name='password' placeholder='Password' id='password' />
                                 {/* <ErrorMessage name='password' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} /> */}
                                 <FontAwesomeIcon onClick={showPassword} className={cls.eye_icon} icon={isShowPassword ? faEye : faEyeSlash} />
                             </Col>
