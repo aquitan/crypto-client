@@ -183,11 +183,4 @@ const MakeTransactionOuter = ({history}) => {
     )
 }
 
-MakeTransactionOuter.propTypes = {
-    
-}
-MakeTransactionOuter.defaultProps = {
-    
-}
-
 export default MakeTransactionOuter

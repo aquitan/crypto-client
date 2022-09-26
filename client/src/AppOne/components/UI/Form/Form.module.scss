@@ -6,6 +6,9 @@
     background-color: transparent;
     color: #121318;
     border-radius: 10px;
+    @media (max-width: 768px) {
+        padding: 20px 10px;
+    }
 }
 .form_big {
     max-width: 100%;

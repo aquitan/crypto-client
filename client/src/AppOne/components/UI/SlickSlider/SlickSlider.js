@@ -43,6 +43,14 @@ const SlickSlider = ({children}) => {
                     variableWidth: true
                 }
             },
+            {
+                breakpoint: 320,
+                settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1,
+                    variableWidth: true
+                }
+            },
         ]
     };
     return (

@@ -165,7 +165,7 @@ const SignUp = () => {
                 <Col className={`px-3 px-xl-0 ${cls.authFormItem}`} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                     <Form onSubmit={handleSubmit(onSubmit)}>
                         <Row>
-                            <h2 style={{color: theme === 'light' ? '#121318' : '#fff'}} className='mb-4'>Register to {store.domain.domainName}</h2>
+                            <h2 style={{color: theme === 'light' ? '#121318' : '#fff'}} className='mb-4'>Sign up {store.domain.domainName}</h2>
                         </Row>
                         <Row className=''>
                             <Col className={'mb-3 col-12 col-md-6'}>

@@ -24,11 +24,11 @@
     color: #121318;
     font-weight: bold;
 }
-.domain_header:after {
-    content: '';
-    width: 2px;
-    height: 100%;
-    position: absolute;
-    right: -35px;
-    background-color: #CCCED9;
-}
+/*.domain_header:after {*/
+/*    content: '';*/
+/*    width: 2px;*/
+/*    height: 100%;*/
+/*    position: absolute;*/
+/*    right: -35px;*/
+/*    background-color: #CCCED9;*/
+/*}*/

@@ -228,7 +228,7 @@ const TradingBitcoin = ({balance}) => {
       <Row>
         <Col className='col-12 col-xl-9'>
           <ButtonCard theme={theme}>
-            <h2 className='mb-4'>Market stats {chartValue}</h2>
+            <h2 className='mb-4'>Market stats</h2>
             <Row>
               <Col className=''>
                 <div className='d-flex align-items-center'>

@@ -16,9 +16,8 @@
 
 .small_scroll {
   @media (max-width: 500px) {
-    overflow-x: auto;
     .row {
-      min-width: 500px;
+      min-width: 1100px;
     }
   }
 }

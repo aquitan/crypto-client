@@ -54,7 +54,7 @@ const LandingHeader = ({state, openSidebar}) => {
                                     Sign in
                                 </Button>
                                 <Button style={{marginLeft: 20}}  classname={'btnBlue'} onClick={() => navigate('/signup')}>
-                                    Register
+                                    Sign up
                                 </Button>
                             </div>
                         </div>
@@ -69,7 +69,11 @@ const LandingHeader = ({state, openSidebar}) => {
                     </h4>
                 </Col>
                 <Col className='d-flex d-xl-none justify-content-end'>
-                    <ToggleCheckbox onChange={toggleTheme}/>
+                    <div onClick={toggleTheme} style={{cursor: 'pointer', marginRight: 10}}>
+                        {
+                            theme === 'light' ? <FontAwesomeIcon icon={faMoon} size='lg' /> : <FontAwesomeIcon icon={faSun} size='lg' color={'orange'}/>
+                        }
+                    </div>
                     <div onClick={handleOpen} style={{cursor: 'pointer'}}>
                         <FontAwesomeIcon icon={faBars} />
                     </div>
@@ -96,7 +100,7 @@ const LandingHeader = ({state, openSidebar}) => {
                                 Sign in
                             </Button>
                             <Button style={{marginLeft: 20}}  classname={'btnBlue'} onClick={() => navigate('/signup')}>
-                                Register
+                                Sign up
                             </Button>
                         </div>
                     </div>

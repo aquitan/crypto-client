@@ -51,24 +51,26 @@ const StaffErrorDetail = () => {
                 <h2>Ошибка изменена!</h2>
             </ModalDark>
 
-            <h1 className='mt-4 mb-4'>Детальная ошибки</h1>
+            <AdminButtonCard>
+                <h1 className='mt-4 mb-4'>Детальная ошибки</h1>
+            </AdminButtonCard>
             <AdminButtonCard>
                 <AdminForm onSubmit={handleSubmit(onSubmit)}>
                     <Row className='mb-3'>
                         <p>Текущее название</p>
-                        <AdminInput defaultValue={state.error?.error_name} {...register('name')} placeholder='Название ошибки' />
+                        <AdminInput defaultValue={state.error?.error_name} {...register('name')} placeholder='Название ошибки' classname='admin-square' />
                     </Row>
                     <Row className='mb-3'>
                         <p>Текущее Тайтл</p>
-                        <AdminInput defaultValue={state.error?.error_title} {...register('title')} placeholder='Заголовок ошибки'/>
+                        <AdminInput defaultValue={state.error?.error_title} {...register('title')} placeholder='Заголовок ошибки' classname='admin-square'/>
                     </Row>
                     <Row className='mb-3'>
                         <p>Текущий Текст</p>
-                        <TextArea defaultValue={state.error?.error_text} {...register('text')} classnames='dark' placeholder='Текст ошибки' />
+                        <TextArea defaultValue={state.error?.error_text} {...register('text')} placeholder='Текст ошибки' classnames='textarea_square'/>
                     </Row>
                     <Row className='mb-3'>
                         <p>Текущий Текст кнопки</p>
-                        <Select defaultValue={state.error?.error_button} {...register('button')} options={optionsButton} classnames='dark'/>
+                        <Select defaultValue={state.error?.error_button} {...register('button')} options={optionsButton}  classname='admin-square'/>
                     </Row>
                     <AdminButton classname='green'>Применить</AdminButton>
                 </AdminForm>

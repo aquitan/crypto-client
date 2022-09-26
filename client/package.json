@@ -4,12 +4,15 @@
   "private": true,
   "dependencies": {
     "@amcharts/amcharts5": "^5.2.18",
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.16",
     "@hookform/error-message": "^2.0.0",
     "@hookform/resolvers": "^2.8.8",
     "@metamask/logo": "^3.1.1",
+    "@mui/material": "^5.10.6",
     "apexcharts": "^3.35.4",
     "autoprefixer": "^10.4.7",
     "axios": "^0.24.0",
@@ -47,8 +50,9 @@
     "workbox-routing": "^6.4.2",
     "workbox-strategies": "^6.4.2"
   },
+  "proxy": "http://164.92.245.8",
   "scripts": {
-    "start": "react-scripts --openssl-legacy-provider start",
+    "start": "PORT=3002 react-scripts --openssl-legacy-provider start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

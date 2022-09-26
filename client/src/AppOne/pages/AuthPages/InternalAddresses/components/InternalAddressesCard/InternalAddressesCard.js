@@ -54,14 +54,14 @@ const InternalAddressesCard = ({currency, sum, onCopy, wallet, theme}) => {
                     icon={faTimesCircle} /> : null
             }
             <Row className='align-items-center my-2'>
-                <Col className=''>
+                <Col className='mb-2'>
                     <Image src={`/img/${imgMatch(currency)}.svg`} height={40} alt={'crypto'} />
                     <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8'}} className='badge'>{currency}</div>
                 </Col>
-                <Col className=''>
+                <Col className='mb-2'>
                     <div>{sum.toFixed(5)} {currency}</div>
                 </Col>
-                <Col className=''>
+                <Col className='mb-2'>
                     <div className='d-flex align-items-center' onClick={() => onCopy(wallet)}>
                         <FontAwesomeIcon
                             style={{marginRight: 20}}

@@ -4,15 +4,6 @@ export const BASE_URL = 'http://164.92.245.8:8888/api'
 export const GEO_API = 'http://geolocation-db.com/json/'
 export const COINS_API = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin%2C%20ethereum%2C%20bitcoin-cash%2C%20solana%2C%20tron%2C%20tether&order=market_cap_desc&per_page=100&page=1&sparkline=false'
 
-export const $usersApi = axios.create({
-    baseURL: BASE_URL,
-    withCredentials: true,
-    headers: {
-        'Content-type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem('token')
-    }
-})
-
 export const $geo_api = axios.create({
     baseURL: GEO_API,
     withCredentials: true
@@ -26,6 +17,7 @@ export const coinsApi = axios.create({
 export const $api = axios.create({
     baseURL: BASE_URL,
     withCredentials: true,
+    crossdomain: true
 })
 
 $api.interceptors.request.use((config) => {

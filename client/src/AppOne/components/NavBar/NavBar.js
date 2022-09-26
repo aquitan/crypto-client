@@ -35,7 +35,7 @@ const NavBar = () => {
                 <Offcanvas placement='end' style={{backgroundColor: theme === 'light' ? '#fff' : '#121318'}} show={show} onHide={handleClose}>
                     <Offcanvas.Header closeVariant={theme === 'light' ? null : 'white'} closeButton>
                         <Logo/>
-                        <span style={{color: theme === 'dark' ? '#fff' : '#121318'}}>{state ? state.domainName : <Preloader/>}</span>
+                        <span style={{color: theme === 'dark' ? '#fff' : '#121318'}}>{store.domain.domainName}</span>
                     </Offcanvas.Header>
                     <Offcanvas.Body>
                         <Row className='flex-column text-start mb-3'>

@@ -76,9 +76,9 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
         const obj = {
             userId: store.user.id,
             coinName: coin.toLowerCase(),
-            coinFullName: coinFullName.toLowerCase(),
-            expiredTime: dateToTimestamp(d),
-            userEmail: store.user.email
+            // coinFullName: coinFullName.toLowerCase(),
+            // expiredTime: dateToTimestamp(d),
+            // userEmail: store.user.email
         }
         const res = await postData('/get_address_for_deposit/', obj)
         setAddress(res.data.address)
@@ -195,7 +195,7 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
                         eventKey='deposit'
                         title='Deposit'>
                         <Row className='mb-3 mt-3'>
-                            <div className='p-0 mb-2'>{address ? `Your address: ${address}` :
+                            <div className='p-0 mb-2' style={{wordBreak: 'break-word'}}>{address ? `Your address: ${address}` :
                                 <Button classname={['btnSmall', 'btnGray']} onClick={getAddressForDeposit}>Generate address</Button>}</div>
                             {/*<Select {...register('coinName')} classname='transparent' options={statusOptions} />*/}
 
