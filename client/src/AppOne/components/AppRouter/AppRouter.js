@@ -65,8 +65,22 @@ const AppRouter = () => {
 
     const sendDomainName = async () => {
         const res = await postData('/get_domain_params/', {domainName: window.location.host})
-        store.setDomain(res.data.domainInfo)
+        console.log('res-----', res);
+        store.setDomain(res.domainInfo)
     }
+
+    // const sendDomainName = async () => {
+    //     const res = await fetch('http://164.92.245.8:8888/api/get_domain_params/', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json'
+    //         },
+    //         body: JSON.stringify({domainName: window.location.host})
+    //     })
+    //     const datas = await res.json()
+    //     store.setDomain(datas.domainInfo)
+    // }
+
 
     if (store.isLoading) {
         console.log('store is loading...')

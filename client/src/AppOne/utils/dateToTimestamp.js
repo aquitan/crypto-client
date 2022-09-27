@@ -1,9 +1,9 @@
 export const dateToTimestamp = (time) => {
     if (time) {
         let date = new Date(time)
-        return date.getTime()
+        return Math.floor(Date.now() / 1000)
     } else {
         let date = new Date()
-        return date.getTime()
+        return Math.floor(Date.now() / 1000)
     }
 }
