@@ -18,7 +18,7 @@ const Landing = () => {
 
     const getDomain = async () => {
         const res = await postData('/get_domain_params/', {domainName: window.location.host})
-        setState(res.domainInfo)
+        setState(res.data.domainInfo)
     }
 
 
