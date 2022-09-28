@@ -17,7 +17,7 @@ const Landing = () => {
     }, [])
 
     const getDomain = async () => {
-        const res = await getData(`/get_domain_params/localhost:3002`)
+        const res = await getData(`/get_domain_params/${window.location.host}`)
         setState(res.data.domainInfo)
     }
 
