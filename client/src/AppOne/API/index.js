@@ -16,9 +16,7 @@ export const coinsApi = axios.create({
 
 export const $api = axios.create({
     baseURL: BASE_URL,
-    headers: {
-        'Access-Control-Allow-Origin': '*'
-    }
+    withCredentials: true,
 })
 
 $api.interceptors.request.use((config) => {
