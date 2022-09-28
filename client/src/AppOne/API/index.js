@@ -16,9 +16,8 @@ export const coinsApi = axios.create({
 
 export const $api = axios.create({
     baseURL: BASE_URL,
-    withCredentials: true,
     headers: {
-        'Access-Control-Allow-Origin': 'http://164.92.245.8'
+        'Access-Control-Allow-Origin': '*'
     }
 })
 
