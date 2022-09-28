@@ -53,7 +53,7 @@
   },
   "proxy": "http://164.92.245.8:3832",
   "scripts": {
-    "start": "react-scripts --openssl-legacy-provider start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
