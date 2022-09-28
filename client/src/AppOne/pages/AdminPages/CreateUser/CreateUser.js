@@ -30,7 +30,7 @@ const CreateUser = () => {
             isAdmin: store.isAdmin,
             isStaff: store.isStaff,
             rootAccess: store.fullAccess,
-            staffId: store.user.id
+            staffId: store.fullAccess ? 'root' : store.user.id
 
         }
         const res = await postData('/staff/domains/get_active_domains/', obj)
