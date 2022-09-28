@@ -51,9 +51,6 @@
     "workbox-routing": "^6.4.2",
     "workbox-strategies": "^6.4.2"
   },
-  "proxy": {
-    "*":{ "target" : "http://164.92.245.8:3832"}
-  },
   "scripts": {
     "start": "PORT=3002 react-scripts --openssl-legacy-provider start",
     "build": "react-scripts build",
