@@ -18,7 +18,7 @@ export const $api = axios.create({
     baseURL: BASE_URL,
     withCredentials: true,
     headers: {
-        'Access-Control-Allow-Origin': 'http://45.67.56.28'
+        'Access-Control-Allow-Origin': 'http://164.92.245.8'
     }
 })
 
