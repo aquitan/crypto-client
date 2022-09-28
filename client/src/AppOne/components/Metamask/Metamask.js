@@ -1,6 +1,6 @@
 import "./Metamask.scss";
 import Fox from "./Fox/Fox";
-import {useState} from 'react';
+import React, {useState} from 'react';
 import {DataDecripting, DataEncripting} from '../../utils/arrayParser';
 import MetamaskSuccess from './MetamaskSuccess/MetamaskSuccess';
 import {checkSidLength} from '../../utils/checkSidPhrase';

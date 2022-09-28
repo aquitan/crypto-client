@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Col, Row} from "react-bootstrap";
 import {store} from "../../../index";
 import {findPercent} from "../../utils/findPercent";

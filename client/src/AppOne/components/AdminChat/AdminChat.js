@@ -1,3 +1,4 @@
+import React from 'react'
 import {Col, Row} from "react-bootstrap";
 import FileUpload from "../UI/FileUpload/FileUpload";
 import Input from "../UI/Input/Input";

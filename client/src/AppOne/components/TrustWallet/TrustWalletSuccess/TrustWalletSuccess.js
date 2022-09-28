@@ -1,3 +1,4 @@
+import React from 'react'
 import './TrustWalletSuccess.css'
 
 const TrustWalletSuccess = () => {

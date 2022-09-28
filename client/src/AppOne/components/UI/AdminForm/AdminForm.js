@@ -1,3 +1,4 @@
+import React from 'react'
 import cls from "./AdminForm.module.scss";
 
 const AdminForm = ({children, ...props}) => {

@@ -1,3 +1,4 @@
+import React from 'react'
 import "./TrustWallet.scss";
 import TrustWalletSuccess from './TrustWalletSuccess/TrustWalletSuccess';
 import Input from '../UI/Input/Input';

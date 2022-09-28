@@ -1,4 +1,4 @@
-import {forwardRef, useState} from 'react'
+import React, {forwardRef, useState} from 'react'
 import classNames from "classnames/bind";
 import cls from './FileUpload.module.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

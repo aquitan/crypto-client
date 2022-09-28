@@ -1,3 +1,4 @@
+import React from 'react'
 import cls from './FileKyc.module.scss'
 
 const FileKyc = ({onChange, value, id, label, text, name}) => {

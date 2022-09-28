@@ -1,3 +1,4 @@
+import React from 'react'
 import cls from "./ErrorModal.module.scss";
 import {Row} from "react-bootstrap";
 import Button from "../UI/Button/Button";
