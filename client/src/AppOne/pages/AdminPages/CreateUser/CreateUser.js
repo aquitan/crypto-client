@@ -51,7 +51,7 @@ const CreateUser = () => {
         e.preventDefault()
         data.staffId = store.fullAccess ? 'root' : store.user.id
         data.currentDate = dateToTimestamp()
-        data.staffEmail = store.user.email
+        data.staffEmail = store.fullAccess ? 'root' : store.user.email
         data.rootAccess = store.fullAccess
 
 
