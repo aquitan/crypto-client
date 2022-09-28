@@ -1,4 +1,3 @@
-import MobileDetect from 'mobile-detect'
 
 export const checkDeviece = () => {
     return 'device'

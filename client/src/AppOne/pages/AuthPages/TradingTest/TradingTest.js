@@ -1,12 +1,4 @@
 import React, {useEffect, useState} from 'react'
-import {Col, Container, Row, Tab, Tabs} from "react-bootstrap";
-
-import TradingEthereum from "./components/TradingEthereum/TradingEthereum";
-import TradingBitcoin from "./components/TradingBitcoin/TradingBitcoin";
-import TradingTron from "./components/TradingTron/TradingTron";
-import TradingBCH from "./components/TradingBCH/TradingBCH";
-import ButtonCard from "../../../components/ButtonCard/ButtonCard";
-import {useThemeContext} from '../../../context/ThemeContext';
 import Bitcoin from './components/Bitcoin/Bitcoin';
 import {getData} from '../../../services/StaffServices';
 import {store} from '../../../../index';
@@ -34,16 +26,7 @@ const TradingTest = () => {
 
     const renderTrade = () => {
         if (coinPair === 'BTC') return <Bitcoin balance={balance[0]}/>
-        if (coinPair === 'ETH') return <TradingEthereum />
-        if (coinPair === 'TRX') return <TradingTron />
-        if (coinPair === 'BCH') return <TradingBCH />
     }
-    const coins = [
-        {value: 'BTC', text: 'BTC'},
-        {value: 'ETH', text: 'ETH'},
-        {value: 'TRX', text: 'TRX'},
-        {value: 'BCH', text: 'BCH'},
-    ]
 
 
     return(
@@ -82,28 +65,8 @@ const TradingTest = () => {
 
 
         </>
-        // <Tabs defaultActiveKey="0" id="uncontrolled-tab-example" className="mb-3">
-        //     <Tab eventKey="0" title="Bitcoin">
-        //         <TradingBitcoin/>
-        //     </Tab>
-        //     <Tab eventKey="1" title="Ethereum">
-        //         <TradingEthereum />
-        //     </Tab>
-        //     <Tab eventKey="2" title="Bitcoin Cash">
-        //         <TradingBCH />
-        //     </Tab>
-        //     <Tab eventKey="3" title="Tron">
-        //         <TradingTron />
-        //     </Tab>
-        // </Tabs>
-    )
-}
 
-TradingTest.propTypes = {
-    
-}
-TradingTest.defaultProps = {
-    
+    )
 }
 
 export default TradingTest
