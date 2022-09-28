@@ -49,10 +49,11 @@ const CreateUser = () => {
 
     const onSubmit = async (data, e) => {
         e.preventDefault()
-        data.staffId = store.user.id
+        data.staffId = store.fullAccess ? 'root' : store.user.id
         data.currentDate = dateToTimestamp()
         data.staffEmail = store.user.email
         data.rootAccess = store.fullAccess
+
 
         const res = await postData('/staff/create_user', data)
         if (res.status === 200) {
