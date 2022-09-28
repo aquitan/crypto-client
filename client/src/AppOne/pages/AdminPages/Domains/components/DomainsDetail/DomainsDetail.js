@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import {Container, Form, Row} from "react-bootstrap";
 import AdminButtonCard from "../../../../../components/AdminButtonCard/AdminButtonCard";
-import {getData, patchData, putData} from "../../../../../services/StaffServices";
+import {deleteData, getData, patchData, putData} from '../../../../../services/StaffServices';
 import Preloader from "../../../../../components/UI/Preloader/Preloader";
 import DomainsDetailTableItem from "../DomainsDetailTableItem/DomainDetailTableItem";
 import {useForm} from "react-hook-form";
@@ -190,6 +190,15 @@ const DomainsDetail = () => {
         }
     }
 
+    const onDelete = async () => {
+        let obj = {
+            isAdmin: true,
+            rootAccess: true,
+            domainName: ' 167.71.68.69:3002'
+        }
+        await deleteData('/staff/domains/full_domain_delete/', {data: obj})
+    }
+
 
     return (
         <Container>
@@ -314,7 +323,11 @@ const DomainsDetail = () => {
                 <AdminButtonCard title={'Сохранить все изменения!'}>
                     <AdminButton classname='green'>Изменить</AdminButton>
                 </AdminButtonCard>
+
             </Form>
+            <AdminButtonCard>
+                <AdminButton onClick={onDelete} classname={'red'}>Удалить</AdminButton>
+            </AdminButtonCard>
         </Container>
     )
 }
