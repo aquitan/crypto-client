@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import { useNavigate} from "react-router-dom";
-import {postData} from "../../../services/StaffServices";
+import {getData, postData} from '../../../services/StaffServices';
 import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 import './landing.scss'
 import LandingSkeleton from '../LandingSkeleton/LandingSkeleton';
@@ -17,7 +17,7 @@ const Landing = () => {
     }, [])
 
     const getDomain = async () => {
-        const res = await postData('/get_domain_params/', {domainName: window.location.host})
+        const res = await getData(`/get_domain_params/${window.location.host}`)
         setState(res.data.domainInfo)
     }
 

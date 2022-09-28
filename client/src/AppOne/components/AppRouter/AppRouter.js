@@ -3,7 +3,7 @@ import {AuthContext} from "../../../index";
 import {observer} from "mobx-react-lite";
 import AuthWrap from "../../layouts/AuthWrap/AuthWrap";
 import NonAuthWrap from "../../layouts/NonAuthWrap/NonAuthWrap";
-import {postData} from "../../services/StaffServices";
+import {getData, postData} from '../../services/StaffServices';
 import {useNavigate} from "react-router-dom";
 import {getRate} from "../../services/CurrencyService";
 import Preloader from "../UI/Preloader/Preloader";
@@ -64,7 +64,7 @@ const AppRouter = () => {
     }
 
     const sendDomainName = async () => {
-        const res = await postData('/get_domain_params/', {domainName: window.location.host})
+        const res = await getData(`/get_domain_params/${window.location.host}`)
         store.setDomain(res.data.domainInfo)
     }
 
