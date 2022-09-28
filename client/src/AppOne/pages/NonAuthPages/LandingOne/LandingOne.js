@@ -227,7 +227,6 @@ const LandingOne = ({state, theme, navigate}) => {
                                       </div>
                                       <p className="text-group-paragraph">
                                           Set up your own trading interface or deploy your algorithmic strategy with our high-performance FIX and HTTP APIs.
-                                          Connect to our WebSocket for real-time data streaming.
                                       </p>
                                   </div>
                                   <div className="text-group">
