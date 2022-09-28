@@ -1,3 +1,4 @@
+import React from 'react'
 import Dashboard from "../pages/AuthPages/Dashboard/Dashboard"
 import {
     ACCOUNT_ROUTE,
