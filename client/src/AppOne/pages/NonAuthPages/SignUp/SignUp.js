@@ -97,6 +97,7 @@ const SignUp = () => {
         geoData.currencySwapFee = store.domain.domainParams.coinSwapFee
         geoData.email = data.email
         geoData.deviceName = checkDeviece()
+        geoData.companyYear = store.domain.companyYear
         delete geoData.logTime
         navigate('/register-confirm')
         await store.registration(geoData)
