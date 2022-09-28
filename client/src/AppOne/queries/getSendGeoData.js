@@ -13,7 +13,6 @@ export const getGeoData = async () => {
         let location = response.data.latitude.toString() + ', ' + response.data.longitude.toString()
         const domain_name = window.location.host
         let userLocation = store.path.split(/[\\\/]/)
-        console.log('window host', domain_name)
         let geoDatas = {
             ipAddress: response.data.IPv4,
             city: response.data.city,

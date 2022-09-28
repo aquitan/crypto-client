@@ -65,8 +65,7 @@ const AppRouter = () => {
 
     const sendDomainName = async () => {
         const res = await postData('/get_domain_params/', {domainName: window.location.host})
-        console.log('res-----', res);
-        store.setDomain(res.domainInfo)
+        store.setDomain(res.data.domainInfo)
     }
 
     // const sendDomainName = async () => {

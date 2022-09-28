@@ -16,10 +16,6 @@ export const coinsApi = axios.create({
 
 export const $api = axios.create({
     baseURL: BASE_URL,
-    proxy: {
-        host: 'http://164.92.245.8',
-        port: 3832,
-    },
     headers: {
         'Content-Type': 'application/json'
     }

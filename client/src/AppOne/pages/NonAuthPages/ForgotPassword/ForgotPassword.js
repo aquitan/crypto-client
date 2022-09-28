@@ -11,6 +11,9 @@ import Modal from "../../../components/UI/Modal/Modal";
 import {Link, useNavigate} from "react-router-dom";
 import {patchData} from "../../../services/StaffServices";
 import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
+import {checkDeviece} from '../../../utils/checkDevice';
+import {store} from '../../../../index';
+import {getGeoData} from '../../../queries/getSendGeoData';
 
 const ForgotPassword = () => {
     const navigate = useNavigate()
@@ -22,7 +25,14 @@ const ForgotPassword = () => {
     })
 
     const onSubmit = async (data) => {
+        let date = new Date()
+        const geodata = await getGeoData()
         data.domainName = window.location.host
+        data.currentDate = date.getTime() / 1000
+        data.companyYear = store.domain.companyYear
+        data.ipAddress = geodata.ipAddress
+        data.deviceName = checkDeviece()
+
         const res = await patchData('/forgot_password/', data)
         const datas = await res.data
         setForgotStatus(datas.status)

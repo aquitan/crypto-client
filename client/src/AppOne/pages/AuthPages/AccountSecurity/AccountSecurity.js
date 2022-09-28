@@ -105,8 +105,7 @@ const AccountSecurity = (props) => {
         geodata.twoFaType = 'telegram'
         geodata.enableDate = dateToTimestamp()
 
-        console.log('2fa----', data)
-        console.log('2fa geo----', geodata)
+
         const res = await postData('/personal_area/security/two_step_enable/', geodata)
         if (res.status === 200) {
             setStatus(true)
@@ -116,7 +115,7 @@ const AccountSecurity = (props) => {
         if (data.code === state.twoFaCode) {
 
         } else {
-            console.log('lol')
+            console.log('error')
         }
     }
 
@@ -155,7 +154,6 @@ const AccountSecurity = (props) => {
 
         const res = await postData('/personal_area/profile/', geodata)
         setStatus(res.data.user.twoStepStatus)
-        console.log('dataProfile', res.data)
     }
 
     return (

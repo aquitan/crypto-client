@@ -18,6 +18,7 @@ import Modal from "../../../components/UI/Modal/Modal";
 import {postData} from "../../../services/StaffServices";
 import Preloader from "../../../components/UI/Preloader/Preloader";
 import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
+import {checkDeviece} from '../../../utils/checkDevice';
 
 
 
@@ -56,17 +57,21 @@ const SignIn = () => {
 
     const checkFaStatus = async (data) => {
         let date = new Date()
+        const geodata = await getGeoData()
         sendLoginData(data)
-        // const res = await postData('/check_two_step/', {
-        //     email: data.email,
-        //     time: date.getTime()
-        // })
-        // if (res.data.twoStepStatus) {
-        //     console.log('OK status')
-        //     setStateTwoFa({twoFaCode: true})
-        // } else {
-        //     sendLoginData(data)
-        // }
+        const res = await postData('/check_two_step/', {
+            email: data.email,
+            currentDate: Math.round(date.getTime() / 1000),
+            domainName: window.location.host,
+            companyYear: store.domain.companyYear,
+            ipAddress: geodata.ipAddress,
+            deviceName: checkDeviece()
+        })
+        if (res.data.twoStepStatus) {
+            setStateTwoFa({twoFaCode: true})
+        } else {
+            sendLoginData(data)
+        }
 
     }
 

@@ -8,7 +8,6 @@ const LandingBlock = ({children, classname, ...attrs}) => {
 
     let cx = classNames.bind(cls)
     let classes = cx(classname, theme)
-    console.log('attrs', attrs)
     return (
         <div {...attrs} className={classes}>
             {children}

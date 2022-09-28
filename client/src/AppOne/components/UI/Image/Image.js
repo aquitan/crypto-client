@@ -7,8 +7,6 @@ const Image = ({src, alt, classname, width, height, ...attr}) => {
     const cx = classNames.bind(cls)
     let classes = cx('image', classname)
 
-    console.log('src', src)
-
     return (
         <img src={src} alt={alt} width={width} height={height} className={classes} {...attr} />
     )

@@ -30,7 +30,6 @@ const Users = () => {
         const res = await postData('/staff/users/', userData)
         if (typeof res.data.usersList !== 'string') {
             const usersReversed = res.data.usersList.slice(0).reverse()
-            console.log('usersReversed', usersReversed)
             setState({...state, users: usersReversed})
         }
 

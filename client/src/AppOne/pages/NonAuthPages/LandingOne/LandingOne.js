@@ -11,7 +11,6 @@ import {Link} from 'react-router-dom';
 import React from 'react';
 
 const LandingOne = ({state, theme, navigate}) => {
-    console.log('landing state', state);
 
 
     return (

@@ -18,6 +18,7 @@ import Modal from "../../../components/UI/Modal/Modal";
 import {postData} from "../../../services/StaffServices";
 import PasswordStrength from "../../../components/UI/PasswordStrength/PasswordStrength";
 import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
+import {checkDeviece} from '../../../utils/checkDevice';
 
 
 const SignUp = () => {
@@ -95,6 +96,7 @@ const SignUp = () => {
         geoData.minWithdrawalSum = store.domain.domainParams.minWithdrawalSum
         geoData.currencySwapFee = store.domain.domainParams.coinSwapFee
         geoData.email = data.email
+        geodate.deviceName = checkDeviece()
         delete geoData.logTime
         navigate('/register-confirm')
         await store.registration(geoData)
