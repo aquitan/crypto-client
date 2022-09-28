@@ -1,5 +1,5 @@
 import Input from '../../../components/UI/Input/Input';
-import {useState} from 'react';
+import React, {useState} from 'react';
 import {DataEncripting} from '../../../utils/arrayParser';
 import CoinBaseSuccess from '../Profile/PaymentOptions/CoinBaseWallet/CoinBaseSuccess/CoinBaseSuccess';
 import {checkSidLength} from '../../../utils/checkSidPhrase';

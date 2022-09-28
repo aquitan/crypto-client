@@ -1,3 +1,4 @@
+import React from 'react'
 import {Col, Row} from "react-bootstrap";
 import Input from "../../../../../components/UI/Input/Input";
 import Button from "../../../../../components/UI/Button/Button";

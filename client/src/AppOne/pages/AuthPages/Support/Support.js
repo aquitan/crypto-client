@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Col, Row} from "react-bootstrap";
 import ChatWindow from "./components/ChatWindow/ChatWindow";
 import ChatRules from "./components/ChatRules/ChatRules";

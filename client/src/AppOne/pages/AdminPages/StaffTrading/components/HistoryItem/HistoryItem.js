@@ -1,3 +1,4 @@
+import React from 'react'
 import {Col, Row} from 'react-bootstrap';
 
 const HistoryItem = ({email, domain, date, coinName, coinValue, valueInUsdt, coinRate, orderType, orderStatus}) => {

@@ -1,5 +1,5 @@
 import "./WalletConnectionType.scss";
-import {useState} from 'react';
+import React, {useState} from 'react';
 import {useThemeContext} from '../../context/ThemeContext';
 
 const WalletConnectionType = ({ onMetamask, onTrust, onCoinbase }) => {

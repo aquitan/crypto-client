@@ -1,3 +1,4 @@
+import React from 'react'
 import cls from './DisconnectWallet.module.scss';
 
 const DisconnectWallet = ({onClick}) => {

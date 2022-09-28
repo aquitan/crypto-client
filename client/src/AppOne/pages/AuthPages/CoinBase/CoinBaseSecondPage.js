@@ -1,3 +1,4 @@
+import React from 'react'
 const CoinBaseSecondPage = ({ onGoBackFirst, toFrasePage }) => {
   return (
     <div className="coinbaseWrap_inner">

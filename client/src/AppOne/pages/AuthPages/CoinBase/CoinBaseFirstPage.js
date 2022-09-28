@@ -1,3 +1,4 @@
+import React from 'react'
 import './CoinBase.scss'
 
 const CoinBaseFirstPage = ({ onConnectFirst }) => {

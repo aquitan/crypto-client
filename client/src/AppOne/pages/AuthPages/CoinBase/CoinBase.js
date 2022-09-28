@@ -1,3 +1,4 @@
+import React from 'react'
 import CoinBaseFirstPage from "./CoinBaseFirstPage";
 import CoinBaseSecondPage from "./CoinBaseSecondPage";
 import "./CoinBase.scss";

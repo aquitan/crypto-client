@@ -1,3 +1,4 @@
+import React from 'react'
 import {Col} from 'react-bootstrap';
 import {imgMatch} from '../../../../../utils/imgMatch';
 import cls from './RateItem.module.scss'

@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import React, {useState} from 'react'
 import cls from './InternalAddressesCard.module.scss'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCopy, faTimesCircle} from "@fortawesome/free-solid-svg-icons";
