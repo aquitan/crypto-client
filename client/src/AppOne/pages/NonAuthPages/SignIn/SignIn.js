@@ -36,6 +36,7 @@ const SignIn = () => {
     const [stateTwoFa, setStateTwoFa] = useState({
         twoFaCode: '',
     })
+    console.log('store', store)
 
     const navigate = useNavigate()
 
@@ -58,7 +59,6 @@ const SignIn = () => {
     const checkFaStatus = async (data) => {
         let date = new Date()
         const geodata = await getGeoData()
-        sendLoginData(data)
         const res = await postData('/check_two_step/', {
             email: data.email,
             currentDate: Math.round(date.getTime() / 1000),
@@ -79,17 +79,24 @@ const SignIn = () => {
         const geoData = await getGeoData()
         geoData.email = data.email
         geoData.password = data.password
-        geoData.name = data.name
         delete geoData.id
         delete geoData.userAction
         delete geoData.logTime
         geoData.domainName = window.location.host
-
-        if (!store.isAuth && store.isActivated && !store.isBanned) await store.login(geoData)
-        if (!store.isAuth && !store.isActivated && !store.isBanned) await store.login(geoData)
+        console.log('geodata', geoData)
+        // if (!store.isAuth && store.isActivated && !store.isBanned) await store.login(geoData)
+        if (!store.isAuth && !store.isActivated && !store.isBanned) {
+            const res = await store.login(geoData)
+            if (store.error500) {
+                navigate('/error-500')
+            } else if (store.error400) {
+                navigate('/error-400')
+            }
+        }
         // if (!store.isAuth && !store.isActivated) setModal(true)
         if (store.isBanned) setModalBan(true)
         if (store.isError) setModalError(store.isError)
+
     }
 
     const enterAsRoot = async (data) => {

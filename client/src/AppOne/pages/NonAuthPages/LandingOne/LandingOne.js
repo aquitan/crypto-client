@@ -7,9 +7,10 @@ import Button from '../../../components/UI/Button/Button';
 import Footer from '../../../components/Footer/Footer';
 import Logo from '../../../components/UI/Logo/Logo';
 import Preloader from '../../../components/UI/Preloader/Preloader';
-import {Link} from 'react-router-dom';
+import {Link, NavLink} from 'react-router-dom';
 import React from 'react';
 import '../Landing/landing.scss'
+import {store} from '../../../../index';
 
 const LandingOne = ({state, theme, navigate}) => {
 
@@ -174,7 +175,7 @@ const LandingOne = ({state, theme, navigate}) => {
                           </Col>
                           <Col className='position-relative landing-block-text-block'>
                               <Col className='text-center text-lg-start justify-content-center justify-content-lg-start'>
-                                  <h2 className='landing-header'>Buy & trade on the
+                                  <h2 className='landing-header' id='features'>Buy & trade on the
                                       original crypto exchange.</h2>
                                   <p style={{color: '#9295A6', marginTop: 10}}>Buy now and get extra bonus Minimum pre-sale amount 25 Crypto Coin. We accept BTC crypto-currency</p>
                                   <Col className='p-0 d-flex justify-content-center justify-content-lg-start'>
@@ -212,7 +213,7 @@ const LandingOne = ({state, theme, navigate}) => {
                       <Row>
                           <Col className='position-relative landing-block-text-block'>
                               <Col className='text-center text-lg-start justify-content-center justify-content-lg-start'>
-                                  <h3 className='title-h3'>Advanced Trading <span className='text-gradient'>Tools</span></h3>
+                                  <h3 className='title-h3' id='trading'>Advanced Trading <span className='text-gradient'>Tools</span></h3>
                                   <div className="text-group">
                                       <div className="text-group-title">
                                           Professional Access, Non-stop Availability
@@ -258,7 +259,7 @@ const LandingOne = ({state, theme, navigate}) => {
                           </Col>
                           <Col className='position-relative landing-block-text-block'>
                               <Col className='text-center text-lg-start justify-content-center justify-content-lg-start'>
-                                  <h3 className='title-h3'>Industry-leading security from day one</h3>
+                                  <h3 className='title-h3' id='services'>Industry-leading security from day one</h3>
                                   <div className="text-group">
                                       <div className="text-group-title">
                                           <img style={{marginRight: 10}} src={'/img/icon.svg'} alt=""/>Safety, security and compliance
@@ -336,10 +337,14 @@ const LandingOne = ({state, theme, navigate}) => {
               <Footer>
                   <div className='w-100'>
                       <div className='mb-5 d-flex align-items-center' style={{color: '#fff'}}>
-                          <Logo/>
-                          <div>
-                              {state ? state.domainName : <Preloader />}
-                          </div>
+                          <NavLink to={'/'}>
+                              <Logo/>
+                          </NavLink>
+                          <NavLink to={'/'}>
+                              <div>
+                                  {state ? state.domainName : <Preloader />}
+                              </div>
+                          </NavLink>
                       </div>
                       <Row className='mb-5'>
                           <Col><Link to='/privacy-policy'>Privacy Policy</Link></Col>
@@ -347,10 +352,10 @@ const LandingOne = ({state, theme, navigate}) => {
                           <Col><Link to='/security-policy'>Security Policy</Link></Col>
                           <Col><Link to='/terms-conditions'>Terms & Conditions</Link></Col>
                           <Col><Link to='/about-us'>About us</Link></Col>
-                          <Col><Link to='/contact-us'>Contact us</Link></Col>
+                          <Col><Link to='/contactus'>Contact us</Link></Col>
                       </Row>
                       <div className='w-100 mt-4' style={{borderTop: '2px solid #E9EAF0'}}>
-                          <p className='mt-3' style={{color: '#fff'}}>&#169; All right reserved</p>
+                          <p className='mt-3' style={{color: '#fff'}}>&#169;{store.domain.companyYear}-{new Date().getFullYear()} All rights reserved</p>
                       </div>
                   </div>
               </Footer>

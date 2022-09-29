@@ -16,6 +16,7 @@ export const coinsApi = axios.create({
 
 export const $api = axios.create({
     baseURL: BASE_URL,
+    withCredentials: true
 })
 
 $api.interceptors.request.use((config) => {
@@ -32,7 +33,7 @@ $api.interceptors.response.use((config) => {
         console.log('try 1')
         try {
             console.log('retry 2')
-            const response = await axios.get(`${BASE_URL}/refresh`, {withCredentials: true})
+            const response = await axios.get(`${BASE_URL}refresh`, {withCredentials: true})
             localStorage.setItem('token', response.data.accessToken)
             return $api.request(originalRequest)
         } catch(e) {

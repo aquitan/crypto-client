@@ -5,7 +5,7 @@ import {observer} from "mobx-react-lite";
 import {ThemeContext, useThemeContext} from "../../context/ThemeContext";
 import {Col, Offcanvas, Row} from "react-bootstrap";
 import Button from "../UI/Button/Button";
-import {useNavigate} from "react-router-dom";
+import {NavLink, useNavigate} from 'react-router-dom';
 import Link from "../UI/Link/Link";
 import ToggleCheckbox from "../UI/ToggleCheckbox/ToggleCheckbox";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -29,8 +29,8 @@ const LandingHeader = ({state, openSidebar}) => {
         <header className='landing_header'>
             <Offcanvas placement='end' style={{backgroundColor: theme === 'light' ? '#fff' : '#121318'}} show={show} onHide={handleClose}>
                 <Offcanvas.Header closeVariant={theme === 'light' ? null : 'white'} closeButton>
-                    <Logo/>
-                    <span style={{color: theme === 'dark' ? '#fff' : '#121318'}}>{state ? state.domainName : <Preloader />}</span>
+                    <NavLink to={'/'}><Logo/></NavLink>
+                    <NavLink to={'/'}><span style={{color: theme === 'dark' ? '#fff' : '#121318'}}>{state ? state.domainName : <Preloader />}</span></NavLink>
                 </Offcanvas.Header>
                 <Offcanvas.Body>
                     <Row className='flex-column text-start mb-3'>
@@ -63,10 +63,12 @@ const LandingHeader = ({state, openSidebar}) => {
             </Offcanvas>
             <Row className='align-items-center justify-content-between'>
                 <Col className='d-flex align-items-center'>
-                    <Logo/>
-                    <h4 className='domain_header'>
-                        {state ? state.domainName : <Preloader />}
-                    </h4>
+                    <NavLink to={'/'}><Logo/></NavLink>
+                    <NavLink to={'/'}>
+                        <h4 className='domain_header'>
+                            {state ? state.domainName : <Preloader />}
+                        </h4>
+                    </NavLink>
                 </Col>
                 <Col className='d-flex d-xl-none justify-content-end'>
                     <div onClick={toggleTheme} style={{cursor: 'pointer', marginRight: 10}}>
@@ -80,10 +82,10 @@ const LandingHeader = ({state, openSidebar}) => {
                 </Col>
 
                 <Col className='d-none d-xl-flex'>
-                    <Link classnames={theme} href="#" value={'Market'}/>
-                    <Link classnames={theme} href="#" value={'Watch list'}/>
-                    <Link classnames={theme} href="#" value={'Portfolio'}/>
-                    <Link classnames={theme} href="#" value={'Learn'}/>
+                    <Link classnames={theme} href="#features" value={'Features'}/>
+                    <Link classnames={theme} href="#services" value={'Services'}/>
+                    <Link classnames={theme} href="#trading" value={'Crypto Trading'}/>
+                    <Link classnames={theme} nav={true} href="/contact-us" value={'Contact Us'}/>
                 </Col>
                 
                 <Col className='d-none d-xl-flex justify-content-end'>

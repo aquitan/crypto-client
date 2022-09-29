@@ -1,13 +1,16 @@
 import React from 'react'
 import cls from './Link.module.scss'
 import classNames from "classnames/bind";
+import {NavLink} from 'react-router-dom';
 
-const Link = ({href, value, classnames}) => {
+const Link = ({href, value, classnames, nav}) => {
     const cx = classNames.bind(cls)
     const classes = cx('landingHeaderLink', classnames)
 
     return (
-        <a href={href} className={classes}>{value}</a>
+        <>
+            {nav ? <NavLink className={classes} to={href}>{value}</NavLink> : <a href={href} className={classes}>{value}</a>}
+        </>
     )
 }
 

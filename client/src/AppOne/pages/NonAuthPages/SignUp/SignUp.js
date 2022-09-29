@@ -178,7 +178,7 @@ const SignUp = () => {
                                     message: 'Email is not valid'
 
                                 })} name='email' placeholder='Email' id='email' type='email'/>
-                                <ErrorMessage  name='email' errors={errors} render={() => <p className={cls.error}>email is invalid</p>} />
+                                <ErrorMessage  name='email' errors={errors} render={() => <p className={cls.error}>Email is invalid</p>} />
                             </Col>
                             <Col className={'mb-3 col-12 col-md-6'}>
                                 <Input {...register('name', {
@@ -237,7 +237,7 @@ const SignUp = () => {
                                     required: true
                                 })} className={cls.checkbox} type='checkbox' />
                                 <span>
-                                    By register I agree with <Link className={cls.link} to='#'>Terms and conditions.</Link>
+                                    By register I agree with <Link className={cls.link} to='/terms-conditions'>Terms and conditions.</Link>
                                 </span>
                                 <ErrorMessage name='agreement' errors={errors} render={({message}) => <p className={cls.error}>You have to agree with Terms</p>} />
                             </FormText>

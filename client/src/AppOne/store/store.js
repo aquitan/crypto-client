@@ -32,6 +32,8 @@ export default class Store {
     total = 0
     activeError = 0
     tfaBot = ''
+    error500 = false
+    error400 = false
 
 
     constructor() {
@@ -115,6 +117,12 @@ export default class Store {
     setBot(str) {
         this.tfaBot = str
     }
+    setError500(bool) {
+        this.error500 = bool
+    }
+    setError400(bool) {
+        this.error500 = bool
+    }
 
 
 
@@ -150,7 +158,11 @@ export default class Store {
             }
 
         } catch(e) {
-            this.setIsError(true)
+            if (e.message === 'Request failed with status code 500') {
+                this.setError500(true)
+            } else {
+                this.setError400(true)
+            }
             console.log('error', e)
         } finally {
             this.setIsLoading(false)
@@ -192,8 +204,9 @@ export default class Store {
     async checkAuth() {
         try {
             this.setIsLoading(true)
-            const response = await axios.get(`${BASE_URL}/refresh`, {withCredentials: true})
-            // localStorage.setItem('token', response.data.accessToken)
+            this.setError500(false)
+            const response = await axios.get(`${BASE_URL}refresh`, {withCredentials: true})
+            localStorage.setItem('token', response.data.accessToken)
             // this.setUserId(response.data.user.id)
             // this.setUserEmail(response.data.user.email)
             // if (response.data.user.isActivated) {

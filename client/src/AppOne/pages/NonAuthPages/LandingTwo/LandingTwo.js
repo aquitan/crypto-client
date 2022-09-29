@@ -3,7 +3,7 @@ import React from 'react';
 import Logo from '../../../components/UI/Logo/Logo';
 import Preloader from '../../../components/UI/Preloader/Preloader';
 import {Col, Row} from 'react-bootstrap';
-import {Link} from 'react-router-dom';
+import {Link, NavLink} from 'react-router-dom';
 import Footer from '../../../components/Footer/Footer';
 
 const LandingTwo = ({state, theme, navigate}) => {
@@ -17,10 +17,14 @@ const LandingTwo = ({state, theme, navigate}) => {
           <Footer>
               <div className='w-100'>
                   <div className='mb-5 d-flex align-items-center' style={{color: '#fff'}}>
-                      <Logo/>
-                      <div>
-                          {state.domainName}
-                      </div>
+                      <NavLink to={'/'}>
+                          <Logo/>
+                      </NavLink>
+                      <NavLink to={'/'}>
+                          <div>
+                              {state ? state.domainName : <Preloader />}
+                          </div>
+                      </NavLink>
                   </div>
                   <Row className='mb-5'>
                       <Col><Link to='/privacy-policy'>Privacy Policy</Link></Col>
@@ -28,7 +32,7 @@ const LandingTwo = ({state, theme, navigate}) => {
                       <Col><Link to='/security-policy'>Security Policy</Link></Col>
                       <Col><Link to='/terms-conditions'>Terms & Conditions</Link></Col>
                       <Col><Link to='/about-us'>About us</Link></Col>
-                      <Col><Link to='/contact-us'>Contact us</Link></Col>
+                      <Col><Link to='/contactus'>Contact us</Link></Col>
                   </Row>
                   <div className='w-100 mt-4' style={{borderTop: '2px solid #E9EAF0'}}>
                       <p className='mt-3' style={{color: '#fff'}}>&#169; All right reserved</p>

@@ -57,7 +57,8 @@ import {
     TRADING,
     ERROR_500,
     RECRUITER_LIST,
-    RECRUITER_DETAIL, CHAT, ADMIN_CHAT, ADMIN_TRADING, WALLET_ROUTE, SUPPORT_US
+    CONTACTUS_ROUTE,
+    RECRUITER_DETAIL, CHAT, ADMIN_CHAT, ADMIN_TRADING, WALLET_ROUTE, SUPPORT_US, ERROR_400
 } from '../utils/constants';
 import SignUp from '../pages/NonAuthPages/SignUp/SignUp'
 import SignIn from '../pages/NonAuthPages/SignIn/SignIn'
@@ -119,6 +120,7 @@ import StaffTrading from "../pages/AdminPages/StaffTrading/StaffTrading";
 import Wallet from "../pages/AuthPages/Wallet/Wallet";
 import TradingTest from "../pages/AuthPages/TradingTest/TradingTest";
 import ContactUsDonate from '../pages/AuthPages/ContactUsDonate/ContactUsDonate';
+import Error400 from '../pages/Error/Error400';
 
 export const authRoutes = [
     {
@@ -212,6 +214,10 @@ export const authRoutes = [
     {
         path: ERROR_500,
         component: <Error500/>
+    },
+    {
+        path: ERROR_400,
+        component: <Error400/>
     },
     {
         path: WALLET_ROUTE,
@@ -366,9 +372,21 @@ export const publicRoutes = [
         component: <AboutUS/>
     },
     {
+        path: CONTACTUS_ROUTE,
+        component: <ContactUS/>
+    },
+    {
         path: ERROR,
         component: <Error/>
-    }
+    },
+    {
+        path: ERROR_500,
+        component: <Error500/>
+    },
+    {
+        path: ERROR_400,
+        component: <Error400/>
+    },
 ]
 
 export const Errors = [
