@@ -114,9 +114,15 @@ const Wallet = () => {
                             <Row>
                                 <div style={{color: '#9295A6', fontSize: 16}}>Wallet balance:</div>
                                 {
-                                    balancesArr ? <h2 className='mt-4' style={{fontWeight: 'bold', color: theme === 'light' ? '#9295A6' : '#fff'}}>${(balancesArr.reduce((prev, cur) => {
-                                        return prev + cur
-                                    }, 0).toFixed(5))}</h2> : <Preloader />
+                                    balancesArr ? <h2 className='mt-4' style={{fontWeight: 'bold', color: theme === 'light' ? '#9295A6' : '#fff'}}>
+                                        ${
+                                        isNaN((balancesArr.reduce((prev, cur) => {
+                                            return prev + cur
+                                        }, 0).toFixed(5))) ? 0 : (balancesArr.reduce((prev, cur) => {
+                                            return prev + cur
+                                        }, 0).toFixed(5))
+                                    }
+                                    </h2> : <Preloader />
                                 }
                             </Row>
                         </Col>
