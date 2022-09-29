@@ -82,7 +82,6 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
         e.preventDefault()
         const geodata = await getGeoData()
         data.value = state.value
-        console.log('store error', store.user.userError)
         const obj = {
             userId: store.user.id,
             userEmail: store.user.email,

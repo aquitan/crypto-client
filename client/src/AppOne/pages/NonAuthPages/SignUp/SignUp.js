@@ -170,17 +170,16 @@ const SignUp = () => {
                         <Row>
                             <h2 style={{color: theme === 'light' ? '#121318' : '#fff'}} className='mb-4'>Sign up {store.domain.domainName}</h2>
                         </Row>
-                        <Row className=''>
-                            <Col className={'mb-3 col-12 col-md-6'}>
+                        <Row className='mb-4'>
+                            <Col className={'mb-3 col-12 col-md-6 position-relative'}>
                                 <Input {...register('email', {
-                                    required: 'Email is required',
+                                    required: 'You must specify email to SignIn',
                                     validate: emailValidate,
-                                    message: 'Email is not valid'
-
-                                })} name='email' placeholder='Email' id='email' type='email'/>
+                                    message: 'Email is not valid',
+                                })} classname='' name='email' placeholder='Email' id='login' />
                                 <ErrorMessage  name='email' errors={errors} render={() => <p className={cls.error}>Email is invalid</p>} />
                             </Col>
-                            <Col className={'mb-3 col-12 col-md-6'}>
+                            <Col className={'mb-3 col-12 col-md-6 position-relative'}>
                                 <Input {...register('name', {
                                     required: false,
                                     minLength: {
@@ -192,7 +191,7 @@ const SignUp = () => {
                                 {errors.name && <p className={cls.error}>{errors.name.message}</p>}
                             </Col>
                         </Row>
-                        <Row className=''>
+                        <Row className='mb-4'>
                             <Col className={`${cls.relative} mb-3 col-12 col-md-6`}>
                                 <Input onChange={onCheckPassword} {...register('password', {
                                     required: 'You must specify your password',
@@ -223,7 +222,7 @@ const SignUp = () => {
                         </Row>
                         {
                             promoStatus ?
-                                <Row className=''>
+                                <Row className='mb-4'>
                                     <Col className={cls.relative}>
                                         <Input onChange={(e) => setCurrentPromo(e.target.value)} placeholder='Enter promocode'/>
                                         <ErrorMessage name='promocode' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
@@ -232,7 +231,7 @@ const SignUp = () => {
                                 : null
                         }
                         <Row className='mt-2'>
-                            <FormText className='d-flex flex-sm-column'>
+                            <FormText className='d-flex position-relative'>
                                 <FormCheck {...register('agreement', {
                                     required: true
                                 })} className={cls.checkbox} type='checkbox' />

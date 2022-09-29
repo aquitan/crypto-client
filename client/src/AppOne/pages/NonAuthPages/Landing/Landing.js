@@ -25,7 +25,7 @@ const Landing = () => {
 
     return (
       <>
-          {!state ? (
+          {state ? (
             <LandingSkeleton/>
           )
           : (

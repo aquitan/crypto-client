@@ -34,7 +34,7 @@ const RegisterConfirm = () => {
 
                     <Form onSubmit={handleSubmit(toSignin)}>
                         <Row className='mb-4 text-center'>
-                            <h2 style={{color: theme === 'light' ? '#121318' : '#fff'}}>You have been registered on our platform</h2>
+                            <h2 style={{color: theme === 'light' ? '#121318' : '#fff'}}>Verify email</h2>
                             <p style={{color: theme === 'light' ? '#121318' : '#fff'}} className='mb-3 mt-3'>Check your Email to confirm registration</p>
                         </Row>
                         <Row className='justify-content-center'>

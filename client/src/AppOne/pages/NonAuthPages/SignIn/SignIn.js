@@ -19,6 +19,7 @@ import {postData} from "../../../services/StaffServices";
 import Preloader from "../../../components/UI/Preloader/Preloader";
 import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 import {checkDeviece} from '../../../utils/checkDevice';
+import CustomModal from '../../../components/CustomModal/CustomModal';
 
 
 
@@ -36,7 +37,6 @@ const SignIn = () => {
     const [stateTwoFa, setStateTwoFa] = useState({
         twoFaCode: '',
     })
-    console.log('store', store)
 
     const navigate = useNavigate()
 
@@ -90,12 +90,12 @@ const SignIn = () => {
             if (store.error500) {
                 navigate('/error-500')
             } else if (store.error400) {
-                navigate('/error-400')
+                // navigate('/error-400')
+                if (store.isError) setModalError(store.isError)
             }
         }
         // if (!store.isAuth && !store.isActivated) setModal(true)
         if (store.isBanned) setModalBan(true)
-        if (store.isError) setModalError(store.isError)
 
     }
 
@@ -112,20 +112,20 @@ const SignIn = () => {
 
     return (
         <Container style={{maxWidth: '100%', backgroundColor: theme === 'light' ? '#fff' : '#121318'}} className='h-100 m-0 p-0'>
-            <Modal active={modalError} setActive={setModalError}>
-                <h2 className='mb-2'>Oops! Check your email</h2>
-                <Button onClick={() => setModalError(false)}>Ok</Button>
-            </Modal>
+            <CustomModal title={'Check email'} size={'md'} btnClose={true} handleClose={() => setModalError(false)} show={modalError}>
+                <h2>Oops! Check your email</h2>
+            </CustomModal>
 
-            <Modal active={modal} setActive={setModal}>
-                <h2 className='mb-2'>You need to activate your account!</h2>
-                <Button onClick={() => navigate('/register-confirm')}>Verify</Button>
-            </Modal>
+            <CustomModal title={'Check email'} size={'md'} btnClose={false} handleClose={() => setModal(false)} show={modal}>
+                <h2>You need to activate your account!</h2>
+                <Row>
+                    <Button onClick={() => navigate('/register-confirm')}>Verify</Button>
+                </Row>
+            </CustomModal>
 
-            <Modal active={modalBan} setActive={setModalBan}>
-                <h2 className='mb-2'>Your account is blocked!</h2>
-                <Button onClick={hideModalBan}>Ok</Button>
-            </Modal>
+            <CustomModal title={'Check email'} size={'md'} btnClose={true} handleClose={() => setModalBan(false)} show={modalBan}>
+                <h2>Your account is blocked!</h2>
+            </CustomModal>
 
 
             <Row className='h-100 p-0'>
@@ -139,17 +139,17 @@ const SignIn = () => {
                         <Row className='mb-4'>
                             <h2 style={{color: theme === 'light' ? '#121318' : '#fff'}}>Sign In to {store.domain.domainName}</h2>
                         </Row>
-                        <Row className='mt-3 mb-3'>
+                        <Row className='mt-3 mb-4'>
                             <Col className={cls.relative}>
                                 <Input defaultValue={store.asUser?.email} {...register('email', {
                                     required: 'You must specify email to SignIn',
                                     validate: emailValidate,
                                     message: 'Email is not valid',
                                 })} classname='' name='email' placeholder='Email' id='login' />
-                                <ErrorMessage  name='email' errors={errors} render={() => <p className={cls.error}>email is invalid</p>} />
+                                <ErrorMessage  name='email' errors={errors} render={() => <p className={cls.error}>Email is invalid</p>} />
                             </Col>
                         </Row>
-                        <Row className='mt-3 mb-3'>
+                        <Row className='mt-3 mb-4'>
                             <Col className={cls.relative}>
                                 <Input defaultValue={store.asUser?.password} {...register('password', {
                                         required: 'You must specify your password',
@@ -164,7 +164,7 @@ const SignIn = () => {
                                         },
                                     }
                                 )} classname='' type={isShowPassword ? 'text' : 'password'} name='password' placeholder='Password' id='password' />
-                                {/* <ErrorMessage name='password' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} /> */}
+                                 <ErrorMessage name='password' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
                                 <FontAwesomeIcon onClick={showPassword} className={cls.eye_icon} icon={isShowPassword ? faEye : faEyeSlash} />
                             </Col>
                         </Row>

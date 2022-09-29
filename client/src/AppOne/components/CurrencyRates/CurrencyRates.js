@@ -15,7 +15,6 @@ const CurrencyRates = () => {
         setState(store.domain.domainParams.rateCorrectSum)
     }
 
-    console.log('store.balance', store.rates.btc)
 
     return (
         <Row className={`${cls.currencyRates} mb-3`} style={{maxWidth: 1000}}>

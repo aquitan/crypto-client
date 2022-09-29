@@ -83,7 +83,6 @@ const AppRouter = () => {
 
 
     if (store.isLoading) {
-        console.log('store is loading...')
         return <Preloader />
     }
 
