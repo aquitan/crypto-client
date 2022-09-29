@@ -89,7 +89,7 @@ const SignUp = () => {
         delete geoData.id
         delete geoData.userAction
         geoData.promocode = data.promocode
-        geoData.domainName = '167'
+        geoData.domainName = 'localhost:3000'
         geoData.doubleDeposit = store.domain.domainParams.doubleDeposit
         geoData.depositFee = store.domain.domainParams.depositFee
         geoData.minDepositSum = store.domain.domainParams.minDepositSum
