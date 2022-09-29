@@ -27,6 +27,15 @@ const NavBar = () => {
         setShow(false)
     }
 
+    const onTrading = () => {
+        navigate('/trading')
+        handleClose()
+    }
+    const onWallet = () => {
+        navigate('/wallet')
+        handleClose()
+    }
+
 
     return (
 
@@ -69,12 +78,12 @@ const NavBar = () => {
                             <div className='d-flex' style={{width: '100%'}}>
                                 <div className='d-flex flex-column' style={{width: '100%'}}>
                                     <div style={{marginBottom: 15, width: '100%'}}>
-                                        <Button style={{width: '100%'}} classname={['btnGray', 'headerBtn', theme]} onClick={() => navigate('/trading')}>
+                                        <Button style={{width: '100%'}} classname={['btnGray', 'headerBtn', theme]} onClick={onTrading}>
                                             <FontAwesomeIcon icon={faChartBar}/> Trading
                                         </Button>
                                     </div>
                                     <div style={{marginBottom: 15, width: '100%'}}>
-                                        <Button style={{width: '100%'}} classname={['btnGray', 'headerBtn', theme]} onClick={() => navigate('/wallet')}>
+                                        <Button style={{width: '100%'}} classname={['btnGray', 'headerBtn', theme]} onClick={onWallet}>
                                             <FontAwesomeIcon icon={faWallet}/> Wallet
                                         </Button>
                                     </div>

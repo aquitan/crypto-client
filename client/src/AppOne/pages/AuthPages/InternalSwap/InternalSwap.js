@@ -200,16 +200,18 @@ const InternalSwap = () => {
 
             <CustomModal
               title={'Success!'}
-              text={'Swap was completed successfully!'}
               btnClose={'Close'}
               show={showModal}
-              handleClose={() => setShowModal(false)} />
+              handleClose={() => setShowModal(false)}>
+                Swap was completed successfully!
+            </CustomModal>
             <CustomModal
               title={'Error!'}
-              text={'You cant exchange identical currencies!'}
               btnClose={'Close'}
               show={errorModal}
-              handleClose={() => setErrorModal(false)} />
+              handleClose={() => setErrorModal(false)}>
+                You cant exchange identical currencies!
+            </CustomModal>
 
             {
                 balance ?

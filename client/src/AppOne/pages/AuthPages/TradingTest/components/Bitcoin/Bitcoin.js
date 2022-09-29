@@ -255,7 +255,7 @@ const TradingBitcoin = ({balance}) => {
           </ButtonCard>
           <Row>
             <ButtonCard theme={theme}>
-              <Row>
+              <Row className='flex-column flex-md-row'>
                 <Col>
                   <OrderForm
                     type={'Buy'}

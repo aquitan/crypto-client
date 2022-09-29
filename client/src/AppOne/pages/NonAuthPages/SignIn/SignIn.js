@@ -182,9 +182,14 @@ const SignIn = () => {
                                 : null
                         }
                         <Row className='mt-3 justify-content-center'>
-                            <Col className='text-end'>
-                                <Link className={cls.link} to='/forgot-password'>Forgot password?</Link>
-                            </Col>
+                            <Row className='justify-content-between'>
+                                <Col>
+                                    <Link className={cls.link} to='/'>Go back</Link>
+                                </Col>
+                                <Col className='text-end'>
+                                    <Link className={cls.link} to='/forgot-password'>Forgot password?</Link>
+                                </Col>
+                            </Row>
                             <Row className='mt-4'>
                                 <Button classname={'btnBlue'} type='submit'>Sign In</Button>
                             </Row>

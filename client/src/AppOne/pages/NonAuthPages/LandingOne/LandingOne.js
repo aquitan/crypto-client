@@ -9,6 +9,7 @@ import Logo from '../../../components/UI/Logo/Logo';
 import Preloader from '../../../components/UI/Preloader/Preloader';
 import {Link} from 'react-router-dom';
 import React from 'react';
+import '../Landing/landing.scss'
 
 const LandingOne = ({state, theme, navigate}) => {
 
@@ -20,7 +21,7 @@ const LandingOne = ({state, theme, navigate}) => {
               <LandingContent>
                   <LandingBlock classname='landingBlock'>
                       <Row>
-                          <Col style={{paddingTop: '100px'}} className='position-relative'>
+                          <Col className='position-relative landing-block-text-block'>
                               <MouseParallaxContainer
                                 className="parallax"
                                 containerStyles={{
@@ -171,7 +172,7 @@ const LandingOne = ({state, theme, navigate}) => {
 
                               </MouseParallaxContainer>
                           </Col>
-                          <Col style={{paddingTop: '100px'}} className='position-relative'>
+                          <Col className='position-relative landing-block-text-block'>
                               <Col className='text-center text-lg-start justify-content-center justify-content-lg-start'>
                                   <h2 className='landing-header'>Buy & trade on the
                                       original crypto exchange.</h2>
@@ -187,7 +188,7 @@ const LandingOne = ({state, theme, navigate}) => {
                   </LandingBlock>
                   <LandingBlock classname='landingTransparentBlock'>
                       <Row>
-                          <Col style={{paddingTop: '100px'}} className='position-relative text-center'>
+                          <Col className='position-relative text-center landing-block-text-block'>
                               <h4 className='trusted-title'>Trusted Partners Worldwide</h4>
                               <p className='trusted-text'>We're partners with countless major organisations around the globe</p>
                               <Row>
@@ -209,7 +210,7 @@ const LandingOne = ({state, theme, navigate}) => {
                   </LandingBlock>
                   <LandingBlock classname='landingBlock'>
                       <Row>
-                          <Col style={{paddingTop: '100px'}} className='position-relative'>
+                          <Col className='position-relative landing-block-text-block'>
                               <Col className='text-center text-lg-start justify-content-center justify-content-lg-start'>
                                   <h3 className='title-h3'>Advanced Trading <span className='text-gradient'>Tools</span></h3>
                                   <div className="text-group">
@@ -255,7 +256,7 @@ const LandingOne = ({state, theme, navigate}) => {
                           <Col className='position-relative d-none d-xl-block'>
                               <img style={{height: "auto", width: '100%'}} src={'/img/security-img.svg'} alt=""/>
                           </Col>
-                          <Col style={{paddingTop: '100px'}} className='position-relative'>
+                          <Col className='position-relative landing-block-text-block'>
                               <Col className='text-center text-lg-start justify-content-center justify-content-lg-start'>
                                   <h3 className='title-h3'>Industry-leading security from day one</h3>
                                   <div className="text-group">
@@ -291,7 +292,7 @@ const LandingOne = ({state, theme, navigate}) => {
                   </LandingBlock>
                   <LandingBlock classname='landingTransparentBlock'>
                       <Row>
-                          <Col style={{paddingTop: '100px'}} className='position-relative text-center'>
+                          <Col className='position-relative text-center landing-block-text-block'>
                               <h4 className='trusted-title'>Get started in just a few minutes</h4>
                               <Row>
                                   <Col>

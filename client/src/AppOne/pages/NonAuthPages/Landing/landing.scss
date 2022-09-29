@@ -145,3 +145,13 @@
     font-size: 14px;
   }
 }
+
+.landing-block-text-block {
+  padding-top: 100px;
+  @media (max-width: 1024px) {
+    padding-top: 30px;
+  }
+  @media (max-width: 768px) {
+    padding-top: 0;
+  }
+}

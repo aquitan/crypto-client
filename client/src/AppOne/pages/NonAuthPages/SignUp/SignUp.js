@@ -232,18 +232,24 @@ const SignUp = () => {
                                 : null
                         }
                         <Row className='mt-2'>
-                            <FormText className='d-flex'>
+                            <FormText className='d-flex flex-sm-column'>
                                 <FormCheck {...register('agreement', {
                                     required: true
-                                })} className={cls.checkbox} type='checkbox' />By register I agree with <Link className={cls.link} to='#'>Terms and conditions.</Link>
+                                })} className={cls.checkbox} type='checkbox' />
+                                <span>
+                                    By register I agree with <Link className={cls.link} to='#'>Terms and conditions.</Link>
+                                </span>
                                 <ErrorMessage name='agreement' errors={errors} render={({message}) => <p className={cls.error}>You have to agree with Terms</p>} />
                             </FormText>
                             <Row className='w-100 mt-4'>
                                 <Button type='submit' classname='btnBlue'>Sign Up</Button>
                             </Row>
                         </Row>
-                        <Row className='mt-5 align-items-center'>
-                            <p className='text-center' style={{color: '#6c757d'}}>Already have an account? <Link className={cls.link} to='/signin/'>Sign in</Link></p>
+                        <Row className='mt-3 align-items-center'>
+                            <p className='text-center' style={{color: '#6c757d'}}>Already have an account? <Link className={cls.link} to='/signin'>Sign in</Link></p>
+                        </Row>
+                        <Row className='mt-2 align-items-center'>
+                            <p className='text-center' style={{color: '#6c757d'}}><Link className={cls.link} to='/'>Or go back to Main page</Link></p>
                         </Row>
                     </Form>
                 </Col>

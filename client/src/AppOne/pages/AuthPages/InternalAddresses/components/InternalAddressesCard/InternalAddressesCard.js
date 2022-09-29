@@ -54,7 +54,7 @@ const InternalAddressesCard = ({currency, sum, onCopy, wallet, theme}) => {
                     style={{position: 'absolute', right: 20, top: 10, cursor: 'pointer'}}
                     icon={faTimesCircle} /> : null
             }
-            <Grid container spacing={1} columns={{ xs: 2, sm: 3, xl: 4 }} justifyContent="space-between" alignItems='center'>
+            <Grid container sx={{my: 2}} spacing={1} columns={{ xs: 2, sm: 3, xl: 4 }} justifyContent="space-between" alignItems='center'>
                 <Grid item gap={2}>
                     <Image src={`/img/${imgMatch(currency)}.svg`} height={40} alt={'crypto'} />
                     <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8'}} className='badge'>{currency}</div>
@@ -62,7 +62,7 @@ const InternalAddressesCard = ({currency, sum, onCopy, wallet, theme}) => {
                 <Grid item gap={2}>
                     <div>{sum.toFixed(5)} {currency}</div>
                 </Grid>
-                <Grid item xs={1} gap={2}>
+                <Grid item xs='auto' gap={2}>
                     <div className='d-flex align-items-center' onClick={() => onCopy(wallet)}>
                         <FontAwesomeIcon
                           style={{marginRight: 20}}
@@ -77,30 +77,6 @@ const InternalAddressesCard = ({currency, sum, onCopy, wallet, theme}) => {
                       </Grid>
                 }
             </Grid>
-
-            {/*<Row className='align-items-center my-2'>*/}
-            {/*    <Col className='mb-2'>*/}
-            {/*        <Image src={`/img/${imgMatch(currency)}.svg`} height={40} alt={'crypto'} />*/}
-            {/*        <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8'}} className='badge'>{currency}</div>*/}
-            {/*    </Col>*/}
-            {/*    <Col className='mb-2'>*/}
-            {/*        <div>{sum.toFixed(5)} {currency}</div>*/}
-            {/*    </Col>*/}
-            {/*    <Col className='mb-2'>*/}
-            {/*        <div className='d-flex align-items-center' onClick={() => onCopy(wallet)}>*/}
-            {/*            <FontAwesomeIcon*/}
-            {/*                style={{marginRight: 20}}*/}
-            {/*                icon={faCopy} />*/}
-            {/*            <span style={{wordBreak: 'break-all', display: 'inline-block', margin: '0 10px 0 0'}} className='internal-address'>{wallet}</span>*/}
-            {/*        </div>*/}
-            {/*    </Col>*/}
-            {/*    {*/}
-            {/*        state.isOpen ? null :*/}
-            {/*            <Col>*/}
-            {/*                <Button style={{marginBottom: 5}} classname={['btnLink', theme]} onClick={makeOpen} >Send</Button>*/}
-            {/*            </Col>*/}
-            {/*    }*/}
-            {/*</Row>*/}
             {
                 state.isOpen ?
                     <InternalAddressCardForm setFormData={setFormData} sum={sum} wallet={wallet} currency={currency} valid={state.isValid} checkAddress={checkAddress} />

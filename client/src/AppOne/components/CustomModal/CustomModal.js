@@ -1,5 +1,5 @@
 import React from 'react'
-import {Button, Modal} from 'react-bootstrap';
+import {Button, Modal, Row} from 'react-bootstrap';
 
 const CustomModal = ({title, text, show, handleClose, btnClose, children, size}) => {
     return (
@@ -12,8 +12,10 @@ const CustomModal = ({title, text, show, handleClose, btnClose, children, size})
                 <Modal.Title>{title}</Modal.Title>
             </Modal.Header>
             {text || children && <Modal.Body>
-              {children}
-              {text}
+              <Row className='py-2 px-3'>
+                  {children}
+                  {text}
+              </Row>
             </Modal.Body>}
             <Modal.Footer>
               <Button onClick={handleClose} variant="secondary">Close</Button>
