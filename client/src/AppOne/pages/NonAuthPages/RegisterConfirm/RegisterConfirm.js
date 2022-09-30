@@ -15,7 +15,7 @@ import {ErrorMessage} from '@hookform/error-message';
 const RegisterConfirm = () => {
     const {theme} = useThemeContext(ThemeContext)
     const navigate = useNavigate()
-    const {register, handleSubmit} = useForm()
+    const {register, handleSubmit,formState: {errors}, watch, setError} = useForm()
 
     const toSignin = async (data) => {
         store.sendActivation(data.activationLink)
