@@ -147,18 +147,28 @@ const Dashboard = () => {
                                 </Row>
                                 <Row style={{margin: 0, padding: 0}}>
                                     {
-                                        store.ratesChange.btc && store.rates.btc && balance.length ?
+                                        store.rates.length && balance.length ?
                                             <SlickSlider>
                                                 {
-                                                    coinsArr.map(item => {
+                                                    store.rates.map(item => {
                                                         return (
+                                                          // <WalletInfoBlock
+                                                          //   key={item}
+                                                          //   rate={store.rates[item]}
+                                                          //   balance={balance.filter(el => el.coinName === item.toUpperCase())[0]}
+                                                          //   currency={item.toUpperCase()}
+                                                          //   amount={store.ratesChange[item].toFixed()}
+                                                          //   status={currencyRateChangeIndicator(store.ratesChange[item].toFixed())}
+                                                          //   theme={theme}
+                                                          // />
                                                           <WalletInfoBlock
-                                                            key={item}
-                                                            rate={store.rates[item]}
-                                                            balance={balance.filter(el => el.coinName === item.toUpperCase())[0]}
-                                                            currency={item.toUpperCase()}
-                                                            amount={store.ratesChange[item]?.toFixed()}
-                                                            status={currencyRateChangeIndicator(store.ratesChange[item].toFixed())}
+                                                            key={item.id}
+                                                            img={item.image}
+                                                            rate={item.current_price}
+                                                            balance={balance.filter(el => el.coinName === item.symbol.toUpperCase())[0]}
+                                                            currency={item.symbol.toUpperCase()}
+                                                            amount={item.price_change_percentage_24h}
+                                                            status={item.price_change_percentage_24h}
                                                             theme={theme}
                                                           />
                                                         )
