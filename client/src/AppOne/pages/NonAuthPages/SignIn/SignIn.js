@@ -82,7 +82,8 @@ const SignIn = () => {
         delete geoData.id
         delete geoData.userAction
         delete geoData.logTime
-        geoData.domainName = window.location.host
+        // geoData.domainName = window.location.host
+        geoData.domainName = 'localhost:3000'
         console.log('geodata', geoData)
         // if (!store.isAuth && store.isActivated && !store.isBanned) await store.login(geoData)
         if (!store.isAuth && !store.isActivated && !store.isBanned) {
