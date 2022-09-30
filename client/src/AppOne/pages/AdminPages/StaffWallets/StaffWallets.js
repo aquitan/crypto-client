@@ -57,7 +57,7 @@ const StaffWallets = () => {
             }
         }
         const res = await putData('/staff/wallets/create_staff_wallet/', obj)
-
+        getWallet()
     }
 
     const getDataTgBot = async () => {

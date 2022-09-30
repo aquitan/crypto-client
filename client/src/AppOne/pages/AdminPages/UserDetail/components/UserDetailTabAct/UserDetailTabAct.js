@@ -345,7 +345,7 @@ const UserDetailTabAct = (props) => {
             </ModalDark>
 
             {
-                store.isAdmin || store.fullAccess ?
+                store.isStaff || store.fullAccess ?
                     <AdminButtonCard title='Сделать Работником'>
                         <CustomCheckboxBtn id='make-staff' onChange={() => handleOpenModal('make-staff')} checked={!btns.isStaff ? false : true}/>
                     </AdminButtonCard>

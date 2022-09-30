@@ -169,21 +169,23 @@ export default class Store {
         }
     }
     async registration(obj) {
-        console.log('registration')
         try {
-            this.setIsError(true)
+            // this.setIsError(true)
             const response = await AuthService.registration(obj)
             console.log('register', response)
             localStorage.setItem('token', response.data.accessToken)
             this.setUserId(response.data.user.ID)
             this.setShowConfirmation(true)
-            this.setIsLoading(true)
             this.setUser(response.data.user)
+            if (response.data === 'email alresdy in use') {
+                this.setIsError(true)
+            }
         } catch(e) {
-            this.setIsError(true)
+            this.setError500(true)
             console.log('error', e)
         } finally {
             this.setIsLoading(false)
+            this.setShowConfirmation(true)
         }
     }
     async logout() {

@@ -10,6 +10,7 @@ import {getGeoData} from "../../../queries/getSendGeoData";
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 import Form from "../../../components/UI/Form/Form";
+import {ErrorMessage} from '@hookform/error-message';
 
 const RegisterConfirm = () => {
     const {theme} = useThemeContext(ThemeContext)
@@ -37,8 +38,11 @@ const RegisterConfirm = () => {
                             <h2 style={{color: theme === 'light' ? '#121318' : '#fff'}}>Verify email</h2>
                             <p style={{color: theme === 'light' ? '#121318' : '#fff'}} className='mb-3 mt-3'>Check your Email to confirm registration</p>
                         </Row>
-                        <Row className='justify-content-center'>
-                            <Input {...register('activationLink')} type='text' classname='text-center' name='activationLink' placeholder='Enter confirmation code here'/>
+                        <Row className='justify-content-center position-relative'>
+                            <Input {...register('activationLink',{
+                                required: 'You have to validate email'
+                            })} type='text' classname='text-center' name='activationLink' placeholder='Enter confirmation code here'/>
+                            <ErrorMessage  name='activationLink' errors={errors} render={() => <p className={cls.error}>You have to validate email</p>} />
                         </Row>
                         <Row className='m-auto mt-4'>
                             <Button classname={'btnBlue'}>Confirm Email</Button>

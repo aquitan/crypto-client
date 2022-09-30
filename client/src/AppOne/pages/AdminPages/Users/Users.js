@@ -15,6 +15,7 @@ const Users = () => {
         users: '',
         search: ''
     })
+    const [limit, setLimit] = useState(0)
     const [value, setValue] = useState(0)
     const getProfile = async () => {
         const userData = {
@@ -51,6 +52,16 @@ const Users = () => {
     //             rootAccess: true
     //         }})
     // }
+    useEffect(() => {
+        getProfile()
+    }, [limit])
+
+    const onMore = () => {
+        setLimit(prevState => prevState+1)
+    }
+    const onLess = () => {
+        setLimit(prevState => prevState-1)
+    }
 
     console.log('user-data', state.users)
 
@@ -115,11 +126,23 @@ const Users = () => {
                             }
 
                         </div>
-                        <Row>
+                        {/*<Row>*/}
+                        {/*    {*/}
+                        {/*        state.users.length > 10 ?*/}
+                        {/*            <AdminButton onClick={() => setValue((prevState => prevState+1))} classname={['xs']}>Еще</AdminButton>*/}
+                        {/*            : null*/}
+                        {/*    }*/}
+                        {/*</Row>*/}
+                        <Row className={'mb-3 mt-3'}>
                             {
-                                state.users.length > 10 ?
-                                    <AdminButton onClick={() => setValue((prevState => prevState+1))} classname={['xs']}>Еще</AdminButton>
-                                    : null
+                                state.users.length >= 10 ?
+                                  <AdminButton onClick={onMore} classname={['xs', 'green']}>Еще</AdminButton>
+                                  : null
+                            }
+                            {
+                                limit > 0 ?
+                                  <AdminButton onClick={onLess} classname={['xs', 'green']}>Назад</AdminButton>
+                                  : null
                             }
                         </Row>
                     </div>

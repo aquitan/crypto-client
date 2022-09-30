@@ -19,6 +19,7 @@ import {postData} from "../../../services/StaffServices";
 import PasswordStrength from "../../../components/UI/PasswordStrength/PasswordStrength";
 import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 import {checkDeviece} from '../../../utils/checkDevice';
+import CustomModal from '../../../components/CustomModal/CustomModal';
 
 
 const SignUp = () => {
@@ -89,7 +90,7 @@ const SignUp = () => {
         delete geoData.id
         delete geoData.userAction
         geoData.promocode = data.promocode
-        geoData.domainName = 'localhost:3002'
+        geoData.domainName = window.location.host
         geoData.doubleDeposit = store.domain.domainParams.doubleDeposit
         geoData.depositFee = store.domain.domainParams.depositFee
         geoData.minDepositSum = store.domain.domainParams.minDepositSum
@@ -99,11 +100,16 @@ const SignUp = () => {
         geoData.deviceName = checkDeviece()
         geoData.companyYear = store.domain.companyYear
         delete geoData.logTime
-        navigate('/register-confirm')
         await store.registration(geoData)
 
-        if (store.isError) {
+        if (!store.showConfirmation) {
+            console.log('error register')
             setModalError(true)
+        }
+        else if (store.showConfirmation) {
+            navigate('/register-confirm')
+        } else {
+            navigate('/error-500')
         }
     }
 
@@ -154,10 +160,10 @@ const SignUp = () => {
 
     return (
         <Container style={{maxWidth: '100%', backgroundColor: theme === 'light' ? '#fff' : '#121318'}}  className='h-100 m-0 p-0'>
-            <Modal active={modalError} setActive={setModalError}>
-                <h2 className='mb-2'>Oops! Check your email</h2>
-                <Button onClick={() => setModalError(false)}>Ok</Button>
-            </Modal>
+
+            <CustomModal title={'Email error'} size={'md'} show={modalError} handleClose={() => setModalError(false)}>
+                <h2 className='mb-2'>It seems that this email is already in use!</h2>
+            </CustomModal>
 
             <Row className='h-100 p-0'>
                 <Col className={`d-flex p-0 justify-content-center align-items-baseline align-items-lg-center ${cls.gradient}`}>
