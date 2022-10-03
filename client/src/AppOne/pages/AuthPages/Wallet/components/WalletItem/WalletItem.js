@@ -4,10 +4,11 @@ import Button from "../../../../../components/UI/Button/Button";
 import {imgMatch} from "../../../../../utils/imgMatch";
 import classNames from "classnames/bind";
 import {Col} from "react-bootstrap";
+import {store} from '../../../../../../index';
 
 
 
-const WalletItem = ({coinsBalance, balanceUsd, coin, coinFullName, theme, onDepositOpen, onWithdrawOpen}) => {
+const WalletItem = ({coinsBalance, coin, coinFullName, theme, onDepositOpen, onWithdrawOpen}) => {
     const cx = classNames.bind(cls)
     const classes = cx('walletItem', theme)
 
@@ -15,12 +16,16 @@ const WalletItem = ({coinsBalance, balanceUsd, coin, coinFullName, theme, onDepo
       if (coinFullName === 'TRX/USDT') return 'TRC 20'
     }
 
+    console.log('wallet item', coinsBalance)
 
+    const setBalanceInUSD = () => {
+        if (!coinFullName === 'TRX/USDT') {
+            return (coinsBalance.toFixed(5) * store.rates[coinName.toLowerCase()]).toFixed(5)
+        } else {
+            return coinsBalance.toFixed(5) * store.rates.trxusdt.toFixed(5)
+        }
+    }
     return (
-
-
-
-
         <div className={`${classes} d-flex`}>
             <Col className='d-flex align-items-center'>
                 <img width={30} src={`/img/${imgMatch(coin === 'TRC 20' ? 'USDT' : coin)}.svg`} alt=""/>
@@ -30,7 +35,7 @@ const WalletItem = ({coinsBalance, balanceUsd, coin, coinFullName, theme, onDepo
                 </div>
             </Col>
             <Col className='d-none d-xl-flex align-items-center'>
-                ${balanceUsd.toLocaleString()}
+                ${setBalanceInUSD()}
             </Col>
             <Col className='d-flex align-items-center'>
                 <b>{coinsBalance.toFixed(5)}</b>

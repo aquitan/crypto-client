@@ -96,6 +96,10 @@ const Dashboard = () => {
                 let val = item.coinBalance * findPercent(store.rates.usdt, percent)
                 arr.push(val)
             }
+            else if (item.coinName === 'TRX/USDT') {
+                let val = item.coinBalance * findPercent(store.rates.usdt, percent)
+                arr.push(val)
+            }
 
 
         })

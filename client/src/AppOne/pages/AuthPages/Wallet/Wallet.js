@@ -39,8 +39,11 @@ const Wallet = () => {
         setBalances(res.data)
         let arr = []
         res.data.forEach((item, index, array) => {
-            if (index !== array.length - 1) {
+            if (!item.coinName === 'TRX/USDT') {
                 arr.push(Number((item.coinBalance * store.rates[item.coinName.toLowerCase()])))
+            }
+            else {
+                arr.push(Number((item.coinBalance * store.rates.trxusdt)))
             }
         })
         console.log('arr---', arr);
@@ -118,7 +121,7 @@ const Wallet = () => {
                                         ${
                                         isNaN((balancesArr.reduce((prev, cur) => {
                                             return prev + cur
-                                        }, 0).toFixed(5))) ? 0 : (balancesArr.reduce((prev, cur) => {
+                                        }, 0).toFixed(5))) ? 0.00000 : (balancesArr.reduce((prev, cur) => {
                                             return prev + cur
                                         }, 0).toFixed(5))
                                     }
@@ -161,38 +164,21 @@ const Wallet = () => {
                     <h2>Wallet list</h2>
                     {
                         typeof balances !== 'string' ?
-                            balances.map(item => (
-                                <WalletItem
+                            balances.map(item => {
+                                return (
+                                  <WalletItem
                                     key={item._id}
                                     onDepositOpen={onDepositOpen}
                                     onWithdrawOpen={onWithdrawOpen}
                                     coinsBalance={item.coinBalance}
                                     coinFullName={item.coinFullName}
                                     theme={theme}
-                                    balanceUsd={(item.coinBalance.toFixed(5) * store.rates[item.coinName.toLowerCase()]).toFixed(5)}
                                     coin={item.coinName === 'TRX/USDT' ? 'TRC 20' : item.coinName} />
-                            )) : <h2>No wallets</h2>
+                                )
+                            }) : <h2>No wallets</h2>
                     }
                 </ButtonCard>
             </Row>
-
-
-            {/*<Row>*/}
-            {/*    {*/}
-            {/*        state ?*/}
-            {/*            state.map(item => {*/}
-            {/*                console.log('wallet item', item)*/}
-            {/*                return <Col key={item._id} className={'col-12 col-sm-6 col-lg-4 mb-5'}>*/}
-            {/*                    <WalletItem*/}
-            {/*                        coinFullName={item.coinFullName}*/}
-            {/*                        balanceUsd={(item.coinBalance.toFixed(5) * store.rates[item.coinName.toLowerCase()]).toFixed(5)}*/}
-            {/*                        coin={item.coinName}*/}
-            {/*                        coinsBalance={item.coinBalance.toFixed(5)} />*/}
-            {/*                </Col>*/}
-            {/*            }) :*/}
-            {/*            <Preloader />*/}
-            {/*    }*/}
-            {/*</Row>*/}
         </>
     )
 }

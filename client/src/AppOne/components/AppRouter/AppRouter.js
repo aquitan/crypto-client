@@ -51,6 +51,7 @@ const AppRouter = () => {
             sol: res.data[3].current_price,
             trx: res.data[4].current_price,
             bch: res.data[5].current_price,
+            trxusdt: res.data[4].current_price,
         }
         const ratesChange = {
             btc: res.data[0].price_change_percentage_24h,
