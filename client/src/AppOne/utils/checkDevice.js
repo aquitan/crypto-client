@@ -1,7 +1,7 @@
-import {isMobile} from 'react-device-detect';
 
 export const checkDeviece = () => {
-    return isMobile ? 'Mobile' : 'Desktop'
+    if (window.innerWidth < 768) return 'Mobile'
+    return 'Desktop'
     // let detect = new MobileDetect(window.navigator.userAgent);
     //
     // if (detect.phone()) {
