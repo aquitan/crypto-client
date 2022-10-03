@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import {Col, Row} from "react-bootstrap";
 import Button from "../../../../../components/UI/Button/Button";
 import classNames from "classnames/bind";
@@ -26,16 +25,6 @@ const SecureDealTableItem = ({amount, status, classname, onClick}) => {
             </Col>
         </Row>
     )
-}
-
-SecureDealTableItem.propTypes = {
-    id: PropTypes.number,
-    amount: PropTypes.any,
-    status: PropTypes.string,
-    onClick: PropTypes.func
-}
-SecureDealTableItem.defaultProps = {
-    
 }
 
 export default SecureDealTableItem

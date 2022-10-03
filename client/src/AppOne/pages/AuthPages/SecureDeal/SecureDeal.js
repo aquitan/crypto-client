@@ -241,10 +241,9 @@ const SecureDeal = () => {
                         <h2>Recent deals</h2>
                         <Row>
                             <Table>
-                                <TableHeader classname='table_header-light' elems={tableHeader} />
                                 <TableBody>
                                     {
-                                        history ?
+                                        history.length ?
                                           history.map(item => {
                                               return <SecureDealTableItem
                                                 classname={'table_item_small'}
@@ -252,7 +251,7 @@ const SecureDeal = () => {
                                                 status={item.status ? 'Completed' : 'Pending'}
                                                 onClick={() => navigate(`/secure-deal/${item._id}`)}/>
                                           })
-                                          : <h3>No data</h3>
+                                          : <h4 className='text-center my-4' style={{color: '#cecece'}}>No deals!</h4>
                                     }
 
                                 </TableBody>

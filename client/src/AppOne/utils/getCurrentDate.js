@@ -1,5 +1,11 @@
 export const getCurrentDate = (date) => {
-  const timeDate = new Date(date * 1000)
+  let timeDate
+  if (date) {
+    timeDate = new Date(date * 1000)
+  } else {
+    let data = Math.floor(Date.now() / 1000)
+    timeDate = new Date(data * 1000);
+  }
   let y = timeDate.getUTCFullYear()
   let m = timeDate.getUTCMonth()+1
   let d = timeDate.getUTCDate()

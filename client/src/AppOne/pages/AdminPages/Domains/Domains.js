@@ -434,7 +434,7 @@ const CreateDomains = () => {
                                 </Row>
                             )
                         })
-                        : <h5>No data!</h5>
+                        : <h4 className='text-center my-4' style={{color: '#cecece'}}>Data not found</h4>
                 }
                 <Row className={'mb-3 mt-3'}>
                     {

@@ -112,7 +112,7 @@ const Wallet = () => {
                         <Col className='p-0 mb-3'>
                             <Row>
                                 <h2 style={{color: theme === 'light' ? '#9295A6' : '#fff'}}>Wallet</h2>
-                                <p style={{color: '#9295A6', fontSize: 12}}>Updated {getCurrentDate(new Date)}</p>
+                                <p style={{color: '#9295A6', fontSize: 12}}>Updated {getCurrentDate()}</p>
                             </Row>
                             <Row>
                                 <div style={{color: '#9295A6', fontSize: 16}}>Wallet balance:</div>

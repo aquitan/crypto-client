@@ -314,7 +314,7 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
                                             />
                                         )
                                     })
-                                    : <h3>No data</h3>
+                                    : <h4 className='text-center my-4' style={{color: '#cecece'}}>Transactions not found!</h4>
 
                             }
                         </div>

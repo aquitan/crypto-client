@@ -31,7 +31,7 @@ const TableItem = ({elems, btn, id, onClick}) => {
                                 : null
                         }
                     </>
-                    : <p className='text-center'>No data detected!</p>
+                    : <h4 className='text-center my-4' style={{color: '#cecece'}}>Data not found</h4>
             }
             
         </Row>

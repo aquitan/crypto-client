@@ -211,7 +211,7 @@ const CreateNews = () => {
                         state.map(news => {
                             return <AllNews key={uuid()} data={news} />
                         })
-                        : <h4>No data!</h4>
+                        : <h4 className='text-center my-4' style={{color: '#cecece'}}>Data not found</h4>
                 }
                 <Row className={'mb-3 mt-3'}>
                     {

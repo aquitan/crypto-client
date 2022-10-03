@@ -39,7 +39,7 @@ const ProjectSupport = () => {
             <AdminButtonCard>
                 Wallet: <br/>
                 {
-                    state ? <p>{state}</p> : <h4>No data</h4>
+                    state ? <p>{state}</p> : <h4 className='text-center my-4' style={{color: '#cecece'}}>No data!</h4>
                 }
             </AdminButtonCard>
             <AdminButtonCard>

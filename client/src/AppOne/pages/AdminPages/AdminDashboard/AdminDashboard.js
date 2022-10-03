@@ -45,7 +45,7 @@ const AdminDashboard = () => {
                             </div>
                         </Row>
                     </>
-                : <div>No data</div>
+                : <h4 className='text-center my-4' style={{color: '#cecece'}}>Data not found</h4>
             }
         </Container>
     )
