@@ -9,7 +9,6 @@ import {imgMatch} from "../../../utils/imgMatch";
 const WalletInfoBlock = ({currency, status, amount, balance, rate, theme, img}) => {
     const cx = classNames.bind(cls)
     const classes = cx('wallet-block', status, theme)
-    console.log('status', status)
     const statusColor = () => {
         return status >= 0;
     }
@@ -29,7 +28,7 @@ const WalletInfoBlock = ({currency, status, amount, balance, rate, theme, img}) 
                     </div>
                     {/*<div>Balance: {balance.coinBalance} {currency}</div>*/}
                     <div>
-                        <b style={{color:statusColor() ? 'green' : 'tomato'}}>{amount} %</b>
+                        <b style={{color:statusColor() ? 'green' : 'tomato'}}>{amount.toFixed(2)} %</b>
                     </div>
                 </Col>
                 <Col>

@@ -26,6 +26,7 @@ export default class Store {
     terms = {}
     asUser = {}
     rates = {}
+    ratesFull = {}
     ratesChange = {}
     depositFee = 0
     balance = []
@@ -101,6 +102,9 @@ export default class Store {
     }
     setRates(obj) {
         this.rates = obj
+    }
+    setRatesFull(obj) {
+        this.ratesFull = obj
     }
     setRatesChange(obj) {
         this.ratesChange = obj

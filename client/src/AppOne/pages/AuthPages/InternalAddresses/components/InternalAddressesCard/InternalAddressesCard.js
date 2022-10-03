@@ -62,7 +62,7 @@ const InternalAddressesCard = ({currency, sum, onCopy, wallet, theme}) => {
                 <Grid item gap={2}>
                     <div>{sum.toFixed(5)} {currency}</div>
                 </Grid>
-                <Grid item xs='auto' gap={2}>
+                <Grid item sx={{width: 100}} xs='auto' gap={2}>
                     <div className='d-flex align-items-center' onClick={() => onCopy(wallet)}>
                         <FontAwesomeIcon
                           style={{marginRight: 20}}

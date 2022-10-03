@@ -166,25 +166,32 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
 
             <CustomModal
               title={'Success'}
-              text={'Deposit was successful!'}
+              size='md'
               show={success}
-              handleClose={closeSuccess} />
+              handleClose={closeSuccess}>
+                <h2>Deposit was successful!</h2>
+            </CustomModal>
             <CustomModal
               title={'Error'}
-              text={'Something went wrong! Try again later...'}
               show={depError}
-              handleClose={closeError} />
+              size='md'
+              handleClose={closeError}>
+                <h2>Something went wrong! Try again later...</h2>
+            </CustomModal>
             <CustomModal
               title={'Error'}
-              text={'All fields must be fulfilled!'}
+              size='md'
               show={fieldError}
-              handleClose={closeFieldError} />
+              handleClose={closeFieldError}>
+                <h2>All fields must be fulfilled!</h2>
+            </CustomModal>
 
             <CustomModal
                 title={'No address'}
-                text={'Please, generate address first before making deposit!'}
                 show={show}
-                handleClose={closeModal} />
+                handleClose={closeModal}>
+                <h2>Please, generate address first before making deposit!</h2>
+            </CustomModal>
 
             <ButtonCard theme={theme} style={{padding: 0}}>
                 <Tabs

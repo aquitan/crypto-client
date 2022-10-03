@@ -89,7 +89,14 @@ const Dashboard = () => {
             } else if (item.coinName === 'USDT') {
                 let val = item.coinBalance * findPercent(store.rates.usdt, percent)
                 arr.push(val)
+            }else if (item.coinName === 'USDT') {
+                let val = item.coinBalance * findPercent(store.rates.usdt, percent)
+                arr.push(val)
+            } else if (item.coinName === 'TRX') {
+                let val = item.coinBalance * findPercent(store.rates.usdt, percent)
+                arr.push(val)
             }
+
 
         })
 
@@ -108,6 +115,7 @@ const Dashboard = () => {
     const handleClose = () => {
         setShow(false)
     }
+    console.log('balance---', balance)
 
     return (
         <>
@@ -147,20 +155,11 @@ const Dashboard = () => {
                                 </Row>
                                 <Row style={{margin: 0, padding: 0}}>
                                     {
-                                        store.rates.length && balance.length ?
+                                        store.ratesFull.length && balance.length ?
                                             <SlickSlider>
                                                 {
-                                                    store.rates.map(item => {
+                                                    store.ratesFull.map(item => {
                                                         return (
-                                                          // <WalletInfoBlock
-                                                          //   key={item}
-                                                          //   rate={store.rates[item]}
-                                                          //   balance={balance.filter(el => el.coinName === item.toUpperCase())[0]}
-                                                          //   currency={item.toUpperCase()}
-                                                          //   amount={store.ratesChange[item].toFixed()}
-                                                          //   status={currencyRateChangeIndicator(store.ratesChange[item].toFixed())}
-                                                          //   theme={theme}
-                                                          // />
                                                           <WalletInfoBlock
                                                             key={item.id}
                                                             img={item.image}

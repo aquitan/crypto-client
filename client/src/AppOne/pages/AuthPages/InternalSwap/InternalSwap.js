@@ -31,6 +31,7 @@ const InternalSwap = () => {
     const [errorModal, setErrorModal] = useState(false)
     const [balance, setBalance] = useState([])
     const [history, setHistory] = useState([])
+    const [valueFrom, setValueFrom] = useState(0)
     const {register, handleSubmit, setError, formState: {errors, isValid, isDirty}} = useForm({
         mode: "onBlur",
         defaultValues: {
@@ -94,12 +95,13 @@ const InternalSwap = () => {
         })
         if (state.initial.currency === state.target.currency) setError('amount', {
             type: 'custom',
-            message: 'warning! You cant swap between same wallets'
+            message: 'Warning! You cant swap between same wallets'
         })
         if (value < 0.00002) setError('amount', {
             type: 'custom',
-            message: 'you have reached minimal swap sum'
+            message: 'You have reached minimal swap sum'
         })
+        setValueFrom(+value)
         let val1 = +value
         let val2 = +value / 100 * 0.02
         setActions({...actions, percent: val1 + val2})
@@ -159,16 +161,23 @@ const InternalSwap = () => {
         delete data.initialCurrency
         delete data.targetCurrency
 
-        console.log('sent', data)
-        if (state.initial.value !== state.target.value) {
-            const res = await putData('/swap/make_swap/', data)
-            if (res.status === 201) {
-                getSwapHistory()
-                setShowModal(true)
+        console.log('balance', balance)
+        const filteredBalance = balance.filter(el => el.coinName === data.coinNameFrom)
+        console.log('filteredBalance', filteredBalance)
+        if (filteredBalance[0].coinBalance !== 0) {
+            if (state.initial.value !== state.target.value) {
+                const res = await putData('/swap/make_swap/', data)
+                if (res.status === 201) {
+                    getSwapHistory()
+                    setShowModal(true)
+                }
+            } else {
+                setErrorModal(true)
             }
         } else {
-            setErrorModal(true)
+            alert('insufficient funds')
         }
+
 
 
 
@@ -192,6 +201,20 @@ const InternalSwap = () => {
         } else if (store.domain.domainParams.coinSwapFee === 5) {
             return 0.05
         }
+    }
+
+    const youExchangeMessage = () => {
+        const filteredTo = store.rates[state.target.currency.toLowerCase()]
+        const filteredFrom = store.rates[state.initial.currency.toLowerCase()]
+        console.log('filteredTo', filteredTo);
+        console.log('filteredFrom', filteredFrom);
+        let countedFrom = filteredFrom * valueFrom
+        let countedTo = countedFrom / filteredTo
+        console.log('countedFrom', countedFrom);
+        return `You exchange 
+        ${valueFrom} 
+        ${state.initial.currency} to 
+        ${countedTo.toFixed(5)} ${state.target.currency}`
     }
 
 
@@ -323,10 +346,10 @@ const InternalSwap = () => {
                                                         onChange: (e) => checkValue(e.target.value),
                                                     })} placeholder='0' classname='inputTransparent' />
                                                     {<p className={cls.error}>{errors.amount?.message}</p>}
-                                                    <ErrorMessage  name='amount' errors={errors} render={() => <p className={cls.error}>Check values</p>} />
+                                                    {/*<ErrorMessage  name='amount' errors={errors} render={() => <p className={cls.error}>Check values</p>} />*/}
                                                 </Col>
                                                 {
-                                                    isValid ? <span>you will pay {actions.percent.toFixed(7)}</span> : null
+                                                    isValid ? <i style={{fontSize: 12, color: 'grey'}}>{youExchangeMessage()} </i> : null
                                                 }
                                             </Row>
                                             <Row>

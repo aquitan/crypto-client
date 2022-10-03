@@ -35,16 +35,16 @@ const LandingHeader = ({state, openSidebar}) => {
                 <Offcanvas.Body>
                     <Row className='flex-column text-start mb-3'>
                         <Col>
-                            <Link classnames={theme} href="#" value={'Market'}/>
+                            <Link classnames={theme} onClick={() => setShow(false)} href="#features" value={'Features'}/>
                         </Col>
                         <Col>
-                            <Link classnames={theme} href="#" value={'Watch list'}/>
+                            <Link classnames={theme} onClick={handleClose}  href="#services" value={'Services'}/>
                         </Col>
                         <Col>
-                            <Link classnames={theme} href="#" value={'Portfolio'}/>
+                            <Link classnames={theme} onClick={handleClose}  href="#trading" value={'Crypto Trading'}/>
                         </Col>
                         <Col>
-                            <Link classnames={theme} href="#" value={'Learn'}/>
+                            <Link classnames={theme} onClick={handleClose}  nav={true} href="/contactus" value={'Contact Us'}/>
                         </Col>
                     </Row>
                     <Row>
@@ -85,7 +85,7 @@ const LandingHeader = ({state, openSidebar}) => {
                     <Link classnames={theme} href="#features" value={'Features'}/>
                     <Link classnames={theme} href="#services" value={'Services'}/>
                     <Link classnames={theme} href="#trading" value={'Crypto Trading'}/>
-                    <Link classnames={theme} nav={true} href="/contact-us" value={'Contact Us'}/>
+                    <Link classnames={theme} nav={true} href="/contactus" value={'Contact Us'}/>
                 </Col>
                 
                 <Col className='d-none d-xl-flex justify-content-end'>
