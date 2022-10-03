@@ -28,6 +28,7 @@ import LandingSkeleton from '../../NonAuthPages/LandingSkeleton/LandingSkeleton'
 const InternalSwap = () => {
     const {theme} = useThemeContext(ThemeContext)
     const [showModal, setShowModal] = useState(false)
+    const [insufficientModal, setInsufficientModal] = useState(false)
     const [errorModal, setErrorModal] = useState(false)
     const [balance, setBalance] = useState([])
     const [history, setHistory] = useState([])
@@ -85,21 +86,21 @@ const InternalSwap = () => {
     }
 
     const checkValue = (value) => {
-        if (parseInt(value) < 0 || parseFloat(value) < 0) setError('amount', {
+        if (Number(value) < 0) setError('amount', {
             type: 'custom',
-            message: 'negative value is not allowed'
+            message: 'Negative value is not allowed!'
         })
         if (value > state.initial.value) setError('amount', {
             type: 'custom',
-            message: 'you are over your account funds'
+            message: 'Insufficient funds!'
         })
         if (state.initial.currency === state.target.currency) setError('amount', {
             type: 'custom',
-            message: 'Warning! You cant swap between same wallets'
+            message: 'Warning! You cant swap between same wallets!'
         })
         if (value < 0.00002) setError('amount', {
             type: 'custom',
-            message: 'You have reached minimal swap sum'
+            message: 'You have reached minimal swap sum!'
         })
         setValueFrom(+value)
         let val1 = +value
@@ -175,7 +176,7 @@ const InternalSwap = () => {
                 setErrorModal(true)
             }
         } else {
-            alert('insufficient funds')
+            setInsufficientModal(true)
         }
 
 
@@ -225,6 +226,7 @@ const InternalSwap = () => {
               title={'Success!'}
               btnClose={'Close'}
               show={showModal}
+              size='md'
               handleClose={() => setShowModal(false)}>
                 Swap was completed successfully!
             </CustomModal>
@@ -232,8 +234,17 @@ const InternalSwap = () => {
               title={'Error!'}
               btnClose={'Close'}
               show={errorModal}
+              size='md'
               handleClose={() => setErrorModal(false)}>
                 You cant exchange identical currencies!
+            </CustomModal>
+            <CustomModal
+              title={'Insufficient funds!'}
+              btnClose={'Close'}
+              size='md'
+              show={insufficientModal}
+              handleClose={() => setInsufficientModal(false)}>
+                You don't have proper amount of funds!
             </CustomModal>
 
             {

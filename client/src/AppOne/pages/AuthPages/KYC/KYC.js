@@ -120,9 +120,11 @@ const KYC = ({status}) => {
         <>
             <CustomModal
               title={'Error'}
-              text={'Check fields! Necessary fields must be fulfilled!'}
               show={modal}
-              handleClose={() => setModal(false)}/>
+              size='md'
+              handleClose={() => setModal(false)}>
+                Check fields! Necessary fields must be fulfilled!
+            </CustomModal>
 
             <Form classnames={'form_big'} onSubmit={handleSubmit(onSubmit)}>
                 <Row className={'mb-3 text-center'}>

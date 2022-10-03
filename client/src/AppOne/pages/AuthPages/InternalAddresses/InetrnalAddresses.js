@@ -83,6 +83,7 @@ const InternalAddresses = () => {
                 <CustomModal
                   title='Transfer info'
                   show={modal.isOpen}
+                  size='md'
                   handleClose={() => setModal({...modal, isOpen: false})}
                   btnClose={'Close'}>
                     <Row>
@@ -94,7 +95,7 @@ const InternalAddresses = () => {
                     </Row>
                 </CustomModal>
 
-                <Col className='col-12 col-xl-8'>
+                <Col className='col-12 col-xl-6'>
                     <ButtonCard theme={theme}>
                         {
                             wallets.length ?
@@ -117,7 +118,7 @@ const InternalAddresses = () => {
                         }
                     </ButtonCard>
                 </Col>
-                <Col>
+                <Col className='col-12 col-xl-6'>
                     <ButtonCard theme={theme}>
                         <Row>
                             <Col>
@@ -142,7 +143,7 @@ const InternalAddresses = () => {
                                                         status={item.status} />
                                                 )
                                             })
-                                            : <h4>No data!</h4>
+                                            : <h4 className='text-center my-4' style={{color: '#cecece'}}>No transfers!</h4>
                                     }
                                 </TableBody>
                             </Col>

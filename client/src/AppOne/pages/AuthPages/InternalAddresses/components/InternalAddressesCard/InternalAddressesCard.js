@@ -54,29 +54,34 @@ const InternalAddressesCard = ({currency, sum, onCopy, wallet, theme}) => {
                     style={{position: 'absolute', right: 20, top: 10, cursor: 'pointer'}}
                     icon={faTimesCircle} /> : null
             }
-            <Grid container sx={{my: 2}} spacing={1} columns={{ xs: 2, sm: 3, xl: 4 }} justifyContent="space-between" alignItems='center'>
-                <Grid item gap={2}>
-                    <Image src={`/img/${imgMatch(currency)}.svg`} height={40} alt={'crypto'} />
-                    <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8'}} className='badge'>{currency}</div>
-                </Grid>
-                <Grid item gap={2}>
-                    <div>{sum.toFixed(5)} {currency}</div>
-                </Grid>
-                <Grid item sx={{width: 100}} xs='auto' gap={2}>
-                    <div className='d-flex align-items-center' onClick={() => onCopy(wallet)}>
-                        <FontAwesomeIcon
-                          style={{marginRight: 20}}
-                          icon={faCopy} />
-                        <span style={{wordBreak: 'break-all', display: 'inline-block', margin: '0 10px 0 0'}} className='internal-address'>{wallet}</span>
-                    </div>
-                </Grid>
+
+            <Row>
+                <Row className='mb-4 pb-4 flex-column align-items-center flex-sm-row' style={{borderBottom: '1px solid #cecece'}}>
+                    <Col className='d-flex align-items-center justify-content-center justify-content-sm-start mb-2'>
+                        <Image src={`/img/${imgMatch(currency)}.svg`} height={60} alt={'crypto'} />
+                        <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8'}} className='badge'>{currency}</div>
+                        <div style={{marginLeft: 10, fontSize: 18}}>{sum.toFixed(5)} {currency}</div>
+                    </Col>
+                    <Col className='d-flex align-items-center justify-content-center justify-content-sm-start mb-2'>
+                        <div className='d-flex align-items-center' onClick={() => onCopy(wallet)}>
+                            <FontAwesomeIcon
+                              style={{marginRight: 20}}
+                              icon={faCopy} />
+                            <span style={{wordBreak: 'break-all', display: 'inline-block', margin: '0 10px 0 0'}} className='internal-address'>{wallet}</span>
+                        </div>
+                    </Col>
+
+                </Row>
                 {
                     state.isOpen ? null :
-                      <Grid item gap={2}>
-                          <Button style={{marginBottom: 5}} classname={['btnLink', theme]} onClick={makeOpen} >Send</Button>
-                      </Grid>
+                      <Row className='justify-content-center'>
+                          <Button style={{marginBottom: 5, width: 200}} classname={['btnBlue', theme]} onClick={makeOpen} >Send</Button>
+                      </Row>
                 }
-            </Grid>
+            </Row>
+
+
+
             {
                 state.isOpen ?
                     <InternalAddressCardForm setFormData={setFormData} sum={sum} wallet={wallet} currency={currency} valid={state.isValid} checkAddress={checkAddress} />
@@ -85,13 +90,6 @@ const InternalAddressesCard = ({currency, sum, onCopy, wallet, theme}) => {
 
         </div>
     )
-}
-
-InternalAddressesCard.propTypes = {
-    
-}
-InternalAddressesCard.defaultProps = {
-    
 }
 
 export default InternalAddressesCard

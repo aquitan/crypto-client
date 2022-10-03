@@ -2,6 +2,7 @@ import {makeAutoObservable} from "mobx";
 import AuthService from "../services/AuthService";
 import axios from "axios";
 import {BASE_URL} from "../API";
+import {getData} from '../services/StaffServices';
 
 export default class Store {
     userId = ''
@@ -211,7 +212,8 @@ export default class Store {
         try {
             this.setIsLoading(true)
             this.setError500(false)
-            const response = await axios.get(`${BASE_URL}refresh`, {withCredentials: true})
+            // const response = await axios.get(`${BASE_URL}refresh`, {withCredentials: true})
+            const response = await getData(`refresh`)
             localStorage.setItem('token', response.data.accessToken)
             // this.setUserId(response.data.user.id)
             // this.setUserEmail(response.data.user.email)

@@ -160,10 +160,12 @@ const AccountSecurity = (props) => {
         <>
 
             <CustomModal
-                title={'Password was changed'}
+                title={'Password'}
                 show={passwordModal}
-                handleClose={() => setPasswordModal(false)}
-            />
+                size={'md'}
+                handleClose={() => setPasswordModal(false)}>
+                Password was changed
+            </CustomModal>
 
             <div className='mb-5 d-flex align-items-center'>
                 <h2>TwoFA status</h2>

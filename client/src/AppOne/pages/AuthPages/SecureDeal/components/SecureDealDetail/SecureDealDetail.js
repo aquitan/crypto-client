@@ -121,7 +121,11 @@ const SecureDealDetail = () => {
 
     return (
         <>
-            <CustomModal show={result} handleClose={() => setResult('')} title={result} />
+            <CustomModal
+              show={result}
+              handleClose={() => setResult('')}>
+                {result}
+            </CustomModal>
 
             <Row>
                 <Col>

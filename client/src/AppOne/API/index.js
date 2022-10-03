@@ -16,7 +16,10 @@ export const coinsApi = axios.create({
 
 export const $api = axios.create({
     baseURL: BASE_URL,
-    withCredentials: true
+    withCredentials: true,
+    headers: {
+        "Content-type": "application/json",
+    },
 })
 
 $api.interceptors.request.use((config) => {
