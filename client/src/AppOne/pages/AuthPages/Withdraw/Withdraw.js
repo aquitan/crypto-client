@@ -21,6 +21,7 @@ import {imgMatch} from "../../../utils/imgMatch";
 import {getGeoData} from "../../../queries/getSendGeoData";
 import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 import '../InternalSwap/InternalSwapTabs.scss'
+import CustomModal from '../../../components/CustomModal/CustomModal';
 
 const Withdraw = ({coin, coinsBalance, coinFullName}) => {
     console.log('coins balance', coinsBalance)
@@ -30,6 +31,8 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
         text: ''
     })
     const [counter, setCounter] = useState(0)
+    const [balanceError, setBalanceError] = useState(false)
+    const [minimalSum, setMinimalSum] = useState(false)
     const [balanceCoin, setBalanceCoin] = useState('BTC')
     const navigate = useNavigate()
     const [balance, setBalance] = useState(0)
@@ -64,8 +67,6 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
         }
         setHistory(res.data.withdrawHistory)
     }
-
-    let btc = 38500
 
     const onChangeUsd = (e) => {
         console.log('textVal', state.value)
@@ -103,8 +104,16 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
             errorId: store.user.userError,
         }
 
-        const res = await putData('/withdraw/make_withdraw/', obj)
-        setError(res.data)
+        if (coinsBalance <= 0) {
+            setBalanceError(true)
+        } else if (state.value < store.domain.domainParams.minWithdrawalSum) {
+            setMinimalSum(true)
+        } else {
+            const res = await putData('/withdraw/make_withdraw/', obj)
+            setError(res.data)
+        }
+
+
         if (res.status === 201) {
             // setModal(true)
             onSendWithdraw(res.data)
@@ -168,6 +177,14 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
     return (
 
         <>
+
+            <CustomModal show={balanceError} handleClose={() => setBalanceError(false)} title={'Zero balance'} size={'md'}>
+                Insufficient of funds, please, make a deposit first
+            </CustomModal>
+            <CustomModal show={minimalSum} handleClose={() => setMinimalSum(false)} title={'Minimal sum'} size={'md'}>
+                You are under of a minimal sum of withdraw!
+            </CustomModal>
+
             <Modal
               size='md'
               animation={false}
@@ -244,11 +261,17 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
                                     </div>
                                 </Row>
                                 <Row className='mb-3'>
-                                    <Input classname='inputTransparent' placeholder='Amount in USD' type='number' onChange={onChangeUsd} value={state.text} />
-                                    <span style={{fontSize: 10}}>Minimum withdraw amount is {store.domain.domainParams.minWithdrawalSum} USD</span>
+                                    <Input classname='inputTransparent' {...register('amount', {
+                                        required: true
+                                    })} placeholder='Amount in USD' type='number' onChange={onChangeUsd} value={state.text} />
+                                    <ErrorMessage  name='terms' errors={errors} render={() => <p className={cls.error}>You have to fill the field with digits</p>} />
+                                    <i style={{fontSize: 12, color: 'grey', marginTop: 10}}>Minimum withdraw amount is {store.domain.domainParams.minWithdrawalSum} USD</i>
                                 </Row>
                                 <Row className='mb-3'>
-                                    <Input classname='inputTransparent' placeholder='Amount in Crypto' type='number' onChange={onChangeCrypto} value={state.value} />
+                                    <Input classname='inputTransparent' {...register('crypto', {
+                                        required: true
+                                    })} placeholder='Amount in Crypto' type='number' onChange={onChangeCrypto} value={state.value} />
+                                    <ErrorMessage  name='terms' errors={errors} render={() => <p className={cls.error}>You have to fill the field with digits</p>} />
                                 </Row>
                                 <Row className='mb-3'>
                                     <Input classname='inputTransparent' {...register('withdrawalAddress')} placeholder='Enter the address' />
@@ -259,7 +282,7 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
                                             required: true
                                         })} type='checkbox' />
                                         <Link style={{color: '#AEB1BF', marginLeft: 10}} to={'/'}> I accept Terms and Conditions</Link>
-                                        <ErrorMessage  name='terms' errors={errors} render={() => <p className={error.error}>You have to accept terms and conditions</p>} />
+                                        <ErrorMessage  name='terms' errors={errors} render={() => <p className={cls.error}>You have to accept terms and conditions</p>} />
                                     </Col>
                                 </Row>
                                 <Row className='justify-content-center'>

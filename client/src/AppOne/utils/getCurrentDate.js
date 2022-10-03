@@ -1,9 +1,9 @@
 export const getCurrentDate = (date) => {
-  const timeDate = new Date(date)
+  const timeDate = new Date(date * 1000)
   let y = timeDate.getUTCFullYear()
-  let m = timeDate.getUTCMonth()+1 
-  let d = timeDate.getUTCDate() 
-  let h = timeDate.getUTCHours() 
+  let m = timeDate.getUTCMonth()+1
+  let d = timeDate.getUTCDate()
+  let h = timeDate.getUTCHours()
   let min = timeDate.getUTCMinutes()
   let s = timeDate.getUTCSeconds()
   function PrefInt(number, len) {
@@ -17,5 +17,6 @@ export const getCurrentDate = (date) => {
     }
   }
   const currentDate = y+'-'+PrefInt(m,10)+'-'+PrefInt(d,10)+' '+PrefInt(h,10)+':'+ PrefInt(min,10) +':'+ PrefInt(s,10)
+  console.log('currentDate', currentDate);
   return currentDate
 }

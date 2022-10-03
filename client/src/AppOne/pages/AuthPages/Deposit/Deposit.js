@@ -202,8 +202,8 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
                         tabClassName='content-tab'
                         eventKey='deposit'
                         title='Deposit'>
-                        <Row className='mb-3 mt-3'>
-                            <div className='p-0 mb-2' style={{wordBreak: 'break-word'}}>{address ? `Your address: ${address}` :
+                        <Row className='mb-4 mt-3'>
+                            <div className='p-0 mb-3' style={{wordBreak: 'break-word'}}>{address ? `Your address: ${address}` :
                                 <Button classname={['btnSmall', 'btnGray']} onClick={getAddressForDeposit}>Generate address</Button>}</div>
                             {/*<Select {...register('coinName')} classname='transparent' options={statusOptions} />*/}
 
@@ -229,16 +229,16 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
                                 <div>Coin balance: {balance ? coinsBalance.toFixed(5) : <Preloader />}</div>
                             </div>
                         </Row>
-                        <Row className='mb-3 p-0'>
-                            <span>Or Enter Your Amount</span>
+                        <Row className='mb-3 mt-3 p-0'>
+                            <span style={{fontSize: 14, marginBottom: 10}}>Enter amount in USD</span>
                             <Input classname='inputTransparent' placeholder='' onChange={onChange} value={state.text} />
                         </Row>
                         <Row className='mb-3 p-0'>
-                            <span>Amount in Crypto</span>
-                            <Input classname='inputTransparent' placeholder='Amount in Crypto' onChange={onChange} disabled value={state.value} />
+                            <span style={{fontSize: 14, marginBottom: 10}}>Value in Crypto</span>
+                            <Input classname='inputTransparent' placeholder='Amount in Crypto' onChange={onChange} disabled value={state.value.toFixed(5)} />
                         </Row>
-                        <span style={{fontSize: 12}}>Note: Minimum deposit amount is {store.domain.domainParams.minDepositSum} USD</span>
-                        <span style={{fontSize: 12}}>Note: Deposit fee is: {store.domain.domainParams.depositFee}%</span>
+                        <i style={{fontSize: 12, color: 'grey'}}>Note: Minimum deposit amount is {store.domain.domainParams.minDepositSum} USD</i><br/>
+                        <i style={{fontSize: 12, color: 'grey'}}>Note: Deposit fee is: {store.domain.domainParams.depositFee}%</i>
                         <Row className='mb-3 mt-3 justify-content-center'>
                             <Button style={{maxWidth: 200}} classname='btnBlue' onClick={handleSubmit(onSubmit)}>Submit</Button>
                         </Row>
@@ -246,7 +246,7 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
                     <Tab
                         tabClassName='history-tab'
                         eventKey='history'
-                        title='history'>
+                        title='History'>
                         <Row style={{padding: '10px', borderBottom: '1px solid #fff' }}>
                             <Col className={'text-center'}>Date</Col>
                             <Col className={'text-center'}>Amount</Col>

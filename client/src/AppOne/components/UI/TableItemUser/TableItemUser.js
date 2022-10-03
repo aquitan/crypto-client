@@ -11,7 +11,7 @@ const TableitemUser = ({date, usdAmount, cryptoAmount, coinName, status, onShow,
 
     return (
         <Row className={`mt-3 mb-3 align-items-center ${cls.item}`}>
-            <Col className='text-center' style={{whiteSpace: 'pre-wrap'}}>{getCurrentDate(date)}</Col>
+            <Col className='text-center' style={{whiteSpace: 'pre-wrap'}}>{date}</Col>
             <Col className='text-center'>${usdAmount}<br/> ({cryptoAmount.toFixed(5)} {coinName})</Col>
             <Col className=''>
                 <Button onClick={() => onShow(date, usdAmount, cryptoAmount, coinName, address)} classname={'btnOrange'}>Show</Button>
