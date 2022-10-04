@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 
 const TableBody = ({children}) => {
     return (
@@ -7,13 +6,6 @@ const TableBody = ({children}) => {
             {children}
         </div>
     )
-}
-
-TableBody.propTypes = {
-    children: PropTypes.node
-}
-TableBody.defaultProps = {
-
 }
 
 export default TableBody

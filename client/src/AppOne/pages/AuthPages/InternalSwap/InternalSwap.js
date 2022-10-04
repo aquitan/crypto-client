@@ -211,7 +211,6 @@ const InternalSwap = () => {
         console.log('filteredFrom', filteredFrom);
         let countedFrom = filteredFrom * valueFrom
         let countedTo = countedFrom / filteredTo
-        console.log('countedFrom', countedFrom);
         return `You exchange 
         ${valueFrom} 
         ${state.initial.currency} to 
@@ -381,8 +380,8 @@ const InternalSwap = () => {
                           </Tab>
                           <Tab tabClassName='history-tab' title='History' eventKey='history'>
                               <Col className='col-12 mb-3 p-0'>
-                                  <Table>
-                                      <TableHeader classname='table_header-dark' elems={['date', 'operation']} />
+                                  <div>
+                                      <TableHeader theme={theme} classname='table_header-dark' elems={['Date', 'Operation']} />
                                       <TableBody>
 
 
@@ -399,19 +398,16 @@ const InternalSwap = () => {
                                                       coinTo={item.coinNameTo}
                                                     />
                                                 })
-                                                : <h3>No data</h3>
+                                                : <h4 className='text-center my-4' style={{color: '#cecece'}}>No data!</h4>
                                           }
                                       </TableBody>
-                                  </Table>
+                                  </div>
                               </Col>
                           </Tab>
                       </Tabs>
                   </ButtonCard>
                   : <LandingSkeleton />
             }
-
-
-
         </>
     )
 }

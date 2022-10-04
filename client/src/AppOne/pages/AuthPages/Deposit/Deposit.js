@@ -25,6 +25,7 @@ import '../InternalSwap/InternalSwapTabs.scss'
 const Deposit = ({coin, coinsBalance, coinFullName}) => {
     const {theme} = useThemeContext(ThemeContext)
     const [show, showModal, closeModal] = useModal()
+    const [minimalSum, setMinimalSum] = useState(false)
     const [success = show, showSuccess = showModal, closeSuccess = closeModal] = useModal()
     const [depError = show, showError = showModal, closeError = closeModal] = useModal()
     const [fieldError = show, showFieldError = showModal, closeFieldError = closeModal] = useModal()
@@ -40,6 +41,15 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
     const [coins, setCoins] = useState([])
     const [coinsFull, setCoinsFull] = useState([])
     const [history, setHistory] = useState([])
+    const [historyModal, setHistoryModal] = useState(false)
+    const [historyModalData, setHistoryModalData] = useState({
+        date: '',
+        usdAmount: '',
+        cryptoAmount: '',
+        coinName: '',
+        address: '',
+        status: ''
+    })
     let btc = store.rates[coin.toLowerCase()]
 
 
@@ -116,6 +126,8 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
         }
         if (!address) {
             showModal(true)
+        } else if (stateVal < store.domain.domainParams.minWithdrawalSum) {
+
         } else {
             if (state.value > 0) {
                 const res = await putData('/deposit/make_deposit/', obj)
@@ -153,16 +165,38 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
             }
         })
         setBalance(balanceAmount)
-        console.log('balance coin', coins)
     }
 
     const onShow = (date, usdAmount, cryptoAmount, coinName, address, status) => {
-
+        setHistoryModalData({date, usdAmount, cryptoAmount, coinName, address, status})
+        setHistoryModal(true)
     }
 
 
     return (
         <>
+            <CustomModal show={minimalSum} handleClose={() => setMinimalSum(false)} title={'Minimal sum'} size={'md'}>
+                You are under of a minimal sum of deposit!
+            </CustomModal>
+
+            <CustomModal show={historyModal} handleClose={() => setHistoryModal(false)} title={'Deposit details'} size={'md'}>
+                <Row className='mb-2'>
+                    <Col>
+                        <b>Date:</b>
+                    </Col>
+                    <Col style={{fontSize: 14, color: 'grey'}}>
+                        {historyModalData.date}
+                    </Col>
+                </Row>
+                <Row className='mb-2'>
+                    <Col>
+                        <b>Amount:</b>
+                    </Col>
+                    <Col style={{fontSize: 14, color: 'grey'}}>
+                        {historyModalData.cryptoAmount} {historyModalData.coinName} ($<b>{historyModalData.usdAmount}</b>)
+                    </Col>
+                </Row>
+            </CustomModal>
 
             <CustomModal
               title={'Success'}

@@ -1,14 +1,13 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import {Col, Row} from "react-bootstrap";
 import '../../Table.scss'
 import {v4 as uuid} from 'uuid'
 import classNames from "classnames";
 
-const TableHeader = ({elems, classname}) => {
+const TableHeader = ({elems, classname, theme}) => {
     let classes = classNames(
         'table_header',
-        classname
+        classname, theme
     )
     return (
         <Row className={classes}>
@@ -19,14 +18,6 @@ const TableHeader = ({elems, classname}) => {
             })}
         </Row>
     )
-}
-
-TableHeader.propTypes = {
-    elems: PropTypes.array,
-    classname: PropTypes.string
-}
-TableHeader.defaultProps = {
-    
 }
 
 export default TableHeader

@@ -18,7 +18,7 @@ const CustomModal = ({title, text, show, handleClose, btnClose, children, size})
               </Row>
             </Modal.Body>}
             <Modal.Footer>
-              <Button onClick={handleClose} variant="secondary">Close</Button>
+              <Button variant='primary' style={{width: 150}} onClick={handleClose}>Close</Button>
             </Modal.Footer>
         </Modal>
     )

@@ -11,9 +11,12 @@ import Withdraw from "../Withdraw/Withdraw";
 import './Wallet.scss'
 import '../InternalSwap/InternalSwapTabs.scss'
 import Preloader from '../../../components/UI/Preloader/Preloader';
+import {findPercent} from '../../../utils/findPercent';
+import {countTotalBalance} from '../../../utils/countTotalBalance';
 
 const Wallet = () => {
     const [balances, setBalances] = useState([])
+    const [percent, setPercent] = useState(0)
     const [deposit, setDeposit] = useState({
         coin: '',
         coinsBalance: '',
@@ -67,9 +70,12 @@ const Wallet = () => {
         setShowWithdraw(true)
     }
 
+
+
     return (
         <>
             <Modal
+                style={{height: '100vh'}}
                 size='xl'
                 animation={false}
                 style={{opacity: 1, zIndex: 9999}}
@@ -116,15 +122,22 @@ const Wallet = () => {
                             </Row>
                             <Row>
                                 <div style={{color: '#9295A6', fontSize: 16}}>Wallet balance:</div>
+                                {/*{*/}
+                                {/*    balancesArr ? <h2 className='mt-4' style={{fontWeight: 'bold', color: theme === 'light' ? '#9295A6' : '#fff'}}>*/}
+                                {/*        ${*/}
+                                {/*        isNaN((balancesArr.reduce((prev, cur) => {*/}
+                                {/*            return prev + cur*/}
+                                {/*        }, 0).toFixed(5))) ? 0.00000 : (balancesArr.reduce((prev, cur) => {*/}
+                                {/*            return prev + cur*/}
+                                {/*        }, 0).toFixed(5))*/}
+                                {/*    }*/}
+                                {/*    </h2> : <Preloader />*/}
+                                {/*}*/}
+                            </Row>
+                            <Row>
                                 {
-                                    balancesArr ? <h2 className='mt-4' style={{fontWeight: 'bold', color: theme === 'light' ? '#9295A6' : '#fff'}}>
-                                        ${
-                                        isNaN((balancesArr.reduce((prev, cur) => {
-                                            return prev + cur
-                                        }, 0).toFixed(5))) ? 0.00000 : (balancesArr.reduce((prev, cur) => {
-                                            return prev + cur
-                                        }, 0).toFixed(5))
-                                    }
+                                    balances ? <h2 className='mt-4' style={{fontWeight: 'bold', color: theme === 'light' ? '#9295A6' : '#fff'}}>
+                                        ${countTotalBalance(balances).toLocaleString()}
                                     </h2> : <Preloader />
                                 }
                             </Row>

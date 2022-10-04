@@ -12,20 +12,6 @@ const WalletItem = ({coinsBalance, coin, coinFullName, theme, onDepositOpen, onW
     const cx = classNames.bind(cls)
     const classes = cx('walletItem', theme)
 
-    const renderCoinNameInBadge = () => {
-      if (coinFullName === 'TRX/USDT') return 'TRC 20'
-    }
-
-    console.log('wallet item', coinsBalance)
-
-    const setBalanceInUSD = () => {
-        if (!coinFullName === 'TRX/USDT') {
-            return (coinsBalance.toFixed(5) * store.rates[coinName.toLowerCase()]).toFixed(5)
-        } else {
-            return coinsBalance.toFixed(5) * store.rates.trxusdt.toFixed(5)
-        }
-    }
-
 
     return (
         <div className={`${classes} d-flex`}>
@@ -37,7 +23,9 @@ const WalletItem = ({coinsBalance, coin, coinFullName, theme, onDepositOpen, onW
                 </div>
             </Col>
             <Col className='d-none d-xl-flex align-items-center'>
-                ${setBalanceInUSD()}
+            ${coin !== 'TRC 20' ?
+              Number(coinsBalance * store.rates[coin.toLowerCase()]).toFixed(5) :
+              Number(coinsBalance.toFixed(5) * store.rates.trxusdt).toFixed(5)}
             </Col>
             <Col className='d-flex align-items-center'>
                 <b>{coinsBalance.toFixed(5)}</b>

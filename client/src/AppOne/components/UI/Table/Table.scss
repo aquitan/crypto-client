@@ -1,21 +1,18 @@
-.table {
-  color: #fff;
-}
-.table_header {
+.dark.table_header {
   padding: 10px 0;
-  border-bottom: 1px solid #fff;
+  border-bottom: 1px solid #cecece;
+  margin-top: 20px;
   &_item {
     color: #fff;
   }
 }
-.table_item {
+.dark.table_item {
   padding: 20px 0;
   color: #fff;
 }
 
-.table_header-dark {
-  .table_header_item {
-    color: #fff;
-  }
+.light.table_header {
+  padding: 10px 0;
+  margin-top: 20px;
   border-bottom: 1px solid #cecece;
 }

@@ -104,20 +104,22 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
             errorId: store.user.userError,
         }
 
+        console.log('coinsBalance', coinsBalance);
+
         if (coinsBalance <= 0) {
             setBalanceError(true)
-        } else if (state.value < store.domain.domainParams.minWithdrawalSum) {
+        } else if (state.text < store.domain.domainParams.minWithdrawalSum) {
             setMinimalSum(true)
         } else {
             const res = await putData('/withdraw/make_withdraw/', obj)
             setError(res.data)
+            if (res.status === 201) {
+                onSendWithdraw(res.data)
+            }
         }
 
 
-        if (res.status === 201) {
-            // setModal(true)
-            onSendWithdraw(res.data)
-        }
+
     }
 
     const onValChange = (e) => {
@@ -134,22 +136,6 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
         })
         setBalance(balanceAmount)
     }
-
-    // const getBalance = async () => {
-    //     const res = await getData(`/get_user_balance/${store.user.id}`)
-    //     let arr = []
-    //         res.data.forEach(item => {
-    //             let obj = {
-    //                 value: item.coinName,
-    //                 text: item.coinName
-    //             }
-    //             arr.push(obj)
-    //         })
-    //     setCoins(arr)
-    //     setCoinsFull(res.data)
-    //     setBalance(res.data[0].coinBalance)
-    //     console.log('res balance', res.data)
-    // }
 
 
     const onNext = () => {
@@ -214,7 +200,7 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
             <Modal
               size='md'
               animation={false}
-              style={{opacity: 1, zIndex: 9999}}
+              style={{opacity: 1, zIndex: 9999999, paddingTop: '10%'}}
               show={showError}
               onHide={() => setShowError(false)}
               dialogClassName={`modal-window ${theme}`}
@@ -225,9 +211,11 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <h4>{error?.errorType}</h4>
-                    <div><b>{error?.errorText}</b></div>
+                    <div style={{fontSize: 14, margin: '20px 10px'}}><b>{error?.errorText}</b></div>
                 </Modal.Body>
+                <Modal.Footer>
+                    <Button variant='primary' classname='btnRed' style={{width: 150}} onClick={() => setShowError(false)}>{error?.errorButton}</Button>
+                </Modal.Footer>
             </Modal>
 
             <ButtonCard theme={theme} style={{padding: 0}}>
