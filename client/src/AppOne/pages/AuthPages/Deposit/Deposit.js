@@ -20,6 +20,7 @@ import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 import {useModal} from "../../../hooks/useModal";
 import CustomModal from "../../../components/CustomModal/CustomModal";
 import '../InternalSwap/InternalSwapTabs.scss'
+import AdminButton from '../../../components/UI/AdminButton/AdminButton';
 
 
 const Deposit = ({coin, coinsBalance, coinFullName}) => {
@@ -38,6 +39,7 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
     })
     const [balanceCoin, setBalanceCoin] = useState('BTC')
     const [balance, setBalance] = useState(0)
+    const [limit, setLimit] = useState(0)
     const [coins, setCoins] = useState([])
     const [coinsFull, setCoinsFull] = useState([])
     const [history, setHistory] = useState([])
@@ -60,7 +62,7 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
     }, [])
 
     const getHistoryDeposit = async () => {
-        const res = await getData(`/deposit/get_deposit_history/${store.user.id}/0/10`)
+        const res = await getData(`/deposit/get_deposit_history/${store.user.id}/${limit}/10`)
         if (typeof res.data.depositHistory !== 'string') {
             const reversedLogs = res.data.depositHistory.slice(0).reverse()
             setHistory(reversedLogs)
@@ -170,6 +172,17 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
     const onShow = (date, usdAmount, cryptoAmount, coinName, address, status) => {
         setHistoryModalData({date, usdAmount, cryptoAmount, coinName, address, status})
         setHistoryModal(true)
+    }
+
+    useEffect(() => {
+        getHistoryDeposit()
+    }, [limit])
+
+    const onMore = () => {
+        setLimit(prevState => prevState+1)
+    }
+    const onLess = () => {
+        setLimit(prevState => prevState-1)
     }
 
 
@@ -308,18 +321,23 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
 
                             }
                         </div>
+                        <Row className={'mb-3 mt-3'}>
+                            {
+                                history.length >= 10 ?
+                                  <AdminButton onClick={onMore} classname={['xs', 'green']}>More</AdminButton>
+                                  : null
+                            }
+                            {
+                                limit > 0 ?
+                                  <AdminButton onClick={onLess} classname={['xs', 'green']}>Back</AdminButton>
+                                  : null
+                            }
+                        </Row>
                     </Tab>
                 </Tabs>
             </ButtonCard>
         </>
     )
-}
-
-Deposit.propTypes = {
-    
-}
-Deposit.defaultProps = {
-    
 }
 
 export default Deposit

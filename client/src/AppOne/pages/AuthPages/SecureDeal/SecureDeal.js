@@ -24,6 +24,8 @@ import {store} from "../../../../index";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import {NotifContext, useNotifContext} from "../../../context/notifContext";
 import {ThemeContext, useThemeContext} from '../../../context/ThemeContext';
+import CustomModal from '../../../components/CustomModal/CustomModal';
+import {getCurrentDate} from '../../../utils/getCurrentDate';
 
 
 const SecureDeal = () => {
@@ -56,7 +58,7 @@ const SecureDeal = () => {
         }
         delete data.role
         data.status = 'pending'
-        data.dealDedline = dateToTimestamp(startDate)
+        data.dealDedline = startDate / 1000
         data.currentDate = dateToTimestamp()
         data.userId = store.user.id
         data.amountInCrypto = +data.amountInCrypto
@@ -75,13 +77,14 @@ const SecureDeal = () => {
 
     const getHistory = async () => {
         const res = await getData(`/personal_area/secure_deal/secure_deal_history/${store.user.email}`)
-        setHistory(res.data.history.filter(item => {
+        let history = res.data.history.filter(item => {
             if (dateToTimestamp() > item.dealDedline) {
                 console.log('dateToTimestamp() > item.dealDedline', dateToTimestamp() > item.dealDedline)
                 onMissDeadline(item._id, item.dealDedline)
             }
             return  dateToTimestamp() < item.dealDedline
-        }))
+        })
+        setHistory(history)
         console.log('history', history)
     }
 
@@ -108,24 +111,10 @@ const SecureDeal = () => {
 
     return (
         <>
-            <Modal
-              size='md'
-              animation={false}
-              style={{opacity: 1, zIndex: 9999}}
-              show={showSecure}
-              onHide={() => setShowSecure(false)}
-              dialogClassName={`modal-window ${theme}`}
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title id="example-custom-modal-styling-title">
-                        Secure deal
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    Secure deal was created successfully!
-                    Please visit detail page of your secure deal.
-                </Modal.Body>
-            </Modal>
+            <CustomModal show={showSecure}  handleClose={() => setShowSecure(false)} size='md' title='Secure deal'>
+                Secure deal was created successfully!
+                Please visit detail page of your secure deal.
+            </CustomModal>
 
             <Row>
                 <Col className='col-12 col-lg-7'>
@@ -246,9 +235,10 @@ const SecureDeal = () => {
                                         history.length ?
                                           history.map(item => {
                                               return <SecureDealTableItem
+                                                key={item._id}
                                                 classname={'table_item_small'}
                                                 amount={item.amountInCrypto}
-                                                status={item.status ? 'Completed' : 'Pending'}
+                                                status={item.status === 'complete' ? 'Completed' : 'Pending'}
                                                 onClick={() => navigate(`/secure-deal/${item._id}`)}/>
                                           })
                                           : <h4 className='text-center my-4' style={{color: '#cecece'}}>No deals!</h4>
