@@ -166,7 +166,7 @@ const InternalAddresses = () => {
                             </Col>
                         </Row>
                         {
-                            typeof history !== 'string' ?
+                            typeof history != 'string' ?
                               <Row className={'mb-3 mt-3'}>
                                   {
                                       history.length >= 10 ?
