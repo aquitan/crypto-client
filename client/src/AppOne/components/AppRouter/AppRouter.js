@@ -9,10 +9,12 @@ import {useNavigate} from "react-router-dom";
 import {getRate} from "../../services/CurrencyService";
 import Preloader from "../UI/Preloader/Preloader";
 import {BASE_URL} from '../../API';
+import {useNotifContext} from '../../context/notifContext';
 
 
 const AppRouter = () => {
     const {store} = useContext(AuthContext)
+    const {updateNotif} = useNotifContext()
     const navigate = useNavigate()
     // const {isLoading, data, error} = useQuery('notif query', async () => {
     //     if (store.isAuth) {

@@ -25,12 +25,11 @@ import './InternalSwapTabs.scss'
 import CustomModal from '../../../components/CustomModal/CustomModal';
 import LandingSkeleton from '../../NonAuthPages/LandingSkeleton/LandingSkeleton';
 
-const InternalSwap = () => {
+const InternalSwap = ({balance}) => {
     const {theme} = useThemeContext(ThemeContext)
     const [showModal, setShowModal] = useState(false)
     const [insufficientModal, setInsufficientModal] = useState(false)
     const [errorModal, setErrorModal] = useState(false)
-    const [balance, setBalance] = useState([])
     const [history, setHistory] = useState([])
     const [valueFrom, setValueFrom] = useState(0)
     const {register, handleSubmit, setError, formState: {errors, isValid, isDirty}} = useForm({
@@ -122,17 +121,19 @@ const InternalSwap = () => {
         getSwapHistory()
     }, [])
 
-    const getBalance = async () => {
-        const res = await getData(`/get_user_balance/${store.user.id}`)
-        setBalance(res.data)
+    const getBalance = () => {
+        // const res = await getData(`/get_user_balance/${store.user.id}`)
+        // setBalance(res.data)
+
+        console.log('internal balance', balance);
         setState({
             target: {
-                value: res.data[0].coinBalance.toFixed(5),
-                currency: res.data[0].coinName
+                value: balance[0].coinBalance?.toFixed(5),
+                currency: balance[0].coinName
             },
             initial: {
-                value: res.data[0].coinBalance.toFixed(5),
-                currency: res.data[0].coinName
+                value: balance[0].coinBalance?.toFixed(5),
+                currency: balance[0].coinName
             },
         })
     }
@@ -355,8 +356,8 @@ const InternalSwap = () => {
                                                         },
                                                         onChange: (e) => checkValue(e.target.value),
                                                     })} placeholder='0' classname='inputTransparent' />
-                                                    {<p className={cls.error}>{errors.amount?.message}</p>}
-                                                    {/*<ErrorMessage  name='amount' errors={errors} render={() => <p className={cls.error}>Check values</p>} />*/}
+                                                    {/*{<p className={cls.error}>{errors.amount?.message}</p>}*/}
+                                                    <ErrorMessage  name='amount' errors={errors} render={() => <p className={cls.error}>Check the value!</p>} />
                                                 </Col>
                                                 {
                                                     isValid ? <i style={{fontSize: 12, color: 'grey'}}>{youExchangeMessage()} </i> : null

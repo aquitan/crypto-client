@@ -35,10 +35,6 @@ const Users = () => {
         }
 
     }
-    useEffect(() => {
-        getProfile()
-        // delUser()
-    }, [])
 
     const onSearch = (e) => {
         setState({...state, search: e.target.value})

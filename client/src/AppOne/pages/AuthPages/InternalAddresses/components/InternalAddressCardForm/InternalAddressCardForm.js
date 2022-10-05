@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react';
 import {Col, Row} from "react-bootstrap";
 import Input from "../../../../../components/UI/Input/Input";
 import Button from "../../../../../components/UI/Button/Button";
@@ -11,9 +11,13 @@ import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
 import {getGeoData} from "../../../../../queries/getSendGeoData";
 import {getCurrentDate} from "../../../../../utils/getCurrentDate";
 import {NotifContext, useNotifContext} from "../../../../../context/notifContext";
+import CustomModal from '../../../../../components/CustomModal/CustomModal';
+import addressValidator from '../../../../../utils/validateAddress';
 
 const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, sum}) => {
     const {updateNotif} = useNotifContext(NotifContext)
+    const [validateAddress, setValidateAddress] = useState(true)
+    const [modalError, setModalError] = useState(false)
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
     })
@@ -51,20 +55,18 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
         delete data.wallet
 
         setFormData(data)
-        const res = await putData('/internal_transfer/make_internal_transfer/', data)
-        updateNotif()
+        if (wallet !== data.toAddress) {
+            const res = await putData('/internal_transfer/make_internal_transfer/', data)
+            updateNotif()
+        } else {
+            setModalError(true)
+        }
         // SwalSimple('Transaction sent!')
     }
 
     const onBlur = async (e) => {
         console.log('value', e.target.value)
         const res = await getData(`/internal_wallet_checker/${e.target.value}/${window.location.host}`)
-        // try {
-        //
-        // } catch(e) {
-        //     if (e.response.status === 500) navigate('/error-500')
-        // }
-
     }
     const onCheckAmount = async () => {
         const res = await getData(`/user_balance_checker/${store.user.id}/${currency}`)
@@ -79,11 +81,16 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
 
     return (
         <>
+            <CustomModal show={modalError} size={'md'} handleClose={() => setModalError(false)} title={'Same wallet'} btnClose={true}>
+                You can't make transaction to your own wallet!
+            </CustomModal>
+
+
             <Row className='mb-3'>
                 <Col className='col mb-3'>
                     <Input {...register('toAddress', {
                         required: 'Invalid wallet',
-
+                        validate: async (val) => console.log('result', await addressValidator(val, currency.toLowerCase())) || 'Address is not valid',
                         onBlur: e => onBlur(e)
                     })} classname='inputTransparent' placeholder='Address' />
                     <ErrorMessage  name='toAddress' errors={errors} render={({message}) => <p className={error.error}>{message}</p>} />

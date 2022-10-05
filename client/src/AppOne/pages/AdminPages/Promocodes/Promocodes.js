@@ -122,7 +122,6 @@ const Promocodes = () => {
     }
 
     useEffect(() => {
-        getAllPromocodes()
         getUsedPromocodes()
         getDomainList()
     }, [])

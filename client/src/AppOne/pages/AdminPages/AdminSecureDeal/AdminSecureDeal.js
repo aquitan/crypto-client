@@ -24,11 +24,6 @@ const AdminSecureDeal = () => {
     })
     const [history, setHistory] = useState([])
     const [limit, setLimit] = useState(0)
-
-    useEffect(() => {
-        getHistory()
-    }, [])
-
     const [startDate, setStartDate] = useState()
     const [timeDate, setTimeDate] = useState()
     const styles = {
@@ -88,7 +83,6 @@ const AdminSecureDeal = () => {
         if (res.data.history !== 'empty list') {
             setHistory(res.data.history.filter(item => {
                 if (dateToTimestamp() > item.dealDedline) {
-                    console.log('dateToTimestamp() > item.dealDedline', dateToTimestamp() > item.dealDedline)
                     onMissDeadline(item._id, item.dealDedline)
                 }
                 return  dateToTimestamp() < item.dealDedline

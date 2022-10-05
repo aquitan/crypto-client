@@ -6,25 +6,24 @@ import {Col, Row} from "react-bootstrap";
 import InternalAddressCardForm from "../InternalAddressCardForm/InternalAddressCardForm";
 import Button from "../../../../../components/UI/Button/Button";
 import Image from "../../../../../components/UI/Image/Image";
-// import WAValidator from 'wallet-address-validator'
 import {postData} from "../../../../../services/StaffServices";
 import addressValidator from '../../../../../utils/validateAddress';
-import {Grid} from '@mui/material';
 
-const InternalAddressesCard = ({currency, sum, onCopy, wallet, theme}) => {
+const InternalAddressesCard = ({currency, sum, onCopy, wallet, theme, onUpdateHistory}) => {
     const [state, setState] = useState({
         isOpen: false,
         isValid: null
     })
-    const checkAddress = async (value) => {
+    const checkAddress = async (value, currency) => {
+        console.log('validator', {value, currency});
         if (currency === 'USDT') currency = 'ETH'
-        // return WAValidator.validate(value, currency);
-        console.log(await addressValidator(value, currency.toLowerCase()))
+        return await addressValidator(value, currency.toLowerCase())
     }
 
     const makeTransaction = async (data) => {
 
         const res = await postData('/internal_transfer/make_internal_transfer/', data)
+        onUpdateHistory()
     }
 
     const makeOpen = (data) => {

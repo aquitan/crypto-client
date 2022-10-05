@@ -35,10 +35,6 @@ const GroupList = () => {
         }
     }
 
-    useEffect(() => {
-        getGroupList()
-    }, [])
-
     const getGroupList = async () => {
         const obj = {
             staffEmail: store.user.email,

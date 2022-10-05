@@ -33,7 +33,6 @@ const CreateNews = () => {
     const [image, setImage] = useState('')
 
     useEffect(() => {
-        getAllNews()
         getDomainList()
     }, [])
 

@@ -24,7 +24,7 @@ const ChatWindow = ({children, onClick, edited, onUploadImg, showRules}) => {
         <div className='chat mb-3'>
             <div style={{height: 68, fontWeight: 'bold', boxShadow: 'inset 0px -1px 0px #E5E5EA', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                 Chat support 24/7
-              <Button onClick={showRules} style={{height: 30, margin: '0 20px'}} classname={'btnBlue'}>Show Rules</Button>
+              {/*<Button onClick={showRules} style={{height: 30, margin: '0 20px'}} classname={'btnBlue'}>Show Rules</Button>*/}
             </div>
             <Row>
                 <Col>

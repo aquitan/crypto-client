@@ -37,7 +37,6 @@ const StaffWallets = () => {
     ]
 
     useEffect(() => {
-        getWallet()
         getDataTgBot()
     }, [])
 

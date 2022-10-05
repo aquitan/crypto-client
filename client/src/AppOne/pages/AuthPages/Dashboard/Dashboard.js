@@ -16,6 +16,7 @@ import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 import MarketOverviewItem from "../../../components/MarketOverviewItem/MarketOverviewItem";
 import Input from "../../../components/UI/Input/Input";
 import InternalSwap from "../InternalSwap/InternalSwap";
+import SkeletonBlocks from '../../../components/SkeletonBlocks/SkeletonBlocks';
 
 const Dashboard = () => {
     const {theme} = useThemeContext(ThemeContext)
@@ -221,7 +222,7 @@ const Dashboard = () => {
                 </Col>
                 <Col className='d-none d-xl-block'>
                     <Row>
-                        <InternalSwap />
+                        {balance.length ? <InternalSwap balance={balance} /> : <SkeletonBlocks/>}
                     </Row>
                 </Col>
             </Row>

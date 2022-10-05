@@ -24,8 +24,8 @@ const WalletItem = ({coinsBalance, coin, coinFullName, theme, onDepositOpen, onW
             </Col>
             <Col className='d-none d-xl-flex align-items-center'>
             ${coin !== 'TRC 20' ?
-              Number(coinsBalance * store.rates[coin.toLowerCase()]).toFixed(5) :
-              Number(coinsBalance.toFixed(5) * store.rates.trxusdt).toFixed(5)}
+              isNaN(Number(coinsBalance * store.rates[coin.toLowerCase()]).toFixed(5)) ? 0 : Number(coinsBalance * store.rates[coin.toLowerCase()]).toFixed(5) :
+              isNaN(Number(coinsBalance.toFixed(5) * store.rates.trxusdt).toFixed(5)) ? 0 : Number(coinsBalance.toFixed(5) * store.rates.trxusdt).toFixed(5)}
             </Col>
             <Col className='d-flex align-items-center'>
                 <b>{coinsBalance.toFixed(5)}</b>

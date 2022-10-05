@@ -125,10 +125,6 @@ const CreateDomains = () => {
 
     const tableHeader = ['#001', '127.0.0.1:8000', 'super', 'Jan. 11, 2022, 10:21 a.m.']
 
-    useEffect(async () => {
-        // getActiveDomains()
-        getDomains()
-    }, [])
 
     const onDetail = (id) => {
         navigate(`/staff/domains/${id}`)

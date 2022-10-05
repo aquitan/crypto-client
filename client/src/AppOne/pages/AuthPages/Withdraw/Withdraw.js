@@ -59,7 +59,6 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
     const location = useLocation()
 
     useEffect(() => {
-        getHistoryDeposit()
         // getBalance()
         setBalance(coinsBalance)
     }, [])

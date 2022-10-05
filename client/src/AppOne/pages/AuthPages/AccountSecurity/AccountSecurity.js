@@ -82,17 +82,22 @@ const AccountSecurity = (props) => {
             twoFaStatus: true,
             currentTime: dateToTimestamp(),
         }
-        const res = await patchData('/personal_area/security/', obj)
-        if (!res.data.bot) {
-            setState({
-                ...state,
-                twoFaCode: res.data.userCode,
-                fieldShow: true,
-            })
-            setShowBot(false)
-        } else {
-            setShowBot(true)
-            setBotCode(res.data.code)
+
+        try {
+            const res = await patchData('/personal_area/security/', obj)
+            if (!res.data.bot) {
+                setState({
+                    ...state,
+                    twoFaCode: res.data.userCode,
+                    fieldShow: true,
+                })
+                setShowBot(false)
+            } else {
+                setShowBot(true)
+                setBotCode(res.data.code)
+            }
+        } catch(e) {
+            navigate('/error-400')
         }
     }
 

@@ -12,11 +12,13 @@ import {store} from "../../../../index";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
 import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 import CustomModal from '../../../components/CustomModal/CustomModal';
+import AdminButton from '../../../components/UI/AdminButton/AdminButton';
 
 const InternalAddresses = () => {
     const {theme} = useThemeContext(ThemeContext)
     const [wallets, setWallets] = useState([])
     const [history, setHistory] = useState([])
+    const [limit, setLimit] = useState(0)
     const [modal, setModal] = useState({
         isOpen: false,
         amount: '',
@@ -41,7 +43,6 @@ const InternalAddresses = () => {
 
     useEffect(() => {
         getWalletsData()
-        getInternalHistory()
     }, [])
 
     const getWalletsData = async () => {
@@ -63,8 +64,23 @@ const InternalAddresses = () => {
     }
 
     const getInternalHistory = async (count) => {
-        const res = await getData(`/internal_transfer/get_internal_transfer_history/${store.user.id}/${0}/20`)
+        const res = await getData(`/internal_transfer/get_internal_transfer_history/${store.user.id}/${limit}/20`)
         setHistory(res.data.internalTransferHistory)
+    }
+
+    const onUpdateHistory = () => {
+        getInternalHistory()
+    }
+
+    useEffect(() => {
+        getInternalHistory()
+    }, [limit])
+
+    const onMore = () => {
+        setLimit(prevState => prevState+1)
+    }
+    const onLess = () => {
+        setLimit(prevState => prevState-1)
     }
 
 
@@ -99,16 +115,17 @@ const InternalAddresses = () => {
                     <ButtonCard theme={theme}>
                         {
                             wallets.length ?
-                                wallets.map(wallet => {
+                                wallets.map((wallet, index) => {
                                     return (
                                         <Row>
                                             <Col className='col-12 mb-3'>
                                                 <InternalAddressesCard
-                                                  key={wallet.walletAddress}
+                                                  key={index}
                                                   theme={theme}
                                                   wallet={wallet.walletAddress}
                                                   currency={wallet.coinName}
                                                   onCopy={onCopy}
+                                                  onUpdateHistory={onUpdateHistory}
                                                   sum={wallet.balance} />
                                             </Col>
                                         </Row>
@@ -148,15 +165,20 @@ const InternalAddresses = () => {
                                 </TableBody>
                             </Col>
                         </Row>
+                        <Row className={'mb-3 mt-3'}>
+                            {
+                                history.length >= 10 ?
+                                  <AdminButton onClick={onMore} classname={['xs', 'green']}>More</AdminButton>
+                                  : null
+                            }
+                            {
+                                limit > 0 ?
+                                  <AdminButton onClick={onLess} classname={['xs', 'green']}>Back</AdminButton>
+                                  : null
+                            }
+                        </Row>
 
                     </ButtonCard>
-                    {/*<Row>*/}
-                    {/*    {*/}
-                    {/*        history ?*/}
-                    {/*            <span onClick={onNext}>Next...</span>*/}
-                    {/*            : null*/}
-                    {/*    }*/}
-                    {/*</Row>*/}
                 </Col>
 
             </Row>

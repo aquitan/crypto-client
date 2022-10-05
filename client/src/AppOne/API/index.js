@@ -17,10 +17,8 @@ export const coinsApi = axios.create({
 export const $api = axios.create({
     baseURL: BASE_URL,
     withCredentials: true,
-    headers: {
-        "Content-type": "application/json",
-    },
 })
+$api.defaults.withCredentials = true
 
 $api.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`

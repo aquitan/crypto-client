@@ -21,6 +21,7 @@ import {useModal} from "../../../hooks/useModal";
 import CustomModal from "../../../components/CustomModal/CustomModal";
 import '../InternalSwap/InternalSwapTabs.scss'
 import AdminButton from '../../../components/UI/AdminButton/AdminButton';
+import {ErrorMessage} from '@hookform/error-message';
 
 
 const Deposit = ({coin, coinsBalance, coinFullName}) => {
@@ -31,7 +32,7 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
     const [depError = show, showError = showModal, closeError = closeModal] = useModal()
     const [fieldError = show, showFieldError = showModal, closeFieldError = closeModal] = useModal()
     const {notificationList, updateNotif} = useNotifContext(NotifContext)
-    const {register, handleSubmit} = useForm()
+    const {register, handleSubmit, formState: {errors}} = useForm()
     const [address, setAddress] = useState('')
     const [state, setState] = useState({
         value: 0,
@@ -56,7 +57,6 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
 
 
     useEffect(() => {
-        getHistoryDeposit()
         getBalance()
         setBalance(coinsBalance)
     }, [])
@@ -129,7 +129,7 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
         if (!address) {
             showModal(true)
         } else if (stateVal < store.domain.domainParams.minWithdrawalSum) {
-
+            setMinimalSum(true)
         } else {
             if (state.value > 0) {
                 const res = await putData('/deposit/make_deposit/', obj)
@@ -199,6 +199,14 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
                     </Col>
                     <Col style={{fontSize: 14, color: 'grey'}}>
                         {historyModalData.date}
+                    </Col>
+                </Row>
+                <Row className='mb-2'>
+                    <Col>
+                        <b>Address:</b>
+                    </Col>
+                    <Col style={{fontSize: 14, color: 'grey'}}>
+                        {historyModalData.address}
                     </Col>
                 </Row>
                 <Row className='mb-2'>
@@ -278,7 +286,13 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
                         </Row>
                         <Row className='mb-3 mt-3 p-0'>
                             <span style={{fontSize: 14, marginBottom: 10}}>Enter amount in USD</span>
-                            <Input classname='inputTransparent' placeholder='' onChange={onChange} value={state.text} />
+                            <Input classname='inputTransparent' {...register('amount', {
+                                required: 'Check the field',
+                                // validate: (val) => {
+                                //     return +val < +state.text
+                                // }
+                            })} placeholder='' onChange={onChange} value={state.text} />
+                            <ErrorMessage  name='amount' errors={errors} render={() => <p className={cls.error}>Check the field</p>} />
                         </Row>
                         <Row className='mb-3 p-0'>
                             <span style={{fontSize: 14, marginBottom: 10}}>Value in Crypto</span>

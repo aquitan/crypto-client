@@ -137,7 +137,7 @@ const Wallet = () => {
                             <Row>
                                 {
                                     balances ? <h2 className='mt-4' style={{fontWeight: 'bold', color: theme === 'light' ? '#9295A6' : '#fff'}}>
-                                        ${countTotalBalance(balances).toLocaleString()}
+                                        ${isNaN(countTotalBalance(balances).toLocaleString()) ? 0 : countTotalBalance(balances).toLocaleString()}
                                     </h2> : <Preloader />
                                 }
                             </Row>
