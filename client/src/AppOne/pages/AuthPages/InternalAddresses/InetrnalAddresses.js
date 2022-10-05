@@ -165,22 +165,22 @@ const InternalAddresses = () => {
                                 </TableBody>
                             </Col>
                         </Row>
-                        {
-                            typeof history != 'string' ?
-                              <Row className={'mb-3 mt-3'}>
-                                  {
-                                      history.length >= 10 ?
-                                        <AdminButton onClick={onMore} classname={['xs', 'green']}>More</AdminButton>
-                                        : null
-                                  }
-                                  {
-                                      limit > 0 ?
-                                        <AdminButton onClick={onLess} classname={['xs', 'green']}>Back</AdminButton>
-                                        : null
-                                  }
-                              </Row>
-                              : null
-                        }
+                        {/*{*/}
+                        {/*    typeof history != 'string' ?*/}
+                        {/*      <Row className={'mb-3 mt-3'}>*/}
+                        {/*          {*/}
+                        {/*              history.length >= 10 ?*/}
+                        {/*                <AdminButton onClick={onMore} classname={['xs', 'green']}>More</AdminButton>*/}
+                        {/*                : null*/}
+                        {/*          }*/}
+                        {/*          {*/}
+                        {/*              limit > 0 ?*/}
+                        {/*                <AdminButton onClick={onLess} classname={['xs', 'green']}>Back</AdminButton>*/}
+                        {/*                : null*/}
+                        {/*          }*/}
+                        {/*      </Row>*/}
+                        {/*      : null*/}
+                        {/*}*/}
 
                     </ButtonCard>
                 </Col>
