@@ -21,9 +21,14 @@ const CustomModal = ({title, text, show, handleClose, btnClose, children, size})
                   {text}
               </Row>
             </Modal.Body>}
-            <Modal.Footer>
-              <Button variant='primary' style={{width: 150}} onClick={handleClose}>Close</Button>
-            </Modal.Footer>
+            {
+                btnClose ?
+                  <Modal.Footer>
+                      <Button variant='danger' style={{width: 150}} onClick={handleClose}>{btnClose}</Button>
+                  </Modal.Footer>
+                  : null
+            }
+
         </Modal>
     )
 }

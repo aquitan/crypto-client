@@ -161,7 +161,7 @@ const SignUp = () => {
     return (
         <Container style={{maxWidth: '100%', backgroundColor: theme === 'light' ? '#fff' : '#121318'}}  className='h-100 m-0 p-0'>
 
-            <CustomModal title={'Email error'} size={'md'} show={modalError} handleClose={() => setModalError(false)}>
+            <CustomModal btnClose={'Close'} title={'Email error'} size={'md'} show={modalError} handleClose={() => setModalError(false)}>
                 It seems that this email is already in use!
             </CustomModal>
 

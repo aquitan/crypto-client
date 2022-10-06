@@ -121,6 +121,7 @@ const KYC = ({status}) => {
     return (
         <>
             <CustomModal
+              btnClose={'Close'}
               title={'Error'}
               show={modal}
               size='md'

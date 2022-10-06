@@ -123,6 +123,7 @@ const SecureDealDetail = () => {
         <>
             <CustomModal
               show={result}
+              btnClose={'Close'}
               handleClose={() => setResult('')}>
                 {result}
             </CustomModal>

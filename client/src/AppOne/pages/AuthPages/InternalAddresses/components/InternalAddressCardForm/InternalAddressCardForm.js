@@ -96,11 +96,11 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
 
     return (
         <>
-            <CustomModal show={modalError} size={'md'} handleClose={() => setModalError(false)} title={'Same wallet'} btnClose={true}>
+            <CustomModal show={modalError} size={'md'} handleClose={() => setModalError(false)} title={'Same wallet'} btnClose={'Close'}>
                 You can't make transaction to your own wallet!
             </CustomModal>
 
-            <CustomModal show={addressModalError} size={'md'} handleClose={() => setAddressModalError(false)} title={'Address'} btnClose={true}>
+            <CustomModal show={addressModalError} size={'md'} handleClose={() => setAddressModalError(false)} title={'Address'} btnClose={'Close'}>
                 The address is not found! Please type a correct address
             </CustomModal>
 

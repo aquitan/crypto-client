@@ -1,15 +1,32 @@
-.internal_address_card {
+.light.internal_address_card {
   position: relative;
+  box-shadow: 0 0 10px 0 rgb(0, 0, 0, .3);
   width: 100%;
   padding: 20px;
   box-sizing: border-box;
   outline: none;
   background-color: transparent;
   color: rgb(108, 112, 128);
-  border: 1px solid #CCCED9;
   border-radius: 8px;
-  box-shadow: 0 0 10px 0 rgb(0, 0, 0, 10%);
   transition: all .2s linear;
+  margin-bottom: 20px;
+  &:hover {
+    transform: scale(1.009);
+    transition: all .2s linear;
+  }
+}
+.dark.internal_address_card {
+  position: relative;
+  box-shadow: 0 0 10px 0 rgb(255, 255, 255, .3);
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  outline: none;
+  background-color: transparent;
+  color: rgb(108, 112, 128);
+  border-radius: 8px;
+  transition: all .2s linear;
+  margin-bottom: 20px;
   &:hover {
     transform: scale(1.009);
     transition: all .2s linear;

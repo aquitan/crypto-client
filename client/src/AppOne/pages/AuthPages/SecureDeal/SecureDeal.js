@@ -111,7 +111,7 @@ const SecureDeal = () => {
 
     return (
         <>
-            <CustomModal show={showSecure}  handleClose={() => setShowSecure(false)} size='md' title='Secure deal'>
+            <CustomModal btnClose={'Close'} show={showSecure} handleClose={() => setShowSecure(false)} size='md' title='Secure deal'>
                 Secure deal was created successfully!
                 Please visit detail page of your secure deal.
             </CustomModal>

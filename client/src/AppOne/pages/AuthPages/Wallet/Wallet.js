@@ -76,7 +76,7 @@ const Wallet = () => {
     return (
         <>
 
-            <CustomModal size='xl' show={showDeposit} handleClose={() => setShowDeposit(false)} title={'Deposit'}>
+            <CustomModal size='xl' show={showDeposit} handleClose={() => setShowDeposit(false)} title={'Deposit'} btnClose={false}>
                 <Deposit coin={deposit.coin} coinsBalance={deposit.coinsBalance} coinFullName={deposit.coinFullName} />
             </CustomModal>
 
@@ -99,7 +99,7 @@ const Wallet = () => {
             {/*    </Modal.Body>*/}
             {/*</Modal>*/}
 
-            <CustomModal size='xl' show={showWithdraw} handleClose={() => setShowWithdraw(false)} title={'Withdraw'}>
+            <CustomModal size='xl' show={showWithdraw} handleClose={() => setShowWithdraw(false)} title={'Withdraw'} btnClose={false}>
                 <Withdraw coin={withdraw.coin} coinsBalance={withdraw.coinsBalance} coinFullName={withdraw.coinFullName} />
             </CustomModal>
 

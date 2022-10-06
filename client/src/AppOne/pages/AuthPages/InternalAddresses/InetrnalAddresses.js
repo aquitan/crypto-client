@@ -132,18 +132,14 @@ const InternalAddresses = () => {
                             wallets.length ?
                                 wallets.map((wallet, index) => {
                                     return (
-                                        <Row>
-                                            <Col className='col-12 mb-3'>
-                                                <InternalAddressesCard
-                                                  key={index}
-                                                  theme={theme}
-                                                  wallet={wallet.walletAddress}
-                                                  currency={wallet.coinName}
-                                                  onCopy={onCopy}
-                                                  onUpdateHistory={onUpdateHistory}
-                                                  sum={wallet.balance} />
-                                            </Col>
-                                        </Row>
+                                      <InternalAddressesCard
+                                        key={index}
+                                        theme={theme}
+                                        wallet={wallet.walletAddress}
+                                        currency={wallet.coinName}
+                                        onCopy={onCopy}
+                                        onUpdateHistory={onUpdateHistory}
+                                        sum={wallet.balance} />
                                     )
                                 })
                                 : <Preloader />

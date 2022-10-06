@@ -188,11 +188,11 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
 
     return (
         <>
-            <CustomModal show={minimalSum} handleClose={() => setMinimalSum(false)} title={'Minimal sum'} size={'md'}>
+            <CustomModal btnClose={'Close'} show={minimalSum} handleClose={() => setMinimalSum(false)} title={'Minimal sum'} size={'md'}>
                 You are under of a minimal sum of deposit!
             </CustomModal>
 
-            <CustomModal show={historyModal} handleClose={() => setHistoryModal(false)} title={'Deposit details'} size={'md'}>
+            <CustomModal btnClose={'Close'} show={historyModal} handleClose={() => setHistoryModal(false)} title={'Deposit details'} size={'md'}>
                 <Row className='mb-2'>
                     <Col>
                         <b>Date:</b>
@@ -220,6 +220,7 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
             </CustomModal>
 
             <CustomModal
+              btnClose={'Close'}
               title={'Success'}
               size='md'
               show={success}
@@ -227,6 +228,7 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
                 Deposit was successful!
             </CustomModal>
             <CustomModal
+              btnClose={'Close'}
               title={'Error'}
               show={depError}
               size='md'
@@ -234,6 +236,7 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
                 Something went wrong! Try again later...
             </CustomModal>
             <CustomModal
+              btnClose={'Close'}
               title={'Error'}
               size='md'
               show={fieldError}
@@ -242,6 +245,7 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
             </CustomModal>
 
             <CustomModal
+                btnClose={'Close'}
                 title={'No address'}
                 show={show}
                 size='md'

@@ -113,18 +113,18 @@ const SignIn = () => {
 
     return (
         <Container style={{maxWidth: '100%', backgroundColor: theme === 'light' ? '#fff' : '#121318'}} className='h-100 m-0 p-0'>
-            <CustomModal title={'Check email'} size={'md'} btnClose={true} handleClose={() => setModalError(false)} show={modalError}>
+            <CustomModal title={'Check email'} size={'md'} btnClose={'Close'} handleClose={() => setModalError(false)} show={modalError}>
                 Oops! Check your email
             </CustomModal>
 
-            <CustomModal title={'Activate account'} size={'md'} btnClose={false} handleClose={() => setModal(false)} show={modal}>
+            <CustomModal title={'Activate account'} size={'md'} btnClose={'Close'} handleClose={() => setModal(false)} show={modal}>
                 You need to activate your account!
                 <Row>
                     <Button onClick={() => navigate('/register-confirm')}>Verify</Button>
                 </Row>
             </CustomModal>
 
-            <CustomModal title={'Blocked account'} size={'md'} btnClose={true} handleClose={() => setModalBan(false)} show={modalBan}>
+            <CustomModal title={'Blocked account'} size={'md'} btnClose={'Close'} handleClose={() => setModalBan(false)} show={modalBan}>
                 Your account is blocked!
             </CustomModal>
 

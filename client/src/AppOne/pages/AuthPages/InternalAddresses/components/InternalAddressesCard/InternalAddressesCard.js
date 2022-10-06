@@ -8,12 +8,17 @@ import Button from "../../../../../components/UI/Button/Button";
 import Image from "../../../../../components/UI/Image/Image";
 import {postData} from "../../../../../services/StaffServices";
 import addressValidator from '../../../../../utils/validateAddress';
+import classNames from 'classnames/bind';
 
 const InternalAddressesCard = ({currency, sum, onCopy, wallet, theme, onUpdateHistory}) => {
     const [state, setState] = useState({
         isOpen: false,
         isValid: null
     })
+
+    const cx = classNames.bind(cls)
+    const classes = cx('internal_address_card', theme)
+
     const checkAddress = async (value, currency) => {
         console.log('validator', {value, currency});
         if (currency === 'USDT') currency = 'ETH'
@@ -46,7 +51,7 @@ const InternalAddressesCard = ({currency, sum, onCopy, wallet, theme, onUpdateHi
     }
 
     return (
-        <div className={`${cls.internal_address_card} p-3`}>
+        <div className={classes}>
             {
                 state.isOpen ? <FontAwesomeIcon
                     onClick={() => setState({...state, isOpen: false})}

@@ -183,14 +183,14 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
 
         <>
 
-            <CustomModal show={balanceError} handleClose={() => setBalanceError(false)} title={'Zero balance'} size={'md'}>
+            <CustomModal btnClose={'Close'} show={balanceError} handleClose={() => setBalanceError(false)} title={'Zero balance'} size={'md'}>
                 Insufficient of funds, please, make a deposit first
             </CustomModal>
-            <CustomModal show={minimalSum} handleClose={() => setMinimalSum(false)} title={'Minimal sum'} size={'md'}>
+            <CustomModal btnClose={'Close'} show={minimalSum} handleClose={() => setMinimalSum(false)} title={'Minimal sum'} size={'md'}>
                 You are under of a minimal sum of withdraw!
             </CustomModal>
 
-            <CustomModal size='md' show={showHistoryItem} handleClose={() => setShowHistoryItem(false)} title={'Transaction'} btnClose='true'>
+            <CustomModal size='md' show={showHistoryItem} handleClose={() => setShowHistoryItem(false)} title={'Transaction'} btnClose='Close'>
                 <Row className='mb-2'>
                     <Col>
                         <b>Date:</b>

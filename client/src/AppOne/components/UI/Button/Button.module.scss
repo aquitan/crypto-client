@@ -1,6 +1,6 @@
 .button {
     display: block;
-    border-radius: 10px;
+    border-radius: 0.25rem;
     border: none;
     text-align: center;
     text-decoration: none;
@@ -68,10 +68,10 @@
 }
 
 .headerBtn.dark {
-    background-color: rgb(18, 19, 24);
+    background-color: rgba(255, 255, 255, .1);
     color: #fff;
     &:hover {
-        background-color: #F0F1F5;
+        background-color: rgba(0, 0, 0, .1);
     }
 }
 
@@ -82,10 +82,10 @@
     margin: 0 5px;
 }
 .btnLink.dark {
-    background-color: rgb(18, 19, 24);
+    background-color: rgba(255, 255, 255, .1);
     color: #fff;
     &:hover {
-        background-color: #F0F1F5;
+        background-color: rgba(0, 0, 0, .1);
     }
 }
 

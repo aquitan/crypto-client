@@ -168,6 +168,7 @@ const AccountSecurity = (props) => {
                 title={'Password'}
                 show={passwordModal}
                 size={'md'}
+                btnClose={'Close'}
                 handleClose={() => setPasswordModal(false)}>
                 Password was changed
             </CustomModal>
