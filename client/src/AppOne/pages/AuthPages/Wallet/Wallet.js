@@ -13,6 +13,7 @@ import '../InternalSwap/InternalSwapTabs.scss'
 import Preloader from '../../../components/UI/Preloader/Preloader';
 import {findPercent} from '../../../utils/findPercent';
 import {countTotalBalance} from '../../../utils/countTotalBalance';
+import CustomModal from '../../../components/CustomModal/CustomModal';
 
 const Wallet = () => {
     const [balances, setBalances] = useState([])
@@ -74,42 +75,33 @@ const Wallet = () => {
 
     return (
         <>
-            <Modal
-                style={{height: '100vh'}}
-                size='xl'
-                animation={false}
-                style={{opacity: 1, zIndex: 9999}}
-                show={showDeposit}
-                onHide={() => setShowDeposit(false)}
-                dialogClassName={`modal-window ${theme}`}
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title id="example-custom-modal-styling-title">
-                        Deposit
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Deposit coin={deposit.coin} coinsBalance={deposit.coinsBalance} coinFullName={deposit.coinFullName} />
-                </Modal.Body>
-            </Modal>
-            <Modal
-                size='xl'
-                animation={false}
-                style={{opacity: 1, zIndex: 9999}}
-                show={showWithdraw}
-                onHide={() => setShowWithdraw(false)}
-                dialogClassName={`modal-window ${theme}`}
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title id="example-custom-modal-styling-title">
-                        Withdraw
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Withdraw coin={withdraw.coin} coinsBalance={withdraw.coinsBalance} coinFullName={withdraw.coinFullName} />
-                </Modal.Body>
-            </Modal>
 
+            <CustomModal size='xl' show={showDeposit} handleClose={() => setShowDeposit(false)} title={'Deposit'}>
+                <Deposit coin={deposit.coin} coinsBalance={deposit.coinsBalance} coinFullName={deposit.coinFullName} />
+            </CustomModal>
+
+            {/*<Modal*/}
+            {/*    style={{height: '100vh'}}*/}
+            {/*    size='xl'*/}
+            {/*    animation={false}*/}
+            {/*    style={{opacity: 1, zIndex: 9999}}*/}
+            {/*    show={showDeposit}*/}
+            {/*    onHide={() => setShowDeposit(false)}*/}
+            {/*    dialogClassName={`modal-window ${theme}`}*/}
+            {/*>*/}
+            {/*    <Modal.Header closeButton>*/}
+            {/*        <Modal.Title id="example-custom-modal-styling-title">*/}
+            {/*            Deposit*/}
+            {/*        </Modal.Title>*/}
+            {/*    </Modal.Header>*/}
+            {/*    <Modal.Body>*/}
+            {/*        <Deposit coin={deposit.coin} coinsBalance={deposit.coinsBalance} coinFullName={deposit.coinFullName} />*/}
+            {/*    </Modal.Body>*/}
+            {/*</Modal>*/}
+
+            <CustomModal size='xl' show={showWithdraw} handleClose={() => setShowWithdraw(false)} title={'Withdraw'}>
+                <Withdraw coin={withdraw.coin} coinsBalance={withdraw.coinsBalance} coinFullName={withdraw.coinFullName} />
+            </CustomModal>
 
 
             <Row>
@@ -145,7 +137,7 @@ const Wallet = () => {
                         <Col>
                             <div className='p-2' style={{
                                 backgroundColor: theme === 'light' ? 'rgb(226, 242, 255)': 'rgb(18, 19, 24)',
-                                color: theme === 'light' ? '#121318': '#fff'
+                                color: theme === 'light' ? 'grey': '#fff'
                             }}>
                                 <Row className='p-2 flex-column flex-sm-row mb-2 d-flex justify-content-between'>
                                     <Col className='d-flex align-items-center' style={{fontSize: 20, color: theme === 'light' ? '#9295A6': '#fff'}}>

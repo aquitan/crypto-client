@@ -30,7 +30,7 @@ const LandingHeader = ({state, openSidebar}) => {
             <Offcanvas placement='end' style={{backgroundColor: theme === 'light' ? '#fff' : '#121318'}} show={show} onHide={handleClose}>
                 <Offcanvas.Header closeVariant={theme === 'light' ? null : 'white'} closeButton>
                     <NavLink to={'/'}><Logo/></NavLink>
-                    <NavLink to={'/'}><span style={{color: theme === 'dark' ? '#fff' : '#121318'}}>{state ? state.domainName : <Preloader />}</span></NavLink>
+                    <NavLink to={'/'}><span style={{color: theme === 'dark' ? '#fff' : 'grey'}}>{state ? state.domainName : <Preloader />}</span></NavLink>
                 </Offcanvas.Header>
                 <Offcanvas.Body>
                     <Row className='flex-column text-start mb-3'>

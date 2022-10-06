@@ -16,7 +16,7 @@ const LandingTwo = ({state, theme, navigate}) => {
           </div>
           <Footer>
               <div className='w-100'>
-                  <div className='mb-5 d-flex align-items-center' style={{color: '#fff'}}>
+                  <div className='mb-5 d-flex align-items-center'>
                       <NavLink to={'/'}>
                           <Logo/>
                       </NavLink>
