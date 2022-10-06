@@ -2,13 +2,13 @@ import React from 'react'
 import {Button, Modal, Row} from 'react-bootstrap';
 import {useThemeContext} from '../../context/ThemeContext';
 
-const CustomModal = ({title, text, show, handleClose, btnClose, children, size}) => {
+const CustomModal = ({title, fullScreen, text, show, handleClose, btnClose, children, size}) => {
     const {theme} = useThemeContext()
     return (
         <Modal
             size={size}
             animation={false}
-            fullscreen={'md-down'}
+            fullscreen={fullScreen}
             style={{opacity: 1, zIndex: 9999999, paddingTop: '2%'}}
             dialogClassName={`modal-window ${theme}`}
             show={show} onHide={handleClose}>
@@ -24,7 +24,7 @@ const CustomModal = ({title, text, show, handleClose, btnClose, children, size})
             {
                 btnClose ?
                   <Modal.Footer>
-                      <Button variant='danger' style={{width: 150}} onClick={handleClose}>{btnClose}</Button>
+                      <Button variant='primary' style={{width: 150}} onClick={handleClose}>{btnClose}</Button>
                   </Modal.Footer>
                   : null
             }
