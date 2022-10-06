@@ -104,7 +104,7 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
                 <Col className='col mb-3'>
                     <Input {...register('toAddress', {
                         required: 'Invalid wallet',
-                        validate: async (val) => console.log('result', await addressValidator(val, currency.toLowerCase())) || 'Address is not valid',
+                        validate: (val) => val === wallet || "You can't use your own address to transfer",
                         onBlur: e => onBlur(e)
                     })} classname='inputTransparent' placeholder='Address' />
                     <ErrorMessage  name='toAddress' errors={errors} render={({message}) => <p className={error.error}>{message}</p>} />
