@@ -11,8 +11,9 @@ const CustomModal = ({title, fullScreen, text, show, handleClose, btnClose, chil
             fullscreen={fullScreen}
             style={{opacity: 1, zIndex: 9999999, paddingTop: '2%'}}
             dialogClassName={`modal-window ${theme}`}
+            backdrop={'static'}
             show={show} onHide={handleClose}>
-            <Modal.Header closeButton>
+            <Modal.Header closeButton closeVariant={theme === 'dark' ? 'white' : ''}>
                 <Modal.Title>{title}</Modal.Title>
             </Modal.Header>
             {text || children && <Modal.Body>

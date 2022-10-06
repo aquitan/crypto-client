@@ -17,6 +17,7 @@ import MarketOverviewItem from "../../../components/MarketOverviewItem/MarketOve
 import Input from "../../../components/UI/Input/Input";
 import InternalSwap from "../InternalSwap/InternalSwap";
 import SkeletonBlocks from '../../../components/SkeletonBlocks/SkeletonBlocks';
+import CustomModal from '../../../components/CustomModal/CustomModal';
 
 const Dashboard = () => {
     const {theme} = useThemeContext(ThemeContext)
@@ -125,18 +126,9 @@ const Dashboard = () => {
     return (
         <>
 
-            <Modal
-                style={{opacity: 1, zIndex: 99999}}
-                show={show}
-                onHide={handleClose}
-                animation={false}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Exchange currencies</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <InternalSwap balance={balance} />
-                </Modal.Body>
-            </Modal>
+            <CustomModal show={show} handleClose={handleClose} size={'md'} title={'Exchange currencies'}>
+                <InternalSwap balance={balance} />
+            </CustomModal>
 
             <Row className='mb-3'>
                 <Row>
