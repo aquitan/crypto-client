@@ -57,8 +57,8 @@ const InternalAddresses = () => {
             amount: obj.amount.toFixed(5),
             id: obj.id,
             currency: obj.currency,
-            from: '1DKRsrFt8L1rwvxBwMiukVrhGWDCovjjbc',
-            to: '1DKRsrFt8L1rwvxBwMiukVrhGWDCovjjbc'
+            from: obj.fromAddress,
+            to: obj.toAddress
         })
         console.log('modal', obj)
     }
@@ -102,12 +102,27 @@ const InternalAddresses = () => {
                   size='md'
                   handleClose={() => setModal({...modal, isOpen: false})}
                   btnClose={'Close'}>
-                    <Row>
-                        <Row className='text-center'><b>From:</b> <span>{modal?.from}</span></Row>
-                        <Row className='text-center'><b>To:</b> <span>{modal?.to}</span></Row>
+                    <Row className='mb-2'>
+                        <Col>
+                            <b>From:</b>
+                        </Col>
+                        <Col style={{fontSize: 14, color: 'grey'}}>
+                            <span>{modal?.from}</span>
+                        </Col>
                     </Row>
-                    <Row>
-                        <Col className='text-center'><b>Amount:</b> {modal?.amount} USD</Col>
+                    <Row className='mb-2'>
+                        <Col>
+                            <b>To:</b>
+                        </Col>
+                        <Col style={{fontSize: 14, color: 'grey'}}>
+                            <span>{modal?.to}</span>
+                        </Col>
+                    </Row>
+                    <Row className='mb-2'>
+                        <Col><b>Amount:</b></Col>
+                        <Col style={{fontSize: 14, color: 'grey'}}>
+                            {modal?.amount} USD
+                        </Col>
                     </Row>
                 </CustomModal>
 
@@ -152,6 +167,8 @@ const InternalAddresses = () => {
                                                     <InternalAddressesTableItem
                                                         key={item._id}
                                                         onClick={onModalOpen}
+                                                        toAddress={item.addressTo}
+                                                        fromAddress={item.addressFrom}
                                                         date={getCurrentDate(item.date)}
                                                         currency={item.coinName}
                                                         amount={item.usdAmount}

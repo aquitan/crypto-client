@@ -14,7 +14,7 @@ const TableitemUser = ({date, usdAmount, cryptoAmount, coinName, status, onShow,
             <Col className='text-center' style={{whiteSpace: 'pre-wrap'}}>{date}</Col>
             <Col className='text-center'>${usdAmount}<br/> ({cryptoAmount.toFixed(5)} {coinName})</Col>
             <Col className=''>
-                <Button onClick={() => onShow(date, usdAmount, cryptoAmount, coinName, address)} classname={'btnOrange'}>Show</Button>
+                <Button onClick={() => onShow(date, usdAmount, cryptoAmount, coinName, address, status)} classname={'btnOrange'}>Show</Button>
             </Col>
         </Row>
     )

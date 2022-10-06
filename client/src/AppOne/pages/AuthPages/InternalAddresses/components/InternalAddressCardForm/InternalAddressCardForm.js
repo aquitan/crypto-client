@@ -82,6 +82,11 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
         const res = await getData(`/user_balance_checker/${store.user.id}/${currency}`)
     }
 
+    const checkWallet = (val) => {
+        console.log('val', val);
+        return val === wallet || "You can't use your own address to transfer"
+    }
+
 
     const checkValue = (value) => {
         if (sum < +value) {
@@ -104,7 +109,7 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
                 <Col className='col mb-3'>
                     <Input {...register('toAddress', {
                         required: 'Invalid wallet',
-                        validate: (val) => val === wallet || "You can't use your own address to transfer",
+                        validate: (val) => checkWallet(val),
                         onBlur: e => onBlur(e)
                     })} classname='inputTransparent' placeholder='Address' />
                     <ErrorMessage  name='toAddress' errors={errors} render={({message}) => <p className={error.error}>{message}</p>} />

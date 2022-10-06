@@ -54,7 +54,8 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
         usdAmount: '',
         cryptoAmount: '',
         coinName: '',
-        address: ''
+        address: '',
+        status: ''
     })
     const location = useLocation()
 
@@ -158,8 +159,11 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
         }, 1500)
     }
 
-    const onShowHistoryItem = (date, usdAmount, cryptoAmount, coinName, address) => {
-        setHistoryItem({date, usdAmount, cryptoAmount, coinName, address})
+    const onShowHistoryItem = (date, usdAmount, cryptoAmount, coinName, address, status) => {
+        console.log('history item', {
+            date, usdAmount, cryptoAmount, coinName, address, status
+        });
+        setHistoryItem({date, usdAmount, cryptoAmount, coinName, address, status})
         setShowHistoryItem(true)
     }
 
@@ -186,31 +190,49 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
                 You are under of a minimal sum of withdraw!
             </CustomModal>
 
-            <Modal
-              size='md'
-              animation={false}
-              style={{opacity: 1, zIndex: 9999}}
-              show={showHistoryItem}
-              onHide={() => setShowHistoryItem(false)}
-              dialogClassName={`modal-window ${theme}`}
-            >
-                <Modal.Header closeButton>
-                    <div style={{display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center'}}>
-                        <b>Transaction</b>
-                        <b>{historyItem.date}</b>
-                    </div>
-                </Modal.Header>
-                <Modal.Body>
-                    <div>
+            <CustomModal size='md' show={showHistoryItem} handleClose={() => setShowHistoryItem(false)} title={'Transaction'} btnClose='true'>
+                <Row className='mb-2'>
+                    <Col>
+                        <b>Date:</b>
+                    </Col>
+                    <Col style={{fontSize: 14, color: 'grey'}}>
+                        {historyItem.date}
+                    </Col>
+                </Row>
+                <Row className='mb-2'>
+                    <Col>
+                        <b>Amount in USD:</b>
+                    </Col>
+                    <Col style={{fontSize: 14, color: 'grey'}}>
+                        ${historyItem.usdAmount}
+                    </Col>
+                </Row>
+                <Row className='mb-2'>
+                    <Col>
+                        <b>Amount in Crypto:</b>
+                    </Col>
+                    <Col style={{fontSize: 14, color: 'grey'}}>
+                        {Number(historyItem.cryptoAmount).toFixed(5)} {historyItem.coinName}
+                    </Col>
+                </Row>
+                <Row className='mb-2'>
+                    <Col>
+                        <b>Address:</b>
+                    </Col>
+                    <Col style={{fontSize: 14, color: 'grey'}}>
+                        {historyItem.address}
+                    </Col>
+                </Row>
+                <Row className='mb-2'>
+                    <Col>
+                        <b>Status:</b>
+                    </Col>
+                    <Col style={{fontSize: 14, color: 'grey'}}>
+                        {historyItem.status}
+                    </Col>
+                </Row>
+            </CustomModal>
 
-                        <div style={{fontSize: 16, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                            <div>${historyItem.usdAmount}</div>
-                            <b>({historyItem.cryptoAmount} {historyItem.coinName})</b>
-                            <div>Address: {historyItem.address}</div>
-                        </div>
-                    </div>
-                </Modal.Body>
-            </Modal>
 
             <Modal
               size='md'
@@ -226,7 +248,7 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <div style={{fontSize: 14, margin: '20px 10px'}}><b>{error?.errorText}</b></div>
+                    <div style={{fontSize: 14, margin: '20px 10px'}}>{error?.errorText}</div>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant='primary' classname='btnRed' style={{width: 150}} onClick={() => setShowError(false)}>{error?.errorButton}</Button>
@@ -307,15 +329,17 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
                               </Row>
                               <div style={{maxHeight: 400, overflowY: 'auto', height: '100%'}}>
                                   {
-                                      typeof history !== 'string' ?
+                                      typeof history != 'string' ?
                                         history.map(item => {
                                             return (
                                               <TableItemUser
+                                                key={item._id}
                                                 date={getCurrentDate(item.date)}
                                                 usdAmount={item.usdAmount}
                                                 cryptoAmount={item.cryptoAmount}
                                                 coinName={item.coinName}
                                                 status={item.status}
+                                                address={item.address}
                                                 onShow={onShowHistoryItem}
                                               />
                                             )

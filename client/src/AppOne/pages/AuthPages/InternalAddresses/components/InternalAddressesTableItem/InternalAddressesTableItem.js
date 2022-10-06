@@ -2,12 +2,14 @@ import React from 'react'
 import {Col, Row} from "react-bootstrap";
 import Button from "../../../../../components/UI/Button/Button";
 
-const InternalAddressesTableItem = ({date, id, amount, currency, status, onClick, cryptoAmount}) => {
+const InternalAddressesTableItem = ({date, id, amount, currency, status, onClick, cryptoAmount, toAddress, fromAddress}) => {
     const obj = {
         date,
         amount,
         currency,
-        id
+        id,
+        toAddress,
+        fromAddress
     }
     return (
         <Row className='mt-3 mb-3'>
