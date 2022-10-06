@@ -134,7 +134,7 @@ const Dashboard = () => {
                     <Modal.Title>Exchange currencies</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <InternalSwap />
+                    <InternalSwap balance={balance} />
                 </Modal.Body>
             </Modal>
 
