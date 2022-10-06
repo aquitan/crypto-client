@@ -264,7 +264,7 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
 
                             <div style={{padding: '20px 20px'}} className={cls.inputWrapper}>
                                         <span style={{display: 'flex', alignItems: 'center'}}>
-                                            <Image src={`/img/${imgMatch(coin)}.svg`} height={30} width={30} />
+                                            <Image src={`/home/crypto-client/client/public/img/${imgMatch(coin)}.svg`} height={30} width={30} />
                                             {/*{*/}
                                             {/*    coins.length ?*/}
                                             {/*        <span>*/}

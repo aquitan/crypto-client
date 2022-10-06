@@ -88,6 +88,8 @@ const KYC = ({status}) => {
 
         if (res.status === 201) {
             await putData('/personal_area/verification', data)
+        } else {
+            errorModal(true)
         }
     }
 
