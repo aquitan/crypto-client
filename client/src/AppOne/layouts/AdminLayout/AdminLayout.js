@@ -5,7 +5,7 @@ import AdminSidebar from "../../components/AdminSidebar/AdminSidebar";
 import NavigationLink from "../../components/UI/NavigationLink/NavigationLink";
 import BurgerMenu from "../../components/UI/BurgerMenu/BurgerMenu";
 import {store} from "../../../index";
-import {Container, Navbar} from "react-bootstrap";
+import {Col, Container, Navbar, Row} from 'react-bootstrap';
 
 
 const AuthLayout = () => {
@@ -21,12 +21,16 @@ const AuthLayout = () => {
 
     return (
         <div className={`${cls.layout} bg-dark`}>
+            <Navbar className='d-flex d-xl-none' bg="black" variant="dark" style={{position: 'sticky'}}>
+                <Container>
+                    <Row>
+                        <Col className='d-flex align-items-center'>
+                            <BurgerMenu onHandleClick={onHandleClick} open={state} /> <div className='mx-2'>Menu</div>
+                        </Col>
+                    </Row>
+                </Container>
+            </Navbar>
             <div className={cls.layout_inner}>
-                <Navbar className='d-flex d-xl-none' bg="black" variant="dark" style={{position: 'sticky'}}>
-                    <Container>
-                        <BurgerMenu onHandleClick={onHandleClick} open={state} />
-                    </Container>
-                </Navbar>
                 <AdminSidebar active={state} setInactive={setInactive}>
                     <NavigationLink onClick={() => setState(false)} to={'/'}>User Dashboard</NavigationLink>
                     <NavigationLink onClick={() => setState(false)} to={'/staff'}>Главная</NavigationLink>
