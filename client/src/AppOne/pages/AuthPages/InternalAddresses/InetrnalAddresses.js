@@ -107,7 +107,7 @@ const InternalAddresses = () => {
                         <Row className='text-center'><b>To:</b> <span>{modal?.to}</span></Row>
                     </Row>
                     <Row>
-                        <Col className='text-center'><b>Amount:</b> {modal?.amount} USD]</Col>
+                        <Col className='text-center'><b>Amount:</b> {modal?.amount} USD</Col>
                     </Row>
                 </CustomModal>
 

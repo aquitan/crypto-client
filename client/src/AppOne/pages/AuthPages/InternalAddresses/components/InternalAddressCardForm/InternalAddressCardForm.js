@@ -17,6 +17,7 @@ import addressValidator from '../../../../../utils/validateAddress';
 const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, sum}) => {
     const {updateNotif} = useNotifContext(NotifContext)
     const [validateAddress, setValidateAddress] = useState(true)
+    const [addressModalError, setAddressModalError] = useState(false)
     const [modalError, setModalError] = useState(false)
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
@@ -65,8 +66,17 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
     }
 
     const onBlur = async (e) => {
-        console.log('value', e.target.value)
-        const res = await getData(`/internal_wallet_checker/${e.target.value}/${window.location.host}`)
+
+        try {
+            const res = await getData(`/internal_wallet_checker/${e.target.value}/${window.location.host}`)
+            console.log('res status', res.status)
+            if (res.status !== 200) {
+                setAddressModalError(true)
+            }
+        } catch(e) {
+            console.log('error', e);
+            setAddressModalError(true)
+        }
     }
     const onCheckAmount = async () => {
         const res = await getData(`/user_balance_checker/${store.user.id}/${currency}`)
@@ -83,6 +93,10 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
         <>
             <CustomModal show={modalError} size={'md'} handleClose={() => setModalError(false)} title={'Same wallet'} btnClose={true}>
                 You can't make transaction to your own wallet!
+            </CustomModal>
+
+            <CustomModal show={addressModalError} size={'md'} handleClose={() => setAddressModalError(false)} title={'Address'} btnClose={true}>
+                The address is not found! Please type a correct address
             </CustomModal>
 
 
