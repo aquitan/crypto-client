@@ -178,7 +178,7 @@ const SecureDeal = () => {
                                         The resolution of possible disputes will depend on this.</p>
                                     <TextArea {...register('dealCondition', {
                                         required: 'This field is required',
-                                    })} rows={10} classnames='textareaTransparent' placeholder='Deal conditions' />
+                                    })} rows={10} classname='textareaTransparent' placeholder='Deal conditions' />
                                     <ErrorMessage
                                       name='dealCondition'
                                       errors={errors}
