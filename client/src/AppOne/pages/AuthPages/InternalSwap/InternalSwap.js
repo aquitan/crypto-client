@@ -273,7 +273,7 @@ const InternalSwap = ({balance}) => {
                                                     {state?.initial.value} {state.initial.currency}
                                                 </span>
                                                         <Image
-                                                          src={`/img/${imgMatch(state?.initial.currency.toLowerCase())}.svg`}
+                                                          src={`${window.location.origin}/img/${imgMatch(state?.initial.currency.toLowerCase())}.svg`}
                                                           height={30}
                                                           width={30}
                                                           alt={'crypto'} />

@@ -271,7 +271,7 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
                                   <Row className='mb-3 align-items-center'>
                                       <div style={{padding: '20px 20px'}} className={cls.inputWrapper}>
                                         <span style={{display: 'flex', alignItems: 'center'}}>
-                                            <Image src={`/img/${imgMatch(coin)}.svg`} height={30} width={30} />
+                                            <Image src={`${window.location.origin}/img/${imgMatch(coin)}.svg`} height={30} width={30} />
                                             {/*{*/}
                                             {/*        */}
                                             {/*        // <Select*/}
