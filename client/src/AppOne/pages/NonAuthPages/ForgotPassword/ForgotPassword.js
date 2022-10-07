@@ -70,8 +70,8 @@ const ForgotPassword = () => {
                                     required: 'You must specify email to SignIn',
                                     validate: emailValidate,
                                     message: 'Email is not valid'
-                                })} name='email' placeholder='Email' id='login' />
-                                <ErrorMessage  name='email' errors={errors} render={() => <p className={cls.error}>email is invalid</p>} />
+                                })} classname={[`${errors.email ? 'error' : ''}`]} name='email' placeholder='Email' id='login' />
+                                <ErrorMessage  name='email' errors={errors} render={() => <p className={cls.error}>Email is not valid</p>} />
                             </Col>
                             <Row className='mt-4 align-items-center'>
                                 <Button classname='btnBlue' type='filled'>Get new password</Button>

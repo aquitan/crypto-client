@@ -8,6 +8,7 @@
   color: #6C7080;
   border-radius: 8px;
   transition: all .2s linear;
+  font-size: 16px;
   &::placeholder {
     color: #717579;
   }
@@ -53,4 +54,8 @@
   border: 1px solid #444;
   border-radius: 0;
   position: relative;
+}
+
+.error {
+  border-color: tomato;
 }

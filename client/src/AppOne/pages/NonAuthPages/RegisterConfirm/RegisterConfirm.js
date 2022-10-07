@@ -41,7 +41,7 @@ const RegisterConfirm = () => {
                         <Row className='justify-content-center position-relative'>
                             <Input {...register('activationLink',{
                                 required: 'You have to validate email'
-                            })} type='text' classname='text-center' name='activationLink' placeholder='Enter confirmation code here'/>
+                            })} type='text' classname={['text-center',`${errors.email ? 'error' : ''}`]} name='activationLink' placeholder='Enter confirmation code here'/>
                             <ErrorMessage  name='activationLink' errors={errors} render={() => <p className={cls.error}>You have to validate email</p>} />
                         </Row>
                         <Row className='m-auto mt-4'>

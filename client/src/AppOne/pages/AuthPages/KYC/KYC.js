@@ -173,7 +173,9 @@ const KYC = ({status}) => {
                     </Col>
                     <Col className={'mb-3 col-12 col-md-6'}>
                         <DatePickert required
-                                     customInput={<DatePickerCustom classname={'inputTransparent'}/>}
+                                     customInput={<DatePickerCustom {...register('startDate', {
+                                         required: 'Date is required'
+                                     })} classname={['inputTransparent', `${errors.startDate ? 'error' : ''}`]}/>}
                                      placeholderText='Date of Birth*'
                                      selected={startDate}
                                      dateFormat='yyyy/MM/dd'
@@ -187,7 +189,7 @@ const KYC = ({status}) => {
                         })}>
                             {(inputProps) => <Input classname={['inputTransparent', `${errors.phoneNumber ? 'error' : ''}`]} {...inputProps} name='phoneNumber' placeholder='Phone number*' type='tel'/>}
                         </InputMask>
-                        <ErrorMessage name='phoneNumber' errors={errors} render={() => <p className={cls.error}>Check the field</p>} />
+                        <ErrorMessage name='phoneNumber' errors={errors} render={() => <p className={'errord'}>Check the field</p>} />
                     </Col>
                     <Col className={'mb-3 col-12 col-md-6'}>
                         <Input classname={['inputTransparent', `${errors.documentNumber ? 'error' : ''}`]} {...register('documentNumber', {

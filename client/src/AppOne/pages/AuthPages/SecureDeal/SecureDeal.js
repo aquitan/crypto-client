@@ -44,6 +44,9 @@ const SecureDeal = () => {
         {value: 'ETH', text: 'ETH'},
         {value: 'BCH', text: 'BCH'},
         {value: 'USDT', text: 'USDT'},
+        {value: 'TRX', text: 'TRX'},
+        {value: 'SOL', text: 'SOL'},
+        {value: 'TRX/USDT', text: 'TRX/USDT'},
     ]
     const tableHeader = ['Amount', 'Status', 'Action']
 
@@ -58,7 +61,7 @@ const SecureDeal = () => {
         }
         delete data.role
         data.status = 'pending'
-        data.dealDedline = startDate / 1000
+        data.dealDedline = data.startDate / 1000
         data.currentDate = dateToTimestamp()
         data.userId = store.user.id
         data.amountInCrypto = +data.amountInCrypto
@@ -129,10 +132,10 @@ const SecureDeal = () => {
                                     Step 1: Choose your role</h4>
                                 <p>You can buy or sell anything securely via our platform.</p>
                                 <div className='secure_deal_col mb-3 d-flex'>
-                                    <div className='p-0 py-4'>
+                                    <div className='p-0 py-4' style={{marginRight: 20}}>
                                         <InputRadio {...register('role', {
-                                            required: 'This field is required',
-                                        })} classname='radio_btn' id='seller' label='Seller' value='seller' name='role' />
+                                            required: 'Chose the role',
+                                        })} classname={['radio_btn', `${errors.role ? 'error' : ''}`]} id='seller' label='Seller' value='seller' name='role' />
                                         <ErrorMessage
                                           name='role'
                                           errors={errors}
@@ -140,8 +143,8 @@ const SecureDeal = () => {
                                     </div>
                                     <div className='p-0 py-4'>
                                         <InputRadio {...register('role', {
-                                            required: 'This field is required',
-                                        })} classname='radio_btn' label='Buyer' id='buyer' value='buyer' name='role' />
+                                            required: 'Chose the role',
+                                        })} classname={['radio_btn', `${errors.role ? 'error' : ''}`]} label='Buyer' id='buyer' value='buyer' name='role' />
                                         <ErrorMessage
                                           name='role'
                                           errors={errors}
@@ -155,7 +158,7 @@ const SecureDeal = () => {
                                         <span className='step'>02</span>
                                         Step 2: Participant</h4>
                                     <p>Please enter username or email of another participant. User should have account at localhost</p>
-                                    <Input classname='inputTransparent' {...register('secondPartyEmail', {
+                                    <Input classname={['inputTransparent', `${errors.secondPartyEmail ? 'error' : ''}`]} {...register('secondPartyEmail', {
                                         required: 'You must specify email',
                                         validate: emailValidate,
                                         message: 'Email is not valid',
@@ -177,8 +180,8 @@ const SecureDeal = () => {
                                         they must be clear to the third party, a Guarantor.
                                         The resolution of possible disputes will depend on this.</p>
                                     <TextArea {...register('dealCondition', {
-                                        required: 'This field is required',
-                                    })} rows={10} classname='textareaTransparent' placeholder='Deal conditions' />
+                                        required: 'Deal conditions are required',
+                                    })} rows={10} classname={['textareaTransparent', `${errors.dealCondition ? 'error' : ''}`]} placeholder='Deal conditions' />
                                     <ErrorMessage
                                       name='dealCondition'
                                       errors={errors}
@@ -189,16 +192,22 @@ const SecureDeal = () => {
                                 <Col className='col-12 col-md-6 mb-3'>
                                     <DatePickert
                                       required
-                                      customInput={<DatePickerCustom classname='inputTransparent'/>}
+                                      customInput={<DatePickerCustom {...register('startDate', {
+                                          required: 'Date is required'
+                                      })} classname={['inputTransparent', `${errors.startDate ? 'error' : ''}`]}/>}
                                       placeholderText='Date'
                                       selected={startDate}
                                       dateFormat='yyyy/MM/dd'
                                       onChange={(date) => setStartDate(date)} />
+                                    <ErrorMessage
+                                      name='startDate'
+                                      errors={errors}
+                                      render={({message}) => <p className={error.error}>{message}</p>} />
                                 </Col>
                                 <Col className='col-12 col-md-6 mb-3'>
                                     <Select {...register('coinName', {
                                         required: 'This field is required',
-                                    })} options={options} classname='selectTransparent' />
+                                    })} options={options} classname={['selectTransparent', `${errors.amountInCrypto ? 'error' : ''}`]} />
                                     <ErrorMessage
                                       name='coinName'
                                       errors={errors}
@@ -207,7 +216,7 @@ const SecureDeal = () => {
                             </Row>
                             <Row className='mb-3 pb-2'>
                                 <Col>
-                                    <Input classname='inputTransparent' {...register('amountInCrypto', {
+                                    <Input classname={['inputTransparent', `${errors.amountInCrypto ? 'error' : ''}`]} {...register('amountInCrypto', {
                                         required: 'This field is required',
                                         pattern: /(\d+(?:\.\d+)?)/
                                     })} placeholder='Amount'/>

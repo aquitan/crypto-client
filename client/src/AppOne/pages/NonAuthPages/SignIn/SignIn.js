@@ -146,7 +146,7 @@ const SignIn = () => {
                                     required: 'You must specify email to SignIn',
                                     validate: emailValidate,
                                     message: 'Email is not valid',
-                                })} classname='' name='email' placeholder='Email' id='login' />
+                                })} classname={[`${errors.email ? 'error' : ''}`]} name='email' placeholder='Email' id='login' />
                                 <ErrorMessage  name='email' errors={errors} render={() => <p className={cls.error}>Email is invalid</p>} />
                             </Col>
                         </Row>
@@ -164,7 +164,7 @@ const SignIn = () => {
                                             message: 'Your password must be less than 32 characters'
                                         },
                                     }
-                                )} classname='' type={isShowPassword ? 'text' : 'password'} name='password' placeholder='Password' id='password' />
+                                )} classname={[`${errors.password ? 'error' : ''}`]} type={isShowPassword ? 'text' : 'password'} name='password' placeholder='Password' id='password' />
                                  <ErrorMessage name='password' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
                                 <FontAwesomeIcon onClick={showPassword} className={cls.eye_icon} icon={isShowPassword ? faEye : faEyeSlash} />
                             </Col>
