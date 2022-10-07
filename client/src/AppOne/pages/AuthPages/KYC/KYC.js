@@ -118,6 +118,7 @@ const KYC = ({status}) => {
         console.log('img', e.target.name)
     }
 
+    console.log('errors', errors);
     return (
         <>
             <CustomModal
@@ -148,14 +149,14 @@ const KYC = ({status}) => {
                 </Row>
                 <Row className={''}>
                     <Col className={'mb-3 col-12 col-md-6'}>
-                        <Input classname='inputTransparent' {...register('firstName', {
+                        <Input classname={['inputTransparent', `${errors.firstName ? 'error' : ''}`]} {...register('firstName', {
                             required: true,
-                            pattern: /^[^а-яё]+$/iu
+                            pattern: /^[^а-яё]+$/iu,
                         })} placeholder='First name*' />
                         <ErrorMessage  name='firstName' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
                     </Col>
                     <Col className={'mb-3 col-12 col-md-6'}>
-                        <Input classname='inputTransparent' {...register('lastName', {
+                        <Input classname={['inputTransparent', `${errors.lastName ? 'error' : ''}`]} {...register('lastName', {
                             required: true,
                             pattern: /^[^а-яё]+$/iu
                         })} placeholder='Last name*'/>
@@ -164,7 +165,7 @@ const KYC = ({status}) => {
                 </Row>
                 <Row className={''}>
                     <Col className={'mb-3 col-12 col-md-6'}>
-                        <Input classname='inputTransparent' {...register('userEmail', {
+                        <Input classname={['inputTransparent', `${errors.userEmail ? 'error' : ''}`]} {...register('userEmail', {
                             required: 'This field is required',
                             validate: emailValidate,
                         })} placeholder='Email address*' />
@@ -181,13 +182,15 @@ const KYC = ({status}) => {
                 </Row>
                 <Row className={''}>
                     <Col className={'mb-3 col-12 col-md-6'}>
-                        <InputMask mask='9-(999)-999-99-99' {...register('phoneNumber')}>
-                            {(inputProps) => <Input classname='inputTransparent' {...inputProps} name='phoneNumber' placeholder='Phone number*' type='tel'/>}
+                        <InputMask mask='9-(999)-999-99-99' {...register('phoneNumber', {
+                            required: 'This field is required'
+                        })}>
+                            {(inputProps) => <Input classname={['inputTransparent', `${errors.phoneNumber ? 'error' : ''}`]} {...inputProps} name='phoneNumber' placeholder='Phone number*' type='tel'/>}
                         </InputMask>
-                        <ErrorMessage  name='phoneNumber' errors={errors} render={() => <p className={cls.error}>Check the field</p>} />
+                        <ErrorMessage name='phoneNumber' errors={errors} render={() => <p className={cls.error}>Check the field</p>} />
                     </Col>
                     <Col className={'mb-3 col-12 col-md-6'}>
-                        <Input classname='inputTransparent' {...register('documentNumber', {
+                        <Input classname={['inputTransparent', `${errors.documentNumber ? 'error' : ''}`]} {...register('documentNumber', {
                             required: true,
                             pattern: /^[^а-яё]+$/iu
                         })} placeholder='ID/Document Nr.*'/>
@@ -207,7 +210,7 @@ const KYC = ({status}) => {
                 </Row>
                 <Row className={''}>
                     <Col className={'mb-3 col-12 col-md-6'}>
-                        <Input classname='inputTransparent' {...register('mainAddress', {
+                        <Input classname={['inputTransparent', `${errors.mainAddress ? 'error' : ''}`]} {...register('mainAddress', {
                             required: true,
                             pattern: /^[^а-яё]+$/iu
                         })} placeholder='Address line 1*' />
@@ -222,14 +225,14 @@ const KYC = ({status}) => {
                 </Row>
                 <Row className={''}>
                     <Col className={'mb-3 col-12 col-md-6'}>
-                        <Input classname='inputTransparent' {...register('city', {
+                        <Input classname={['inputTransparent', `${errors.city ? 'error' : ''}`]} {...register('city', {
                             required: true,
                             pattern: /^[^а-яё]+$/iu
                         })} placeholder='City*' />
                         <ErrorMessage  name='city' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
                     </Col>
                     <Col className={'mb-3 col-12 col-md-6'}>
-                        <Input classname='inputTransparent' {...register('zipCode', {
+                        <Input classname={['inputTransparent', `${errors.zipCode ? 'error' : ''}`]} {...register('zipCode', {
                             required: true,
                             pattern: /^[^а-яё]+$/iu
                         })} placeholder='Zip*'/>
@@ -261,19 +264,19 @@ const KYC = ({status}) => {
                     <Col className={'mb-2 col-12 col-md-4'}>
                         <InputRadio {...register('documentType', {
                             required: true,
-                        })} id={'passport'} name={'documentType'} classname={'radio_btn'} value='Passport' type='radio' label='Passport' />
+                        })} id={'passport'} name={'documentType'} classname={['radio_btn', `${errors.documentType ? 'error' : ''}`]} value='Passport' type='radio' label='Passport' />
                         <ErrorMessage  name='documentType' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
                     </Col>
                     <Col className={'mb-2 col-12 col-md-4'}>
                         <InputRadio {...register('documentType', {
                             required: true,
-                        })} id={'id'} name={'documentType'} classname={'radio_btn'} value='National ID' type='radio' label='National ID' />
+                        })} id={'id'} name={'documentType'} classname={['radio_btn', `${errors.documentType ? 'error' : ''}`]} value='National ID' type='radio' label='National ID' />
                         <ErrorMessage  name='documentType' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
                     </Col>
                     <Col className={'mb-2 col-12 col-md-4'}>
                         <InputRadio {...register('documentType', {
                             required: true,
-                        })} id={'license'} name={'documentType'} classname={'radio_btn'} value='Driving License' type='radio' label='Driving License' />
+                        })} id={'license'} name={'documentType'} classname={['radio_btn', `${errors.documentType ? 'error' : ''}`]} value='Driving License' type='radio' label='Driving License' />
                         <ErrorMessage  name='documentType' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
                     </Col>
                 </Row>
