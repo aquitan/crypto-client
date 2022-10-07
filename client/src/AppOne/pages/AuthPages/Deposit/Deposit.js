@@ -22,6 +22,9 @@ import CustomModal from "../../../components/CustomModal/CustomModal";
 import '../InternalSwap/InternalSwapTabs.scss'
 import AdminButton from '../../../components/UI/AdminButton/AdminButton';
 import {ErrorMessage} from '@hookform/error-message';
+import {copyTextToClipboard} from '../../../utils/copyToClipboard';
+import {faCopy} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 
 const Deposit = ({coin, coinsBalance, coinFullName}) => {
@@ -32,7 +35,9 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
     const [depError = show, showError = showModal, closeError = closeModal] = useModal()
     const [fieldError = show, showFieldError = showModal, closeFieldError = closeModal] = useModal()
     const {notificationList, updateNotif} = useNotifContext(NotifContext)
-    const {register, handleSubmit, formState: {errors}} = useForm()
+    const {register, handleSubmit, formState: {errors}, setValue} = useForm({
+        mode: "onChange"
+    })
     const [address, setAddress] = useState('')
     const [state, setState] = useState({
         value: 0,
@@ -71,15 +76,6 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
         }
 
     }
-    const getBalances = async () => {
-        const obj = {
-            isStaff: store.isStaff,
-            isAdmin: store.isAdmin,
-            rootAccess: store.fullAccess,
-            coinName: coin
-        }
-        const res = postData('/staff/balances/check_address_balance/', obj)
-    }
 
     const getAddressForDeposit = async () => {
         let d = new Date();
@@ -97,10 +93,6 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
     }
 
 
-    const setValue = (val) => {
-        let calc = +val / btc
-        setState({text: val, value: calc})
-    }
     const onSubmit = async (data, e) => {
         e.preventDefault()
         data.value = state.value
@@ -108,14 +100,15 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
 
         let stateVal = +state.text
 
+        console.log('register', register);
         const obj = {
             userId: store.user.id,
             userEmail: store.userEmail,
             domainName: window.location.host,
-            coinName: balanceCoin,
+            coinName: coin,
             coinFullName: coinFullName,
-            amountInCrypto: +state.value.toFixed(5),
-            amountInUsd: stateVal.toFixed(5),
+            amountInCrypto: Number(data.crypto).toFixed(5),
+            amountInUsd: Number(data.amount).toFixed(5),
             currentDate: dateToTimestamp(),
             depositAddress: address,
             depositStatus: 'pending',
@@ -128,10 +121,10 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
         }
         if (!address) {
             showModal(true)
-        } else if (stateVal < store.domain.domainParams.minWithdrawalSum) {
+        } else if (data.amount < store.domain.domainParams.minWithdrawalSum) {
             setMinimalSum(true)
         } else {
-            if (state.value > 0) {
+            if (data.crypto > 0) {
                 const res = await putData('/deposit/make_deposit/', obj)
                 updateNotif()
                 if (res.status === 201) {
@@ -148,25 +141,16 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
 
 
     }
-    const onChange = (e) => {
-        let calc = +e.target.value / btc
-        setState({text: e.target.value, value: calc})
+
+    const onChangeCrypto = (e) => {
+        setValue('amount', (e.target.value * store.rates[coin.toLowerCase()]).toFixed(5) )
+    }
+    const onChangeUsd = (e) => {
+        setValue('crypto', (e.target.value / store.rates[coin.toLowerCase()]).toFixed(5) )
     }
     const getBalance = async () => {
         const res = await getData(`/get_user_balance/${store.user.id}`)
         setBalance(res.data.filter(item => item.coinName === coin))
-    }
-    const onValChange = (e) => {
-        let target = e.target.value
-        let balanceAmount = 0
-        setBalanceCoin(e.target.value)
-        coinsFull.filter(el => {
-            if (el.coinName === target) {
-                balanceAmount = el.coinBalance.toFixed(5)
-                return balanceAmount
-            }
-        })
-        setBalance(balanceAmount)
     }
 
     const onShow = (date, usdAmount, cryptoAmount, coinName, address, status) => {
@@ -185,6 +169,10 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
         setLimit(prevState => prevState-1)
     }
 
+    const onCopy = () => {
+        copyTextToClipboard(historyModalData.address)
+    }
+
 
     return (
         <>
@@ -193,29 +181,40 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
             </CustomModal>
 
             <CustomModal btnClose={'Close'} show={historyModal} handleClose={() => setHistoryModal(false)} title={'Deposit details'} size={'md'}>
-                <Row className='mb-2'>
-                    <Col>
+                <Row className='mb-2 d-flex justify-content-center'>
+                    <div className='text-center'>
                         <b>Date:</b>
-                    </Col>
-                    <Col style={{fontSize: 14, color: 'grey'}}>
+                    </div>
+                    <div className='text-center' style={{fontSize: 14, color: 'grey'}}>
                         {historyModalData.date}
-                    </Col>
+                    </div>
                 </Row>
                 <Row className='mb-2'>
-                    <Col>
+                    <div className='text-center'>
                         <b>Address:</b>
-                    </Col>
-                    <Col style={{fontSize: 14, color: 'grey'}}>
+                    </div>
+                    <div className='text-center' onClick={onCopy} style={{fontSize: 14, color: 'grey', cursor: 'pointer'}}>
+                        <FontAwesomeIcon
+                          style={{marginRight: 10}}
+                          icon={faCopy} />
                         {historyModalData.address}
-                    </Col>
+                    </div>
                 </Row>
                 <Row className='mb-2'>
-                    <Col>
+                    <div className='text-center'>
                         <b>Amount:</b>
-                    </Col>
-                    <Col style={{fontSize: 14, color: 'grey'}}>
+                    </div>
+                    <div className='text-center' style={{fontSize: 14, color: 'grey'}}>
                         {historyModalData.cryptoAmount} {historyModalData.coinName} ($<b>{historyModalData.usdAmount}</b>)
-                    </Col>
+                    </div>
+                </Row>
+                <Row className='mb-2'>
+                    <div className='text-center'>
+                        <b>Status:</b>
+                    </div>
+                    <div className='text-center' style={{fontSize: 14, color: 'grey'}}>
+                        {historyModalData.status}
+                    </div>
                 </Row>
             </CustomModal>
 
@@ -285,25 +284,28 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
                                                 {coin}
                                             </span>
                                         </span>
-                                <div>Coin balance: {balance ? coinsBalance.toFixed(5) : <Preloader />}</div>
+                                <div>Balance: {balance ? coinsBalance.toFixed(5) : <Preloader />}</div>
                             </div>
+                        </Row>
+                        <Row className='mb-3 p-0'>
+                            <span style={{fontSize: 14, marginBottom: 10}}>Enter amount in Crypto</span>
+                            <Input classname={['inputTransparent', `${errors.crypto ? 'error' : ''}`]} placeholder='0.00' {...register('crypto', {
+                                required: true,
+                                pattern: /^[1-9]\d*(\.\d+)?$/,
+                                onChange: (val) => onChangeCrypto(val)
+                            })}/>
+                            <ErrorMessage  name='crypto' errors={errors} render={() => <p className={cls.error}>Check the field</p>} />
                         </Row>
                         <Row className='mb-3 mt-3 p-0'>
                             <span style={{fontSize: 14, marginBottom: 10}}>Enter amount in USD</span>
-                            <Input classname='inputTransparent' {...register('amount', {
+                            <Input classname={['inputTransparent', `${errors.amount ? 'error' : ''}`]} {...register('amount', {
                                 required: 'Check the field',
-                                // validate: (val) => {
-                                //     return +val < +state.text
-                                // }
-                            })} placeholder='' onChange={onChange} value={state.text} />
-                            <ErrorMessage  name='amount' errors={errors} render={() => <p className={cls.error}>Check the field</p>} />
-                        </Row>
-                        <Row className='mb-3 p-0'>
-                            <span style={{fontSize: 14, marginBottom: 10}}>Value in Crypto</span>
-                            <Input classname='inputTransparent' placeholder='Amount in Crypto' onChange={onChange} disabled value={state.value.toFixed(5)} />
+                                pattern: /^[1-9]\d*(\.\d+)?$/,
+                                onChange: (val) => onChangeUsd(val)
+                            })} placeholder='0.00' />
+                            <ErrorMessage name='amount' errors={errors} render={() => <p className={cls.error}>Check the field</p>} />
                         </Row>
                         <i style={{fontSize: 12, color: 'grey'}}>Note: Minimum deposit amount is {store.domain.domainParams.minDepositSum} USD</i><br/>
-                        <i style={{fontSize: 12, color: 'grey'}}>Note: Deposit fee is: {store.domain.domainParams.depositFee}%</i>
                         <Row className='mb-3 mt-3 justify-content-center'>
                             <Button style={{maxWidth: 200}} classname='btnBlue' onClick={handleSubmit(onSubmit)}>Submit</Button>
                         </Row>
@@ -315,7 +317,7 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
                         <Row style={{padding: '10px', borderBottom: '1px solid #fff' }}>
                             <Col className={'text-center'}>Date</Col>
                             <Col className={'text-center'}>Amount</Col>
-                            <Col className={'text-center'}></Col>
+                            <Col className={'text-center'}>Details</Col>
                         </Row>
 
                         <div style={{maxHeight: 400, overflowY: 'auto', height: '100%'}}>

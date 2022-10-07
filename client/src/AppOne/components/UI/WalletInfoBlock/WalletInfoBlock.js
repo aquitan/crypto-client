@@ -15,14 +15,14 @@ const WalletInfoBlock = ({currency, status, amount, balance, rate, theme, img}) 
 
     return (
         <Row className={classes}>
-            <Row className='mb-2'>
-                <div className='d-flex align-items-center mb-2'>
+            <Row className='mb-2 p-0'>
+                <div className='d-flex align-items-center mb-2 p-0'>
                     <img src={img} height={40} alt=""/>
                     <div style={{fontSize: 20, fontWeight: 'bold'}} className='px-2'>{currency}</div>
                 </div>
             </Row>
-            <Row>
-                <Col>
+            <Row className='p-0'>
+                <Col className='p-0'>
                     <div>
                         $<b>{rate.toLocaleString()}</b>
                     </div>
@@ -31,7 +31,7 @@ const WalletInfoBlock = ({currency, status, amount, balance, rate, theme, img}) 
                         <b style={{color:statusColor() ? 'green' : 'tomato'}}>{amount.toFixed(2)} %</b>
                     </div>
                 </Col>
-                <Col>
+                <Col className='p-0 d-flex justify-content-end'>
                     <img src={statusColor() ? '/img/vector-up.svg' : '/img/vector-down.svg'} alt=""/>
                 </Col>
             </Row>

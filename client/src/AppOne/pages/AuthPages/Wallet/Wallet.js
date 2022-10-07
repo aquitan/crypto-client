@@ -76,30 +76,12 @@ const Wallet = () => {
     return (
         <>
 
-            <CustomModal size='xl' fullScreen='md-down' show={showDeposit} handleClose={() => setShowDeposit(false)} title={'Deposit'} btnClose={false}>
+            <CustomModal size='lg' fullScreen='md-down' show={showDeposit} handleClose={() => setShowDeposit(false)} title={'Deposit'} btnClose={false}>
                 <Deposit coin={deposit.coin} coinsBalance={deposit.coinsBalance} coinFullName={deposit.coinFullName} />
             </CustomModal>
 
-            {/*<Modal*/}
-            {/*    style={{height: '100vh'}}*/}
-            {/*    size='xl'*/}
-            {/*    animation={false}*/}
-            {/*    style={{opacity: 1, zIndex: 9999}}*/}
-            {/*    show={showDeposit}*/}
-            {/*    onHide={() => setShowDeposit(false)}*/}
-            {/*    dialogClassName={`modal-window ${theme}`}*/}
-            {/*>*/}
-            {/*    <Modal.Header closeButton>*/}
-            {/*        <Modal.Title id="example-custom-modal-styling-title">*/}
-            {/*            Deposit*/}
-            {/*        </Modal.Title>*/}
-            {/*    </Modal.Header>*/}
-            {/*    <Modal.Body>*/}
-            {/*        <Deposit coin={deposit.coin} coinsBalance={deposit.coinsBalance} coinFullName={deposit.coinFullName} />*/}
-            {/*    </Modal.Body>*/}
-            {/*</Modal>*/}
 
-            <CustomModal size='xl' fullScreen={'md-down'} show={showWithdraw} handleClose={() => setShowWithdraw(false)} title={'Withdraw'} btnClose={false}>
+            <CustomModal size='lg' fullScreen={'md-down'} show={showWithdraw} handleClose={() => setShowWithdraw(false)} title={'Withdraw'} btnClose={false}>
                 <Withdraw coin={withdraw.coin} coinsBalance={withdraw.coinsBalance} coinFullName={withdraw.coinFullName} />
             </CustomModal>
 

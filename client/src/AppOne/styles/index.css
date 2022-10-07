@@ -33,6 +33,10 @@ h1 {
   max-width: 1700px;
 }
 
+.nav-pills {
+  justify-content: center;
+}
+
 body *::-webkit-scrollbar {
   display: none;
 }

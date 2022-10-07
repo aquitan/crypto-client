@@ -1,6 +1,7 @@
 import React from 'react'
 import {Button, Modal, Row} from 'react-bootstrap';
 import {useThemeContext} from '../../context/ThemeContext';
+import './CustomModal.scss'
 
 const CustomModal = ({title, fullScreen, text, show, handleClose, btnClose, children, size}) => {
     const {theme} = useThemeContext()
@@ -13,8 +14,8 @@ const CustomModal = ({title, fullScreen, text, show, handleClose, btnClose, chil
             dialogClassName={`modal-window ${theme}`}
             backdrop={'static'}
             show={show} onHide={handleClose}>
-            <Modal.Header closeButton closeVariant={theme === 'dark' ? 'white' : ''}>
-                <Modal.Title>{title}</Modal.Title>
+            <Modal.Header style={{textAlign: 'center', display: 'inline-block'}} closeButton closeVariant={theme === 'dark' ? 'white' : ''}>
+                <Modal.Title style={{textAlign: 'center', display: 'inline-block'}}>{title}</Modal.Title>
             </Modal.Header>
             {text || children && <Modal.Body>
               <Row className='py-3 px-3'>

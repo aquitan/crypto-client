@@ -23,6 +23,5 @@ export const getCurrentDate = (date) => {
     }
   }
   const currentDate = y+'-'+PrefInt(m,10)+'-'+PrefInt(d,10)+' '+PrefInt(h,10)+':'+ PrefInt(min,10) +':'+ PrefInt(s,10)
-  console.log('currentDate', currentDate);
   return currentDate
 }

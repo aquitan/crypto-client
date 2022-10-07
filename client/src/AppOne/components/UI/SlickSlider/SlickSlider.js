@@ -36,7 +36,7 @@ const SlickSlider = ({children}) => {
                 }
             },
             {
-                breakpoint: 480,
+                breakpoint: 530,
                 settings: {
                     slidesToShow: 1,
                     slidesToScroll: 1,

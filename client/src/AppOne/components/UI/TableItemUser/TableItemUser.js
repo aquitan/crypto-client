@@ -13,8 +13,9 @@ const TableitemUser = ({date, usdAmount, cryptoAmount, coinName, status, onShow,
         <Row className={`mt-3 mb-3 align-items-center ${cls.item}`}>
             <Col className='text-center' style={{whiteSpace: 'pre-wrap'}}>{date}</Col>
             <Col className='text-center'>${usdAmount}<br/> ({cryptoAmount.toFixed(5)} {coinName})</Col>
-            <Col className=''>
-                <Button onClick={() => onShow(date, usdAmount, cryptoAmount, coinName, address, status)} classname={'btnOrange'}>Show</Button>
+            <Col className='d-flex text-center justify-content-center'>
+                <Button onClick={() => onShow(date, usdAmount, cryptoAmount, coinName, address, status)}
+                        classname={`${status === 'pending' ? 'btnOrange' : status === 'success' ? 'btnGreen' : 'btnRed'}`}>Details</Button>
             </Col>
         </Row>
     )

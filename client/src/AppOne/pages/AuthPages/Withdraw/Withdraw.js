@@ -24,6 +24,9 @@ import '../InternalSwap/InternalSwapTabs.scss'
 import CustomModal from '../../../components/CustomModal/CustomModal';
 import SkeletonBlocks from '../../../components/SkeletonBlocks/SkeletonBlocks';
 import AdminButton from '../../../components/UI/AdminButton/AdminButton';
+import {faCopy} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {copyTextToClipboard} from '../../../utils/copyToClipboard';
 
 const Withdraw = ({coin, coinsBalance, coinFullName}) => {
     console.log('coins balance', coinsBalance)
@@ -40,8 +43,8 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
     const navigate = useNavigate()
     const [balance, setBalance] = useState(0)
     const [coinsFull, setCoinsFull] = useState([])
-    const {register, handleSubmit, formState: {errors}} = useForm({
-        mode: 'onBlur'
+    const {register, handleSubmit, formState: {errors}, setValue} = useForm({
+        mode: 'onChange'
     })
     const [history, setHistory] = useState([])
     const [modal, setModal] = useState(false)
@@ -72,15 +75,11 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
         setHistory(res.data.withdrawHistory)
     }
 
-    const onChangeUsd = (e) => {
-        console.log('textVal', state.value)
-        let calc = +e.target.value / findPercent(store.rates.btc, store.domain.domainParams.rateCorrectSum).toFixed(5)
-        setState({text: +e.target.value, value: +calc})
-    }
     const onChangeCrypto = (e) => {
-        console.log(e.target.value)
-        let calc = +e.target.value * findPercent(store.rates.btc, store.domain.domainParams.rateCorrectSum).toFixed(5)
-        setState({text: +calc.toFixed(5), value: +e.target.value})
+        setValue('amount', (e.target.value * store.rates[coin.toLowerCase()]).toFixed(5) )
+    }
+    const onChangeUsd = (e) => {
+        setValue('crypto', (e.target.value / store.rates[coin.toLowerCase()]).toFixed(5) )
     }
 
     const onSubmit = async (data, e) => {
@@ -92,8 +91,8 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
             userEmail: store.user.email,
             domainName: window.location.host,
             coinName: balanceCoin,
-            amountInCrypto: state.value.toFixed(5),
-            amountInUsd: state.text,
+            amountInCrypto: Number(data.crypto).toFixed(5),
+            amountInUsd: Number(data.amount).toFixed(5),
             currentDate: dateToTimestamp(),
             withdrawalAddress: data.withdrawalAddress,
             withdrawalStatus: 'failed',
@@ -112,12 +111,13 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
 
         if (coinsBalance <= 0) {
             setBalanceError(true)
-        } else if (state.text < store.domain.domainParams.minWithdrawalSum) {
+        } else if (data.amount < store.domain.domainParams.minWithdrawalSum) {
             setMinimalSum(true)
         } else {
             const res = await putData('/withdraw/make_withdraw/', obj)
             setError(res.data)
             if (res.status === 201) {
+                getHistoryDeposit()
                 onSendWithdraw(res.data)
             }
         }
@@ -126,20 +126,6 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
 
     }
 
-    const onValChange = (e) => {
-        console.log('value', e.target.value)
-        let target = e.target.value
-        let balanceAmount = 0
-        setBalanceCoin(e.target.value)
-        coinsFull.filter(el => {
-            console.log('coins', coinsFull)
-            if (el.coinName === target) {
-                balanceAmount = el.coinBalance.toFixed(5)
-                return balanceAmount
-            }
-        })
-        setBalance(balanceAmount)
-    }
 
 
     const onNext = () => {
@@ -178,6 +164,10 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
         setLimit(prevState => prevState-1)
     }
 
+    const onCopy = () => {
+        copyTextToClipboard(historyItem.address)
+    }
+
 
     return (
 
@@ -192,44 +182,47 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
 
             <CustomModal size='md' show={showHistoryItem} handleClose={() => setShowHistoryItem(false)} title={'Transaction'} btnClose='Close'>
                 <Row className='mb-2'>
-                    <Col>
+                    <div className='text-center'>
                         <b>Date:</b>
-                    </Col>
-                    <Col style={{fontSize: 14, color: 'grey'}}>
+                    </div>
+                    <div className='text-center' style={{fontSize: 14, color: 'grey'}}>
                         {historyItem.date}
-                    </Col>
+                    </div>
                 </Row>
                 <Row className='mb-2'>
-                    <Col>
+                    <div className='text-center'>
                         <b>Amount in USD:</b>
-                    </Col>
-                    <Col style={{fontSize: 14, color: 'grey'}}>
+                    </div>
+                    <div className='text-center' style={{fontSize: 14, color: 'grey'}}>
                         ${historyItem.usdAmount}
-                    </Col>
+                    </div>
                 </Row>
                 <Row className='mb-2'>
-                    <Col>
+                    <div className='text-center'>
                         <b>Amount in Crypto:</b>
-                    </Col>
-                    <Col style={{fontSize: 14, color: 'grey'}}>
+                    </div>
+                    <div className='text-center' style={{fontSize: 14, color: 'grey'}}>
                         {Number(historyItem.cryptoAmount).toFixed(5)} {historyItem.coinName}
-                    </Col>
+                    </div>
                 </Row>
                 <Row className='mb-2'>
-                    <Col>
+                    <div className='text-center'>
                         <b>Address:</b>
-                    </Col>
-                    <Col style={{fontSize: 14, color: 'grey'}}>
+                    </div>
+                    <div className='text-center' onClick={onCopy}  style={{fontSize: 14, color: 'grey'}}>
+                        <FontAwesomeIcon
+                          style={{marginRight: 10}}
+                          icon={faCopy} />
                         {historyItem.address}
-                    </Col>
+                    </div>
                 </Row>
                 <Row className='mb-2'>
-                    <Col>
+                    <div className='text-center'>
                         <b>Status:</b>
-                    </Col>
-                    <Col style={{fontSize: 14, color: 'grey'}}>
+                    </div>
+                    <div className='text-center' style={{fontSize: 14, color: 'grey'}}>
                         {historyItem.status}
-                    </Col>
+                    </div>
                 </Row>
             </CustomModal>
 
@@ -285,21 +278,26 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
                                                 {coin}
                                             </span>
                                         </span>
-                                          <div>Coin balance: {balance.toFixed(5)}</div>
+                                          <div>Balance: {balance.toFixed(5)}</div>
                                       </div>
                                   </Row>
-                                  <Row className='mb-3'>
-                                      <Input classname='inputTransparent' {...register('amount', {
-                                          required: true
-                                      })} placeholder='Amount in USD' type='number' onChange={onChangeUsd} value={state.text} />
-                                      <ErrorMessage  name='terms' errors={errors} render={() => <p className={cls.error}>You have to fill the field with digits</p>} />
-                                      <i style={{fontSize: 12, color: 'grey', marginTop: 10}}>Minimum withdraw amount is {store.domain.domainParams.minWithdrawalSum} USD</i>
+                                  <Row className='mb-3 p-0'>
+                                      <span style={{fontSize: 14, marginBottom: 10}}>Enter amount in Crypto</span>
+                                      <Input classname={['inputTransparent', `${errors.crypto ? 'error' : ''}`]} placeholder='0.00' {...register('crypto', {
+                                          required: true,
+                                          pattern: /^[1-9]\d*(\.\d+)?$/,
+                                          onChange: (val) => onChangeCrypto(val)
+                                      })}/>
+                                      <ErrorMessage  name='crypto' errors={errors} render={() => <p className={cls.error}>Check the field</p>} />
                                   </Row>
-                                  <Row className='mb-3'>
-                                      <Input classname='inputTransparent' {...register('crypto', {
-                                          required: true
-                                      })} placeholder='Amount in Crypto' type='number' onChange={onChangeCrypto} value={Number(state.value).toFixed(5)} />
-                                      <ErrorMessage  name='terms' errors={errors} render={() => <p className={cls.error}>You have to fill the field with digits</p>} />
+                                  <Row className='mb-3 mt-3 p-0'>
+                                      <span style={{fontSize: 14, marginBottom: 10}}>Enter amount in USD</span>
+                                      <Input classname={['inputTransparent', `${errors.amount ? 'error' : ''}`]} {...register('amount', {
+                                          required: 'Check the field',
+                                          pattern: /^[1-9]\d*(\.\d+)?$/,
+                                          onChange: (val) => onChangeUsd(val)
+                                      })} placeholder='0.00' />
+                                      <ErrorMessage name='amount' errors={errors} render={() => <p className={cls.error}>Check the field</p>} />
                                   </Row>
                                   <Row className='mb-3'>
                                       <Input classname='inputTransparent' {...register('withdrawalAddress')} placeholder='Enter the address' />
@@ -324,13 +322,13 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
                             eventKey='history'>
                               <Row style={{padding: '10px', borderBottom: '1px solid #fff' }}>
                                   <Col className={'text-center'}>Date</Col>
-                                  <Col className={'text-center'}>Sum</Col>
-                                  <Col className={'text-center'}></Col>
+                                  <Col className={'text-center'}>Amount</Col>
+                                  <Col className={'text-center'}>Details</Col>
                               </Row>
                               <div style={{maxHeight: 400, overflowY: 'auto', height: '100%'}}>
                                   {
                                       typeof history != 'string' ?
-                                        history.map(item => {
+                                        history.slice(0).reverse().map(item => {
                                             return (
                                               <TableItemUser
                                                 key={item._id}
