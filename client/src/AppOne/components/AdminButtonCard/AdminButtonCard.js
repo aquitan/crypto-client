@@ -11,13 +11,13 @@ const AdminButtonCard = ({children, title, classname}) => {
 
     return (
         <Card className={classes}>
-            <Row className='pt-3 pb-3 align-items-center'>
-                <Row className='mb-1'>
+            <Row className='pt-3 pb-3 py-0 align-items-center'>
+                <Row className='mb-1 py-0'>
                     <Col className='col-12'>
                         <h2>{title}</h2>
                     </Col>
                 </Row>
-                <Row className='p-3 mt-1'>
+                <Row className='py-0 p-md-3 mt-1'>
                     {children}
                 </Row>
             </Row>

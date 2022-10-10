@@ -8,8 +8,8 @@ import {getData, postData} from '../../services/StaffServices';
 import {useNavigate} from "react-router-dom";
 import {getRate} from "../../services/CurrencyService";
 import Preloader from "../UI/Preloader/Preloader";
-import {BASE_URL} from '../../API';
 import {useNotifContext} from '../../context/notifContext';
+
 
 
 const AppRouter = () => {

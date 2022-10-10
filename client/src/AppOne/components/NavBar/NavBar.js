@@ -42,8 +42,8 @@ const NavBar = () => {
         <>
             <Navbar style={{height: 123, backgroundColor: theme === 'light' ? '#fff' : 'rgb(8, 8, 8)'}}>
                 <Offcanvas placement='end' style={{backgroundColor: theme === 'light' ? '#fff' : '#121318'}} show={show} onHide={handleClose}>
-                    <Offcanvas.Header closeVariant={theme === 'light' ? null : 'white'} closeButton>
-                        <Nav.Link onClick={handleClose} to={'/'} as={NavLink}>
+                    <Offcanvas.Header style={{justifyContent: 'flex-start', marginTop: 20}} closeVariant={theme === 'light' ? null : 'white'} closeButton>
+                        <Nav.Link style={{marginRight: 20}} onClick={handleClose} to={'/'} as={NavLink}>
                             <Logo/>
                         </Nav.Link>
                         <Nav.Link onClick={handleClose} to={'/'} as={NavLink}>

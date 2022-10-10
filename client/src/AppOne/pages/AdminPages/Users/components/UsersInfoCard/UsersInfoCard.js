@@ -6,9 +6,9 @@ const UsersInfoCard = ({type, color, amount}) => {
     let classes = [cls.users_info_card]
     classes.push(cls[color])
     return (
-        <Col className='col-12 col-md-3 color_card'>
+        <Col className='color_card col-12 col-md-auto px-1'>
             <Card className={classes.join(' ')}>
-                {type} {amount}
+                <b>{type}</b> {amount}
             </Card>
         </Col>
     )

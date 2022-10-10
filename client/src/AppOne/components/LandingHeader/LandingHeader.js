@@ -28,8 +28,8 @@ const LandingHeader = ({state, openSidebar}) => {
     return (
         <header className='landing_header'>
             <Offcanvas placement='end' style={{backgroundColor: theme === 'light' ? '#fff' : '#121318'}} show={show} onHide={handleClose}>
-                <Offcanvas.Header closeVariant={theme === 'light' ? null : 'white'} closeButton>
-                    <NavLink to={'/'}><Logo/></NavLink>
+                <Offcanvas.Header style={{justifyContent: 'flex-start', marginTop: 20}} closeVariant={theme === 'light' ? null : 'white'} closeButton>
+                    <NavLink style={{marginRight: 20}} to={'/'}><Logo/></NavLink>
                     <NavLink to={'/'}><span style={{color: theme === 'dark' ? '#fff' : 'grey'}}>{state ? state.domainName : <Preloader />}</span></NavLink>
                 </Offcanvas.Header>
                 <Offcanvas.Body>

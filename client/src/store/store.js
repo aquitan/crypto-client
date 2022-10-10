@@ -194,7 +194,7 @@ export default class Store {
         try {
             this.setIsLoading(true)
             const response = await axios.get(`${BASE_URL}/refresh`, {withCredentials: true})
-            // localStorage.setItem('token', response.data.accessToken)
+            localStorage.setItem('token', response.data.accessToken)
             // this.setUserId(response.data.user.id)
             // this.setUserEmail(response.data.user.email)
             // if (response.data.user.isActivated) {

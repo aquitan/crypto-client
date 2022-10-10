@@ -19,6 +19,7 @@ import {dateToTimestamp} from '../../../../../utils/dateToTimestamp';
 import {useValueContext} from '../../../../../context/ValueContext';
 import {checkOrderBuyToComplete} from '../../utils/checkOrderToComplete/checkOrderToComplete';
 import Deposit from '../../../Deposit/Deposit';
+import CustomModal from '../../../../../components/CustomModal/CustomModal';
 
 const TradingBitcoin = ({balance}) => {
   const {theme} = useThemeContext()
@@ -183,10 +184,10 @@ const TradingBitcoin = ({balance}) => {
     }
     if (price) {
       const res = await putData('/trading/make_order/', obj)
-    }
-    if (res.status === 201) {
-      await getTradingHistory()
-      setOrderModal(true)
+      if (res.status === 201) {
+        await getTradingHistory()
+        setOrderModal(true)
+      }
     }
   }
 
@@ -224,6 +225,10 @@ const TradingBitcoin = ({balance}) => {
           Order has been added!
         </Modal.Body>
       </Modal>
+
+      <CustomModal size='md' title='Order' >
+        Order has been added!
+      </CustomModal>
 
       <Row>
         <Col className='col-12 col-xl-9'>
@@ -328,7 +333,7 @@ const TradingBitcoin = ({balance}) => {
                         onCancelOrder={onCancelOrder}
                       />
                     )
-                  }) : <h2>No trading data</h2>
+                  }) : <h4 className='text-center my-4' style={{color: '#cecece'}}>No deals!</h4>
               }
             </Tab>
             <Tab tabClassName='content-tab' eventKey='sell' title='Sell'>
@@ -350,7 +355,7 @@ const TradingBitcoin = ({balance}) => {
                         onCancelOrder={onCancelOrder}
                       />
                     )
-                  }) : <h2>No trading data</h2>
+                  }) : <h4 className='text-center my-4' style={{color: '#cecece'}}>No deals!</h4>
               }
             </Tab>
             <Tab tabClassName='content-tab' eventKey='completed' title='Completed'>
@@ -372,7 +377,7 @@ const TradingBitcoin = ({balance}) => {
                         onCancelOrder={onCancelOrder}
                       />
                     )
-                  }) : <h2>No trading data</h2>
+                  }) : <h4 className='text-center my-4' style={{color: '#cecece'}}>No deals!</h4>
               }
             </Tab>
           </Tabs>

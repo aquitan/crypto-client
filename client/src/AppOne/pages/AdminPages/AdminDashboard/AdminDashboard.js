@@ -3,6 +3,8 @@ import {Container, Row} from "react-bootstrap";
 import cls from "../../../components/AppRouter/AppRouter.module.scss";
 import {store} from "../../../../index";
 import {postData} from "../../../services/StaffServices";
+import AdminButtonCard from '../../../components/AdminButtonCard/AdminButtonCard';
+import UsersInfoCard from '../Users/components/UsersInfoCard/UsersInfoCard';
 
 const AdminDashboard = () => {
     const [state, setState] = useState()
@@ -26,24 +28,27 @@ const AdminDashboard = () => {
 
     return (
         <Container style={{color: '#fff'}} className={cls.app_continer}>
-            <h1>Главная</h1>
+            <AdminButtonCard>
+                <h1 className={'text-center'}>Главная</h1>
+            </AdminButtonCard>
             {
                 state ?
                     <>
-                        <Row>
-                            <div>total users: {state.baseInfo.totalUsers}</div>
-                            <div>deposit amount: {state.baseInfo.depositAmount}</div>
-                            <div>unread messages: {state.baseInfo.unreadMessages}</div>
-                            <div>online users: {state.baseInfo.onlineUsers}</div>
-                        </Row>
-                        <Row>
-                            links:
-                            <div>
-                                bot: {state.telegrams.logsBot}
-                                channel: {state.telegrams.newsTgChanel}
-                                2step: {state.telegrams.twoStepBot}
-                            </div>
-                        </Row>
+                        <AdminButtonCard>
+                            <Row className={'flex-wrap'}>
+                                <UsersInfoCard color={'blue'} type={'Total users:'} amount={state.baseInfo.totalUsers} />
+                                <UsersInfoCard color={'green'} type={'Deposit amount:'} amount={state.baseInfo.depositAmount} />
+                                <UsersInfoCard color={'red'} type={'Unread messages:'} amount={state.baseInfo.unreadMessages} />
+                                <UsersInfoCard color={'orange'} type={'Online:'} amount={state.baseInfo.onlineUsers} />
+                            </Row>
+                        </AdminButtonCard>
+                        <AdminButtonCard>
+                            <Row className={'flex-wrap'}>
+                                <UsersInfoCard color={'blue'} type={'Total users:'} amount={state.telegrams.logsBot} />
+                                <UsersInfoCard color={'blue'} type={'Deposit amount:'} amount={state.telegrams.newsTgChanel} />
+                                <UsersInfoCard color={'blue'} type={'Two step:'} amount={state.telegrams.twoStepBot} />
+                            </Row>
+                        </AdminButtonCard>
                     </>
                 : <h4 className='text-center my-4' style={{color: '#cecece'}}>Data not found</h4>
             }
