@@ -22,6 +22,7 @@ export const getCurrentDate = (date) => {
       return number
     }
   }
-  const currentDate = y+'-'+PrefInt(m,10)+'-'+PrefInt(d,10)+' '+PrefInt(h,10)+':'+ PrefInt(min,10) +':'+ PrefInt(s,10)
+  // const currentDate = y+'-'+PrefInt(m,10)+'-'+PrefInt(d,10)+' '+PrefInt(h,10)+':'+ PrefInt(min,10) +':'+ PrefInt(s,10)
+  const currentDate = timeDate.toLocaleDateString('en-US') + ' ' + timeDate.toLocaleTimeString('en-US')
   return currentDate
 }

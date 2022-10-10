@@ -41,7 +41,7 @@ const Notification = () => {
             </div>
             {
                 open ?
-                  <Overlay id={theme} target={target.current} show={open} placement="right">
+                  <Overlay rootClose onHide={() => setOpen(false)} id={theme} target={target.current} show={open} placement="right">
                       {(props) => (
                         <Popover placement='bottom' id="overlay-example" {...props}>
                             <Popover.Header style={{backgroundColor: '#fff'}}>

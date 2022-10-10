@@ -76,10 +76,10 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
     }
 
     const onChangeCrypto = (e) => {
-        setValue('amount', (e.target.value * store.rates[coin.toLowerCase()]).toFixed(5) )
+        setValue('amount', isNaN((e.target.value * store.rates[coin.toLowerCase()]).toFixed(5)) ? 'Only numbers allowed' : (e.target.value * store.rates[coin.toLowerCase()]).toFixed(5) )
     }
     const onChangeUsd = (e) => {
-        setValue('crypto', (e.target.value / store.rates[coin.toLowerCase()]).toFixed(5) )
+        setValue('crypto', isNaN((e.target.value / store.rates[coin.toLowerCase()]).toFixed(5)) ? 'Only numbers allowed' : (e.target.value / store.rates[coin.toLowerCase()]).toFixed(5) )
     }
 
     const onSubmit = async (data, e) => {
@@ -107,8 +107,6 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
             errorId: store.user.userError,
         }
 
-        console.log('coinsBalance', coinsBalance);
-
         if (coinsBalance <= 0) {
             setBalanceError(true)
         } else if (data.amount < store.domain.domainParams.minWithdrawalSum) {
@@ -132,12 +130,10 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
         setCounter((prevState => {
             return prevState + 10
         }))
-        console.log('counter', counter)
     }
 
 
     const onSendWithdraw = (error) => {
-        console.log('withdraw error', error)
         setOnWaitError(true)
         setTimeout(() => {
             setOnWaitError(false)
@@ -146,9 +142,6 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
     }
 
     const onShowHistoryItem = (date, usdAmount, cryptoAmount, coinName, address, status) => {
-        console.log('history item', {
-            date, usdAmount, cryptoAmount, coinName, address, status
-        });
         setHistoryItem({date, usdAmount, cryptoAmount, coinName, address, status})
         setShowHistoryItem(true)
     }
@@ -264,18 +257,10 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
                                   <Row className='mb-3 align-items-center'>
                                       <div style={{padding: '20px 20px'}} className={cls.inputWrapper}>
                                         <span style={{display: 'flex', alignItems: 'center'}}>
-                                            <Image src={`${window.location.origin}/img/${imgMatch(coin).toLowerCase()}.svg`} height={30} width={30} />
-                                            {/*{*/}
-                                            {/*        */}
-                                            {/*        // <Select*/}
-                                            {/*        //     value={balanceCoin}*/}
-                                            {/*        //     onChange={e => onValChange(e)}*/}
-                                            {/*        //     classname={['transparent', 'borderLess']}*/}
-                                            {/*        //     options={coins} />*/}
-                                            {/*        : <Preloader/>*/}
-                                            {/*}*/}
+                                            <Image src={`${window.location.origin}/img/${imgMatch(coin === 'TRC 20' ? 'usdt' : coin).toLowerCase()}.svg`} height={30} width={30} />
+
                                             <span>
-                                                {coin}
+                                                {coin === 'TRC 20' ? 'USDT (TRC 20)' : coin === 'USDT' ? 'USDT (ERC 20)' : coin}
                                             </span>
                                         </span>
                                           <div>Balance: {balance.toFixed(5)}</div>

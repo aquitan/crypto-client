@@ -43,11 +43,8 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
         value: 0,
         text: ''
     })
-    const [balanceCoin, setBalanceCoin] = useState('BTC')
     const [balance, setBalance] = useState(0)
     const [limit, setLimit] = useState(0)
-    const [coins, setCoins] = useState([])
-    const [coinsFull, setCoinsFull] = useState([])
     const [history, setHistory] = useState([])
     const [historyModal, setHistoryModal] = useState(false)
     const [historyModalData, setHistoryModalData] = useState({
@@ -58,8 +55,6 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
         address: '',
         status: ''
     })
-    let btc = store.rates[coin.toLowerCase()]
-
 
     useEffect(() => {
         getBalance()
@@ -84,13 +79,12 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
         const obj = {
             userId: store.user.id,
             coinName: coin.toLowerCase(),
-            // coinFullName: coinFullName.toLowerCase(),
-            // expiredTime: dateToTimestamp(d),
-            // userEmail: store.user.email
         }
         const res = await postData('/get_address_for_deposit/', obj)
         setAddress(res.data.address)
     }
+
+    console.log('deposit coin', coin)
 
 
     const onSubmit = async (data, e) => {
@@ -98,9 +92,6 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
         data.value = state.value
         let geoData = await getGeoData()
 
-        let stateVal = +state.text
-
-        console.log('register', register);
         const obj = {
             userId: store.user.id,
             userEmail: store.userEmail,
@@ -143,10 +134,10 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
     }
 
     const onChangeCrypto = (e) => {
-        setValue('amount', (e.target.value * store.rates[coin.toLowerCase()]).toFixed(5) )
+        setValue('amount', isNaN((e.target.value * store.rates[coin.toLowerCase()]).toFixed(5)) ? 'Only numbers allowed' : (e.target.value * store.rates[coin.toLowerCase()]).toFixed(5) )
     }
     const onChangeUsd = (e) => {
-        setValue('crypto', (e.target.value / store.rates[coin.toLowerCase()]).toFixed(5) )
+        setValue('crypto', isNaN((e.target.value / store.rates[coin.toLowerCase()]).toFixed(5)) ? 'Only numbers allowed' : (e.target.value / store.rates[coin.toLowerCase()]).toFixed(5) )
     }
     const getBalance = async () => {
         const res = await getData(`/get_user_balance/${store.user.id}`)
@@ -267,21 +258,9 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
 
                             <div style={{padding: '20px 20px'}} className={cls.inputWrapper}>
                                         <span style={{display: 'flex', alignItems: 'center'}}>
-                                            <Image src={`${window.location.origin}/img/${imgMatch(coin).toLowerCase()}.svg`} height={30} width={30} />
-                                            {/*{*/}
-                                            {/*    coins.length ?*/}
-                                            {/*        <span>*/}
-                                            {/*            {location.state.coin}*/}
-                                            {/*        </span>*/}
-                                            {/*        // <Select*/}
-                                            {/*        //     value={balanceCoin}*/}
-                                            {/*        //     onChange={e => onValChange(e)}*/}
-                                            {/*        //     classname={['transparent', 'borderLess']}*/}
-                                            {/*        //     options={coins} />*/}
-                                            {/*        : <Preloader/>*/}
-                                            {/*}*/}
+                                            <Image src={`${window.location.origin}/img/${imgMatch(coin === 'TRC 20' ? 'usdt' : coin ).toLowerCase()}.svg`} height={30} width={30} />
                                             <span>
-                                                {coin}
+                                                {coin === 'TRC 20' ? 'USDT (TRC 20)' : coin === 'USDT' ? 'USDT (ERC 20)' : coin}
                                             </span>
                                         </span>
                                 <div>Balance: {balance ? coinsBalance.toFixed(5) : <Preloader />}</div>
