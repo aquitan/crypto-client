@@ -66,7 +66,7 @@ const Support = () => {
         <>
             <ButtonCard style={{padding: 0}} theme={theme}>
                 <Row className='py-3 px-3'>
-                    <Col className='col-12 col-lg-10'>
+                    <Col className='col-12 col-lg-9'>
                         <ChatWindow onUploadImg={onUploadImg} onClick={onClick}>
                             {
                                 msg.length ?
@@ -85,7 +85,7 @@ const Support = () => {
                             }
                         </ChatWindow>
                     </Col>
-                    <Col className='col-12 col-lg-2'>
+                    <Col className='col-12 col-lg-3'>
                         <ChatRules rulesDisclamer={supportRulesText} />
                     </Col>
                 </Row>

@@ -6,10 +6,12 @@ import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
 import {getData, patchData, postData, putData} from '../../../services/StaffServices';
 import {store} from "../../../../index";
+import CustomModal from '../../../components/CustomModal/CustomModal';
 
 const Chat = () => {
     const [msg, setMsg] = useState([])
     const [chats, setChats] = useState([])
+    const [msgError, setMsgError] = useState(false)
     const [currentChat, setCurrentChat] = useState('')
     const [image, setImage] = useState()
 
@@ -36,7 +38,7 @@ const Chat = () => {
             const res = await putData('staff/support/send_message_to_user/', obj)
             await chooseChat()
         } catch(e) {
-            alert('something went wront')
+            setMsgError(true)
         }
 
 
@@ -94,6 +96,11 @@ const Chat = () => {
 
     return (
         <Container>
+
+            <CustomModal show={msgError} handleClose={() => setMsgError(false)} size='md' themeDark={true} title={'Ошибка'} btnClose='Ok'>
+                Ошибка отпавки сообщения!
+            </CustomModal>
+
             <AdminButtonCard>
                 <h1>Чат</h1>
             </AdminButtonCard>
