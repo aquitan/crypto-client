@@ -125,14 +125,14 @@ const AdminSecureDeal = () => {
             <AdminButtonCard>
                 <Form onSubmit={handleSubmit(onSubmit)}>
                     <Row className={'mb-3'}>
-                        <Col>
+                        <Col className='col-12 col-md-6 mb-2'>
                             <AdminInput {...register('buyerEmail', {
                                 required: true,
                                 pattern: /^[^а-яё]+$/iu
                             })} placeholder='Buyer'/>
                             <ErrorMessage  name='buyerEmail' errors={errors} render={() => <p className={error.error}>Только английские буквы</p>} />
                         </Col>
-                        <Col>
+                        <Col className='col-12 col-md-6 mb-2'>
                             <AdminInput {...register('sellerEmail', {
                                 required: true,
                                 pattern: /^[^а-яё]+$/iu

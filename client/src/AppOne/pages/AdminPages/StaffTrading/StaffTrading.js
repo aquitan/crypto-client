@@ -12,6 +12,7 @@ import HistoryItem from './components/HistoryItem/HistoryItem';
 import {optionsCurrency} from '../../../utils/staffConstants';
 import RateItem from './components/RateItem/RateItem';
 import Preloader from '../../../components/UI/Preloader/Preloader';
+import './StaffTrading.scss'
 
 const StaffTrading = () => {
     const {register, handleSubmit} = useForm()
@@ -22,7 +23,6 @@ const StaffTrading = () => {
     const [currentDomain, setCurrentDomain] = useState(window.location.host)
 
     useEffect(() => {
-        getHistory()
         getDomainList()
     }, [])
 
@@ -155,19 +155,19 @@ const StaffTrading = () => {
 
                 <Tabs
                   defaultActiveKey="buy"
-                  id="uncontrolled-tab-example"
-                  className="mb-3"
+                  id="history-tab"
+                  className="mb-3 history-tab"
                 >
-                    <Tab eventKey="buy" title="Buy">
+                    <Tab eventKey="buy" className='tab-content-buy' title="Buy">
                         <Row className='mb-3'>
-                            <Col>Email</Col>
-                            <Col>Домен</Col>
-                            <Col>Дата</Col>
-                            <Col>Монета</Col>
-                            <Col>Сумма Монеты</Col>
-                            <Col>Сумма USDT</Col>
-                            <Col>Рейт</Col>
-                            <Col>Статус</Col>
+                            <Col className='text-center'>Email</Col>
+                            <Col className='text-center'>Домен</Col>
+                            <Col className='text-center'>Дата</Col>
+                            <Col className='text-center'>Монета</Col>
+                            <Col className='text-center'>Сумма Монеты</Col>
+                            <Col className='text-center'>Сумма USDT</Col>
+                            <Col className='text-center'>Рейт</Col>
+                            <Col className='text-center'>Статус</Col>
                         </Row>
                         {
                             historyBuy.length ?
@@ -189,16 +189,16 @@ const StaffTrading = () => {
                               }) : <h3>Нет активных ордеров</h3>
                         }
                     </Tab>
-                    <Tab eventKey="sell" title="Sell">
+                    <Tab eventKey="sell" className='tab-content-buy' title="Sell">
                         <Row className='mb-3'>
-                            <Col>Email</Col>
-                            <Col>Домен</Col>
-                            <Col>Дата</Col>
-                            <Col>Монета</Col>
-                            <Col>Сумма Монеты</Col>
-                            <Col>Сумма USDT</Col>
-                            <Col>Рейт</Col>
-                            <Col>Статус</Col>
+                            <Col className='text-center'>Email</Col>
+                            <Col className='text-center'>Домен</Col>
+                            <Col className='text-center'>Дата</Col>
+                            <Col className='text-center'>Монета</Col>
+                            <Col className='text-center'>Сумма Монеты</Col>
+                            <Col className='text-center'>Сумма USDT</Col>
+                            <Col className='text-center'>Рейт</Col>
+                            <Col className='text-center'>Статус</Col>
                         </Row>
                         {
                             historySell.length ?

@@ -3,7 +3,7 @@ import {Button, Modal, Row} from 'react-bootstrap';
 import {useThemeContext} from '../../context/ThemeContext';
 import './CustomModal.scss'
 
-const CustomModal = ({title, fullScreen, text, show, handleClose, btnClose, children, size}) => {
+const CustomModal = ({title, fullScreen, text, show, handleClose, btnClose, children, size, themeDark}) => {
     const {theme} = useThemeContext()
     return (
         <Modal
@@ -11,10 +11,10 @@ const CustomModal = ({title, fullScreen, text, show, handleClose, btnClose, chil
             animation={false}
             fullscreen={fullScreen}
             style={{opacity: 1, zIndex: 9999999, paddingTop: '2%'}}
-            dialogClassName={`modal-window ${theme}`}
+            dialogClassName={`modal-window ${themeDark ? 'dark' : theme}`}
             backdrop={'static'}
             show={show} onHide={handleClose}>
-            <Modal.Header style={{textAlign: 'center', display: 'inline-block'}} closeButton closeVariant={theme === 'dark' ? 'white' : ''}>
+            <Modal.Header style={{textAlign: 'center', display: 'inline-block'}} closeButton closeVariant={themeDark ? 'white' : theme === 'dark' ? 'white' : ''}>
                 <Modal.Title style={{textAlign: 'center', display: 'inline-block'}}>{title}</Modal.Title>
             </Modal.Header>
             {text || children && <Modal.Body>

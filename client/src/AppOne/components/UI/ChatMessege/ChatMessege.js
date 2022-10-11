@@ -5,13 +5,15 @@ import {Row} from "react-bootstrap";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
 import {store} from '../../../../index';
 
-const ChatMessege = ({text, date, type, allowEdit, onEditChatMessage, id, image, userId}) => {
+const ChatMessege = ({text, date, type, allowEdit, onEditChatMessage, id, image, userId, inSupport}) => {
     const [textVal, setTextVal] = useState(text)
     const [disabled, setDisabled] = useState(true)
     let cx = classNames.bind(cls)
     let classes = ''
     if (!allowEdit) {
         classes = cx('chat-message', type && store.user.id === userId ? 'user' : 'support')
+    } else {
+        classes = cx('chat-message', type && inSupport ? 'user-support' : 'support')
     }
 
     const onTextChange = (e) => {

@@ -22,6 +22,7 @@ import {ErrorMessage} from "@hookform/error-message";
 import {useNavigate} from "react-router-dom";
 import ModalDark from "../../../components/UI/ModalDark/ModalDark";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
+import CustomModal from '../../../components/CustomModal/CustomModal';
 
 const CreateDomains = () => {
     const [showDomain, setShowDomain] = useState(false)
@@ -166,23 +167,10 @@ const CreateDomains = () => {
 
     return (
         <Container>
-            <Modal
-              size='md'
-              animation={false}
-              style={{opacity: 1, zIndex: 9999}}
-              show={showDomain}
-              onHide={() => setShowDomain(false)}
-              dialogClassName={`modal-window dark`}
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title id="example-custom-modal-styling-title">
-                        Domain
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    Domain was created successfully!
-                </Modal.Body>
-            </Modal>
+
+            <CustomModal title={'Domain'} show={showDomain} size={'md'} themeDark={true} btnClose={'Ok'} handleClose={() => setShowDomain(false)}>
+                Domain was created successfully!
+            </CustomModal>
 
 
 
@@ -294,7 +282,7 @@ const CreateDomains = () => {
                                                     button: errorList.verif_address.button
                                                 }})
                                         }
-                                        classnames='dark admin-square'
+                                        classname={['dark', 'admin-square']}
                                     />
                                     <div>
                                         <b>Пример текста:</b><br/> {defaultErrors[0].text}
@@ -321,7 +309,7 @@ const CreateDomains = () => {
                                                     button: errorList.verif_document.button
                                                 }})
                                         }
-                                        classnames='dark admin-square'
+                                        classname={['dark', 'admin-square']}
                                     />
                                     <b>Пример текста:</b> {defaultErrors[1].text}
                                 </Row>
@@ -346,7 +334,7 @@ const CreateDomains = () => {
                                                     button: errorList.insurance.button
                                                 }})
                                         }
-                                        classnames='dark admin-square'
+                                        classname={['dark', 'admin-square']}
                                     />
                                     <b>Пример текста:</b> {defaultErrors[2].text}
                                 </Row>
@@ -371,7 +359,7 @@ const CreateDomains = () => {
                                                     button: errorList.premium.button
                                                 }})
                                         }
-                                        classnames='dark admin-square'
+                                        classname={['dark', 'admin-square']}
                                     />
                                     <b>Пример текста:</b> {defaultErrors[3].text}
                                 </Row>
@@ -396,7 +384,7 @@ const CreateDomains = () => {
                                                     button: errorList.multi_account.button
                                                 }})
                                         }
-                                        classnames='dark admin-square'
+                                        classname={['dark', 'admin-square']}
                                     />
                                     <b>Пример текста:</b> {defaultErrors[4].text}
                                 </Row>

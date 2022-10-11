@@ -4,7 +4,7 @@ import ChatWindow from "../../AuthPages/Support/components/ChatWindow/ChatWindow
 import ChatMessege from "../../../components/UI/ChatMessege/ChatMessege";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard";
-import {getData, patchData, postData} from "../../../services/StaffServices";
+import {getData, patchData, postData, putData} from '../../../services/StaffServices';
 import {store} from "../../../../index";
 
 const Chat = () => {
@@ -18,8 +18,27 @@ const Chat = () => {
     }, [])
 
     const onClick = async (text) => {
+        const obj = {
+            userId: '',
+            domainName: window.location.host,
+            staffId: store.user.id,
+            curDate: dateToTimestamp(new Date()),
+            messageBody: text,
+            imageLink: image ? image : null,
+            chatId: msg.length > 0 ? msg[0].chatId : null,
+            isUser: true,
+            supportName: store.domain.supportName,
+            isStaff: store.user.isStaff,
+            isAdmin: store.user.isAdmin,
+            rootAccess: store.fullAccess
+        }
+        try {
+            const res = await putData('staff/support/send_message_to_user/', obj)
+            await chooseChat()
+        } catch(e) {
+            alert('something went wront')
+        }
 
-        await chooseChat()
 
     }
 
@@ -31,7 +50,7 @@ const Chat = () => {
             staffId: store.fullAccess ? 'root' : store.user.id
 
         }
-        const res = await postData('/staff/support/', data)
+        const res = await postData('staff/support/', data)
         let arr = []
         res.data.forEach((item) => {
             let obj = {
@@ -97,6 +116,7 @@ const Chat = () => {
                                     return(
                                         <ChatMessege
                                             key={item._id}
+                                            inSupport={true}
                                             id={item._id}
                                             allowEdit={true}
                                             date={item.curDate}

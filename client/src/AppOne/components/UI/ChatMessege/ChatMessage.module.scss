@@ -49,6 +49,21 @@
     border-top: 10px solid #007AFF;
   }
 }
+.user-support {
+  background-color: tomato;
+  align-self: start;
+  color: #fff;
+}
+
+.chat-message.user-support {
+  &:after {
+    content: '';
+    position: absolute;
+    left: -10px; top: 0;
+    border: 10px solid transparent;
+    border-top: 10px solid tomato;
+  }
+}
 
 .time {
   text-align: left;

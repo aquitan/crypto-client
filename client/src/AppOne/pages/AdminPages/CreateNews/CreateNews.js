@@ -18,6 +18,7 @@ import {ErrorMessage} from "@hookform/error-message";
 import FileUpload from "../../../components/UI/FileUpload/FileUpload";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import {v4 as uuid} from 'uuid'
+import FileAdmin from '../../../components/UI/FileAdmin/FileAdmin';
 
 const CreateNews = () => {
     const [state, setState] = useState([])
@@ -190,7 +191,7 @@ const CreateNews = () => {
                     </Row>
                     <Row className='mb-3'>
                         <Col className='col-12 col-md-6 mb-3'>
-                            <FileUpload onUploadImg={onUploadImg} id='newsImg' />
+                            <FileAdmin onUploadImg={onUploadImg} style={{color: '#fff'}} id='newsImg' />
                         </Col>
                         {/*<Col className='col-12 col-md-6 mb-3'>*/}
                         {/*    <AdminInput {...register('youtubeLink')} placeholder='Ссылка на Youtube' />*/}

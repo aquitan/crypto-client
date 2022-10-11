@@ -66,7 +66,7 @@ const StaffErrorDetail = () => {
                     </Row>
                     <Row className='mb-3'>
                         <p>Текущий Текст</p>
-                        <TextArea defaultValue={state.error?.error_text} {...register('text')} placeholder='Текст ошибки' classnames='textarea_square'/>
+                        <TextArea defaultValue={state.error?.error_text} {...register('text')} placeholder='Текст ошибки' classname='textarea_square'/>
                     </Row>
                     <Row className='mb-3'>
                         <p>Текущий Текст кнопки</p>
@@ -79,11 +79,5 @@ const StaffErrorDetail = () => {
     )
 }
 
-StaffErrorDetail.propTypes = {
-    
-}
-StaffErrorDetail.defaultProps = {
-    
-}
 
 export default StaffErrorDetail

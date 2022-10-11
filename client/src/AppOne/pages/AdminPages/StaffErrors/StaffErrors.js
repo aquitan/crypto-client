@@ -15,6 +15,7 @@ import Preloader from "../../../components/UI/Preloader/Preloader";
 import error from "../../../styles/Error.module.scss";
 import {ErrorMessage} from "@hookform/error-message";
 import ModalDark from "../../../components/UI/ModalDark/ModalDark";
+import CustomModal from '../../../components/CustomModal/CustomModal';
 
 const StaffErrors = () => {
     const [modal, setModal] = useState(false)
@@ -119,9 +120,9 @@ const StaffErrors = () => {
 
     return (
         <Container>
-            <ModalDark active={modal} setActive={setModal} singleBtn={true}>
-                <h2>Ошибка создана успешно!</h2>
-            </ModalDark>
+            <CustomModal show={modal} handleClose={() => setModal(false)} size={'md'} themeDark={true} title={'Новая ошибка'} btnClose='Ok'>
+                Ошибка создана успешно!
+            </CustomModal>
             <AdminButtonCard>
                 <h1 className='text-center'>Ошибки</h1>
             </AdminButtonCard>
@@ -145,7 +146,7 @@ const StaffErrors = () => {
                   </Row>
                   <Row className='mb-3'>
                       Основной текст
-                      <TextArea classnames='dark textarea_square' {...register('errorText', {
+                      <TextArea classname={['dark', 'textarea_square']} {...register('errorText', {
                           required: true,
                           pattern: /^[^а-яё]+$/iu
                       })} />

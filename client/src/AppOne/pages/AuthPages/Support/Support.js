@@ -9,10 +9,12 @@ import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import {getData, putData} from "../../../services/StaffServices";
 import {store} from "../../../../index";
 import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
+import {useNavigate} from 'react-router-dom';
 
 const Support = () => {
     const [msg, setMsg] = useState([])
     const [image, setImage] = useState()
+    const navigate = useNavigate()
     const {theme} = useThemeContext(ThemeContext)
 
     useEffect(() => {
@@ -32,9 +34,12 @@ const Support = () => {
             supportName: store.domain.supportName
         }
 
-        const res = await putData('/support/send_support_message/', obj)
-        if (res.status === 202) {
+        try {
+            const res = await putData('/support/send_support_message/', obj)
             getSupportMessages()
+        } catch(e) {
+            console.log('error', e)
+            navigate('error-500')
         }
     }
 

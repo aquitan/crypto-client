@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {Col, Container, Modal, Row} from "react-bootstrap";
+import {Button, Col, Container, Modal, Row} from 'react-bootstrap';
 import cls from './Promocodes.module.scss'
 import error from '../../../styles/Error.module.scss'
 import AdminButton from "../../../components/UI/AdminButton/AdminButton";
@@ -14,10 +14,17 @@ import {deleteData, postData, putData} from '../../../services/StaffServices';
 import AdminButtonCard from '../../../components/AdminButtonCard/AdminButtonCard';
 import ModalDark from "../../../components/UI/ModalDark/ModalDark";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
+import CustomModal from '../../../components/CustomModal/CustomModal';
 
 const Promocodes = () => {
     const [curSelect, setCurSelect] = useState('')
     const [optionId, setOptionId] = useState('')
+    const [successPromoAdd, setSuccessPromoAdd] = useState(false)
+    const [deleteStepOne, setDeleteStepOne] = useState(false)
+    const [deleteStepTwo, setDeleteStepTwo] = useState(false)
+    const [deleteSuccess, setDeleteSuccess] = useState(false)
+    const [deleteUsedError, setDeleteUsedError] = useState(false)
+    const [codeForDelete, setCodeForDelete] = useState('')
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: "onBlur"
     })
@@ -83,7 +90,7 @@ const Promocodes = () => {
         }
         const res = await putData('/staff/create_promocode/', promoData)
         if (res.status === 201) {
-            // SwalSimple('Промокод создан!')
+            setSuccessPromoAdd(true)
             getAllPromocodes()
         }
     }
@@ -118,7 +125,6 @@ const Promocodes = () => {
         const data = await res.data
 
         setUsedPromocodes(data.promocodeList)
-        console.log('data.promocodeList', data.promocodeList)
     }
 
     useEffect(() => {
@@ -126,19 +132,18 @@ const Promocodes = () => {
         getDomainList()
     }, [])
 
-    const onDeletePromo = async (code) => {
+    const onDeletePromo = async () => {
         const obj = {
-            promocode: code
+            promocode: codeForDelete
         }
         console.log('code', obj)
         const res = await deleteData('/staff/delete_promocode/', {data: obj})
         setState({
-            ...state, currentPromocodes: state.currentPromocodes.filter(el => el.code !== code )
+            ...state, currentPromocodes: state.currentPromocodes.filter(el => el.code !== codeForDelete )
         })
-        handleCloseModal()
-        setModal({...modal, isDelete: true})
+        setDeleteStepTwo(false)
         if (res.status === 200) {
-            setModal({...modal, isDelete: true})
+           setDeleteSuccess(true)
         }
     }
     const deleteAllUsed = async () => {
@@ -148,24 +153,26 @@ const Promocodes = () => {
             id: store.user.id
         }
         const res = await deleteData('/staff/delete_all_used_promocode/', {data: obj})
-        setState({...state, usedPromocodes: ''})
-        handleCloseModal()
+        if (res.status !== 200) {
+            setDeleteUsedError(true)
+        }
     }
 
     const handleOpenModal = (code) => {
-        const onClickConfirm = () => onDeletePromo(code) // запихнул коллбэк потому что возвращался объект в onClick и все крашилось
-        console.log('this is', code)
-        setModal(
-            {
-            isOpen: true,
-            onClickConfirm
-        })
+        setDeleteStepOne(true)
+        setCodeForDelete(code)
     }
 
     const handleCloseModal = () => {
         setModal({isOpen: false, onClickConfirm: null, isDelete: false})
     }
 
+    const onConfirmStep = () => {
+        setDeleteStepOne(false)
+        setTimeout(() => {
+            setDeleteStepTwo(true)
+        }, 1000)
+    }
 
 
     const getDomainList = async () => {
@@ -216,16 +223,66 @@ const Promocodes = () => {
     }
 
 
-    console.log('currentPromocodes', state.usedPromocodes)
 
     const {isOpen, onClickConfirm, isDelete} = modal
 
     return (
         <Container>
 
-            <ModalDark active={isOpen} onClick={onClickConfirm} setActive={handleCloseModal}>
-                <h2>Вы уверены?</h2>
-            </ModalDark>
+            <CustomModal size={'md'} show={deleteUsedError} handleClose={() => setDeleteUsedError(false)}>
+                Вы уверены что есть промокоды для удаления?
+            </CustomModal>
+
+            <CustomModal themeDark={true} title={'Промокод'} btnClose={'Ok'} size={'md'} show={successPromoAdd} handleClose={() => setSuccessPromoAdd(false)} >
+                Промокод успешно добавлен!
+            </CustomModal>
+            <CustomModal themeDark={true} title={'Промокод'} btnClose={'Ok'} size={'md'} show={deleteSuccess} handleClose={() => setDeleteSuccess(false)} >
+                Код удален!
+            </CustomModal>
+
+            <Modal
+              size={'md'}
+              animation={false}
+              style={{opacity: 1, zIndex: 9999999, paddingTop: '2%'}}
+              dialogClassName={`modal-window dark`}
+              backdrop={'static'}
+              show={deleteStepTwo} onHide={() => setDeleteStepTwo(false)}>
+                <Modal.Header style={{textAlign: 'center', display: 'inline-block'}} closeButton closeVariant={'white'}>
+                    <Modal.Title style={{textAlign: 'center', display: 'inline-block'}}>Удалить промокод?</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Row className='py-3 px-3'>
+                        Вы уверены?
+                    </Row>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant='primary' style={{width: 150}} onClick={() => setDeleteStepOne(false)}>Закрыть</Button>
+                    <Button variant='danger' style={{width: 150}} onClick={() => onDeletePromo()}>Удалить</Button>
+                </Modal.Footer>
+            </Modal>
+
+
+
+            <Modal
+              size={'md'}
+              animation={false}
+              style={{opacity: 1, zIndex: 9999999, paddingTop: '2%'}}
+              dialogClassName={`modal-window dark`}
+              backdrop={'static'}
+              show={deleteStepOne} onHide={() => setDeleteStepOne(false)}>
+                <Modal.Header style={{textAlign: 'center', display: 'inline-block'}} closeButton closeVariant='white'>
+                    <Modal.Title style={{textAlign: 'center', display: 'inline-block'}}>Удалить промокод?</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Row className='py-3 px-3'>
+                        Подтвердите действие, удалить или отменить!
+                    </Row>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant='primary' style={{width: 150}} onClick={() => setDeleteStepOne(false)}>Закрыть</Button>
+                    <Button variant='danger' style={{width: 150}} onClick={onConfirmStep}>Подтвердить</Button>
+                </Modal.Footer>
+            </Modal>
 
             <ModalDark singleBtn={true} active={isDelete} setActive={handleCloseModal}>
                 <h2>Код удален!</h2>

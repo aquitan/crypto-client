@@ -4,7 +4,7 @@ import cls from './FileUpload.module.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faPaperclip} from '@fortawesome/free-solid-svg-icons';
 
-const FileUpload = forwardRef(({id, onUploadImg, classnames}, ref) => {
+const FileUpload = forwardRef(({id, onUploadImg, classnames, ...attr}, ref) => {
     const [state, setState] = useState()
     const cx = classNames.bind(cls)
     const classes = cx('file-wrap', classnames)
@@ -13,6 +13,8 @@ const FileUpload = forwardRef(({id, onUploadImg, classnames}, ref) => {
         setState(e.target.files.length)
         onUploadImg(e.target.files[0])
     }
+
+    console.log('attr', attr);
     return (
         <div className={classes}>
             <label htmlFor={id}>
