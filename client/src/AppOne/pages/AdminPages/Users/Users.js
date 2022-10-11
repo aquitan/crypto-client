@@ -108,13 +108,13 @@ const Users = () => {
                                         return(
                                             <UsersTableItem
                                                 key={uuid()}
-                                                registerDate={user.registerDate}
-                                                name={user.userName}
-                                                email={user.userEmail}
+                                                registerDate={user.dateOfEntry}
+                                                name={user.name}
+                                                email={user.email}
                                                 id={user.userId}
                                                 userStatus={user.userStatus}
                                                 kycStatus={user.kycStatus}
-                                                userDomain={user.userDomain}
+                                                userDomain={user.domainName}
                                                 staff={true}/>
                                         )
                                     })

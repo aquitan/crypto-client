@@ -12,7 +12,7 @@ const UsersTableItem = (props) => {
     return (
         <div className={cls.table_item}>
             <Row>
-                <Col className='d-none d-md-block col-2 text-center'>{getCurrentDate(getCurrentDate(props.registerDate))}</Col>
+                <Col className='d-none d-md-block col-2 text-center'>{getCurrentDate(props.registerDate)}</Col>
                 <Col className='d-none d-md-block col-2 col-md-2 text-center'>{props.name}</Col>
                 <Col className='col-6 col-md-2 text-center'><span onClick={() => navigate(`/staff/users/${props.id}`)}>{props.email}</span></Col>
                 <Col className='d-none d-md-block col-8 col-sm-2 text-center'>
