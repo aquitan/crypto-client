@@ -13,6 +13,7 @@ import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import {useLocation, useNavigate} from "react-router-dom";
 import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 import CustomModal from '../../../components/CustomModal/CustomModal';
+import {checkDeviece} from '../../../utils/checkDevice';
 
 const AccountSecurity = (props) => {
     const {theme} = useThemeContext(ThemeContext)
@@ -72,8 +73,9 @@ const AccountSecurity = (props) => {
     }
 
     const onClickSelect = async (e, val) => {
-        setFaType(val)
         e.preventDefault()
+        setFaType(val)
+        let geodata = await getGeoData()
         const obj = {
             domainName: window.location.host,
             userEmail: store.userEmail,
@@ -81,6 +83,9 @@ const AccountSecurity = (props) => {
             twoFaType: val,
             twoFaStatus: true,
             currentTime: dateToTimestamp(),
+            companyYear: store.domain.companyYear,
+            deviceName: checkDeviece(),
+            ipAddress: geodata.ipAddress
         }
 
         try {

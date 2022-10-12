@@ -26,6 +26,8 @@ import {faCheckCircle} from "@fortawesome/free-solid-svg-icons";
 import CustomModal from '../../../components/CustomModal/CustomModal';
 import axios from 'axios';
 import FileKyc from '../../../components/UI/fileKyc/FileKyc';
+import {dateToTimestamp} from '../../../utils/dateToTimestamp';
+import {getCurrentDate} from '../../../utils/getCurrentDate';
 
 
 
@@ -37,13 +39,15 @@ const KYC = ({status}) => {
         selfieDocumentPhoto: ''
     })
     const [startDate, setStartDate] = useState()
-    const [modal, setModal] = useState(false)
+    const [errorModal, setErrorModal] = useState(false)
+    const [succesKyc, setSuccesKyc] = useState(false)
     const location = useLocation()
-    const {register, handleSubmit, formState: {errors}} = useForm({
+    const {register, handleSubmit, formState: {errors}, setValue} = useForm({
         mode: 'onBlur'
     })
 
     const onSubmit = async (data) => {
+        console.log('data kyc', data);
         let formData = new FormData()
 
         const type1 = img.frontDocumentPhoto.type.split("/");
@@ -69,7 +73,7 @@ const KYC = ({status}) => {
         data.zipCode = +data.zipCode
         data.domainName = window.location.host
         data.documentType = 'Passport'
-        data.dateOfBirth = startDate
+        data.dateOfBirth = getCurrentDate(startDate.getTime() / 1000)
         data.browser = geodata.browser
 
         delete data.frontDocumentPhoto
@@ -77,8 +81,9 @@ const KYC = ({status}) => {
         delete data.selfieDocumentPhoto
         delete data.terms
         delete data.privacy
+        delete data.startDate
 
-        const res = await fetch(`http://164.92.245.8:8888/api/personal_area/verification/save_images/${store.user.id}/`, {
+        const res = await fetch(`http://164.92.245.8:3832/api/personal_area/verification/save_images/${store.user.id}/`, {
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -87,9 +92,15 @@ const KYC = ({status}) => {
         });
 
         if (res.status === 201) {
-            await putData('/personal_area/verification', data)
+            try {
+                await putData('/personal_area/verification', data)
+                setSuccesKyc(true)
+            } catch(e) {
+                setErrorModal(true)
+            }
+
         } else {
-            errorModal(true)
+            setErrorModal(true)
         }
     }
 
@@ -118,16 +129,29 @@ const KYC = ({status}) => {
         console.log('img', e.target.name)
     }
 
+    const onChangeDate = (date) => {
+        setStartDate(date)
+        setValue('startDate', date)
+    }
+
     console.log('errors', errors);
     return (
         <>
             <CustomModal
               btnClose={'Close'}
               title={'Error'}
-              show={modal}
+              show={errorModal}
               size='md'
-              handleClose={() => setModal(false)}>
-                Check fields! Necessary fields must be fulfilled!
+              handleClose={() => setErrorModal(false)}>
+                Something went wrong! Please check data in fields or try again later!
+            </CustomModal>
+            <CustomModal
+              btnClose={'Close'}
+              title={'Success'}
+              show={succesKyc}
+              size='md'
+              handleClose={() => setSuccesKyc(false)}>
+                Your data has been sent to moderation! It could take some time
             </CustomModal>
 
             <Form classnames={'form_big'} onSubmit={handleSubmit(onSubmit)}>
@@ -174,12 +198,13 @@ const KYC = ({status}) => {
                     <Col className={'mb-3 col-12 col-md-6'}>
                         <DatePickert required
                                      customInput={<DatePickerCustom {...register('startDate', {
-                                         required: 'Date is required'
+                                         required: 'Date is required',
                                      })} classname={['inputTransparent', `${errors.startDate ? 'error' : ''}`]}/>}
                                      placeholderText='Date of Birth*'
                                      selected={startDate}
                                      dateFormat='yyyy/MM/dd'
-                                     onChange={(date) => setStartDate(date)} />
+                                     onChange={(date) => {onChangeDate(date)}} />
+                        <ErrorMessage name='startDate' errors={errors} render={({message}) => <p className={'error'}>{message}</p>} />
                     </Col>
                 </Row>
                 <Row className={''}>
@@ -189,7 +214,7 @@ const KYC = ({status}) => {
                         })}>
                             {(inputProps) => <Input classname={['inputTransparent', `${errors.phoneNumber ? 'error' : ''}`]} {...inputProps} name='phoneNumber' placeholder='Phone number*' type='tel'/>}
                         </InputMask>
-                        <ErrorMessage name='phoneNumber' errors={errors} render={() => <p className={'errord'}>Check the field</p>} />
+                        <ErrorMessage name='phoneNumber' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
                     </Col>
                     <Col className={'mb-3 col-12 col-md-6'}>
                         <Input classname={['inputTransparent', `${errors.documentNumber ? 'error' : ''}`]} {...register('documentNumber', {
