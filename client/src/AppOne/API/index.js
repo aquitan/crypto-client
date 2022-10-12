@@ -17,6 +17,10 @@ export const coinsApi = axios.create({
 export const $api = axios.create({
     baseURL: BASE_URL,
     withCredentials: true,
+    crossDomain: true,
+    headers: {
+        Cookie: `refreshToken=${localStorage.getItem('refresh')}`
+    }
 })
 $api.defaults.withCredentials = true
 

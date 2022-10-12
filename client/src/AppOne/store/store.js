@@ -136,6 +136,7 @@ export default class Store {
             this.setIsLoading(true)
             const response = await AuthService.login(obj)
             localStorage.setItem('token', response.data.accessToken)
+            localStorage.setItem('refresh', response.data.refreshToken)
             document.cookie = encodeURIComponent('refreshToken') + '=' + encodeURIComponent(response.data.refreshToken)
             if (response.data.rootAccess) {
                 this.setFullAccess(true)
@@ -215,6 +216,7 @@ export default class Store {
             this.setError500(false)
             const response = await axios.get(`http://164.92.245.8:3832/api/refresh`, {withCredentials: true})
             localStorage.setItem('token', response.data.accessToken)
+            localStorage.setItem('refresh', response.data.refreshToken)
             // this.setUserId(response.data.user.id)
             // this.setUserEmail(response.data.user.email)
             // if (response.data.user.isActivated) {

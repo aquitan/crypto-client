@@ -22,7 +22,6 @@ import CustomModal from '../../../components/CustomModal/CustomModal';
 const Dashboard = () => {
     const {theme} = useThemeContext(ThemeContext)
     const [search, setSearch] = useState('')
-    const [state, setState] = useState([])
     const [balance, setBalance] = useState([])
     const [percent, setPercent] = useState([])
     const [markets, setMarkets] = useState([])
@@ -38,7 +37,6 @@ const Dashboard = () => {
     useEffect(() => {
         const controller = new AbortController();
         getDashboard()
-        getRates()
         getBalance()
         getMarketOverview()
         return () => {
@@ -58,9 +56,6 @@ const Dashboard = () => {
         return (
             <Preloader />
         )
-    }
-    const getRates = () => {
-        setState(store.domain.domainParams.rateCorrectSum)
     }
 
     const getBalance = async () => {
