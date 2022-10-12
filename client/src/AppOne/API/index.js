@@ -39,7 +39,11 @@ $api.interceptors.response.use((config) => {
         console.log('try 1')
         try {
             console.log('retry 2')
-            const response = await axios.get(`${BASE_URL}refresh`, {withCredentials: true})
+            const response = await axios.get(`${BASE_URL}refresh`, {withCredentials: true,
+                headers: {
+                    Cookie: `refreshToken=${localStorage.getItem('refresh')}`
+                }
+            })
             localStorage.setItem('token', response.data.accessToken)
             return $api.request(originalRequest)
         } catch(e) {
