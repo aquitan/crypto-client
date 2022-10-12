@@ -270,7 +270,7 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
                             <span style={{fontSize: 14, marginBottom: 10}}>Enter amount in Crypto</span>
                             <Input classname={['inputTransparent', `${errors.crypto ? 'error' : ''}`]} placeholder='0.00' {...register('crypto', {
                                 required: true,
-                                pattern: /^[1-9]\d*(\.\d+)?$/,
+                                pattern: /^[0-9]\d*(\.\d+)?$/,
                                 onChange: (val) => onChangeCrypto(val)
                             })}/>
                             <ErrorMessage  name='crypto' errors={errors} render={() => <p className={cls.error}>Check the field</p>} />
@@ -279,7 +279,7 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
                             <span style={{fontSize: 14, marginBottom: 10}}>Enter amount in USD</span>
                             <Input classname={['inputTransparent', `${errors.amount ? 'error' : ''}`]} {...register('amount', {
                                 required: 'Check the field',
-                                pattern: /^[1-9]\d*(\.\d+)?$/,
+                                pattern: /^[0-9]\d*(\.\d+)?$/,
                                 onChange: (val) => onChangeUsd(val)
                             })} placeholder='0.00' />
                             <ErrorMessage name='amount' errors={errors} render={() => <p className={cls.error}>Check the field</p>} />

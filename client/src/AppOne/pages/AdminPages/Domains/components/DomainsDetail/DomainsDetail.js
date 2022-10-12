@@ -311,7 +311,7 @@ const DomainsDetail = () => {
                         <AdminInput {...registerError('title')}  placeholder='Новый заголовок'/>
                     </Row>
                     <Row className='mb-3'>
-                        <TextArea {...registerError('text')}  classnames='dark admin-square' placeholder='Новый текст'/>
+                        <TextArea {...registerError('text')}  classname={['dark', 'admin-square']} placeholder='Новый текст'/>
                     </Row>
                     <Row className='mb-3'>
                         <Select {...registerError('button')}  classname={'admin-square'} options={btns} />

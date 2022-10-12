@@ -175,7 +175,7 @@ const StaffErrors = () => {
             <AdminButtonCard>
                 <h2 className='text-center mb-4'>Ошибки</h2>
                 <Row>
-                    <Col>
+                    <Col className='col-12 col-md-6 mb-3'>
                         {
                             state.allDomains.length ?
                                 <Select
@@ -187,7 +187,7 @@ const StaffErrors = () => {
                                 : <Preloader/>
                         }
                     </Col>
-                    <Col>
+                    <Col className='col-12 col-md-6 text-center text-md-start mb-3'>
                         <AdminButton onClick={chooseErrorsList} classname={'green'}>Выбрать</AdminButton>
                     </Col>
                 </Row>
