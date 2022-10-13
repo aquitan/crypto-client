@@ -19,11 +19,12 @@ import FileUpload from "../../../components/UI/FileUpload/FileUpload";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import {v4 as uuid} from 'uuid'
 import FileAdmin from '../../../components/UI/FileAdmin/FileAdmin';
+import CustomModal from '../../../components/CustomModal/CustomModal';
 
 const CreateNews = () => {
     const [state, setState] = useState([])
     const [curSelect, setCurSelect] = useState('')
-    const [optionId, setOptionId] = useState('')
+    const [newsAddModal, setNewsAddModal] = useState(false)
     const [startDate, setStartDate] = useState()
     const [timeDate, setTimeDate] = useState()
     const {register, handleSubmit, formState: {errors}} = useForm({
@@ -76,6 +77,7 @@ const CreateNews = () => {
         }
         const res = await putData('/staff/news/news_create/', data)
         if (res.status === 201) {
+            setNewsAddModal(true)
             getAllNews()
         }
     }
@@ -144,6 +146,11 @@ const CreateNews = () => {
 
     return (
         <Container>
+
+            <CustomModal show={newsAddModal} handleClose={() => setNewsAddModal(false)} themeDark={true} size='md' btnClose='Close' title='Новость добавлена'>
+                Новость успешно добавлена!
+            </CustomModal>
+
             <AdminButtonCard>
                 <h1 className={'text-center'}>Новости</h1>
             </AdminButtonCard>

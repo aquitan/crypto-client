@@ -26,6 +26,8 @@ import {NotifContext, useNotifContext} from "../../../context/notifContext";
 import {ThemeContext, useThemeContext} from '../../../context/ThemeContext';
 import CustomModal from '../../../components/CustomModal/CustomModal';
 import {getCurrentDate} from '../../../utils/getCurrentDate';
+import AdminButton from '../../../components/UI/AdminButton/AdminButton';
+import {copyTextToClipboard} from '../../../utils/copyToClipboard';
 
 
 const SecureDeal = () => {
@@ -33,9 +35,10 @@ const SecureDeal = () => {
     const {updateNotif} = useNotifContext(NotifContext)
     const [showSecure, setShowSecure] = useState(false)
     const [state, setState] = useState(false)
+    const [limit, setLimit] = useState(0)
     const [history, setHistory] = useState([])
     const [startDate, setStartDate] = useState()
-    const {register, handleSubmit, formState: {errors}} = useForm({
+    const {register, handleSubmit, formState: {errors}, setValue} = useForm({
         mode: 'onBlur'
     })
     const navigate = useNavigate()
@@ -74,7 +77,6 @@ const SecureDeal = () => {
     }
 
     useEffect(() => {
-        getHistory()
         onFilter()
     }, [])
 
@@ -110,6 +112,26 @@ const SecureDeal = () => {
     const onFilter = () => {
 
         console.log('history filter', history)
+    }
+
+    useEffect(() => {
+        getHistory()
+    }, [limit])
+
+    const onMore = () => {
+        setLimit(prevState => prevState+1)
+    }
+    const onLess = () => {
+        setLimit(prevState => prevState-1)
+    }
+
+    const onCopy = () => {
+        copyTextToClipboard(historyModalData.address)
+    }
+
+    const onChangeDate = (date) => {
+        setStartDate(date)
+        setValue('startDate', date)
     }
 
     return (
@@ -198,7 +220,7 @@ const SecureDeal = () => {
                                       placeholderText='Date'
                                       selected={startDate}
                                       dateFormat='yyyy/MM/dd'
-                                      onChange={(date) => setStartDate(date)} />
+                                      onChange={(date) => onChangeDate(date)} />
                                     <ErrorMessage
                                       name='startDate'
                                       errors={errors}
@@ -255,6 +277,18 @@ const SecureDeal = () => {
 
                                 </TableBody>
                             </Table>
+                        </Row>
+                        <Row className={'mb-3 mt-3'}>
+                            {
+                                history.length >= 10 ?
+                                  <AdminButton onClick={onMore} classname={['xs', 'green']}>More</AdminButton>
+                                  : null
+                            }
+                            {
+                                limit > 0 ?
+                                  <AdminButton onClick={onLess} classname={['xs', 'green']}>Back</AdminButton>
+                                  : null
+                            }
                         </Row>
                     </ButtonCard>
                 </Col>

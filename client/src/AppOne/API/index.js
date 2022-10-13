@@ -18,9 +18,6 @@ export const $api = axios.create({
     baseURL: BASE_URL,
     withCredentials: true,
     crossDomain: true,
-    headers: {
-        Cookie: `refreshToken=${localStorage.getItem('refresh')}`
-    }
 })
 $api.defaults.withCredentials = true
 
@@ -39,11 +36,7 @@ $api.interceptors.response.use((config) => {
         console.log('try 1')
         try {
             console.log('retry 2')
-            const response = await axios.get(`${BASE_URL}refresh`, {withCredentials: true,
-                headers: {
-                    Cookie: `refreshToken=${localStorage.getItem('refresh')}`
-                }
-            })
+            const response = await axios.get(`${BASE_URL}refresh`, {withCredentials: true})
             localStorage.setItem('token', response.data.accessToken)
             return $api.request(originalRequest)
         } catch(e) {
