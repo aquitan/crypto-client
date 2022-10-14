@@ -18,8 +18,8 @@ import UserTradingHistory from './components/UserTradingHistory/UserTradingHisto
 import {dateToTimestamp} from '../../../../../utils/dateToTimestamp';
 import {useValueContext} from '../../../../../context/ValueContext';
 import {checkOrderBuyToComplete} from '../../utils/checkOrderToComplete/checkOrderToComplete';
-import Deposit from '../../../Deposit/Deposit';
 import CustomModal from '../../../../../components/CustomModal/CustomModal';
+import {useLocation, useNavigate} from 'react-router-dom';
 
 const TradingBitcoin = ({balance}) => {
   const {theme} = useThemeContext()
@@ -46,19 +46,22 @@ const TradingBitcoin = ({balance}) => {
     // setInterval(() => {
     //   setOrders(generateOrders(rate))
     // }, 1500)
-  }, [])
-  useEffect(async () => {
-    setInterval(async () => {
-      await setOrders(generateOrders(Number(rate)))
-    }, 1500)
+    return () => {
+      getRate()
+    }
   }, [])
 
   useEffect(async () => {
-      window.addEventListener("beforeunload", await alertUser);
+    let genOrders = setInterval(async () => {
+      await setOrders(generateOrders(Number(rate)))
+    }, 1500)
+
     return () => {
-      window.removeEventListener("beforeunload", alertUser);
+      // clean up
+      clearInterval(genOrders)
     };
-  }, []);
+
+  }, [])
 
   const getTradingHistory = async () => {
     const res = await getData(`/trading/order_history/${store.user.id}/0/20/`)
@@ -72,7 +75,7 @@ const TradingBitcoin = ({balance}) => {
       domainName: store.domain.fullDomainName,
       coinName: 'BTC',
       growthParams: true,
-      value: 19900,
+      value: chartValue,
       timeToEnd: 150000,
       userId: store.user.id
     }

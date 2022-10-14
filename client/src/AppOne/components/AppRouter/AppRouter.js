@@ -1,11 +1,11 @@
 import React from 'react'
 import {useContext, useEffect} from 'react'
-import {AuthContext} from "../../../index";
+import {AuthContext, store} from '../../../index';
 import {observer} from "mobx-react-lite";
 import AuthWrap from "../../layouts/AuthWrap/AuthWrap";
 import NonAuthWrap from "../../layouts/NonAuthWrap/NonAuthWrap";
 import {getData, postData} from '../../services/StaffServices';
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from 'react-router-dom';
 import {getRate} from "../../services/CurrencyService";
 import Preloader from "../UI/Preloader/Preloader";
 import {useNotifContext} from '../../context/notifContext';
@@ -16,6 +16,22 @@ const AppRouter = () => {
     const {store} = useContext(AuthContext)
     const {updateNotif} = useNotifContext()
     const navigate = useNavigate()
+    const location = useLocation()
+
+    const checkLeaving = async () => {
+        window.addEventListener("beforeunload", await alertUser);
+    }
+
+    const checkLocation = () => {
+        if (location.pathname === '/trading') {
+            store.setTradingPath(true)
+        } else {
+            if (store.tradingPath === '/trading') {
+                store.setTradingPath(false)
+                checkLeaving()
+            }
+        }
+    }
     // const {isLoading, data, error} = useQuery('notif query', async () => {
     //     if (store.isAuth) {
     //         const res = await postData('/get_domain_params/', {domainName: window.location.host})
@@ -41,6 +57,10 @@ const AppRouter = () => {
         sendDomainName()
         getRates()
     }, [])
+
+    useEffect(() => {
+        checkLocation()
+    }, [location.pathname])
 
     const getRates = async () => {
         const res = await getRate()

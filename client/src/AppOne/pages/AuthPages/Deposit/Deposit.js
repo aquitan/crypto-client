@@ -28,6 +28,8 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 
 const Deposit = ({coin, coinsBalance, coinFullName}) => {
+    const location = useLocation()
+    console.log('router', {location});
     const {theme} = useThemeContext(ThemeContext)
     const [show, showModal, closeModal] = useModal()
     const [minimalSum, setMinimalSum] = useState(false)

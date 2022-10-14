@@ -36,6 +36,7 @@ export default class Store {
     tfaBot = ''
     error500 = false
     error400 = false
+    tradingPath = false
 
 
     constructor() {
@@ -128,6 +129,9 @@ export default class Store {
     setError400(bool) {
         this.error500 = bool
     }
+    setTradingPath(bool) {
+        this.tradingPath = bool
+    }
 
 
 
@@ -137,7 +141,6 @@ export default class Store {
             const response = await AuthService.login(obj)
             localStorage.setItem('token', response.data.accessToken)
             localStorage.setItem('refresh', response.data.refreshToken)
-            document.cookie = encodeURIComponent('refreshToken') + '=' + encodeURIComponent(response.data.refreshToken)
             if (response.data.rootAccess) {
                 this.setFullAccess(true)
                 this.setAuth(true)
@@ -199,9 +202,11 @@ export default class Store {
         try {
             const response = await AuthService.logout()
             localStorage.removeItem('token')
+            localStorage.removeItem('refresh')
             this.setAuth(false)
             this.setIsAdmin(false)
             this.setIsStaff(false)
+            this.setIsAdmin(false)
             this.setUser({})
             this.setFullAccess(false)
         } catch(e) {
@@ -214,7 +219,7 @@ export default class Store {
         try {
             this.setIsLoading(true)
             this.setError500(false)
-            const response = await axios.get(`http://164.92.245.8:3832/api/refresh`, {withCredentials: true})
+            const response = await axios.post(`http://164.92.245.8:3832/api/refresh`, {refreshToken: localStorage.getItem('refresh')})
             localStorage.setItem('token', response.data.accessToken)
             localStorage.setItem('refresh', response.data.refreshToken)
             // this.setUserId(response.data.user.id)
