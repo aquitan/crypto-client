@@ -18,7 +18,6 @@ export const $api = axios.create({
     baseURL: BASE_URL,
     withCredentials: true,
 })
-$api.defaults.withCredentials = true
 
 $api.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`

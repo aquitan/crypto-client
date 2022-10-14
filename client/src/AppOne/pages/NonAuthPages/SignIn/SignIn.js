@@ -59,18 +59,23 @@ const SignIn = () => {
     const checkFaStatus = async (data) => {
         let date = new Date()
         const geodata = await getGeoData()
-        const res = await postData('/check_two_step/', {
-            email: data.email,
-            currentDate: Math.round(date.getTime() / 1000),
-            domainName: window.location.host,
-            companyYear: store.domain.companyYear,
-            ipAddress: geodata.ipAddress,
-            deviceName: checkDeviece()
-        })
-        if (res.data.twoStepStatus) {
-            setStateTwoFa({twoFaCode: true})
-        } else {
-            sendLoginData(data)
+        try {
+            const res = await postData('/check_two_step/', {
+                email: data.email,
+                currentDate: Math.round(date.getTime() / 1000),
+                domainName: window.location.host,
+                companyYear: store.domain.companyYear,
+                ipAddress: geodata.ipAddress,
+                deviceName: checkDeviece()
+            })
+            if (res.data.twoStepStatus) {
+                setStateTwoFa({twoFaCode: true})
+            } else {
+                sendLoginData(data)
+            }
+        } catch (e) {
+            console.log('error two fa', e);
+            navigate('/error-500')
         }
 
     }

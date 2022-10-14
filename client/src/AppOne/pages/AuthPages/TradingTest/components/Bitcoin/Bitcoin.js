@@ -36,6 +36,9 @@ const TradingBitcoin = ({balance}) => {
   const [tradingData, setTradingData] = useState([])
   const [orderModal, setOrderModal] = useState(false)
   const {chartValue} = useValueContext()
+  const navigate = useNavigate()
+  const location = useLocation()
+
 
   useEffect(() => {
     getRate()
@@ -62,6 +65,13 @@ const TradingBitcoin = ({balance}) => {
     };
 
   }, [])
+
+  useEffect(async () => {
+      window.addEventListener("beforeunload", await alertUser);
+    return () => {
+      window.removeEventListener("beforeunload", alertUser);
+    };
+  }, []);
 
   const getTradingHistory = async () => {
     const res = await getData(`/trading/order_history/${store.user.id}/0/20/`)

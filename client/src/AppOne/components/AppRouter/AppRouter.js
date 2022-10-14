@@ -19,7 +19,7 @@ const AppRouter = () => {
     const location = useLocation()
 
     const checkLeaving = async () => {
-        window.addEventListener("beforeunload", await alertUser);
+        window.addEventListener("beforeunload", alert('You are left trading'));
     }
 
     const checkLocation = () => {
