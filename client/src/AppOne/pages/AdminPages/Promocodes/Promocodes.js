@@ -136,7 +136,6 @@ const Promocodes = () => {
         const obj = {
             promocode: codeForDelete
         }
-        console.log('code', obj)
         const res = await deleteData('/staff/delete_promocode/', {data: obj})
         setState({
             ...state, currentPromocodes: state.currentPromocodes.filter(el => el.code !== codeForDelete )

@@ -35,7 +35,6 @@ const UserDetailTabAct = (props) => {
         chatBan: props.data.user_params_data.chatBan,
 
     })
-    console.log('user-actions', props.data)
     const dataObj = {
         userId: props.data.base_data._id,
         staffEmail: store.userEmail,
@@ -190,7 +189,6 @@ const UserDetailTabAct = (props) => {
     }
 
     const sendPremStatus = async () => {
-        console.log('clicked premium')
         delete dataObj.currentDate
         const response = await patchData('/staff/users/user_detail/update_premium_status/',{
             ...dataObj,

@@ -24,6 +24,7 @@ import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 import './InternalSwapTabs.scss'
 import CustomModal from '../../../components/CustomModal/CustomModal';
 import LandingSkeleton from '../../NonAuthPages/LandingSkeleton/LandingSkeleton';
+import classNames from 'classnames/bind';
 
 const InternalSwap = ({balance}) => {
     const {theme} = useThemeContext(ThemeContext)
@@ -43,6 +44,8 @@ const InternalSwap = ({balance}) => {
         error: ''
     })
     const [checked, setChecked] = useState(false)
+    const cx = classNames.bind(cls)
+    const classnames = cx('value_box', theme)
 
     const [state, setState] = useState({
         initial: {
@@ -268,7 +271,7 @@ const InternalSwap = ({balance}) => {
                                                     <h5 className='mb-3'>Choose address from</h5>
                                                     <div onClick={onOpenInitialList}
                                                          style={{display: 'flex', justifyContent: 'space-between'}}
-                                                         className={cls.value_box}>
+                                                         className={classnames}>
                                                 <span style={{display: 'inline-block', marginRight: 10}}>
                                                     {state?.initial.value} {state.initial.currency}
                                                 </span>
@@ -304,7 +307,7 @@ const InternalSwap = ({balance}) => {
                                                     <h5 className='mb-3'>Choose address to</h5>
                                                     <div onClick={onOpenTargetList}
                                                          style={{display: 'flex', justifyContent: 'space-between'}}
-                                                         className={cls.value_box}>
+                                                         className={classnames}>
                                                         <span>{state.target.value} {state.target.currency}</span>
                                                         <Image
                                                           src={`/img/${imgMatch(state?.target.currency.toLowerCase())}.svg`}

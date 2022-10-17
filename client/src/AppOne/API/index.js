@@ -25,20 +25,17 @@ $api.interceptors.request.use((config) => {
 })
 
 $api.interceptors.response.use((config) => {
-    console.log('repeate refresh', config);
     return config
 }, async (error) => {
     const originalRequest = error.config
     if (error.response.status === 401 && error.config && !error.config._isRetry) {
         originalRequest._isRetry = true
-        console.log('try 1')
         try {
             console.log('retry 2')
             const response = await axios.post(`${BASE_URL}refresh`, {refreshToken: localStorage.getItem('refresh')})
             localStorage.setItem('token', response.data.accessToken)
             return $api.request(originalRequest)
         } catch(e) {
-            console.log(e.message)
             console.log('Не авторизованный пользователь')
         }
     }

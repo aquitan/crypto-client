@@ -35,7 +35,6 @@ const StaffErrorDetail = () => {
         setState({...state, error: res.data.domain_detail[params.id-1]})
     }
     const onSubmit = (data) => {
-        console.log(data)
         setState({...state, modal: true})
     }
 

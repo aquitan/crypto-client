@@ -193,7 +193,7 @@ const CreateNews = () => {
                     </Row>
                     <Row className='mb-3'>
                         <Col>
-                            <TextArea {...register('newsBody')} classnames='dark textarea_square' rows='10' placeholder='Основной текст'/>
+                            <TextArea {...register('newsBody')} classname={['dark', 'textarea_square']} rows='10' placeholder='Основной текст'/>
                         </Col>
                     </Row>
                     <Row className='mb-3'>

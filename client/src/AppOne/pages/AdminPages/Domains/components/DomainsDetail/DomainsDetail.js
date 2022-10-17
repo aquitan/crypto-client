@@ -157,7 +157,6 @@ const DomainsDetail = () => {
         }
         data.rootAccess = store.fullAccess
         const res = await patchData('/staff/domains/domain_detail/domain_edit/', data)
-        console.log('domain edit', data)
     }
 
     const onChangeError = (data) => {

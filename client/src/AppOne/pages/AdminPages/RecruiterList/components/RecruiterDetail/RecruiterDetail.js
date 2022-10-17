@@ -138,7 +138,6 @@ const RecruiterDetail = () => {
             wallet: wallet,
             coinName: currency
         }
-        console.log('obj', obj)
         const res = await patchData('/staff/recruiter/update_recruiter_wallet/', obj)
         if (res.status === 201) {
             // SwalSimple('Кошелек изменен!')

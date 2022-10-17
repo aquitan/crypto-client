@@ -24,18 +24,18 @@ const UserNews = () => {
         <>
             {
                 typeof state !== 'string' ?
-                    state.map(item => {
+                    state.slice(0).reverse('').map(item => {
                         return (
-                            <ButtonCard theme={theme}>
+                            <ButtonCard style={{maxWidth: 1024, margin: '20px auto', textAlign: 'center'}} theme={theme}>
                                 <h3 className='mb-3'>{item.newsTitle}</h3>
                                 <div className='mb-3'>
                                     <img style={{maxWidth: 450}} src={item.newsImage} alt=""/>
                                 </div>
                                 <div className='mb-3'>
-                                    {item.newsBody}
+                                    <p style={{textAlign: 'justify'}}>{item.newsBody}</p>
                                 </div>
                                 <div>
-                                    {getCurrentDate(item.newsDate)}
+                                    <span style={{color: 'grey', fontSize: '14px'}}>{getCurrentDate(item.newsDate)}</span>
                                 </div>
                             </ButtonCard>
                         )
