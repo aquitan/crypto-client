@@ -23,7 +23,7 @@ const Support = () => {
 
     const onClick = async (text) => {
         const obj = {
-            userId: store.user.id,
+            userEmail: store.user.email,
             domainName: window.location.host,
             staffId: '',
             curDate: dateToTimestamp(new Date()),

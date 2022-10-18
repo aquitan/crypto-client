@@ -4,7 +4,7 @@ import classNames from "classnames/bind";
 import cls from './Select.module.scss'
 import {v4 as uuid} from 'uuid'
 
-const Select = forwardRef(({options, getAvalue, classname, ...attr}, ref) => {
+const Select = forwardRef(({options, getAvalue, classname, initial, ...attr}, ref) => {
     let cx = classNames.bind(cls)
 
     const classes = cx(
@@ -14,6 +14,11 @@ const Select = forwardRef(({options, getAvalue, classname, ...attr}, ref) => {
 
     return (
         <select ref={ref} className={classes} {...attr}>
+            {
+                initial ? 
+                <option>Выбери значение</option>
+                : null
+            }
             {
                 options.map(option => {
                     return <option key={uuid()} id={option.id}  value={!getAvalue ? option.id : option.value}>{option.text}</option>

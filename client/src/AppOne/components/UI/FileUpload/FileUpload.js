@@ -14,7 +14,6 @@ const FileUpload = forwardRef(({id, onUploadImg, classnames, ...attr}, ref) => {
         onUploadImg(e.target.files[0])
     }
 
-    console.log('attr', attr);
     return (
         <div className={classes}>
             <label htmlFor={id}>

@@ -7,12 +7,14 @@ import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard
 import {getData, patchData, postData, putData} from '../../../services/StaffServices';
 import {store} from "../../../../index";
 import CustomModal from '../../../components/CustomModal/CustomModal';
+import Select from '../../../components/UI/Select/Select';
 
 const Chat = () => {
     const [msg, setMsg] = useState([])
     const [chats, setChats] = useState([])
     const [msgError, setMsgError] = useState(false)
     const [currentChat, setCurrentChat] = useState('')
+    const [currentEmail, setCurrentEmail] = useState('')
     const [image, setImage] = useState()
 
     useEffect(() => {
@@ -21,7 +23,6 @@ const Chat = () => {
 
     const onClick = async (text) => {
         const obj = {
-            userId: '',
             domainName: window.location.host,
             staffId: store.user.id,
             curDate: dateToTimestamp(new Date()),
@@ -32,13 +33,16 @@ const Chat = () => {
             supportName: store.domain.supportName,
             isStaff: store.user.isStaff,
             isAdmin: store.user.isAdmin,
-            rootAccess: store.fullAccess
+            rootAccess: store.fullAccess,
+            userEmail: 'aquitan@mail.ru'
         }
         try {
             const res = await putData('staff/support/send_message_to_user/', obj)
-            await chooseChat()
+            if (res.status === 202) {
+                await chooseChat()
+            }
         } catch(e) {
-            setMsgError(true)
+            console.log(e);
         }
 
 
@@ -76,6 +80,7 @@ const Chat = () => {
     }
 
     const chooseChat = async (e) => {
+        console.log('change chat', e.target.value)
         setCurrentChat(e.target.value)
         const res = await getData(`/staff/support/chat_item/get_chat_data/${e.target.value}/0/20/`)
         setMsg(res.data)
@@ -106,12 +111,15 @@ const Chat = () => {
             </AdminButtonCard>
             <AdminButtonCard title={'Выбери чат'}>
                 <Row>
-                    <select style={{backgroundColor: 'transparent', color: '#fff', padding: 10, width: '100%'}} value={currentChat} onChange={chooseChat}>
+                    {/* <Sele style={{backgroundColor: 'transparent', color: '#fff', padding: 10, width: '100%'}} value={currentChat} 
+                    
+                    >
                         <option>Выбери чат</option>
                         {
                             chats.map(item => <option key={item.text} value={item.value}>{item.text}</option>)
                         }
-                    </select>
+                    </select> */}
+                    <Select value={currentChat} onChange={(e) => chooseChat(e)} classname={'admin-square'} initial={true} options={chats}/>
                 </Row>
             </AdminButtonCard>
             <AdminButtonCard>
@@ -140,13 +148,6 @@ const Chat = () => {
             
         </Container>
     )
-}
-
-Chat.propTypes = {
-    
-}
-Chat.defaultProps = {
-    
 }
 
 export default Chat

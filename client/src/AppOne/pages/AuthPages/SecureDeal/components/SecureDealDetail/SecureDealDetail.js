@@ -89,7 +89,7 @@ const SecureDealDetail = () => {
             chatId: typeof msg !== 'string' ? msg[0].chatId : null,
             isUser: true,
             dealId: dealData._id,
-            userId: store.user.id
+            userEmail: store.user.email
         }
 
         const res = await putData('/secure_deal/deal_detail/send_message_to_secure_deal_chat', obj)
