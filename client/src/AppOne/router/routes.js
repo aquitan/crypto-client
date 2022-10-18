@@ -58,7 +58,7 @@ import {
     ERROR_500,
     RECRUITER_LIST,
     CONTACTUS_ROUTE,
-    RECRUITER_DETAIL, CHAT, ADMIN_CHAT, ADMIN_TRADING, WALLET_ROUTE, SUPPORT_US, ERROR_400
+    RECRUITER_DETAIL, CHAT, ADMIN_CHAT, ADMIN_TRADING, WALLET_ROUTE, SUPPORT_US, ERROR_400, ETH_TRADING_ROUTE
 } from '../utils/constants';
 import SignUp from '../pages/NonAuthPages/SignUp/SignUp'
 import SignIn from '../pages/NonAuthPages/SignIn/SignIn'
@@ -121,6 +121,7 @@ import Wallet from "../pages/AuthPages/Wallet/Wallet";
 import TradingTest from "../pages/AuthPages/TradingTest/TradingTest";
 import ContactUsDonate from '../pages/AuthPages/ContactUsDonate/ContactUsDonate';
 import Error400 from '../pages/Error/Error400';
+import TradingEthereum from '../pages/AuthPages/TradingTest/components/Ethereum/Ethereum';
 
 export const authRoutes = [
     {
@@ -226,6 +227,10 @@ export const authRoutes = [
     {
         path: SUPPORT_US,
         component: <ContactUsDonate/>
+    },
+    {
+        path: ETH_TRADING_ROUTE,
+        component: <TradingEthereum/>
     },
 
 ]

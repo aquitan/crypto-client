@@ -8,7 +8,6 @@ export const countFunc = async (targetCounter, val, prev, real, time, growth, co
         counter = counter + 1000
         let ms = targetCounter / 1000
         let number = growth ? Number(prev + ((prev * val / 100) / ms)) : Number(prev - ((prev * val / 100) / ms))
-        console.log('number', number);
         return number
     } else if (counter >= targetCounter) {
         if (!sendReq && targetCounter) {

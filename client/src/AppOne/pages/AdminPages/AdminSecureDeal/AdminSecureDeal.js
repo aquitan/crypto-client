@@ -143,7 +143,7 @@ const AdminSecureDeal = () => {
 
                     <Row className={'mb-3'}>
                         <Col>
-                            <TextArea {...register('dealCondition')} classnames='dark textarea_square' rows='10' placeholder='Conditions'/>
+                            <TextArea {...register('dealCondition')} classname={['dark', 'textarea_square']} rows='10' placeholder='Conditions'/>
                         </Col>
                     </Row>
 

@@ -6,11 +6,9 @@ import * as am5stock from '@amcharts/amcharts5/stock';
 import {countFunc} from '../../../../../utils/chartRateUpdate';
 import {useValueContext} from '../../../../../context/ValueContext';
 
-const Chart = ({rate, initialData, tradingData}) => {
+const Chart = ({rate, initialData, tradingData, coinName}) => {
     const [realRate, setRealRate] = useState(0)
     const {toggleValue} = useValueContext()
-
-
     // const getRate = async () => {
     //     const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT`)
     //     const datas = await res.json()
@@ -178,7 +176,6 @@ const Chart = ({rate, initialData, tradingData}) => {
                 let low = Number(item[3]);
                 let high = Number(item[2]);
                 let close = Number(item[4])
-                // console.log('chartData', item);
 
                 chartData.unshift({
                     Date: newDate.getTime(),
@@ -228,12 +225,12 @@ const Chart = ({rate, initialData, tradingData}) => {
             let lastDataObject = valueSeries.data.getIndex(valueSeries.data.length - 1);
             let real
             const getRate = async () => {
-                const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT`)
+                const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${coinName}USDT`)
                 real = await res.json()
                 return Number(real.lastPrice)
             }
 
-            let dataFromServer = true
+            let dataFromServer = tradingData.timeRangeInMs
 
             if (lastDataObject) {
                 let previousDate = lastDataObject.Date;
@@ -243,7 +240,6 @@ const Chart = ({rate, initialData, tradingData}) => {
                   await countFunc(tradingData.timeRangeInMs, tradingData.valueInPercent, previousValue, await getRate(), tradingData.timeRangeInMs, tradingData.growthParams, 'bitcoin')
                   : await getRate()
 
-                console.log('value', value);
                 toggleValue(value.toFixed(5))
                 let high = lastDataObject.High;
                 let low = lastDataObject.Low;

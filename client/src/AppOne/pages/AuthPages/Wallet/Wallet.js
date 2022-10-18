@@ -131,16 +131,6 @@ const Wallet = () => {
                                         <b>$100500</b>
                                     </Col>
                                 </Row>
-                                <Row className='p-2 flex-column flex-sm-row mb-2 d-flex justify-content-between'>
-                                    <Col className='d-flex align-items-center' style={{fontSize: 20, color: theme === 'light' ? '#9295A6': '#fff'}}>
-                                        <img src={'/img/clock.svg'} alt=""/>
-                                        <div className='px-2'>Total withdrawals: </div>
-                                    </Col>
-                                    <Col style={{color: theme === 'light' ? '#6C7080': '#fff'}}>
-                                        <img className='px-2' src={'/img/out-icon.svg'} alt=""/>
-                                        <b>$100500</b>
-                                    </Col>
-                                </Row>
                             </div>
                         </Col>
                     </Row>

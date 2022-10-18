@@ -1,11 +1,10 @@
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import {Col, Container, Form, Row} from "react-bootstrap";
 import AdminButton from "../../../../../components/UI/AdminButton/AdminButton";
 import cls from '../../UserDetail.module.scss'
 import AdminInput from "../../../../../components/UI/AdminInput/AdminInput";
 import {useForm} from "react-hook-form";
 import {v4 as uuid} from 'uuid'
-import ModalDark from "../../../../../components/UI/ModalDark/ModalDark";
 import {store} from "../../../../../../index";
 import AdminButtonCard from "../../../../../components/AdminButtonCard/AdminButtonCard";
 import error from "../../../../../styles/Error.module.scss";
@@ -16,10 +15,13 @@ import {useNavigate} from "react-router-dom";
 import {onLogin} from "../../../../../utils/onLogin";
 import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
 import Preloader from "../../../../../components/UI/Preloader/Preloader";
+import CustomModal from '../../../../../components/CustomModal/CustomModal';
+import Button from '../../../../../components/UI/Button/Button';
 
 const UserDetailTabAct = (props) => {
 
     const navigate = useNavigate()
+    const [successChanged, setSuccessChanged] = useState(false)
     const [state, setState] = useState({
         isOpen: false,
         onClickConfirm: null,
@@ -103,6 +105,9 @@ const UserDetailTabAct = (props) => {
         data.domainName = window.location.host
         const response = await putData('/staff/notifications/create_new_notification/', data)
         handleCloseModal()
+        if (response.status === 202) {
+            setSuccessChanged(true)
+        }
     }
     const changePercent = async (data) => {
         // const response = await UserService.postUserDetailData('/123', data)
@@ -124,6 +129,9 @@ const UserDetailTabAct = (props) => {
         }
         const res = await patchData('/staff/users/user_detail/change_user_domain/', obj)
         handleCloseModal()
+        if (response.status === 202) {
+            setSuccessChanged(true)
+        }
     }
     const changeSupportName = async (data) => {
         delete dataObj.userId
@@ -132,6 +140,9 @@ const UserDetailTabAct = (props) => {
             ...dataObj, updatedName: data.supportName
         })
         handleCloseModal()
+        if (response.status === 202) {
+            setSuccessChanged(true)
+        }
     }
     const makeStaff = async () => {
         dataObj.status = !btns.isStaff
@@ -144,16 +155,19 @@ const UserDetailTabAct = (props) => {
         const response = await patchData('/staff/users/user_detail/update_staff_status/', dataObj)
         setBtns({...btns, isStaff: !btns.isStaff})
         handleCloseModal()
+        if (response.status === 202) {
+            setSuccessChanged(true)
+        }
     }
     const makeDouble = async () => {
         const response = await patchData('/staff/users/user_detail/update_double_deposit/', {
             ...dataObj, status: !btns.double
         })
         if (response.status === 202) {
-            // SwalSimple('Изменено')
+            setSuccessChanged(true)
         }
         setBtns({...btns, double: !btns.double})
-        // handleCloseModal()
+        handleCloseModal()
     }
     const makeFullBan = async () => {
         delete dataObj.currentDate
@@ -165,6 +179,9 @@ const UserDetailTabAct = (props) => {
         })
         setBtns({...btns, fullBan: !btns.fullBan})
         handleCloseModal()
+        if (response.status === 202) {
+            setSuccessChanged(true)
+        }
     }
     const makeTransactionBan = async () => {
         const response = await patchData('/staff/users/user_detail/update_internal_ban_status/', {
@@ -172,11 +189,17 @@ const UserDetailTabAct = (props) => {
         })
         setBtns({...btns, transactionBan: !btns.transactionBan})
         handleCloseModal()
+        if (response.status === 202) {
+            setSuccessChanged(true)
+        }
     }
     const makeSwapBan = async () => {
         const response = await patchData('/staff/users/user_detail/update_swap_ban_status/', {
             ...dataObj, status: !btns.fullBan
         })
+        if (response.status === 202) {
+            setSuccessChanged(true)
+        }
         setBtns({...btns, swapBan: !btns.swapBan})
         handleCloseModal()
     }
@@ -186,6 +209,9 @@ const UserDetailTabAct = (props) => {
         })
         setBtns({...btns, chatBan: !btns.chatBan})
         handleCloseModal()
+        if (response.status === 202) {
+            setSuccessChanged(true)
+        }
     }
 
     const sendPremStatus = async () => {
@@ -194,12 +220,12 @@ const UserDetailTabAct = (props) => {
             ...dataObj,
             status: !btns.currentPrem,
         })
-        if (response.status === 202) {
-            // SwalSimple('Изменено!')
-        }
         setBtns({...btns, currentPrem: !btns.currentPrem})
         // setState({isOpen: false, onClickConfirm: null})
-        // handleCloseModal()
+        handleCloseModal()
+        if (response.status === 202) {
+            setSuccessChanged(true)
+        }
     }
 
     const makeIpClear = async () => {
@@ -251,7 +277,7 @@ const UserDetailTabAct = (props) => {
             case 'confirm-delete':
                 return confirmDelete;
             case 'chat-ban':
-                return chatBan();
+                return chatBan;
             case 'update-domain':
                 return handleChangeDomain(updateDomain);
             default:
@@ -334,13 +360,35 @@ const UserDetailTabAct = (props) => {
     return (
         <Container>
 
-            <ModalDark active={isOpen} onClick={onClickConfirm} setActive={handleCloseModal}>
-                <Row>Вы уверены?</Row>
-            </ModalDark>
+            <CustomModal show={isOpen} handleClose={handleCloseModal} themeDark={true} title='Подтверждение'>
+                <Row className='mb-3'>Вы уверены?</Row>
+                <Row className='p-0 justify-content-between'>
+                    <Col>
+                        <Button classname='btnGreen' onClick={onClickConfirm}>Подтвердить</Button>
+                    </Col>
+                    <Col>
+                        <Button onClick={handleCloseModal} classname='btnRed'>Отмена</Button>
+                    </Col>
+                </Row>
+            </CustomModal>
 
-            <ModalDark active={doubleConfirm} onClick={onClickConfirm} setActive={handleCloseModal}>
+            <CustomModal show={doubleConfirm} handleClose={handleCloseModal} themeDark={true} >
                 <Row>Вы точно уверены?</Row>
-            </ModalDark>
+                <Row>
+                    <Col>
+                        <Button classname='btnGreen' onClick={onClickConfirm}>Подтвердить</Button>
+                    </Col>
+                    <Col>
+                        <AdminButton onClick={handleCloseModal} classname='red'>Отмена</AdminButton>
+                    </Col>
+                </Row>
+            </CustomModal>
+
+            <CustomModal show={successChanged} title='Изменено' handleClose={() => setSuccessChanged(false)} btnClose={'Ok'} themeDark={true}>
+                Успешно изменено!
+            </CustomModal>
+
+
 
             {
                 store.isStaff || store.fullAccess ?
@@ -373,7 +421,7 @@ const UserDetailTabAct = (props) => {
                 </Row>
             </AdminButtonCard>
 
-            <AdminButtonCard title='Комиссия депозита'>
+            {/* <AdminButtonCard title='Комиссия депозита'>
                 <Row className='mb-1'>Текущий процент: 80%</Row>
                 <Row className='mb-3'>
                     <Col className='col-12 col-sm-6 mb-2'>
@@ -383,7 +431,7 @@ const UserDetailTabAct = (props) => {
                         <AdminButton onClick={() => handleOpenModal('new-percent')} classname={['green', 'marginless']}>Изменить</AdminButton>
                     </Col>
                 </Row>
-            </AdminButtonCard>
+            </AdminButtonCard> */}
 
             {/*<AdminButtonCard title='Новый стафф рекрутер'>*/}
             {/*    <Row className='mb-3'>*/}

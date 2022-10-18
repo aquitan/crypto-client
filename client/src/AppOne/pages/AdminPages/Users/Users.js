@@ -39,15 +39,6 @@ const Users = () => {
     const onSearch = (e) => {
         setState({...state, search: e.target.value})
     }
-
-    // const filteredUsers = state.users.filter(user => user.userEmail.toLowerCase().includes(state.search.toLowerCase()))
-    // const delUser = async () => {
-    //     const res = await deleteData('/staff/users/user_detail/delete_user_with_all_params/', {data: {
-    //             userId: '62d6524567a932e48e089a20',
-    //             userEmail: 'aquitanfw@gmail.com',
-    //             rootAccess: true
-    //         }})
-    // }
     useEffect(() => {
         getProfile()
     }, [limit])
@@ -111,7 +102,7 @@ const Users = () => {
                                                 registerDate={user.dateOfEntry}
                                                 name={user.name}
                                                 email={user.email}
-                                                id={user.userId}
+                                                id={user._id}
                                                 userStatus={user.userStatus}
                                                 kycStatus={user.kycStatus}
                                                 userDomain={user.domainName}
@@ -122,13 +113,6 @@ const Users = () => {
                             }
 
                         </div>
-                        {/*<Row>*/}
-                        {/*    {*/}
-                        {/*        state.users.length > 10 ?*/}
-                        {/*            <AdminButton onClick={() => setValue((prevState => prevState+1))} classname={['xs']}>Еще</AdminButton>*/}
-                        {/*            : null*/}
-                        {/*    }*/}
-                        {/*</Row>*/}
                         <Row className={'mb-3 mt-3'}>
                             {
                                 state.users.length >= 10 ?

@@ -56,6 +56,11 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
         delete data.wallet
 
         setFormData(data)
+        console.log('compare wallet and address', {
+            walletEqual: wallet !== data.toAddress,
+            wallet,
+            toAddress: data.toAddress
+        });
         if (wallet !== data.toAddress) {
             const res = await putData('/internal_transfer/make_internal_transfer/', data)
             updateNotif()
@@ -131,13 +136,6 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
             </Row>
         </>
     )
-}
-
-InternalAddressCardForm.propTypes = {
-    
-}
-InternalAddressCardForm.defaultProps = {
-    
 }
 
 export default InternalAddressCardForm

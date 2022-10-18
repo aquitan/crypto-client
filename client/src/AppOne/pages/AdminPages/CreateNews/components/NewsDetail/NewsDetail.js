@@ -125,7 +125,11 @@ const NewsDetail = () => {
                     </Row>
                     <Row>
                         <Col>
-                            <TextArea {...register('newsBody')} classnames='dark textarea_square' rows='10' placeholder='Основной текст'/>
+                            <TextArea {...register('newsBody', {
+                                required: true,
+                                pattern: /^[^а-яё]+$/iu
+                            })} classname={['dark', 'textarea_square']} rows='10' placeholder='Основной текст'/>
+                            <ErrorMessage  name='newsBody' errors={errors} render={() => <p className={error.error}>Только английские буквы</p>} />
                         </Col>
                     </Row>
                     <Row>
@@ -138,13 +142,6 @@ const NewsDetail = () => {
             </AdminButtonCard>
         </Container>
     )
-}
-
-NewsDetail.propTypes = {
-
-}
-NewsDetail.defaultProps = {
-
 }
 
 export default NewsDetail
