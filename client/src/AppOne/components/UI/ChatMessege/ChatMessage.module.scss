@@ -16,11 +16,7 @@
   position: relative;
   max-width: 350px;
 }
-.support {
-  background-color: #F2F2F7;
-  align-self: baseline;
-  color: #000;
-}
+
 .chatInput {
   background-color: transparent;
   border: none;
@@ -63,6 +59,12 @@
     border: 10px solid transparent;
     border-top: 10px solid tomato;
   }
+}
+
+.support {
+  background-color: #F2F2F7;
+  align-self: baseline;
+  color: #000;
 }
 
 .time {

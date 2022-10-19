@@ -7,7 +7,6 @@ import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard
 import {getData, patchData, postData, putData} from '../../../services/StaffServices';
 import {store} from "../../../../index";
 import CustomModal from '../../../components/CustomModal/CustomModal';
-import Select from '../../../components/UI/Select/Select';
 
 const Chat = () => {
     const [msg, setMsg] = useState([])
@@ -39,7 +38,8 @@ const Chat = () => {
         try {
             const res = await putData('staff/support/send_message_to_user/', obj)
             if (res.status === 202) {
-                await chooseChat()
+                const res = await getData(`/staff/support/chat_item/get_chat_data/${currentChat}/0/20/`)
+                setMsg(res.data)
             }
         } catch(e) {
             console.log(e);
@@ -80,7 +80,6 @@ const Chat = () => {
     }
 
     const chooseChat = async (e) => {
-        console.log('change chat', e.target.value)
         setCurrentChat(e.target.value)
         const res = await getData(`/staff/support/chat_item/get_chat_data/${e.target.value}/0/20/`)
         setMsg(res.data)
@@ -111,15 +110,13 @@ const Chat = () => {
             </AdminButtonCard>
             <AdminButtonCard title={'Выбери чат'}>
                 <Row>
-                    {/* <Sele style={{backgroundColor: 'transparent', color: '#fff', padding: 10, width: '100%'}} value={currentChat} 
-                    
-                    >
+                    <select style={{backgroundColor: 'transparent', color: '#fff', padding: 10, width: '100%'}} value={currentChat} 
+                    onChange={(e) => chooseChat(e)}>
                         <option>Выбери чат</option>
                         {
                             chats.map(item => <option key={item.text} value={item.value}>{item.text}</option>)
                         }
-                    </select> */}
-                    <Select value={currentChat} onChange={(e) => chooseChat(e)} classname={'admin-square'} initial={true} options={chats}/>
+                    </select>
                 </Row>
             </AdminButtonCard>
             <AdminButtonCard>
