@@ -1,25 +1,20 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef, useLayoutEffect} from 'react';
 import * as am5 from "@amcharts/amcharts5";
 import * as am5xy from "@amcharts/amcharts5/xy";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated"
 import * as am5stock from '@amcharts/amcharts5/stock';
 import {countFunc} from '../../../../../utils/chartRateUpdate';
 import {useValueContext} from '../../../../../context/ValueContext';
+import ButtonCard from '../../../../../components/ButtonCard/ButtonCard';
+import { Button } from '@mui/material';
 
 const Chart = ({rate, initialData, tradingData, coinName}) => {
     const [realRate, setRealRate] = useState(0)
     const {toggleValue} = useValueContext()
-    // const getRate = async () => {
-    //     const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT`)
-    //     const datas = await res.json()
-    //     setRealRate(Number(datas.lastPrice))
-    // }
-    // useEffect(() => {
-    //     getRate()
-    //     setInterval(() => {
-    //         getRate()
-    //     }, 1000)
-    // }, [])
+    const [newCoin, setNewCoin] = useState('BTC') 
+    const ref = useRef(null)
+    const chartRef = useRef(null)
+    
 
     const createChart = async (val) => {
         let root = am5.Root.new("chartdiv");
@@ -167,6 +162,8 @@ const Chart = ({rate, initialData, tradingData, coinName}) => {
         function generateChartData() {
             let chartData = [];
 
+            console.log('initialData--chart', initialData);
+
             initialData.forEach((item, index) => {
                 let newDate = new Date(firstDate);
                 newDate.setMinutes(newDate.getMinutes() - index);
@@ -187,27 +184,6 @@ const Chart = ({rate, initialData, tradingData, coinName}) => {
                 lastDate = newDate;
             })
 
-            // for (let i = 0; i < 100; i++) {
-            //     let newDate = new Date(firstDate);
-            //     newDate.setMinutes(newDate.getMinutes() - i);
-            //
-            //     value += Math.round((Math.random() < 0.49 ? 1 : -1) * Math.random() * 10);
-            //
-            //     let open = value + Math.round(Math.random() * 16 - 8);
-            //     let low = Math.min(value, open) - Math.round(Math.random() * 5);
-            //     let high = Math.max(value, open) + Math.round(Math.random() * 5);
-            //
-            //     chartData.unshift({
-            //         Date: newDate.getTime(),
-            //         Close: value,
-            //         Open: open,
-            //         Low: low,
-            //         High: high
-            //     });
-            //
-            //     lastDate = newDate;
-            //     console.log('chart data', chartData);
-            // }
             return chartData;
         }
         let data = generateChartData();
@@ -219,7 +195,7 @@ const Chart = ({rate, initialData, tradingData, coinName}) => {
         let previousDate;
         let fnVal
 
-        setInterval(async function() {
+        let interval = setInterval(async function() {
             let valueSeries = stockChart.get("stockSeries");
             let date = Date.now();
             let lastDataObject = valueSeries.data.getIndex(valueSeries.data.length - 1);
@@ -297,6 +273,8 @@ const Chart = ({rate, initialData, tradingData, coinName}) => {
                     }
                 }
             }
+            ref.current = interval
+            chartRef.current = root
         }, 1000);
 
 
@@ -306,9 +284,30 @@ const Chart = ({rate, initialData, tradingData, coinName}) => {
         await createChart(rate)
     }, [])
 
+    const callFunc = async () => {
+        console.log('restart fn');
+        await createChart(rate)
+    }
+
+    useEffect(() => {
+        if (coinName !== 'BTC') {
+            console.log('newCoin', coinName);
+            clearInterval(ref.current)
+            chartRef.current.dispose()
+            callFunc()
+        }
+    }, [coinName])
+
 
     return (
-        <div id="chartdiv" style={{width: '100%', height: '500px'}}/>
+        <>
+            {/* <ButtonCard>
+                <Button variant='contained' onClick={() => setNewCoin('ETH')}>ETH</Button>
+                <Button variant='contained' onClick={() => setNewCoin('BTC')}>BTC</Button>
+            </ButtonCard> */}
+            <div id="chartdiv" style={{width: '100%', height: '500px'}}/>
+        </>
+        
     )
 }
 

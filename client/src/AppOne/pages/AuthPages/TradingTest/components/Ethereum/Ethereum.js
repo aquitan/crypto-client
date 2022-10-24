@@ -21,7 +21,7 @@ import {checkOrderBuyToComplete} from '../../utils/checkOrderToComplete/checkOrd
 import CustomModal from '../../../../../components/CustomModal/CustomModal';
 import {useLocation, useNavigate} from 'react-router-dom';
 
-const TradingEthereum = ({balance}) => {
+const TradingEthereum = ({balance, coinPair}) => {
   const {theme} = useThemeContext()
   const [rate, setRate] = useState(0)
   const [orders, setOrders] = useState([])
@@ -269,7 +269,7 @@ const TradingEthereum = ({balance}) => {
           <ButtonCard theme={theme}>
             <h3>Ethereum Chart</h3>
             {
-              rate && initialChartData.length && tradingData ? <Chart initialData={initialChartData} coinName={'ETH'} tradingData={tradingData} rate={Number(rate)} data={data} /> : <Preloader />
+              rate && initialChartData.length && tradingData ? <Chart initialData={initialChartData} coinName={coinPair} tradingData={tradingData} rate={Number(rate)} data={data} /> : <Preloader />
             }
           </ButtonCard>
           <Row>

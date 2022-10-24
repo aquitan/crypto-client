@@ -93,7 +93,7 @@ const AccountSecurity = (props) => {
             if (!res.data.bot) {
                 setState({
                     ...state,
-                    twoFaCode: res.data.userCode,
+                    twoFaCode: res.data.userCode ? res.data.userCode : res.data,
                     fieldShow: true,
                 })
                 setShowBot(false)
@@ -237,7 +237,8 @@ const AccountSecurity = (props) => {
                             </Row>
                             <Row>
                                 {
-                                    state.fieldShow ?  <Input classname='inputTransparent' {...twoFaReg('code')} placeholder='Code'/> : null
+                                    state.fieldShow && faType !== 'google' ?  <Input classname='inputTransparent' {...twoFaReg('code')} placeholder='Code'/>
+                                     : faType === 'google' ? <img style={{width: 200, height: 'auto'}} src={state.twoFaCode} alt='qr-code' /> : null
                                 }
                                 {
                                     showBot ? <>
@@ -245,7 +246,7 @@ const AccountSecurity = (props) => {
                                     </> : null
                                 }
                             </Row>
-                            { faType && faType !== 'telegram' ?
+                            { faType && faType !== 'telegram' && faType !== 'google' ?
                               !showBot && <Row className='mt-3 px-2 justify-content-end'>
                                   <Button style={{width: 140}} classname='btnBlue' onClick={twoFaHandle(onSubmit)}>Confirm</Button>
                               </Row> : null

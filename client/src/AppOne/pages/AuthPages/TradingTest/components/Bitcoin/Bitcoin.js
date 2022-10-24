@@ -22,7 +22,7 @@ import CustomModal from '../../../../../components/CustomModal/CustomModal';
 import {useLocation, useNavigate} from 'react-router-dom';
 import { Select } from '@mui/material';
 
-const TradingBitcoin = ({balance}) => {
+const TradingBitcoin = ({balance, coinPair}) => {
   const {theme} = useThemeContext()
   const [rate, setRate] = useState(0)
   const [orders, setOrders] = useState([])
@@ -53,7 +53,7 @@ const TradingBitcoin = ({balance}) => {
     return () => {
       getRate()
     }
-  }, [])
+  }, [coinPair])
 
   useEffect(async () => {
     let genOrders = setInterval(async () => {
@@ -65,7 +65,7 @@ const TradingBitcoin = ({balance}) => {
       clearInterval(genOrders)
     };
 
-  }, [])
+  }, [coinPair])
   // useEffect(async () => {
       
   //   return () => {
@@ -88,17 +88,17 @@ const TradingBitcoin = ({balance}) => {
 
   const getTradingData = async () => {
     const res = await getData(`/staff/trading/get_valid_trading_data/${store.domain.fullDomainName}/`)
-    let validRate = res.data.ratesData.filter(el => el.coinName === 'BTC')
+    let validRate = res.data.ratesData.filter(el => el.coinName === coinPair)
     setTradingData(validRate[0])
   }
 
   const getRate = async () => {
-    const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT`)
+    const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${coinPair}USDT`)
     const datas = await res.json()
     setRate(datas.lastPrice)
   }
   const getInitialChartData = async () => {
-    const res = await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1m&limit=100')
+    const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${coinPair}USDT&interval=1m&limit=100`)
     const data = await res.json()
     setInitialChartData(data.slice(0).reverse())
   }
@@ -203,6 +203,15 @@ const TradingBitcoin = ({balance}) => {
     return tradingHistory.filter(el => !el.orderStatus)
   }
 
+  const getName = () => {
+    if (coinPair === 'BTC') return 'Bitcoin'
+    if (coinPair === 'ETH') return 'Ethereum'
+    if (coinPair === 'BCH') return 'Bitcoin Cash'
+    if (coinPair === 'TRX') return 'Tron'
+    if (coinPair === 'USDT') return 'Tether'
+    if (coinPair === 'SOL') return 'Solana'
+  }
+
 
   return (
     <>
@@ -237,9 +246,9 @@ const TradingBitcoin = ({balance}) => {
             <Row>
               <Col className=''>
                 <div className='d-flex align-items-center'>
-                  <img style={{marginRight: 20}} width={40} src={`/img/btc.svg`} alt=""/>
+                  <img style={{marginRight: 20}} width={40} src={`/img/${coinPair}.svg`} alt=""/>
                   <div className='d-flex align-items-center'>
-                    <span style={{fontSize: 28, marginRight: 20}}>Bitcoin</span>
+                    <span style={{fontSize: 28, marginRight: 20}}>{getName()}</span>
                     <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8', width: 'fit-content', height: 'fit-content'}} className="badge d-none d-xl-flex">
                       BTC
                     </div>
@@ -253,9 +262,9 @@ const TradingBitcoin = ({balance}) => {
             </Row>
           </ButtonCard>
           <ButtonCard theme={theme}>
-            <h3>Bitcoin Chart</h3>
+            <h3>{getName()} Chart</h3>
             {
-              rate && initialChartData.length && tradingData ? <Chart initialData={initialChartData} tradingData={tradingData} coinName={'BTC'} rate={Number(rate)} data={data} /> : <Preloader />
+              rate && initialChartData.length && tradingData ? <Chart initialData={initialChartData} tradingData={tradingData} coinName={coinPair} rate={Number(rate)} data={data} /> : <Preloader />
             }
           </ButtonCard>
           <Row>

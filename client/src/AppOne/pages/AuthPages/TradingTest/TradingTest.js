@@ -10,6 +10,7 @@ import { useThemeContext } from '../../../context/ThemeContext';
 import { Row } from 'react-bootstrap';
 import { Routes } from 'react-router-dom';
 import TradingBCH from './components/BitcoinCash/BitcoinCash';
+import { Button } from '@mui/material';
 
 const TradingTest = () => {
     const [coinPair, setCoinPair] = useState('BTC')
@@ -32,52 +33,34 @@ const TradingTest = () => {
     }
 
     const renderTrade = () => {
-        if (coinPair === 'BTC') return <Bitcoin balance={balance[0]}/>
+        if (coinPair === 'BTC') return <Bitcoin balance={balance[0]} coinPair={coinPair}/>
         if (coinPair === 'BCH') return <TradingBCH balance={balance[1]}/>
-        if (coinPair === 'ETH') return <TradingEthereum balance={balance[2]}/>
+        if (coinPair === 'ETH') return <TradingEthereum balance={balance[2]} coinPair={coinPair} />
     }
+
+    const fileteredBalance = balance.filter(el => el.coinName === coinPair)
 
 
     return(
         <>
             <Row>
                 <ButtonCard theme={theme}>
-                    Chose currency you want to trade
+                    Chose currency you want to trade 
+                    <Button sx={{mx: 1}} variant={'contained'} onClick={() => setCoinPair('ETH')}>ETH</Button>
+                    <Button sx={{mx: 1}}  variant={'contained'} onClick={() => setCoinPair('BTC')}>BTC</Button>
+                    <Button sx={{mx: 1}}  variant={'contained'} onClick={() => setCoinPair('BCH')}>BCH</Button>
+                    <Button sx={{mx: 1}}  variant={'contained'} onClick={() => setCoinPair('TRX')}>TRX</Button>
+                    <Button sx={{mx: 1}}  variant={'contained'} onClick={() => setCoinPair('USDT')}>USDT</Button>
+                    <Button sx={{mx: 1}}  variant={'contained'} onClick={() => setCoinPair('SOL')}>SOL</Button>
                 </ButtonCard>
             </Row>
             <ValueContextProvider>
                 {
                     balance.length ?
-                        renderTrade()
+                        <Bitcoin balance={fileteredBalance[0]} coinPair={coinPair}/>
                     : <Preloader/>
                 }
             </ValueContextProvider>
-            {/*<ButtonCard theme={theme}>*/}
-            {/*    <Row>*/}
-            {/*        <Col className='col-12 col-sm-2'>*/}
-            {/*            <h2>Market Stats</h2>*/}
-            {/*        </Col>*/}
-            {/*        <Col className='col-12 col-sm-4'>*/}
-            {/*            <select style={{*/}
-            {/*                backgroundColor: 'transparent',*/}
-            {/*                color: theme === 'light' ? '#121318' : '#fff',*/}
-            {/*                maxWidth: 200,*/}
-            {/*                width: '100%',*/}
-            {/*                padding: 10,*/}
-            {/*                border: '1px solid #717579',*/}
-            {/*                borderRadius: 20,*/}
-            {/*            }} onChange={onChangeCoinsPair} value={coinPair} >*/}
-            {/*                {*/}
-            {/*                    coins.map(coin => {*/}
-            {/*                        return <option key={coin.value} value={coin.value}>{coin.text}</option>*/}
-            {/*                    })*/}
-            {/*                }*/}
-            {/*            </select>*/}
-            {/*        </Col>*/}
-            {/*    </Row>*/}
-            {/*</ButtonCard>*/}
-
-
         </>
 
     )
