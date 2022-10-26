@@ -101,6 +101,7 @@ const AdminKycTableItem = (props) => {
 
 
     const onClickFront = async () => {
+        console.log('front')
        await getData(`/staff/kyc/get_kyc_image/${id}/1/`)
     }
     const onClickBack = async () => {
