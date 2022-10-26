@@ -82,10 +82,7 @@ const KYC = ({status}) => {
         delete data.privacy
         delete data.startDate
 
-
-        console.log('formData', formData)
-        console.log('data', data)
-        const res = await fetch(`http://164.92.245.8:3832/123`, {
+        const res = await fetch(`http://164.92.245.8:3832/api/personal_area/verification/save_images/${store.user.id}/`, {
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -95,7 +92,7 @@ const KYC = ({status}) => {
 
         if (res.status === 201) {
             try {
-                await putData('/personal_area/123', data)
+                await putData('/personal_area/verification', data)
                 setSuccesKyc(true)
             } catch(e) {
                 setErrorModal(true)
