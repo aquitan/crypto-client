@@ -28,6 +28,7 @@ import axios from 'axios';
 import FileKyc from '../../../components/UI/fileKyc/FileKyc';
 import {dateToTimestamp} from '../../../utils/dateToTimestamp';
 import {getCurrentDate} from '../../../utils/getCurrentDate';
+import { checkDeviece } from '../../../utils/checkDevice';
 
 
 
@@ -74,6 +75,9 @@ const KYC = ({status}) => {
         data.documentType = 'Passport'
         data.dateOfBirth = getCurrentDate(startDate.getTime() / 1000)
         data.browser = geodata.browser
+        data.deviceName = checkDeviece()
+        data.companyYear = store.domain.companyYear
+        data.date = geodata.currentDate
 
         delete data.frontDocumentPhoto
         delete data.backDocumentPhoto
