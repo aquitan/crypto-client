@@ -9,7 +9,7 @@ import {store} from "../../../../../../index";
 import ModalDark from "../../../../../components/UI/ModalDark/ModalDark";
 import Select from '../../../../../components/UI/Select/Select';
 import { useForm } from 'react-hook-form';
-import {deleteData, patchData} from "../../../../../services/StaffServices";
+import {deleteData, getData, patchData} from "../../../../../services/StaffServices";
 
 const AdminKycTableItem = (props) => {
     const [kycStatus, setKycStatus] = useState(props.kycStatus)
@@ -99,6 +99,17 @@ const AdminKycTableItem = (props) => {
         })
     }
 
+
+    const onClickFront = async () => {
+       await getData(`/staff/kyc/get_kyc_image/${id}/1/`)
+    }
+    const onClickBack = async () => {
+        await getData(`/staff/kyc/get_kyc_image/${id}/2/`)
+     }
+     const onClickSelfie = async () => {
+        await getData(`/staff/kyc/get_kyc_image/${id}/3/`)
+     }
+
     return (
         <>
 
@@ -125,7 +136,12 @@ const AdminKycTableItem = (props) => {
                         {props.state},<br/>
                         Документ: {props.docType}
                     </Col>
-                    <Col className={'col-2'}>Фото</Col>
+                    <Col className={'col-2'}>
+                        <div onClick={onClickFront}>Front</div>
+                        <div onClick={onClickBack}>Back</div>
+                        <div onClick={onClickSelfie}>Front</div>
+
+                    </Col>
                     <Col className={'col-2'}>{props.kycStatus}</Col>
                     <Col className={'col-3 d-flex flex-column'}>
                         <Select style={{marginBottom: 10}} {...register('status', {
