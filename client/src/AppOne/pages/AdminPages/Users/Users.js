@@ -101,7 +101,7 @@ const Users = () => {
                                                 registerDate={user.dateOfEntry}
                                                 name={user.name}
                                                 email={user.email}
-                                                id={user._id}
+                                                id={user.userId}
                                                 userStatus={user.userStatus}
                                                 kycStatus={user.kycStatus}
                                                 userDomain={user.domainName}
