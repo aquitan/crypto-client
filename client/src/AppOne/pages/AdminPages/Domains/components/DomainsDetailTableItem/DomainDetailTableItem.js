@@ -62,14 +62,6 @@ const DomainsDetailTableItem = ({data, params}) => {
             </Row>
             <Row className='mb-3 domain_table_item'>
                 <Col className='col-6 col-md-2'>
-                    Дата создания
-                </Col>
-                <Col className='col-6 col-md-2'>
-                    {data.dateOfCreate}
-                </Col>
-            </Row>
-            <Row className='mb-3 domain_table_item'>
-                <Col className='col-6 col-md-2'>
                     Комиссия на депозите
                 </Col>
                 <Col className='col-6 col-md-2'>
@@ -115,14 +107,6 @@ const DomainsDetailTableItem = ({data, params}) => {
                 </Col>
                 <Col className='col-6 col-md-2'>
                     {params.minWithdrawalSum}
-                </Col>
-            </Row>
-            <Row className='mb-3 domain_table_item'>
-                <Col className='col-6 col-md-2'>
-                    Корректировка курса
-                </Col>
-                <Col className='col-6 col-md-2'>
-                    {params.rateCorrectSum}
                 </Col>
             </Row>
             <Row className='mb-3 domain_table_item'>

@@ -11,7 +11,6 @@ const SecureDealTableItem = ({amount, status, classname, onClick}) => {
         'table_item',
         classname
     )
-    console.log('classes', classes)
     return (
         <Row key={uuid()} className={classes}>
             <Col className='text-center'>

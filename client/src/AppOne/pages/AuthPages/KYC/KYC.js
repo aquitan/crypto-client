@@ -47,7 +47,6 @@ const KYC = ({status}) => {
     })
 
     const onSubmit = async (data) => {
-        console.log('data kyc', data);
         let formData = new FormData()
 
         const type1 = img.frontDocumentPhoto.type.split("/");
@@ -83,25 +82,28 @@ const KYC = ({status}) => {
         delete data.privacy
         delete data.startDate
 
-        const res = await fetch(`http://164.92.245.8:3832/api/personal_area/verification/save_images/${store.user.id}/`, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
-            body: formData
-        });
 
-        if (res.status === 201) {
-            try {
-                await putData('/personal_area/verification', data)
-                setSuccesKyc(true)
-            } catch(e) {
-                setErrorModal(true)
-            }
+        console.log('formData', formData)
+        console.log('data', data)
+        // const res = await fetch(`http://164.92.245.8:3832/api/personal_area/verification/save_images/${store.user.id}/`, {
+        //     method: 'PUT',
+        //     headers: {
+        //         'Authorization': `Bearer ${localStorage.getItem('token')}`
+        //     },
+        //     body: formData
+        // });
 
-        } else {
-            setErrorModal(true)
-        }
+        // if (res.status === 201) {
+        //     try {
+        //         await putData('/personal_area/verification', data)
+        //         setSuccesKyc(true)
+        //     } catch(e) {
+        //         setErrorModal(true)
+        //     }
+
+        // } else {
+        //     setErrorModal(true)
+        // }
     }
 
     const checkKycStatus = (status) => {
@@ -126,7 +128,6 @@ const KYC = ({status}) => {
 
     const onImgChange = (e) => {
         setImg({...img, [e.target.name]: e.target.files[0] })
-        console.log('img', e.target.name)
     }
 
     const onChangeDate = (date) => {
@@ -134,7 +135,6 @@ const KYC = ({status}) => {
         setValue('startDate', date)
     }
 
-    console.log('errors', errors);
     return (
         <>
             <CustomModal

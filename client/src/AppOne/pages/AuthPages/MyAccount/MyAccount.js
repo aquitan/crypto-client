@@ -40,7 +40,6 @@ const MyAccount = (props) => {
         const res = await postData('/use_promocode_in_profile/', geodata)
     }
 
-    console.log('props.data', props.data)
 
     return (
         <>

@@ -7,7 +7,6 @@ import {Link, NavLink} from 'react-router-dom';
 import Footer from '../../../components/Footer/Footer';
 
 const LandingTwo = ({state, theme, navigate}) => {
-    console.log('state', state.domainName);
     return(
       <>
           <LandingHeader state={state}/>

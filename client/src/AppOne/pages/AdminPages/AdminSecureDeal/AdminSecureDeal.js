@@ -99,7 +99,6 @@ const AdminSecureDeal = () => {
         // if (res.status === 200) {
         //     const resDel = await deleteData(`/personal_area/secure_deal/secure_deal_detail/delete_deal/${id}`, {data: {staffId: id}})
         // }
-        console.log('on miss deadline', obj)
     }
 
     const deleteSecureDeal = async (id) => {

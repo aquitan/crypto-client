@@ -128,7 +128,6 @@ const InternalSwap = ({balance}) => {
         // const res = await getData(`/get_user_balance/${store.user.id}`)
         // setBalance(res.data)
 
-        console.log('internal balance', balance);
         setState({
             target: {
                 value: balance[0].coinBalance?.toFixed(5),
@@ -166,9 +165,7 @@ const InternalSwap = ({balance}) => {
         delete data.initialCurrency
         delete data.targetCurrency
 
-        console.log('balance', balance)
         const filteredBalance = balance.filter(el => el.coinName === data.coinNameFrom)
-        console.log('filteredBalance', filteredBalance)
         if (filteredBalance[0].coinBalance !== 0) {
             if (state.initial.value !== state.target.value) {
                 const res = await putData('/swap/make_swap/', data)
@@ -211,8 +208,6 @@ const InternalSwap = ({balance}) => {
     const youExchangeMessage = () => {
         const filteredTo = store.rates[state.target.currency.toLowerCase()]
         const filteredFrom = store.rates[state.initial.currency.toLowerCase()]
-        console.log('filteredTo', filteredTo);
-        console.log('filteredFrom', filteredFrom);
         let countedFrom = filteredFrom * valueFrom
         let countedTo = countedFrom / filteredTo
         return `You exchange 

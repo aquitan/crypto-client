@@ -39,15 +39,11 @@ $api.interceptors.response.use((config) => {
     const originalRequest = error.config
     if (error.response.status === 401 && error.config && !error.config._isRetry) {
         originalRequest._isRetry = true
-        console.log('try 1')
         try {
-            console.log('retry 2')
             const response = await axios.get(`${BASE_URL}/refresh`, {withCredentials: true})
             localStorage.setItem('token', response.data.accessToken)
             return $api.request(originalRequest)
         } catch(e) {
-            console.log(e.message)
-            console.log('Не авторизованный пользователь')
         }
     }
     throw error

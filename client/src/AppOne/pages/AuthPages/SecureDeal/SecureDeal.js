@@ -84,13 +84,11 @@ const SecureDeal = () => {
         const res = await getData(`/personal_area/secure_deal/secure_deal_history/${store.user.email}`)
         let history = res.data.history.filter(item => {
             if (dateToTimestamp() > item.dealDedline) {
-                console.log('dateToTimestamp() > item.dealDedline', dateToTimestamp() > item.dealDedline)
                 onMissDeadline(item._id, item.dealDedline)
             }
             return  dateToTimestamp() < item.dealDedline
         })
         setHistory(history)
-        console.log('history', history)
     }
 
     const onMissDeadline = async (id, deadline) => {
@@ -102,7 +100,6 @@ const SecureDeal = () => {
         // if (res.status === 200) {
         //     const resDel = await deleteData(`/personal_area/secure_deal/secure_deal_detail/delete_deal/${id}`, {data: {staffId: id}})
         // }
-        console.log('on miss deadline', obj)
     }
 
     const checkOnBlur = async (e) => {

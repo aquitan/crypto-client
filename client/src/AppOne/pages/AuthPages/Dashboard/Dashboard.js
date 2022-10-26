@@ -116,7 +116,6 @@ const Dashboard = () => {
     const handleClose = () => {
         setShow(false)
     }
-    console.log('balance---', balance)
 
     return (
         <>

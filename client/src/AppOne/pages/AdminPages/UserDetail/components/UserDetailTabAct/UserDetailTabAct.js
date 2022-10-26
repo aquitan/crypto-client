@@ -244,7 +244,6 @@ const UserDetailTabAct = (props) => {
     }
 
     const handleFindType = (requestType) => {
-        console.log('requestType', requestType)
         switch (requestType) {
             case 'support':
                 return handleSupportSubmit(changeSupportName);
@@ -347,7 +346,6 @@ const UserDetailTabAct = (props) => {
         if (res.status === 200) {
             navigate('/staff')
         }
-        console.log("you've deleted user")
     }
 
     const onCheckDomain = async (value) => {

@@ -103,7 +103,6 @@ const SignUp = () => {
         await store.registration(geoData)
 
         if (!store.showConfirmation) {
-            console.log('error register')
             setModalError(true)
         }
         else if (store.showConfirmation) {

@@ -21,7 +21,6 @@ const ChatMessege = ({text, date, type, allowEdit, onEditChatMessage, id, image,
     }
 
     const onEdit = async (id) => {
-        console.log('id', id)
         setDisabled(!disabled)
         if (!disabled) {
             onEditChatMessage(id, textVal, image)

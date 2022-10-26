@@ -1,7 +1,6 @@
 import {coinList} from './userConstants'
 
 async function addressValidator(address, coinName) {
-    console.log('validator', {address, coinName});
 
     if (!address || !coinName) return false
     const coin = coinName.toLowerCase()

@@ -21,7 +21,7 @@ import {checkOrderBuyToComplete} from '../../utils/checkOrderToComplete/checkOrd
 import CustomModal from '../../../../../components/CustomModal/CustomModal';
 import {useLocation, useNavigate} from 'react-router-dom';
 
-const TradingEthereum = ({balance, coinPair}) => {
+const TradingEthereum = ({balance, coinPair, initialChartData}) => {
   const {theme} = useThemeContext()
   const [rate, setRate] = useState(0)
   const [orders, setOrders] = useState([])
@@ -32,7 +32,7 @@ const TradingEthereum = ({balance, coinPair}) => {
   const [sellCrypto, setSellCrypto] = useState(0)
   const [sellPrice, setSellPrice] = useState(0)
   const [tradingHistory, setTradingHistory] = useState([])
-  const [initialChartData, setInitialChartData] = useState([])
+  // const [initialChartData, setInitialChartData] = useState([])
   const [tradingData, setTradingData] = useState([])
   const [orderModal, setOrderModal] = useState(false)
   const {chartValue} = useValueContext()
@@ -44,7 +44,7 @@ const TradingEthereum = ({balance, coinPair}) => {
     getRate()
     getTradingData()
     getHistory()
-    getInitialChartData()
+    // getInitialChartData()
     getTradingHistory()
     // setInterval(() => {
     //   setOrders(generateOrders(rate))
@@ -113,11 +113,11 @@ const TradingEthereum = ({balance, coinPair}) => {
     const datas = await res.json()
     setRate(datas.lastPrice)
   }
-  const getInitialChartData = async () => {
-    const res = await fetch('https://api.binance.com/api/v3/klines?symbol=ETHUSDT&interval=1m&limit=100')
-    const data = await res.json()
-    setInitialChartData(data.slice(0).reverse())
-  }
+  // const getInitialChartData = async () => {
+  //   const res = await fetch('https://api.binance.com/api/v3/klines?symbol=ETHUSDT&interval=1m&limit=100')
+  //   const data = await res.json()
+  //   setInitialChartData(data.slice(0).reverse())
+  // }
 
   const getHistory = async () => {
     const res = await getData(`/trading/order_history/${store.user.id}/0/50/`)

@@ -50,7 +50,6 @@ const Wallet = () => {
                 arr.push(Number((item.coinBalance * store.rates.trxusdt)))
             }
         })
-        console.log('arr---', arr);
         setBalancesArr(arr)
     }
 

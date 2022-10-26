@@ -74,7 +74,6 @@ const SignIn = () => {
                 sendLoginData(data)
             }
         } catch (e) {
-            console.log('error two fa', e);
             navigate('/error-500')
         }
 
@@ -89,7 +88,6 @@ const SignIn = () => {
         delete geoData.logTime
         // geoData.domainName = window.location.host
         geoData.domainName = 'localhost:3000'
-        console.log('geodata', geoData)
         // if (!store.isAuth && store.isActivated && !store.isBanned) await store.login(geoData)
         if (!store.isAuth && !store.isActivated && !store.isBanned) {
             const res = await store.login(geoData)

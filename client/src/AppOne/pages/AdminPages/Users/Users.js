@@ -50,7 +50,6 @@ const Users = () => {
         setLimit(prevState => prevState-1)
     }
 
-    console.log('user-data', state.users)
 
     return (
         <Container>

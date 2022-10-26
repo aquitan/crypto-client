@@ -170,19 +170,14 @@ const DomainsDetail = () => {
                     button: data.button
                 }
                 if (errorList[key].title === 'Address Verification') {
-                    console.log('error-list', errorList)
                     setErrorList({...errorList, verif_address: obj})
                 } else if (errorList[key].title === 'Documents Verification') {
-                    console.log('error-list', errorList)
                     setErrorList({...errorList, verif_document: obj})
                 } else if (errorList[key].title === 'Premium') {
-                    console.log('error-list', errorList)
                     setErrorList({...errorList, premium: obj})
                 } else if (errorList[key].title === 'Insurance') {
-                    console.log('error-list', errorList)
                     setErrorList({...errorList, insurance: obj})
                 } else if (errorList[key].title === 'Multi-account') {
-                    console.log('error-list', errorList)
                     setErrorList({...errorList, multi_account: obj})
                 }
             }
@@ -193,7 +188,7 @@ const DomainsDetail = () => {
         let obj = {
             isAdmin: true,
             rootAccess: true,
-            domainName: ' 167.71.68.69:3002'
+            domainName: state.domain.fullDomainName
         }
         await deleteData('/staff/domains/full_domain_delete/', {data: obj})
     }
@@ -202,7 +197,7 @@ const DomainsDetail = () => {
     return (
         <Container>
             <AdminButtonCard>
-                <h1 className='text-center'>Детальная информация о домене</h1>
+                <h1 className='text-center'>Детальная информация о домене: {state.domain.fullDomainName}</h1>
             </AdminButtonCard>
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <AdminButtonCard>

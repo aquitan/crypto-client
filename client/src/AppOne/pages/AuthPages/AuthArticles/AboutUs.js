@@ -12,7 +12,6 @@ const AboutUs = () => {
     const classes = cx('article', theme)
     let domain = store.domain.domainName.toUpperCase()
     let domainName = store.domain.companyOwnerName
-    console.log(store.domain)
     return (
         <ButtonCard theme={theme}>
             <div className={classes}>

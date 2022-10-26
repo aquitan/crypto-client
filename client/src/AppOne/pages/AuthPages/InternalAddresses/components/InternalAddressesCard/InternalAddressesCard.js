@@ -20,7 +20,6 @@ const InternalAddressesCard = ({currency, sum, onCopy, wallet, theme, onUpdateHi
     const classes = cx('internal_address_card', theme)
 
     const checkAddress = async (value, currency) => {
-        console.log('validator', {value, currency});
         if (currency === 'USDT') currency = 'ETH'
         return await addressValidator(value, currency.toLowerCase())
     }

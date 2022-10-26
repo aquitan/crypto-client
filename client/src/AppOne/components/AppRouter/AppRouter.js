@@ -65,7 +65,6 @@ const AppRouter = () => {
     const getRates = async () => {
         const res = await getRate()
 
-        console.log('res data rates', res.data)
         const obj = {
             btc: res.data[0].current_price,
             eth: res.data[1].current_price,

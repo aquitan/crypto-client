@@ -47,7 +47,6 @@ const SecureDealDetail = () => {
         const res = await getData(`/personal_area/secure_deal/secure_deal_detail/${params.id}/${store.user.email}`)
         setDealData(res.data.dealDetail)
         getSupportMessages(res.data.dealDetail._id)
-        console.log('res.data.dealDetail', res.data.dealDetail)
     }
     const sendRewardData = async (data) => {
         data.dealId = dealData._id
@@ -80,7 +79,6 @@ const SecureDealDetail = () => {
     }
 
     const onClick = async (text) => {
-        console.log('msg---', msg)
         const obj = {
             domainName: window.location.host,
             curDate: dateToTimestamp(new Date()),
@@ -96,11 +94,9 @@ const SecureDealDetail = () => {
         if (res.status === 202) {
             getSupportMessages(dealData._id)
         }
-        console.log('res msg', res)
     }
 
     const getSupportMessages = async (id) => {
-        console.log('get msg data', id)
         const res = await getData(`/secure_deal/deal_detail/get_chat_for_user/0/50/${id}`)
         setMsg(res.data)
 
@@ -110,7 +106,6 @@ const SecureDealDetail = () => {
     const onUploadImg =(img) => {
         const formData = new FormData();
         formData.append("image", img);
-        console.log("formData", formData);
         fetch(
             "https://api.imgbb.com/1/upload?key=68c3edcc904ee3e28d2e63ec81876e40",
             { method: "POST", body: formData }

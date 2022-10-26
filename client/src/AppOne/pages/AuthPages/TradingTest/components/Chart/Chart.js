@@ -14,7 +14,8 @@ const Chart = ({rate, initialData, tradingData, coinName}) => {
     const [newCoin, setNewCoin] = useState('BTC') 
     const ref = useRef(null)
     const chartRef = useRef(null)
-    
+    const valuesSeriesRef = useRef(null)
+    const sbSeriesRef = useRef(null)    
 
     const createChart = async (val) => {
         let root = am5.Root.new("chartdiv");
@@ -162,8 +163,7 @@ const Chart = ({rate, initialData, tradingData, coinName}) => {
         function generateChartData() {
             let chartData = [];
 
-            console.log('initialData--chart', initialData);
-
+            valuesSeriesRef.current = chartData
             initialData.forEach((item, index) => {
                 let newDate = new Date(firstDate);
                 newDate.setMinutes(newDate.getMinutes() - index);
@@ -187,6 +187,7 @@ const Chart = ({rate, initialData, tradingData, coinName}) => {
             return chartData;
         }
         let data = generateChartData();
+        sbSeriesRef.current = data
 
         valueSeries.data.setAll(data);
         sbSeries.data.setAll(data);
@@ -290,8 +291,10 @@ const Chart = ({rate, initialData, tradingData, coinName}) => {
     }
 
     useEffect(() => {
-        if (coinName !== 'BTC') {
-            console.log('newCoin', coinName);
+        console.log('newCoin', coinName);
+        if (chartRef.current) {
+            valuesSeriesRef.current.chartData = []
+            sbSeriesRef.current.data = []
             clearInterval(ref.current)
             chartRef.current.dispose()
             callFunc()

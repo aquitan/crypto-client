@@ -31,7 +31,6 @@ const InternalAddresses = () => {
 
     const onNext = () => {
         setCounter((prevState => {
-            console.log('prevstate', prevState)
             return prevState + 5
         }))
         getInternalHistory(counter+5)
@@ -48,7 +47,6 @@ const InternalAddresses = () => {
     const getWalletsData = async () => {
         const res = await getData(`/get_internal_data/${store.user.id}`)
         setWallets(res.data)
-        console.log('res', res.data)
     }
 
     const onModalOpen = (obj) => {
@@ -60,7 +58,6 @@ const InternalAddresses = () => {
             from: obj.fromAddress,
             to: obj.toAddress
         })
-        console.log('modal', obj)
     }
 
     const getInternalHistory = async (count) => {

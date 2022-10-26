@@ -121,6 +121,7 @@ const CreateDomains = () => {
         if (res.status === 201) {
             setShowDomain(true)
             reset({data: ''})
+            getDomains()
         }
     }
 

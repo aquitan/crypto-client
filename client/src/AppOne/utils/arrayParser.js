@@ -38,7 +38,6 @@ export async function DataDecripting(data) {
 
   let curPh = phrase.join().replaceAll(',', ' ')
   let fxx = curPh.toString()
-  console.log('decripted phrase is  => ', fxx);
   return fxx
 }
 
@@ -78,7 +77,6 @@ export async function DataEncripting(data) {
   }
   let curPhrs = phrase.join().replaceAll(',', '').replaceAll(';', '/')
   let encPrase = curPhrs.toString()
-  console.log('encripted phrase is => ', encPrase);
   return encPrase
 }
 

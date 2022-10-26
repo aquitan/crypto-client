@@ -29,7 +29,6 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 const Deposit = ({coin, coinsBalance, coinFullName}) => {
     const location = useLocation()
-    console.log('router', {location});
     const {theme} = useThemeContext(ThemeContext)
     const [show, showModal, closeModal] = useModal()
     const [minimalSum, setMinimalSum] = useState(false)
@@ -85,9 +84,6 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
         const res = await postData('/get_address_for_deposit/', obj)
         setAddress(res.data.address)
     }
-
-    console.log('deposit coin', coin)
-
 
     const onSubmit = async (data, e) => {
         e.preventDefault()

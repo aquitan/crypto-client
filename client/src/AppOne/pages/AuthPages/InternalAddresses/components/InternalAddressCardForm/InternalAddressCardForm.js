@@ -29,7 +29,6 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
             return bucs
         }
         else {
-            console.log('coin', store.rates[coin] * bucs)
             return store.rates[coin] * bucs
         }
     }
@@ -74,7 +73,6 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
 
         try {
             const res = await getData(`/internal_wallet_checker/${e.target.value}/${window.location.host}`)
-            console.log('res status', res.status)
             if (res.status !== 200) {
                 setAddressModalError(true)
             }
@@ -88,7 +86,6 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
     }
 
     const checkWallet = (val) => {
-        console.log('val', val);
         return val === wallet || "You can't use your own address to transfer"
     }
 

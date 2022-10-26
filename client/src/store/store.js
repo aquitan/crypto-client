@@ -151,17 +151,14 @@ export default class Store {
 
         } catch(e) {
             this.setIsError(true)
-            console.log('error', e)
         } finally {
             this.setIsLoading(false)
         }
     }
     async registration(obj) {
-        console.log('registration')
         try {
             this.setIsError(true)
             const response = await AuthService.registration(obj)
-            console.log('register', response)
             localStorage.setItem('token', response.data.accessToken)
             this.setUserId(response.data.user.ID)
             this.setShowConfirmation(true)
@@ -170,7 +167,6 @@ export default class Store {
             this.setUser(response.data.user)
         } catch(e) {
             this.setIsError(true)
-            console.log('error', e)
         } finally {
             this.setIsLoading(false)
         }
@@ -186,7 +182,6 @@ export default class Store {
             this.setFullAccess(false)
         } catch(e) {
             this.setIsError(true)
-            console.log('error', e)
         }
     }
 
@@ -209,7 +204,6 @@ export default class Store {
             this.setAuth(true)
             this.setUser(response.data.user)
 
-            console.log('response-refresh', response.data)
             if (response.data.user.isBanned) {
                 this.setIsBanned(true)
             }
@@ -238,7 +232,6 @@ export default class Store {
             }
 
         } catch(e) {
-            console.log('error---', e)
             localStorage.removeItem('token')
             this.setAuth(false)
             this.setIsActivated(false)
@@ -263,7 +256,6 @@ export default class Store {
             this.setShowConfirmation(false)
             this.setIsActivated(true)
         } catch(e) {
-            console.log('activation error', e)
         } finally {
             this.setIsLoading(false)
         }
@@ -272,10 +264,8 @@ export default class Store {
     async sendPath(path) {
         try {
             this.setPath(path)
-            console.log('path----', path)
 
         } catch(e) {
-            console.log('path error', e)
         }
     }
 }

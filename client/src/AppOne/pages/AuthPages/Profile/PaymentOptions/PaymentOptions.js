@@ -23,7 +23,6 @@ const PaymentOptions = () => {
     const {theme} = useThemeContext()
 
     const addOption = () => {
-        console.log('add option')
         setShow(true)
     }
 

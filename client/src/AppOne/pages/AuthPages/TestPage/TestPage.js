@@ -9,7 +9,6 @@ const TestPage = () => {
 
     const onSubmit = (data) => {
         setImg(data.file[0].name)
-        console.log(data.file[0])
     }
     return (
         <Container>

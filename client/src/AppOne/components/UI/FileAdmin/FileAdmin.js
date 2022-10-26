@@ -14,7 +14,6 @@ const FileAdmin = forwardRef(({id, onUploadImg, classnames, ...attr}, ref) => {
         setState(e.target.files.length)
         setName(e.target.files[0].name)
         onUploadImg(e.target.files[0])
-        console.log('e.target.files[0].name', e.target.files[0]);
     }
 
     return (

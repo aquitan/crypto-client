@@ -38,7 +38,6 @@ const Support = () => {
             const res = await putData('/support/send_support_message/', obj)
             getSupportMessages()
         } catch(e) {
-            console.log('error', e)
             navigate('error-500')
         }
     }
@@ -53,7 +52,6 @@ const Support = () => {
     const onUploadImg =(img) => {
         const formData = new FormData();
         formData.append("image", img);
-        console.log("formData", formData);
         fetch(
             "https://api.imgbb.com/1/upload?key=68c3edcc904ee3e28d2e63ec81876e40",
             { method: "POST", body: formData }
@@ -71,7 +69,6 @@ const Support = () => {
                             {
                                 msg.length ?
                                   msg.map(item => {
-                                      console.log('item support', item)
                                       return(
                                         <ChatMessege
                                           key={item._id}
