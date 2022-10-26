@@ -26,7 +26,7 @@ const AdminKYC = () => {
         const res = await postData('/staff/users/kyc/', userData)
         const data = await res.data
         const filteredCoins = data.usersKycList.filter(el => el.userEmail.toLowerCase().includes(search.toLowerCase()))
-        setUsersKyc(filteredCoins)
+        setUsersKyc(data.usersKycList)
     }
 
     useEffect(() => {
