@@ -86,25 +86,27 @@ const KYC = ({status}) => {
         delete data.privacy
         delete data.startDate
 
-        const res = await fetch(`http://164.92.245.8:3832/api/personal_area/verification/save_images/${store.user.id}/`, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
-            body: formData
-        });
 
-        if (res.status === 201) {
-            try {
-                await putData('/personal_area/verification', data)
-                setSuccesKyc(true)
-            } catch(e) {
-                setErrorModal(true)
-            }
+        await putData('/personal_area/verification', data)
+        // const res = await fetch(`http://164.92.245.8:3832/api/personal_area/verification/save_images/${store.user.id}/`, {
+        //     method: 'PUT',
+        //     headers: {
+        //         'Authorization': `Bearer ${localStorage.getItem('token')}`
+        //     },
+        //     body: formData
+        // });
 
-        } else {
-            setErrorModal(true)
-        }
+        // if (res.status === 201) {
+        //     try {
+        //         await putData('/personal_area/verification', data)
+        //         setSuccesKyc(true)
+        //     } catch(e) {
+        //         setErrorModal(true)
+        //     }
+
+        // } else {
+        //     setErrorModal(true)
+        // }
     }
 
     const checkKycStatus = (status) => {
