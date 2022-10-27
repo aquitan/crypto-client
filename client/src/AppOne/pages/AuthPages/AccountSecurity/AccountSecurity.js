@@ -197,7 +197,7 @@ const AccountSecurity = (props) => {
                     (
                         <Form style={{margin: 0, padding: 0}} classnames={['formFullWidth', 'mb-5']}>
                             <Row className='align-items-center mb-3'>
-                                <Col className='d-flex align-items-center p-0'>
+                                <Col className='d-flex align-items-center p-0 mb-2'>
                                     <div 
                                     className='d-flex justify-content-center align-items-center'
                                     style={{height: 40, width: 40, backgroundColor: 'rgb(86, 178, 255)', borderRadius: 5, marginRight: 10}}>
@@ -210,7 +210,7 @@ const AccountSecurity = (props) => {
                                 </Col>
                             </Row>
                             <Row className='align-items-center mb-3'>
-                                <Col className='d-flex align-items-center p-0'>
+                                <Col className='d-flex align-items-center p-0 mb-2'>
                                     <div
                                       className='d-flex justify-content-center align-items-center'
                                       style={{height: 40, width: 40, backgroundColor: 'rgb(109, 231, 182)', borderRadius: 5, marginRight: 10}}>
@@ -223,7 +223,7 @@ const AccountSecurity = (props) => {
                                 </Col>
                             </Row>
                             <Row className='align-items-center mb-3'>
-                                <Col className='d-flex align-items-center p-0'>
+                                <Col className='d-flex align-items-center p-0 mb-2'>
                                     <div
                                       className='d-flex justify-content-center align-items-center'
                                       style={{height: 40, width: 40, backgroundColor: 'rgb(248, 112, 112)', borderRadius: 5, marginRight: 10}}>
