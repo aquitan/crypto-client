@@ -10,6 +10,7 @@ import CustomModal from '../../../components/CustomModal/CustomModal';
 
 const Chat = () => {
     const [msg, setMsg] = useState([])
+    const [limit, setLimit] = useState(0)
     const [chats, setChats] = useState([])
     const [msgError, setMsgError] = useState(false)
     const [currentChat, setCurrentChat] = useState('')
@@ -38,7 +39,7 @@ const Chat = () => {
         try {
             const res = await putData('staff/support/send_message_to_user/', obj)
             if (res.status === 202) {
-                const res = await getData(`/staff/support/chat_item/get_chat_data/${currentChat}/0/20/`)
+                const res = await getData(`/staff/support/chat_item/get_chat_data/${currentChat}/${limit}/50/`)
                 setMsg(res.data)
             }
         } catch(e) {
@@ -98,6 +99,23 @@ const Chat = () => {
         const res = await patchData('/staff/support/edit_message/', obj)
     }
 
+    const getSupportMessages = async () => {
+        const res = await getData(`/staff/support/chat_item/get_chat_data/${currentChat}/${limit}/50/`)
+        setMsg(res.data.reverse())
+        // createMessagesOnLoad(res.data)
+    }
+
+    useEffect(() => {
+        getSupportMessages()
+    }, [limit])
+
+    const onMore = () => {
+        setLimit(prevState => prevState+1)
+    }
+    const onLess = () => {
+        setLimit(prevState => prevState-1)
+    }
+
     return (
         <Container>
 
@@ -140,6 +158,21 @@ const Chat = () => {
                                 }) : <h3>Выбери чат</h3>
                         }
                     </ChatWindow>
+                    {
+                        msg.length ? 
+                        <Row className={'mb-3 mt-3'}>
+                            {
+                                msg.length >= 50 ?
+                                <AdminButton onClick={onMore} classname={['xs', 'green']}>Load older messages</AdminButton>
+                                : null
+                            }
+                            {
+                                limit > 0 ?
+                                <AdminButton onClick={onLess} classname={['xs', 'green']}>Back</AdminButton>
+                                : null
+                            }
+                        </Row> : null
+                    }
                 </Row>
             </AdminButtonCard>
             

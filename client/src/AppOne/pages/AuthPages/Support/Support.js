@@ -10,16 +10,14 @@ import {getData, putData} from "../../../services/StaffServices";
 import {store} from "../../../../index";
 import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 import {useNavigate} from 'react-router-dom';
+import AdminButton from '../../../components/UI/AdminButton/AdminButton';
 
 const Support = () => {
     const [msg, setMsg] = useState([])
     const [image, setImage] = useState()
     const navigate = useNavigate()
     const {theme} = useThemeContext(ThemeContext)
-
-    useEffect(() => {
-        getSupportMessages()
-    }, [])
+    const [limit, setLimit] = useState(0)
 
     const onClick = async (text) => {
         const obj = {
@@ -43,7 +41,7 @@ const Support = () => {
     }
 
     const getSupportMessages = async () => {
-        const res = await getData(`/support/get_chat_for_user/${store.user.id}/${0}/${50}/`)
+        const res = await getData(`/support/get_chat_for_user/${store.user.id}/${limit}/${50}/`)
         setMsg(res.data.reverse())
         // createMessagesOnLoad(res.data)
     }
@@ -58,6 +56,17 @@ const Support = () => {
         )
             .then((response) => response.json())
             .then((data) => setImage(data.data.display_url));
+    }
+
+    useEffect(() => {
+        getSupportMessages()
+    }, [limit])
+
+    const onMore = () => {
+        setLimit(prevState => prevState+1)
+    }
+    const onLess = () => {
+        setLimit(prevState => prevState-1)
     }
 
     return (
@@ -80,7 +89,23 @@ const Support = () => {
                                       )
                                   }) : null
                             }
+                            
                         </ChatWindow>
+                        {
+                                msg.length ? 
+                                <Row className={'mb-3 mt-3'}>
+                                    {
+                                        msg.length >= 50 ?
+                                        <AdminButton onClick={onMore} classname={['xs', 'green']}>Load older messages</AdminButton>
+                                        : null
+                                    }
+                                    {
+                                        limit > 0 ?
+                                        <AdminButton onClick={onLess} classname={['xs', 'green']}>Back</AdminButton>
+                                        : null
+                                    }
+                                </Row> : null
+                            }
                     </Col>
                     <Col className='col-12 col-lg-3'>
                         <ChatRules rulesDisclamer={supportRulesText} />
@@ -89,13 +114,6 @@ const Support = () => {
             </ButtonCard>
         </>
     )
-}
-
-Support.propTypes = {
-    
-}
-Support.defaultProps = {
-    
 }
 
 export default Support

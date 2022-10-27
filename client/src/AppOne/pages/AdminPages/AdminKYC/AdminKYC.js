@@ -11,6 +11,7 @@ import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard
 const AdminKYC = () => {
     const [usersKyc, setUsersKyc] = useState()
     const [search, setSearch] = useState()
+    const [limit, setLimit] = useState(0)
 
     const getStaffKyc = async () => {
         const userData = {
@@ -20,7 +21,7 @@ const AdminKYC = () => {
             rootAccess: store.fullAccess,
             staffEmail: store.fullAccess ? 'root' : store.user.email,
             staffId: store.fullAccess ? 'root' : store.user.id,
-            skipValue: 0,
+            skipValue: limit,
             limitValue: 20
         }
         const res = await postData('/staff/users/kyc/', userData)
@@ -36,6 +37,18 @@ const AdminKYC = () => {
     const onSearch = (e) => {
         setSearch(e.target.value)
     }
+
+    useEffect(() => {
+        getStaffKyc()
+    }, [limit])
+
+    const onMore = () => {
+        setLimit(prevState => prevState+1)
+    }
+    const onLess = () => {
+        setLimit(prevState => prevState-1)
+    }
+
 
     return (
         <Container style={{color: '#fff'}}>
@@ -94,6 +107,24 @@ const AdminKYC = () => {
                                 </Row>
                         }
                     </div>
+                    {
+                        usersKyc &&  typeof usersKyc !== 'string' ? 
+                            <Row className={'mb-3 mt-3'}>
+                                {
+                                    usersKyc.length >= 10 ?
+                                        <AdminButton onClick={onMore} classname={['xs', 'green']}>Еще</AdminButton>
+                                        : null
+                                }
+                                {
+                                    limit > 0 ?
+                                        <AdminButton onClick={onLess} classname={['xs', 'green']}>Назад</AdminButton>
+                                        : null
+                                }
+                            </Row>
+                            : null
+                        
+                    }
+                    
                 </Card>
             </Row>
 

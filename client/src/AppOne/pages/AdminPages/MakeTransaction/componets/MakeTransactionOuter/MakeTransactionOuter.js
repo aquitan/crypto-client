@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import AdminForm from "../../../../../components/UI/AdminForm/AdminForm";
 import {Col, Row} from "react-bootstrap";
 import Select from "../../../../../components/UI/Select/Select";
@@ -13,13 +13,13 @@ import moment from "moment";
 import Table from "../../../../../components/UI/Table/Table";
 import TableHeader from "../../../../../components/UI/Table/components/TableHeader/TableHeader";
 import TableBody from "../../../../../components/UI/Table/components/TableBody/TableBody";
-import {putData} from "../../../../../services/StaffServices";
+import {postData, putData} from "../../../../../services/StaffServices";
 import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
 import {store} from "../../../../../../index";
 import {getCurrentDate} from "../../../../../utils/getCurrentDate";
 import CustomModal from '../../../../../components/CustomModal/CustomModal';
 
-const MakeTransactionOuter = ({history}) => {
+const MakeTransactionOuter = ({history, callMore, callLess, limit}) => {
     const [startDate, setStartDate] = useState()
     const [timeDate, setTimeDate] = useState()
     const [modalSuccess, setModalSuccess] = useState(false)
@@ -104,6 +104,14 @@ const MakeTransactionOuter = ({history}) => {
         setTimeDate(time)
     }
 
+
+    const onMore = () => {
+        callMore()
+    }
+    const onLess = () => {
+        callLess()
+    }
+
     return (
         <>
 
@@ -174,9 +182,9 @@ const MakeTransactionOuter = ({history}) => {
                         <TableBody>
                             {
                                 history ?
-                                    history.map(item => {
+                                    history.map((item, index) => {
                                         return(
-                                            <Row style={{padding: '10px 0', borderBottom: '1px solid #fff', marginBottom: 10}}>
+                                            <Row key={index} style={{padding: '10px 0', borderBottom: '1px solid #fff', marginBottom: 10}}>
                                                 <Col className={'text-center'}>
                                                     {item.coinName}
                                                 </Col>
@@ -200,6 +208,21 @@ const MakeTransactionOuter = ({history}) => {
                             }
                         </TableBody>
                     </Table>
+                    {
+                        history ?
+                        <Row className={'mb-3 mt-3'}>
+                            {
+                                history.length >= 10 ?
+                                  <AdminButton onClick={onMore} classname={['xs', 'green']}>Еще</AdminButton>
+                                  : null
+                            }
+                            {
+                                limit > 0 ?
+                                  <AdminButton onClick={onLess} classname={['xs', 'green']}>Назад</AdminButton>
+                                  : null
+                            }
+                        </Row> : null
+                    }
                 </AdminButtonCard>
             </>
     )

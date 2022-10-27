@@ -144,17 +144,6 @@ const CreateDomains = () => {
         setActiveDomains(res.data)
     }
 
-    // const getActiveDomains = async () => {
-    //     const obj = {
-    //         isAdmin: store.isAdmin,
-    //         isStaff: store.isStaff,
-    //         staffId: store.userId
-    //     }
-    //     const res = await postData('/staff/domains/get_active_domains/', obj)
-    //     setActiveDomains(res.data.domainsList)
-    //     console.log('get domains', res.data)
-    // }
-
     useEffect(() => {
         getDomains()
     }, [limit])

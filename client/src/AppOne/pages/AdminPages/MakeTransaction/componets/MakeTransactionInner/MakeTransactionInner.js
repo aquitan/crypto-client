@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import AdminForm from "../../../../../components/UI/AdminForm/AdminForm";
 import {Col, Row} from "react-bootstrap";
 import Select from "../../../../../components/UI/Select/Select";
@@ -18,8 +18,9 @@ import {getData, postData, putData} from "../../../../../services/StaffServices"
 import {store} from "../../../../../../index";
 import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
 import CustomModal from '../../../../../components/CustomModal/CustomModal';
+import { getCurrentDate } from '../../../../../utils/getCurrentDate';
 
-const MakeTransactionInner = () => {
+const MakeTransactionInner = ({history, callMore, callLess, limit}) => {
     const [startDate, setStartDate] = useState()
     const [timeDate, setTimeDate] = useState()
     const [modalSuccess, setModalSuccess] = useState(false)
@@ -104,6 +105,15 @@ const MakeTransactionInner = () => {
     const onBlur = async (e) => {
         const res = await getData(`/second_party_user_checker/${e.target.value}/${window.location.host}/${store.user.id}/`)
     }
+
+    const onMore = () => {
+        callMore()
+    }
+    const onLess = () => {
+        callLess()
+    }
+
+
     return (
         <>
 
@@ -170,21 +180,54 @@ const MakeTransactionInner = () => {
 
                 <AdminButtonCard classname='small_scroll'>
                     <Table>
-                        <TableHeader elems={transInnerTableHeader} />
+                    <TableHeader elems={transTableHeader}/>
                         <TableBody>
-                            <TableItem  />
+                            {
+                                history ?
+                                    history.map(item => {
+                                        return(
+                                            <Row key={item._id} style={{padding: '10px 0', borderBottom: '1px solid #fff', marginBottom: 10}}>
+                                                <Col className={'text-center'}>
+                                                    {item.coinName}
+                                                </Col>
+                                                <Col className={'text-center'}>
+                                                    {item.status}
+                                                </Col>
+                                                <Col className={'text-center'}>
+                                                    {getCurrentDate(item.date)}
+                                                </Col>
+                                                <Col className={'text-center'}>
+                                                    {item.cryptoAmount}
+                                                </Col>
+                                                <Col className={'text-center'}>
+                                                    {item.usdAmount}
+                                                </Col>
+
+                                            </Row>
+                                        )
+                                    })
+                                    : null
+                            }
                         </TableBody>
                     </Table>
+                    {
+                        history ?
+                        <Row className={'mb-3 mt-3'}>
+                            {
+                                history.length >= 10 ?
+                                  <AdminButton onClick={onMore} classname={['xs', 'green']}>Еще</AdminButton>
+                                  : null
+                            }
+                            {
+                                limit > 0 ?
+                                  <AdminButton onClick={onLess} classname={['xs', 'green']}>Назад</AdminButton>
+                                  : null
+                            }
+                        </Row> : null
+                    }
                 </AdminButtonCard>
         </>
     )
-}
-
-MakeTransactionInner.propTypes = {
-    
-}
-MakeTransactionInner.defaultProps = {
-    
 }
 
 export default MakeTransactionInner

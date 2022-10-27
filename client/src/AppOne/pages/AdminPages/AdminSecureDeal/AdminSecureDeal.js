@@ -264,11 +264,4 @@ const AdminSecureDeal = () => {
     )
 }
 
-AdminSecureDeal.propTypes = {
-
-}
-AdminSecureDeal.defaultProps = {
-
-}
-
 export default AdminSecureDeal

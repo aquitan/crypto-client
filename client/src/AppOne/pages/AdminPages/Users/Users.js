@@ -25,7 +25,7 @@ const Users = () => {
             rootAccess: store.fullAccess,
             staffEmail: store.fullAccess ? 'root': store.user.email,
             staffId: store.fullAccess ? 'root': store.user.id,
-            skipValue: value,
+            skipValue: limit,
             limitValue: 10
         }
         const res = await postData('/staff/users/', userData)

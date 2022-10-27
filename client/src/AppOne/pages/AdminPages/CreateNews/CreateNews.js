@@ -250,11 +250,4 @@ const CreateNews = () => {
     )
 }
 
-CreateNews.propTypes = {
-
-}
-CreateNews.defaultProps = {
-
-}
-
 export default CreateNews
