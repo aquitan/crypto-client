@@ -10,9 +10,12 @@ import ModalDark from "../../../../../components/UI/ModalDark/ModalDark";
 import Select from '../../../../../components/UI/Select/Select';
 import { useForm } from 'react-hook-form';
 import {deleteData, getData, patchData} from "../../../../../services/StaffServices";
+import CustomModal from '../../../../../components/CustomModal/CustomModal';
 
 const AdminKycTableItem = (props) => {
     const [kycStatus, setKycStatus] = useState(props.kycStatus)
+    const [modalSuccess, setModalSuccess] = useState(false)
+    const [modalError, setModalError] = useState(false)
     const [modalDelete, setModalDelete] = useState(false)
     const [state, setState] = useState({
         isOpen: false,
@@ -47,9 +50,17 @@ const AdminKycTableItem = (props) => {
             delete statusData.staffId
         }
 
-        const res = await patchData('/staff/kyc/update_kyc_status/', statusData)
-        const data = await res.data
-        handleCloseModal()
+
+        try {
+            const res = await patchData('/staff/kyc/update_kyc_status/', statusData)
+            const data = await res.data
+            handleCloseModal()
+            setModalSuccess(true)
+        } catch(e) {
+            setModalError(true)
+        }
+
+        
     }
 
     const onSendDelete = async () => {
@@ -61,16 +72,14 @@ const AdminKycTableItem = (props) => {
             userId: props.userId,
             rootAccess: store.fullAccess
         }
-        // if (store.fullAccess) {
-        //     delete data.staffEmail
-        //     delete data.staffId
-        // }
-        const res = await deleteData('/staff/kyc/delete_kyc/', {data})
-        if (res.status === 202) {
-            // SwalSimple('KYC удален!')
+       
+        try {
+            const res = await deleteData('/staff/kyc/delete_kyc/', {data})
             handleCloseModal()
+            setModalDelete(true)
+        } catch(e) {
+            setModalDelete(true)
         }
-
     }
 
     const handleCloseModal = () => {
@@ -114,7 +123,17 @@ const AdminKycTableItem = (props) => {
     return (
         <>
 
-            <Modal active={state.isOpen} title={'Подтвердить действие'} setActive={handleCloseModal}>
+            <CustomModal size={'md'} show={modalSuccess} handleClose={() => setModalSuccess(false)} themeDark={true} btnClose='Ok' title='Успешно'>
+                Пользователь успешно добавлен в группу!
+            </CustomModal>
+            <CustomModal size={'md'} show={modalDelete} handleClose={() => setModalDelete(false)} themeDark={true} btnClose='Ok' title='Успешно'>
+                Пользователь успешно удален из группы!
+            </CustomModal>
+            <CustomModal size={'md'} show={modalError} handleClose={() => setModalError(false)} themeDark={true} btnClose='Ok' title='Ошибка'>
+                Упс! Что-то пошло не так! Попробуйте позже!
+            </CustomModal>
+
+            <CustomModal size={'md'} show={state.isOpen} handleClose={handleCloseModal} themeDark={true} title='Подтвердите действие'>
                 <Row>
                     <Col className={'col-6'}>
                         <AdminButton classname={'green'} onClick={state.onClickConfirm} >Подтвердить</AdminButton>
@@ -123,32 +142,34 @@ const AdminKycTableItem = (props) => {
                         <AdminButton classname={'red'} onClick={handleCloseModal} >Отмена</AdminButton>
                     </Col>
                 </Row>
-            </Modal>
+            </CustomModal>
 
 
             <div className={'mt-3 mb-3'}>
                 <Row>
                     {/*<Col className={'col-1'}>{props.registerDate}</Col>*/}
-                    <Col className={'col-1'}>{props.name ? props.name : <FontAwesomeIcon icon={faTimesCircle} color='tomato' />}</Col>
-                    <Col className={'col-2'}>{props.email}</Col>
-                    <Col className={'col-2'}>
+                    <Col style={{width: '190px'}} className={'text-center'}>{props.name ? props.name : <FontAwesomeIcon icon={faTimesCircle} color='tomato' />}</Col>
+                    <Col style={{width: '190px'}} className={'text-center'}>{props.email}</Col>
+                    <Col style={{width: '190px'}} className={'text-center'}>
                         {props.city + ' '}
                         {props.zip}<br/>
                         {props.state},<br/>
+                    </Col>
+                    <Col style={{width: '190px'}} className='text-center'>
                         Документ: {props.docType}
                     </Col>
-                    <Col className={'col-2'}>
-                        <div onClick={onClickFront}>Front</div>
-                        <div onClick={onClickBack}>Back</div>
-                        <div onClick={onClickSelfie}>Front</div>
-
+                    <Col style={{width: '190px'}} className={'text-center'}>
+                        <div className={'text-center'} onClick={onClickFront}>Front</div>
+                        <div className={'text-center'} onClick={onClickBack}>Back</div>
+                        <div className={'text-center'} onClick={onClickSelfie}>Selfie</div>
                     </Col>
-                    <Col className={'col-2'}>{props.kycStatus}</Col>
-                    <Col className={'col-3 d-flex flex-column'}>
+                    <Col style={{width: '190px'}} className={'text-center d-flex align-items-center flex-column'}>
                         <Select style={{marginBottom: 10}} {...register('status', {
                             onChange: (value) => handleOpenModal('edit')
-                        })} classname='' options={kusStatuses} />
-                        <AdminButton style={{width: '100%', maxWidth: '100%', margin: 0}} onClick={() => handleOpenModal('delete')} classname={'red'} >Удалить</AdminButton>
+                        })} classname={['admin-square']} options={kusStatuses} />
+                    </Col>
+                    <Col style={{width: '190px'}} className={'text-center d-flex align-items-center flex-column'}>
+                        <AdminButton style={{width: '100%', maxWidth: '100%', margin: 0, height: '20px'}} onClick={() => handleOpenModal('delete')} classname={'red'} >Удалить</AdminButton>
                     </Col>
 
                 </Row>

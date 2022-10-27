@@ -17,6 +17,7 @@ import TextArea from "../../../../../components/UI/TextArea/TextArea";
 import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
 import {useParams} from "react-router-dom";
 import {store} from "../../../../../../index";
+import CustomModal from '../../../../../components/CustomModal/CustomModal';
 
 
 const DomainsDetail = () => {
@@ -27,6 +28,9 @@ const DomainsDetail = () => {
         params: ''
     })
     const [errorsNames, setErrorsNames] = useState([])
+    const [showModal, setShowModal] = useState(false)
+    const [showError, setShowError] = useState(false)
+    const [modalDomainChange, setModalDomainChange] = useState(false)
     const [errorList, setErrorList] = useState([])
 
     const {register, handleSubmit, formState: {errors}} = useForm({
@@ -156,7 +160,12 @@ const DomainsDetail = () => {
             data.showNews = false
         }
         data.rootAccess = store.fullAccess
-        const res = await patchData('/staff/domains/domain_detail/domain_edit/', data)
+        try {
+            const res = await patchData('/staff/domains/domain_detail/domain_edit/', data)
+            setModalDomainChange(true)
+        } catch(e) {
+            setShowError(true)
+        }
     }
 
     const onChangeError = (data) => {
@@ -182,6 +191,7 @@ const DomainsDetail = () => {
                 }
             }
         }
+        setShowModal(true)
     }
 
     const onDelete = async () => {
@@ -196,6 +206,19 @@ const DomainsDetail = () => {
 
     return (
         <Container>
+
+            <CustomModal title={'Изменение ошибки'} show={showModal} size={'md'} themeDark={true} btnClose={'Ok'} handleClose={() => setShowModal(false)}>
+                Вы изменили ошибку!
+            </CustomModal>
+
+            <CustomModal title={'Произошла ошибка'} show={showError} size={'md'} themeDark={true} btnClose={'Ok'} handleClose={() => setShowError(false)}>
+                Упс! Что-то пошло не так! Попробуйте позже!
+            </CustomModal>
+
+            <CustomModal title={'Изменение домена'} show={modalDomainChange} size={'md'} themeDark={true} btnClose={'Ok'} handleClose={() => setModalDomainChange(false)}>
+                Вы изменили данные домена!
+            </CustomModal>
+
             <AdminButtonCard>
                 <h1 className='text-center'>Детальная информация о домене: {state.domain.fullDomainName}</h1>
             </AdminButtonCard>
@@ -217,7 +240,7 @@ const DomainsDetail = () => {
                     </Row>
                     <Row className='mb-3 relative'>
                         Полное доменное имя
-                        <AdminInput {...register('fullDomainName', {
+                        <AdminInput defaultValue={state.domain.fullDomainName} {...register('fullDomainName', {
                             required: true,
                             pattern: /^[^а-яё]+$/iu
                         })} placeholder='bitdomain.com' />
@@ -326,11 +349,5 @@ const DomainsDetail = () => {
     )
 }
 
-DomainsDetail.propTypes = {
-
-}
-DomainsDetail.defaultProps = {
-
-}
 
 export default DomainsDetail

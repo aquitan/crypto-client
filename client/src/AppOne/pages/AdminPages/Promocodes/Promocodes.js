@@ -39,6 +39,7 @@ const Promocodes = () => {
     })
     const [allDomains, setAllDomains] = useState([])
     const [limit, setLimit] = useState(0)
+    const [limitUsed, setLimitUsed] = useState(0)
 
     const options = [
         {value: 'BTC', text: 'BTC'},
@@ -221,6 +222,13 @@ const Promocodes = () => {
         setLimit(prevState => prevState-1)
     }
 
+    const onMoreUsed = () => {
+        setLimitUsed(prevState => prevState+1)
+    }
+    const onLessUsed = () => {
+        setLimitUsed(prevState => prevState-1)
+    }
+
 
 
     const {isOpen, onClickConfirm, isDelete} = modal
@@ -228,7 +236,7 @@ const Promocodes = () => {
     return (
         <Container>
 
-            <CustomModal size={'md'} show={deleteUsedError} handleClose={() => setDeleteUsedError(false)}>
+            <CustomModal size={'md'} show={deleteUsedError} handleClose={() => setDeleteUsedError(false)} themeDark={true} btnClose='Ok' title='Вы уверены?'>
                 Вы уверены что есть промокоды для удаления?
             </CustomModal>
 
@@ -427,6 +435,21 @@ const Promocodes = () => {
                             : null
                     }
                 </div>
+                {
+                    usedPromocodes ? 
+                    <Row className={'mb-3 mt-3'}>
+                        {
+                            usedPromocodes.length >= 10 ?
+                                <AdminButton onClick={onMoreUsed} classname={['xs', 'green']}>Еще</AdminButton>
+                                : null
+                        }
+                        {
+                            limit > 0 ?
+                                <AdminButton onClick={onLessUsed} classname={['xs', 'green']}>Назад</AdminButton>
+                                : null
+                        }
+                    </Row> : null
+                }
 
             </AdminButtonCard>
             

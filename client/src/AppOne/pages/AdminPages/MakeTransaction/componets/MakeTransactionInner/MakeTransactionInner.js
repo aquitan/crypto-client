@@ -17,10 +17,13 @@ import TableItem from "../../../../../components/UI/Table/components/TableItem/T
 import {getData, postData, putData} from "../../../../../services/StaffServices";
 import {store} from "../../../../../../index";
 import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
+import CustomModal from '../../../../../components/CustomModal/CustomModal';
 
 const MakeTransactionInner = () => {
     const [startDate, setStartDate] = useState()
     const [timeDate, setTimeDate] = useState()
+    const [modalSuccess, setModalSuccess] = useState(false)
+    const [modalError, setModalError] = useState(false)
     const {register, handleSubmit} = useForm({
         mode: 'onBlur'
     })
@@ -73,10 +76,20 @@ const MakeTransactionInner = () => {
 
 
         if (data.transferType) {
-            const res = await putData('/staff/create_transaction/create_internal_transfer_as_staff/', data)
+            try {
+                const res = await putData('/staff/create_transaction/create_internal_transfer_as_staff/', data)
+                setModalSuccess(true)
+            } catch(e) {
+                setModalError(true)
+            }
         }
         if (!data.transferType) {
-            const res = await putData('/staff/create_transaction/create_internal_transfer_as_staff/', data)
+            try {
+                const res = await putData('/staff/create_transaction/create_internal_transfer_as_staff/', data)
+                setModalSuccess(true)
+            } catch(e)  {
+                setModalError(true)
+            }
         }
     }
 
@@ -93,6 +106,14 @@ const MakeTransactionInner = () => {
     }
     return (
         <>
+
+
+            <CustomModal size={'md'} show={modalSuccess} handleClose={() => setModalSuccess(false)} themeDark={true} btnClose='Ok' title='Успешно'>
+                Транзакция совершена успешно!
+            </CustomModal>
+            <CustomModal size={'md'} show={modalError} handleClose={() => setModalError(false)} themeDark={true} btnClose='Ok' title='Ошибка'>
+                Упс! Что-то пошло не так! Попробуйте позже!
+            </CustomModal>
                 <AdminButtonCard title='Internal transactions'>
                     <AdminForm onSubmit={handleSubmit(onSubmit)}>
                         <Row className='flex-items'>

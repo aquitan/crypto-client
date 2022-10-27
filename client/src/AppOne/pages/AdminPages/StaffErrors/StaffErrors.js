@@ -19,6 +19,7 @@ import CustomModal from '../../../components/CustomModal/CustomModal';
 
 const StaffErrors = () => {
     const [modal, setModal] = useState(false)
+    const [modalError, setModalError] = useState(false)
     const [state, setState] = useState({
         domainDetail: '',
         domain: '',
@@ -94,16 +95,23 @@ const StaffErrors = () => {
         data.isStaff = store.isStaff
         data.rootAccess = store.fullAccess
         data.domainName = custSelect
-        const res = await putData('/staff/errors/create_new_error/', data)
-        if (res.status === 201) {
+
+        try {
+            const res = await putData('/staff/errors/create_new_error/', data)
             setModal(true)
             reset({data: ''})
+        } catch(e) {
+            setModalError(true)
         }
     }
 
     const onChangeDomain = async (e) => {
         setCurSelect(e.target.value)
-        const res = await getData(`/staff/errors/get_all_errors/${e.target.value}`)
+        try {
+            const res = await getData(`/staff/errors/get_all_errors/${e.target.value}`)
+        } catch(e) {
+            setModalError(true)
+        }
         // setState({...state, domain: res.data.domain_detail})
     }
     const onChangeCustDomain = async (e) => {
@@ -123,6 +131,11 @@ const StaffErrors = () => {
             <CustomModal show={modal} handleClose={() => setModal(false)} size={'md'} themeDark={true} title={'Новая ошибка'} btnClose='Ok'>
                 Ошибка создана успешно!
             </CustomModal>
+
+            <CustomModal show={modalError} handleClose={() => setModalError(false)} size={'md'} themeDark={true} title={'Что то пошло не так'} btnClose='Ok'>
+                Упс! Что-то пошло не так! Попробуйте позже!
+            </CustomModal>
+
             <AdminButtonCard>
                 <h1 className='text-center'>Ошибки</h1>
             </AdminButtonCard>

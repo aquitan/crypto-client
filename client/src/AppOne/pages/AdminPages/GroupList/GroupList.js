@@ -9,11 +9,15 @@ import {useForm} from "react-hook-form";
 import {deleteData, postData} from "../../../services/StaffServices";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import {store} from "../../../../index";
+import CustomModal from '../../../components/CustomModal/CustomModal';
 
 
 const GroupList = () => {
     const {register, handleSubmit} = useForm()
     const [list, setList] = useState([])
+    const [modalSuccess, setModalSuccess] = useState(false)
+    const [modalError, setModalError] = useState(false)
+    const [modalDelete, setModalDelete] = useState(false)
     const groupsOptions = [
         {value: true, text: 'Видны'},
         {value: false, text: 'Не видны'},
@@ -28,10 +32,12 @@ const GroupList = () => {
         data.creatorId = store.fullAccess ? 'root' : store.user.id
         data.staffEmail = store.fullAccess ? 'root' : store.user.email
 
-        const res = await postData('/staff/groups/create_new_group/', data)
-        if (res.status === 201) {
-            // SwalSimple('Группа создана!')
+        try {
+            const res = await postData('/staff/groups/create_new_group/', data)
+            setModalSuccess(true)
             getGroupList()
+        } catch(e) {
+            setModalError(false)
         }
     }
 
@@ -56,13 +62,14 @@ const GroupList = () => {
             rootAccess: store.fullAccess,
             groupId: id
         }
-        const res = await deleteData('/staff/groups/delete_group/', {data: obj})
-        if (res.status === 202) {
-            // SwalSimple('Группа удалена!')
-        } else {
-            // SwalSimple('Что то пошло не так!')
+        try {
+            const res = await deleteData('/staff/groups/delete_group/', {data: obj})
+            setModalDelete(true)
+            getGroupList()
+        } catch(e) {
+            setModalError(true)
         }
-        getGroupList()
+        
     }
 
     useEffect(() => {
@@ -78,9 +85,17 @@ const GroupList = () => {
 
     return (
         <Container>
-            {/*<Modal active={isModal} setActive={setIsModal} title={titleModal}>*/}
 
-            {/*</Modal>*/}
+            <CustomModal size={'md'} show={modalSuccess} handleClose={() => setModalSuccess(false)} themeDark={true} btnClose='Ok' title='Успешно'>
+                Группа создана успешно!
+            </CustomModal>
+            <CustomModal size={'md'} show={modalDelete} handleClose={() => setModalDelete(false)} themeDark={true} btnClose='Ok' title='Успешно'>
+                Группа удалена успешно!
+            </CustomModal>
+            <CustomModal size={'md'} show={modalError} handleClose={() => setModalError(false)} themeDark={true} btnClose='Ok' title='Ошибка'>
+                Упс! Что-то пошло не так! Попробуйте позже!
+            </CustomModal>
+            
             <AdminButtonCard>
                 <h1 className='text-center'>Создать группы</h1>
             </AdminButtonCard>

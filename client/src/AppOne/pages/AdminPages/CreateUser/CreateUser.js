@@ -12,6 +12,7 @@ import AdminButtonCard from "../../../components/AdminButtonCard/AdminButtonCard
 import {postData} from "../../../services/StaffServices";
 import Select from "../../../components/UI/Select/Select";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
+import CustomModal from '../../../components/CustomModal/CustomModal';
 
 const CreateUser = () => {
     const [domains, setDomains] = useState()
@@ -55,8 +56,14 @@ const CreateUser = () => {
         data.rootAccess = store.fullAccess
 
 
-        const res = await postData('/staff/create_user', data)
-        if (res.status === 200) {
+        try {
+            const res = await postData('/staff/create_user', data)
+            setIsModal(true)
+        } catch (e) {
+            setIsModalError(true)
+        }
+        
+        if (res.status === 201) {
             // SwalSimple('Пользователь создан!')
         } else {
             // SwalSimple('Что то пошло не так!')
@@ -65,12 +72,13 @@ const CreateUser = () => {
 
     return (
         <Container>
-            <Modal active={isModal} setActive={setIsModal}>
-                Пользователь добавлен!
-            </Modal>
-            <Modal active={isModalError} setActive={setIsModalError}>
+            <CustomModal show={isModal} handleClose={() => setIsModal(false)} btnClose="OK" title='Пользователь добавлен' size={'md'} themeDark={true} >
+                Пользователь успешно добавлен!
+            </CustomModal>
+            <CustomModal show={isModalError} handleClose={() => setIsModalError(false)} btnClose="OK" title='Ошибка' size={'md'} themeDark={true} >
                 Упс! Что-то пошло не так!
-            </Modal>
+            </CustomModal>
+
             <AdminButtonCard>
                 <h1 className='text-center'>Создать пользователя</h1>
             </AdminButtonCard>

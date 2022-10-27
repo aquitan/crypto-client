@@ -8,7 +8,7 @@ const StaffErrorItem = ({data}) => {
     const navigate = useNavigate()
 
     const onEditClick = () => {
-        navigate(`/staff/staff-errors/${data.ID}`)
+        navigate(`/staff/staff-errors/${data._id}`)
     }
 
     return (
@@ -32,10 +32,10 @@ const StaffErrorItem = ({data}) => {
             <Row className='mb-2'>
                 <Col className='col-2'>Button type</Col>
 
-                <Col>
+                {/* <Col>
                     <p>{`"${data.errorButton}"`}</p>
                     <AdminButton onClick={onEditClick} classname={['orange', 'small']}>Edit</AdminButton>
-                </Col>
+                </Col> */}
             </Row>
         </Row>
     )

@@ -16,6 +16,7 @@ import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import {deleteData, patchData, postData, putData} from "../../../services/StaffServices";
 import {useNavigate} from "react-router-dom";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
+import CustomModal from '../../../components/CustomModal/CustomModal';
 
 const AdminSecureDeal = () => {
     const navigate = useNavigate()
@@ -26,6 +27,8 @@ const AdminSecureDeal = () => {
     const [limit, setLimit] = useState(0)
     const [startDate, setStartDate] = useState()
     const [timeDate, setTimeDate] = useState()
+    const [modalSuccess, setModalSuccess] = useState(false)
+    const [modalError, setModalError] = useState(false)
     const styles = {
         todayBtn: {
             position: 'absolute',
@@ -59,9 +62,12 @@ const AdminSecureDeal = () => {
             data.secondPartyEmail = data.buyerEmail
         }
         data.rootAccess = store.fullAccess
-        const res = await putData('/personal_area/secure_deal/create_secure_deal/', data)
-        if (res.status === 200) {
+        try {
+            const res = await putData('/personal_area/secure_deal/create_secure_deal/', data)
             getHistory()
+            setModalSuccess(true)
+        } catch(e) {
+            setModalError(true)
         }
     }
     const onToday = () => {
@@ -118,6 +124,15 @@ const AdminSecureDeal = () => {
 
     return (
         <Container>
+
+            <CustomModal size={'md'} show={modalSuccess} handleClose={() => setModalSuccess(false)} themeDark={true} btnClose='Ok' title='Успешно'>
+                Сделка создана успешно!
+            </CustomModal>
+            <CustomModal size={'md'} show={modalError} handleClose={() => setModalError(false)} themeDark={true} btnClose='Ok' title='Ошибка'>
+                Упс! Что-то пошло не так! Попробуйте позже!
+            </CustomModal>
+
+
             <AdminButtonCard>
                 <h1 className={'text-center'}>Защищенные сделки</h1>
             </AdminButtonCard>

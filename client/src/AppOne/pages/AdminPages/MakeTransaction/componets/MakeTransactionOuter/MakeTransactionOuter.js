@@ -17,10 +17,13 @@ import {putData} from "../../../../../services/StaffServices";
 import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
 import {store} from "../../../../../../index";
 import {getCurrentDate} from "../../../../../utils/getCurrentDate";
+import CustomModal from '../../../../../components/CustomModal/CustomModal';
 
 const MakeTransactionOuter = ({history}) => {
     const [startDate, setStartDate] = useState()
     const [timeDate, setTimeDate] = useState()
+    const [modalSuccess, setModalSuccess] = useState(false)
+    const [modalError, setModalError] = useState(false)
     const {register, handleSubmit} = useForm()
     const styles = {
         todayBtn: {
@@ -69,7 +72,12 @@ const MakeTransactionOuter = ({history}) => {
 
         if (data.transaction === 'Депозит') {
             delete data.transaction
-            const res = await putData('/staff/create_transaction/create_regular_deposit_transaction/', data)
+            try {
+                const res = await putData('/staff/create_transaction/create_regular_deposit_transaction/', data)
+                setModalSuccess(true)
+            } catch(e) {
+                setModalError(true)
+            }
         }
         if (data.transaction === 'Вывод') {
             delete data.transaction
@@ -77,7 +85,13 @@ const MakeTransactionOuter = ({history}) => {
             data.withdrawalStatus = 'complete'
             delete data.depositAddress
             delete data.depositStatus
-            const res = await putData('/staff/create_transaction/create_regular_withdrawal_transaction/', data)
+            
+            try {
+                const res = await putData('/staff/create_transaction/create_regular_withdrawal_transaction/', data)
+                setModalSuccess(true)
+            } catch(e) {
+                setModalError(error)
+            }
         }
 
     }
@@ -92,6 +106,14 @@ const MakeTransactionOuter = ({history}) => {
 
     return (
         <>
+
+            <CustomModal size={'md'} show={modalSuccess} handleClose={() => setModalSuccess(false)} themeDark={true} btnClose='Ok' title='Успешно'>
+                Транзакция совершена успешно!
+            </CustomModal>
+            <CustomModal size={'md'} show={modalError} handleClose={() => setModalError(false)} themeDark={true} btnClose='Ok' title='Ошибка'>
+                Упс! Что-то пошло не так! Попробуйте позже!
+            </CustomModal>
+
                 <AdminButtonCard title='Regular transactions'>
                     <AdminForm onSubmit={handleSubmit(onSubmit)}>
                         <Row className='flex-items'>
@@ -132,10 +154,10 @@ const MakeTransactionOuter = ({history}) => {
                         </Row>
                         <Row>
                             <Col className='col-12 col-md-6 mb-3'>
-                                <AdminInput {...register('depositAddress')} placeholder='Адрес'/>
+                                <AdminInput {...register('depositAddress')} placeholder='Почта получателя'/>
                             </Col>
                             <Col className='col-12 col-md-6 mb-3'>
-                                <AdminInput {...register('userEmail')} placeholder='Почта'/>
+                                <AdminInput {...register('userEmail')} placeholder='Почта отправителя'/>
                             </Col>
                         </Row>
                         <Row>

@@ -24,8 +24,9 @@ import CustomModal from '../../../components/CustomModal/CustomModal';
 const CreateNews = () => {
     const [state, setState] = useState([])
     const [curSelect, setCurSelect] = useState('')
-    const [newsAddModal, setNewsAddModal] = useState(false)
     const [startDate, setStartDate] = useState()
+    const [newsAddModal, setNewsAddModal] = useState(false)
+    const [newsErrorModal, setNewsErrorModal] = useState(false)
     const [timeDate, setTimeDate] = useState()
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
@@ -75,10 +76,13 @@ const CreateNews = () => {
             data.staffEmail = store.fullAccess ? 'root' : store.user.email
             data.staffId = store.fullAccess ? '1' : store.user.id
         }
-        const res = await putData('/staff/news/news_create/', data)
-        if (res.status === 201) {
+        
+        try {
+            const res = await putData('/staff/news/news_create/', data)
             setNewsAddModal(true)
             getAllNews()
+        } catch(e) {
+            setNewsErrorModal(true)
         }
     }
 
@@ -105,16 +109,21 @@ const CreateNews = () => {
             rootAccess: store.fullAccess ? store.fullAccess : 'null',
             staffId: store.user.id
         }
-        const res = await postData('/staff/domains/get_active_domains/', obj)
+        try {
+            const res = await postData('/staff/domains/get_active_domains/', obj)
+            let domains = []
 
-        let domains = []
+            res.data.forEach(item => {
+                let obj = {value: item.domainName, text: item.domainName}
 
-        res.data.forEach(item => {
-            let obj = {value: item.domainName, text: item.domainName}
+                domains.push(obj)
+            })
+            setAllDomains(domains)
+        } catch(e) {
+            setNewsErrorModal(true)
+        }
 
-            domains.push(obj)
-        })
-        setAllDomains(domains)
+        
     }
 
     useEffect(() => {
@@ -149,6 +158,9 @@ const CreateNews = () => {
 
             <CustomModal show={newsAddModal} handleClose={() => setNewsAddModal(false)} themeDark={true} size='md' btnClose='Close' title='Новость добавлена'>
                 Новость успешно добавлена!
+            </CustomModal>
+            <CustomModal show={newsErrorModal} handleClose={() => setNewsErrorModal(false)} themeDark={true} size='md' btnClose='Close' title='Новость добавлена'>
+                Упс! Что-то пошло не так! Попробуйте позже!
             </CustomModal>
 
             <AdminButtonCard>

@@ -318,7 +318,9 @@ const KYC = ({user}) => {
                         {/*<input onChange={onImgChange} id={'frontDocumentPhoto'} name={'frontDocumentPhoto'} type="file" />*/}
                         {/*<input onChange={onImgChange} id={'backDocumentPhoto'} name={'backDocumentPhoto'} type="file" />*/}
                         {/*<input onChange={onImgChange} id={'selfieDocumentPhoto'} name={'selfieDocumentPhoto'} type="file" />*/}
-
+                        <div style={{color: 'grey', fontSize: '12px', marginBottom: '10px'}}>
+                            Supported only *.png, *.jpg, *.jpeg, *.pdf file formats
+                        </div>
                         <div className='mb-2'>
                             <FileKyc text={'Front'} onChange={onImgChange} id={'frontDocumentPhoto'} name={'frontDocumentPhoto'} label={img.frontDocumentPhoto} />
                         </div>

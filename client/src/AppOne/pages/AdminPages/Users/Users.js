@@ -99,12 +99,12 @@ const Users = () => {
                                             <UsersTableItem
                                                 key={uuid()}
                                                 registerDate={user.dateOfEntry}
-                                                name={user.name}
-                                                email={user.email}
+                                                name={user.userName}
+                                                email={user.userEmail}
                                                 id={user.userId}
                                                 userStatus={user.userStatus}
                                                 kycStatus={user.kycStatus}
-                                                userDomain={user.domainName}
+                                                userDomain={user.userDomain}
                                                 staff={true}/>
                                         )
                                     })

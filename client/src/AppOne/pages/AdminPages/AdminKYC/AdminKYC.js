@@ -56,41 +56,44 @@ const AdminKYC = () => {
                 </Card>
             </Row>
             <Row>
-                <Card className={`${cls.bg_black} p-3`}>
-                    <Row className={cls.table_header}>
-                        {/*<Col className={'col-1'}>Register date</Col>*/}
-                        <Col className={'d-none d-md-block col-2 text-center'}>Name</Col>
-                        <Col className={'col-6 col-md-2 text-center'}>Email</Col>
-                        <Col className={'d-none d-md-block col-8 col-sm-2 text-center'}>Information</Col>
-                        <Col className={'d-none d-md-block col-4 col-sm-2 text-center'}>Documents</Col>
-                        <Col className={'d-none d-md-block col-4 col-sm-1 text-center'}>Status</Col>
-                        <Col className={'col-6 col-md-3 text-center'}>Action</Col>
-                    </Row>
-                    {
-                        usersKyc &&  typeof usersKyc !== 'string'
-                            ?
-                          usersKyc.map(user => {
-                                return(
-                                    <AdminKycTableItem
-                                        key={user._id}
-                                        city={user.city}
-                                        zip={user.zipCode}
-                                        state={user.state}
-                                        email={user.email}
-                                        name={user.firstName}
-                                        docType={user.documentType}
-                                        kycStatus={user.kycStatus}
-                                        id={user._id}
-                                        userId={user.userId}
-                                    />
-                                )
-                            })
-                            : <Row className='text-center'>
-                                <Col className='mt-4'>
-                                    <h4 className='text-center my-4' style={{color: '#cecece'}}>Data not found</h4>
-                                </Col>
-                            </Row>
-                    }
+                <Card style={{overflow: 'scroll'}} className={`${cls.bg_black} p-3`}>
+                    <div style={{minWidth: '1000px'}}>
+                        <Row className={cls.table_header}>
+                            {/*<Col className={'col-1'}>Register date</Col>*/}
+                            <Col style={{width: '190px'}} className={'text-center'}>Имя</Col>
+                            <Col style={{width: '190px'}} className={'text-center'}>Почта</Col>
+                            <Col style={{width: '190px'}} className={'text-center'}>Инфо</Col>
+                            <Col style={{width: '190px'}} className={'text-center'}>Док-ты</Col>
+                            <Col style={{width: '190px'}} className={'text-center'}>Фото</Col>
+                            <Col style={{width: '190px'}} className={'col-6 col-md-3 text-center'}>Изменить стутус</Col>
+                            <Col style={{width: '190px'}} className={'col-6 col-md-3 text-center'}>Удалить</Col>
+                        </Row>
+                        {
+                            usersKyc &&  typeof usersKyc !== 'string'
+                                ?
+                            usersKyc.map(user => {
+                                    return(
+                                        <AdminKycTableItem
+                                            key={user._id}
+                                            city={user.city}
+                                            zip={user.zipCode}
+                                            state={user.state}
+                                            email={user.email}
+                                            name={user.firstName}
+                                            docType={user.documentType}
+                                            kycStatus={user.kycStatus}
+                                            id={user._id}
+                                            userId={user.userId}
+                                        />
+                                    )
+                                })
+                                : <Row className='text-center'>
+                                    <Col className='mt-4'>
+                                        <h4 className='text-center my-4' style={{color: '#cecece'}}>Data not found</h4>
+                                    </Col>
+                                </Row>
+                        }
+                    </div>
                 </Card>
             </Row>
 

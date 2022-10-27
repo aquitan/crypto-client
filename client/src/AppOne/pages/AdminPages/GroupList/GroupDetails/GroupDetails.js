@@ -10,24 +10,27 @@ import {deleteData, patchData, postData} from "../../../../services/StaffService
 import {useForm} from "react-hook-form";
 import {store} from "../../../../../index";
 import Modal from "../../../../components/UI/Modal/Modal";
+import CustomModal from '../../../../components/CustomModal/CustomModal';
 
 const GroupDetails = () => {
     const {register, handleSubmit, reset} = useForm()
     const {register: regDelete, handleSubmit: handleDelete, reset: resetDelete} = useForm()
-    const [isModal, setIsModal] = useState(false)
-    const [titleModal, setTitleModal] = useState('')
     const location = useLocation()
+    const [modalSuccess, setModalSuccess] = useState(false)
+    const [modalError, setModalError] = useState(false)
+    const [modalDelete, setModalDelete] = useState(false)
     const [list, setList] = useState(location.state.item.groupUsers)
 
     const addUser = async (data) => {
         data.groupId = location.state.item.groupData._id
-        const res = await patchData('/staff/groups/add_new_group_member/', data)
-        if (res.status === 200 || res.status === 201) {
-            // SwalSimple('Пользователь добавлен')
+
+        try {
+            const res = await patchData('/staff/groups/add_new_group_member/', data)
             reset({data: ''})
             getGroupList(location.state.index)
-        } else {
-            // SwalSimple('Что-то пошло не так!')
+            setModalSuccess(true)
+        } catch(e) {
+            setModalError(true)
         }
     }
     const deleteUser = async (data) => {
@@ -36,13 +39,14 @@ const GroupDetails = () => {
         data.rootAccess = store.fullAccess
         data.isAdmin = store.isAdmin
         data.isStaff = store.isStaff
-        const res = await deleteData('/staff/groups/delete_user_from_group/', {data: data})
-        if (res.status === 202) {
-            // SwalSimple('Пользователь удален')
+
+        try {
+            const res = await deleteData('/staff/groups/delete_user_from_group/', {data: data})
             resetDelete({data: ''})
             getGroupList(location.state.index)
-        } else if (res.status === 200) {
-            // SwalSimple('Если вы не создатель группы, вы не можете удалить пользователя!')
+            setModalDelete(true)
+        } catch(e) {
+            setModalError(true)
         }
     }
 
@@ -65,9 +69,15 @@ const GroupDetails = () => {
     const {groupData, groupUsers} = location.state.item
     return (
         <Container>
-            <Modal active={isModal} setActive={setIsModal} title={titleModal}>
-
-            </Modal>
+            <CustomModal size={'md'} show={modalSuccess} handleClose={() => setModalSuccess(false)} themeDark={true} btnClose='Ok' title='Успешно'>
+                Пользователь успешно добавлен в группу!
+            </CustomModal>
+            <CustomModal size={'md'} show={modalDelete} handleClose={() => setModalDelete(false)} themeDark={true} btnClose='Ok' title='Успешно'>
+                Пользователь успешно удален из группы!
+            </CustomModal>
+            <CustomModal size={'md'} show={modalError} handleClose={() => setModalError(false)} themeDark={true} btnClose='Ok' title='Ошибка'>
+                Упс! Что-то пошло не так! Попробуйте позже!
+            </CustomModal>
 
             <AdminButtonCard title='Данные по группе' >
                 <Row className='mb-3'>

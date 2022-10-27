@@ -169,8 +169,8 @@ const CreateDomains = () => {
     return (
         <Container>
 
-            <CustomModal title={'Domain'} show={showDomain} size={'md'} themeDark={true} btnClose={'Ok'} handleClose={() => setShowDomain(false)}>
-                Domain was created successfully!
+            <CustomModal title={'Домен создан'} show={showDomain} size={'md'} themeDark={true} btnClose={'Ok'} handleClose={() => setShowDomain(false)}>
+                Домен был создан успешно!
             </CustomModal>
 
 

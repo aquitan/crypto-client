@@ -31,8 +31,12 @@ const StaffErrorDetail = () => {
     }, [])
 
     const getErrorData = async () => {
-        const res = await getData(`/staff/errors/get_all_errors/${params.id}`)
-        setState({...state, error: res.data.domain_detail[params.id-1]})
+        try {
+            const res = await getData(`/staff/errors/get_all_errors/${params.id}`)
+            setState({...state, error: res.data.domain_detail[params.id-1]})
+        } catch(e) {
+            console.log(e);
+        }
     }
     const onSubmit = (data) => {
         setState({...state, modal: true})
