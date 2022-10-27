@@ -153,11 +153,4 @@ const GroupList = () => {
     )
 }
 
-GroupList.propTypes = {
-
-}
-GroupList.defaultProps = {
-
-}
-
 export default GroupList

@@ -25,9 +25,11 @@ import './InternalSwapTabs.scss'
 import CustomModal from '../../../components/CustomModal/CustomModal';
 import LandingSkeleton from '../../NonAuthPages/LandingSkeleton/LandingSkeleton';
 import classNames from 'classnames/bind';
+import AdminButton from '../../../components/UI/AdminButton/AdminButton';
 
 const InternalSwap = () => {
     const {theme} = useThemeContext(ThemeContext)
+    const [limit, setLimit] = useState(0)
     const [showModal, setShowModal] = useState(false)
     const [insufficientModal, setInsufficientModal] = useState(false)
     const [errorModal, setErrorModal] = useState(false)
@@ -122,7 +124,6 @@ const InternalSwap = () => {
 
     useEffect(() => {
         getBalance()
-        getSwapHistory()
     }, [])
 
     const compileBalance = (bal) => {
@@ -188,7 +189,7 @@ const InternalSwap = () => {
     }
 
     const getSwapHistory = async () => {
-        const res = await getData(`/swap/get_swap_history/${store.user.id}/0/20`)
+        const res = await getData(`/swap/get_swap_history/${store.user.id}/${limit}/10`)
         setHistory(res.data.swapHistory)
     }
 
@@ -223,6 +224,18 @@ const InternalSwap = () => {
         setBalance(res.data)
         compileBalance(res.data)
     }
+
+    useEffect(() => {
+        getSwapHistory()
+    }, [limit])
+
+    const onMore = () => {
+        setLimit(prevState => prevState+1)
+    }
+    const onLess = () => {
+        setLimit(prevState => prevState-1)
+    }
+
 
 
     return (
@@ -339,16 +352,6 @@ const InternalSwap = () => {
                                                     }
                                                 </Col>
                                             </Row>
-                                            {/*<Row className='mb-3'>*/}
-                                            {/*    <Col>*/}
-                                            {/*        <Input {...register('secondPartyEmail', {*/}
-                                            {/*            required: 'You must specify email to SignIn',*/}
-                                            {/*            validate: emailValidate,*/}
-                                            {/*            message: 'Email is not valid',*/}
-                                            {/*        })} placeholder='Specify your second party Email' />*/}
-                                            {/*        <ErrorMessage  name='secondPartyEmail' errors={errors} render={() => <p className={cls.error}>Email is not valid</p>} />*/}
-                                            {/*    </Col>*/}
-                                            {/*</Row>*/}
                                             <Row className='mb-3 p-0'>
                                                 <Col className='p-0'>
                                                     {/*<h5 className='mb-3' style={{fontSize: 12}}>Enter Amount (Fee {store.domain.domainParams.coinSwapFee}%)</h5>*/}
@@ -409,6 +412,22 @@ const InternalSwap = () => {
                                           }
                                       </TableBody>
                                   </div>
+                                    {
+                                        typeof history !== 'string' ?
+                                        <Row className={'mb-3 mt-3'}>
+                                            {
+                                                history.length >= 10 ?
+                                                    <AdminButton onClick={onMore} classname={['xs', 'green']}>More</AdminButton>
+                                                    : null
+                                            }
+                                            {
+                                                limit > 0 ?
+                                                    <AdminButton onClick={onLess} classname={['xs', 'green']}>Less</AdminButton>
+                                                    : null
+                                            }
+                                        </Row>
+                                        : null
+                                    }
                               </Col>
                           </Tab>
                       </Tabs>

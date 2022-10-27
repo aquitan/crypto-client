@@ -283,7 +283,7 @@ const SecureDeal = () => {
                             }
                             {
                                 limit > 0 ?
-                                  <AdminButton onClick={onLess} classname={['xs', 'green']}>Back</AdminButton>
+                                  <AdminButton onClick={onLess} classname={['xs', 'green']}>Less</AdminButton>
                                   : null
                             }
                         </Row>

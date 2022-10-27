@@ -25,7 +25,7 @@ const ContactUsDonate = () => {
                     <Input classname='inputTransparent' {...register('email')} name='email' placeholder='your email' />
                 </Row>
                 <Row className={'mb-3'}>
-                    <TextArea classnames='textareaTransparent' {...register('comment')} name='comment' placeholder='type your comment'/>
+                    <TextArea classname='textareaTransparent' {...register('comment')} name='comment' placeholder='type your comment'/>
                 </Row>
                 <Row className={'mb-3'}>
                     <Input classname='inputTransparent' placeholder='donation address'/>
