@@ -26,13 +26,14 @@ import CustomModal from '../../../components/CustomModal/CustomModal';
 import LandingSkeleton from '../../NonAuthPages/LandingSkeleton/LandingSkeleton';
 import classNames from 'classnames/bind';
 
-const InternalSwap = ({balance}) => {
+const InternalSwap = () => {
     const {theme} = useThemeContext(ThemeContext)
     const [showModal, setShowModal] = useState(false)
     const [insufficientModal, setInsufficientModal] = useState(false)
     const [errorModal, setErrorModal] = useState(false)
     const [history, setHistory] = useState([])
     const [valueFrom, setValueFrom] = useState(0)
+    const [balance, setBalance] = useState([])
     const {register, handleSubmit, setError, formState: {errors, isValid, isDirty}} = useForm({
         mode: "onBlur",
         defaultValues: {
@@ -124,18 +125,18 @@ const InternalSwap = ({balance}) => {
         getSwapHistory()
     }, [])
 
-    const getBalance = () => {
+    const compileBalance = (bal) => {
         // const res = await getData(`/get_user_balance/${store.user.id}`)
         // setBalance(res.data)
 
         setState({
             target: {
-                value: balance[0].coinBalance?.toFixed(5),
-                currency: balance[0].coinName
+                value: bal[0].coinBalance?.toFixed(5),
+                currency: bal[0].coinName
             },
             initial: {
-                value: balance[0].coinBalance?.toFixed(5),
-                currency: balance[0].coinName
+                value: bal[0].coinBalance?.toFixed(5),
+                currency: bal[0].coinName
             },
         })
     }
@@ -172,6 +173,7 @@ const InternalSwap = ({balance}) => {
                 if (res.status === 201) {
                     getSwapHistory()
                     setShowModal(true)
+                    getBalance()
                 }
             } else {
                 setErrorModal(true)
@@ -214,6 +216,12 @@ const InternalSwap = ({balance}) => {
         ${valueFrom} 
         ${state.initial.currency} to 
         ${countedTo.toFixed(5)} ${state.target.currency}`
+    }
+
+    const getBalance = async () => {
+        const res = await getData(`/get_user_balance/${store.user.id}`)
+        setBalance(res.data)
+        compileBalance(res.data)
     }
 
 

@@ -33,7 +33,7 @@ import { checkDeviece } from '../../../utils/checkDevice';
 
 
 
-const KYC = ({status}) => {
+const KYC = ({user}) => {
     const [img, setImg] = useState({
         frontDocumentPhoto: '',
         backDocumentPhoto: '',
@@ -155,7 +155,10 @@ const KYC = ({status}) => {
                 Your data has been sent to moderation! It could take some time
             </CustomModal>
 
-            <Form classnames={'form_big'} onSubmit={handleSubmit(onSubmit)}>
+
+            {
+                user.kycStatus !== 'empty' ? <KycResults status={user.kycStatus} /> :
+                <Form classnames={'form_big'} onSubmit={handleSubmit(onSubmit)}>
                 <Row className={'mb-3 text-center'}>
                     <h2 className={'mb-3'} style={{fontWeight: 'bold'}}>Begin your ID-Verification</h2>
                     <p style={{maxWidth: 520, margin: '0 auto'}}>To comply with regulation each participant will have to go through identity verification
@@ -343,6 +346,7 @@ const KYC = ({status}) => {
                     <Button classname='btnBlue'>Submit</Button>
                 </Row>
             </Form>
+            }
         </>
     )
 }

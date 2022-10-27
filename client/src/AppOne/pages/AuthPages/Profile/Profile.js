@@ -86,7 +86,7 @@ const Profile = () => {
         } else if (currentLink === 'payment') {
             return <PaymentOptions />
         } else {
-            return <KYC status={profileData?.user}/>
+            return <KYC user={profileData?.user}/>
         }
     }
 

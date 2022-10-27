@@ -209,6 +209,8 @@ const AccountSecurity = (props) => {
                                     <Button style={{height: 40}} classname='btnBlue' onClick={(e) => onClickSelect(e, 'email')}>Select</Button>
                                 </Col>
                             </Row>
+
+
                             <Row className='align-items-center mb-3'>
                                 <Col className='d-flex align-items-center p-0 mb-2'>
                                     <div
@@ -222,6 +224,8 @@ const AccountSecurity = (props) => {
                                     <Button style={{height: 40}} classname='btnBlue'  onClick={(e) => onClickSelect(e, 'telegram')}>Select</Button>
                                 </Col>
                             </Row>
+
+
                             <Row className='align-items-center mb-3'>
                                 <Col className='d-flex align-items-center p-0 mb-2'>
                                     <div
@@ -235,9 +239,11 @@ const AccountSecurity = (props) => {
                                     <Button style={{height: 40}} classname='btnBlue'  onClick={(e) => onClickSelect(e, 'google')}>Select</Button>
                                 </Col>
                             </Row>
+
+
                             <Row>
                                 {
-                                    state.fieldShow && faType !== 'google' ?  <Input classname='inputTransparent' {...twoFaReg('code')} placeholder='Code'/>
+                                    state.fieldShow && faType !== 'google' && faType !== 'telegram' ?  <Input classname='inputTransparent' {...twoFaReg('code')} placeholder='Code'/>
                                      : faType === 'google' ? <img style={{width: 200, height: 'auto'}} src={state.twoFaCode} alt='qr-code' /> : null
                                 }
                                 {
@@ -246,6 +252,8 @@ const AccountSecurity = (props) => {
                                     </> : null
                                 }
                             </Row>
+
+                            
                             { faType && faType !== 'telegram' && faType !== 'google' ?
                               !showBot && <Row className='mt-3 px-2 justify-content-end'>
                                   <Button style={{width: 140}} classname='btnBlue' onClick={twoFaHandle(onSubmit)}>Confirm</Button>
