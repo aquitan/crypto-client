@@ -1,7 +1,7 @@
 import axios from "axios";
 
-export const BASE_URL = 'https://fujitutti.art/api/'
-export const GEO_API = 'https://geolocation-db.com/json/'
+export const BASE_URL = 'http://164.92.245.8:3832/api/'
+export const GEO_API = 'https://api.ipdata.co?api-key=5ac29a510a7f382e9ab5f818b16171f54b4e5f127d2a66da25be8e9f'
 export const COINS_API = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin%2C%20ethereum%2C%20bitcoin-cash%2C%20solana%2C%20tron%2C%20tether&order=market_cap_desc&per_page=100&page=1&sparkline=false'
 
 export const $geo_api = axios.create({
