@@ -146,12 +146,12 @@ const InternalAddresses = () => {
                                 : skeletonLength.map(item => {
                                     return <div style={{border: '1px solid #eee', padding: '10px', borderRadius: '5px', marginBottom: '20px'}}>
                                         <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                                            <Skeleton sx={{mb: 2}} variant="rectangular" width={'200px'} height={40} />
-                                            <Skeleton sx={{mb: 2}} variant="rectangular" width={'200px'} height={40} />
-                                            <Skeleton sx={{mb: 2}} variant="rectangular" width={'200px'} height={40} />
+                                            <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'200px'} height={40} />
+                                            <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'200px'} height={40} />
+                                            <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'200px'} height={40} />
                                         </div>
                                         <div style={{display: 'flex', justifyContent: 'center'}}>
-                                            <Skeleton sx={{mb: 2}} variant="rectangular" width={'200px'} height={50} />
+                                            <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'200px'} height={50} />
                                         </div>
                                     </div>
                                 })

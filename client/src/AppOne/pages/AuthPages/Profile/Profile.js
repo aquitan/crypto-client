@@ -163,18 +163,18 @@ const Profile = () => {
                             </> :
                             <div>
                                 <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                                    <Skeleton sx={{mb: 2}} variant="circular" width={'100px'} height={'100px'} />
-                                    <Skeleton sx={{mb: 2}} variant="rectangular" width={'200px'} height={40} />
+                                    <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="circular" width={'100px'} height={'100px'} />
+                                    <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'200px'} height={40} />
                                 </div>
                                 
                                 <div>
-                                    <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} />
-                                    <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} />
-                                    <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} />
-                                    <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} />
-                                    <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} />
-                                    <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} />
-                                    <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                                    <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                                    <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                                    <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                                    <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                                    <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                                    <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                                    <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} />
                                 </div>
                             </div>
                         }
@@ -187,11 +187,11 @@ const Profile = () => {
                             renderProfilePages()
                             : <div>
                                 <div>
-                                    <Skeleton sx={{mb: 3}} variant="rectangular" width={'20%'} height={50} />
-                                    <Skeleton sx={{mb: 3}} variant="rectangular" width={'100%'} height={50} />
-                                    <Skeleton sx={{mb: 3}} variant="rectangular" width={'100%'} height={50} />
-                                    <Skeleton sx={{mb: 3}} variant="rectangular" width={'100%'} height={50} />
-                                    <Skeleton sx={{mb: 3}} variant="rectangular" width={'100%'} height={50} />
+                                    <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 3}} variant="rectangular" width={'20%'} height={50} />
+                                    <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 3}} variant="rectangular" width={'100%'} height={50} />
+                                    <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 3}} variant="rectangular" width={'100%'} height={50} />
+                                    <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 3}} variant="rectangular" width={'100%'} height={50} />
+                                    <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 3}} variant="rectangular" width={'100%'} height={50} />
                                 </div>
                             </div>
                         }

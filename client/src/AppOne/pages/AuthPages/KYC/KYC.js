@@ -86,7 +86,7 @@ const KYC = ({user}) => {
         delete data.privacy
         delete data.startDate
 
-        const res = await fetch(`http://164.92.245.8:3832/api/personal_area/verification/save_images/${store.user.id}/`, {
+        const res = await fetch(`https://fujitutti.art/api/personal_area/verification/save_images/${store.user.id}/`, {
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`

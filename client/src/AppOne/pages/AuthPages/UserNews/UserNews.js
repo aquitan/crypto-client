@@ -35,12 +35,12 @@ const UserNews = () => {
                 showSkeleton ? 
                     <ButtonCard style={{maxWidth: 1024, margin: '20px auto', textAlign: 'center'}} theme={theme}>
                         <div style={{display: 'flex', justifyContent: 'center'}}>
-                            <Skeleton sx={{mb: 2}} variant="rectangular" width={200} height={200} />
+                            <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={200} height={200} />
                         </div>
-                        <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} />
-                        <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} />
-                        <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} />
-                        <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                        <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                        <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                        <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                        <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} />
                     </ButtonCard>
                     : 
                     <>

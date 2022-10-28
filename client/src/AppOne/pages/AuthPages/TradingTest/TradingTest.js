@@ -45,7 +45,7 @@ const TradingTest = () => {
     return(
         <>
             {
-                !balance.length ? 
+                balance.length ? 
                 <Row>
                     <Col>
                         <ButtonCard theme={theme}>
@@ -61,36 +61,47 @@ const TradingTest = () => {
                 </Row> : <Row>
                     <Col>
                         <ButtonCard theme={theme}>
-                            <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={50} />
+                            <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={50} />
                         </ButtonCard>
                     </Col>
                 </Row>
             }
             <ValueContextProvider>
                 {
-                    !balance.length ?
+                    balance.length ?
                         <Bitcoin balance={fileteredBalance[0]} coinPair={coinPair}/>
-                    : <Row>
-                        <Col className="col-12 col-md-8">
-                            <ButtonCard theme={theme}>
-                                <Skeleton variant="rectangular" width={'100%'} height={'100%'} />
-                            </ButtonCard>
-                            <ButtonCard theme={theme}>
-                                <div style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
+                    : <>
+                        <Row>
+                            <Col className="col-12 col-md-8">
+                                <ButtonCard theme={theme}>
+                                    <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : ''}} variant="rectangular" width={'100%'} height={300} />
+                                </ButtonCard>
+                                <ButtonCard theme={theme}>
+                                    <div style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
+                                        <UserPageSkeleton/>
+                                        <UserPageSkeleton/>
+                                    </div>
+                                </ButtonCard>
+                            </Col>
+                            <Col>
+                                <ButtonCard theme={theme}>
                                     <UserPageSkeleton/>
+                                </ButtonCard>
+                                <ButtonCard theme={theme}>
                                     <UserPageSkeleton/>
-                                </div>
-                            </ButtonCard>
-                        </Col>
-                        <Col>
-                            <ButtonCard theme={theme}>
-                                <UserPageSkeleton/>
-                            </ButtonCard>
-                            <ButtonCard theme={theme}>
-                                <UserPageSkeleton/>
-                            </ButtonCard>
-                        </Col>
-                    </Row>
+                                </ButtonCard>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Row>
+                                <ButtonCard theme={theme}>
+                                    <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                                    <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                                    <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                                </ButtonCard>
+                            </Row>
+                        </Row>
+                    </>
                 }
             </ValueContextProvider>
         </>

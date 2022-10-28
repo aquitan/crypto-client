@@ -132,8 +132,8 @@ const Dashboard = () => {
                 <Row>
                     {
                         balance.length ?
-                            <b>Total balance: ${balance.length ? countTotalBalance().toLocaleString() : <Skeleton sx={{mb: 2}} variant="rectangular" width={100} height={20} />}</b>
-                            : <Skeleton sx={{mb: 2}} variant="rectangular" width={100} height={20} />
+                            <b>Total balance: ${balance.length ? countTotalBalance().toLocaleString() : <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={100} height={20} />}</b>
+                            : <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={100} height={20} />
                     }
 
                 </Row>

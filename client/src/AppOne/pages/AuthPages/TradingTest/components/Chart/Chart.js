@@ -8,14 +8,16 @@ import {useValueContext} from '../../../../../context/ValueContext';
 import ButtonCard from '../../../../../components/ButtonCard/ButtonCard';
 import { Button } from '@mui/material';
 
-const Chart = ({rate, initialData, tradingData, coinName}) => {
+const Chart = ({rate, tradingData, coinName}) => {
     const [realRate, setRealRate] = useState(0)
     const {toggleValue} = useValueContext()
     const [newCoin, setNewCoin] = useState('BTC') 
     const ref = useRef(null)
     const chartRef = useRef(null)
     const valuesSeriesRef = useRef(null)
-    const sbSeriesRef = useRef(null)    
+    const sbSeriesRef = useRef(null)  
+    const [initialData, setInitialChartData] = useState([]) 
+
 
     const createChart = async (val) => {
         let root = am5.Root.new("chartdiv");
@@ -289,9 +291,15 @@ const Chart = ({rate, initialData, tradingData, coinName}) => {
         console.log('restart fn');
         await createChart(rate)
     }
+    const getInitialChartData = async () => {
+        const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${coinName}USDT&interval=1m&limit=100`)
+        const data = await res.json()
+        setInitialChartData(data.slice(0).reverse())
+      }
 
     useEffect(() => {
         console.log('newCoin', coinName);
+        getInitialChartData()
         if (chartRef.current) {
             valuesSeriesRef.current.chartData = []
             sbSeriesRef.current.data = []

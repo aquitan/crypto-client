@@ -215,7 +215,7 @@ export default class Store {
         try {
             this.setIsLoading(true)
             this.setError500(false)
-            const response = await axios.post(`http://164.92.245.8:3832/api/refresh`, {refreshToken: localStorage.getItem('refresh')})
+            const response = await axios.post(`https://fujitutti.art/api/refresh`, {refreshToken: localStorage.getItem('refresh')})
             localStorage.setItem('token', response.data.accessToken)
             localStorage.setItem('refresh', response.data.refreshToken)
             // this.setUserId(response.data.user.id)

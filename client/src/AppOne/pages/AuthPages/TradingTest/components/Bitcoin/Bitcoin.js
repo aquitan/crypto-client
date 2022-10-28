@@ -195,13 +195,13 @@ const TradingBitcoin = ({balance, coinPair}) => {
   }, [chartValue])
 
   const filteredBuy = () => {
-    return tradingHistory.filter(el => el.orderType && el.orderStatus)
+    return tradingHistory.filter(el => el.orderType && !el.orderStatus)
   }
   const filteredSell = () => {
-    return tradingHistory.filter(el => !el.orderType && el.orderStatus)
+    return tradingHistory.filter(el => !el.orderType && !el.orderStatus)
   }
   const filteredCompleted = () => {
-    return tradingHistory.filter(el => !el.orderStatus)
+    return tradingHistory.filter(el => el.orderStatus)
   }
 
   const getName = () => {
@@ -254,7 +254,7 @@ const TradingBitcoin = ({balance, coinPair}) => {
                       <div className='d-flex align-items-center'>
                         <span style={{fontSize: 28, marginRight: 20}}>{getName()}</span>
                         <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8', width: 'fit-content', height: 'fit-content'}} className="badge d-none d-xl-flex">
-                          BTC
+                          {coinPair}
                         </div>
                       </div>
                     </div>
@@ -270,7 +270,7 @@ const TradingBitcoin = ({balance, coinPair}) => {
           <ButtonCard theme={theme}>
             <h3>{getName()} Chart</h3>
             {
-              rate && initialChartData.length && tradingData ? <Chart initialData={initialChartData} tradingData={tradingData} coinName={coinPair} rate={Number(rate)} data={data} /> : <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} /> 
+              rate && initialChartData.length && tradingData ? <Chart initialData={initialChartData} tradingData={tradingData} coinName={coinPair} rate={Number(rate)} data={data} /> : <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} /> 
             }
           </ButtonCard>
           <Row>
@@ -285,7 +285,7 @@ const TradingBitcoin = ({balance, coinPair}) => {
                     total={buyTotal}
                     price={buyPrice}
                     crypto={buyCrypto}
-                    coinName={'BTC'}
+                    coinName={coinPair}
                     onSubmit={onSubmit}
                   />
                 </Col>
@@ -298,7 +298,7 @@ const TradingBitcoin = ({balance, coinPair}) => {
                     total={sellTotal}
                     price={sellPrice}
                     crypto={sellCrypto}
-                    coinName={'BTC'}
+                    coinName={coinPair}
                     onSubmit={onSubmit}
                   />
                 </Col>

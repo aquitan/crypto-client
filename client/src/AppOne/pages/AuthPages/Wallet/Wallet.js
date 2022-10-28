@@ -128,13 +128,13 @@ const Wallet = () => {
                         </Row>
                         : <div style={{display: 'flex', justifyContent: 'space-between'}}>
                             <div style={{width: '100%', margin: '0 10px'}}>
-                                <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} />
-                                <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} />
-                                <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} />
-                                <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                                <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                                <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                                <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                                <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} />
                             </div>
                             <div style={{width: '100%', margin: '0 10px'}}>
-                                <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={'40%'} />
+                                <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={'40%'} />
                             </div>
                         </div>
                     }
@@ -162,14 +162,14 @@ const Wallet = () => {
                                     }) : <h2>No wallets</h2>
                             }
                         </> : <div>
-                                <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={60} />
-                                <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={60} />
-                                <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={60} />
-                                <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={60} />
-                                <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={60} />
-                                <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={60} />
-                                <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={60} />
-                                <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={60} />
+                                <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={60} />
+                                <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={60} />
+                                <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={60} />
+                                <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={60} />
+                                <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={60} />
+                                <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={60} />
+                                <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={60} />
+                                <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={60} />
                             </div>
                     }
                 </ButtonCard>
