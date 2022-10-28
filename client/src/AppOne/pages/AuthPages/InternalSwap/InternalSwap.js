@@ -432,7 +432,9 @@ const InternalSwap = () => {
                           </Tab>
                       </Tabs>
                   </ButtonCard>
-                  : <LandingSkeleton />
+                  : <ButtonCard>
+                    <LandingSkeleton />
+                  </ButtonCard>
             }
         </>
     )

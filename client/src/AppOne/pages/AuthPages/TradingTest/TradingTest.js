@@ -7,10 +7,11 @@ import {ValueContextProvider} from '../../../context/ValueContext';
 import TradingEthereum from './components/Ethereum/Ethereum';
 import ButtonCard from '../../../components/ButtonCard/ButtonCard';
 import { useThemeContext } from '../../../context/ThemeContext';
-import { Row } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 import { Routes } from 'react-router-dom';
 import TradingBCH from './components/BitcoinCash/BitcoinCash';
-import { Button } from '@mui/material';
+import { Button, Skeleton } from '@mui/material';
+import UserPageSkeleton from '../../../components/UserPageSkeleton/UserPageSkeleton';
 
 const TradingTest = () => {
     const [coinPair, setCoinPair] = useState('BTC')
@@ -43,22 +44,53 @@ const TradingTest = () => {
 
     return(
         <>
-            <Row>
-                <ButtonCard theme={theme}>
-                    Chose currency you want to trade 
-                    <Button sx={{mx: 1}} variant={'contained'} onClick={() => setCoinPair('ETH')}>ETH</Button>
-                    <Button sx={{mx: 1}}  variant={'contained'} onClick={() => setCoinPair('BTC')}>BTC</Button>
-                    <Button sx={{mx: 1}}  variant={'contained'} onClick={() => setCoinPair('BCH')}>BCH</Button>
-                    <Button sx={{mx: 1}}  variant={'contained'} onClick={() => setCoinPair('TRX')}>TRX</Button>
-                    <Button sx={{mx: 1}}  variant={'contained'} onClick={() => setCoinPair('USDT')}>USDT</Button>
-                    <Button sx={{mx: 1}}  variant={'contained'} onClick={() => setCoinPair('SOL')}>SOL</Button>
-                </ButtonCard>
-            </Row>
+            {
+                !balance.length ? 
+                <Row>
+                    <Col>
+                        <ButtonCard theme={theme}>
+                            Chose currency you want to trade 
+                            <Button sx={{mx: 1}} variant={'contained'} onClick={() => setCoinPair('ETH')}>ETH</Button>
+                            <Button sx={{mx: 1}}  variant={'contained'} onClick={() => setCoinPair('BTC')}>BTC</Button>
+                            <Button sx={{mx: 1}}  variant={'contained'} onClick={() => setCoinPair('BCH')}>BCH</Button>
+                            <Button sx={{mx: 1}}  variant={'contained'} onClick={() => setCoinPair('TRX')}>TRX</Button>
+                            <Button sx={{mx: 1}}  variant={'contained'} onClick={() => setCoinPair('USDT')}>USDT</Button>
+                            <Button sx={{mx: 1}}  variant={'contained'} onClick={() => setCoinPair('SOL')}>SOL</Button>
+                        </ButtonCard>
+                    </Col>
+                </Row> : <Row>
+                    <Col>
+                        <ButtonCard theme={theme}>
+                            <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={50} />
+                        </ButtonCard>
+                    </Col>
+                </Row>
+            }
             <ValueContextProvider>
                 {
-                    balance.length ?
+                    !balance.length ?
                         <Bitcoin balance={fileteredBalance[0]} coinPair={coinPair}/>
-                    : <Preloader/>
+                    : <Row>
+                        <Col className="col-12 col-md-8">
+                            <ButtonCard theme={theme}>
+                                <Skeleton variant="rectangular" width={'100%'} height={'100%'} />
+                            </ButtonCard>
+                            <ButtonCard theme={theme}>
+                                <div style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
+                                    <UserPageSkeleton/>
+                                    <UserPageSkeleton/>
+                                </div>
+                            </ButtonCard>
+                        </Col>
+                        <Col>
+                            <ButtonCard theme={theme}>
+                                <UserPageSkeleton/>
+                            </ButtonCard>
+                            <ButtonCard theme={theme}>
+                                <UserPageSkeleton/>
+                            </ButtonCard>
+                        </Col>
+                    </Row>
                 }
             </ValueContextProvider>
         </>

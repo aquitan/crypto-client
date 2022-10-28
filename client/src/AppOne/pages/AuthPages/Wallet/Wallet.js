@@ -14,6 +14,8 @@ import Preloader from '../../../components/UI/Preloader/Preloader';
 import {findPercent} from '../../../utils/findPercent';
 import {countTotalBalance} from '../../../utils/countTotalBalance';
 import CustomModal from '../../../components/CustomModal/CustomModal';
+import UserPageSkeleton from '../../../components/UserPageSkeleton/UserPageSkeleton';
+import { Skeleton } from '@mui/material';
 
 const Wallet = () => {
     const [balances, setBalances] = useState([])
@@ -87,71 +89,88 @@ const Wallet = () => {
 
             <Row>
                 <ButtonCard theme={theme}>
-                    <Row className='flex-column flex-lg-row'>
-                        <Col className='p-0 mb-3'>
-                            <Row>
-                                <h2 style={{color: theme === 'light' ? '#9295A6' : '#fff'}}>Wallet</h2>
-                                <p style={{color: '#9295A6', fontSize: 12}}>Updated {getCurrentDate()}</p>
-                            </Row>
-                            <Row>
-                                <div style={{color: '#9295A6', fontSize: 16}}>Wallet balance:</div>
-                                {/*{*/}
-                                {/*    balancesArr ? <h2 className='mt-4' style={{fontWeight: 'bold', color: theme === 'light' ? '#9295A6' : '#fff'}}>*/}
-                                {/*        ${*/}
-                                {/*        isNaN((balancesArr.reduce((prev, cur) => {*/}
-                                {/*            return prev + cur*/}
-                                {/*        }, 0).toFixed(5))) ? 0.00000 : (balancesArr.reduce((prev, cur) => {*/}
-                                {/*            return prev + cur*/}
-                                {/*        }, 0).toFixed(5))*/}
-                                {/*    }*/}
-                                {/*    </h2> : <Preloader />*/}
-                                {/*}*/}
-                            </Row>
-                            <Row>
-                                {
-                                    balances ? <h2 className='mt-4' style={{fontWeight: 'bold', color: theme === 'light' ? '#9295A6' : '#fff'}}>
-                                        ${isNaN(countTotalBalance(balances).toLocaleString()) ? 0 : countTotalBalance(balances).toLocaleString()}
-                                    </h2> : <Preloader />
-                                }
-                            </Row>
-                        </Col>
-                        <Col>
-                            <div className='p-2' style={{
-                                backgroundColor: theme === 'light' ? 'rgb(226, 242, 255)': 'rgb(18, 19, 24)',
-                                color: theme === 'light' ? 'grey': '#fff'
-                            }}>
-                                <Row className='p-2 flex-column flex-sm-row mb-2 d-flex justify-content-between'>
-                                    <Col className='d-flex align-items-center' style={{fontSize: 20, color: theme === 'light' ? '#9295A6': '#fff'}}>
-                                        <img src={'/img/deposit-icon.svg'} alt=""/>
-                                        <div className='px-2'>Total deposits:</div>
-                                    </Col>
-                                    <Col style={{color: theme === 'light' ? '#6C7080': '#fff'}}>
-                                        <img className='px-2' src={'/img/in-icon.svg'} alt=""/>
-                                        <b>$100500</b>
-                                    </Col>
+                    {
+                        typeof balances !== 'string' ?
+                        <Row className='flex-column flex-lg-row'>
+                            <Col className='p-0 mb-3'>
+                                <Row>
+                                    <h2 style={{color: theme === 'light' ? '#9295A6' : '#fff'}}>Wallet</h2>
+                                    <p style={{color: '#9295A6', fontSize: 12}}>Updated {getCurrentDate()}</p>
                                 </Row>
+                                <Row>
+                                    <div style={{color: '#9295A6', fontSize: 16}}>Wallet balance:</div>
+                                </Row>
+                                <Row>
+                                    {
+                                        balances ? <h2 className='mt-4' style={{fontWeight: 'bold', color: theme === 'light' ? '#9295A6' : '#fff'}}>
+                                            ${isNaN(countTotalBalance(balances).toLocaleString()) ? 0 : countTotalBalance(balances).toLocaleString()}
+                                        </h2> : <Preloader />
+                                    }
+                                </Row>
+                            </Col>
+                            <Col>
+                                <div className='p-2' style={{
+                                    backgroundColor: theme === 'light' ? 'rgb(226, 242, 255)': 'rgb(18, 19, 24)',
+                                    color: theme === 'light' ? 'grey': '#fff'
+                                }}>
+                                    <Row className='p-2 flex-column flex-sm-row mb-2 d-flex justify-content-between'>
+                                        <Col className='d-flex align-items-center' style={{fontSize: 20, color: theme === 'light' ? '#9295A6': '#fff'}}>
+                                            <img src={'/img/deposit-icon.svg'} alt=""/>
+                                            <div className='px-2'>Total deposits:</div>
+                                        </Col>
+                                        <Col style={{color: theme === 'light' ? '#6C7080': '#fff'}}>
+                                            <img className='px-2' src={'/img/in-icon.svg'} alt=""/>
+                                            <b>$100500</b>
+                                        </Col>
+                                    </Row>
+                                </div>
+                            </Col>
+                        </Row>
+                        : <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                            <div style={{width: '100%', margin: '0 10px'}}>
+                                <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                                <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                                <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                                <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} />
                             </div>
-                        </Col>
-                    </Row>
+                            <div style={{width: '100%', margin: '0 10px'}}>
+                                <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={'40%'} />
+                            </div>
+                        </div>
+                    }
                 </ButtonCard>
 
 
                 <ButtonCard theme={theme}>
-                    <h2>Wallet list</h2>
                     {
                         typeof balances !== 'string' ?
-                            balances.map(item => {
-                                return (
-                                  <WalletItem
-                                    key={item._id}
-                                    onDepositOpen={onDepositOpen}
-                                    onWithdrawOpen={onWithdrawOpen}
-                                    coinsBalance={item.coinBalance}
-                                    coinFullName={item.coinFullName}
-                                    theme={theme}
-                                    coin={item.coinName === 'TRX/USDT' ? 'TRC 20' : item.coinName} />
-                                )
-                            }) : <h2>No wallets</h2>
+                        <>
+                            <h2>Wallet list</h2>
+                            {
+                                typeof balances !== 'string' ?
+                                    balances.map(item => {
+                                        return (
+                                        <WalletItem
+                                            key={item._id}
+                                            onDepositOpen={onDepositOpen}
+                                            onWithdrawOpen={onWithdrawOpen}
+                                            coinsBalance={item.coinBalance}
+                                            coinFullName={item.coinFullName}
+                                            theme={theme}
+                                            coin={item.coinName === 'TRX/USDT' ? 'TRC 20' : item.coinName} />
+                                        )
+                                    }) : <h2>No wallets</h2>
+                            }
+                        </> : <div>
+                                <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={60} />
+                                <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={60} />
+                                <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={60} />
+                                <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={60} />
+                                <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={60} />
+                                <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={60} />
+                                <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={60} />
+                                <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={60} />
+                            </div>
                     }
                 </ButtonCard>
             </Row>

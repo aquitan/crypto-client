@@ -6,6 +6,7 @@ import './landing.scss'
 import LandingSkeleton from '../LandingSkeleton/LandingSkeleton';
 import LandingOne from '../LandingOne/LandingOne';
 import LandingTwo from '../LandingTwo/LandingTwo';
+import { Skeleton } from '@mui/material';
 
 
 const Landing = () => {
@@ -26,7 +27,23 @@ const Landing = () => {
     return (
       <>
           {!state ? (
-            <LandingSkeleton/>
+            <>
+              <div className='d-flex' style={{backgroundColor: '#fff', padding: '20px 40px', boxShadow: '0 0 5px 1px rgba(0,0,0, .2)', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                <Skeleton sx={{mb: 2}} variant="rectangular" width={100} height={40} />
+                <div style={{display: 'flex'}}>
+                  <Skeleton sx={{mx: 1}} variant="rectangular" width={50} height={20} />
+                  <Skeleton sx={{mx: 1}} variant="rectangular" width={50} height={20} />
+                  <Skeleton sx={{mx: 1}} variant="rectangular" width={50} height={20} />
+                  <Skeleton sx={{mx: 1}} variant="rectangular" width={50} height={20} />
+                </div>
+                <div style={{display: 'flex'}}>
+                  <Skeleton sx={{mb: 2, mx: 2}} variant="rectangular" width={100} height={40} />
+                  <Skeleton sx={{mb: 2}} variant="rectangular" width={100} height={40} />
+                </div>
+              </div>
+              <LandingSkeleton/>
+            </>
+            
           )
           : (
               state.landingName === 'one' || !state.landingName ? <LandingOne state={state} theme={theme} navigate={navigate}/> :

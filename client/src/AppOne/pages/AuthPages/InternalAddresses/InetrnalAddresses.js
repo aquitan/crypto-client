@@ -13,6 +13,8 @@ import {getCurrentDate} from "../../../utils/getCurrentDate";
 import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 import CustomModal from '../../../components/CustomModal/CustomModal';
 import AdminButton from '../../../components/UI/AdminButton/AdminButton';
+import UserPageSkeleton from '../../../components/UserPageSkeleton/UserPageSkeleton';
+import { Skeleton } from '@mui/material';
 
 const InternalAddresses = () => {
     const {theme} = useThemeContext(ThemeContext)
@@ -80,6 +82,8 @@ const InternalAddresses = () => {
         setLimit(prevState => prevState-1)
     }
 
+    const skeletonLength = [1, 2, 3, 4, 5, 6, 7]
+
 
     return (
         <>
@@ -139,58 +143,56 @@ const InternalAddresses = () => {
                                         sum={wallet.balance} />
                                     )
                                 })
-                                : <Preloader />
+                                : skeletonLength.map(item => {
+                                    return <div style={{border: '1px solid #eee', padding: '10px', borderRadius: '5px', marginBottom: '20px'}}>
+                                        <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                            <Skeleton sx={{mb: 2}} variant="rectangular" width={'200px'} height={40} />
+                                            <Skeleton sx={{mb: 2}} variant="rectangular" width={'200px'} height={40} />
+                                            <Skeleton sx={{mb: 2}} variant="rectangular" width={'200px'} height={40} />
+                                        </div>
+                                        <div style={{display: 'flex', justifyContent: 'center'}}>
+                                            <Skeleton sx={{mb: 2}} variant="rectangular" width={'200px'} height={50} />
+                                        </div>
+                                    </div>
+                                })
                         }
                     </ButtonCard>
                 </Col>
                 <Col className='col-12 col-xl-6'>
                     <ButtonCard theme={theme}>
-                        <Row>
-                            <Col>
-                                <Row>
-                                    <Col className={'d-none d-md-block text-center'}>Date</Col>
-                                    <Col className={'text-center'}>Transaction details</Col>
-                                    <Col className={'text-center'}>Amount</Col>
-                                </Row>
-                                <TableBody>
-                                    {
-                                        history ?
-                                            history.map(item => {
-                                                return (
-                                                    <InternalAddressesTableItem
-                                                        key={item._id}
-                                                        onClick={onModalOpen}
-                                                        toAddress={item.addressTo}
-                                                        fromAddress={item.addressFrom}
-                                                        date={getCurrentDate(item.date)}
-                                                        currency={item.coinName}
-                                                        amount={item.usdAmount}
-                                                        cryptoAmount={item.cryptoAmount}
-                                                        id={item._id}
-                                                        status={item.status} />
-                                                )
-                                            })
-                                            : <h4 className='text-center my-4' style={{color: '#cecece'}}>No transfers!</h4>
-                                    }
-                                </TableBody>
-                            </Col>
-                        </Row>
-                        {/*{*/}
-                        {/*    typeof history != 'string' ?*/}
-                        {/*      <Row className={'mb-3 mt-3'}>*/}
-                        {/*          {*/}
-                        {/*              history.length >= 10 ?*/}
-                        {/*                <AdminButton onClick={onMore} classname={['xs', 'green']}>More</AdminButton>*/}
-                        {/*                : null*/}
-                        {/*          }*/}
-                        {/*          {*/}
-                        {/*              limit > 0 ?*/}
-                        {/*                <AdminButton onClick={onLess} classname={['xs', 'green']}>Back</AdminButton>*/}
-                        {/*                : null*/}
-                        {/*          }*/}
-                        {/*      </Row>*/}
-                        {/*      : null*/}
-                        {/*}*/}
+                        {
+                            wallets.length ?
+                            <Row>
+                                <Col>
+                                    <Row>
+                                        <Col className={'d-none d-md-block text-center'}>Date</Col>
+                                        <Col className={'text-center'}>Transaction details</Col>
+                                        <Col className={'text-center'}>Amount</Col>
+                                    </Row>
+                                    <TableBody>
+                                        {
+                                            history ?
+                                                history.map(item => {
+                                                    return (
+                                                        <InternalAddressesTableItem
+                                                            key={item._id}
+                                                            onClick={onModalOpen}
+                                                            toAddress={item.addressTo}
+                                                            fromAddress={item.addressFrom}
+                                                            date={getCurrentDate(item.date)}
+                                                            currency={item.coinName}
+                                                            amount={item.usdAmount}
+                                                            cryptoAmount={item.cryptoAmount}
+                                                            id={item._id}
+                                                            status={item.status} />
+                                                    )
+                                                })
+                                                : <h4 className='text-center my-4' style={{color: '#cecece'}}>No transfers!</h4>
+                                        }
+                                    </TableBody>
+                                </Col>
+                            </Row> : <UserPageSkeleton />
+                        }
 
                     </ButtonCard>
                 </Col>

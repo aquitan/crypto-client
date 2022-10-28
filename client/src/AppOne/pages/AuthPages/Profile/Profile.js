@@ -19,6 +19,8 @@ import Preloader from "../../../components/UI/Preloader/Preloader";
 import {faFile, faHeadset, faLock, faPhone, faUser, faWallet} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import UserService from '../../../services/UserService';
+import UserPageSkeleton from '../../../components/UserPageSkeleton/UserPageSkeleton';
+import { Skeleton } from '@mui/material';
 
 const Profile = () => {
     const [profileData, setProfileData] = useState()
@@ -68,10 +70,6 @@ const Profile = () => {
         checkPromocodeProfile()
     }, [])
 
-    if (!profileData) {
-        return <Preloader />
-    }
-
     const onLogout= async () => {
         await store.logout()
         await store.setIsStaff(false)
@@ -109,75 +107,97 @@ const Profile = () => {
             <Row>
                 <Col className='col-12 col-lg-4'>
                     <ButtonCard theme={theme}>
-                        <Row className='text-center mb-5'>
-                            <Row className='mb-3'>
-                                <div>
-                                    <img height={70} width={'auto'} src={'/img/avatar-svg-round.svg'} alt=""/>
-                                </div>
-                            </Row>
-                            <Row className='mb-3'>
-                                <div style={{display: 'flex', justifyContent: 'center', fontSize: 20, fontWeight: 'bold'}}>
-                                    <span style={{cursor: 'pointer'}} onClick={onEditNameHandler}>
-                                        <img src={'/img/edit.svg'} alt=""/>
-                                    </span>
-                                    <div>
-                                        {
-                                            !nameEdit ? profileData?.user === '' ? '-' : profileData?.user.name :
-                                              <input onChange={e => setNewName(e.target.value)} style={{backgroundColor: 'transparent', border: 'none'}} type="text" value={newName} />
-                                        }
+                        {
+                            profileData ?
+                            <>
+                                <Row className='text-center mb-5'>
+                                    <Row className='mb-3'>
+                                        <div>
+                                            <img height={70} width={'auto'} src={'/img/avatar-svg-round.svg'} alt=""/>
+                                        </div>
+                                    </Row>
+                                    <Row className='mb-3'>
+                                        <div style={{display: 'flex', justifyContent: 'center', fontSize: 20, fontWeight: 'bold'}}>
+                                            <span style={{cursor: 'pointer'}} onClick={onEditNameHandler}>
+                                                <img src={'/img/edit.svg'} alt=""/>
+                                            </span>
+                                            <div>
+                                                {
+                                                    !nameEdit ? profileData?.user === '' ? '-' : profileData?.user.name :
+                                                    <input onChange={e => setNewName(e.target.value)} style={{backgroundColor: 'transparent', border: 'none'}} type="text" value={newName} />
+                                                }
+                                            </div>
+                                        </div>
+                                        <div>{profileData?.user === '' ? '-' : profileData?.user.email}</div>
+                                    </Row>
+                                    <Row className='mb-2'>
+                                        <Button classname={['btnBlue', 'btnSmall', 'btnRed']} onClick={onLogout}>Logout</Button>
+                                    </Row>
+                                </Row>
+                                <Row className='d-flex flex-column align-items-start'>
+                                    <div className={classes} onClick={() => setCurrentLink('account')}>
+                                        <FontAwesomeIcon icon={faUser} />
+                                        <div style={{marginLeft: 20}}>My Profile</div>
                                     </div>
+                                    <div className={classes} onClick={() => setCurrentLink('security')}>
+                                        <FontAwesomeIcon icon={faLock} />
+                                        <div style={{marginLeft: 20}}>Security</div>
+                                    </div>
+                                    <div className={classes} onClick={() => setCurrentLink('kyc')}>
+                                        <FontAwesomeIcon icon={faFile} />
+                                        <div style={{marginLeft: 20}}>KYC Verification</div>
+                                    </div>
+                                    <div className={classes} onClick={() => setCurrentLink('payment')}>
+                                        <FontAwesomeIcon icon={faWallet} />
+                                        <div style={{marginLeft: 20}}>Payment Options</div>
+                                    </div>
+                                    <div className={classes}>
+                                        <FontAwesomeIcon icon={faHeadset} />
+                                        <Nav.Link className={classes} style={{padding: 0, marginLeft: 20}} to={'/support'} as={NavLink}>Profile Support</Nav.Link>
+                                    </div>
+                                    <div className={classes}>
+                                        <FontAwesomeIcon icon={faPhone} />
+                                        <Nav.Link className={classes} style={{padding: 0, marginLeft: 20}} to={'/support-us'} as={NavLink}>Support Us</Nav.Link>
+                                    </div>
+                                </Row>
+                            </> :
+                            <div>
+                                <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                                    <Skeleton sx={{mb: 2}} variant="circular" width={'100px'} height={'100px'} />
+                                    <Skeleton sx={{mb: 2}} variant="rectangular" width={'200px'} height={40} />
                                 </div>
-                                <div>{profileData?.user === '' ? '-' : profileData?.user.email}</div>
-                            </Row>
-                            <Row className='mb-2'>
-                                <Button classname={['btnBlue', 'btnSmall', 'btnRed']} onClick={onLogout}>Logout</Button>
-                            </Row>
-                        </Row>
-                        <Row className='d-flex flex-column align-items-start'>
-                            <div className={classes} onClick={() => setCurrentLink('account')}>
-                                <FontAwesomeIcon icon={faUser} />
-                                <div style={{marginLeft: 20}}>My Profile</div>
+                                
+                                <div>
+                                    <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                                    <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                                    <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                                    <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                                    <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                                    <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                                    <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} />
+                                </div>
                             </div>
-                            <div className={classes} onClick={() => setCurrentLink('security')}>
-                                <FontAwesomeIcon icon={faLock} />
-                                <div style={{marginLeft: 20}}>Security</div>
-                            </div>
-                            <div className={classes} onClick={() => setCurrentLink('kyc')}>
-                                <FontAwesomeIcon icon={faFile} />
-                                <div style={{marginLeft: 20}}>KYC Verification</div>
-                            </div>
-                            <div className={classes} onClick={() => setCurrentLink('payment')}>
-                                <FontAwesomeIcon icon={faWallet} />
-                                <div style={{marginLeft: 20}}>Payment Options</div>
-                            </div>
-                            <div className={classes}>
-                                <FontAwesomeIcon icon={faHeadset} />
-                                <Nav.Link className={classes} style={{padding: 0, marginLeft: 20}} to={'/support'} as={NavLink}>Profile Support</Nav.Link>
-                            </div>
-                            <div className={classes}>
-                                <FontAwesomeIcon icon={faPhone} />
-                                <Nav.Link className={classes} style={{padding: 0, marginLeft: 20}} to={'/support-us'} as={NavLink}>Support Us</Nav.Link>
-                            </div>
-                        </Row>
+                        }
                     </ButtonCard>
                 </Col>
                 <Col>
                     <ButtonCard theme={theme}>
-                        {renderProfilePages()}
+                        {
+                            profileData ?
+                            renderProfilePages()
+                            : <div>
+                                <div>
+                                    <Skeleton sx={{mb: 3}} variant="rectangular" width={'20%'} height={50} />
+                                    <Skeleton sx={{mb: 3}} variant="rectangular" width={'100%'} height={50} />
+                                    <Skeleton sx={{mb: 3}} variant="rectangular" width={'100%'} height={50} />
+                                    <Skeleton sx={{mb: 3}} variant="rectangular" width={'100%'} height={50} />
+                                    <Skeleton sx={{mb: 3}} variant="rectangular" width={'100%'} height={50} />
+                                </div>
+                            </div>
+                        }
                     </ButtonCard>
                 </Col>
             </Row>
-            {/*<Tabs>*/}
-            {/*    <Tab eventKey='profile' title='My Account'>*/}
-            {/*        <MyAccount promocode={state} data={profileData?.user}/>*/}
-            {/*    </Tab>*/}
-            {/*    <Tab eventKey='security' title='Security'>*/}
-            {/*        <AccountSecurity data={profileData?.user}/>*/}
-            {/*    </Tab>*/}
-            {/*    <Tab eventKey='kyc' title='Verification'>*/}
-            {/*        <KYC status={profileData?.user}/>*/}
-            {/*    </Tab>*/}
-            {/*</Tabs>*/}
         </>
     )
 }

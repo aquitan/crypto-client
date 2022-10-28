@@ -20,7 +20,8 @@ import {useValueContext} from '../../../../../context/ValueContext';
 import {checkOrderBuyToComplete} from '../../utils/checkOrderToComplete/checkOrderToComplete';
 import CustomModal from '../../../../../components/CustomModal/CustomModal';
 import {useLocation, useNavigate} from 'react-router-dom';
-import { Select } from '@mui/material';
+import { Select, Skeleton } from '@mui/material';
+import UserPageSkeleton from '../../../../../components/UserPageSkeleton/UserPageSkeleton';
 
 const TradingBitcoin = ({balance, coinPair}) => {
   const {theme} = useThemeContext()
@@ -240,31 +241,36 @@ const TradingBitcoin = ({balance, coinPair}) => {
       <Row>
         <Col className='col-12 col-xl-9'>
           <ButtonCard theme={theme}>
-            <h2 className='mb-4'>
-              Market stats
-            </h2>
-            <Row>
-              <Col className=''>
-                <div className='d-flex align-items-center'>
-                  <img style={{marginRight: 20}} width={40} src={`/img/${coinPair}.svg`} alt=""/>
-                  <div className='d-flex align-items-center'>
-                    <span style={{fontSize: 28, marginRight: 20}}>{getName()}</span>
-                    <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8', width: 'fit-content', height: 'fit-content'}} className="badge d-none d-xl-flex">
-                      BTC
+            {
+              balance ? 
+              <>
+                <h2 className='mb-4'>
+                  Market stats
+                </h2>
+                <Row>
+                  <Col className=''>
+                    <div className='d-flex align-items-center'>
+                      <img style={{marginRight: 20}} width={40} src={`/img/${coinPair}.svg`} alt=""/>
+                      <div className='d-flex align-items-center'>
+                        <span style={{fontSize: 28, marginRight: 20}}>{getName()}</span>
+                        <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8', width: 'fit-content', height: 'fit-content'}} className="badge d-none d-xl-flex">
+                          BTC
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div style={{color: 'grey', fontSize: 16, marginTop: 20}}>Balance: {balance.coinBalance.toFixed(5)} BTC</div>
-              </Col>
-              <Col>
-                <CurrencyPrice />
-              </Col>
-            </Row>
+                    <div style={{color: 'grey', fontSize: 16, marginTop: 20}}>Balance: {balance.coinBalance.toFixed(5)} {coinPair}</div>
+                  </Col>
+                  <Col>
+                    <CurrencyPrice />
+                  </Col>
+                </Row>
+              </> : <UserPageSkeleton />
+            }
           </ButtonCard>
           <ButtonCard theme={theme}>
             <h3>{getName()} Chart</h3>
             {
-              rate && initialChartData.length && tradingData ? <Chart initialData={initialChartData} tradingData={tradingData} coinName={coinPair} rate={Number(rate)} data={data} /> : <Preloader />
+              rate && initialChartData.length && tradingData ? <Chart initialData={initialChartData} tradingData={tradingData} coinName={coinPair} rate={Number(rate)} data={data} /> : <Skeleton sx={{mb: 2}} variant="rectangular" width={'100%'} height={40} /> 
             }
           </ButtonCard>
           <Row>

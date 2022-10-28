@@ -18,6 +18,9 @@ import Input from "../../../components/UI/Input/Input";
 import InternalSwap from "../InternalSwap/InternalSwap";
 import SkeletonBlocks from '../../../components/SkeletonBlocks/SkeletonBlocks';
 import CustomModal from '../../../components/CustomModal/CustomModal';
+import LandingSkeleton from '../../NonAuthPages/LandingSkeleton/LandingSkeleton';
+import { Skeleton } from '@mui/material';
+import UserPageSkeleton from '../../../components/UserPageSkeleton/UserPageSkeleton';
 
 const Dashboard = () => {
     const {theme} = useThemeContext(ThemeContext)
@@ -54,7 +57,7 @@ const Dashboard = () => {
 
     if (store.isLoading) {
         return (
-            <Preloader />
+            <LandingSkeleton />
         )
     }
 
@@ -117,6 +120,7 @@ const Dashboard = () => {
         setShow(false)
     }
 
+
     return (
         <>
 
@@ -128,8 +132,8 @@ const Dashboard = () => {
                 <Row>
                     {
                         balance.length ?
-                            <b>Total balance: ${balance.length ? countTotalBalance().toLocaleString() : <Preloader/>}</b>
-                            : <Preloader />
+                            <b>Total balance: ${balance.length ? countTotalBalance().toLocaleString() : <Skeleton sx={{mb: 2}} variant="rectangular" width={100} height={20} />}</b>
+                            : <Skeleton sx={{mb: 2}} variant="rectangular" width={100} height={20} />
                     }
 
                 </Row>
@@ -140,34 +144,37 @@ const Dashboard = () => {
                     <Row className='p-0'>
                         <Col>
                             <ButtonCard style={{paddingRight: 10, paddingLeft: 10}} theme={theme}>
-                                <Row>
-                                    <h2>Market coins</h2>
-                                    <p>Daily updated coins info</p>
-                                </Row>
-                                <Row style={{margin: 0, padding: 0}}>
-                                    {
-                                        store.ratesFull.length && balance.length ?
-                                            <SlickSlider>
-                                                {
-                                                    store.ratesFull.map(item => {
-                                                        return (
-                                                          <WalletInfoBlock
-                                                            key={item.id}
-                                                            img={item.image}
-                                                            rate={item.current_price}
-                                                            balance={balance.filter(el => el.coinName === item.symbol.toUpperCase())[0]}
-                                                            currency={item.symbol.toUpperCase()}
-                                                            amount={item.price_change_percentage_24h}
-                                                            status={item.price_change_percentage_24h}
-                                                            theme={theme}
-                                                          />
-                                                        )
-                                                    })
-                                                }
-                                            </SlickSlider>
-                                            : <Preloader />
-                                    }
-                                </Row>
+                            {
+                                store.ratesFull.length && balance.length ?
+                                <>
+                                    <Row>
+                                        <h2>Market coins</h2>
+                                        <p>Daily updated coins info</p>
+                                    </Row>
+                                    <Row style={{margin: 0, padding: 0}}>
+                                        
+                                                <SlickSlider>
+                                                    {
+                                                        store.ratesFull.map(item => {
+                                                            return (
+                                                            <WalletInfoBlock
+                                                                key={item.id}
+                                                                img={item.image}
+                                                                rate={item.current_price}
+                                                                balance={balance.filter(el => el.coinName === item.symbol.toUpperCase())[0]}
+                                                                currency={item.symbol.toUpperCase()}
+                                                                amount={item.price_change_percentage_24h}
+                                                                status={item.price_change_percentage_24h}
+                                                                theme={theme}
+                                                            />
+                                                            )
+                                                        })
+                                                    }
+                                                </SlickSlider>
+                                    </Row> 
+                                </>
+                                : <UserPageSkeleton />
+                            }
                             </ButtonCard>
                         </Col>
                         <Row className='mb-4 d-block d-xl-none'>
@@ -179,29 +186,36 @@ const Dashboard = () => {
                     <Row>
                         <Row>
                             <ButtonCard theme={theme}>
-                                <Row className='mb-5'>
-                                    <Col>
-                                        <h2>Market overview</h2>
-                                    </Col>
-                                    <Col>
-                                        <Input classname='inputTransparent' placeholder='Search Coin Name' type="text" onChange={handleChange}/>
-                                    </Col>
-                                </Row>
+                                {
+                                    store.ratesFull && balance.length ?
+                                        <>
+                                            <Row className='mb-5'>
+                                                <Col>
+                                                    <h2>Market overview</h2>
+                                                </Col>
+                                                <Col>
+                                                    <Input classname='inputTransparent' placeholder='Search Coin Name' type="text" onChange={handleChange}/>
+                                                </Col>
+                                            </Row>
 
-                                {filteredCoins.map(item => {
-                                    return (
-                                        <MarketOverviewItem
-                                            theme={theme}
-                                            key={item.name}
-                                            name={item.name}
-                                            image={item.image}
-                                            symbol={item.symbol}
-                                            price={item.current_price}
-                                            volume={item.market_cap}
-                                            priceChange={item.price_change_percentage_24h}
-                                        />
-                                    )
-                                })}
+                                            {filteredCoins.map(item => {
+                                                return (
+                                                    <MarketOverviewItem
+                                                        theme={theme}
+                                                        key={item.name}
+                                                        name={item.name}
+                                                        image={item.image}
+                                                        symbol={item.symbol}
+                                                        price={item.current_price}
+                                                        volume={item.market_cap}
+                                                        priceChange={item.price_change_percentage_24h}
+                                                    />
+                                                )
+                                            })}
+                                        </>
+
+                                        : <UserPageSkeleton />
+                                }
                             </ButtonCard>
                         </Row>
                     </Row>
