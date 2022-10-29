@@ -81,7 +81,6 @@ const AdminKYC = () => {
                             usersKyc &&  typeof usersKyc !== 'string'
                                 ?
                             usersKyc.map(user => {
-                                    console.log('kys user', user);
                                     return(
                                         <AdminKycTableItem
                                             key={user._id}

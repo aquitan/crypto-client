@@ -110,10 +110,11 @@ const AdminKycTableItem = (props) => {
 
 
     const onClickFront = async () => {
-        console.log('front')
+        console.log('props---', props.userId);
        await getData(`/staff/kyc/get_kyc_image/${props.userId}/1/`)
     }
     const onClickBack = async () => {
+        console.log('props---', props.userId);
         await getData(`/staff/kyc/get_kyc_image/${props.userId}/2/`)
      }
      const onClickSelfie = async () => {
