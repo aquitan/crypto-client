@@ -120,6 +120,8 @@ const AdminKycTableItem = (props) => {
         await getData(`/staff/kyc/get_kyc_image/${props.userId}/3/`)
      }
 
+     console.log('props---', props);
+
     return (
         <>
 
