@@ -206,6 +206,7 @@ export default class Store {
             this.setIsAdmin(false)
             this.setUser({})
             this.setFullAccess(false)
+            this.setIsActivated(false)
         } catch(e) {
             this.setIsError(true)
         }
