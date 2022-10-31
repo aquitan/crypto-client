@@ -292,7 +292,7 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
                                           <input classname='inputTransparent' {...register('terms', {
                                               required: true
                                           })} type='checkbox' />
-                                          <Link style={{color: '#AEB1BF', marginLeft: 10}} to={'/'}> I accept Terms and Conditions</Link>
+                                          <Link style={{color: '#AEB1BF', marginLeft: 10}} to={'/terms-and-conditions'}> I accept Terms and Conditions</Link>
                                           <ErrorMessage  name='terms' errors={errors} render={() => <p className={cls.error}>You have to accept terms and conditions</p>} />
                                       </Col>
                                   </Row>
