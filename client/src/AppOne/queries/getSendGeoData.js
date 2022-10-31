@@ -14,7 +14,7 @@ export const getGeoData = async () => {
         const domain_name = window.location.host
         let userLocation = store.path.split(/[\\\/]/)
         let geoDatas = {
-            ipAddress: response.data.IPv4, // ------
+            ipAddress: response.data.ip, // ------
             city: response.data.city, // -----
             countryName: response.data.country_name, //-----
             coordinates: location,
