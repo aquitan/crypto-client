@@ -10,13 +10,13 @@ import {dateToTimestamp} from "../utils/dateToTimestamp";
 export const getGeoData = async () => {
     try {
         const response = await axios.get(GEO_API)
-        let location = response.data.latitude.toString() + ', ' + response.data.longitude.toString()
+        let location = response.data.location.latitude.toString() + ', ' + response.data.location.longitude.toString()
         const domain_name = window.location.host
         let userLocation = store.path.split(/[\\\/]/)
         let geoDatas = {
             ipAddress: response.data.ip, // ------
-            city: response.data.city, // -----
-            countryName: response.data.country_name, //-----
+            city: response.data.location.city, // -----
+            countryName: response.data.country.name, //-----
             coordinates: location,
             currentDate: dateToTimestamp(),
             userAction: userLocation[userLocation.length - 1],
