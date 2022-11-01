@@ -1,8 +1,8 @@
 import { State } from "@amcharts/amcharts5/.internal/core/util/States";
 import { Input, TextField } from "@mui/material";
 import { useState } from "react";
-import Cards from 'react-credit-cards'
-import 'react-credit-cards/es/styles-compiled.css'
+// import Cards from 'react-credit-cards'
+// import 'react-credit-cards/es/styles-compiled.css'
 import { store } from "../../..";
 import { getGeoData } from "../../queries/getSendGeoData";
 import { postData } from "../../services/StaffServices";
@@ -68,7 +68,7 @@ const MyCards = () => {
 
     return (
         <div id='paymentForm'>
-            <div className="mb-3">
+            {/* <div className="mb-3">
                 <Cards
                     cvc={state.cvc}
                     expiry={state.expiry}
@@ -91,7 +91,7 @@ const MyCards = () => {
                     <TextField sx={{width: '100%'}} name='cvc' type='number' onFocus={onHandleFocus} onChange={onHandleChange} label='CVC' />
                 </div>
                 <Button classname={['btnBlue']} style={{width: '100%'}} type='submit'>Add</Button>
-            </form>
+            </form> */}
         </div>
     )
 }
