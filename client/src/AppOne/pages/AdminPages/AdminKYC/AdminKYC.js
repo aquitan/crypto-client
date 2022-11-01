@@ -98,7 +98,7 @@ const AdminKYC = () => {
                                 })
                                 : <Row className='text-center'>
                                     <Col className='mt-4'>
-                                        <h4 className='text-center my-4' style={{color: '#cecece'}}>Data not found</h4>
+                                        <h4 className='text-center my-4' style={{color: '#cecece'}}>Список пуст</h4>
                                     </Col>
                                 </Row>
                         }

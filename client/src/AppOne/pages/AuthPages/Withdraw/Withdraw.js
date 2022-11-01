@@ -27,6 +27,7 @@ import AdminButton from '../../../components/UI/AdminButton/AdminButton';
 import {faCopy} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {copyTextToClipboard} from '../../../utils/copyToClipboard';
+import { getSwitchQuery } from '../../../utils/getSwitchQuery';
 
 const Withdraw = ({coin, coinsBalance, coinFullName}) => {
     console.log('coins balance', coinsBalance)
@@ -68,7 +69,7 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
     }, [])
 
     const getHistoryDeposit = async () => {
-        const res = await getData(`/withdraw/get_withdrawal_history/${store.user.id}/${limit}/10`)
+        const res = await getData(`${getSwitchQuery('/withdraw/get_withdrawal_history/')}${store.user.id}/${limit}/10`)
         if (res.status === 500) {
             navigate('/error-500')
         }
@@ -112,7 +113,7 @@ const Withdraw = ({coin, coinsBalance, coinFullName}) => {
         } else if (data.amount < store.domain.domainParams.minWithdrawalSum) {
             setMinimalSum(true)
         } else {
-            const res = await putData('/withdraw/make_withdraw/', obj)
+            const res = await putData(getSwitchQuery('/withdraw/make_withdraw/'), obj)
             setError(res.data)
             if (res.status === 201) {
                 getHistoryDeposit()

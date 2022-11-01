@@ -15,6 +15,7 @@ import CustomModal from '../../../components/CustomModal/CustomModal';
 import AdminButton from '../../../components/UI/AdminButton/AdminButton';
 import UserPageSkeleton from '../../../components/UserPageSkeleton/UserPageSkeleton';
 import { Skeleton } from '@mui/material';
+import { getSwitchQuery } from '../../../utils/getSwitchQuery';
 
 const InternalAddresses = () => {
     const {theme} = useThemeContext(ThemeContext)
@@ -47,7 +48,7 @@ const InternalAddresses = () => {
     }, [])
 
     const getWalletsData = async () => {
-        const res = await getData(`/get_internal_data/${store.user.id}`)
+        const res = await getData(`${getSwitchQuery('/get_internal_data/')}${store.user.id}`)
         setWallets(res.data)
     }
 
@@ -63,7 +64,7 @@ const InternalAddresses = () => {
     }
 
     const getInternalHistory = async (count) => {
-        const res = await getData(`/internal_transfer/get_internal_transfer_history/${store.user.id}/${limit}/20`)
+        const res = await getData(`${getSwitchQuery('/internal_transfer/get_internal_transfer_history/')}${store.user.id}/${limit}/20`)
         setHistory(res.data.internalTransferHistory)
     }
 

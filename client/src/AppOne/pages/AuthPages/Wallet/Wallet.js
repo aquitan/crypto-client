@@ -16,6 +16,7 @@ import {countTotalBalance} from '../../../utils/countTotalBalance';
 import CustomModal from '../../../components/CustomModal/CustomModal';
 import UserPageSkeleton from '../../../components/UserPageSkeleton/UserPageSkeleton';
 import { Skeleton } from '@mui/material';
+import { getSwitchQuery } from '../../../utils/getSwitchQuery';
 
 const Wallet = () => {
     const [balances, setBalances] = useState([])
@@ -41,7 +42,7 @@ const Wallet = () => {
 
 
     const getBalance = async () => {
-        const res = await getData(`/get_user_balance/${store.user.id}`)
+        const res = await getData(`${getSwitchQuery('/get_user_balance/')}${store.user.id}`)
         setBalances(res.data)
         let arr = []
         res.data.forEach((item, index, array) => {

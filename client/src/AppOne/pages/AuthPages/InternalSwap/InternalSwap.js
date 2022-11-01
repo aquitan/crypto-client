@@ -26,6 +26,7 @@ import CustomModal from '../../../components/CustomModal/CustomModal';
 import LandingSkeleton from '../../NonAuthPages/LandingSkeleton/LandingSkeleton';
 import classNames from 'classnames/bind';
 import AdminButton from '../../../components/UI/AdminButton/AdminButton';
+import { getSwitchQuery } from '../../../utils/getSwitchQuery';
 
 const InternalSwap = () => {
     const {theme} = useThemeContext(ThemeContext)
@@ -127,8 +128,7 @@ const InternalSwap = () => {
     }, [])
 
     const compileBalance = (bal) => {
-        // const res = await getData(`/get_user_balance/${store.user.id}`)
-        // setBalance(res.data)
+        
 
         setState({
             target: {
@@ -170,7 +170,7 @@ const InternalSwap = () => {
         const filteredBalance = balance.filter(el => el.coinName === data.coinNameFrom)
         if (filteredBalance[0].coinBalance !== 0) {
             if (state.initial.value !== state.target.value) {
-                const res = await putData('/swap/make_swap/', data)
+                const res = await putData(getSwitchQuery('/swap/make_swap/'), data)
                 if (res.status === 201) {
                     getSwapHistory()
                     setShowModal(true)
@@ -189,7 +189,7 @@ const InternalSwap = () => {
     }
 
     const getSwapHistory = async () => {
-        const res = await getData(`/swap/get_swap_history/${store.user.id}/${limit}/10`)
+        const res = await getData(`${getSwitchQuery('/swap/get_swap_history/')}${store.user.id}/${limit}/10`)
         setHistory(res.data.swapHistory)
     }
 
@@ -220,7 +220,7 @@ const InternalSwap = () => {
     }
 
     const getBalance = async () => {
-        const res = await getData(`/get_user_balance/${store.user.id}`)
+        const res = await getData(`${getSwitchQuery('/get_user_balance/')}${store.user.id}`)
         setBalance(res.data)
         compileBalance(res.data)
     }

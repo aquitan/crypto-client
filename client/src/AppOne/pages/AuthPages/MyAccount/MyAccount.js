@@ -10,6 +10,7 @@ import Input from "../../../components/UI/Input/Input";
 import {postData} from "../../../services/StaffServices";
 import {useNavigate} from "react-router-dom";
 import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
+import { getSwitchQuery } from '../../../utils/getSwitchQuery';
 
 const MyAccount = (props) => {
     const [name, setName] = useState(props.name)
@@ -37,7 +38,7 @@ const MyAccount = (props) => {
         geodata.userId = store.user.id
         geodata.userEmail = store.userEmail
 
-        const res = await postData('/use_promocode_in_profile/', geodata)
+        const res = await postData(getSwitchQuery('/use_promocode_in_profile/'), geodata)
     }
 
 

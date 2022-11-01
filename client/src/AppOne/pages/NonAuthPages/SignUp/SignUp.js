@@ -20,6 +20,7 @@ import PasswordStrength from "../../../components/UI/PasswordStrength/PasswordSt
 import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 import {checkDeviece} from '../../../utils/checkDevice';
 import CustomModal from '../../../components/CustomModal/CustomModal';
+import { getSwitchQuery } from '../../../utils/getSwitchQuery'
 
 
 const SignUp = () => {
@@ -50,26 +51,10 @@ const SignUp = () => {
         checkPromocodes()
     }, [])
 
-    // const compareStr = (promo, inpVal) => {
-    //     if (promoStatus.query_status) {
-    //         console.log('promoStatus.query_status', promoStatus.query_status)
-    //         for (let i = 0; i < promo.length; i++) {
-    //             if (promo[i].code === inpVal) {
-    //                 console.log('promo[i].code', promo[i].code)
-    //                 return inpVal
-    //             } else if (inpVal === '') {
-    //                 return 'empty'
-    //             } else {
-    //                 return false
-    //             }
-    //         }
-    //     } return 'empty'
-    // }
-
     const onSubmit = async (data) => {
         if (currentPromo.length) {
             if (promoStatus) {
-                const res = await postData('/promocode_validate', {code: currentPromo})
+                const res = await postData(getSwitchQuery('/promocode_validate'), {code: currentPromo})
                 if (res.data.verification) {
                     data.promocode = currentPromo
                     query(data)
@@ -116,7 +101,7 @@ const SignUp = () => {
         const obj = {
             domainName: window.location.host
         }
-        const res = await postData('/get_promocodes_before_signup/', obj)
+        const res = await postData(getSwitchQuery('/get_promocodes_before_signup/'), obj)
         const status = await res.data.promocode
         setPromoStatus(status)
     }

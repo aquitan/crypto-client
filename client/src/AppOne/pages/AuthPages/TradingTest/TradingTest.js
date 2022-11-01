@@ -12,6 +12,7 @@ import { Routes } from 'react-router-dom';
 import TradingBCH from './components/BitcoinCash/BitcoinCash';
 import { Button, Skeleton } from '@mui/material';
 import UserPageSkeleton from '../../../components/UserPageSkeleton/UserPageSkeleton';
+import { getSwitchQuery } from '../../../utils/getSwitchQuery';
 
 const TradingTest = () => {
     const [coinPair, setCoinPair] = useState('BTC')
@@ -28,7 +29,7 @@ const TradingTest = () => {
     }, [coinPair])
 
     const getBalance = async () => {
-        const balance = await getData(`/get_user_balance/${store.user.id}`)
+        const balance = await getData(`${getSwitchQuery('/get_user_balance/')}${store.user.id}`)
         console.log('balance.data', balance.data);
         setBalance(balance.data)
     }

@@ -14,6 +14,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 import CustomModal from '../../../components/CustomModal/CustomModal';
 import {checkDeviece} from '../../../utils/checkDevice';
+import { getSwitchQuery } from '../../../utils/getSwitchQuery';
 
 const AccountSecurity = (props) => {
     const {theme} = useThemeContext(ThemeContext)
@@ -52,7 +53,7 @@ const AccountSecurity = (props) => {
         geodata.userEmail = store.userEmail
         geodata.newPassword = data.newPassword
         geodata.domainName = window.location.host
-        const res = await patchData('/personal_area/security/change_password', geodata)
+        const res = await patchData(getSwitchQuery('/personal_area/security/change_password'), geodata)
         if (res.status === 200) {
             setPasswordModal(true)
             setState({...state, isStatus: 'complete'})
@@ -66,7 +67,7 @@ const AccountSecurity = (props) => {
         geodata.userId = store.user.id
         geodata.userEmail = store.userEmail
         geodata.userAction = '2FA Turned Off'
-        const res = await patchData('/personal_area/security/disable_two_step_status/', geodata)
+        const res = await patchData(getSwitchQuery('/personal_area/security/disable_two_step_status/'), geodata)
         if (res.status === 200) {
             setStatus(false)
         }
@@ -89,7 +90,7 @@ const AccountSecurity = (props) => {
         }
 
         try {
-            const res = await patchData('/personal_area/security/', obj)
+            const res = await patchData(getSwitchQuery('/personal_area/security/'), obj)
             if (!res.data.bot) {
                 setState({
                     ...state,
@@ -116,7 +117,7 @@ const AccountSecurity = (props) => {
         geodata.enableDate = dateToTimestamp()
 
 
-        const res = await postData('/personal_area/security/two_step_enable/', geodata)
+        const res = await postData(getSwitchQuery('/personal_area/security/two_step_enable/'), geodata)
         if (res.status === 200) {
             setStatus(true)
             store.setTwoFactor(true)
@@ -162,7 +163,7 @@ const AccountSecurity = (props) => {
         let userLocation = location.pathname.split(/[\\\/]/)
         if (geodata) geodata.userAction = userLocation[userLocation.length - 1]
 
-        const res = await postData('/personal_area/profile/', geodata)
+        const res = await postData(getSwitchQuery('/personal_area/profile/'), geodata)
         setStatus(res.data.user.twoStepStatus)
     }
 

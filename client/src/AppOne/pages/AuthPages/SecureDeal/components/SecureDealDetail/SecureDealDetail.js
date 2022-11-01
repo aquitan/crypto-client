@@ -20,6 +20,7 @@ import {dateToTimestamp} from "../../../../../utils/dateToTimestamp";
 import ChatMessege from "../../../../../components/UI/ChatMessege/ChatMessege";
 import {ThemeContext, useThemeContext} from '../../../../../context/ThemeContext';
 import CustomModal from '../../../../../components/CustomModal/CustomModal';
+import { getSwitchQuery } from '../../../../../utils/getSwitchQuery';
 
 const SecureDealDetail = () => {
     const {theme} = useThemeContext(ThemeContext)
@@ -27,6 +28,7 @@ const SecureDealDetail = () => {
     const cx = classNames.bind(cls)
     const {register, handleSubmit} = useForm()
     const [modal, setModal] = useState(false)
+    const [limit, setLimit] = useState(0)
     const [dealData, setDealData] = useState()
     const [state, setState] = useState({
         seller: false,
@@ -44,13 +46,13 @@ const SecureDealDetail = () => {
     const [image, setImage] = useState()
 
     const getSecureDealData = async () => {
-        const res = await getData(`/personal_area/secure_deal/secure_deal_detail/${params.id}/${store.user.email}`)
+        const res = await getData(`${getSwitchQuery('/personal_area/secure_deal/secure_deal_detail/')}${params.id}/${store.user.email}`)
         setDealData(res.data.dealDetail)
         getSupportMessages(res.data.dealDetail._id)
     }
     const sendRewardData = async (data) => {
         data.dealId = dealData._id
-        const res = await patchData('/personal_area/secure_deal/secure_deal_detail/accept_deal/', data)
+        const res = await patchData(getSwitchQuery('/personal_area/secure_deal/secure_deal_detail/accept_deal/'), data)
         checkResponse(201)
         setModal(true)
         if (res.status === 201) {
@@ -90,14 +92,14 @@ const SecureDealDetail = () => {
             userEmail: store.user.email
         }
 
-        const res = await putData('/secure_deal/deal_detail/send_message_to_secure_deal_chat', obj)
+        const res = await putData(getSwitchQuery('/secure_deal/deal_detail/send_message_to_secure_deal_chat'), obj)
         if (res.status === 202) {
             getSupportMessages(dealData._id)
         }
     }
 
     const getSupportMessages = async (id) => {
-        const res = await getData(`/secure_deal/deal_detail/get_chat_for_user/0/50/${id}`)
+        const res = await getData(`${getSwitchQuery('/secure_deal/deal_detail/get_chat_for_user')}/${limit}/50/${id}`)
         setMsg(res.data)
 
         // createMessagesOnLoad(res.data)
@@ -112,6 +114,17 @@ const SecureDealDetail = () => {
         )
             .then((response) => response.json())
             .then((data) => setImage(data.data.display_url));
+    }
+
+    useEffect(() => {
+        getSupportMessages()
+    }, [limit])
+
+    const onMore = () => {
+        setLimit(prevState => prevState+1)
+    }
+    const onLess = () => {
+        setLimit(prevState => prevState-1)
     }
 
     return (
@@ -211,6 +224,21 @@ const SecureDealDetail = () => {
                                                       }) : null
                                                 }
                                             </ChatWindow>
+                                            {
+                                                msg.length ? 
+                                                <Row className={'mb-3 mt-3'}>
+                                                    {
+                                                        msg.length >= 50 ?
+                                                        <AdminButton onClick={onMore} classname={['xs', 'green']}>Load older messages</AdminButton>
+                                                        : null
+                                                    }
+                                                    {
+                                                        limit > 0 ?
+                                                        <AdminButton onClick={onLess} classname={['xs', 'green']}>Back</AdminButton>
+                                                        : null
+                                                    }
+                                                </Row> : null
+                                            }
                                         </Col>
                                         <Col className='col-12 col-lg-4 mb-3'>
                                             <ChatRules rulesDisclamer={secureDealRulesText} />

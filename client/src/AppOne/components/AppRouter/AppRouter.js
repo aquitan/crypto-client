@@ -9,6 +9,7 @@ import {useLocation, useNavigate} from 'react-router-dom';
 import {getRate} from "../../services/CurrencyService";
 import Preloader from "../UI/Preloader/Preloader";
 import {useNotifContext} from '../../context/notifContext';
+import { getSwitchQuery } from '../../utils/getSwitchQuery';
 
 
 
@@ -32,19 +33,6 @@ const AppRouter = () => {
             }
         }
     }
-    // const {isLoading, data, error} = useQuery('notif query', async () => {
-    //     if (store.isAuth) {
-    //         const res = await postData('/get_domain_params/', {domainName: window.location.host})
-    //         if (res.data) {
-    //             const balance = await getData(`/get_user_balance/${store.user.id}`)
-    //             setState(balance.data)
-    //             countTotalBalance()
-    //         }
-    //         setPercent(store.domain.domainParams.rateCorrectSum)
-    //         store.setDepositFee(res.data.domainInfo.domainParams.depositFee)
-    //         store.setDomain(res.data.domainInfo)
-    //     }
-    // })
 
     useEffect( () => {
         if (localStorage.getItem('token')) {
@@ -88,7 +76,7 @@ const AppRouter = () => {
     }
 
     const sendDomainName = async () => {
-        const res = await getData(`/get_domain_params/${window.location.host}`)
+        const res = await getData(`${getSwitchQuery('/get_domain_params/')}${window.location.host}`)
         store.setDomain(res.data.domainInfo)
     }
 

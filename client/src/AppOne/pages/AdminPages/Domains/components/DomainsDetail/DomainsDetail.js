@@ -316,7 +316,7 @@ const DomainsDetail = () => {
                         state.errors ? state.errors.map(error => {
                                 return <StaffErrorItem key={uuid()} data={error} />
                             })
-                            : <h4 className='text-center my-4' style={{color: '#cecece'}}>Data not found</h4>
+                            : <h4 className='text-center my-4' style={{color: '#cecece'}}>Список пуст</h4>
                     }
                 </AdminButtonCard>
                 <AdminButtonCard>

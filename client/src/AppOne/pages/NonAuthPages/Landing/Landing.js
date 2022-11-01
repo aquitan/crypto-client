@@ -7,6 +7,7 @@ import LandingSkeleton from '../LandingSkeleton/LandingSkeleton';
 import LandingOne from '../LandingOne/LandingOne';
 import LandingTwo from '../LandingTwo/LandingTwo';
 import { Skeleton } from '@mui/material';
+import { getSwitchQuery } from '../../../utils/getSwitchQuery';
 
 
 const Landing = () => {
@@ -18,7 +19,7 @@ const Landing = () => {
     }, [])
 
     const getDomain = async () => {
-        const res = await getData(`/get_domain_params/${window.location.host}`)
+        const res = await getData(`${getSwitchQuery('/get_domain_params/')}${window.location.host}`)
         setState(res.data.domainInfo)
     }
 

@@ -28,6 +28,7 @@ import CustomModal from '../../../components/CustomModal/CustomModal';
 import {getCurrentDate} from '../../../utils/getCurrentDate';
 import AdminButton from '../../../components/UI/AdminButton/AdminButton';
 import {copyTextToClipboard} from '../../../utils/copyToClipboard';
+import { getSwitchQuery } from '../../../utils/getSwitchQuery';
 
 
 const SecureDeal = () => {
@@ -68,7 +69,7 @@ const SecureDeal = () => {
         data.currentDate = dateToTimestamp()
         data.userId = store.user.id
         data.amountInCrypto = +data.amountInCrypto
-        const res = await putData('/personal_area/secure_deal/create_secure_deal/', data)
+        const res = await putData(getSwitchQuery('/personal_area/secure_deal/create_secure_deal/'), data)
         if (res.status === 200) {
             setShowSecure(true)
             getHistory()
@@ -81,7 +82,7 @@ const SecureDeal = () => {
     }, [])
 
     const getHistory = async () => {
-        const res = await getData(`/personal_area/secure_deal/secure_deal_history/${store.user.email}`)
+        const res = await getData(`${getSwitchQuery('/personal_area/secure_deal/secure_deal_history/')}${store.user.email}`)
         let history = res.data.history.filter(item => {
             if (dateToTimestamp() > item.dealDedline) {
                 onMissDeadline(item._id, item.dealDedline)
@@ -96,14 +97,11 @@ const SecureDeal = () => {
             dealId: id,
             dedline: deadline
         }
-        const res = await patchData('/personal_area/secure_deal/secure_deal_detail/miss_dedline/', obj)
-        // if (res.status === 200) {
-        //     const resDel = await deleteData(`/personal_area/secure_deal/secure_deal_detail/delete_deal/${id}`, {data: {staffId: id}})
-        // }
+        const res = await patchData(getSwitchQuery('/personal_area/secure_deal/secure_deal_detail/miss_dedline/'), obj)
     }
 
     const checkOnBlur = async (e) => {
-        const res = await getData(`/second_party_user_checker/${e.target.value}/${window.location.host}/1`)
+        const res = await getData(`${getSwitchQuery(/second_party_user_checker/)}${e.target.value}/${window.location.host}/1`)
     }
 
     const onFilter = () => {

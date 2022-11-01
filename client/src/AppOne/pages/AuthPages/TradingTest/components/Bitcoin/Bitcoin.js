@@ -22,6 +22,7 @@ import CustomModal from '../../../../../components/CustomModal/CustomModal';
 import {useLocation, useNavigate} from 'react-router-dom';
 import { Select, Skeleton } from '@mui/material';
 import UserPageSkeleton from '../../../../../components/UserPageSkeleton/UserPageSkeleton';
+import { getSwitchQuery } from '../../../../../utils/getSwitchQuery';
 
 const TradingBitcoin = ({balance, coinPair}) => {
   const {theme} = useThemeContext()
@@ -67,15 +68,29 @@ const TradingBitcoin = ({balance, coinPair}) => {
     };
 
   }, [coinPair])
-  // useEffect(async () => {
+  useEffect(async () => {
       
-  //   return () => {
-  //     window.removeEventListener("beforeunload", alertUser);
-  //   };
-  // }, []);
+    return () => {
+      window.removeEventListener("beforeunload", alertUser);
+    };
+  }, []);
+
+  const alertUser = async (e) => {
+    e.preventDefault();
+    const obj = {
+      domainName: store.domain.fullDomainName,
+      coinName: 'BCH',
+      growthParams: true,
+      value: chartValue,
+      timeToEnd: 150000,
+      userId: store.user.id
+    }
+    await putData(getSwitchQuery('/trading/add_user_data/'), obj)
+    e.returnValue = "";
+  };
 
   const getTradingHistory = async () => {
-    const res = await getData(`/trading/order_history/${store.user.id}/0/20/`)
+    const res = await getData(`${getSwitchQuery('/trading/order_history/')}${store.user.id}/0/20/`)
     setTradingHistory(res.data)
   }
 
@@ -88,7 +103,7 @@ const TradingBitcoin = ({balance, coinPair}) => {
   }, [sellPrice, sellCrypto])
 
   const getTradingData = async () => {
-    const res = await getData(`/staff/trading/get_valid_trading_data/${store.domain.fullDomainName}/`)
+    const res = await getData(`/staff/${getSwitchQuery('trading/get_valid_trading_data/')}${store.domain.fullDomainName}/`)
     let validRate = res.data.ratesData.filter(el => el.coinName === coinPair)
     setTradingData(validRate[0])
   }
@@ -105,7 +120,7 @@ const TradingBitcoin = ({balance, coinPair}) => {
   }
 
   const getHistory = async () => {
-    const res = await getData(`/trading/order_history/${store.user.id}/0/50/`)
+    const res = await getData(`${getSwitchQuery('/trading/order_history/')}${store.user.id}/0/50/`)
   }
 
   let data = [
@@ -164,7 +179,7 @@ const TradingBitcoin = ({balance, coinPair}) => {
   }
 
   const onCancelOrder = async (id) => {
-    await patchData(`/trading/cancel_order/${id}`)
+    await patchData(`${getSwitchQuery('/trading/cancel_order/')}${id}`)
   }
 
   const onSubmit = async (e, coinName, crypto, total, price, type) => {
@@ -182,7 +197,7 @@ const TradingBitcoin = ({balance, coinPair}) => {
       userId: store.user.id
     }
     if (price) {
-      const res = await putData('/trading/make_order/', obj)
+      const res = await putData(getSwitchQuery('/trading/make_order/'), obj)
       if (res.status === 201) {
         await getTradingHistory()
         setOrderModal(true)

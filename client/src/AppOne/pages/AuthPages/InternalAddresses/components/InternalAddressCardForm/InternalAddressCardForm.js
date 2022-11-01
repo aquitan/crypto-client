@@ -13,6 +13,7 @@ import {getCurrentDate} from "../../../../../utils/getCurrentDate";
 import {NotifContext, useNotifContext} from "../../../../../context/notifContext";
 import CustomModal from '../../../../../components/CustomModal/CustomModal';
 import addressValidator from '../../../../../utils/validateAddress';
+import { getSwitchQuery } from '../../../../../utils/getSwitchQuery';
 
 const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, sum}) => {
     const {updateNotif} = useNotifContext(NotifContext)
@@ -61,7 +62,7 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
             toAddress: data.toAddress
         });
         if (wallet !== data.toAddress) {
-            const res = await putData('/internal_transfer/make_internal_transfer/', data)
+            const res = await putData(getSwitchQuery('/internal_transfer/make_internal_transfer/'), data)
             updateNotif()
         } else {
             setModalError(true)
@@ -72,7 +73,7 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
     const onBlur = async (e) => {
 
         try {
-            const res = await getData(`/internal_wallet_checker/${e.target.value}/${window.location.host}`)
+            const res = await getData(`${getSwitchQuery('/internal_wallet_checker/')}${e.target.value}/${window.location.host}`)
             if (res.status !== 200) {
                 setAddressModalError(true)
             }
@@ -82,7 +83,7 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
         }
     }
     const onCheckAmount = async () => {
-        const res = await getData(`/user_balance_checker/${store.user.id}/${currency}`)
+        const res = await getData(`${getSwitchQuery('/user_balance_checker/')}${store.user.id}/${currency}`)
     }
 
     const checkWallet = (val) => {

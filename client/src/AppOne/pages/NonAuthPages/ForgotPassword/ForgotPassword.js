@@ -14,6 +14,7 @@ import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 import {checkDeviece} from '../../../utils/checkDevice';
 import {store} from '../../../../index';
 import {getGeoData} from '../../../queries/getSendGeoData';
+import { getSwitchQuery } from '../../../utils/getSwitchQuery';
 
 const ForgotPassword = () => {
     const navigate = useNavigate()
@@ -33,7 +34,7 @@ const ForgotPassword = () => {
         data.ipAddress = geodata.ipAddress
         data.deviceName = checkDeviece()
 
-        const res = await patchData('/forgot_password/', data)
+        const res = await patchData(getSwitchQuery('/forgot_password/'), data)
         const datas = await res.data
         setForgotStatus(datas.status)
         setModal(true)

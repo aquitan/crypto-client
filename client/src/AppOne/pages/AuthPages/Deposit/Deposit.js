@@ -25,6 +25,7 @@ import {ErrorMessage} from '@hookform/error-message';
 import {copyTextToClipboard} from '../../../utils/copyToClipboard';
 import {faCopy} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { getSwitchQuery } from '../../../utils/getSwitchQuery';
 
 
 const Deposit = ({coin, coinsBalance, coinFullName}) => {
@@ -63,7 +64,7 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
     }, [])
 
     const getHistoryDeposit = async () => {
-        const res = await getData(`/deposit/get_deposit_history/${store.user.id}/${limit}/10`)
+        const res = await getData(`${getSwitchQuery('/deposit/get_deposit_history/')}${store.user.id}/${limit}/10`)
         if (typeof res.data.depositHistory !== 'string') {
             const reversedLogs = res.data.depositHistory.slice(0).reverse()
             setHistory(reversedLogs)
@@ -81,7 +82,7 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
             userId: store.user.id,
             coinName: coin.toLowerCase(),
         }
-        const res = await postData('/get_address_for_deposit/', obj)
+        const res = await postData(getSwitchQuery('/get_address_for_deposit/'), obj)
         setAddress(res.data.address)
     }
 
@@ -114,7 +115,7 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
             setMinimalSum(true)
         } else {
             if (data.crypto > 0) {
-                const res = await putData('/deposit/make_deposit/', obj)
+                const res = await putData(getSwitchQuery('/deposit/make_deposit/'), obj)
                 updateNotif()
                 if (res.status === 201) {
                     getHistoryDeposit()
@@ -138,7 +139,7 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
         setValue('crypto', isNaN((e.target.value / store.rates[coin.toLowerCase()]).toFixed(5)) ? 'Only numbers allowed' : (e.target.value / store.rates[coin.toLowerCase()]).toFixed(5) )
     }
     const getBalance = async () => {
-        const res = await getData(`/get_user_balance/${store.user.id}`)
+        const res = await getData(`${getSwitchQuery('/get_user_balance/')}${store.user.id}`)
         setBalance(res.data.filter(item => item.coinName === coin))
     }
 

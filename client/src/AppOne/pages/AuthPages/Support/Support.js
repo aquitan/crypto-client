@@ -11,6 +11,7 @@ import {store} from "../../../../index";
 import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 import {useNavigate} from 'react-router-dom';
 import AdminButton from '../../../components/UI/AdminButton/AdminButton';
+import { getSwitchQuery } from '../../../utils/getSwitchQuery';
 
 const Support = () => {
     const [msg, setMsg] = useState([])
@@ -33,7 +34,7 @@ const Support = () => {
         }
 
         try {
-            const res = await putData('/support/send_support_message/', obj)
+            const res = await putData(getSwitchQuery('/support/send_support_message/'), obj)
             getSupportMessages()
         } catch(e) {
             navigate('error-500')
@@ -41,7 +42,7 @@ const Support = () => {
     }
 
     const getSupportMessages = async () => {
-        const res = await getData(`/support/get_chat_for_user/${store.user.id}/${limit}/${50}/`)
+        const res = await getData(`${getSwitchQuery('/support/get_chat_for_user/')}${store.user.id}/${limit}/${50}/`)
         setMsg(res.data.reverse())
         // createMessagesOnLoad(res.data)
     }

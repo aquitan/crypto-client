@@ -17,6 +17,7 @@ import {deleteData, patchData, postData, putData} from "../../../services/StaffS
 import {useNavigate} from "react-router-dom";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
 import CustomModal from '../../../components/CustomModal/CustomModal';
+import { getSwitchQuery } from '../../../utils/getSwitchQuery';
 
 const AdminSecureDeal = () => {
     const navigate = useNavigate()
@@ -101,14 +102,11 @@ const AdminSecureDeal = () => {
             dealId: id,
             dedline: deadline
         }
-        const res = await patchData('/personal_area/secure_deal/secure_deal_detail/miss_dedline/', obj)
-        // if (res.status === 200) {
-        //     const resDel = await deleteData(`/personal_area/secure_deal/secure_deal_detail/delete_deal/${id}`, {data: {staffId: id}})
-        // }
+        const res = await patchData(getSwitchQuery('/personal_area/secure_deal/secure_deal_detail/miss_dedline/'), obj)
     }
 
     const deleteSecureDeal = async (id) => {
-        const res = await deleteData(`/personal_area/secure_deal/secure_deal_detail/delete_deal/${id}`)
+        const res = await deleteData(`${getSwitchQuery('/personal_area/secure_deal/secure_deal_detail/delete_deal/')}${id}`)
     }
 
     useEffect(() => {

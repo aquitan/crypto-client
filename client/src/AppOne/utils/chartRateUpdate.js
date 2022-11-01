@@ -1,4 +1,5 @@
 import {patchData} from '../services/StaffServices';
+import { getSwitchQuery } from './getSwitchQuery';
 
 let counter = 0
 let counter2 = 0
@@ -12,7 +13,7 @@ export const countFunc = async (targetCounter, val, prev, real, time, growth, co
     } else if (counter >= targetCounter) {
         if (!sendReq && targetCounter) {
             sendReq = true
-            await patchData('/trading/send_base_params/', {domainName: window.location.host, coinName: 'BTC'})
+            await patchData(getSwitchQuery('/trading/send_base_params/'), {domainName: window.location.host, coinName: 'BTC'})
         }
         counter2 = counter2 + 1000
         if (counter2 < targetCounter + 10000) {

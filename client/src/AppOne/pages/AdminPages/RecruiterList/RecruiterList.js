@@ -14,15 +14,11 @@ import {ErrorMessage} from "@hookform/error-message";
 
 const RecruiterList = () => {
     const navigate = useNavigate()
+    const [limit, setLimit] = useState(0)
     const [users, setUsers] = useState([])
-
     const {register, handleSubmit, formState: {errors}} = useForm({
         mode: 'onBlur'
     })
-
-    useEffect(() => {
-        getRecruiterList()
-    }, [])
 
 
     const onCheckEmail = async (e) => {
@@ -32,7 +28,9 @@ const RecruiterList = () => {
     const getRecruiterList = async () => {
         let obj = {
             isAdmin: store.isAdmin,
-            rootAccess: store.fullAccess
+            rootAccess: store.fullAccess,
+            limitValue: 20,
+            skipValue: limit
         }
         const res = await postData('/staff/recruiter/get_recruiter_list/', obj)
         setUsers(res.data)
@@ -63,6 +61,19 @@ const RecruiterList = () => {
         const res = await deleteData('/staff/recruiter/delete_recruiter_user/', {data: obj})
         getRecruiterList()
     }
+
+
+    useEffect(() => {
+        getRecruiterList()
+    }, [limit])
+
+    const onMore = () => {
+        setLimit(prevState => prevState+1)
+    }
+    const onLess = () => {
+        setLimit(prevState => prevState-1)
+    }
+
 
     return (
         <Container>
@@ -128,9 +139,25 @@ const RecruiterList = () => {
                                 </Row>
                             )
                         })
-                        : <h3>No recruiters</h3>
+                        : <h4 className='text-center my-4' style={{color: '#cecece'}}>Список пуст</h4>
                 }
 
+                {
+                    users.length && typeof users !== 'string' ?
+                        <Row className={'mb-3 mt-3'}>
+                            {
+                                users.length >= 10 ?
+                                <AdminButton onClick={onMore} classname={['xs', 'green']}>Еще</AdminButton>
+                                : null
+                            }
+                            {
+                                limit > 0 ?
+                                <AdminButton onClick={onLess} classname={['xs', 'green']}>Назад</AdminButton>
+                                : null
+                            }
+                        </Row>
+                    : null
+                }
 
             </AdminButtonCard>
             

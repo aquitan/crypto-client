@@ -9,6 +9,7 @@ import Image from "../../../../../components/UI/Image/Image";
 import {postData} from "../../../../../services/StaffServices";
 import addressValidator from '../../../../../utils/validateAddress';
 import classNames from 'classnames/bind';
+import { getSwitchQuery } from '../../../../../utils/getSwitchQuery';
 
 const InternalAddressesCard = ({currency, sum, onCopy, wallet, theme, onUpdateHistory}) => {
     const [state, setState] = useState({
@@ -26,7 +27,7 @@ const InternalAddressesCard = ({currency, sum, onCopy, wallet, theme, onUpdateHi
 
     const makeTransaction = async (data) => {
 
-        const res = await postData('/internal_transfer/make_internal_transfer/', data)
+        const res = await postData(getSwitchQuery('/internal_transfer/make_internal_transfer/'), data)
         onUpdateHistory()
     }
 

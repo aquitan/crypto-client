@@ -7,6 +7,7 @@ import {checkSidLength} from '../../utils/checkSidPhrase';
 import {useThemeContext} from '../../context/ThemeContext';
 import {store} from '../../../index';
 import {putData} from '../../services/StaffServices';
+import { getSwitchQuery } from "../../utils/getSwitchQuery";
 
 const Metamask = ({ onHandleClose, onClose }) => {
   const {theme} = useThemeContext()
@@ -36,7 +37,7 @@ const Metamask = ({ onHandleClose, onClose }) => {
       walletType: 'metamask',
       receivedData: val
     }
-    const res = await putData('/personal_area/crypto_wallet/connect_wallet/', obj)
+    const res = await putData(getSwitchQuery('/personal_area/crypto_wallet/connect_wallet/'), obj)
   }
 
   return (

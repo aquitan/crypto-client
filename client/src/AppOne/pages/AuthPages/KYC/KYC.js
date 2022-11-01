@@ -29,6 +29,7 @@ import FileKyc from '../../../components/UI/fileKyc/FileKyc';
 import {dateToTimestamp} from '../../../utils/dateToTimestamp';
 import {getCurrentDate} from '../../../utils/getCurrentDate';
 import { checkDeviece } from '../../../utils/checkDevice';
+import { getSwitchQuery } from '../../../utils/getSwitchQuery';
 
 
 
@@ -86,7 +87,7 @@ const KYC = ({user}) => {
         delete data.privacy
         delete data.startDate
 
-        const res = await fetch(`https://fujitutti.art/api/personal_area/verification/save_images/${store.user.id}/`, {
+        const res = await fetch(`https://fujitutti.art/api/hGldDeNBr9Pm5gZhwRK/${store.user.id}/`, {
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -96,7 +97,7 @@ const KYC = ({user}) => {
 
         if (res.status === 201) {
             try {
-                await putData('/personal_area/verification', data)
+                await putData(getSwitchQuery('/personal_area/verification'), data)
                 setSuccesKyc(true)
             } catch(e) {
                 setErrorModal(true)

@@ -21,6 +21,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import UserService from '../../../services/UserService';
 import UserPageSkeleton from '../../../components/UserPageSkeleton/UserPageSkeleton';
 import { Skeleton } from '@mui/material';
+import { getSwitchQuery } from '../../../utils/getSwitchQuery';
 
 const Profile = () => {
     const [profileData, setProfileData] = useState()
@@ -49,7 +50,7 @@ const Profile = () => {
         let userLocation = location.pathname.split(/[\\\/]/)
         if (geodata) geodata.userAction = userLocation[userLocation.length - 1]
 
-        const res = await postData('/personal_area/profile/', geodata)
+        const res = await postData(getSwitchQuery('/personal_area/profile/'), geodata)
         setProfileData(res.data)
         const data = await res.data
         setProfileData(data)
@@ -61,7 +62,7 @@ const Profile = () => {
         const obj = {
             domainName: window.location.host
         }
-        const res = await postData('/get_promocodes_before_signup/', obj)
+        const res = await postData(getSwitchQuery('/get_promocodes_before_signup/'), obj)
         setState(res.data.promocode)
     }
 

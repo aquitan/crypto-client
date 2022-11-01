@@ -20,6 +20,7 @@ import Preloader from "../../../components/UI/Preloader/Preloader";
 import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 import {checkDeviece} from '../../../utils/checkDevice';
 import CustomModal from '../../../components/CustomModal/CustomModal';
+import { getSwitchQuery } from '../../../utils/getSwitchQuery'
 
 
 
@@ -46,7 +47,7 @@ const SignIn = () => {
         }
 
         if (data.twoFaCode) {
-            const res = await postData('/get_verified_two_step_code/', {code: data.twoFaCode})
+            const res = await postData(getSwitchQuery('/get_verified_two_step_code/'), {code: data.twoFaCode})
             if (res.data.verification) {
                 sendLoginData(data)
             }
@@ -60,7 +61,7 @@ const SignIn = () => {
         let date = new Date()
         const geodata = await getGeoData()
         try {
-            const res = await postData('/check_two_step/', {
+            const res = await postData(getSwitchQuery('/check_two_step/'), {
                 email: data.email,
                 currentDate: Math.round(date.getTime() / 1000),
                 domainName: window.location.host,

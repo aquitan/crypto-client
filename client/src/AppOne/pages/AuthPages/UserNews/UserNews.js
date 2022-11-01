@@ -6,6 +6,7 @@ import {store} from "../../../../index";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
 import {ThemeContext, useThemeContext} from '../../../context/ThemeContext';
 import { Skeleton } from '@mui/material';
+import { getSwitchQuery } from '../../../utils/getSwitchQuery';
 
 const UserNews = () => {
     const [state, setState] = useState([])
@@ -19,7 +20,7 @@ const UserNews = () => {
     const getNews = async () => {
         try {
             setShowSkeleton(true)
-            const res = await getData(`/news/get_news_for_user/${store.domain.domainId}`)
+            const res = await getData(`${getSwitchQuery('/news/get_news_for_user/')}${store.domain.domainId}`)
             setState(res.data)
         } catch(e) {
 

@@ -21,6 +21,7 @@ import CustomModal from '../../../components/CustomModal/CustomModal';
 import LandingSkeleton from '../../NonAuthPages/LandingSkeleton/LandingSkeleton';
 import { Skeleton } from '@mui/material';
 import UserPageSkeleton from '../../../components/UserPageSkeleton/UserPageSkeleton';
+import { getSwitchQuery } from '../../../utils/getSwitchQuery';
 
 const Dashboard = () => {
     const {theme} = useThemeContext(ThemeContext)
@@ -35,7 +36,7 @@ const Dashboard = () => {
         let geodata = await getGeoData()
         geodata.domainName = window.location.host
         geodata.id = store.user.id
-        const res = await postData('/dashboard/', geodata)
+        const res = await postData(getSwitchQuery('/dashboard/'), geodata)
     }
     useEffect(() => {
         const controller = new AbortController();
@@ -62,7 +63,7 @@ const Dashboard = () => {
     }
 
     const getBalance = async () => {
-        const res = await getData(`/get_user_balance/${store.user.id}`)
+        const res = await getData(`${getSwitchQuery('/get_user_balance/')}${store.user.id}`)
         setBalance(res.data)
     }
 
@@ -123,7 +124,6 @@ const Dashboard = () => {
 
     return (
         <>
-
             <CustomModal show={show} handleClose={handleClose} size={'md'} title={'Exchange currencies'}>
                 <InternalSwap balance={balance} />
             </CustomModal>

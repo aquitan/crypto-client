@@ -20,6 +20,7 @@ import {useValueContext} from '../../../../../context/ValueContext';
 import {checkOrderBuyToComplete} from '../../utils/checkOrderToComplete/checkOrderToComplete';
 import CustomModal from '../../../../../components/CustomModal/CustomModal';
 import {useLocation, useNavigate} from 'react-router-dom';
+import { getSwitchQuery } from '../../../../../utils/getSwitchQuery';
 
 const TradingBCH = ({balance}) => {
   const {theme} = useThemeContext()
@@ -88,7 +89,7 @@ const TradingBCH = ({balance}) => {
       timeToEnd: 150000,
       userId: store.user.id
     }
-    await putData('/trading/add_user_data/', obj)
+    await putData(getSwitchQuery('/trading/add_user_data/'), obj)
     e.returnValue = "";
   };
 
