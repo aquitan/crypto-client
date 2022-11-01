@@ -5,7 +5,7 @@ import AccountSecurity from "../AccountSecurity/AccountSecurity";
 import KYC from "../KYC/KYC";
 import {getGeoData} from "../../../queries/getSendGeoData";
 import {NavLink, useLocation, useNavigate} from 'react-router-dom';
-import {postData} from "../../../services/StaffServices";
+import {patchData, postData} from "../../../services/StaffServices";
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
 import {store} from "../../../../index";
@@ -92,13 +92,19 @@ const Profile = () => {
     const onEditNameHandler = async () => {
         setNameEdit(!nameEdit)
         if (newName.length > 3) {
-            let geodata =  await getGeoData()
-            geodata.userName = newName
-            delete geodata.id
-            delete geodata.email
-            geodata.userEmail = store.userEmail
-            geodata.userId = store.user.id
-            const response = await UserService.editUser(geodata)
+            try {
+                let geodata =  await getGeoData()
+                geodata.userName = newName
+                delete geodata.id
+                delete geodata.email
+                geodata.userEmail = store.userEmail
+                geodata.userId = store.user.id
+                const response = await patchData(getSwitchQuery('/personal_area/profile/edit_user_name/'), geodata)
+                getProfile()
+                setNewName('')
+            } catch(e) {
+                
+            }
         }
     }
 
@@ -125,7 +131,7 @@ const Profile = () => {
                                             <div>
                                                 {
                                                     !nameEdit ? profileData?.user === '' ? '-' : profileData?.user.name :
-                                                    <input onChange={e => setNewName(e.target.value)} style={{backgroundColor: 'transparent', border: 'none'}} type="text" value={newName} />
+                                                    <input onChange={e => setNewName(e.target.value)} style={{backgroundColor: 'transparent', border: 'none'}} type="text" placeholder='Enter new nickname' value={newName} />
                                                 }
                                             </div>
                                         </div>

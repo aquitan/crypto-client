@@ -103,7 +103,7 @@ const TradingBitcoin = ({balance, coinPair}) => {
   }, [sellPrice, sellCrypto])
 
   const getTradingData = async () => {
-    const res = await getData(`/staff/${getSwitchQuery('trading/get_valid_trading_data/')}${store.domain.fullDomainName}/`)
+    const res = await getData(`${getSwitchQuery('/trading/get_valid_trading_data/')}${store.domain.fullDomainName}/${store.user.id}`)
     let validRate = res.data.ratesData.filter(el => el.coinName === coinPair)
     setTradingData(validRate[0])
   }

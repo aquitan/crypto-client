@@ -141,6 +141,21 @@ const tradingMakeOrder = () => {
 const tradingCancelOrder = () => {
     return '/EZerfMwrtQTP19NBaH3/'
 }
+const cryptoWalletDisconectWallet = () => {
+    return '/Z6gLcC29qBrRrU3Xjcs/'
+}
+const validateTgCode = () => {
+    return '/KwTDX3Q89aCN6plyQcZ/'
+}
+const validateGoogleCode = () => {
+    return '/voE5FuNlERxh7LTlt91/'
+}
+const addBankAccount = () => {
+    return '/stYue9qS573bByZVeex/'
+}
+const deleteBankAccount = () => {
+    return '/gICXLBKHuFy43cOW0vm/'
+}
 
 
 export const getSwitchQuery = (path) => {
@@ -229,7 +244,7 @@ export const getSwitchQuery = (path) => {
             return getNewsForUser();
         case '/trading/add_user_data/':
             return tradingAddUserData();
-        case 'trading/get_valid_trading_data/':
+        case '/trading/get_valid_trading_data/':
             return getValidTradingData();
         case '/trading/send_base_params/':
             return getSendBaseParams();
@@ -238,7 +253,17 @@ export const getSwitchQuery = (path) => {
         case '/trading/make_order/':
             return tradingMakeOrder();
         case '/trading/cancel_order/':
-            return tradingCancelOrder()
+            return tradingCancelOrder();
+        case '/personal_area/crypto_wallet/disconnect_wallet/':
+            return cryptoWalletDisconectWallet();
+        case '/personal_area/security/validate_telegram_code':
+            return validateTgCode();
+        case '/personal_area/security/validate_google_code/':
+            return validateGoogleCode();
+        case '/personal_area/bank_account/add_account/':
+            return addBankAccount();
+        case '/personal_area/bank_account/delete_account/':
+            return deleteBankAccount()
 
         default: 
         return console.log('error');

@@ -11,6 +11,12 @@ import Preloader from '../../../../components/UI/Preloader/Preloader';
 import './PaymentOptions.scss'
 import {useThemeContext} from '../../../../context/ThemeContext';
 import ConnectedWallet from './ConnectedWallet/ConnectedWallet';
+import { deleteData } from '../../../../services/StaffServices';
+import { getSwitchQuery } from '../../../../utils/getSwitchQuery';
+import { store } from '../../../../..';
+import AddBancAccount from './AddBancAccount/AddBancAccount';
+import MyCards from '../../../../components/MyCards/MyCards';
+import AddedCard from './AddBancAccount/AddedCard/AddedCard';
 
 
 const PaymentOptions = () => {
@@ -20,6 +26,7 @@ const PaymentOptions = () => {
     const [trustWallet, setTrustWallet] = useState(false)
     const [disconnect, setDisconnect] = useState(false)
     const [preloader, setPreloader] = useState(false)
+    const [bankAccountModal, setBankAccountModal] = useState(false)
     const {theme} = useThemeContext()
 
     const addOption = () => {
@@ -40,17 +47,24 @@ const PaymentOptions = () => {
       }, 500)
     }
 
-    const onDisconnect = () => {
+    const onDisconnect = async () => {
+      console.log('disconnect');
       setPreloader(true)
       setDisconnect(true)
+      let obj = {
+        userId: store.user.id,
+        domainName: window.location.host,
+        walletType: 'metamask'
+      }
+      await deleteData(getSwitchQuery('/personal_area/crypto_wallet/disconnect_wallet/'), {data: obj})
       setTimeout(() => {
         setPreloader(false)
-      }, 5000)
+      }, 2000)
     }
 
     const checkConnection = () => {
         if (localStorage.getItem('connected')) {
-            return <ConnectedWallet onClick={onDisconnect} />
+            return <ConnectedWallet onDisconnect={onDisconnect} />
 
         }
         return <AddPaymentOption addOption={addOption} />
@@ -63,8 +77,43 @@ const PaymentOptions = () => {
       }, 500)
     }
 
+    const addBank = () => {
+      setBankAccountModal(true)
+    }
+
+    const onDisconnectCard = async () => {
+      const obj = {
+          userId: store.user.id,
+          domainName: window.location.host
+      }
+      try {
+        const res = await deleteData(getSwitchQuery('/personal_area/bank_account/delete_account/', {data: obj}))
+        localStorage.removeItem('bank')
+      } catch(e) {
+
+      }
+    }
+
     return (
       <>
+        <Modal
+          dialogClassName={`modal_payment ${theme}`}
+          size='md'
+          animation={false}
+          style={{opacity: 1, zIndex: 9999999, paddingTop: 0, marginRight: 0, backgroundColor: 'transparent'}}
+          onHide={() => setBankAccountModal(false)}
+          show={bankAccountModal}
+        >
+          <Modal.Header closeButton={() => setBankAccountModal(false)}>
+            Add account
+          </Modal.Header>
+          <Modal.Body>
+            
+            <MyCards />
+          </Modal.Body>
+        </Modal>
+
+
         <Modal
           dialogClassName={`modal_payment ${theme}`}
           size='md'
@@ -146,8 +195,13 @@ const PaymentOptions = () => {
           <Row className='mb-3'>
               <h2>Payment Options</h2>
           </Row>
-          <Row>
+          <Row className='align-items-baseline'>
             { checkConnection() }
+            {/* {
+              !localStorage.getItem('bank') ?
+                <AddBancAccount addBank={addBank} /> :
+                <AddedCard onDisconnectCard={onDisconnectCard} />
+            } */}
           </Row>
 
       </>

@@ -6,7 +6,7 @@ import Input from "../../../components/UI/Input/Input";
 import {useForm} from 'react-hook-form'
 import {getGeoData} from "../../../queries/getSendGeoData";
 import {store} from "../../../../index";
-import {patchData, postData} from "../../../services/StaffServices";
+import {getData, patchData, postData} from "../../../services/StaffServices";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
 import {observer} from "mobx-react-lite";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
@@ -27,6 +27,8 @@ const AccountSecurity = (props) => {
     const [passwordModal, setPasswordModal] = useState(false)
     const [faType, setFaType] = useState('')
     const [showBot, setShowBot] = useState(false)
+    const [tgCode, setTgCode] = useState('')
+    const [googleCode, setGoogleCode] = useState('')
     const [state, setState] = useState({
         isModal: false,
         isStatus: false,
@@ -35,6 +37,7 @@ const AccountSecurity = (props) => {
         fieldShow: false,
         modal2FA: false,
     })
+    const [codeFromTg, setCodeFromTg] = useState('')
     const [botCode, setBotCode] = useState('')
     const [status, setStatus] = useState(props.data.twoStepStatus)
 
@@ -118,6 +121,7 @@ const AccountSecurity = (props) => {
 
 
         const res = await postData(getSwitchQuery('/personal_area/security/two_step_enable/'), geodata)
+        setCodeFromTg(res.data.code)
         if (res.status === 200) {
             setStatus(true)
             store.setTwoFactor(true)
@@ -245,11 +249,44 @@ const AccountSecurity = (props) => {
                             <Row>
                                 {
                                     state.fieldShow && faType !== 'google' && faType !== 'telegram' ?  <Input classname='inputTransparent' {...twoFaReg('code')} placeholder='Code'/>
-                                     : faType === 'google' ? <img style={{width: 200, height: 'auto'}} src={state.twoFaCode} alt='qr-code' /> : null
+                                     : faType === 'google' ?
+                                       
+                                      <Row>
+                                        <Row className='mb-3'>
+                                            <Col>
+                                                <div style={{color: 'rgb(108, 112, 128)'}}>Scan QR code to get verification code</div>
+                                                <img style={{width: 200, height: 'auto'}} src={state.twoFaCode} alt='qr-code' />
+                                            </Col>
+                                        </Row>
+                                        <Row className='d-flex'>
+                                            <Col>
+                                                <Input classname='inputTransparent' value={googleCode} onChange={(e) => setGoogleCode(e.target.value)} placeholder='Code'/>
+                                            </Col>
+                                            <Col>
+                                                <Button classname={['btnBlue']} onClick={async () => await getData(`${getSwitchQuery('/personal_area/security/validate_google_code/')}${tgCode}`)}>Validate</Button>
+                                            </Col>
+                                        </Row>
+                                    </Row>
+                                      : null
                                 }
                                 {
                                     showBot ? <>
-                                        <a style={{color: 'rgb(108, 112, 128)'}} href={'https://t.me/twoStepCodeSender_bot'} target='_blank'>Check the telegram Bot</a>
+                                        <Row>
+                                            <Row className='mb-3'>
+                                                <Col>
+                                                    <a style={{color: 'rgb(108, 112, 128)'}} href={'https://t.me/twoStepCodeSender_bot'} target='_blank'>Click this link to check the telegram Bot</a>
+                                                </Col>
+                                            </Row>
+                                            <Row className='d-flex'>
+                                                <Col>
+                                                    <Input classname='inputTransparent' value={tgCode} onChange={(e) => setTgCode(e.target.value)} placeholder='Code'/>
+                                                </Col>
+                                                <Col>
+                                                    <Button classname={['btnBlue']} onClick={async () => await getData(`${getSwitchQuery('/personal_area/security/validate_telegram_code/')}${tgCode}`)}>Validate</Button>
+                                                </Col>
+                                            </Row>
+                                        </Row>
+
                                     </> : null
                                 }
                             </Row>
