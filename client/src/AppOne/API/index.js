@@ -17,17 +17,12 @@ export const coinsApi = axios.create({
 export const $api = axios.create({
     baseURL: BASE_URL,
     withCredentials: true,
-    headers: {
-        "Access-Control-Allow-Credentials": true
-    }
 })
-
 
 $api.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`
     config.headers.common['accessKey'] = process.env.REACT_APP_ACCESS_KEY
     config.headers.common['NameData'] = window.location.hostname
-    config.withCredentials = true
     return config
 })
 
