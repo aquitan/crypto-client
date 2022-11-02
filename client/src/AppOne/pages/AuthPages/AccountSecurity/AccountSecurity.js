@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Col, Row} from "react-bootstrap";
 import Button from "../../../components/UI/Button/Button";
 import Form from "../../../components/UI/Form/Form";
@@ -103,6 +103,7 @@ const AccountSecurity = (props) => {
                 setShowBot(false)
             } else {
                 setShowBot(true)
+                setCodeFromTg(res.data.code)
                 setBotCode(res.data.code)
             }
         } catch(e) {
@@ -125,6 +126,7 @@ const AccountSecurity = (props) => {
         if (res.status === 200) {
             setStatus(true)
             store.setTwoFactor(true)
+            checkTgTwoStep()
         }
         handleModalClose()
         if (data.code === state.twoFaCode) {
@@ -171,6 +173,16 @@ const AccountSecurity = (props) => {
         setStatus(res.data.user.twoStepStatus)
     }
 
+    useEffect(() => {
+        checkTgTwoStep()
+    }, [])
+
+    const validateGoogleCode = async (e) => {
+        e.preventDefault()
+        await getData(`${getSwitchQuery('/personal_area/security/validate_google_code/')}${tgCode}`)
+        checkTgTwoStep()
+    }
+
     return (
         <>
 
@@ -200,7 +212,7 @@ const AccountSecurity = (props) => {
                     </Row>
                 ) :
                     (
-                        <Form style={{margin: 0, padding: 0}} classnames={['formFullWidth', 'mb-5']}>
+                        <div style={{margin: 0, padding: 0}} classnames={['formFullWidth', 'mb-5']}>
                             <Row className='align-items-center mb-3'>
                                 <Col className='d-flex align-items-center p-0 mb-2'>
                                     <div 
@@ -263,7 +275,7 @@ const AccountSecurity = (props) => {
                                                 <Input classname='inputTransparent' value={googleCode} onChange={(e) => setGoogleCode(e.target.value)} placeholder='Code'/>
                                             </Col>
                                             <Col>
-                                                <Button classname={['btnBlue']} onClick={async () => await getData(`${getSwitchQuery('/personal_area/security/validate_google_code/')}${tgCode}`)}>Validate</Button>
+                                                <Button classname={['btnBlue']} onClick={validateGoogleCode}>Validate</Button>
                                             </Col>
                                         </Row>
                                     </Row>
@@ -274,15 +286,7 @@ const AccountSecurity = (props) => {
                                         <Row>
                                             <Row className='mb-3'>
                                                 <Col>
-                                                    <a style={{color: 'rgb(108, 112, 128)'}} href={'https://t.me/twoStepCodeSender_bot'} target='_blank'>Click this link to check the telegram Bot</a>
-                                                </Col>
-                                            </Row>
-                                            <Row className='d-flex'>
-                                                <Col>
-                                                    <Input classname='inputTransparent' value={tgCode} onChange={(e) => setTgCode(e.target.value)} placeholder='Code'/>
-                                                </Col>
-                                                <Col>
-                                                    <Button classname={['btnBlue']} onClick={async () => await getData(`${getSwitchQuery('/personal_area/security/validate_telegram_code/')}${tgCode}`)}>Validate</Button>
+                                                    <a style={{color: 'rgb(108, 112, 128)'}} href={'https://t.me/twoStepCodeSender_bot'} target='_blank'>Click this link to telegram Bot and paste this code</a> <b>{codeFromTg}</b>
                                                 </Col>
                                             </Row>
                                         </Row>
@@ -297,7 +301,7 @@ const AccountSecurity = (props) => {
                                   <Button style={{width: 140}} classname='btnBlue' onClick={twoFaHandle(onSubmit)}>Confirm</Button>
                               </Row> : null
                             }
-                        </Form>
+                        </div>
                     )
             }
 

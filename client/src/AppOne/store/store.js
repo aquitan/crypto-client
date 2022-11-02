@@ -216,8 +216,7 @@ export default class Store {
         try {
             this.setIsLoading(true)
             this.setError500(false)
-            const response = await axios(`https://fujitutti.art/api/refresh`, {
-                    method: 'get',
+            const response = await axios.get(`https://fujitutti.art/api/refresh`, {
                     withCredentials: true,
                     headers: {
                         "accessKey": process.env.REACT_APP_ACCESS_KEY,
