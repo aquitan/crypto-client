@@ -216,7 +216,15 @@ export default class Store {
         try {
             this.setIsLoading(true)
             this.setError500(false)
-            const response = await axios.get(`https://fujitutti.art/api/refresh`, {withCredentials: true})
+            const response = await axios(`https://fujitutti.art/api/refresh`, {
+                    method: 'get',
+                    withCredentials: true,
+                    headers: {
+                        "accessKey": process.env.REACT_APP_ACCESS_KEY,
+                        "NameData": window.location.hostname,
+                    }
+                }
+            )
             localStorage.setItem('token', response.data.accessToken)
             localStorage.setItem('refresh', response.data.refreshToken)
             // this.setUserId(response.data.user.id)
