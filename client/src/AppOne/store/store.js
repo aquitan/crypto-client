@@ -141,6 +141,7 @@ export default class Store {
             const response = await AuthService.login(obj)
             localStorage.setItem('token', response.data.accessToken)
             localStorage.setItem('refresh', response.data.refreshToken)
+            document.cookie = `refreshToken=${response.data.refreshToken}`
             if (response.data.rootAccess) {
                 this.setFullAccess(true)
                 this.setAuth(true)
@@ -213,10 +214,21 @@ export default class Store {
     }
 
     async checkAuth() {
+        console.log('cookie---', document.cookie)
         try {
             this.setIsLoading(true)
             this.setError500(false)
             const response = await axios.get(`https://fujitutti.art/api/refresh`, {withCredentials: true})
+            // const response = await fetch('https://fujitutti.art/api/refresh', {
+            //     method: 'GET',
+            //     credentials: 'omit',
+            //     headers: {
+            //         "Content-Type": "application/json",
+            //         "Cookie": document.cookie,
+            //         "Access-Control-Allow-Origin": "https://fujitutti.art/api/"
+            //     },
+            // });
+            const dat = response.json()
             localStorage.setItem('token', response.data.accessToken)
             localStorage.setItem('refresh', response.data.refreshToken)
             // this.setUserId(response.data.user.id)
@@ -224,35 +236,35 @@ export default class Store {
             // if (response.data.user.isActivated) {
             //     this.setIsActivated(true)
             // }
-            if (response.data.user.isStaff) {
+            if (dat.user.isStaff) {
                 this.setIsStaff(true)
             }
-            if (response.data.user.isAdmin) {
+            if (dat.user.isAdmin) {
                 this.setIsAdmin(true)
             }
             this.setAuth(true)
-            this.setUser(response.data.user)
+            this.setUser(dat.user)
 
-            if (response.data.user.isBanned) {
+            if (dat.user.isBanned) {
                 this.setIsBanned(true)
             }
-            if (response.data.fullAccess) {
-                localStorage.setItem('token', response.data.accessToken)
+            if (dat.fullAccess) {
+                localStorage.setItem('token', dat.accessToken)
                 this.setFullAccess(true)
                 this.setAuth(true)
                 this.setIsActivated(true)
             } else {
                 if (!this.isBanned) {
-                    this.setUserId(response.data.user.ID)
-                    this.setUserEmail(response.data.user.email)
-                    localStorage.setItem('token', response.data.accessToken)
-                    if (response.data.user.isActivated) {
+                    this.setUserId(dat.user.ID)
+                    this.setUserEmail(dat.user.email)
+                    localStorage.setItem('token', dat.accessToken)
+                    if (dat.user.isActivated) {
                         this.setIsActivated(true)
                     }
-                    if (response.data.user.isStaff) {
+                    if (dat.user.isStaff) {
                         this.setIsStaff(true)
                     }
-                    if (response.data.user.isAdmin) {
+                    if (dat.user.isAdmin) {
                         this.setIsAdmin(true)
                     }
                     this.setAuth(true)

@@ -19,14 +19,17 @@ export const $api = axios.create({
     withCredentials: true,
 })
 
+
 $api.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`
     config.headers.common['accessKey'] = process.env.REACT_APP_ACCESS_KEY
     config.headers.common['NameData'] = window.location.hostname
+    config.withCredentials = true
     return config
 })
 
 $api.interceptors.response.use((config) => {
+    config.withCredentials = true
     return config
 }, async (error) => {
     const originalRequest = error.config
