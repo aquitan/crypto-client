@@ -55,7 +55,6 @@
     "workbox-routing": "^6.4.2",
     "workbox-strategies": "^6.4.2"
   },
-  "proxy": "https://fujitutti.art/",
   "scripts": {
     "start": "react-scripts --openssl-legacy-provider start",
     "build": "react-scripts build",
