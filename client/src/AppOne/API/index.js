@@ -17,6 +17,9 @@ export const coinsApi = axios.create({
 export const $api = axios.create({
     baseURL: BASE_URL,
     withCredentials: true,
+    headers: {
+        "Access-Control-Allow-Credentials": true
+    }
 })
 
 
@@ -29,7 +32,6 @@ $api.interceptors.request.use((config) => {
 })
 
 $api.interceptors.response.use((config) => {
-    config.withCredentials = true
     return config
 }, async (error) => {
     const originalRequest = error.config
