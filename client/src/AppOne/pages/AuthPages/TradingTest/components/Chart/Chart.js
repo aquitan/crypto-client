@@ -8,7 +8,7 @@ import {useValueContext} from '../../../../../context/ValueContext';
 import ButtonCard from '../../../../../components/ButtonCard/ButtonCard';
 import { Button } from '@mui/material';
 
-const Chart = ({rate, tradingData, coinName, initialBtc, initialEth}) => {
+const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch, initialTrx, initialSol}) => {
     const [realRate, setRealRate] = useState(0)
     const {toggleValue} = useValueContext()
     const [newCoin, setNewCoin] = useState('BTC') 
@@ -16,16 +16,33 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth}) => {
     const chartRef = useRef(null)
     const valuesSeriesRef = useRef(null)
     const sbSeriesRef = useRef(null)  
+    const chartsDatas = useRef(null)  
+    const chartToolbar = useRef(null)  
     const [initialData, setInitialChartData] = useState(initialBtc) 
 
 
-    const createChart = async (val) => {
+    const createChart = async (initial) => {
         let root = am5.Root.new("chartdiv");
         root.setThemes([am5themes_Animated.new(root)]);
 
         let stockChart = root.container.children.push(
           am5stock.StockChart.new(root, {})
         );
+
+        let toolbar = am5stock.StockToolbar.new(root, {
+            container: document.getElementById("chartcontrols"),
+            stockChart: stockChart,
+            controls: [
+              am5stock.DrawingControl.new(root, {
+                stockChart: stockChart
+              }),
+              am5stock.ResetControl.new(root, {
+                stockChart: stockChart
+              })
+            ]
+          });
+
+          chartToolbar.current = toolbar
 
         root.numberFormatter.set("numberFormat", "#,###.00");
         let mainPanel = stockChart.panels.push(
@@ -166,7 +183,7 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth}) => {
             let chartData = [];
 
             valuesSeriesRef.current = chartData
-            initialData.forEach((item, index) => {
+            initial.forEach((item, index) => {
                 let newDate = new Date(firstDate);
                 newDate.setMinutes(newDate.getMinutes() - index);
 
@@ -184,8 +201,9 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth}) => {
                     High: high
                 });
                 lastDate = newDate;
-            })
 
+            })
+            chartsDatas.current = chartData
             return chartData;
         }
         let data = generateChartData();
@@ -283,34 +301,72 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth}) => {
 
     }
 
-    useEffect(async () => {
-        await createChart(rate)
+    useLayoutEffect(() => {
+        createChart(initialData)
     }, [])
 
-    const callFunc = async () => {
-        console.log('restart fn');
-        await createChart(rate)
+    const callFunc = async (val) => {
+        console.log('chartToolbar.current', chartToolbar.current)
+        chartToolbar.current.dispose()
+        await createChart(val)
     }
 
     useEffect(() => {
-        console.log('initialBtc', initialBtc)
-        console.log('initialEth', initialEth)
-        console.log('newCoin', coinName);
+        console.log('coin-name', coinName);
         if (chartRef.current) {
-            valuesSeriesRef.current.chartData = []
-            sbSeriesRef.current.data = []
-            clearInterval(ref.current)
-            chartRef.current.dispose()
             if (coinName === 'ETH') {
-                console.log('---eth---');
+                chartsDatas.current = []
+                setInitialChartData([])
                 setInitialChartData(initialEth)
-            } else {
-                console.log('---btc---')
+                valuesSeriesRef.current.chartData = []
+                sbSeriesRef.current.data = []
+                clearInterval(ref.current)
+                chartRef.current.dispose()
+                callFunc(initialEth)
+            } else if (coinName === 'BTC') {
+                chartsDatas.current = []
+                setInitialChartData([])
                 setInitialChartData(initialBtc)
+                valuesSeriesRef.current.chartData = []
+                sbSeriesRef.current.data = []
+                clearInterval(ref.current)
+                chartRef.current.dispose()
+                callFunc(initialBtc)
+            } else if (coinName === 'BCH') {
+                chartsDatas.current = []
+                setInitialChartData([])
+                setInitialChartData(initialBch)
+                valuesSeriesRef.current.chartData = []
+                sbSeriesRef.current.data = []
+                clearInterval(ref.current)
+                chartRef.current.dispose()
+                callFunc(initialBch)
+            } else if (coinName === 'TRX') {
+                chartsDatas.current = []
+                setInitialChartData([])
+                setInitialChartData(initialTrx)
+                valuesSeriesRef.current.chartData = []
+                sbSeriesRef.current.data = []
+                clearInterval(ref.current)
+                chartRef.current.dispose()
+                callFunc(initialTrx)
+            } else if (coinName === 'SOL') {
+                chartsDatas.current = []
+                setInitialChartData([])
+                setInitialChartData(initialSol)
+                valuesSeriesRef.current.chartData = []
+                sbSeriesRef.current.data = []
+                clearInterval(ref.current)
+                chartRef.current.dispose()
+                callFunc(initialSol)
             }
-            callFunc()
         }
     }, [coinName])
+
+    const clearData = () => {
+        chartsDatas.current = []
+        callFunc()
+    }
 
 
     return (
@@ -319,6 +375,7 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth}) => {
                 <Button variant='contained' onClick={() => setNewCoin('ETH')}>ETH</Button>
                 <Button variant='contained' onClick={() => setNewCoin('BTC')}>BTC</Button>
             </ButtonCard> */}
+            <div id="chartcontrols"></div>
             <div id="chartdiv" style={{width: '100%', height: '500px'}}/>
         </>
         

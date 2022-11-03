@@ -5,7 +5,7 @@ import AccountSecurity from "../AccountSecurity/AccountSecurity";
 import KYC from "../KYC/KYC";
 import {getGeoData} from "../../../queries/getSendGeoData";
 import {NavLink, useLocation, useNavigate} from 'react-router-dom';
-import {patchData, postData} from "../../../services/StaffServices";
+import {getData, patchData, postData} from "../../../services/StaffServices";
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 import {getCurrentDate} from "../../../utils/getCurrentDate";
 import {store} from "../../../../index";
@@ -22,6 +22,7 @@ import UserService from '../../../services/UserService';
 import UserPageSkeleton from '../../../components/UserPageSkeleton/UserPageSkeleton';
 import { Skeleton } from '@mui/material';
 import { getSwitchQuery } from '../../../utils/getSwitchQuery';
+import CustomModal from '../../../components/CustomModal/CustomModal';
 
 const Profile = () => {
     const [profileData, setProfileData] = useState()
@@ -31,6 +32,8 @@ const Profile = () => {
     const [nameEdit, setNameEdit] = useState(false)
     const [changeName, setChangeName] = useState('')
     const [newName, setNewName] = useState('')
+    const [logsArr, setLogsArr] = useState([])
+    const [showLogs, setShowLogs] = useState(false)
     const location = useLocation()
     const navigate = useNavigate()
 
@@ -69,6 +72,7 @@ const Profile = () => {
     useEffect(() => {
         getProfile()
         checkPromocodeProfile()
+        getLogs()
     }, [])
 
     const onLogout= async () => {
@@ -108,9 +112,35 @@ const Profile = () => {
         }
     }
 
+    const getLogs = async () => {
+        const response = await getData(`/GJAd1LKADJh9a8dFTDA/${store.user.email}/0/10/`,)
+        setLogsArr(response.data.message)
+    }
+
 
     return (
         <>
+
+        <CustomModal show={showLogs} size='lg' handleClose={() => setShowLogs(false)} btnClose='Close'  title='Your logs'>
+            {
+                logsArr.length ?
+                    logsArr.map(log => {
+                        return <Row className='mb-2' style={{padding: '10px 0', borderBottom: '1px solid #eee'}} key={log._id}>
+                            <Col>
+                                {log.browser}
+                            </Col>
+                            <Col>
+                                {log.ipAddress}
+                            </Col>
+                            <Col>
+                                {getCurrentDate(Number(log.actionDate))}
+                            </Col>
+                        </Row>
+                    }) : <h2>No logs for now</h2>
+            }
+        </CustomModal>
+
+
             <Row>
                 <Col className='col-12 col-lg-4'>
                     <ButtonCard theme={theme}>
@@ -165,6 +195,9 @@ const Profile = () => {
                                     <div className={classes}>
                                         <FontAwesomeIcon icon={faPhone} />
                                         <Nav.Link className={classes} style={{padding: 0, marginLeft: 20}} to={'/support-us'} as={NavLink}>Support Us</Nav.Link>
+                                    </div>
+                                    <div>
+                                        <div onClick={() => setShowLogs(true)}>Logs</div>
                                     </div>
                                 </Row>
                             </> :

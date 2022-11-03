@@ -24,7 +24,7 @@ import { Select, Skeleton } from '@mui/material';
 import UserPageSkeleton from '../../../../../components/UserPageSkeleton/UserPageSkeleton';
 import { getSwitchQuery } from '../../../../../utils/getSwitchQuery';
 
-const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth}) => {
+const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, initialTrx, initialSol}) => {
   const {theme} = useThemeContext()
   const [rate, setRate] = useState(0)
   const [orders, setOrders] = useState([])
@@ -105,6 +105,7 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth}) => {
   const getTradingData = async () => {
     const res = await getData(`${getSwitchQuery('/trading/get_valid_trading_data/')}${store.domain.fullDomainName}/${store.user.id}`)
     let validRate = res.data.ratesData.filter(el => el.coinName === coinPair)
+    console.log('validRate', res.data);
     setTradingData(validRate[0])
   }
 
@@ -285,7 +286,7 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth}) => {
           <ButtonCard theme={theme}>
             <h3>{getName()} Chart</h3>
             {
-              rate && initialChartData.length && tradingData ? <Chart initialBtc={initialBtc} initialEth={initialEth} initialData={initialChartData} tradingData={tradingData} coinName={coinPair} rate={Number(rate)} data={data} /> : <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} /> 
+              rate && initialChartData.length && tradingData ? <Chart initialSol={initialSol} initialTrx={initialTrx} initialBch={initialBch} initialBtc={initialBtc} initialEth={initialEth} initialData={initialChartData} tradingData={tradingData} coinName={coinPair} rate={Number(rate)} data={data} /> : <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} /> 
             }
           </ButtonCard>
           <Row>

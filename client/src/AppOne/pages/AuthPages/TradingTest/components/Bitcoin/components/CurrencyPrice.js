@@ -20,7 +20,7 @@ const CurrencyPrice = () => {
                 </div>
             </Col>
             <Col className='text-end'>
-                Bitcoin Price (USD)
+                Price (USD)
             </Col>
         </Row>
     )

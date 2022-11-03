@@ -11,12 +11,15 @@ import Select from '../../../../../components/UI/Select/Select';
 import { useForm } from 'react-hook-form';
 import {deleteData, getData, patchData} from "../../../../../services/StaffServices";
 import CustomModal from '../../../../../components/CustomModal/CustomModal';
+import axios from 'axios';
 
 const AdminKycTableItem = (props) => {
     const [kycStatus, setKycStatus] = useState(props.kycStatus)
     const [modalSuccess, setModalSuccess] = useState(false)
     const [modalError, setModalError] = useState(false)
     const [modalDelete, setModalDelete] = useState(false)
+    const [showImg, setShowImg] = useState(false)
+    const [img, setImg] = useState('')
     const [state, setState] = useState({
         isOpen: false,
         onClickConfirm: null,
@@ -111,14 +114,46 @@ const AdminKycTableItem = (props) => {
 
     const onClickFront = async () => {
         console.log('props---', props.userId);
-       await getData(`/staff/kyc/get_kyc_image/${props.userId}/1/`)
+       try {
+            axios.get(`https://fujitutti.art/api/staff/kyc/get_kyc_image/${props.userId}/1/`, { responseType: "blob" }).then(resp => {
+                const url = URL.createObjectURL(resp.data);
+                console.log('src', url)
+                setImg(url)
+              });
+            
+            setTimeout(() => {
+                setShowImg(true)
+            }, 1000)
+       } catch(e) {}
+
+       
     }
     const onClickBack = async () => {
         console.log('props---', props.userId);
-        await getData(`/staff/kyc/get_kyc_image/${props.userId}/2/`)
+        try {
+            axios.get(`https://fujitutti.art/api/staff/kyc/get_kyc_image/${props.userId}/2/`, { responseType: "blob" }).then(resp => {
+                const url = URL.createObjectURL(resp.data);
+                console.log('src', url)
+                setImg(url)
+              });
+            
+            setTimeout(() => {
+                setShowImg(true)
+            }, 1000)
+       } catch(e) {}
      }
      const onClickSelfie = async () => {
-        await getData(`/staff/kyc/get_kyc_image/${props.userId}/3/`)
+        try {
+            axios.get(`https://fujitutti.art/api/staff/kyc/get_kyc_image/${props.userId}/3/`, { responseType: "blob" }).then(resp => {
+                const url = URL.createObjectURL(resp.data);
+                console.log('src', url)
+                setImg(url)
+              });
+            
+            setTimeout(() => {
+                setShowImg(true)
+            }, 1000)
+       } catch(e) {}
      }
 
      console.log('props---', props);
@@ -134,6 +169,12 @@ const AdminKycTableItem = (props) => {
             </CustomModal>
             <CustomModal size={'md'} show={modalError} handleClose={() => setModalError(false)} themeDark={true} btnClose='Ok' title='Ошибка'>
                 Упс! Что-то пошло не так! Попробуйте позже!
+            </CustomModal>
+
+            <CustomModal size={'md'} show={showImg} handleClose={() => setShowImg(false)} themeDark={true} btnClose='Ok' title='Документ'>
+                <a style={{width: '100%', boxSizing: 'border-box'}} href='#' target="_blank" rel="noopener noreferrer">
+                    <img style={{width: '100%'}} src={img} alt='doc' />
+                </a>
             </CustomModal>
 
             <CustomModal size={'md'} show={state.isOpen} handleClose={handleCloseModal} themeDark={true} title='Подтвердите действие'>
@@ -162,9 +203,9 @@ const AdminKycTableItem = (props) => {
                         Документ: {props.docType}
                     </Col>
                     <Col style={{width: '190px'}} className={'text-center'}>
-                        <div className={'text-center'} onClick={onClickFront}>Front</div>
-                        <div className={'text-center'} onClick={onClickBack}>Back</div>
-                        <div className={'text-center'} onClick={onClickSelfie}>Selfie</div>
+                        <div style={{cursor: 'pointer'}} className={'text-center'} onClick={onClickFront}>Front</div>
+                        <div style={{cursor: 'pointer'}} className={'text-center'} onClick={onClickBack}>Back</div>
+                        <div style={{cursor: 'pointer'}} className={'text-center'} onClick={onClickSelfie}>Selfie</div>
                     </Col>
                     <Col style={{width: '190px'}} className={'text-center d-flex align-items-center flex-column'}>
                         <Select style={{marginBottom: 10}} {...register('status', {

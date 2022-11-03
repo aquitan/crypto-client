@@ -180,7 +180,7 @@ const SignIn = () => {
                             stateTwoFa.twoFaCode ?
                                 <Row>
                                     <Col className={cls.relative}>
-                                        <Input classname='transparent' {...register('twoFaCode', {
+                                        <Input classname='transparent' placeholder='Your 2FA code' {...register('twoFaCode', {
                                             required: true,
                                             message: 'Field is required',
                                             maxLength: {

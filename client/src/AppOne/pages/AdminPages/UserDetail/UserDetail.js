@@ -29,8 +29,15 @@ const UserDetail = () => {
         setUserDetails(data)
     }
 
+    const getLogs = async () => {
+        
+        
+        
+    }
+
     useEffect(() => {
         getAdminUsersDetail()
+        getLogs()
     }, [])
 
     return (

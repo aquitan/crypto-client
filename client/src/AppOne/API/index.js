@@ -38,7 +38,6 @@ $api.interceptors.response.use((config) => {
                 withCredentials: true,
                 headers: {
                     "accessKey": process.env.REACT_APP_ACCESS_KEY,
-                    "NameData": window.location.hostname,
                 }
             })
             localStorage.setItem('token', response.data.accessToken)

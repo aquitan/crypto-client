@@ -17,6 +17,9 @@ const TradingTest = () => {
     const [coinPair, setCoinPair] = useState('BTC')
     const [initialBtc, setInitialBtc] = useState([])
     const [initialEth, setInitialEth] = useState([])
+    const [initialBch, setInitialBch] = useState([])
+    const [initialTrx, setInitialTrx] = useState([])
+    const [initialSol, setInitialSol] = useState([])
     const [balance, setBalance] = useState([])
     
     const {theme} = useThemeContext()
@@ -26,11 +29,17 @@ const TradingTest = () => {
         getBalance()
         getInitialChartData()
         getEthInitial()
+        getBCHInitial()
+        getTRXInitial()
+        getSOLInitial()
         return () => {
             renderTrade()
             getBalance()
             getInitialChartData()
             getEthInitial()
+            getBCHInitial()
+            getTRXInitial()
+            getSOLInitial()
         }
     }, [coinPair])
 
@@ -57,6 +66,21 @@ const TradingTest = () => {
         const resEth = await fetch(`https://api.binance.com/api/v3/klines?symbol=ETHUSDT&interval=1m&limit=100`)
         const dataEth = await resEth.json()
         setInitialEth(dataEth.slice(0).reverse())
+    }
+    const getBCHInitial = async () => {
+        const resBch = await fetch(`https://api.binance.com/api/v3/klines?symbol=BCHUSDT&interval=1m&limit=100`)
+        const dataBch = await resBch.json()
+        setInitialBch(dataBch.slice(0).reverse())
+    }
+    const getTRXInitial = async () => {
+        const resTrx = await fetch(`https://api.binance.com/api/v3/klines?symbol=TRXUSDT&interval=1m&limit=100`)
+        const dataTrx = await resTrx.json()
+        setInitialTrx(dataTrx.slice(0).reverse())
+    }
+    const getSOLInitial = async () => {
+        const resSol = await fetch(`https://api.binance.com/api/v3/klines?symbol=SOLUSDT&interval=1m&limit=100`)
+        const dataSol = await resSol.json()
+        setInitialSol(dataSol.slice(0).reverse())
     }
 
 
@@ -87,7 +111,7 @@ const TradingTest = () => {
             <ValueContextProvider>
                 {
                     balance.length ?
-                        <Bitcoin balance={fileteredBalance[0]} coinPair={coinPair} initialBtc={initialBtc} initialEth={initialEth}/>
+                        <Bitcoin balance={fileteredBalance[0]} coinPair={coinPair} initialSol={initialSol} initialTrx={initialTrx} initialBch={initialBch} initialBtc={initialBtc} initialEth={initialEth}/>
                     : <>
                         <Row>
                             <Col className="col-12 col-md-8">

@@ -14,7 +14,7 @@ const CustomModal = ({title, fullScreen, text, show, handleClose, btnClose, chil
             dialogClassName={`modal-window ${themeDark ? 'dark' : theme}`}
             backdrop={'static'}
             show={show} onHide={handleClose}>
-            <Modal.Header style={{textAlign: 'center', display: 'inline-block'}} closeButton closeVariant={themeDark ? 'white' : theme === 'dark' ? 'white' : ''}>
+            <Modal.Header style={{textAlign: 'center', display: 'inline-block'}} closeButton closeVariant={themeDark ? 'white' : theme === 'dark' ? 'white' : null}>
                 <Modal.Title style={{textAlign: 'center', display: 'inline-block'}}>{title}</Modal.Title>
             </Modal.Header>
             {text || children && <Modal.Body>
