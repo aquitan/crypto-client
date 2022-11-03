@@ -17,18 +17,19 @@ const ContactUsDonate = () => {
 
     return (
         <ButtonCard theme={theme}>
+            <h2 className='text-center'>Support us</h2>
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <Row className={'mb-3'}>
-                    <Input classname='inputTransparent' {...register('name')} name='name' placeholder='your name' />
+                    <Input classname='inputTransparent' {...register('name')} name='name' placeholder='Your name' />
                 </Row>
                 <Row className={'mb-3'}>
-                    <Input classname='inputTransparent' {...register('email')} name='email' placeholder='your email' />
+                    <Input classname='inputTransparent' {...register('email')} name='email' placeholder='Your email' />
                 </Row>
                 <Row className={'mb-3'}>
-                    <TextArea classname='textareaTransparent' {...register('comment')} name='comment' placeholder='type your comment'/>
+                    <TextArea classname='textareaTransparent' {...register('comment')} name='comment' placeholder='Type your comment'/>
                 </Row>
                 <Row className={'mb-3'}>
-                    <Input classname='inputTransparent' placeholder='donation address'/>
+                    <Input classname='inputTransparent' placeholder='Donation address'/>
                 </Row>
                 <Row className={'mb-3'}>
                     <Button classname='btnBlue'>Submit</Button>

@@ -24,7 +24,7 @@ import { Select, Skeleton } from '@mui/material';
 import UserPageSkeleton from '../../../../../components/UserPageSkeleton/UserPageSkeleton';
 import { getSwitchQuery } from '../../../../../utils/getSwitchQuery';
 
-const TradingBitcoin = ({balance, coinPair}) => {
+const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth}) => {
   const {theme} = useThemeContext()
   const [rate, setRate] = useState(0)
   const [orders, setOrders] = useState([])
@@ -285,7 +285,7 @@ const TradingBitcoin = ({balance, coinPair}) => {
           <ButtonCard theme={theme}>
             <h3>{getName()} Chart</h3>
             {
-              rate && initialChartData.length && tradingData ? <Chart initialData={initialChartData} tradingData={tradingData} coinName={coinPair} rate={Number(rate)} data={data} /> : <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} /> 
+              rate && initialChartData.length && tradingData ? <Chart initialBtc={initialBtc} initialEth={initialEth} initialData={initialChartData} tradingData={tradingData} coinName={coinPair} rate={Number(rate)} data={data} /> : <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} /> 
             }
           </ButtonCard>
           <Row>

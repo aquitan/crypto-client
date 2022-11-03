@@ -178,8 +178,8 @@ const AccountSecurity = (props) => {
     }, [])
 
     const validateGoogleCode = async (e) => {
-        e.preventDefault()
-        await getData(`${getSwitchQuery('/personal_area/security/validate_google_code/')}${tgCode}`)
+        console.log('googleCode', googleCode)
+        await getData(`${getSwitchQuery('/personal_area/security/validate_google_code/')}${googleCode}`)
         checkTgTwoStep()
     }
 

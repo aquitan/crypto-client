@@ -8,7 +8,7 @@ import {useValueContext} from '../../../../../context/ValueContext';
 import ButtonCard from '../../../../../components/ButtonCard/ButtonCard';
 import { Button } from '@mui/material';
 
-const Chart = ({rate, tradingData, coinName}) => {
+const Chart = ({rate, tradingData, coinName, initialBtc, initialEth}) => {
     const [realRate, setRealRate] = useState(0)
     const {toggleValue} = useValueContext()
     const [newCoin, setNewCoin] = useState('BTC') 
@@ -16,7 +16,7 @@ const Chart = ({rate, tradingData, coinName}) => {
     const chartRef = useRef(null)
     const valuesSeriesRef = useRef(null)
     const sbSeriesRef = useRef(null)  
-    const [initialData, setInitialChartData] = useState([]) 
+    const [initialData, setInitialChartData] = useState(initialBtc) 
 
 
     const createChart = async (val) => {
@@ -291,20 +291,23 @@ const Chart = ({rate, tradingData, coinName}) => {
         console.log('restart fn');
         await createChart(rate)
     }
-    const getInitialChartData = async () => {
-        const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${coinName}USDT&interval=1m&limit=100`)
-        const data = await res.json()
-        setInitialChartData(data.slice(0).reverse())
-      }
 
     useEffect(() => {
+        console.log('initialBtc', initialBtc)
+        console.log('initialEth', initialEth)
         console.log('newCoin', coinName);
-        getInitialChartData()
         if (chartRef.current) {
             valuesSeriesRef.current.chartData = []
             sbSeriesRef.current.data = []
             clearInterval(ref.current)
             chartRef.current.dispose()
+            if (coinName === 'ETH') {
+                console.log('---eth---');
+                setInitialChartData(initialEth)
+            } else {
+                console.log('---btc---')
+                setInitialChartData(initialBtc)
+            }
             callFunc()
         }
     }, [coinName])
