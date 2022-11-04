@@ -16,9 +16,9 @@ const Orders = ({orders, type}) => {
                           color: type === 'buy' ? 'green' : 'tomato',
                           backgroundColor: item.max && type === 'sell' ? 'rgba(255, 99, 71, .3)' : item.max && type === 'buy' ? 'rgba(0, 128, 0, .3)' : '',
                       }}>
-                          <Col className='col-4 text-center'>{item.price}</Col>
-                          <Col className='col-4 text-center'>{item.crypto}</Col>
-                          <Col className='col-4 text-center'>{item.total}</Col>
+                          <Col className='col-4 text-start'>{item.price}</Col>
+                          <Col className='col-4 text-start'>{item.crypto}</Col>
+                          <Col className='col-4 text-start'>{item.total}</Col>
                       </Row>
                     )
                 })
