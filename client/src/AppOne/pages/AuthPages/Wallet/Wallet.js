@@ -104,7 +104,7 @@ const Wallet = () => {
                                 <Row>
                                     {
                                         balances ? <h2 className='mt-4' style={{fontWeight: 'bold', color: theme === 'light' ? '#9295A6' : '#fff'}}>
-                                            ${isNaN(countTotalBalance(balances).toLocaleString()) ? 0 : countTotalBalance(balances).toLocaleString()}
+                                            BTC {isNaN(countTotalBalance(balances).toLocaleString()) ? 0 : (countTotalBalance(balances) * store.rates.btc).toLocaleString()}
                                         </h2> : <Preloader />
                                     }
                                 </Row>
@@ -123,7 +123,7 @@ const Wallet = () => {
                                             <img className='px-2' src={'/img/in-icon.svg'} alt=""/>
                                             {
                                                 balances ? <div className='mt-4' style={{fontWeight: 'bold', color: theme === 'light' ? '#9295A6' : '#fff', fontSize: '16px'}}>
-                                                    ${isNaN(countTotalBalance(balances).toLocaleString()) ? 0 : (countTotalBalance(balances) * store.rates.btc).toLocaleString()}
+                                                    ${isNaN(countTotalBalance(balances).toLocaleString()) ? 0 : countTotalBalance(balances).toLocaleString()}
                                                 </div> : <Preloader />
                                             }
                                         </Col>
