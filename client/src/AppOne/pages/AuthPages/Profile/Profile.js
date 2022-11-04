@@ -155,9 +155,6 @@ const Profile = () => {
                                     </Row>
                                     <Row className='mb-3'>
                                         <div style={{display: 'flex', justifyContent: 'center', fontSize: 20, fontWeight: 'bold'}}>
-                                            <span style={{cursor: 'pointer'}} onClick={onEditNameHandler}>
-                                                <img src={'/img/edit.svg'} alt=""/>
-                                            </span>
                                             <div>
                                                 {
                                                     !nameEdit ? profileData?.user === '' ? '-' : profileData?.user.name :
