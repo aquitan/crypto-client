@@ -19,7 +19,7 @@ import {useNavigate} from "react-router-dom";
 import Form from "../../../components/UI/Form/Form";
 import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 import {emailValidate} from "../../../utils/checkEmail";
-import {deleteData, getData, patchData, putData} from "../../../services/StaffServices";
+import {deleteData, getData, patchData, postData, putData} from "../../../services/StaffServices";
 import {store} from "../../../../index";
 import {dateToTimestamp} from "../../../utils/dateToTimestamp";
 import {NotifContext, useNotifContext} from "../../../context/notifContext";
@@ -109,7 +109,13 @@ const SecureDeal = () => {
     }
 
     const checkOnBlur = async (e) => {
-        const res = await getData(`${getSwitchQuery('/second_party_user_checker/')}${e.target.value}/${window.location.host}/1`)
+        let obj = {
+            userEmail: e.target.value,
+            domainName: window.location.host,
+            staffId: null
+        }
+
+        const res = await postData(getSwitchQuery('/second_party_user_checker/'), obj)
     }
 
     const onFilter = () => {
@@ -187,6 +193,7 @@ const SecureDeal = () => {
                                         required: 'You must specify email',
                                         validate: emailValidate,
                                         message: 'Email is not valid',
+                                        onBlur: (e) => checkOnBlur(e)
                                     })} placeholder='Second party email' />
                                     <ErrorMessage
                                       name='secondPartyEmail'
