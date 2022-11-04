@@ -266,7 +266,7 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, 
                 <Row>
                   <Col className=''>
                     <div className='d-flex align-items-center'>
-                      <img style={{marginRight: 20}} width={40} src={`/img/${coinPair}.svg`} alt=""/>
+                      <img style={{marginRight: 20}} width={40} src={`/img/${coinPair.toLowerCase()}.svg`} alt=""/>
                       <div className='d-flex align-items-center'>
                         <span style={{fontSize: 28, marginRight: 20}}>{getName()}</span>
                         <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8', width: 'fit-content', height: 'fit-content'}} className="badge d-none d-xl-flex">
