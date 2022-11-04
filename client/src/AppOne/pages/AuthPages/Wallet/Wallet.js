@@ -99,12 +99,12 @@ const Wallet = () => {
                                     <p style={{color: '#9295A6', fontSize: 12}}>Updated {getCurrentDate()}</p>
                                 </Row>
                                 <Row>
-                                    <div style={{color: '#9295A6', fontSize: 16}}>Wallet balance:</div>
+                                    <div style={{color: '#9295A6', fontSize: 16}}>Total wallet balance in BTC:</div>
                                 </Row>
                                 <Row>
                                     {
                                         balances ? <h4 className='mt-4' style={{fontWeight: 'bold', color: theme === 'light' ? '#9295A6' : '#fff'}}>
-                                            BTC {isNaN(countTotalBalance(balances).toLocaleString()) ? 0 : (countTotalBalance(balances) / store.rates.btc).toLocaleString()}
+                                            <img src='/static/img/btc.svg' alt='btc'/> {isNaN(countTotalBalance(balances).toLocaleString()) ? 0 : (countTotalBalance(balances) / store.rates.btc).toLocaleString()}
                                         </h4> : <Preloader />
                                     }
                                 </Row>
@@ -117,7 +117,7 @@ const Wallet = () => {
                                     <Row className='p-2 flex-column flex-sm-row mb-2 d-flex justify-content-between'>
                                         <Col className='d-flex align-items-center' style={{fontSize: 20, color: theme === 'light' ? '#9295A6': '#fff'}}>
                                             <img src={'/img/deposit-icon.svg'} alt=""/>
-                                            <div className='px-2'>Total available in USD:</div>
+                                            <div className='px-2'>Total wallet ballance in USD:</div>
                                         </Col>
                                         <Col style={{color: theme === 'light' ? '#6C7080': '#fff'}}>
                                             {
