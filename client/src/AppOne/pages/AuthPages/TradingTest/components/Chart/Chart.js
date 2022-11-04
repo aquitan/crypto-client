@@ -307,7 +307,7 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
 
     const callFunc = async (val) => {
         console.log('chartToolbar.current', chartToolbar.current.dispose())
-        chartToolbar.current.disposed()
+        chartToolbar.current.dispose()
         await createChart(val)
     }
 
