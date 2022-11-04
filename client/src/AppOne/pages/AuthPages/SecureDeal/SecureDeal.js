@@ -70,13 +70,13 @@ const SecureDeal = () => {
         data.currentDate = dateToTimestamp()
         data.userId = store.user.id
         data.amountInCrypto = +data.amountInCrypto
-        // const res = await putData(getSwitchQuery('/personal_area/secure_deal/create_secure_deal/'), data)
-        const res = await axios.put('http://164.92.245.8:3832/api/lv915XzWJFDALfn7rEb/', data, {
-            withCredentials: true,
-            headers: {
-                "accessKey": process.env.REACT_APP_ACCESS_KEY,
-            }
-        })
+        const res = await putData(getSwitchQuery('/personal_area/secure_deal/create_secure_deal/'), data)
+        // const res = await axios.put('http://164.92.245.8:3832/api/lv915XzWJFDALfn7rEb/', data, {
+        //     withCredentials: true,
+        //         headers: {
+        //             "accessKey": process.env.REACT_APP_ACCESS_KEY,
+        //         }
+        // })
         if (res.status === 200) {
             setShowSecure(true)
             getHistory()
@@ -86,6 +86,7 @@ const SecureDeal = () => {
 
     useEffect(() => {
         onFilter()
+        getHistory()
     }, [])
 
     const getHistory = async () => {
