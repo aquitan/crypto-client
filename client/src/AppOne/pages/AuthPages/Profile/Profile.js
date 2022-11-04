@@ -123,7 +123,7 @@ const Profile = () => {
 
         <CustomModal show={showLogs} size='lg' handleClose={() => setShowLogs(false)} btnClose='Close'  title='Your logs'>
             {
-                logsArr.length ?
+                logsArr ?
                     logsArr.map(log => {
                         return <Row className='mb-2' style={{padding: '10px 0', borderBottom: '1px solid #eee'}} key={log._id}>
                             <Col>
@@ -197,7 +197,7 @@ const Profile = () => {
                                         <Nav.Link className={classes} style={{padding: 0, marginLeft: 20}} to={'/support-us'} as={NavLink}>Support Us</Nav.Link>
                                     </div>
                                     <div>
-                                        <div onClick={() => setShowLogs(true)}>Logs</div>
+                                        <div className={classes} style={{padding: 0, marginLeft: 20}} onClick={() => setShowLogs(true)}>Logs</div>
                                     </div>
                                 </Row>
                             </> :
