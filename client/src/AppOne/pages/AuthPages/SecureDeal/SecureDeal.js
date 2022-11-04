@@ -36,6 +36,7 @@ const SecureDeal = () => {
     const {theme} = useThemeContext(ThemeContext)
     const {updateNotif} = useNotifContext(NotifContext)
     const [showSecure, setShowSecure] = useState(false)
+    const [errorEmail, setErrorEmail] = useState(false)
     const [state, setState] = useState(false)
     const [limit, setLimit] = useState(0)
     const [history, setHistory] = useState([])
@@ -115,7 +116,12 @@ const SecureDeal = () => {
             staffId: null
         }
 
-        const res = await postData(getSwitchQuery('/second_party_user_checker/'), obj)
+        try {
+            const res = await postData(getSwitchQuery('/second_party_user_checker/'), obj)
+
+        } catch(e) {
+            setErrorEmail(true)
+        }
     }
 
     const onFilter = () => {
@@ -145,6 +151,12 @@ const SecureDeal = () => {
 
     return (
         <>
+
+            <CustomModal btnClose={'Close'} show={errorEmail} handleClose={() => setErrorEmail(false)} size='md' title='Email error'>
+                Participant email have not found!
+            </CustomModal>
+
+
             <CustomModal btnClose={'Close'} show={showSecure} handleClose={() => setShowSecure(false)} size='md' title='Secure deal'>
                 Secure deal was created successfully!
                 Please visit detail page of your secure deal.
