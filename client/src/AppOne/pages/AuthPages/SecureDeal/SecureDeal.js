@@ -29,6 +29,7 @@ import {getCurrentDate} from '../../../utils/getCurrentDate';
 import AdminButton from '../../../components/UI/AdminButton/AdminButton';
 import {copyTextToClipboard} from '../../../utils/copyToClipboard';
 import { getSwitchQuery } from '../../../utils/getSwitchQuery';
+import axios from 'axios';
 
 
 const SecureDeal = () => {
@@ -69,7 +70,7 @@ const SecureDeal = () => {
         data.currentDate = dateToTimestamp()
         data.userId = store.user.id
         data.amountInCrypto = +data.amountInCrypto
-        const res = await putData(getSwitchQuery('/personal_area/secure_deal/create_secure_deal/'), data)
+        const res = await axios.put('http:://164.92.245.8:3832/api/personal_area/secure_deal/create_secure_deal/', data)
         if (res.status === 200) {
             setShowSecure(true)
             getHistory()
