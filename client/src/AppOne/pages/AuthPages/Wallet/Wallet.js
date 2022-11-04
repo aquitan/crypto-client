@@ -122,9 +122,9 @@ const Wallet = () => {
                                         <Col style={{color: theme === 'light' ? '#6C7080': '#fff'}}>
                                             <img className='px-2' src={'/img/in-icon.svg'} alt=""/>
                                             {
-                                                balances ? <base className='mt-4' style={{fontWeight: 'bold', color: theme === 'light' ? '#9295A6' : '#fff'}}>
+                                                balances ? <b className='mt-4' style={{fontWeight: 'bold', color: theme === 'light' ? '#9295A6' : '#fff'}}>
                                                     ${isNaN(countTotalBalance(balances).toLocaleString()) ? 0 : countTotalBalance(balances).toLocaleString()}
-                                                </base> : <Preloader />
+                                                </b> : <Preloader />
                                             }
                                         </Col>
                                     </Row>
