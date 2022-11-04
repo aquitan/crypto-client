@@ -92,26 +92,26 @@ const TradingTest = () => {
                     <Col>
                         <ButtonCard theme={theme}>
                             Chose currency you want to trade 
-                            <Row className='d-flex'>
-                                <div onClick={() => setCoinPair('BTC')}>
+                            <div className='d-flex'>
+                                <div style={{padding: '0 5px', cursor: 'pointer'}} onClick={() => setCoinPair('BTC')}>
                                     <img width={30} src='/img/btc.svg' alt='coin' />
                                 </div>
-                                <div onClick={() => setCoinPair('ETH')}>
+                                <div style={{padding: '0 5px', cursor: 'pointer'}} onClick={() => setCoinPair('ETH')}>
                                     <img width={30} src='/img/eth.svg' alt='coin' />
                                 </div>
-                                <div onClick={() => setCoinPair('BCH')}>
+                                <div style={{padding: '0 5px', cursor: 'pointer'}} onClick={() => setCoinPair('BCH')}>
                                     <img width={30} src='/img/bch.svg' alt='coin' />
                                 </div>
-                                <div onClick={() => setCoinPair('TRX')}>
+                                <div style={{padding: '0 5px', cursor: 'pointer'}} onClick={() => setCoinPair('TRX')}>
                                     <img width={30} src='/img/trx.svg' alt='coin' />
                                 </div>
-                                <div onClick={() => setCoinPair('USDT')}>
+                                <div style={{padding: '0 5px', cursor: 'pointer'}} onClick={() => setCoinPair('USDT')}>
                                     <img width={30} src='/img/usdt.svg' alt='coin' />
                                 </div>
-                                <div onClick={() => setCoinPair('SOL')}>
+                                <div style={{padding: '0 5px', cursor: 'pointer'}} onClick={() => setCoinPair('SOL')}>
                                     <img width={30} src='/img/sol.svg' alt='coin' />
                                 </div>
-                            </Row>
+                            </div>
                             {/* <Button sx={{mx: 1}} variant={'contained'} onClick={() => setCoinPair('ETH')}>ETH</Button>
                             <Button sx={{mx: 1}}  variant={'contained'} onClick={() => setCoinPair('BTC')}>BTC</Button>
                             <Button sx={{mx: 1}}  variant={'contained'} onClick={() => setCoinPair('BCH')}>BCH</Button>
