@@ -37,6 +37,7 @@ const SecureDeal = () => {
     const {updateNotif} = useNotifContext(NotifContext)
     const [showSecure, setShowSecure] = useState(false)
     const [errorEmail, setErrorEmail] = useState(false)
+    const [errorDate, setErrorDate] = useState(false)
     const [state, setState] = useState(false)
     const [limit, setLimit] = useState(0)
     const [history, setHistory] = useState([])
@@ -71,18 +72,19 @@ const SecureDeal = () => {
         data.currentDate = dateToTimestamp()
         data.userId = store.user.id
         data.amountInCrypto = +data.amountInCrypto
-        const res = await putData(getSwitchQuery('/personal_area/secure_deal/create_secure_deal/'), data)
-        // const res = await axios.put('http://164.92.245.8:3832/api/lv915XzWJFDALfn7rEb/', data, {
-        //     withCredentials: true,
-        //         headers: {
-        //             "accessKey": process.env.REACT_APP_ACCESS_KEY,
-        //         }
-        // })
-        if (res.status === 200) {
-            setShowSecure(true)
-            getHistory()
-            updateNotif()
+
+        if (data.startDate / 1000 < dateToTimestamp()) {
+            setErrorDate(true)
+        } else {
+            const res = await putData(getSwitchQuery('/personal_area/secure_deal/create_secure_deal/'), data)
+            if (res.status === 200) {
+                setShowSecure(true)
+                getHistory()
+                updateNotif()
+            }
         }
+
+        
     }
 
     useEffect(() => {
@@ -154,6 +156,10 @@ const SecureDeal = () => {
 
             <CustomModal btnClose={'Close'} show={errorEmail} handleClose={() => setErrorEmail(false)} size='md' title='Email error'>
                 Participant email have not found!
+            </CustomModal>
+
+            <CustomModal btnClose={'Close'} show={errorDate} handleClose={() => setErrorDate(false)} size='md' title='Date error'>
+                You can't set past date!
             </CustomModal>
 
 
