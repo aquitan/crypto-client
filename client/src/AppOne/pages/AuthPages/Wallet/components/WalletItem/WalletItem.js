@@ -17,7 +17,7 @@ const WalletItem = ({coinsBalance, coin, coinFullName, theme, onDepositOpen, onW
         <div className={`${classes} d-flex`}>
             <Col className='d-flex align-items-center'>
                 <img width={30} src={`${window.location.origin}/img/${imgMatch(coin === 'TRC 20' ? 'USDT' : coin).toLowerCase()}.svg`} alt=""/>
-                <b className='mx-3 d-none d-md-flex'>{coinFullName === 'TRX/USDT' ? 'Tether' : coinFullName}</b>
+                <b className='mx-3 d-none d-md-flex'>{coinFullName === 'TRX/USDT' ? 'Tether' : coinFullName === 'Teaser' ? 'Tether' : coinFullName}</b>
                 <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8'}} className="badge d-none d-xl-flex">
                   {coin === 'USDT' ? 'ERC 20' : coin}
                 </div>

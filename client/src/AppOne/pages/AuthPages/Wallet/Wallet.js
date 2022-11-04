@@ -103,8 +103,8 @@ const Wallet = () => {
                                 </Row>
                                 <Row>
                                     {
-                                        balances ? <h4 className='mt-4' style={{fontWeight: 'bold', color: theme === 'light' ? '#9295A6' : '#fff'}}>
-                                            <img src='/static/img/btc.svg' width={30} alt='btc'/> {isNaN(countTotalBalance(balances).toLocaleString()) ? 0 : (countTotalBalance(balances) / store.rates.btc).toLocaleString()}
+                                        balances ? <h4 className='mt-4 align-items-center' style={{fontWeight: 'bold', color: theme === 'light' ? '#9295A6' : '#fff'}}>
+                                            <img src='/static/img/btc.svg' width={30} alt='btc'/> <span>{isNaN(countTotalBalance(balances).toLocaleString()) ? 0 : (countTotalBalance(balances) / store.rates.btc).toLocaleString()}</span>
                                         </h4> : <Preloader />
                                     }
                                 </Row>
@@ -114,7 +114,7 @@ const Wallet = () => {
                                     backgroundColor: theme === 'light' ? 'rgb(226, 242, 255)': 'rgb(18, 19, 24)',
                                     color: theme === 'light' ? 'grey': '#fff'
                                 }}>
-                                    <Row className='p-2 flex-column flex-sm-row mb-2 d-flex justify-content-between'>
+                                    <Row className='p-2 flex-column flex-sm-row mb-2 d-flex justify-content-between align-items-center'>
                                         <Col className='d-flex align-items-center' style={{fontSize: 20, color: theme === 'light' ? '#9295A6': '#fff'}}>
                                             <img src={'/img/deposit-icon.svg'} alt=""/>
                                             <div className='px-2'>Total wallet ballance in USD:</div>
