@@ -92,12 +92,32 @@ const TradingTest = () => {
                     <Col>
                         <ButtonCard theme={theme}>
                             Chose currency you want to trade 
-                            <Button sx={{mx: 1}} variant={'contained'} onClick={() => setCoinPair('ETH')}>ETH</Button>
+                            <Row className='d-flex'>
+                                <div onClick={() => setCoinPair('BTC')}>
+                                    <img width={30} src='/img/btc.svg' alt='coin' />
+                                </div>
+                                <div onClick={() => setCoinPair('ETH')}>
+                                    <img width={30} src='/img/eth.svg' alt='coin' />
+                                </div>
+                                <div onClick={() => setCoinPair('BCH')}>
+                                    <img width={30} src='/img/bch.svg' alt='coin' />
+                                </div>
+                                <div onClick={() => setCoinPair('TRX')}>
+                                    <img width={30} src='/img/trx.svg' alt='coin' />
+                                </div>
+                                <div onClick={() => setCoinPair('USDT')}>
+                                    <img width={30} src='/img/usdt.svg' alt='coin' />
+                                </div>
+                                <div onClick={() => setCoinPair('SOL')}>
+                                    <img width={30} src='/img/sol.svg' alt='coin' />
+                                </div>
+                            </Row>
+                            {/* <Button sx={{mx: 1}} variant={'contained'} onClick={() => setCoinPair('ETH')}>ETH</Button>
                             <Button sx={{mx: 1}}  variant={'contained'} onClick={() => setCoinPair('BTC')}>BTC</Button>
                             <Button sx={{mx: 1}}  variant={'contained'} onClick={() => setCoinPair('BCH')}>BCH</Button>
                             <Button sx={{mx: 1}}  variant={'contained'} onClick={() => setCoinPair('TRX')}>TRX</Button>
                             <Button sx={{mx: 1}}  variant={'contained'} onClick={() => setCoinPair('USDT')}>USDT</Button>
-                            <Button sx={{mx: 1}}  variant={'contained'} onClick={() => setCoinPair('SOL')}>SOL</Button>
+                            <Button sx={{mx: 1}}  variant={'contained'} onClick={() => setCoinPair('SOL')}>SOL</Button> */}
                         </ButtonCard>
                     </Col>
                 </Row> : <Row>
