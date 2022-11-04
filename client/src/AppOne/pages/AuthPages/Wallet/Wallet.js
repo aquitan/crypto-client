@@ -117,11 +117,15 @@ const Wallet = () => {
                                     <Row className='p-2 flex-column flex-sm-row mb-2 d-flex justify-content-between'>
                                         <Col className='d-flex align-items-center' style={{fontSize: 20, color: theme === 'light' ? '#9295A6': '#fff'}}>
                                             <img src={'/img/deposit-icon.svg'} alt=""/>
-                                            <div className='px-2'>Total deposits:</div>
+                                            <div className='px-2'>Total available in USD:</div>
                                         </Col>
                                         <Col style={{color: theme === 'light' ? '#6C7080': '#fff'}}>
                                             <img className='px-2' src={'/img/in-icon.svg'} alt=""/>
-                                            <b>$100500</b>
+                                            {
+                                                balances ? <base className='mt-4' style={{fontWeight: 'bold', color: theme === 'light' ? '#9295A6' : '#fff'}}>
+                                                    ${isNaN(countTotalBalance(balances).toLocaleString()) ? 0 : countTotalBalance(balances).toLocaleString()}
+                                                </base> : <Preloader />
+                                            }
                                         </Col>
                                     </Row>
                                 </div>
