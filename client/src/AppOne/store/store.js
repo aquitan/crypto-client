@@ -220,7 +220,6 @@ export default class Store {
                     withCredentials: true,
                     headers: {
                         "accessKey": process.env.REACT_APP_ACCESS_KEY,
-                        "NameData": window.location.hostname,
                     }
                 }
             )

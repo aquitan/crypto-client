@@ -22,7 +22,6 @@ export const $api = axios.create({
 $api.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`
     config.headers.common['accessKey'] = process.env.REACT_APP_ACCESS_KEY
-    config.headers.common['NameData'] = window.location.hostname
     config.withCredentials = true
     return config
 })

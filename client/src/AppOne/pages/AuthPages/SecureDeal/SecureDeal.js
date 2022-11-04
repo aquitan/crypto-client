@@ -179,7 +179,6 @@ const SecureDeal = () => {
                                         required: 'You must specify email',
                                         validate: emailValidate,
                                         message: 'Email is not valid',
-                                        onBlur: (e) => checkOnBlur(e)
                                     })} placeholder='Second party email' />
                                     <ErrorMessage
                                       name='secondPartyEmail'
