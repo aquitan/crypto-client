@@ -41,10 +41,8 @@ const SecureDeal = () => {
     const [errorBalance, setErrorBalance] = useState(false)
     const [state, setState] = useState(false)
     const [limit, setLimit] = useState(0)
-    const [currentCurrency, setCurrentCurrency] = useState('BTC')
     const [history, setHistory] = useState([])
     const [balances, setBalances] = useState([])
-    const [curBalance, setCurBalance] = useState([])
     const [startDate, setStartDate] = useState()
     const {register, handleSubmit, formState: {errors}, setValue} = useForm({
         mode: 'onBlur'
@@ -162,16 +160,8 @@ const SecureDeal = () => {
         setValue('startDate', date)
     }
 
-    const onChangeCurrency = (e) => {
-        setCurrentCurrency(e.target.value)
-        let newArr = balances.filter(el => el.coinName === e.target.value)
-        console.log(newArr);
-        setCurBalance(newArr)
-    }
-
     const getBalanceForCheck = async () => {
         const res = await getData(`${getSwitchQuery('/get_user_balance/')}${store.user.id}`)
-        let newArr = res.filter(el => el.coinName === e.target.value)
         setBalances(res.data)
     }
 
