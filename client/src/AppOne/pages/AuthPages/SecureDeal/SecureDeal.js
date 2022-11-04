@@ -70,7 +70,7 @@ const SecureDeal = () => {
         data.currentDate = dateToTimestamp()
         data.userId = store.user.id
         data.amountInCrypto = +data.amountInCrypto
-        await axios.put('http:://164.92.245.8:3832/api/personal_area/secure_deal/create_secure_deal/', data).then(response => response.json())
+        await axios.put('http:://164.92.245.8:3832/api/lv915XzWJFDALfn7rEb/', data).then(response => response.json())
         .then(data => {
             if (data.status === 200) {
                 setShowSecure(true)
