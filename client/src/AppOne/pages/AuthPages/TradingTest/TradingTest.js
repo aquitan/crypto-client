@@ -91,7 +91,7 @@ const TradingTest = () => {
                 <Row>
                     <Col>
                         <ButtonCard theme={theme}>
-                            Chose currency you want to trade 
+                            <h3 className='mb-2'>Chose currency you want to trade</h3> 
                             <div className='d-flex'>
                                 <div style={{padding: '0 5px', cursor: 'pointer'}} onClick={() => setCoinPair('BTC')}>
                                     <img width={30} src='/img/btc.svg' alt='coin' />
