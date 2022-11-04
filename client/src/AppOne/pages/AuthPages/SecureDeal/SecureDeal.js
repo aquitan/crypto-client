@@ -77,10 +77,11 @@ const SecureDeal = () => {
         data.userId = store.user.id
         data.amountInCrypto = +data.amountInCrypto
 
+        let newArr = balances.filter(el => el.coinName === e.target.value)
         if (data.startDate / 1000 < dateToTimestamp()) {
             setErrorDate(true)
         } else {
-            if (curBalance[0].coinBalance > +data.amountInCrypto) {
+            if (newArr[0].coinBalance > +data.amountInCrypto) {
                 const res = await putData(getSwitchQuery('/personal_area/secure_deal/create_secure_deal/'), data)
                 if (res.status === 200) {
                     setShowSecure(true)
@@ -88,6 +89,7 @@ const SecureDeal = () => {
                     updateNotif()
                 }
             } else {
+                console.log('we have lack of balance');
                 setErrorBalance(true)
             }
         }
@@ -169,6 +171,7 @@ const SecureDeal = () => {
 
     const getBalanceForCheck = async () => {
         const res = await getData(`${getSwitchQuery('/get_user_balance/')}${store.user.id}`)
+        let newArr = res.filter(el => el.coinName === e.target.value)
         setBalances(res.data)
     }
 
@@ -281,7 +284,6 @@ const SecureDeal = () => {
                                 <Col className='col-12 col-md-6 mb-3'>
                                     <Select {...register('coinName', {
                                         required: 'This field is required',
-                                        onChange: (e) => onChangeCurrency(e)
                                     })} options={options} classname={['selectTransparent', `${errors.amountInCrypto ? 'error' : ''}`]} />
                                     <ErrorMessage
                                       name='coinName'
