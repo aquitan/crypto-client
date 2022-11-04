@@ -38,9 +38,13 @@ const SecureDeal = () => {
     const [showSecure, setShowSecure] = useState(false)
     const [errorEmail, setErrorEmail] = useState(false)
     const [errorDate, setErrorDate] = useState(false)
+    const [errorBalance, setErrorBalance] = useState(false)
     const [state, setState] = useState(false)
     const [limit, setLimit] = useState(0)
+    const [currentCurrency, setCurrentCurrency] = useState('BTC')
     const [history, setHistory] = useState([])
+    const [balances, setBalances] = useState([])
+    const [curBalance, setCurBalance] = useState([])
     const [startDate, setStartDate] = useState()
     const {register, handleSubmit, formState: {errors}, setValue} = useForm({
         mode: 'onBlur'
@@ -76,11 +80,15 @@ const SecureDeal = () => {
         if (data.startDate / 1000 < dateToTimestamp()) {
             setErrorDate(true)
         } else {
-            const res = await putData(getSwitchQuery('/personal_area/secure_deal/create_secure_deal/'), data)
-            if (res.status === 200) {
-                setShowSecure(true)
-                getHistory()
-                updateNotif()
+            if (curBalance[0].coinBalance > +data.amountInCrypto) {
+                const res = await putData(getSwitchQuery('/personal_area/secure_deal/create_secure_deal/'), data)
+                if (res.status === 200) {
+                    setShowSecure(true)
+                    getHistory()
+                    updateNotif()
+                }
+            } else {
+                setErrorBalance(true)
             }
         }
 
@@ -90,6 +98,7 @@ const SecureDeal = () => {
     useEffect(() => {
         onFilter()
         getHistory()
+        getBalanceForCheck()
     }, [])
 
     const getHistory = async () => {
@@ -151,6 +160,18 @@ const SecureDeal = () => {
         setValue('startDate', date)
     }
 
+    const onChangeCurrency = (e) => {
+        setCurrentCurrency(e.target.value)
+        let newArr = balances.filter(el => el.coinName === e.target.value)
+        console.log(newArr);
+        setCurBalance(newArr)
+    }
+
+    const getBalanceForCheck = async () => {
+        const res = await getData(`${getSwitchQuery('/get_user_balance/')}${store.user.id}`)
+        setBalances(res.data)
+    }
+
     return (
         <>
 
@@ -160,6 +181,10 @@ const SecureDeal = () => {
 
             <CustomModal btnClose={'Close'} show={errorDate} handleClose={() => setErrorDate(false)} size='md' title='Date error'>
                 You can't set past date!
+            </CustomModal>
+
+            <CustomModal btnClose={'Close'} show={errorBalance} handleClose={() => setErrorBalance(false)} size='md' title='Date error'>
+                Insufficient of funds!
             </CustomModal>
 
 
@@ -256,6 +281,7 @@ const SecureDeal = () => {
                                 <Col className='col-12 col-md-6 mb-3'>
                                     <Select {...register('coinName', {
                                         required: 'This field is required',
+                                        onChange: (e) => onChangeCurrency(e)
                                     })} options={options} classname={['selectTransparent', `${errors.amountInCrypto ? 'error' : ''}`]} />
                                     <ErrorMessage
                                       name='coinName'
