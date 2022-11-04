@@ -4,7 +4,7 @@ import React from 'react'
 
 const KycResults = (props) => {
     const checkKycResult = () => {
-        if (props.status === 'complete') {
+        if (props.status === 'approved') {
             return <>
                 <h1>You've been Approved! <FontAwesomeIcon color='green' icon={faCheckCircle} /></h1>
             </>
