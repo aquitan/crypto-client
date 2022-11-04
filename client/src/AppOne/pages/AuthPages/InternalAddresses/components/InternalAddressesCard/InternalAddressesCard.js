@@ -44,7 +44,7 @@ const InternalAddressesCard = ({currency, sum, onCopy, wallet, theme, onUpdateHi
 
     const imgMatch = (currency) => {
         if (currency === 'TRX/USDT') {
-            return 'trx-usdt'
+            return 'usdt'
         } else {
             return currency
         }
@@ -63,8 +63,8 @@ const InternalAddressesCard = ({currency, sum, onCopy, wallet, theme, onUpdateHi
                 <Row className='mb-4 pb-4 flex-column align-items-center flex-sm-row' style={{borderBottom: '1px solid #cecece'}}>
                     <Col className='d-flex align-items-center justify-content-center justify-content-sm-start mb-2'>
                         <Image src={`${window.location.origin}/img/${imgMatch(currency).toLowerCase()}.svg`} height={60} alt={'crypto'} />
-                        <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8'}} className='badge'>{currency}</div>
-                        <div style={{marginLeft: 10, fontSize: 18}}>{sum.toFixed(5)} {currency}</div>
+                        <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8'}} className='badge'>{currency === 'USDT' ? 'ERC20' : currency === 'TRX/USDT' ? 'TRC20' : currency}</div>
+                        <div style={{marginLeft: 10, fontSize: 18}}>{sum.toFixed(5)} {currency === 'TRX/USDT' ? 'USDT' : currency}</div>
                     </Col>
                     <Col className='d-flex align-items-center justify-content-center justify-content-sm-start mb-2'>
                         <div className='d-flex align-items-center' onClick={() => onCopy(wallet)}>
