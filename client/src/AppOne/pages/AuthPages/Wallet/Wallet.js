@@ -121,7 +121,7 @@ const Wallet = () => {
                                         </Col>
                                         <Col style={{color: theme === 'light' ? '#6C7080': '#fff'}}>
                                             {
-                                                balances ? <div className='mt-4' style={{fontWeight: 'bold', color: theme === 'light' ? '#9295A6' : '#fff', fontSize: '16px'}}>
+                                                balances ? <div style={{fontWeight: 'bold', color: theme === 'light' ? '#9295A6' : '#fff', fontSize: '18px'}}>
                                                     ${isNaN(countTotalBalance(balances).toLocaleString()) ? 0 : countTotalBalance(balances).toLocaleString()}
                                                 </div> : <Preloader />
                                             }
