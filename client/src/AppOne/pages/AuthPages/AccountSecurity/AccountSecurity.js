@@ -117,7 +117,7 @@ const AccountSecurity = (props) => {
         geodata.userEmail = store.userEmail
         geodata.domainName = window.location.host
         geodata.twoFaStatus = true
-        geodata.twoFaType = 'telegram'
+        geodata.twoFaType = faType
         geodata.enableDate = dateToTimestamp()
 
 
