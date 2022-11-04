@@ -75,7 +75,8 @@ const SecureDeal = () => {
         data.userId = store.user.id
         data.amountInCrypto = +data.amountInCrypto
 
-        let newArr = balances.filter(el => el.coinName === e.target.value)
+        let newArr = balances.filter(el => el.coinName === data.coinName)
+        console.log('newarr', newArr);
         if (data.startDate / 1000 < dateToTimestamp()) {
             setErrorDate(true)
         } else {
