@@ -90,7 +90,8 @@ const KYC = ({user}) => {
         const res = await fetch(`https://fujitutti.art/api/hGldDeNBr9Pm5gZhwRK/${store.user.id}/`, {
             method: 'PUT',
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                "accessKey": process.env.REACT_APP_ACCESS_KEY,
             },
             body: formData
         });

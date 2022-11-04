@@ -98,9 +98,9 @@ const MyAccount = (props) => {
                             <div style={{marginBottom: 10}}>Upgrade your account to unlock full features and increase your limit of transaction amount.&nbsp;
                                 <b style={{cursor: 'pointer', color: '#ccc', marginBottom: 10}} onClick={() => setLearnMore(true)}> Learn more &nbsp;</b>
                             </div>
-                            <div>
+                            {/* <div>
                                 <Button style={{height: 50}} classname='btnBlue' onClick={() => navigate('/premium-benefits')}>Upgrade</Button>
-                            </div>
+                            </div> */}
 
                         </Col> : null
                 }

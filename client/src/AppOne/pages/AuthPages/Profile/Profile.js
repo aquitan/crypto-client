@@ -192,13 +192,13 @@ const Profile = () => {
                                         <FontAwesomeIcon icon={faHeadset} />
                                         <Nav.Link className={classes} style={{padding: 0, marginLeft: 20}} to={'/support'} as={NavLink}>Profile Support</Nav.Link>
                                     </div>
-                                    <div className={classes}>
+                                    {/* <div className={classes}>
                                         <FontAwesomeIcon icon={faPhone} />
                                         <Nav.Link className={classes} style={{padding: 0, marginLeft: 20}} to={'/support-us'} as={NavLink}>Support Us</Nav.Link>
-                                    </div>
-                                    <div>
+                                    </div> */}
+                                    {/* <div>
                                         <div className={classes} style={{padding: 0, marginLeft: 20}} onClick={() => setShowLogs(true)}>Logs</div>
-                                    </div>
+                                    </div> */}
                                 </Row>
                             </> :
                             <div>

@@ -286,7 +286,9 @@ const AccountSecurity = (props) => {
                                         <Row>
                                             <Row className='mb-3'>
                                                 <Col>
-                                                    <a style={{color: 'rgb(108, 112, 128)'}} href={'https://t.me/twoStepCodeSender_bot'} target='_blank'>Click this link to telegram Bot and paste this code</a> <b>{codeFromTg}</b>
+                                                    <a style={{color: 'rgb(108, 112, 128)', fontSize: '16px'}} href={'https://t.me/twoStepCodeSender_bot'} target='_blank'>
+                                                        <i>Click this <span style={{color: 'blue', textDecoration: 'underline'}}>link to</span> telegram Bot and paste this code</i>    
+                                                    </a> <b style={{fontSize: '16px'}}>{codeFromTg}</b>
                                                 </Col>
                                             </Row>
                                         </Row>
