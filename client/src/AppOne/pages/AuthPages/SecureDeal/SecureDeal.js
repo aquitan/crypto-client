@@ -103,13 +103,13 @@ const SecureDeal = () => {
 
     const getHistory = async () => {
         const res = await getData(`${getSwitchQuery('/personal_area/secure_deal/secure_deal_history/')}${store.user.email}`)
-        let history = res.data.history.filter(item => {
-            if (dateToTimestamp() > item.dealDedline) {
-                onMissDeadline(item._id, item.dealDedline)
-            }
-            return  dateToTimestamp() < item.dealDedline
-        })
-        setHistory(history)
+        // let history = res.data.history.filter(item => {
+        //     if (dateToTimestamp() > item.dealDedline) {
+        //         onMissDeadline(item._id, item.dealDedline)
+        //     }
+        //     return  dateToTimestamp() < item.dealDedline
+        // })
+        setHistory(res.data.history)
     }
 
     const onMissDeadline = async (id, deadline) => {
@@ -314,7 +314,10 @@ const SecureDeal = () => {
                                                 key={item._id}
                                                 classname={'table_item_small'}
                                                 amount={item.amountInCrypto}
-                                                status={item.status === 'complete' ? 'Completed' : 'Pending'}
+                                                status={item.status}
+                                                coin={item.coinName}
+                                                buyer={item.buyer}
+                                                seller={item.seller}
                                                 onClick={() => navigate(`/secure-deal/${item._id}`)}/>
                                           })
                                           : <h4 className='text-center my-4' style={{color: '#cecece'}}>No deals!</h4>
