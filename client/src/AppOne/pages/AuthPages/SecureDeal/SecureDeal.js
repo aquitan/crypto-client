@@ -88,7 +88,6 @@ const SecureDeal = () => {
                     updateNotif()
                 }
             } else {
-                console.log('we have lack of balance');
                 setErrorBalance(true)
             }
         }
@@ -285,8 +284,8 @@ const SecureDeal = () => {
                             <Row className='mb-3 pb-2'>
                                 <Col>
                                     <Input classname={['inputTransparent', `${errors.amountInCrypto ? 'error' : ''}`]} {...register('amountInCrypto', {
-                                        required: 'This field is required',
-                                        pattern: /(\d+(?:\.\d+)?)/
+                                        required: 'Check the value',
+                                        pattern: /^[0-9]+$/
                                     })} placeholder='Amount'/>
                                     <ErrorMessage
                                       name='amountInCrypto'
