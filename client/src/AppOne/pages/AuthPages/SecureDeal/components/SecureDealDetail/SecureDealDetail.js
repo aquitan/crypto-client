@@ -91,10 +91,12 @@ const SecureDealDetail = () => {
             dealId: dealData._id,
             userEmail: store.user.email
         }
-
-        const res = await putData(getSwitchQuery('/secure_deal/deal_detail/send_message_to_secure_deal_chat'), obj)
-        if (res.status === 202) {
+        
+        try {
+            const res = await putData(getSwitchQuery('/secure_deal/deal_detail/send_message_to_secure_deal_chat'), obj)
             getSupportMessages(dealData._id)
+        } catch(e) {
+
         }
     }
 
@@ -196,7 +198,7 @@ const SecureDealDetail = () => {
                                 <ButtonCard style={{minHeight: 400}} theme={theme} className='mt-4 p-3'>
                                     <h5 className={cls.card_header}>Detailed info</h5>
                                     <Row className='mt-3'>
-                                        <TextArea rows={8} classnames='textareaTransparent' value={dealData.dealCondition}/>
+                                        <TextArea rows={8} classname='textareaTransparent' value={dealData.dealCondition}/>
                                     </Row>
                                 </ButtonCard>
                             </Col>
@@ -252,13 +254,6 @@ const SecureDealDetail = () => {
             }
         </>
     )
-}
-
-SecureDealDetail.propTypes = {
-    
-}
-SecureDealDetail.defaultProps = {
-    
 }
 
 export default SecureDealDetail
