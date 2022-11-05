@@ -177,7 +177,7 @@ const SecureDeal = () => {
                 You can't set past date!
             </CustomModal>
 
-            <CustomModal btnClose={'Close'} show={errorBalance} handleClose={() => setErrorBalance(false)} size='md' title='Date error'>
+            <CustomModal btnClose={'Close'} show={errorBalance} handleClose={() => setErrorBalance(false)} size='md' title='Balance error'>
                 Insufficient of funds!
             </CustomModal>
 
