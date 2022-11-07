@@ -35,8 +35,8 @@ const Support = () => {
             isUser: true,
             supportName: store.domain.supportName
         }
+        setPreloader(true)
         try {
-            setPreloader(true)
             const res = await putData(getSwitchQuery('/support/send_support_message/'), obj)
             getSupportMessages()
         } catch(e) {
