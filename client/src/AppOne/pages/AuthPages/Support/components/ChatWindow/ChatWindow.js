@@ -15,7 +15,8 @@ const ChatWindow = ({children, onClick, edited, onUploadImg, showRules}) => {
     const onChange = (e) => {
         setState(e.target.value)
     }
-    const onBtnClick = () => {
+    const onBtnClick = (e) => {
+        e.preventDefault()
         onClick(state)
         setState('')
     }

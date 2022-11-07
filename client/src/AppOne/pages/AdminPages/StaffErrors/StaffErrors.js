@@ -207,7 +207,7 @@ const StaffErrors = () => {
 
                 {
                     state.domain ? state.domain.map(error => {
-                        return <StaffErrorItem data={error} />
+                        return <StaffErrorItem key={error._id} data={error} />
                     })
                         : <Row className='mt-4 mb-4'>
                             <h4>Выбери домен</h4>
@@ -217,7 +217,7 @@ const StaffErrors = () => {
                     domainErrors.length ?
                         domainErrors.map(item => {
                             return (
-                                <Row style={{borderBottom: '1px solid #fff', paddingBottom: 20, paddingTop: 20}}>
+                                <Row key={item._id} style={{borderBottom: '1px solid #fff', paddingBottom: 20, paddingTop: 20}}>
                                     <Col>
                                         <Row className={'mb-3'}>
                                             <Col>Domain name</Col>

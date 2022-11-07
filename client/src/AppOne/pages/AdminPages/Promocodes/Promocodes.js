@@ -46,6 +46,8 @@ const Promocodes = () => {
         {value: 'ETH', text: 'ETH'},
         {value: 'BCH', text: 'BCH'},
         {value: 'USDT', text: 'USDT'},
+        {value: 'TRX', text: 'TRX'},
+        {value: 'SOL', text: 'SOL'},
     ]
     const promoAmount = [
         {text: 1, id: 1},

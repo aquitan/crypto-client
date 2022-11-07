@@ -12,6 +12,7 @@ import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 import {useNavigate} from 'react-router-dom';
 import AdminButton from '../../../components/UI/AdminButton/AdminButton';
 import { getSwitchQuery } from '../../../utils/getSwitchQuery';
+import CustomModal from '../../../components/CustomModal/CustomModal';
 
 const Support = () => {
     const [msg, setMsg] = useState([])
@@ -19,6 +20,8 @@ const Support = () => {
     const navigate = useNavigate()
     const {theme} = useThemeContext(ThemeContext)
     const [limit, setLimit] = useState(0)
+    const [preloader, setPreloader] = useState(false)
+    const [showError, setShowError] = useState(false)
 
     const onClick = async (text) => {
         const obj = {
@@ -32,12 +35,14 @@ const Support = () => {
             isUser: true,
             supportName: store.domain.supportName
         }
-
         try {
+            setPreloader(true)
             const res = await putData(getSwitchQuery('/support/send_support_message/'), obj)
             getSupportMessages()
         } catch(e) {
-            navigate('error-500')
+            setShowError(true)
+        } finally {
+            setPreloader(false)
         }
     }
 
@@ -72,6 +77,12 @@ const Support = () => {
 
     return (
         <>
+
+            <CustomModal size='md' show={showError} handleClose={() => setShowError(false)} btnClose='Ok' title='Message error'>
+                Something went wrong! Please, try again later!
+            </CustomModal>
+
+
             <ButtonCard style={{padding: 0}} theme={theme}>
                 <Row className='py-3 px-3'>
                     <Col className='col-12 col-lg-9'>

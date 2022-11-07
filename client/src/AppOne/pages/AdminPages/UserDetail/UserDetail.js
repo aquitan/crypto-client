@@ -29,15 +29,13 @@ const UserDetail = () => {
         setUserDetails(data)
     }
 
-    const getLogs = async () => {
-        
-        
-        
+    const update = async () => {
+        getAdminUsersDetail()
     }
+    
 
     useEffect(() => {
         getAdminUsersDetail()
-        getLogs()
     }, [])
 
     return (
@@ -47,7 +45,7 @@ const UserDetail = () => {
             </AdminButtonCard>
             <Tabs defaultActiveKey="info" id="uncontrolled-tab-example" className="mb-3 mt-3">
                 <Tab eventKey="info" title="Инфо">
-                    <UserDetailTabInfo data={userDetail} />
+                    <UserDetailTabInfo data={userDetail} update={update} />
                 </Tab>
                 <Tab eventKey="logs" title="Логи">
                     <UserDetailTabLogs data={userDetail.user} />

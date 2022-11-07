@@ -162,10 +162,10 @@ const AdminKycTableItem = (props) => {
         <>
 
             <CustomModal size={'md'} show={modalSuccess} handleClose={() => setModalSuccess(false)} themeDark={true} btnClose='Ok' title='Успешно'>
-                Пользователь успешно добавлен в группу!
+                Статус KYC изменен успешно!
             </CustomModal>
             <CustomModal size={'md'} show={modalDelete} handleClose={() => setModalDelete(false)} themeDark={true} btnClose='Ok' title='Успешно'>
-                Пользователь успешно удален из группы!
+                KYC удален успешно!
             </CustomModal>
             <CustomModal size={'md'} show={modalError} handleClose={() => setModalError(false)} themeDark={true} btnClose='Ok' title='Ошибка'>
                 Упс! Что-то пошло не так! Попробуйте позже!

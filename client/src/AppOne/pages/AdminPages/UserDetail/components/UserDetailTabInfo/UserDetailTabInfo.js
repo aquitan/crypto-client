@@ -12,12 +12,15 @@ import Select from "../../../../../components/UI/Select/Select";
 import Preloader from "../../../../../components/UI/Preloader/Preloader";
 import {store} from "../../../../../../index";
 import {patchData} from "../../../../../services/StaffServices";
+import CustomModal from '../../../../../components/CustomModal/CustomModal';
 // import {SwalSimple} from "../../../../../utils/SweetAlert";
 
 
-const UserDetailTabInfo = ({data}) => {
+const UserDetailTabInfo = ({data, update}) => {
     const {register, handleSubmit} = useForm()
     const [errorId, setErrorId] = useState(1)
+    const [modalSuccess, setModalSuccess] = useState(false)
+    const [modalError, setModalError] = useState(false)
 
     if (!data) {
         return <Preloader />
@@ -37,11 +40,12 @@ const UserDetailTabInfo = ({data}) => {
         datas.rootAccess = store.fullAccess
         delete datas.errorId
 
-        let res = await patchData('/staff/users/user_detail/update_error_for_user/', datas)
-        if (res.status === 202) {
-            // SwalSimple('Тип ошибки изменен')
-        } else {
-            // SwalSimple('Упс! Что-то пошло не так!')
+        try {
+            let res = await patchData('/staff/users/user_detail/update_error_for_user/', datas)
+            setModalSuccess(true)
+            update()
+        } catch(e) {
+            setModalError(true)
         }
     }
 
@@ -68,12 +72,28 @@ const UserDetailTabInfo = ({data}) => {
     //     console.log('option', option)
     // }
 
+    const checkCurrentError = () => {
+        let arr = data.user.user_errors.filter(el => el._id === data.user.user_action_data.activeError)
+
+        return arr[0].errorName
+    }
+
     if (!data) {
         return <Preloader />
     }
 
     return (
         <Container>
+
+            <CustomModal size={'md'} show={modalSuccess} handleClose={() => setModalSuccess(false)} themeDark={true} btnClose='Ok' title='Успешно'>
+                Ошибка изменена успешно!
+            </CustomModal>
+
+            <CustomModal size={'md'} show={modalError} handleClose={() => setModalError(false)} themeDark={true} btnClose='Ok' title='Успешно'>
+                Упс! Что-то пошло не так! Попробуйте позже!
+            </CustomModal>
+
+
             <AdminButtonCard title={'Информация о пользователе'}>
                 <Row>
                     <Col className='col-12 col-xl-6'>
@@ -229,7 +249,7 @@ const UserDetailTabInfo = ({data}) => {
                     <Col className='col-12 col-xl-6'>
 
                         <Row className={cls.users_detail_table_row}>
-                            <p>Текущая ошибка</p>
+                            <p>Текущая ошибка: {checkCurrentError()}</p>
                             <Row className=''>
                                 <Col className='mb-3'>
                                     <Select {...register('errorId')} classname={'admin-square'} options={toArr()}/>

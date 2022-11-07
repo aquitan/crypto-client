@@ -140,7 +140,6 @@ export default class Store {
             this.setIsLoading(true)
             const response = await AuthService.login(obj)
             localStorage.setItem('token', response.data.accessToken)
-            localStorage.setItem('refresh', response.data.refreshToken)
             if (response.data.rootAccess) {
                 this.setFullAccess(true)
                 this.setAuth(true)
@@ -199,7 +198,6 @@ export default class Store {
         try {
             const response = await AuthService.logout()
             localStorage.removeItem('token')
-            localStorage.removeItem('refresh')
             this.setAuth(false)
             this.setIsAdmin(false)
             this.setIsStaff(false)
@@ -224,7 +222,6 @@ export default class Store {
                 }
             )
             localStorage.setItem('token', response.data.accessToken)
-            localStorage.setItem('refresh', response.data.refreshToken)
             // this.setUserId(response.data.user.id)
             // this.setUserEmail(response.data.user.email)
             // if (response.data.user.isActivated) {
