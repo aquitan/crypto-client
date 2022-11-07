@@ -57,9 +57,9 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, 
     }
   }, [coinPair])
 
-  useEffect(async () => {
-    let genOrders = setInterval(async () => {
-      await setOrders(generateOrders(Number(rate)))
+  useEffect( () => {
+      let genOrders = setInterval(async () => {
+      setOrders(generateOrders(Number(rate)))
     }, 1500)
 
     return () => {
@@ -68,6 +68,7 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, 
     };
 
   }, [coinPair])
+  
   useEffect(async () => {
       
     return () => {

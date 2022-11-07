@@ -8,7 +8,7 @@ import TradingEthereum from './components/Ethereum/Ethereum';
 import ButtonCard from '../../../components/ButtonCard/ButtonCard';
 import { useThemeContext } from '../../../context/ThemeContext';
 import { Col, Row } from 'react-bootstrap';
-import { Routes } from 'react-router-dom';
+import { Routes, useLocation } from 'react-router-dom';
 import { Button, Skeleton } from '@mui/material';
 import UserPageSkeleton from '../../../components/UserPageSkeleton/UserPageSkeleton';
 import { getSwitchQuery } from '../../../utils/getSwitchQuery';
@@ -21,7 +21,6 @@ const TradingTest = () => {
     const [initialTrx, setInitialTrx] = useState([])
     const [initialSol, setInitialSol] = useState([])
     const [balance, setBalance] = useState([])
-    
     const {theme} = useThemeContext()
 
     useEffect(() => {

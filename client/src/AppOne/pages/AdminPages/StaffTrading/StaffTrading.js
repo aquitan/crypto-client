@@ -140,6 +140,7 @@ const StaffTrading = () => {
                       ratesData.map(item => {
                           return (
                             <RateItem
+                                key={item.coinName}
                                 growthParams={item.growthParams}
                                 coinName={item.coinName}
                                 valueInPercent={item.valueInPercent}

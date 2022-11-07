@@ -30,6 +30,8 @@ const SecureDealDetail = () => {
     const [modal, setModal] = useState(false)
     const [limit, setLimit] = useState(0)
     const [dealData, setDealData] = useState()
+    const [preloader, setPreloader] = useState(false)
+    const [showError, setShowError] = useState(false)
     const [state, setState] = useState({
         seller: false,
         sellerbuyer: false,
@@ -91,12 +93,14 @@ const SecureDealDetail = () => {
             dealId: dealData._id,
             userEmail: store.user.email
         }
-        
+        setPreloader(true)
         try {
             const res = await putData(getSwitchQuery('/secure_deal/deal_detail/send_message_to_secure_deal_chat'), obj)
             getSupportMessages(dealData._id)
         } catch(e) {
-
+            setShowError(true)
+        } finally {
+            setPreloader(false)
         }
     }
 
@@ -131,6 +135,10 @@ const SecureDealDetail = () => {
 
     return (
         <>
+            <CustomModal size='md' show={showError} handleClose={() => setShowError(false)} btnClose='Ok' title='Message error'>
+                Something went wrong! Please, try again later!
+            </CustomModal>
+
             <CustomModal
               show={result}
               btnClose={'Close'}

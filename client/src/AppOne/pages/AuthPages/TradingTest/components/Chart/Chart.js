@@ -7,6 +7,7 @@ import {countFunc} from '../../../../../utils/chartRateUpdate';
 import {useValueContext} from '../../../../../context/ValueContext';
 import ButtonCard from '../../../../../components/ButtonCard/ButtonCard';
 import { Button } from '@mui/material';
+import { useLocation } from 'react-router-dom';
 
 const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch, initialTrx, initialSol}) => {
     const [realRate, setRealRate] = useState(0)
@@ -19,7 +20,9 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
     const chartsDatas = useRef(null)  
     const chartToolbar = useRef(null)  
     const [initialData, setInitialChartData] = useState(initialBtc) 
+    const location = useLocation()
 
+    console.log('location----', location.pathname)
 
     const createChart = async (initial) => {
         let root = am5.Root.new("chartdiv");
@@ -303,6 +306,11 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
 
     useLayoutEffect(() => {
         createChart(initialData)
+        return () => {
+            onSendDateOnReload()
+            chartRef.current.dispose()
+            clearInterval(ref.current)
+        }
     }, [])
 
     const callFunc = async (val) => {
@@ -361,11 +369,27 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
                 callFunc(initialSol)
             }
         }
+        return () => {
+            chartRef.current.dispose()
+            clearInterval(ref.current)
+        }
     }, [coinName])
 
     const clearData = () => {
         chartsDatas.current = []
         callFunc()
+    }
+
+    const onSendDateOnReload = async () => {
+        const obj = {
+            domainName: store.domain.fullDomainName,
+            coinName: 'BCH',
+            growthParams: true,
+            value: chartValue,
+            timeToEnd: 150000,
+            userId: store.user.id
+          }
+        await putData(getSwitchQuery('/trading/add_user_data/'), obj)
     }
 
 
