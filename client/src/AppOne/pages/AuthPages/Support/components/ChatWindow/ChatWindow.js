@@ -7,8 +7,9 @@ import {ThemeContext, useThemeContext} from "../../../../../context/ThemeContext
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faPaperPlane} from '@fortawesome/free-solid-svg-icons';
 import Button from '../../../../../components/UI/Button/Button';
+import Preloader from '../../../../../components/UI/Preloader/Preloader';
 
-const ChatWindow = ({children, onClick, edited, onUploadImg, showRules}) => {
+const ChatWindow = ({children, onClick, edited, onUploadImg, showRules, preloader}) => {
     const [state, setState] = useState('')
     const {theme} = useThemeContext(ThemeContext)
 
@@ -32,6 +33,9 @@ const ChatWindow = ({children, onClick, edited, onUploadImg, showRules}) => {
                     <div className="chat_message_area">
                         {children}
                     </div>
+                    {
+                        preloader ? <Preloader/> : null
+                    }
                 </Col>
             </Row>
             <div className='px-2 mt-2 align-items-center d-flex' style={{boxShadow: 'inset 0px 1px 0px #E5E5EA'}}>
