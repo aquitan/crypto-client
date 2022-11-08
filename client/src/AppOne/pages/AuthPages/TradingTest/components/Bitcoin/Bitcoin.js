@@ -68,9 +68,9 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, 
     };
 
   }, [coinPair])
-  
+
   useEffect(async () => {
-      
+      window.addEventListener('beforeunload', alertUser)
     return () => {
       window.removeEventListener("beforeunload", alertUser);
     };
@@ -78,6 +78,7 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, 
 
   const alertUser = async (e) => {
     e.preventDefault();
+    console.log('adfjkhskdjhfkjsd')
     const obj = {
       domainName: store.domain.fullDomainName,
       coinName: 'BCH',
@@ -233,25 +234,8 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, 
 
   return (
     <>
-      <Modal
-        size='md'
-        animation={false}
-        style={{opacity: 1, zIndex: 9999}}
-        show={orderModal}
-        onHide={() => setOrderModal(false)}
-        dialogClassName={`modal-window ${theme}`}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title id="example-custom-modal-styling-title">
-            Order
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Order has been added!
-        </Modal.Body>
-      </Modal>
 
-      <CustomModal size='md' title='Order' >
+      <CustomModal show={orderModal} handleClose={() => setOrderModal(false)} size='md' title='Order' btnClose={'Ok'} >
         Order has been added!
       </CustomModal>
 

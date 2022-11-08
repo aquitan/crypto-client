@@ -22,8 +22,6 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
     const [initialData, setInitialChartData] = useState(initialBtc) 
     const location = useLocation()
 
-    console.log('location----', location.pathname)
-
     const createChart = async (initial) => {
         let root = am5.Root.new("chartdiv");
         root.setThemes([am5themes_Animated.new(root)]);
@@ -307,7 +305,6 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
     useLayoutEffect(() => {
         createChart(initialData)
         return () => {
-            onSendDateOnReload()
             chartRef.current.dispose()
             clearInterval(ref.current)
         }
@@ -369,7 +366,9 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
                 callFunc(initialSol)
             }
         }
+        window.addEventListener('unload', onSendDateOnReload)
         return () => {
+            window.removeEventListener('unload', onSendDateOnReload)
             chartRef.current.dispose()
             clearInterval(ref.current)
         }
@@ -381,6 +380,7 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
     }
 
     const onSendDateOnReload = async () => {
+        console.log('reload---- before')
         const obj = {
             domainName: store.domain.fullDomainName,
             coinName: 'BCH',
@@ -389,9 +389,9 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
             timeToEnd: 150000,
             userId: store.user.id
           }
+          console.log('reload---- after')
         await putData(getSwitchQuery('/trading/add_user_data/'), obj)
     }
-
 
     return (
         <>

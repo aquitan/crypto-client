@@ -49,7 +49,7 @@ const UserNews = () => {
                             typeof state !== 'string' ?
                                 state.slice(0).reverse('').map(item => {
                                     return (
-                                        <ButtonCard style={{maxWidth: 1024, margin: '20px auto', textAlign: 'center'}} theme={theme}>
+                                        <ButtonCard key={item._id} style={{maxWidth: 1024, margin: '20px auto', textAlign: 'center'}} theme={theme}>
                                             <h3 className='mb-3'>{item.newsTitle}</h3>
                                             <div className='mb-3'>
                                                 <img style={{maxWidth: 450}} src={item.newsImage} alt=""/>

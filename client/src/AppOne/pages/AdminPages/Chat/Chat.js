@@ -82,7 +82,7 @@ const Chat = () => {
 
     const chooseChat = async (e) => {
         setCurrentChat(e.target.value)
-        const res = await getData(`/staff/support/chat_item/get_chat_data/${e.target.value}/0/20/`)
+        const res = await getData(`/staff/support/chat_item/get_chat_data/${e.target.value}/0/50/`)
         setMsg(res.data)
     }
 
@@ -106,7 +106,9 @@ const Chat = () => {
     }
 
     useEffect(() => {
-        getSupportMessages()
+        if (currentChat) {
+            getSupportMessages()
+        }
     }, [limit])
 
     const onMore = () => {
@@ -142,7 +144,7 @@ const Chat = () => {
                     <ChatWindow onUploadImg={onUploadImg} onClick={onClick}>
                         {
                             msg.length ?
-                                msg.reverse().map(item => {
+                                msg.map(item => {
                                     return(
                                         <ChatMessege
                                             key={item._id}

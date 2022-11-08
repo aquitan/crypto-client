@@ -81,6 +81,7 @@ const TradingTest = () => {
         const dataSol = await resSol.json()
         setInitialSol(dataSol.slice(0).reverse())
     }
+    
 
 
     return(
