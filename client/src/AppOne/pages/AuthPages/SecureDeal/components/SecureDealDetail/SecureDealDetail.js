@@ -218,7 +218,7 @@ const SecureDealDetail = () => {
                                     <h5 className={cls.card_header}>Chat</h5>
                                     <Row className='mt-3'>
                                         <Col className='col-12 col-lg-8 mb-3'>
-                                            <ChatWindow onUploadImg={onUploadImg} onClick={onClick}>
+                                            <ChatWindow onUploadImg={onUploadImg} onClick={onClick} preloader={preloader}>
                                                 {
                                                     typeof msg !== 'string' ?
                                                       msg.slice(0).reverse().map(item => {
