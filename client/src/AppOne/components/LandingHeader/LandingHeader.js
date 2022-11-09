@@ -44,7 +44,7 @@ const LandingHeader = ({state, openSidebar, hideLinks}) => {
                             <Link classnames={theme} onClick={handleClose}  href="/#trading" value={'Crypto Trading'}/>
                         </Col>
                         <Col>
-                            <Link classnames={theme} onClick={handleClose}  nav={true} href="/contactus" value={'Contact Us'}/>
+                            <Link classnames={theme} onClick={handleClose}  nav={true} href="/contact-us" value={'Contact Us'}/>
                         </Col>
                     </Row>
                     <Row>
@@ -85,7 +85,7 @@ const LandingHeader = ({state, openSidebar, hideLinks}) => {
                     <Link classnames={theme} href="/#features" value={'Features'}/>
                     <Link classnames={theme} href="/#services" value={'Services'}/>
                     <Link classnames={theme} href="/#trading" value={'Crypto Trading'}/>
-                    <Link classnames={theme} nav={true} href="/contactus" value={'Contact Us'}/>
+                    <Link classnames={theme} nav={true} href="/contact-us" value={'Contact Us'}/>
                 </Col>
                 
                 <Col className='d-none d-xl-flex justify-content-end'>

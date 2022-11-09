@@ -2,12 +2,20 @@
 /*@import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@400;700&display=swap');*/
 /*@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');*/
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap'); */
+@font-face {
+  font-family: 'BrandonGrotesque-Regular';
+  src: url('../fonts/BrandonGrotesque-Regular.woff2') format('woff2'),
+       url('../fonts/BrandonGrotesque-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+
+}
 
 body {
   margin: 0;
   height: 100%;
-  font-family: 'Inter', sans-serif;
+  font-family: 'BrandonGrotesque-Regular', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -26,6 +34,7 @@ body {
 }
 h1 {
   margin: 0 !important;
+  font-family: 'BrandonGrotesque-Regular', sans-serif;
 }
 .container {
   overflow-y: auto;
@@ -81,7 +90,7 @@ html {
 }
 h1, h2, h3, h4 {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'BrandonGrotesque-Regular', sans-serif;
 }
 @media (max-width: 1200px) {
   h1 {

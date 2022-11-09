@@ -8,6 +8,16 @@
         padding-bottom: 10px;
         font-size: 18px;
     }
+    &:after {
+        content: '';
+        width: 0;
+        position: absolute;
+        height: 3px;
+        bottom: -44px;
+        background-color: violet;
+        left: 0;
+        transition: all 0.2s linear; 
+    }
 }
 .landingHeaderLink:hover {
     color: violet;
@@ -15,12 +25,8 @@
 .landingHeaderLink:hover:after {
     content: '';
     display: block;
-    position: absolute;
-    height: 3px;
     width: 100%;
-    bottom: -50px;
-    background-color: violet;
-    left: 0;
+    transition: all 0.2s linear; 
     @media (max-width: 1200px) {
         display: none;
     }

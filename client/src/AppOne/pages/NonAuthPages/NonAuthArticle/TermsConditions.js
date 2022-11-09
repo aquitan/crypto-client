@@ -91,7 +91,7 @@ const TermsConditions = () => {
                                         <Col><Link to='/security-policy'>Security Policy</Link></Col>
                                         <Col><Link to='/terms-conditions'>Terms & Conditions</Link></Col>
                                         <Col><Link to='/about-us'>About us</Link></Col>
-                                        <Col><Link to='/contactus'>Contact us</Link></Col>
+                                        <Col><Link to='/contact-us'>Contact us</Link></Col>
                                     </Row>
                                     <div className='w-100 mt-4' style={{borderTop: '2px solid #E9EAF0'}}>
                                         <p className='mt-3' style={{color: '#fff'}}>&#169;{store.domain.companyYear}-{new Date().getFullYear()} All rights reserved</p>
