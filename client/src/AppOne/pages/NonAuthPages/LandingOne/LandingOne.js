@@ -325,7 +325,7 @@ const LandingOne = ({state, theme, navigate}) => {
                                               Buy Crypto
                                           </div>
                                           <div className="started-text">
-                                              Sign up for your free Wallet on web and follow our easy process to set up your profile
+                                              Sign Up for your free Wallet on web and follow our easy process to set up your profile
                                           </div>
                                       </div>
                                   </Col>

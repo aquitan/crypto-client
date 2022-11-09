@@ -142,7 +142,7 @@ const SignIn = () => {
                 <Col className={`px-3 px-xl-0 ${cls.authFormItem}`} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                     <Form onSubmit={handleSubmit(onSubmit)}>
                         <Row className='mb-4'>
-                            <h2 style={{color: theme === 'light' ? '#121318' : '#fff'}}>Sign In to {store.domain.domainName}</h2>
+                            <h2 style={{color: theme === 'light' ? '#121318' : '#fff'}}>Sign In to your account</h2>
                         </Row>
                         <Row className='mt-3 mb-4'>
                             <Col className={cls.relative}>
@@ -207,7 +207,7 @@ const SignIn = () => {
                             </Row>
                         </Row>
                         <Row className='mt-5'>
-                            <p style={{color: '#6c757d'}} className='text-center'>If you have not registered yet <Link className={cls.link} to='/signup/'>Create an account</Link></p>
+                            <p style={{color: '#6c757d'}} className='text-center'>Don't have an account yet? <Link className={cls.link} to='/signup/'>Create an account</Link></p>
                         </Row>
                     </Form>
                 </Col>

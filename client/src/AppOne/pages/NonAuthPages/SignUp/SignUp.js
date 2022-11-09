@@ -158,7 +158,7 @@ const SignUp = () => {
                 <Col className={`px-3 px-xl-0 ${cls.authFormItem}`} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                     <Form onSubmit={handleSubmit(onSubmit)}>
                         <Row>
-                            <h2 style={{color: theme === 'light' ? '#121318' : '#fff'}} className='mb-4'>Sign up {store.domain.domainName}</h2>
+                            <h2 style={{color: theme === 'light' ? '#121318' : '#fff'}} className='mb-4'>Create your account</h2>
                         </Row>
                         <Row className='mb-4'>
                             <Col className={'mb-3 col-12 col-md-6 position-relative'}>
@@ -177,7 +177,7 @@ const SignUp = () => {
                                         message: 'Minimum 2 symbols'
                                     },
                                     onBlur: (e) => onCheckError(e)
-                                })} classname={[`${errors.name ? 'error' : ''}`]}  name='name' placeholder='Display name' id='displayName' />
+                                })} classname={[`${errors.name ? 'error' : ''}`]}  name='name' placeholder='Username' id='displayName' />
                                 {errors.name && <p className={cls.error}>{errors.name.message}</p>}
                             </Col>
                         </Row>
@@ -226,19 +226,19 @@ const SignUp = () => {
                                     required: true
                                 })} className={cls.checkbox} type='checkbox' />
                                 <span>
-                                    By register I agree with <Link className={cls.link} to='/terms-conditions'>Terms and conditions.</Link>
+                                    By continuing I agree to the <Link className={cls.link} to='/terms-conditions'>Terms of Service and Privacy Policy.</Link>
                                 </span>
-                                <ErrorMessage name='agreement' errors={errors} render={({message}) => <p className={cls.error}>You have to agree with Terms</p>} />
+                                <ErrorMessage name='agreement' errors={errors} render={({message}) => <p className={cls.error}>You have to provide your consent</p>} />
                             </FormText>
                             <Row className='w-100 mt-4'>
                                 <Button type='submit' classname='btnBlue'>Sign Up</Button>
                             </Row>
                         </Row>
                         <Row className='mt-3 align-items-center'>
-                            <p className='text-center' style={{color: '#6c757d'}}>Already have an account? <Link className={cls.link} to='/signin'>Sign in</Link></p>
+                            <p className='text-center' style={{color: '#6c757d'}}>Already have an account? <Link className={cls.link} to='/signin'>Sign In</Link></p>
                         </Row>
                         <Row className='mt-2 align-items-center'>
-                            <p className='text-center' style={{color: '#6c757d'}}><Link className={cls.link} to='/'>Or go back to Main page</Link></p>
+                            <p className='text-center' style={{color: '#6c757d'}}><Link className={cls.link} to='/'>Back to Home</Link></p>
                         </Row>
                     </Form>
                 </Col>

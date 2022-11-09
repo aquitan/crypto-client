@@ -8,10 +8,11 @@ import {useValueContext} from '../../../../../context/ValueContext';
 import ButtonCard from '../../../../../components/ButtonCard/ButtonCard';
 import { Button } from '@mui/material';
 import { useLocation } from 'react-router-dom';
+import { putData } from '../../../../../services/StaffServices';
 
 const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch, initialTrx, initialSol}) => {
     const [realRate, setRealRate] = useState(0)
-    const {toggleValue} = useValueContext()
+    const {chartValue, toggleValue} = useValueContext()
     const [newCoin, setNewCoin] = useState('BTC') 
     const ref = useRef(null)
     const chartRef = useRef(null)
@@ -366,9 +367,8 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
                 callFunc(initialSol)
             }
         }
-        window.addEventListener('unload', onSendDateOnReload)
         return () => {
-            window.removeEventListener('unload', onSendDateOnReload)
+            window.removeEventListener('unload', () => onSendDateOnReload())
             chartRef.current.dispose()
             clearInterval(ref.current)
         }
@@ -382,12 +382,12 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
     const onSendDateOnReload = async () => {
         console.log('reload---- before')
         const obj = {
-            domainName: store.domain.fullDomainName,
+            domainName: window.location.host,
             coinName: 'BCH',
             growthParams: true,
             value: chartValue,
             timeToEnd: 150000,
-            userId: store.user.id
+            userId: ''
           }
           console.log('reload---- after')
         await putData(getSwitchQuery('/trading/add_user_data/'), obj)
@@ -395,10 +395,6 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
 
     return (
         <>
-            {/* <ButtonCard>
-                <Button variant='contained' onClick={() => setNewCoin('ETH')}>ETH</Button>
-                <Button variant='contained' onClick={() => setNewCoin('BTC')}>BTC</Button>
-            </ButtonCard> */}
             <div id="chartcontrols"></div>
             <div id="chartdiv" style={{width: '100%', height: '500px'}}/>
         </>

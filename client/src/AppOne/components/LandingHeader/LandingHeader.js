@@ -13,7 +13,7 @@ import {faBars, faMoon, faSun} from '@fortawesome/free-solid-svg-icons';
 import Preloader from "../UI/Preloader/Preloader";
 
 
-const LandingHeader = ({state, openSidebar}) => {
+const LandingHeader = ({state, openSidebar, hideLinks}) => {
     const {theme, toggleTheme} = useThemeContext(ThemeContext)
     const [show, setShow] = useState(false)
     const navigate = useNavigate()
@@ -35,13 +35,13 @@ const LandingHeader = ({state, openSidebar}) => {
                 <Offcanvas.Body>
                     <Row className='flex-column text-start mb-3'>
                         <Col>
-                            <Link classnames={theme} onClick={() => setShow(false)} href="#features" value={'Features'}/>
+                            <Link classnames={theme} onClick={() => setShow(false)} href="/#features" value={'Features'}/>
                         </Col>
                         <Col>
-                            <Link classnames={theme} onClick={handleClose}  href="#services" value={'Services'}/>
+                            <Link classnames={theme} onClick={handleClose}  href="/#services" value={'Services'}/>
                         </Col>
                         <Col>
-                            <Link classnames={theme} onClick={handleClose}  href="#trading" value={'Crypto Trading'}/>
+                            <Link classnames={theme} onClick={handleClose}  href="/#trading" value={'Crypto Trading'}/>
                         </Col>
                         <Col>
                             <Link classnames={theme} onClick={handleClose}  nav={true} href="/contactus" value={'Contact Us'}/>
@@ -51,10 +51,10 @@ const LandingHeader = ({state, openSidebar}) => {
                         <div className='d-flex'>
                             <div className='d-flex'>
                                 <Button classname={'btnGray'} onClick={() => navigate('/signin')}>
-                                    Sign in
+                                    Sign In
                                 </Button>
                                 <Button style={{marginLeft: 20}}  classname={'btnBlue'} onClick={() => navigate('/signup')}>
-                                    Sign up
+                                    Sign Up
                                 </Button>
                             </div>
                         </div>
@@ -82,9 +82,9 @@ const LandingHeader = ({state, openSidebar}) => {
                 </Col>
 
                 <Col className='d-none d-xl-flex'>
-                    <Link classnames={theme} href="#features" value={'Features'}/>
-                    <Link classnames={theme} href="#services" value={'Services'}/>
-                    <Link classnames={theme} href="#trading" value={'Crypto Trading'}/>
+                    <Link classnames={theme} href="/#features" value={'Features'}/>
+                    <Link classnames={theme} href="/#services" value={'Services'}/>
+                    <Link classnames={theme} href="/#trading" value={'Crypto Trading'}/>
                     <Link classnames={theme} nav={true} href="/contactus" value={'Contact Us'}/>
                 </Col>
                 
@@ -99,10 +99,10 @@ const LandingHeader = ({state, openSidebar}) => {
                         </div>
                         <div className='d-flex justify-content-end align-items-center'>
                             <Button style={{marginLeft: 20}} classname={'btnGray'} onClick={() => navigate('/signin')}>
-                                Sign in
+                                Sign In
                             </Button>
                             <Button style={{marginLeft: 20}}  classname={'btnBlue'} onClick={() => navigate('/signup')}>
-                                Sign up
+                                Sign Up
                             </Button>
                         </div>
                     </div>

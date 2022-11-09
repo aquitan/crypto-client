@@ -70,25 +70,27 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, 
   }, [coinPair])
 
   useEffect(async () => {
-      window.addEventListener('beforeunload', alertUser)
+      window.addEventListener('beforeunload', (e) => {
+        alertUser()
+      })
     return () => {
-      window.removeEventListener("beforeunload", alertUser);
+      window.removeEventListener("beforeunload", (e) => {
+        alertUser()
+      });
     };
   }, []);
 
   const alertUser = async (e) => {
-    e.preventDefault();
     console.log('adfjkhskdjhfkjsd')
     const obj = {
-      domainName: store.domain.fullDomainName,
+      domainName: window.location.host,
       coinName: 'BCH',
       growthParams: true,
       value: chartValue,
       timeToEnd: 150000,
-      userId: store.user.id
+      userId: ''
     }
     await putData(getSwitchQuery('/trading/add_user_data/'), obj)
-    e.returnValue = "";
   };
 
   const getTradingHistory = async () => {

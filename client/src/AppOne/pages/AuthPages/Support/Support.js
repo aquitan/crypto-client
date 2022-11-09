@@ -66,6 +66,9 @@ const Support = () => {
 
     useEffect(() => {
         getSupportMessages()
+        setInterval(() => {
+            getSupportMessages()
+        }, 30000)
     }, [limit])
 
     const onMore = () => {

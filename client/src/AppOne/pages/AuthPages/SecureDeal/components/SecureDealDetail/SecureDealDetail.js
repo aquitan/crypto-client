@@ -124,6 +124,9 @@ const SecureDealDetail = () => {
 
     useEffect(() => {
         getSupportMessages()
+        setInterval(() => {
+            getSupportMessages()
+        }, 30000)
     }, [limit])
 
     const onMore = () => {

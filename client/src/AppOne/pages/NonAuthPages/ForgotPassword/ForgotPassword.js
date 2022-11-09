@@ -63,7 +63,7 @@ const ForgotPassword = () => {
                 <Col className={`px-3 px-xl-0 ${cls.authFormItem}`} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                     <Form onSubmit={handleSubmit(onSubmit)}>
                         <Row className='mb-4'>
-                            <h2 style={{color: theme === 'light' ? '#121318' : '#fff'}}>Forgot password</h2>
+                            <h2 style={{color: theme === 'light' ? '#121318' : '#fff'}}>Reset password</h2>
                         </Row>
                         <Row className='mt-3'>
                             <Col className={cls.relative}>
@@ -75,14 +75,14 @@ const ForgotPassword = () => {
                                 <ErrorMessage  name='email' errors={errors} render={() => <p className={cls.error}>Email is not valid</p>} />
                             </Col>
                             <Row className='mt-4 align-items-center'>
-                                <Button classname='btnBlue' type='filled'>Get new password</Button>
+                                <Button classname='btnBlue' type='filled'>Reset your password</Button>
                             </Row>
                             <Row className='mt-3'>
                                 <Col className='text-start'>
                                     <Link className={cls.link} to='/signup/'>Create an account</Link>
                                 </Col>
                                 <Col className='text-end'>
-                                    <Link className={cls.link} to='/signin/'>Sign in</Link>
+                                    <Link className={cls.link} to='/signin/'>Sign In</Link>
                                 </Col>
                             </Row>
                         </Row>
