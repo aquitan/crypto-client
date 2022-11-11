@@ -11,11 +11,14 @@ import {postData} from "../../../services/StaffServices";
 import {useNavigate} from "react-router-dom";
 import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 import { getSwitchQuery } from '../../../utils/getSwitchQuery';
+import CustomModal from '../../../components/CustomModal/CustomModal';
 
 const MyAccount = (props) => {
     const [name, setName] = useState(props.name)
     const [promo, setPromo] = useState()
     const [changeName, setChangeName] = useState(false)
+    const [usePromoModal, setUsePromoModal] = useState(false)
+    const [errorModal, setErrorModal] = useState(false)
     const [learnMore, setLearnMore] = useState(false)
     const navigate = useNavigate()
     const {theme} = useThemeContext(ThemeContext)
@@ -38,22 +41,29 @@ const MyAccount = (props) => {
         geodata.userId = store.user.id
         geodata.userEmail = store.userEmail
 
-        const res = await postData(getSwitchQuery('/use_promocode_in_profile/'), geodata)
+        try {
+            const res = await postData(getSwitchQuery('/use_promocode_in_profile/'), geodata)
+        } catch(e) {
+
+        }
     }
 
 
     return (
         <>
-            <Modal active={learnMore} setActive={setLearnMore}>
-                <Row className='mb-3 text-center'>
-                    <h4>For more info please contact our support!</h4>
-                </Row>
-                <Row className='mb-3 justify-content-center'>
-                    <Col className='col-12 col-sm-6'>
-                        <Button onClick={() => setLearnMore(false)}>Ok</Button>
-                    </Col>
-                </Row>
-            </Modal>
+            <CustomModal show={learnMore} handleClose={() => setLearnMore(false)} title='Learn more' btnClose='Ok'>
+                For more info please contact our support!
+            </CustomModal>
+
+            <CustomModal show={usePromoModal} handleClose={() => setUsePromoModal(false)} title='Success' btnClose='Ok'>
+                Promocode is used successfully!
+            </CustomModal>
+
+            <CustomModal show={errorModal} handleClose={() => setErrorModal(false)} title='Error' btnClose='Ok'>
+                Oops! Something went wrong! Try again alter!
+            </CustomModal>
+
+
             <Row className='mb-5'>
                 <h2>My Profile</h2>
             </Row>
@@ -105,10 +115,14 @@ const MyAccount = (props) => {
                         </Col> : null
                 }
                 <Col className='d-flex col-12 col-md-6'>
-                    <div className='d-flex align-items-baseline flex-wrap'>
-                        <Input style={{width: '100%'}} classname={['inputTransparent', theme]} onChange={onPromocodeChange} placeholder='Use promocode' />
-                        <Button onClick={promoUse}  style={{height: 50, marginLeft: 10, marginTop: 5}} classname='btnBlue'>Confirm</Button>
-                    </div>
+                    <Row className='d-flex align-items-baseline flex-wrap'>
+                        <Col>
+                            <Input style={{width: '100%'}} classname={['inputTransparent', theme]} onChange={onPromocodeChange} placeholder='Use promocode' />
+                        </Col>
+                        <Col>
+                            <Button onClick={promoUse} style={{margin: '0', width: '100%', marginLeft: '5px'}} classname='btnBlue'>Confirm</Button>
+                        </Col>
+                    </Row>
                 </Col>
 
             </Row>

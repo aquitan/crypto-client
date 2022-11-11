@@ -17,11 +17,11 @@ const SecureDealTableItem = ({amount, status, classname, onClick, coin, buyer, s
                 {amount} <b>{coin}</b>
             </Col>
             <Col style={{fontSize: '14px'}} className='text-center'>
-                <div><b>Buyer:</b> {buyer}</div>
-                <div><b>Seller:</b> {seller}</div>
+                <div><b>Buyer:</b><br/> {buyer}</div>
+                <div style={{wordBreak: 'break-all'}}><b>Seller:</b><br/> {seller}</div>
             </Col>
             <Col className='d-flex justify-content-center text-center'>
-                <Button onClick={onClick} classname={status === 'failed' ? 'btnRed' : status === 'pending' ? 'btnOrange' : 'btnGreen'}>View details</Button>
+                <Button style={{height: '30px', width: '100px', margin: '0 0 0 15px'}} onClick={onClick} classname={status === 'failed' ? 'btnRed' : status === 'pending' ? 'btnOrange' : 'btnGreen'}>Details</Button>
             </Col>
         </Row>
     )

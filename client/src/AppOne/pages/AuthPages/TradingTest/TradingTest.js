@@ -105,9 +105,6 @@ const TradingTest = () => {
                                 <div style={{padding: '0 5px', cursor: 'pointer'}} onClick={() => setCoinPair('TRX')}>
                                     <img width={30} src='/img/trx.svg' alt='coin' />
                                 </div>
-                                <div style={{padding: '0 5px', cursor: 'pointer'}} onClick={() => setCoinPair('USDT')}>
-                                    <img width={30} src='/img/usdt.svg' alt='coin' />
-                                </div>
                                 <div style={{padding: '0 5px', cursor: 'pointer'}} onClick={() => setCoinPair('SOL')}>
                                     <img width={30} src='/img/sol.svg' alt='coin' />
                                 </div>

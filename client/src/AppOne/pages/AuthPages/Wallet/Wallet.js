@@ -103,8 +103,8 @@ const Wallet = () => {
                                 </Row>
                                 <Row>
                                     {
-                                        balances ? <h4 className='mt-4 align-items-center' style={{fontWeight: 'bold', color: theme === 'light' ? '#9295A6' : '#fff'}}>
-                                            <img src='/static/img/btc.svg' width={30} alt='btc'/> <span>{isNaN(countTotalBalance(balances).toLocaleString()) ? 0 : (countTotalBalance(balances) / store.rates.btc).toLocaleString()}</span>
+                                        balances ? <h4 className='mt-4 align-items-center d-flex' style={{fontWeight: 'bold', color: theme === 'light' ? '#9295A6' : '#fff'}}>
+                                            <img src='/static/img/btc.svg' width={30} alt='btc'/> <span style={{marginLeft: 10}}>{isNaN(countTotalBalance(balances).toLocaleString()) ? 0 : (countTotalBalance(balances) / store.rates.btc).toLocaleString()}</span>
                                         </h4> : <Preloader />
                                     }
                                 </Row>

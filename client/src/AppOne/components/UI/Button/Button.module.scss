@@ -106,3 +106,12 @@
     font-weight: bold;
     min-width: 120px;
 }
+
+@media (max-width: 768px) {
+    .orderBtnPercent {
+        min-width: auto;
+        width: auto;
+        padding: 0 15px;
+        font-size: 18px;
+    }
+}

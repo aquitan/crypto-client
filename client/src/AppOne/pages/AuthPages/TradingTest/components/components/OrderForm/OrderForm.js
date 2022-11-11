@@ -39,14 +39,11 @@ const OrderForm = ({type, onChangePrice, onChangeCrypto, onHandlerPercent, total
           </Row>
 
           <Row className='mb-3'>
-              <Col style={{padding: '0 15px'}} className={'d-flex justify-content-between flex-wrap'}>
-                  {
-                      btns.map(btn => {
-                          return <Button
-                            onClick={(e) => onHandlerPercent(e, btn)}
-                            key={btn} style={{height: 30, marginBottom: 10}} classname={['btnBlue', 'btnSmall']} >{btn}%</Button>
-                      })
-                  }
+              <Col style={{padding: '0'}} className={'d-flex justify-content-between'}>
+              <Button onClick={(e) => onHandlerPercent(e, 25)} style={{height: 30, marginBottom: 10}} classname={['btnBlue', 'btnSmall', 'orderBtnPercent']} >25%</Button>
+              <Button onClick={(e) => onHandlerPercent(e, 50)} style={{height: 30, marginBottom: 10}} classname={['btnBlue', 'btnSmall', 'orderBtnPercent']} >50%</Button>
+              <Button onClick={(e) => onHandlerPercent(e, 75)} style={{height: 30, marginBottom: 10}} classname={['btnBlue', 'btnSmall', 'orderBtnPercent']} >75%</Button>
+              <Button onClick={(e) => onHandlerPercent(e, 100)} style={{height: 30, marginBottom: 10}} classname={['btnBlue', 'btnSmall', 'orderBtnPercent']} >100%</Button>
               </Col>
           </Row>
 

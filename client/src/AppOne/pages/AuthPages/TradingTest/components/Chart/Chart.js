@@ -6,9 +6,11 @@ import * as am5stock from '@amcharts/amcharts5/stock';
 import {countFunc} from '../../../../../utils/chartRateUpdate';
 import {useValueContext} from '../../../../../context/ValueContext';
 import ButtonCard from '../../../../../components/ButtonCard/ButtonCard';
-import { Button } from '@mui/material';
+import { Button, Zoom } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import { putData } from '../../../../../services/StaffServices';
+import { useThemeContext } from '../../../../../context/ThemeContext';
+import { ZoomControl } from '@amcharts/amcharts5/.internal/charts/map/ZoomControl';
 
 const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch, initialTrx, initialSol}) => {
     const [realRate, setRealRate] = useState(0)
@@ -22,14 +24,18 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
     const chartToolbar = useRef(null)  
     const [initialData, setInitialChartData] = useState(initialBtc) 
     const location = useLocation()
+    const {theme} = useThemeContext()
 
     const createChart = async (initial) => {
         let root = am5.Root.new("chartdiv");
         root.setThemes([am5themes_Animated.new(root)]);
+        root._logo?.dispose()
 
         let stockChart = root.container.children.push(
           am5stock.StockChart.new(root, {})
         );
+
+        
 
         let toolbar = am5stock.StockToolbar.new(root, {
             container: document.getElementById("chartcontrols"),
@@ -41,7 +47,7 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
               am5stock.ResetControl.new(root, {
                 stockChart: stockChart
               })
-            ]
+            ],    
           });
 
           chartToolbar.current = toolbar
@@ -51,9 +57,10 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
           am5stock.StockPanel.new(root, {
               wheelY: "zoomX",
               panX: true,
-              panY: true
+              panY: true,
           })
         );
+        
 
         let valueAxis = mainPanel.yAxes.push(
           am5xy.ValueAxis.new(root, {
@@ -62,10 +69,11 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
               }),
               extraMin: 0.1, // adds some space for for main series
               tooltip: am5.Tooltip.new(root, {}),
-              numberFormat: "#,###.00",
-              extraTooltipPrecision: 2
+              numberFormat: "#,###",
+              extraTooltipPrecision: 2,
           })
         );
+        root.tapToActivate = true
 
         let dateAxis = mainPanel.xAxes.push(
           am5xy.GaplessDateAxis.new(root, {
@@ -84,7 +92,7 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
         if (currentLabel) {
             currentLabel.setAll({
                 fill: am5.color(0xffffff),
-                background: am5.Rectangle.new(root, { fill: am5.color(0x000000) })
+                background: am5.Rectangle.new(root, { fill: theme === 'dark' ? am5.color(0xffffff) : am5.color(0x000000) })
             })
         }
 
@@ -158,7 +166,7 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
 
         let sbValueAxis = scrollbar.chart.yAxes.push(
           am5xy.ValueAxis.new(root, {
-              renderer: am5xy.AxisRendererY.new(root, {})
+              renderer: am5xy.AxisRendererY.new(root, {}),
           })
         );
 
