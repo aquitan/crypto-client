@@ -47,44 +47,46 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
               am5stock.ResetControl.new(root, {
                 stockChart: stockChart
               })
-            ],    
+            ],
           });
 
           chartToolbar.current = toolbar
+          console.log('sfsdfsdfsdf', toolbar._settings.container)
+          
 
         root.numberFormatter.set("numberFormat", "#,###.00");
-        let mainPanel = stockChart.panels.push(
-          am5stock.StockPanel.new(root, {
-              wheelY: "zoomX",
-              panX: true,
-              panY: true,
-          })
-        );
+        // let mainPanel = stockChart.panels.push(
+        //   am5stock.StockPanel.new(root, {
+        //       wheelY: "zoomX",
+        //       panX: true,
+        //       panY: true,
+        //   })
+        // );
         
 
-        let valueAxis = mainPanel.yAxes.push(
-          am5xy.ValueAxis.new(root, {
-              renderer: am5xy.AxisRendererY.new(root, {
-                  pan: "zoom"
-              }),
-              extraMin: 0.1, // adds some space for for main series
-              tooltip: am5.Tooltip.new(root, {}),
-              numberFormat: "#,###",
-              extraTooltipPrecision: 2,
-          })
-        );
-        root.tapToActivate = true
+        // let valueAxis = mainPanel.yAxes.push(
+        //   am5xy.ValueAxis.new(root, {
+        //       renderer: am5xy.AxisRendererY.new(root, {
+        //           pan: "zoom"
+        //       }),
+        //       extraMin: 0.1, // adds some space for for main series
+        //       tooltip: am5.Tooltip.new(root, {}),
+        //       numberFormat: "#,###",
+        //       extraTooltipPrecision: 2,
+        //   })
+        // );
+        // root.tapToActivate = true
 
-        let dateAxis = mainPanel.xAxes.push(
-          am5xy.GaplessDateAxis.new(root, {
-              baseInterval: {
-                  timeUnit: "minute",
-                  count: 1
-              },
-              renderer: am5xy.AxisRendererX.new(root, {}),
-              tooltip: am5.Tooltip.new(root, {})
-          })
-        );
+        // let dateAxis = mainPanel.xAxes.push(
+        //   am5xy.GaplessDateAxis.new(root, {
+        //       baseInterval: {
+        //           timeUnit: "minute",
+        //           count: 1
+        //       },
+        //       renderer: am5xy.AxisRendererX.new(root, {}),
+        //       tooltip: am5.Tooltip.new(root, {})
+        //   })
+        // );
 
         // add range which will show current value
         let currentValueDataItem = valueAxis.createAxisRange(valueAxis.makeDataItem({ value: 0 }));
@@ -237,13 +239,13 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
                 return Number(real.lastPrice)
             }
 
-            let dataFromServer = tradingData.timeRangeInMs
+            // let dataFromServer = tradingData.timeRangeInMs
 
             if (lastDataObject) {
                 let previousDate = lastDataObject.Date;
                 let previousValue = lastDataObject.Close;
 
-                value = dataFromServer ?
+                value = tradingData ?
                   await countFunc(tradingData.timeRangeInMs, tradingData.valueInPercent, previousValue, await getRate(), tradingData.timeRangeInMs, tradingData.growthParams, 'bitcoin')
                   : await getRate()
 
@@ -320,8 +322,7 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
     }, [])
 
     const callFunc = async (val) => {
-        console.log('chartToolbar.current', chartToolbar.current = null)
-        chartToolbar.current = null
+        chartToolbar.current._settings.container.innerHTML = ''
         await createChart(val)
     }
 
@@ -388,7 +389,6 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
     }
 
     const onSendDateOnReload = async () => {
-        console.log('reload---- before')
         const obj = {
             domainName: window.location.host,
             coinName: 'BCH',

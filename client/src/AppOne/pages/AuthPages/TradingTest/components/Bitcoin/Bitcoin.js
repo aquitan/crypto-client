@@ -108,7 +108,7 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, 
 
   const getTradingData = async () => {
     const res = await getData(`${getSwitchQuery('/trading/get_valid_trading_data/')}${store.domain.fullDomainName}/${store.user.id}`)
-    let validRate = res.data.ratesData.filter(el => el.coinName === coinPair)
+    let validRate = res.data.filter(el => el.coinName === coinPair)
     console.log('validRate', res.data);
     setTradingData(validRate[0])
   }
@@ -273,7 +273,7 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, 
           <ButtonCard theme={theme}>
             <h3>{getName()} Chart</h3>
             {
-              rate && initialChartData.length && tradingData ? <Chart initialSol={initialSol} initialTrx={initialTrx} initialBch={initialBch} initialBtc={initialBtc} initialEth={initialEth} initialData={initialChartData} tradingData={tradingData} coinName={coinPair} rate={Number(rate)} data={data} /> : <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} /> 
+              rate && initialChartData.length ? <Chart initialSol={initialSol} initialTrx={initialTrx} initialBch={initialBch} initialBtc={initialBtc} initialEth={initialEth} initialData={initialChartData} tradingData={tradingData} coinName={coinPair} rate={Number(rate)} data={data} /> : <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} /> 
             }
           </ButtonCard>
           <Row>
