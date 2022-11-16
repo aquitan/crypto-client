@@ -55,38 +55,38 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
           
 
         root.numberFormatter.set("numberFormat", "#,###.00");
-        // let mainPanel = stockChart.panels.push(
-        //   am5stock.StockPanel.new(root, {
-        //       wheelY: "zoomX",
-        //       panX: true,
-        //       panY: true,
-        //   })
-        // );
+        let mainPanel = stockChart.panels.push(
+          am5stock.StockPanel.new(root, {
+              wheelY: "zoomX",
+              panX: true,
+              panY: true,
+          })
+        );
         
 
-        // let valueAxis = mainPanel.yAxes.push(
-        //   am5xy.ValueAxis.new(root, {
-        //       renderer: am5xy.AxisRendererY.new(root, {
-        //           pan: "zoom"
-        //       }),
-        //       extraMin: 0.1, // adds some space for for main series
-        //       tooltip: am5.Tooltip.new(root, {}),
-        //       numberFormat: "#,###",
-        //       extraTooltipPrecision: 2,
-        //   })
-        // );
-        // root.tapToActivate = true
+        let valueAxis = mainPanel.yAxes.push(
+          am5xy.ValueAxis.new(root, {
+              renderer: am5xy.AxisRendererY.new(root, {
+                  pan: "zoom"
+              }),
+              extraMin: 0.1, // adds some space for for main series
+              tooltip: am5.Tooltip.new(root, {}),
+              numberFormat: "#,###",
+              extraTooltipPrecision: 2,
+          })
+        );
+        root.tapToActivate = true
 
-        // let dateAxis = mainPanel.xAxes.push(
-        //   am5xy.GaplessDateAxis.new(root, {
-        //       baseInterval: {
-        //           timeUnit: "minute",
-        //           count: 1
-        //       },
-        //       renderer: am5xy.AxisRendererX.new(root, {}),
-        //       tooltip: am5.Tooltip.new(root, {})
-        //   })
-        // );
+        let dateAxis = mainPanel.xAxes.push(
+          am5xy.GaplessDateAxis.new(root, {
+              baseInterval: {
+                  timeUnit: "minute",
+                  count: 1
+              },
+              renderer: am5xy.AxisRendererX.new(root, {}),
+              tooltip: am5.Tooltip.new(root, {})
+          })
+        );
 
         // add range which will show current value
         let currentValueDataItem = valueAxis.createAxisRange(valueAxis.makeDataItem({ value: 0 }));
