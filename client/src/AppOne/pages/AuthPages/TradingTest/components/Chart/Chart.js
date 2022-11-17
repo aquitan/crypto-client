@@ -11,6 +11,7 @@ import { useLocation } from 'react-router-dom';
 import { putData } from '../../../../../services/StaffServices';
 import { useThemeContext } from '../../../../../context/ThemeContext';
 import { ZoomControl } from '@amcharts/amcharts5/.internal/charts/map/ZoomControl';
+import { getSwitchQuery } from '../../../../../utils/getSwitchQuery';
 
 const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch, initialTrx, initialSol}) => {
     const [realRate, setRealRate] = useState(0)
@@ -75,7 +76,7 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
               extraTooltipPrecision: 2,
           })
         );
-        root.tapToActivate = true
+        
 
         let dateAxis = mainPanel.xAxes.push(
           am5xy.GaplessDateAxis.new(root, {
@@ -318,12 +319,14 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
         return () => {
             chartRef.current.dispose()
             clearInterval(ref.current)
+            onSendDateOnReload()
         }
     }, [])
 
     const callFunc = async (val) => {
         chartToolbar.current._settings.container.innerHTML = ''
         await createChart(val)
+        onSendDateOnReload()
     }
 
     useEffect(() => {
@@ -377,7 +380,6 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
             }
         }
         return () => {
-            window.removeEventListener('unload', () => onSendDateOnReload())
             chartRef.current.dispose()
             clearInterval(ref.current)
         }
@@ -391,15 +393,23 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
     const onSendDateOnReload = async () => {
         const obj = {
             domainName: window.location.host,
-            coinName: 'BCH',
-            growthParams: true,
+            coinName: coinName,
+            growthParams: tradingData?.growthParams ? tradingData?.growthParams : true,
             value: chartValue,
             timeToEnd: 150000,
             userId: ''
           }
-          console.log('reload---- after')
         await putData(getSwitchQuery('/trading/add_user_data/'), obj)
     }
+
+    // window.addEventListener('beforeunload', function (e) {
+    //     console.log('mozilla')
+    //     // Cancel the event
+    //     e.preventDefault(); // If you prevent default behavior in Mozilla Firefox prompt will always be shown
+    //     // Chrome requires returnValue to be set
+    //     e.returnValue = '';
+    //     onSendDateOnReload()
+    //   });
 
     return (
         <>

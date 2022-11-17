@@ -25,7 +25,7 @@ const UserTradingHistory = ({email, domain, date, coinName, coinValue, valueInUs
               <b>Price: ${coinRate}</b>
             </div>
           </Col>
-          <Col>{orderStatus ? 'Active' : 'Completed'}</Col>
+          <Col>{!orderStatus ? 'Active' : 'Completed'}</Col>
           <Col><Button onClick={() => onCancelOrder(id)} style={{height: 30, fontSize: 12}} classname='btnOrange'>Cancel</Button></Col>
       </Row>
     )

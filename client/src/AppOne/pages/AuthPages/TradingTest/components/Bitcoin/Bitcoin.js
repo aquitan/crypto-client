@@ -69,29 +69,7 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, 
 
   }, [coinPair])
 
-  useEffect(async () => {
-      window.addEventListener('beforeunload', (e) => {
-        alertUser()
-      })
-    return () => {
-      window.removeEventListener("beforeunload", (e) => {
-        alertUser()
-      });
-    };
-  }, []);
 
-  const alertUser = async (e) => {
-    console.log('adfjkhskdjhfkjsd')
-    const obj = {
-      domainName: window.location.host,
-      coinName: 'BCH',
-      growthParams: true,
-      value: chartValue,
-      timeToEnd: 150000,
-      userId: ''
-    }
-    await putData(getSwitchQuery('/trading/add_user_data/'), obj)
-  };
 
   const getTradingHistory = async () => {
     const res = await getData(`${getSwitchQuery('/trading/order_history/')}${store.user.id}/0/20/`)
