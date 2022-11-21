@@ -293,8 +293,8 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, 
               {
                 rate > 0 ?
                   <>
-                    <Orders type={'buy'} orders={generateOrders(rate)} />
-                    <Orders type={'sell'} orders={generateOrders(rate)} />
+                    <Orders type={'buy'} orders={generateOrders(rate, coinPair)} />
+                    <Orders type={'sell'} orders={generateOrders(rate, coinPair)} />
                   </> : <Preloader/>
               }
             </ButtonCard>
