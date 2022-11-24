@@ -23,6 +23,7 @@ import {useLocation, useNavigate} from 'react-router-dom';
 import { Select, Skeleton } from '@mui/material';
 import UserPageSkeleton from '../../../../../components/UserPageSkeleton/UserPageSkeleton';
 import { getSwitchQuery } from '../../../../../utils/getSwitchQuery';
+import { generateOrdersTron } from './utils/generateOrdersTron';
 
 const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, initialTrx, initialSol}) => {
   const {theme} = useThemeContext()
@@ -38,6 +39,7 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, 
   const [initialChartData, setInitialChartData] = useState([])
   const [tradingData, setTradingData] = useState([])
   const [orderModal, setOrderModal] = useState(false)
+  const [orderModalError, setOrderModalError] = useState(false)
   const {chartValue} = useValueContext()
   const navigate = useNavigate()
   const location = useLocation()
@@ -180,10 +182,12 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, 
       userId: store.user.id
     }
     if (price) {
-      const res = await putData(getSwitchQuery('/trading/make_order/'), obj)
-      if (res.status === 201) {
+      try {
+        const res = await putData(getSwitchQuery('/trading/make_order/'), obj)
         await getTradingHistory()
         setOrderModal(true)
+      } catch(e) {
+        setOrderModalError(true)
       }
     }
   }
@@ -217,6 +221,10 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, 
 
       <CustomModal show={orderModal} handleClose={() => setOrderModal(false)} size='md' title='Order' btnClose={'Ok'} >
         Order has been added!
+      </CustomModal>
+
+      <CustomModal show={orderModalError} handleClose={() => setOrderModalError(false)} size='md' title='Error' btnClose={'Ok'} >
+        Oops! Something went wrong! Try again later!
       </CustomModal>
 
       <Row>
@@ -293,8 +301,18 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, 
               {
                 rate > 0 ?
                   <>
-                    <Orders type={'buy'} orders={generateOrders(rate, coinPair)} />
-                    <Orders type={'sell'} orders={generateOrders(rate, coinPair)} />
+                    {
+                      coinPair !== 'TRX' ?
+                        <>
+                          <Orders type={'buy'} orders={generateOrders(rate)} />
+                          <Orders type={'sell'} orders={generateOrders(rate)} />
+                        </>
+                      : 
+                      <>
+                        <Orders type={'buy'} orders={generateOrdersTron(rate)} />
+                        <Orders type={'sell'} orders={generateOrdersTron(rate)} />
+                      </>
+                    }
                   </> : <Preloader/>
               }
             </ButtonCard>

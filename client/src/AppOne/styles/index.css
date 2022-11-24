@@ -177,3 +177,10 @@ button.accordion-button.collapsed, .accordion-flush .accordion-item .accordion-b
 .tradingview-widget-copyright a:visited .blue-text {
   color: #2962FF !important;
 }
+
+.dark .am5stock-control-button path {
+  stroke: #fff !important;
+}
+.dark .am5stock-control-label {
+  color: #fff !important;
+}

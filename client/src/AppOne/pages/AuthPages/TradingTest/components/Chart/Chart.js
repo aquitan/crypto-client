@@ -26,6 +26,7 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
     const [initialData, setInitialChartData] = useState(initialBtc) 
     const location = useLocation()
     const {theme} = useThemeContext()
+    const [created, setCreated] = useState(false)
 
     const createChart = async (initial) => {
         let root = am5.Root.new("chartdiv");
@@ -313,9 +314,16 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
 
 
     }
+    
+    function handler(e) {
+        e.stopPropagation();
+        e.preventDefault();
+    }
+
 
     useLayoutEffect(() => {
         createChart(initialData)
+        document.removeEventListener("click", handler, true)
         return () => {
             chartRef.current.dispose()
             clearInterval(ref.current)
@@ -413,7 +421,7 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
 
     return (
         <>
-            <div id="chartcontrols"></div>
+            <div className={theme} id="chartcontrols"></div>
             <div id="chartdiv" style={{width: '100%', height: '500px'}}/>
         </>
         

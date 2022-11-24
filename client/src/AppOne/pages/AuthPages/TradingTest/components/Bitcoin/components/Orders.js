@@ -6,7 +6,7 @@ const Orders = ({orders, type}) => {
         <Row style={{}} className='mt-4 px-0'>
             <Row style={{color: 'grey', fontSize: 14}} className='p-0'>
                 <Col>Price USD</Col>
-                <Col>Qty BTC</Col>
+                <Col>Qty Crypto</Col>
                 <Col>Total USD</Col>
             </Row>
             {
