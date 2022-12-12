@@ -240,6 +240,9 @@
   position: absolute;
   left: 10%;
   top: 30%;
+  @media(max-width: 480px) {
+    display: none;
+  }
 }
 .Ellipse-26 {
   width: 242.5px;
@@ -251,6 +254,9 @@
   background-color: #0083f8;
   position: absolute;
   right: 10%;
+  @media(max-width: 480px) {
+    display: none;
+  }
 }
 .Ellipse-25 {
   width: 242.5px;
@@ -262,6 +268,9 @@
   background-color: #0083f8;
   position: absolute;
   left: 20%;
+  @media(max-width: 480px) {
+    display: none;
+  }
 }
 
 .easy-card {
@@ -334,4 +343,9 @@
 
 #dark .easy-card {
   background-color: #121318;
+}
+
+.landing-h2 {
+  font-size: 32px;
+  font-weight: normal;
 }

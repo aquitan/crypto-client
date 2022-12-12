@@ -117,7 +117,7 @@ const LandingOne = ({state, theme, navigate}) => {
                       <Row className='flex-column flex-xl-row'>
                           <Col className='position-relative landing-block-text-block mb-3'>
                             <h4 className='signup-today'>Create Profile</h4>
-                            <h2>Easy Way to Get Started</h2>
+                            <h2 style={{marginBottom: 30}} className='landing-h2'>Easy Way to Get Started</h2>
                             <p style={{color: '#9295A6', marginTop: 10}}>No matter your level of experience. An intuitive experience from the start. From day one we designed and built a streamlined bitcoin exchange for newcomers and experts alike.</p>
                             <Col className='p-0 d-flex justify-content-center justify-content-lg-start'>
                                 <div className='get-started-link' style={{marginTop: 20}} onClick={() => navigate('/signUp')}>
@@ -159,7 +159,7 @@ const LandingOne = ({state, theme, navigate}) => {
                   
                   <LandingBlock classname='landingTransparentBlock'>
                     <Row className='text-center mb-4'>
-                        <h2>Get Various Crypto Coin</h2>
+                        <h2 className='landing-h2'>Get Various Crypto Coin</h2>
                     </Row>
                     <Row>
                         <TradingWidget/>
@@ -175,11 +175,10 @@ const LandingOne = ({state, theme, navigate}) => {
                           </Col>
                           <Col className='position-relative landing-block-text-block'>
                               <Col className='text-center text-lg-start justify-content-center justify-content-lg-start'>
-                                  <h2 className='' id='features'>Buy & trade on the
-                                      original crypto exchange.</h2>
+                                  <h2 style={{marginBottom: 30}} className='landing-h2' id='features'>Buy & trade on the original crypto exchange.</h2>
                                   <p style={{color: '#9295A6', marginTop: 10}}>Buy now and get extra bonus Minimum pre-sale amount 25 Crypto Coin. We accept BTC crypto-currency</p>
                                   <Col className='p-0 d-flex justify-content-center justify-content-lg-start'>
-                                      <Button style={{marginTop: 20}} classname={'btnBlue'} onClick={() => navigate('/signUp')}>
+                                      <Button style={{marginTop: 20, width: 150}} classname={'btnBlue'} onClick={() => navigate('/signUp')}>
                                           Buy Now
                                       </Button>
                                   </Col>
@@ -261,7 +260,7 @@ const LandingOne = ({state, theme, navigate}) => {
                           </Col>
                           <Col className='position-relative landing-block-text-block'>
                               <Col className='text-center text-lg-start justify-content-center justify-content-lg-start'>
-                                  <h3 className='title-h3' id='services'>Industry-leading security from day one</h3>
+                                  <h2 style={{marginBottom: 30}} className='landing-h2' id='services'>Industry-leading security from day one</h2>
                                   <div className="text-group">
                                       <div className="text-group-title">
                                           <img style={{marginRight: 10}} src={'/img/icon.svg'} alt=""/>Safety, security and compliance
@@ -296,7 +295,7 @@ const LandingOne = ({state, theme, navigate}) => {
                   <LandingBlock classname='landingTransparentBlock'>
                       <Row>
                           <Col className='position-relative text-center landing-block-text-block'>
-                              <h4 className='trusted-title'>Get started in just a few minutes</h4>
+                              <h2 className='landing-h2' style={{marginBottom: 30}}>Get started in just a few minutes</h2>
                               <Row>
                                   <Col>
                                       <img src={'/img/signup-icon.svg'} alt=""/>
