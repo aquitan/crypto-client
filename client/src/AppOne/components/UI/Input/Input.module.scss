@@ -77,6 +77,21 @@ select:-webkit-autofill:focus {
     -webkit-box-shadow: 0 0 0px 1000px transparent inset;
     transition: background-color 5000s ease-in-out 0s;
 }
+input.dark:-webkit-autofill,
+input.dark:-webkit-autofill:hover,
+input.dark:-webkit-autofill:focus,
+textarea.dark:-webkit-autofill,
+textarea.dark:-webkit-autofill:hover,
+textarea.dark:-webkit-autofill:focus,
+select.dark:-webkit-autofill,
+select.dark:-webkit-autofill:hover,
+select.dark:-webkit-autofill:focus {
+  border: 1px solid #121318 !important;
+  -webkit-text-fill-color: #fff !important;
+  background-color: #121318 !important;
+  -webkit-box-shadow: 0 0 0px 1000px transparent inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
 
 .error {
     border-color: tomato;
@@ -85,7 +100,7 @@ select:-webkit-autofill:focus {
     color: #fff;
 }
 .dark.input {
-    background-color: #707070 !important;
+    background-color: #121318 !important;
     color: #fff !important;
     border-color: transparent !important;
 }

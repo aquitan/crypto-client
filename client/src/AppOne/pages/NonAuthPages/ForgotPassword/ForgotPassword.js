@@ -56,7 +56,7 @@ const ForgotPassword = () => {
                 </Row>
             </Modal>
 
-            <Row className='h-100 p-0'>
+            <Row id={theme} className='h-100 p-0'>
                 <Col style={{position: 'relative'}} className={`d-flex p-0 justify-content-center align-items-baseline align-items-lg-center ${cls.gradient}`}>
                     <div className='pt-5 pt-xl-0 img-container-form'>
                         <img width='100%' src={'/img/pngfind_1.png'} alt=""/>
