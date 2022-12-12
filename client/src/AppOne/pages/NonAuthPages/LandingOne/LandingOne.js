@@ -38,7 +38,7 @@ const LandingOne = ({state, theme, navigate}) => {
                                       <h2 className='landing-header landing-header__colored'>Crypto Instant</h2>
                                       <p style={{color: '#9295A6', marginTop: 10}}>Join World biggest cryptocurrencies Exchange to Buy and sell many currencies.</p>
                                       <Col className='p-0 d-flex justify-content-center justify-content-lg-start'>
-                                          <Button style={{marginTop: 20}} classname={'btnBlue'} onClick={() => navigate('/signUp')}>
+                                          <Button style={{marginTop: 20, width: '150px'}} classname={'btnBlue'} onClick={() => navigate('/signUp')}>
                                               Get started
                                           </Button>
                                       </Col>
@@ -348,13 +348,13 @@ const LandingOne = ({state, theme, navigate}) => {
                               </div>
                           </NavLink>
                       </div>
-                      <Row className='mb-5'>
-                          <Col><Link to='/privacy-policy'>Privacy Policy</Link></Col>
-                          <Col><Link to='/cookie-policy'>Cookie Policy</Link></Col>
-                          <Col><Link to='/security-policy'>Security Policy</Link></Col>
-                          <Col><Link to='/terms-conditions'>Terms & Conditions</Link></Col>
-                          <Col><Link to='/about-us'>About us</Link></Col>
-                          <Col><Link to='/contact-us'>Contact us</Link></Col>
+                      <Row className='mb-5 flex-column flex-md-row'>
+                          <Col className='text-center'><Link to='/privacy-policy'>Privacy Policy</Link></Col>
+                          <Col className='text-center'><Link to='/cookie-policy'>Cookie Policy</Link></Col>
+                          <Col className='text-center'><Link to='/security-policy'>Security Policy</Link></Col>
+                          <Col className='text-center'><Link to='/terms-conditions'>Terms & Conditions</Link></Col>
+                          <Col className='text-center'><Link to='/about-us'>About us</Link></Col>
+                          <Col className='text-center'><Link to='/contact-us'>Contact us</Link></Col>
                       </Row>
                       <div className='w-100 mt-4 text-center' style={{borderTop: '2px solid #2b3144'}}>
                           <p className='mt-3' style={{color: '#fff'}}>&#169;{store.domain.companyYear}-{new Date().getFullYear()} All rights reserved</p>

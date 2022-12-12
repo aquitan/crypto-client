@@ -157,11 +157,12 @@ const SignUp = () => {
                     </div>
                 </Col>
                 <Col className={`px-3 px-xl-0 ${cls.authFormItem}`} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                    
                     <Form classnames='narrow' onSubmit={handleSubmit(onSubmit)}>
                         <Row>
                             <h2 style={{color: theme === 'light' ? '#121318' : '#fff'}} className='mb-4'>Create your account</h2>
                         </Row>
-                        <Row className='mb-3'>
+                        <Row style={{marginBottom: 30}}>
                            <Col>
                                 <Input {...register('email', {
                                     required: 'You must specify email to SignIn',
@@ -171,7 +172,7 @@ const SignUp = () => {
                                 <ErrorMessage  name='email' errors={errors} render={() => <p className={cls.error}>Email is invalid</p>} />
                            </Col>
                         </Row>
-                        <Row className='mb-3'>
+                        <Row style={{marginBottom: 30}}>
                             <Col>
                                 <Input {...register('name', {
                                     required: false,
@@ -184,7 +185,7 @@ const SignUp = () => {
                                 {errors.name && <p className={cls.error}>{errors.name.message}</p>}
                             </Col>
                         </Row>
-                        <Row className='mb-3'>
+                        <Row style={{marginBottom: 30}}>
                             <Col style={{width: '100%'}} className={`${cls.relative} col-12 col-md-6`}>
                                 <Input onChange={onCheckPassword} {...register('password', {
                                     required: 'You must specify your password',
@@ -204,7 +205,7 @@ const SignUp = () => {
                                 <PasswordStrength active={match.active} characters={match.characters} numbers={match.numbers} uppercase={match.uppercase} />
                             </Col>
                         </Row>
-                        <Row className='mb-3' style={{width: '100%'}}>
+                        <Row style={{marginBottom: 30}}>
                             <Col style={{width: '100%'}} className={`${cls.relative} col-12 col-md-6`}>
                                 <Input {...register('repeatPassword', {
                                     required: 'You have to repeat your password',
@@ -217,7 +218,7 @@ const SignUp = () => {
                         </Row>
                         {
                             promoStatus ?
-                                <Row className='mb-4'>
+                                <Row style={{marginBottom: 30}}>
                                     <Col className={cls.relative}>
                                         <Input onChange={(e) => setCurrentPromo(e.target.value)} placeholder='Enter promocode'/>
                                         <ErrorMessage name='promocode' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
@@ -225,7 +226,7 @@ const SignUp = () => {
                                 </Row>
                                 : null
                         }
-                        <Row className='mt-2'>
+                        <Row style={{marginBottom: 30}}>
                             <FormText className='d-flex position-relative'>
                                 <FormCheck {...register('agreement', {
                                     required: true

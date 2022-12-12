@@ -3,8 +3,8 @@
     box-sizing: border-box;
     width: 100%;
     outline: none;
-    background-color: #8AC8FF;
-    border: 1px solid #8AC8FF;
+    background-color: #e2f2ff;
+    border: 1px solid #e2f2ff;
     color: #6C7080;
     border-radius: 8px;
     transition: all .2s linear;
@@ -83,4 +83,9 @@ select:-webkit-autofill:focus {
 }
 .dark.input {
     color: #fff;
+}
+.dark.input {
+    background-color: #707070 !important;
+    color: #fff !important;
+    border-color: transparent !important;
 }

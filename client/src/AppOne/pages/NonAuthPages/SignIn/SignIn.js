@@ -143,10 +143,10 @@ const SignIn = () => {
                 </Col>
                 <Col className={`px-3 px-xl-0 ${cls.authFormItem}`} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                     <Form classnames='narrow' onSubmit={handleSubmit(onSubmit)}>
-                        <Row className='mb-4'>
+                        <Row style={{marginBottom: 30}}>
                             <h2 style={{color: theme === 'light' ? '#121318' : '#fff'}}>Sign In to your account</h2>
                         </Row>
-                        <Row className='mt-3 mb-4'>
+                        <Row style={{marginBottom: 30}} className='mt-3'>
                             <Col className={cls.relative}>
                                 <Input defaultValue={store.asUser?.email} {...register('email', {
                                     required: 'You must specify email to SignIn',
@@ -156,7 +156,7 @@ const SignIn = () => {
                                 <ErrorMessage  name='email' errors={errors} render={() => <p className={cls.error}>Email is invalid</p>} />
                             </Col>
                         </Row>
-                        <Row className='mt-3 mb-4'>
+                        <Row style={{marginBottom: 30}} className=''>
                             <Col className={cls.relative}>
                                 <Input defaultValue={store.asUser?.password} {...register('password', {
                                         required: 'You must specify your password',
@@ -172,7 +172,7 @@ const SignIn = () => {
                                     }
                                 )} classname={[`${errors.password ? 'error' : ''}`]} type={isShowPassword ? 'text' : 'password'} name='password' placeholder='Password' id='password' />
                                  <ErrorMessage name='password' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
-                                <FontAwesomeIcon onClick={showPassword} className={cls.eye_icon} icon={isShowPassword ? faEye : faEyeSlash} />
+                                <FontAwesomeIcon color='#9295a6' onClick={showPassword} className={cls.eye_icon} icon={isShowPassword ? faEye : faEyeSlash} />
                             </Col>
                         </Row>
                         {
@@ -180,7 +180,7 @@ const SignIn = () => {
                         }
                         {
                             stateTwoFa.twoFaCode ?
-                                <Row>
+                                <Row style={{marginBottom: 30}}>
                                     <Col className={cls.relative}>
                                         <Input classname='transparent' placeholder='Your 2FA code' {...register('twoFaCode', {
                                             required: true,
