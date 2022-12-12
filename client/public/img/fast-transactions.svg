@@ -1,0 +1,24 @@
+<svg id="Icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="70" height="70" viewBox="0 0 70 70">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="stopwatch_1_Background_Mask_" data-name="stopwatch 1 (Background/Mask)" width="50" height="50" fill="none"/>
+    </clipPath>
+  </defs>
+  <rect id="Rectangle_437" data-name="Rectangle 437" width="70" height="70" rx="10" fill="#e2f2ff"/>
+  <g id="stopwatch_1" data-name="stopwatch 1" transform="translate(10 10)">
+    <rect id="stopwatch_1_Background_Mask_2" data-name="stopwatch 1 (Background/Mask)" width="50" height="50" fill="none"/>
+    <g id="stopwatch_1-2" data-name="stopwatch 1" clip-path="url(#clip-path)">
+      <g id="_16-express" data-name="16-express" transform="translate(0.391 1.172)">
+        <g id="glyph">
+          <path id="Vector" d="M8.984,0a1.172,1.172,0,0,1,1.172,1.172V3.516A1.172,1.172,0,0,1,8.984,4.688H1.172A1.172,1.172,0,0,1,0,3.516V1.172A1.172,1.172,0,0,1,1.172,0Z" transform="translate(26.563)" fill="#5367ff"/>
+          <path id="Vector-2" data-name="Vector" d="M1.172,0a1.172,1.172,0,0,0,0,2.344H8.984A1.172,1.172,0,0,0,8.984,0H1.172Z" transform="translate(3.906 17.188)" fill="#5367ff"/>
+          <path id="Vector-3" data-name="Vector" d="M9.813.343A1.172,1.172,0,0,0,8.984,0H1.172a1.172,1.172,0,1,0,0,2.344H8.984a1.172,1.172,0,0,0,.829-2Z" transform="translate(2.344 26.563)" fill="#5367ff"/>
+          <path id="Vector-4" data-name="Vector" d="M1.172,0a1.172,1.172,0,1,0,0,2.344H6.641A1.172,1.172,0,1,0,6.641,0Z" transform="translate(5.469 31.25)" fill="#5367ff"/>
+          <path id="Vector-5" data-name="Vector" d="M12.157.343A1.172,1.172,0,0,0,11.328,0H1.172a1.172,1.172,0,1,0,0,2.344H11.328A1.172,1.172,0,0,0,12.5,1.172h0A1.172,1.172,0,0,0,12.157.343Z" transform="translate(0 21.875)" fill="#5367ff"/>
+          <path id="Vector-6" data-name="Vector" d="M13.281,0A13.281,13.281,0,1,0,26.563,13.281H13.281Z" transform="translate(18.359 12.109)" fill="#5367ff"/>
+          <path id="Vector-7" data-name="Vector" d="M0,19.531A17.506,17.506,0,0,1,4.725,7.554L3.469,6.3a1.171,1.171,0,0,1-.007-1.663,1.171,1.171,0,0,1,1.664.006L6.433,5.947a17.507,17.507,0,0,1,8.8-3.838V0h4.687V2.11a17.493,17.493,0,0,1,8.8,3.839L30.031,4.64a1.171,1.171,0,0,1,1.663-.007,1.169,1.169,0,0,1,.344.833,1.194,1.194,0,0,1-.092.451,1.18,1.18,0,0,1-.258.38L30.432,7.554A17.575,17.575,0,1,1,0,19.531Z" transform="translate(14.063 5.859)" fill="#5367ff"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

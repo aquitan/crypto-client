@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40" viewBox="0 0 40 40">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="wallet_1_Background_Mask_" data-name="wallet 1 (Background/Mask)" width="40" height="40" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="wallet_1" data-name="wallet 1" clip-path="url(#clip-path)">
+    <g id="Icon" transform="translate(0.804 4.375)">
+      <g id="Group">
+        <path id="Vector" d="M12.054,5.357a1.339,1.339,0,0,0,0,2.679H26.339s1.339-.105,1.339-1.363V4.911A4.908,4.908,0,0,0,22.768,0H4.911A4.91,4.91,0,0,0,0,4.911V8.482a1.339,1.339,0,1,0,2.679,0V4.911A2.233,2.233,0,0,1,4.911,2.679H22.768A2.231,2.231,0,0,1,25,4.911v.446Z" fill="#5367ff"/>
+        <path id="Vector-2" data-name="Vector" d="M4.91,25.447A4.907,4.907,0,0,1,0,20.535V1.339A1.34,1.34,0,0,1,1.339,0H29.911a4.91,4.91,0,0,1,4.91,4.91v.446h-4.91A4.909,4.909,0,0,0,25,10.268v5.357a4.907,4.907,0,0,0,4.91,4.91h4.91a4.907,4.907,0,0,1-4.91,4.911Z" transform="translate(0 5.357)" fill="#5367ff"/>
+        <path id="Vector-3" data-name="Vector" d="M10.691.916A3.118,3.118,0,0,0,8.482,0H3.125A3.128,3.128,0,0,0,0,3.125V8.482a3.128,3.128,0,0,0,3.125,3.125H8.482a3.128,3.128,0,0,0,3.125-3.125V3.125A3.118,3.118,0,0,0,10.691.916Z" transform="translate(26.786 12.5)" fill="#5367ff"/>
+      </g>
+    </g>
+  </g>
+</svg>

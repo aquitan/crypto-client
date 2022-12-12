@@ -3,19 +3,19 @@
 /*@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');*/
 
 /* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap'); */
-@font-face {
+/* @font-face {
   font-family: 'BrandonGrotesque-Regular';
   src: url('../fonts/BrandonGrotesque-Regular.woff2') format('woff2'),
        url('../fonts/BrandonGrotesque-Regular.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 
-}
-
+} */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 body {
   margin: 0;
   height: 100%;
-  font-family: 'BrandonGrotesque-Regular', sans-serif;
+  font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -39,7 +39,7 @@ h1 {
 .container {
   overflow-y: auto;
   position: relative;
-  max-width: 1700px;
+  max-width: 1480px;
 }
 
 .nav-pills {

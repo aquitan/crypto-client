@@ -77,7 +77,6 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
               extraTooltipPrecision: 2,
           })
         );
-        
 
         let dateAxis = mainPanel.xAxes.push(
           am5xy.GaplessDateAxis.new(root, {
@@ -86,7 +85,8 @@ const Chart = ({rate, tradingData, coinName, initialBtc, initialEth, initialBch,
                   count: 1
               },
               renderer: am5xy.AxisRendererX.new(root, {}),
-              tooltip: am5.Tooltip.new(root, {})
+              tooltip: am5.Tooltip.new(root, {}),
+              color: am5.color(0xffffff)
           })
         );
 

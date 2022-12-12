@@ -30,14 +30,16 @@
     right: 20px;
     top: 25px;
     cursor: pointer;
+    width: 20px;
+    height: 20px;
 }
 
 .relative {
     position: relative;
 }
 .gradient {
-    background: rgb(167,184,226);
-    background: linear-gradient(90deg, rgba(167,184,226,1) 0%, rgba(174,218,238,1) 0%, rgba(148,187,233,1) 100%);
+    background: #8ac8ff;
+    
     @media (max-width: 1024px) {
         display: none !important;
     }

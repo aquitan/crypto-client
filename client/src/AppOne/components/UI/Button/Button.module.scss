@@ -26,9 +26,10 @@
     }
 }
 .btnBlue {
-    background-color: rgb(83, 103, 254);
+    background-color: #5367ff;
     color: #fff;
     transition: all .2s linear;
+    border-radius: 5px;
     &:hover {
         transition: all .2s linear;
         background-color: #8ac8ff;

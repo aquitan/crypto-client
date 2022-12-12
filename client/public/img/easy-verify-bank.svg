@@ -1,0 +1,25 @@
+<svg id="credit-card_1" data-name="credit-card 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40" viewBox="0 0 40 40">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="credit-card_1_Background_Mask_" data-name="credit-card 1 (Background/Mask)" width="40" height="40" fill="none"/>
+    </clipPath>
+  </defs>
+  <rect id="credit-card_1_Background_Mask_2" data-name="credit-card 1 (Background/Mask)" width="40" height="40" fill="none"/>
+  <g id="credit-card_1-2" data-name="credit-card 1" clip-path="url(#clip-path)">
+    <g id="Group" transform="translate(0 10)">
+      <g id="Group-2" data-name="Group">
+        <path id="Vector" d="M17.5,0H2.5A2.5,2.5,0,0,0,0,2.5v5H18.028a22.384,22.384,0,0,1-.528-5Z" fill="#5367ff"/>
+      </g>
+    </g>
+    <g id="Group-3" data-name="Group" transform="translate(0 22.5)">
+      <g id="Group-4" data-name="Group">
+        <path id="Vector-2" data-name="Vector" d="M2.5,15A2.5,2.5,0,0,1,0,12.5V0H20.108A22.589,22.589,0,0,0,28.14,7.007a3.758,3.758,0,0,0,3.727,0A22.5,22.5,0,0,0,39.9,0H40V12.5A2.5,2.5,0,0,1,37.5,15Z" fill="#5367ff"/>
+      </g>
+    </g>
+    <g id="Group-5" data-name="Group" transform="translate(20 2.5)">
+      <g id="Group-6" data-name="Group">
+        <path id="Vector-3" data-name="Vector" d="M9.377,24.834C2.543,20.9,0,16.876,0,10V5A1.248,1.248,0,0,1,.755,3.851L9.5.1a1.246,1.246,0,0,1,.987,0l8.751,3.749A1.246,1.246,0,0,1,20,5v5c0,6.888-2.542,10.907-9.377,14.835a1.26,1.26,0,0,1-1.246,0Z" fill="#5367ff"/>
+      </g>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,16 @@
+<svg id="Icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="70" height="70" viewBox="0 0 70 70">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="file_1_Background_Mask_" data-name="file 1 (Background/Mask)" width="50" height="50" fill="none"/>
+    </clipPath>
+  </defs>
+  <rect id="Rectangle_437" data-name="Rectangle 437" width="70" height="70" rx="10" fill="#e2f2ff"/>
+  <g id="file_1" data-name="file 1" transform="translate(10 10)">
+    <rect id="file_1_Background_Mask_2" data-name="file 1 (Background/Mask)" width="50" height="50" fill="none"/>
+    <g id="file_1-2" data-name="file 1" clip-path="url(#clip-path)">
+      <path id="Vector" d="M0,13.183A13.184,13.184,0,1,1,13.183,26.367,13.2,13.2,0,0,1,0,13.183Z" transform="translate(0.098 23.633)" fill="#5367ff"/>
+      <path id="Vector-2" data-name="Vector" d="M10.719,50A16.118,16.118,0,0,0,17.51,38.282H29.786a1.465,1.465,0,0,0,0-2.93H17.51a15.97,15.97,0,0,0-1.7-5.86H29.786a1.465,1.465,0,0,0,0-2.93h-15.9A16.087,16.087,0,0,0,1.465,20.7c-.494,0-.983.024-1.465.068V4.395A4.4,4.4,0,0,1,4.395,0h21V11.23A1.465,1.465,0,0,0,26.855,12.7H38.086v32.91A4.4,4.4,0,0,1,33.692,50Z" transform="translate(11.816)" fill="#5367ff"/>
+      <path id="Vector-3" data-name="Vector" d="M0,8.908H8.907L0,0Z" transform="translate(40.137 0.857)" fill="#5367ff"/>
+    </g>
+  </g>
+</svg>

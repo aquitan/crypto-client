@@ -11,6 +11,8 @@ import ButtonCard from "../../../components/ButtonCard/ButtonCard";
 import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 import Form from "../../../components/UI/Form/Form";
 import {ErrorMessage} from '@hookform/error-message';
+import './ImgContainer.scss'
+
 
 const RegisterConfirm = () => {
     const {theme} = useThemeContext(ThemeContext)
@@ -26,8 +28,8 @@ const RegisterConfirm = () => {
     return (
         <Container style={{maxWidth: '100%', backgroundColor: theme === 'light' ? '#fff' : '#121318'}}  className='h-100 p-0'>
             <Row className='h-100 p-0'>
-                <Col className={`d-flex p-0 justify-content-center align-items-baseline align-items-lg-center ${cls.gradient}`}>
-                    <div className='pt-5 pt-xl-0'>
+                <Col style={{position: 'relative'}} className={`d-flex p-0 justify-content-center align-items-baseline align-items-lg-center ${cls.gradient}`}>
+                    <div className='pt-5 pt-xl-0 img-container-form'>
                         <img width='100%' src={'/img/pngfind_1.png'} alt=""/>
                     </div>
                 </Col>

@@ -17,20 +17,27 @@
 }
 
 .signup-today {
-  background: linear-gradient(136.91deg, #468EF9 -12.5%, #0C66EE 107.5%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-fill-color: transparent;
-  font-size: 20px;
-  line-height: 30px;
-  text-transform: uppercase;
-  font-weight: bold;
+  font-family: Inter;
+  font-size: 19px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 2;
+  margin-bottom: 20px;
+  letter-spacing: normal;
+  text-align: left;
+  color: #5367ff;
 }
 .landing-header {
-  font-size: 68px;
-  line-height: 82px;
+  margin: 0 0 21px;
+  font-family: Inter;
+  font-size: 65px;
+  font-stretch: normal;
   font-weight: bold;
+  font-style: normal;
+  line-height: 1.2;
+  letter-spacing: normal;
+  text-align: left;
   @media (max-width: 1400px) {
     font-size: 42px;
     line-height: 44px;
@@ -38,6 +45,9 @@
   @media (max-width: 768px) {
     font-size: 32px;
     line-height: 34px;
+  }
+  &__colored {
+    color: #5367ff;
   }
 }
 
@@ -147,11 +157,170 @@
 }
 
 .landing-block-text-block {
-  padding-top: 100px;
+  flex-shrink: 0;
+  padding-top: 50px;
   @media (max-width: 1024px) {
     padding-top: 30px;
   }
   @media (max-width: 768px) {
     padding-top: 0;
   }
+}
+
+.best-service-block {
+  width: 300px;
+  height: 259px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #707070;
+  margin-bottom: 30px;
+  padding: 20px;
+  text-align: left;
+  &__header {
+    font-size: 18px;
+    letter-spacing: 0.02em;
+    line-height: 23px;
+    text-align: left;
+    color: #232530;
+    margin: 20px 0;
+  }
+}
+
+#dark .best-service-block {
+  background-color: #121318;
+  border-color: #000;
+}
+
+.get-started-link {
+  margin: 0 0 4px;
+  font-size: 19px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 2.33;
+  letter-spacing: normal;
+  color: #5367ff;
+  position: relative;
+  display: flex;
+  align-items: center;
+  &__text {
+    display: inline-block;
+    position: relative;
+    &::after {
+      position: absolute;
+      content: '';
+      width: 100%;
+      height: 1px;
+      margin: 4px 0 0;
+      border-radius: 0.5px;
+      background-color: #5367ff;
+      left: 0;
+      bottom: 0;
+      transition: all .2s linear;
+    }
+  }
+  &:hover {
+    cursor: pointer;
+  }
+}
+.get-started-link:hover .get-started-link__text::after {
+  width: 30%;
+  transition: all .2s linear;
+}
+
+.Ellipse-27 {
+  width: 247.5px;
+  height: 240.5px;
+  margin: 0 251px 76.5px 0;
+  padding: 13px 28px 118.5px 64.5px;
+  opacity: 0.2;
+  -webkit-filter: blur(25px);
+  filter: blur(25px);
+  background-color: #0091ff;
+  position: absolute;
+  left: 10%;
+  top: 30%;
+}
+.Ellipse-26 {
+  width: 242.5px;
+  height: 236.5px;
+  margin: 32.5px 118px 42px 109.5px;
+  opacity: 0.1;
+  -webkit-filter: blur(25px);
+  filter: blur(25px);
+  background-color: #0083f8;
+  position: absolute;
+  right: 10%;
+}
+
+.easy-card {
+  min-width: 165px;
+  max-width: 285px;
+  width: 100%;
+  height: 145px;
+  min-height: 96px;
+  margin: 0 15px 19px 0;
+  padding: 15px 10px 18px;
+  border-radius: 5px;
+  background-color: #fff;
+  text-align: center;
+  img {
+    margin-bottom: 10px;
+  }
+  @media(max-width: 1590px) {
+    max-width: 250px;
+  }
+  @media(max-width: 1447px) {
+    max-width: 230px;
+  }
+  @media(max-width: 1370px) {
+    max-width: 200px;
+  }
+  @media(max-width: 1370px) {
+    max-width: 200px;
+  }
+  @media(min-width:1200px) and (max-width: 1369px) {
+    max-width: 185px;
+  }
+  @media(max-width: 510px) {
+    max-width: 280px;
+  }
+  p {
+    margin: 7px 0 0;
+    font-size: 14px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.38;
+    letter-spacing: normal;
+    text-align: center;
+    color: #6c7080;
+    @media(max-width: 1370px) {
+      font-size: 12px;
+    }
+  }
+  div {
+    @media(max-width: 1370px) {
+      font-size: 14px;
+    }
+  }
+}
+.easy-row-two {
+  margin-left: 10%;
+  @media(max-width: 1580px) {
+    margin-left: 0;
+  }
+}
+
+.wrapped-row {
+  @media(max-width: 1368px) {
+    flex-wrap: wrap !important;
+  }
+}
+.easy-card-row {
+  justify-content: center;
+}
+
+#dark .easy-card {
+  background-color: #121318;
 }

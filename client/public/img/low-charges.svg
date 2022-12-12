@@ -1,0 +1,19 @@
+<svg id="Icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="70" height="70" viewBox="0 0 70 70">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="low-cost_1_Background_Mask_" data-name="low-cost 1 (Background/Mask)" width="50" height="50" fill="none"/>
+    </clipPath>
+  </defs>
+  <rect id="Rectangle_437" data-name="Rectangle 437" width="70" height="70" rx="10" fill="#e2f2ff"/>
+  <g id="low-cost_1" data-name="low-cost 1" transform="translate(10 10)">
+    <rect id="low-cost_1_Background_Mask_2" data-name="low-cost 1 (Background/Mask)" width="50" height="50" fill="none"/>
+    <g id="low-cost_1-2" data-name="low-cost 1" clip-path="url(#clip-path)">
+      <g id="Group">
+        <path id="Vector" d="M16.236,3.845V0A19.151,19.151,0,0,1,4.517.075v3.77H1.467A1.466,1.466,0,0,0,.424,6.339l8.769,8.887a1.465,1.465,0,0,0,2.083,0l8.81-8.887a1.466,1.466,0,0,0-1.04-2.5Z" transform="translate(14.739 34.34)" fill="#5367ff"/>
+        <path id="Vector-2" data-name="Vector" d="M0,13.024A13.224,13.224,0,0,0,11.024,26.048,19.076,19.076,0,0,1,11.025,0h0A13.226,13.226,0,0,0,0,13.024Z" transform="translate(0 3.158)" fill="#5367ff"/>
+        <path id="Vector-3" data-name="Vector" d="M0,26.048A13.224,13.224,0,0,0,11.025,13.024,13.226,13.226,0,0,0,0,0H0A19.075,19.075,0,0,1,0,26.048Z" transform="translate(38.975 3.158)" fill="#5367ff"/>
+        <path id="Vector-4" data-name="Vector" d="M0,16.183A16.183,16.183,0,1,1,16.183,32.366,16.2,16.2,0,0,1,0,16.183Z" transform="translate(8.817)" fill="#5367ff"/>
+      </g>
+    </g>
+  </g>
+</svg>

@@ -21,6 +21,7 @@ import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 import {checkDeviece} from '../../../utils/checkDevice';
 import CustomModal from '../../../components/CustomModal/CustomModal';
 import { getSwitchQuery } from '../../../utils/getSwitchQuery'
+import './ImgContainer.scss'
 
 
 const SignUp = () => {
@@ -150,26 +151,28 @@ const SignUp = () => {
             </CustomModal>
 
             <Row className='h-100 p-0'>
-                <Col className={`d-flex p-0 justify-content-center align-items-baseline align-items-lg-center ${cls.gradient}`}>
-                    <div className='pt-5 pt-xl-0'>
+                <Col style={{position: 'relative'}} className={`d-flex p-0 justify-content-center align-items-baseline align-items-lg-center ${cls.gradient}`}>
+                    <div className='pt-5 pt-xl-0 img-container-form'>
                         <img width='100%' src={'/img/pngfind_1.png'} alt=""/>
                     </div>
                 </Col>
                 <Col className={`px-3 px-xl-0 ${cls.authFormItem}`} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                    <Form onSubmit={handleSubmit(onSubmit)}>
+                    <Form classnames='narrow' onSubmit={handleSubmit(onSubmit)}>
                         <Row>
                             <h2 style={{color: theme === 'light' ? '#121318' : '#fff'}} className='mb-4'>Create your account</h2>
                         </Row>
-                        <Row className='mb-4'>
-                            <Col className={'mb-3 col-12 col-md-6 position-relative'}>
+                        <Row className='mb-3'>
+                           <Col>
                                 <Input {...register('email', {
                                     required: 'You must specify email to SignIn',
                                     validate: emailValidate,
                                     message: 'Email is not valid',
                                 })} classname={[`${errors.email ? 'error' : ''}`]} name='email' placeholder='Email' id='login' />
                                 <ErrorMessage  name='email' errors={errors} render={() => <p className={cls.error}>Email is invalid</p>} />
-                            </Col>
-                            <Col className={'mb-3 col-12 col-md-6 position-relative'}>
+                           </Col>
+                        </Row>
+                        <Row className='mb-3'>
+                            <Col>
                                 <Input {...register('name', {
                                     required: false,
                                     minLength: {
@@ -181,8 +184,8 @@ const SignUp = () => {
                                 {errors.name && <p className={cls.error}>{errors.name.message}</p>}
                             </Col>
                         </Row>
-                        <Row className='mb-4'>
-                            <Col className={`${cls.relative} mb-3 col-12 col-md-6`}>
+                        <Row className='mb-3'>
+                            <Col style={{width: '100%'}} className={`${cls.relative} col-12 col-md-6`}>
                                 <Input onChange={onCheckPassword} {...register('password', {
                                     required: 'You must specify your password',
                                     minLength: {
@@ -197,17 +200,19 @@ const SignUp = () => {
                                     onBlur: () => showPasswordTip()
                                 })} classname={[`${errors.password ? 'error' : ''}`]} name='password' type={visiblePass.password ? 'text' : 'password'} placeholder='Password' id='password' />
                                 <ErrorMessage name='password' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
-                                <FontAwesomeIcon onClick={showPassword} className={cls.eye_icon} icon={visiblePass.password ? faEye : faEyeSlash} />
+                                <FontAwesomeIcon color='#9295a6' onClick={showPassword} className={cls.eye_icon} icon={visiblePass.password ? faEye : faEyeSlash} />
                                 <PasswordStrength active={match.active} characters={match.characters} numbers={match.numbers} uppercase={match.uppercase} />
                             </Col>
-                            <Col className={`${cls.relative} mb-3 col-12 col-md-6`}>
+                        </Row>
+                        <Row className='mb-3' style={{width: '100%'}}>
+                            <Col style={{width: '100%'}} className={`${cls.relative} col-12 col-md-6`}>
                                 <Input {...register('repeatPassword', {
                                     required: 'You have to repeat your password',
                                     validate: value => value === password.current || 'Password is not the same',
                                     message: 'The password does not match'
                                 })} classname={[`${errors.repeatPassword ? 'error' : ''}`]} name='repeatPassword' type={visiblePass.repeatPassword ? 'text' : 'password'} placeholder='Repeat password' id='repeatPassword' />
                                 <ErrorMessage name='repeatPassword' errors={errors} render={({message}) => <p className={cls.error}>{message}</p>} />
-                                <FontAwesomeIcon onClick={showRepeatPassword} className={cls.eye_icon} icon={visiblePass.repeatPassword ? faEye : faEyeSlash} />
+                                <FontAwesomeIcon color='#9295a6' onClick={showRepeatPassword} className={cls.eye_icon} icon={visiblePass.repeatPassword ? faEye : faEyeSlash} />
                             </Col>
                         </Row>
                         {

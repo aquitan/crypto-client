@@ -21,6 +21,8 @@ import {ThemeContext, useThemeContext} from "../../../context/ThemeContext";
 import {checkDeviece} from '../../../utils/checkDevice';
 import CustomModal from '../../../components/CustomModal/CustomModal';
 import { getSwitchQuery } from '../../../utils/getSwitchQuery'
+import './ImgContainer.scss'
+
 
 
 
@@ -134,13 +136,13 @@ const SignIn = () => {
 
 
             <Row className='h-100 p-0'>
-                <Col className={`d-flex p-0 justify-content-center align-items-baseline align-items-lg-center ${cls.gradient}`}>
-                    <div className='pt-5 pt-xl-0'>
+                <Col style={{position: 'relative'}} className={`d-flex p-0 justify-content-center align-items-baseline align-items-lg-center ${cls.gradient}`}>
+                    <div className='pt-5 pt-xl-0 img-container-form'>
                         <img width='100%' src={'/img/pngfind_1.png'} alt=""/>
                     </div>
                 </Col>
                 <Col className={`px-3 px-xl-0 ${cls.authFormItem}`} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                    <Form onSubmit={handleSubmit(onSubmit)}>
+                    <Form classnames='narrow' onSubmit={handleSubmit(onSubmit)}>
                         <Row className='mb-4'>
                             <h2 style={{color: theme === 'light' ? '#121318' : '#fff'}}>Sign In to your account</h2>
                         </Row>

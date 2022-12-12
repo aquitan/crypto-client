@@ -32,9 +32,9 @@ const LandingOne = ({state, theme, navigate}) => {
                                 resetOnLeave
                               >
                                   <Col className='text-center text-lg-start justify-content-center justify-content-lg-start'>
-                                      <h4 className='signup-today'>Sign Up tuday</h4>
+                                      <h4 className='signup-today'>Sign Up today</h4>
                                       <h2 className='landing-header'>Buy & Sell</h2>
-                                      <h2 className='landing-header'>Crypto Instant</h2>
+                                      <h2 className='landing-header landing-header__colored'>Crypto Instant</h2>
                                       <p style={{color: '#9295A6', marginTop: 10}}>Join World biggest cryptocurrencies Exchange to Buy and sell many currencies.</p>
                                       <Col className='p-0 d-flex justify-content-center justify-content-lg-start'>
                                           <Button style={{marginTop: 20}} classname={'btnBlue'} onClick={() => navigate('/signUp')}>
@@ -109,7 +109,54 @@ const LandingOne = ({state, theme, navigate}) => {
                           </Col>
                       </Row>
                   </LandingBlock>
-                  <LandingBlock style={{backgroundColor: theme === 'light' ? '#fff' : ''}} classname='landingAbsoluteBlock'>
+
+                  <LandingBlock style={{borderRadius: 0}} classname='landingBlock'>
+                    <div className='Ellipse-27'></div>
+                    <div className='Ellipse-26'></div>
+                      <Row className='flex-column flex-xl-row'>
+                          <Col className='position-relative landing-block-text-block mb-3'>
+                            <h4 className='signup-today'>Create Profile</h4>
+                            <h2>Easy Way to Get Started</h2>
+                            <p style={{color: '#9295A6', marginTop: 10}}>No matter your level of experience. An intuitive experience from the start. From day one we designed and built a streamlined bitcoin exchange for newcomers and experts alike.</p>
+                            <Col className='p-0 d-flex justify-content-center justify-content-lg-start'>
+                                <div className='get-started-link' style={{marginTop: 20}} onClick={() => navigate('/signUp')}>
+                                    <span className='get-started-link__text'>Start Trading </span>
+                                    <img style={{marginLeft: 10}} width={20} height={20} src='/img/white-circle-arrow.svg' />
+                                </div>
+                            </Col>
+                          </Col>
+                          <Col className='position-relative mb-3'>
+                            <Row className='easy-card-row'>
+                                <div className='easy-card'>
+                                    <img src='/img/easy-create-account.svg' alt='icon'/>
+                                    <div>Create an Account</div>
+                                    <p>Sign up with your email and mobile in just 5 minutes</p>
+                                </div>
+                                <div className='easy-card'>
+                                    <img src='/img/easy-verify-bank.svg' alt='icon'/>
+                                    <div>Verify Bank Account</div>
+                                    <p>Verify Your Bank Account in Easy Way</p>
+                                </div>
+                                <div className='easy-card'>
+                                    <img src='/img/easy-add-funds.svg' alt='icon'/>
+                                    <div>Add Funds to Wallet</div>
+                                    <p>Quickly add money to your investment wallet</p>
+                                </div>
+                                <div className='easy-card'>
+                                    <img src='/img/easy-start-trading.svg' alt='icon'/>
+                                    <div>Start Tranding Instantly</div>
+                                    <p>Buy & Sell a variety of top coins at the best prices</p>
+                                </div>
+                            </Row>
+                            {/* <Row className='d-flex easy-row-two'>
+                                
+                            </Row> */}
+                            
+                          </Col>
+                      </Row>
+                  </LandingBlock>
+
+                  <LandingBlock style={{backgroundColor: theme === 'light' ? '#fff' : '', borderRadius: 0}} classname='landingAbsoluteBlock'>
                       <Row>
                           <Col className='position-relative d-none d-xl-block'>
                               <MouseParallaxContainer
@@ -190,69 +237,71 @@ const LandingOne = ({state, theme, navigate}) => {
                   <LandingBlock classname='landingTransparentBlock'>
                       <Row>
                           <Col className='position-relative text-center landing-block-text-block'>
-                              <h4 className='trusted-title'>Trusted Partners Worldwide</h4>
+                              <h4 className='trusted-title'>Our Best Service</h4>
                               <p className='trusted-text'>We're partners with countless major organisations around the globe</p>
                               <Row>
                                   <Col>
-                                      <img src={'/img/trusted-img-1.svg'} alt=""/>
+                                      <div className='best-service-block'>
+                                        <img src='/img/safety-first.svg' />
+                                        <div className='best-service-block__header'>Safety Comes First</div>
+                                        <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
+                                      </div>
                                   </Col>
                                   <Col>
-                                      <img src={'/img/trusted-img-2.svg'} alt=""/>
+                                        <div className='best-service-block'>
+                                            <img src='/img/easy-deposit.svg' />
+                                            <div className='best-service-block__header'>Easy Deposit & Withdrawals</div>
+                                            <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
+                                        </div>
                                   </Col>
                                   <Col>
-                                      <img src={'/img/trusted-img-3.svg'} alt=""/>
+                                        <div className='best-service-block'>
+                                            <img src='/img/low-charges.svg' />
+                                            <div className='best-service-block__header'>Low Charges</div>
+                                            <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
+                                        </div>
                                   </Col>
                                   <Col>
-                                      <img src={'/img/trusted-img-4.svg'} alt=""/>
+                                        <div className='best-service-block'>
+                                            <img src='/img/bonus-referal.svg' />
+                                            <div className='best-service-block__header'>Bonus & Refferal</div>
+                                            <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
+                                        </div>
+                                  </Col>
+                                  <Col>
+                                        <div className='best-service-block'>
+                                            <img src='/img/fast-transactions.svg' />
+                                            <div className='best-service-block__header'>Fast Transactions</div>
+                                            <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
+                                        </div>
+                                  </Col>
+                                  <Col>
+                                        <div className='best-service-block'>
+                                            <img src='/img/deep-encryption.svg' />
+                                            <div className='best-service-block__header'>Deep Encryption</div>
+                                            <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
+                                        </div>
+                                  </Col>
+                                  <Col>
+                                        <div className='best-service-block'>
+                                            <img src='/img/fast-kyc.svg' />
+                                            <div className='best-service-block__header'>Fast KYC</div>
+                                            <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
+                                        </div>
+                                  </Col>
+                                  <Col>
+                                        <div className='best-service-block'>
+                                            <img src='/img/support-24.svg' />
+                                            <div className='best-service-block__header'>24/7 Support</div>
+                                            <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
+                                        </div>
                                   </Col>
                               </Row>
                           </Col>
                       </Row>
                   </LandingBlock>
-                  <LandingBlock classname='landingBlock'>
-                      <Row>
-                          <Col className='position-relative landing-block-text-block'>
-                              <Col className='text-center text-lg-start justify-content-center justify-content-lg-start'>
-                                  <h3 className='title-h3' id='trading'>Advanced Trading <span className='text-gradient'>Tools</span></h3>
-                                  <div className="text-group">
-                                      <div className="text-group-title">
-                                          Professional Access, Non-stop Availability
-                                      </div>
-                                      <p className="text-group-paragraph">
-                                          We provide premium access to crypto trading for both individuals and institutions through high liquidity,
-                                          reliable order execution and constant uptime.
-                                      </p>
-                                  </div>
-                                  <div className="text-group">
-                                      <div className="text-group-title">
-                                          A Range of Powerful Apis
-                                      </div>
-                                      <p className="text-group-paragraph">
-                                          Set up your own trading interface or deploy your algorithmic strategy with our high-performance FIX and HTTP APIs.
-                                      </p>
-                                  </div>
-                                  <div className="text-group">
-                                      <div className="text-group-title">
-                                          Customer Support
-                                      </div>
-                                      <p className="text-group-paragraph">
-                                          Premium 24/7 support available to all customers worldwide by phone or email. Dedicated account managers for partners.
-                                      </p>
-                                  </div>
-
-                                  <Col className='p-0 d-flex justify-content-center justify-content-lg-start'>
-                                      <Button style={{marginTop: 20}} classname={'btnBordered'} onClick={() => navigate('/signUp')}>
-                                          <span className='text-gradient'>Get started</span>
-                                      </Button>
-                                  </Col>
-                              </Col>
-                          </Col>
-                          <Col className='position-relative d-none d-xl-block'>
-                              <img style={{height: "auto", width: '100%'}} src={'/img/advanced-tools-img.svg'} alt=""/>
-                          </Col>
-                      </Row>
-                  </LandingBlock>
-                  <LandingBlock style={{backgroundColor: theme === 'light' ? '#fff' : ''}} classname='landingAbsoluteBlock'>
+                  
+                  <LandingBlock style={{backgroundColor: theme === 'light' ? '#fff' : '', borderRadius: 0}} classname='landingAbsoluteBlock'>
                       <Row>
                           <Col className='position-relative d-none d-xl-block'>
                               <img style={{height: "auto", width: '100%'}} src={'/img/security-img.svg'} alt=""/>
@@ -354,7 +403,7 @@ const LandingOne = ({state, theme, navigate}) => {
                           <Col><Link to='/about-us'>About us</Link></Col>
                           <Col><Link to='/contact-us'>Contact us</Link></Col>
                       </Row>
-                      <div className='w-100 mt-4' style={{borderTop: '2px solid #E9EAF0'}}>
+                      <div className='w-100 mt-4 text-center' style={{borderTop: '2px solid #2b3144'}}>
                           <p className='mt-3' style={{color: '#fff'}}>&#169;{store.domain.companyYear}-{new Date().getFullYear()} All rights reserved</p>
                       </div>
                   </div>

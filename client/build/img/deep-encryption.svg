@@ -1,0 +1,20 @@
+<svg id="Icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="70" height="70" viewBox="0 0 70 70">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="data-encryption_1_Background_Mask_" data-name="data-encryption 1 (Background/Mask)" width="50" height="50" fill="none"/>
+    </clipPath>
+  </defs>
+  <rect id="Rectangle_437" data-name="Rectangle 437" width="70" height="70" rx="10" fill="#e2f2ff"/>
+  <g id="data-encryption_1" data-name="data-encryption 1" transform="translate(7 11)">
+    <rect id="data-encryption_1_Background_Mask_2" data-name="data-encryption 1 (Background/Mask)" width="50" height="50" fill="none"/>
+    <g id="data-encryption_1-2" data-name="data-encryption 1" clip-path="url(#clip-path)">
+      <g id="Group" transform="translate(5 5)">
+        <path id="Vector" d="M13.1,8.75H10.2a1.169,1.169,0,0,0-.762.283l-1.1.939a1.171,1.171,0,0,1-1.525,0l-.6-.515a1.172,1.172,0,0,0-1.591.061l-.247.248A1.172,1.172,0,0,1,2.69,9.734L.313,7.174A1.171,1.171,0,0,1,.44,5.462L2.259,4.007a1.17,1.17,0,0,1,.732-.257H13.1a6.25,6.25,0,1,1,0,5Z" transform="translate(14.92 23.906)" fill="#5367ff"/>
+        <path id="Vector-2" data-name="Vector" d="M0,1.016v1.25a1.016,1.016,0,1,0,2.031,0V1.016A1.016,1.016,0,1,0,0,1.016Z" transform="translate(6.641 22.266)" fill="#5367ff"/>
+        <path id="Vector-3" data-name="Vector" d="M2.031,2.266V1.016A1.016,1.016,0,0,0,0,1.016v1.25a1.016,1.016,0,0,0,2.031,0Z" transform="translate(12.266 12.266)" fill="#5367ff"/>
+        <path id="Vector-4" data-name="Vector" d="M0,5.67H6.161L0,0Z" transform="translate(24.219 0.658)" fill="#5367ff"/>
+        <path id="Vector-5" data-name="Vector" d="M1.172,40A1.172,1.172,0,0,1,0,38.828V1.172A1.172,1.172,0,0,1,1.172,0h20.7V7.5a1.173,1.173,0,0,0,1.173,1.172h8.046v2.422h2.188a1.173,1.173,0,0,0,1.172-1.172V5.206a2.734,2.734,0,1,1,2.344,0V9.922a3.519,3.519,0,0,1-3.515,3.515H31.093V15.7h3.7a2.734,2.734,0,1,1,0,2.344h-3.7v3.936a8.6,8.6,0,0,0-4.442,3.33H22.265V21.093a1.173,1.173,0,0,0-1.7-1.049l-1.25.626a1.172,1.172,0,0,0,.6,2.218v2.425H17.911a3.508,3.508,0,0,0-1.27.239V21.093a1.174,1.174,0,0,0-1.7-1.049l-1.25.626a1.172,1.172,0,0,0,.6,2.218v3.83a1.161,1.161,0,0,0,.084.432l-.484.388a3.518,3.518,0,0,0-.381,5.137l2.378,2.56a3.52,3.52,0,0,0,4.489.559,3.517,3.517,0,0,0,4.405-.137L25.555,35h1.1a8.605,8.605,0,0,0,4.442,3.329v.5A1.172,1.172,0,0,1,29.921,40Z" fill="#5367ff"/>
+      </g>
+    </g>
+  </g>
+</svg>
