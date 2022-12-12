@@ -11,6 +11,7 @@ import {Link, NavLink} from 'react-router-dom';
 import React from 'react';
 import '../Landing/landing.scss'
 import {store} from '../../../../index';
+import TradingWidget from '../../../components/TradingWidget/TradingWidget';
 
 const LandingOne = ({state, theme, navigate}) => {
 
@@ -155,74 +156,26 @@ const LandingOne = ({state, theme, navigate}) => {
                           </Col>
                       </Row>
                   </LandingBlock>
+                  
+                  <LandingBlock classname='landingTransparentBlock'>
+                    <Row className='text-center mb-4'>
+                        <h2>Get Various Crypto Coin</h2>
+                    </Row>
+                    <Row>
+                        <TradingWidget/>
+                    </Row>
+                  </LandingBlock>
 
-                  <LandingBlock style={{backgroundColor: theme === 'light' ? '#fff' : '', borderRadius: 0}} classname='landingAbsoluteBlock'>
+                  <LandingBlock style={{backgroundColor: theme === 'light' ? '#fff' : '', borderRadius: 0, position:'relative'}} classname='landingAbsoluteBlock'>
+                    <div className='Ellipse-25'></div>
+                    <div className='Ellipse-26'></div>
                       <Row>
                           <Col className='position-relative d-none d-xl-block'>
-                              <MouseParallaxContainer
-                                className="parallax"
-                                containerStyles={{
-                                    width: "100%",
-                                    display: "flex",
-                                }}
-                                resetOnLeave
-                              >
-                                  <MouseParallaxChild
-                                    factorX={-0.02}
-                                    factorY={0.03}
-                                    className='buy-background-img'
-                                    updateStyles={{
-                                        position: 'absolute',
-                                        zIndex: '0',
-                                        right: '10%',
-                                        top: '20%'
-                                    }}
-                                  >
-                                      <img style={{zIndex: 9}} className='' src={'/img/buy-background.svg'} alt=""/>
-                                  </MouseParallaxChild>
-                                  <img style={{height: "auto", width: '100%'}} src={'/img/buy-img.svg'} alt=""/>
-                                  <MouseParallaxChild
-                                    factorX={-0.02}
-                                    factorY={-0.02}
-                                    updateStyles={{
-                                        position: 'absolute',
-                                        zIndex: '99999',
-                                        right: '10%',
-                                        bottom: '50px'
-                                    }}
-                                  >
-                                      <img className='elipseThree' src={'/img/elipse-1.svg'} alt=""/>
-                                  </MouseParallaxChild>
-                                  <MouseParallaxChild
-                                    factorX={0.02}
-                                    factorY={0.02}
-                                    updateStyles={{
-                                        position: 'absolute',
-                                        zIndex: '99999',
-                                        left: '20%',
-                                        top: '50px'
-                                    }}
-                                  >
-                                      <img className='elipseOne' src={'/img/elipse-2.svg'} alt=""/>
-                                  </MouseParallaxChild>
-                                  <MouseParallaxChild
-                                    factorX={-0.02}
-                                    factorY={0.03}
-                                    updateStyles={{
-                                        position: 'absolute',
-                                        zIndex: '99999',
-                                        left: '10%',
-                                        top: '250px'
-                                    }}
-                                  >
-                                      <img className='elipseOne' src={'/img/elipse-3.svg'} alt=""/>
-                                  </MouseParallaxChild>
-
-                              </MouseParallaxContainer>
+                            <img style={{height: "auto", width: '50%'}} src={'/img/buy-img.svg'} alt=""/>
                           </Col>
                           <Col className='position-relative landing-block-text-block'>
                               <Col className='text-center text-lg-start justify-content-center justify-content-lg-start'>
-                                  <h2 className='landing-header' id='features'>Buy & trade on the
+                                  <h2 className='' id='features'>Buy & trade on the
                                       original crypto exchange.</h2>
                                   <p style={{color: '#9295A6', marginTop: 10}}>Buy now and get extra bonus Minimum pre-sale amount 25 Crypto Coin. We accept BTC crypto-currency</p>
                                   <Col className='p-0 d-flex justify-content-center justify-content-lg-start'>
@@ -240,56 +193,56 @@ const LandingOne = ({state, theme, navigate}) => {
                               <h4 className='trusted-title'>Our Best Service</h4>
                               <p className='trusted-text'>We're partners with countless major organisations around the globe</p>
                               <Row>
-                                  <Col>
+                                  <Col className='d-flex justify-content-center'>
                                       <div className='best-service-block'>
                                         <img src='/img/safety-first.svg' />
                                         <div className='best-service-block__header'>Safety Comes First</div>
                                         <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
                                       </div>
                                   </Col>
-                                  <Col>
+                                  <Col className='d-flex justify-content-center'>
                                         <div className='best-service-block'>
                                             <img src='/img/easy-deposit.svg' />
                                             <div className='best-service-block__header'>Easy Deposit & Withdrawals</div>
                                             <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
                                         </div>
                                   </Col>
-                                  <Col>
+                                  <Col className='d-flex justify-content-center'>
                                         <div className='best-service-block'>
                                             <img src='/img/low-charges.svg' />
                                             <div className='best-service-block__header'>Low Charges</div>
                                             <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
                                         </div>
                                   </Col>
-                                  <Col>
+                                  <Col className='d-flex justify-content-center'>
                                         <div className='best-service-block'>
                                             <img src='/img/bonus-referal.svg' />
                                             <div className='best-service-block__header'>Bonus & Refferal</div>
                                             <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
                                         </div>
                                   </Col>
-                                  <Col>
+                                  <Col className='d-flex justify-content-center'>
                                         <div className='best-service-block'>
                                             <img src='/img/fast-transactions.svg' />
                                             <div className='best-service-block__header'>Fast Transactions</div>
                                             <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
                                         </div>
                                   </Col>
-                                  <Col>
+                                  <Col className='d-flex justify-content-center'>
                                         <div className='best-service-block'>
                                             <img src='/img/deep-encryption.svg' />
                                             <div className='best-service-block__header'>Deep Encryption</div>
                                             <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
                                         </div>
                                   </Col>
-                                  <Col>
+                                  <Col className='d-flex justify-content-center'>
                                         <div className='best-service-block'>
                                             <img src='/img/fast-kyc.svg' />
                                             <div className='best-service-block__header'>Fast KYC</div>
                                             <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
                                         </div>
                                   </Col>
-                                  <Col>
+                                  <Col className='d-flex justify-content-center'>
                                         <div className='best-service-block'>
                                             <img src='/img/support-24.svg' />
                                             <div className='best-service-block__header'>24/7 Support</div>
