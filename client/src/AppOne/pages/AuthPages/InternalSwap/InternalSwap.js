@@ -268,7 +268,7 @@ const InternalSwap = () => {
 
             {
                 balance ?
-                  <ButtonCard theme={theme} >
+                  <ButtonCard style={{paddingTop: 0, paddingBottom: 0}} theme={theme} >
 
                       <Tabs
                         variant='pills'

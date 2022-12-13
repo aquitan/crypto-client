@@ -13,6 +13,7 @@ import '../Landing/landing.scss'
 import {store} from '../../../../index';
 import TradingWidget from '../../../components/TradingWidget/TradingWidget';
 
+
 const LandingOne = ({state, theme, navigate}) => {
 
 
@@ -333,14 +334,31 @@ const LandingOne = ({state, theme, navigate}) => {
                               </div>
                           </NavLink>
                       </div>
-                      <Row className='mb-5 flex-column flex-md-row'>
+                      {/* <Row className='mb-5 flex-column flex-md-row'>
                           <Col className='text-center'><Link to='/privacy-policy'>Privacy Policy</Link></Col>
                           <Col className='text-center'><Link to='/cookie-policy'>Cookie Policy</Link></Col>
                           <Col className='text-center'><Link to='/security-policy'>Security Policy</Link></Col>
                           <Col className='text-center'><Link to='/terms-conditions'>Terms & Conditions</Link></Col>
                           <Col className='text-center'><Link to='/about-us'>About us</Link></Col>
                           <Col className='text-center'><Link to='/contact-us'>Contact us</Link></Col>
-                      </Row>
+                      </Row> */}
+                            <div style={{width: '100%', justifyContent: 'space-between'}} className='d-flex flex-row'>
+                                <div className='d-flex flex-column'>
+                                    <Link className='me-2' to='/privacy-policy'>Privacy Policy</Link>
+                                    <Link className='me-2' to='/cookie-policy'>Cookie Policy</Link>
+                                    <Link className='me-2' to='/before-start'>Before you start</Link>
+                                </div>
+                                <div className='d-flex flex-column'>
+                                    <Link className='me-2' to='/security-policy'>Security policy</Link>
+                                    <Link className='me-2' to='/terms-and-conditions'>Terms & Conditions</Link>
+                                    <Link className='me-2' to='/general-basics'>General Basics</Link>
+                                </div>
+                                <div className='d-flex flex-column'>
+                                    <Link className='me-2' to='/about-us'>About Us</Link>
+                                    <Link className='me-2' to='/contact-us'>Contact Us</Link>
+                                    <Link className='me-2' to='/cryptocurrencies'>Cryptocurrencies</Link>
+                                </div>
+                            </div>
                       <div className='w-100 mt-4 text-center' style={{borderTop: '2px solid #2b3144'}}>
                           <p className='mt-3' style={{color: '#fff'}}>&#169;{store.domain.companyYear}-{new Date().getFullYear()} All rights reserved</p>
                       </div>

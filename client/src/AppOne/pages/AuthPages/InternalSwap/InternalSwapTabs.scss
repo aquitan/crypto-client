@@ -1,12 +1,22 @@
 .content-tab.nav-link.active {
-  background-color: rgb(83, 103, 254) !important;
+  background-color: transparent !important;
+  color: rgb(108, 112, 128);
+  border-bottom: 2px solid #5367ff;
+  border-radius: 0;
 }
 .content-tab.nav-link {
   color: grey;
+  border-bottom: 2px solid rgb(174, 177, 191);
+  border-radius: 0;
 }
 .history-tab.nav-link {
   color: grey;
+  border-bottom: 2px solid rgb(174, 177, 191);
+  border-radius: 0;
 }
 .history-tab.nav-link.active {
-  background-color: rgb(83, 103, 254) !important;
+  background-color: transparent !important;
+  color: rgb(108, 112, 128);
+  border-bottom: 2px solid #5367ff;
+  border-radius: 0;
 }
