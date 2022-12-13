@@ -1,7 +1,13 @@
 .img-container-form {
     img {
         position: absolute;
-        top: 10%;
-        right: -20%;
+        top: 15%;
+        right: -15%;
+        @media(max-width: 1470px) {
+            right: -10%;
+        }
+        @media(max-width: 1270px) {
+            right: -5%;
+        }
     }
 }

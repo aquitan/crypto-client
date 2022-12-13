@@ -32,7 +32,7 @@ const WalletInfoBlock = ({currency, status, amount, balance, rate, theme, img}) 
                     </div>
                 </Col>
                 <Col className='p-0 d-flex justify-content-end'>
-                    <img src={statusColor() ? '/img/vector-up.svg' : '/img/vector-down.svg'} alt=""/>
+                    <img src={statusColor() ? '/img/mini-chart-icon-blue.svg' : '/img/mini-chart-icon-red.svg'} alt=""/>
                 </Col>
             </Row>
         </Row>

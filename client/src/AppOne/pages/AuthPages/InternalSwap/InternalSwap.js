@@ -284,11 +284,11 @@ const InternalSwap = () => {
                                                 <Col
                                                   style={{position: 'relative'}}
                                                   className='col-12 mb-3 p-0'>
-                                                    <h5 className='mb-3'>Choose address from</h5>
+                                                    <span className={cls.smal_label}>From:</span>
                                                     <div onClick={onOpenInitialList}
                                                          style={{display: 'flex', justifyContent: 'space-between'}}
                                                          className={classnames}>
-                                                <span style={{display: 'inline-block', marginRight: 10}}>
+                                                <span className={cls.amount_value} style={{display: 'inline-block', marginRight: 10}}>
                                                     {state?.initial.value} {state.initial.currency}
                                                 </span>
                                                         <Image
@@ -317,14 +317,17 @@ const InternalSwap = () => {
                                                           : null
                                                     }
                                                 </Col>
+                                                <Col className='col-12 mb-3 d-flex justify-content-center'>
+                                                    <img src='/img/swap-icon.svg' />
+                                                </Col>
                                                 <Col
                                                   style={{position: 'relative'}}
                                                   className='col-12 mb-3 p-0'>
-                                                    <h5 className='mb-3'>Choose address to</h5>
+                                                    <span className={cls.smal_label}>To:</span>
                                                     <div onClick={onOpenTargetList}
                                                          style={{display: 'flex', justifyContent: 'space-between'}}
                                                          className={classnames}>
-                                                        <span>{state.target.value} {state.target.currency}</span>
+                                                        <span className={cls.amount_value}>{state.target.value} {state.target.currency}</span>
                                                         <Image
                                                           src={`/img/${imgMatch(state?.target.currency.toLowerCase())}.svg`}
                                                           height={30}
@@ -355,7 +358,7 @@ const InternalSwap = () => {
                                             <Row className='mb-3 p-0'>
                                                 <Col className='p-0'>
                                                     {/*<h5 className='mb-3' style={{fontSize: 12}}>Enter Amount (Fee {store.domain.domainParams.coinSwapFee}%)</h5>*/}
-                                                    <Input {...register('amount', {
+                                                    <Input style={{border: 'none', borderBottom: '1px solid #2b3144', borderRadius: 0}} {...register('amount', {
                                                         required: 'Check the value',
                                                         pattern: /(\d+(?:\.\d+)?)/,
                                                         message: 'Check the value',

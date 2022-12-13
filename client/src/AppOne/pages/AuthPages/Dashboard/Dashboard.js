@@ -22,6 +22,7 @@ import LandingSkeleton from '../../NonAuthPages/LandingSkeleton/LandingSkeleton'
 import { Skeleton } from '@mui/material';
 import UserPageSkeleton from '../../../components/UserPageSkeleton/UserPageSkeleton';
 import { getSwitchQuery } from '../../../utils/getSwitchQuery';
+import Watchlist from '../../../components/Watchlist/Watchlist';
 
 const Dashboard = () => {
     const {theme} = useThemeContext(ThemeContext)
@@ -128,28 +129,26 @@ const Dashboard = () => {
                 <InternalSwap balance={balance} />
             </CustomModal>
 
-            <Row className='mb-3'>
-                <Row>
-                    {
-                        balance.length ?
-                            <b>Total balance: ${balance.length ? countTotalBalance().toLocaleString() : <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={100} height={20} />}</b>
-                            : <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={100} height={20} />
-                    }
-
-                </Row>
-            </Row>
-
             <Row className='p-0'>
-                <Col className='p-0 col-12 col-xl-8'>
+                <Col className='p-0 col-12 col-xl-9'>
                     <Row className='p-0'>
                         <Col>
                             <ButtonCard style={{paddingRight: 10, paddingLeft: 10}} theme={theme}>
                             {
                                 store.ratesFull.length && balance.length ?
                                 <>
-                                    <Row>
-                                        <h2>Market coins</h2>
-                                        <p>Daily updated coins info</p>
+                                    <Row className='align-items-center'>
+                                        <Col>
+                                            <h2>Market coins</h2>
+                                            <p>Daily updated coins info</p>
+                                        </Col>
+                                        <Col style={{marginBottom: '1rem'}} className='d-flex justify-content-end'>
+                                        {
+                                            balance.length ?
+                                                <b style={{textAlign: 'right'}}>Total balance: ${balance.length ? countTotalBalance().toLocaleString() : <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={100} height={20} />}</b>
+                                                : <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={100} height={20} />
+                                        }
+                                        </Col>
                                     </Row>
                                     <Row style={{margin: 0, padding: 0}}>
                                         
@@ -197,6 +196,30 @@ const Dashboard = () => {
                                                     <Input classname='inputTransparent' placeholder='Search Coin Name' type="text" onChange={handleChange}/>
                                                 </Col>
                                             </Row>
+                                            <Row style={{borderBottom: '1px solid rgb(204, 206, 217)', paddingBottom: 20, color: '#6c7080', fontSize: 14}}>
+                                                <Col>
+                                                    Name
+                                                </Col>
+                                                <Col>
+                                                    Price
+                                                </Col>
+                                                <Col className='d-none d-xl-flex'>
+                                                    Market Capacity
+                                                </Col>
+                                                <Col>
+                                                    24h %
+                                                </Col>
+                                                <Col className='d-none d-sm-block'>
+                                                    Low 24h
+                                                </Col>
+                                                <Col className='d-none d-sm-block'>
+                                                    High 24h
+                                                </Col>
+                                                <Col className='d-none d-xl-flex'>
+                                                    Chart
+                                                </Col>
+
+                                            </Row>
 
                                             {filteredCoins.map(item => {
                                                 return (
@@ -208,6 +231,8 @@ const Dashboard = () => {
                                                         symbol={item.symbol}
                                                         price={item.current_price}
                                                         volume={item.market_cap}
+                                                        low={item.low_24h}
+                                                        high={item.high_24h}
                                                         priceChange={item.price_change_percentage_24h}
                                                     />
                                                 )
@@ -223,6 +248,40 @@ const Dashboard = () => {
                 <Col className='d-none d-xl-block'>
                     <Row>
                         {balance.length ? <InternalSwap balance={balance} /> : <SkeletonBlocks/>}
+                    </Row>
+                    <Row>
+                       <ButtonCard theme={theme}>
+                            <Row style={{borderBottom: '1px solid rgb(204, 206, 217)', paddingBottom: 20, color: '#6c7080', fontSize: 14}}>
+                                <Col>
+                                    Name
+                                </Col>
+                                <Col>
+                                    Price
+                                </Col>
+                                <Col>
+                                    24h %
+                                </Col>
+                            </Row>
+                            <Row style={{maxHeight: 600, overflowY: 'auto'}}>
+                                {
+                                    markets.length ? 
+                                    markets.map(item => {
+                                        console.log('item watchlist', item);
+                                        return (
+                                            <Watchlist
+                                            theme={theme}
+                                            key={item.name}
+                                            name={item.name}
+                                            image={item.image}
+                                            symbol={item.symbol}
+                                            price={item.current_price}
+                                            priceChange={item.price_change_percentage_24h}
+                                        />
+                                        )
+                                    }) : <SkeletonBlocks/>
+                                }
+                            </Row>
+                       </ButtonCard>
                     </Row>
                 </Col>
             </Row>

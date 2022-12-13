@@ -167,29 +167,7 @@
   }
 }
 
-.best-service-block {
-  width: 300px;
-  height: 259px;
-  border-radius: 10px;
-  background: #fff;
-  border: 1px solid #707070;
-  margin-bottom: 30px;
-  padding: 20px;
-  text-align: left;
-  &__header {
-    font-size: 18px;
-    letter-spacing: 0.02em;
-    line-height: 23px;
-    text-align: left;
-    color: #232530;
-    margin: 20px 0;
-  }
-}
 
-#dark .best-service-block {
-  background-color: #121318;
-  border-color: #000;
-}
 
 .get-started-link {
   margin: 0 0 4px;
@@ -348,4 +326,34 @@
 .landing-h2 {
   font-size: 32px;
   font-weight: normal;
+}
+
+.best-service-wrap {
+  margin: 0 -20px;
+}
+
+.best-service-block {
+  display: inline-block;
+  max-width: 300px;
+  margin: 0 10px;
+  min-height: 259px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #707070;
+  margin-bottom: 30px;
+  padding: 20px;
+  text-align: left;
+  &__header {
+    font-size: 18px;
+    letter-spacing: 0.02em;
+    line-height: 23px;
+    text-align: left;
+    color: #232530;
+    margin: 20px 0;
+  }
+}
+
+#dark .best-service-block {
+  background-color: #121318;
+  border-color: #000;
 }

@@ -58,6 +58,9 @@ const ForgotPassword = () => {
 
             <Row id={theme} className='h-100 p-0'>
                 <Col style={{position: 'relative'}} className={`d-flex p-0 justify-content-center align-items-baseline align-items-lg-center ${cls.gradient}`}>
+                    <div style={{position: 'relative', height: '100%', width: '100%', overflow: 'hidden'}}>
+                        <img style={{position: 'absolute', left: 0, top: 0}} src='/img/elipse.svg' />
+                    </div>
                     <div className='pt-5 pt-xl-0 img-container-form'>
                         <img width='100%' src={'/img/pngfind_1.png'} alt=""/>
                     </div>

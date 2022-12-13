@@ -39,7 +39,7 @@
 }
 .gradient {
     background: #8ac8ff;
-    
+    background: linear-gradient(90deg, rgba(167,184,226,1) 0%, rgba(174,218,238,1) 0%, rgba(148,187,233,1) 100%);
     @media (max-width: 1024px) {
         display: none !important;
     }

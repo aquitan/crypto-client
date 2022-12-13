@@ -33,7 +33,7 @@ const LandingOne = ({state, theme, navigate}) => {
                                 resetOnLeave
                               >
                                   <Col className='text-center text-lg-start justify-content-center justify-content-lg-start'>
-                                      <h4 className='signup-today'>Sign Up today</h4>
+                                      <h4 className='signup-today'>Sign Up Today</h4>
                                       <h2 className='landing-header'>Buy & Sell</h2>
                                       <h2 className='landing-header landing-header__colored'>Crypto Instant</h2>
                                       <p style={{color: '#9295A6', marginTop: 10}}>Join World biggest cryptocurrencies Exchange to Buy and sell many currencies.</p>
@@ -191,64 +191,50 @@ const LandingOne = ({state, theme, navigate}) => {
                           <Col className='position-relative text-center landing-block-text-block'>
                               <h4 className='trusted-title'>Our Best Service</h4>
                               <p className='trusted-text'>We're partners with countless major organisations around the globe</p>
-                              <Row>
-                                  <Col className='d-flex justify-content-center'>
-                                      <div className='best-service-block'>
+                              <div style={{maxWidth: '1470px', margin: '0 auto'}}>
+                                <div className='best-service-wrap'>
+                                    <div className='best-service-block'>
                                         <img src='/img/safety-first.svg' />
                                         <div className='best-service-block__header'>Safety Comes First</div>
                                         <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
-                                      </div>
-                                  </Col>
-                                  <Col className='d-flex justify-content-center'>
-                                        <div className='best-service-block'>
-                                            <img src='/img/easy-deposit.svg' />
-                                            <div className='best-service-block__header'>Easy Deposit & Withdrawals</div>
-                                            <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
-                                        </div>
-                                  </Col>
-                                  <Col className='d-flex justify-content-center'>
-                                        <div className='best-service-block'>
-                                            <img src='/img/low-charges.svg' />
-                                            <div className='best-service-block__header'>Low Charges</div>
-                                            <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
-                                        </div>
-                                  </Col>
-                                  <Col className='d-flex justify-content-center'>
-                                        <div className='best-service-block'>
-                                            <img src='/img/bonus-referal.svg' />
-                                            <div className='best-service-block__header'>Bonus & Refferal</div>
-                                            <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
-                                        </div>
-                                  </Col>
-                                  <Col className='d-flex justify-content-center'>
-                                        <div className='best-service-block'>
-                                            <img src='/img/fast-transactions.svg' />
-                                            <div className='best-service-block__header'>Fast Transactions</div>
-                                            <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
-                                        </div>
-                                  </Col>
-                                  <Col className='d-flex justify-content-center'>
-                                        <div className='best-service-block'>
-                                            <img src='/img/deep-encryption.svg' />
-                                            <div className='best-service-block__header'>Deep Encryption</div>
-                                            <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
-                                        </div>
-                                  </Col>
-                                  <Col className='d-flex justify-content-center'>
-                                        <div className='best-service-block'>
-                                            <img src='/img/fast-kyc.svg' />
-                                            <div className='best-service-block__header'>Fast KYC</div>
-                                            <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
-                                        </div>
-                                  </Col>
-                                  <Col className='d-flex justify-content-center'>
-                                        <div className='best-service-block'>
-                                            <img src='/img/support-24.svg' />
-                                            <div className='best-service-block__header'>24/7 Support</div>
-                                            <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
-                                        </div>
-                                  </Col>
-                              </Row>
+                                    </div>
+                                    <div className='best-service-block'>
+                                        <img src='/img/easy-deposit.svg' />
+                                        <div className='best-service-block__header'>Easy Deposit & Withdrawals</div>
+                                        <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
+                                    </div>
+                                    <div className='best-service-block'>
+                                        <img src='/img/low-charges.svg' />
+                                        <div className='best-service-block__header'>Low Charges</div>
+                                        <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
+                                    </div>
+                                    <div className='best-service-block'>
+                                        <img src='/img/bonus-referal.svg' />
+                                        <div className='best-service-block__header'>Bonus & Refferal</div>
+                                        <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
+                                    </div>
+                                    <div className='best-service-block'>
+                                        <img src='/img/fast-transactions.svg' />
+                                        <div className='best-service-block__header'>Fast Transactions</div>
+                                        <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
+                                    </div>
+                                    <div className='best-service-block'>
+                                        <img src='/img/deep-encryption.svg' />
+                                        <div className='best-service-block__header'>Deep Encryption</div>
+                                        <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
+                                    </div>
+                                    <div className='best-service-block'>
+                                        <img src='/img/fast-kyc.svg' />
+                                        <div className='best-service-block__header'>Fast KYC</div>
+                                        <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
+                                    </div>
+                                    <div className='best-service-block'>
+                                        <img src='/img/support-24.svg' />
+                                        <div className='best-service-block__header'>24/7 Support</div>
+                                        <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
+                                    </div>
+                                </div>
+                              </div>
                           </Col>
                       </Row>
                   </LandingBlock>
