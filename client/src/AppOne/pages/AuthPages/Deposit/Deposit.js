@@ -250,23 +250,28 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
                         tabClassName='content-tab'
                         eventKey='deposit'
                         title='Deposit'>
-                        <Row className='mb-4 mt-3'>
-                            <div className='p-0 mb-3' style={{wordBreak: 'break-word'}}>{address ? `Your address: ${address}` :
+                        <Row className='mb-4 mt-4'>
+                            <div className='p-0 mb-3' style={{wordBreak: 'break-word'}}>{address ? <div className={cls.yourAddress}>
+                                Your address: <b>{address}</b>
+                            </div> :
                                 <Button classname={['btnSmall', 'btnGray']} onClick={getAddressForDeposit}>Generate address</Button>}</div>
                             {/*<Select {...register('coinName')} classname='transparent' options={statusOptions} />*/}
-
-                            <div style={{padding: '20px 20px'}} className={cls.inputWrapper}>
-                                        <span style={{display: 'flex', alignItems: 'center'}}>
-                                            <Image src={`${window.location.origin}/img/${imgMatch(coin === 'TRC 20' ? 'usdt' : coin ).toLowerCase()}.svg`} height={30} width={30} />
-                                            <span>
-                                                {coin === 'TRC 20' ? 'USDT (TRC 20)' : coin === 'USDT' ? 'USDT (ERC 20)' : coin}
-                                            </span>
+                                <div style={{display: 'flex', justifyContent: 'space-between', padding: 0}}>
+                                    <span className={cls.smal_label}>Coin:</span>
+                                    <span className={cls.smal_label}>Balance:</span>
+                                </div>
+                                <div className={cls.inputWrapper}>
+                                    <span style={{display: 'flex', alignItems: 'center'}}>
+                                        <Image src={`${window.location.origin}/img/${imgMatch(coin === 'TRC 20' ? 'usdt' : coin ).toLowerCase()}.svg`} height={30} width={30} />
+                                        <span>
+                                            {coin === 'TRC 20' ? 'USDT (TRC 20)' : coin === 'USDT' ? 'USDT (ERC 20)' : coin}
                                         </span>
-                                <div>Balance: {balance ? coinsBalance.toFixed(5) : <Preloader />}</div>
+                                    </span>
+                                <div>{balance ? coinsBalance.toFixed(5) : <Preloader />}</div>
                             </div>
                         </Row>
                         <Row className='mb-3 p-0'>
-                            <span style={{fontSize: 14, marginBottom: 10}}>Enter amount in Crypto</span>
+                            <span className={cls.smal_label} style={{marginBottom: 10}}>Enter amount in Crypto</span>
                             <Input classname={['inputTransparent', `${errors.crypto ? 'error' : ''}`]} placeholder='0.00' {...register('crypto', {
                                 required: true,
                                 pattern: /^[0-9]\d*(\.\d+)?$/,
@@ -275,7 +280,7 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
                             <ErrorMessage  name='crypto' errors={errors} render={() => <p className={cls.error}>Check the field</p>} />
                         </Row>
                         <Row className='mb-3 mt-3 p-0'>
-                            <span style={{fontSize: 14, marginBottom: 10}}>Enter amount in USD</span>
+                            <span className={cls.smal_label} style={{marginBottom: 10}}>Enter amount in USD</span>
                             <Input classname={['inputTransparent', `${errors.amount ? 'error' : ''}`]} {...register('amount', {
                                 required: 'Check the field',
                                 pattern: /^[0-9]\d*(\.\d+)?$/,

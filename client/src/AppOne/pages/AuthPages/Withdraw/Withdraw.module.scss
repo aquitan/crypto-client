@@ -1,11 +1,16 @@
 .inputWrapper {
   display: flex;
-  padding: 5px 20px;
-  border: 1px solid #CCCED9;
-  border-radius: 5px;
-  align-items: center;
-  color: #6C7080;
+  padding: 20px 0;
+  margin: 0;
   justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  outline: none;
+  background-color: transparent;
+  color: #6C7080;
+  transition: all 0.2s linear;
+  border-bottom: 1px solid #CCCED9;
 }
 
 .inp {
@@ -22,4 +27,14 @@
 .error {
   color: tomato;
   font-size: 12px;
+}
+.smal_label {
+  font-size: 12px;
+  color: rgb(108, 112, 128);
+  padding: 0;
+}
+.yourAddress {
+  font-size: 12px;
+  color: rgb(108, 112, 128);
+  padding: 0;
 }
