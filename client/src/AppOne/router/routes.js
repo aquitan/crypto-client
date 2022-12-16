@@ -122,6 +122,9 @@ import TradingTest from "../pages/AuthPages/TradingTest/TradingTest";
 import ContactUsDonate from '../pages/AuthPages/ContactUsDonate/ContactUsDonate';
 import Error400 from '../pages/Error/Error400';
 import TradingEthereum from '../pages/AuthPages/TradingTest/components/Ethereum/Ethereum';
+import BeforeYouStartNonAuth from '../pages/NonAuthPages/NonAuthArticle/BeforeYouStartNonAuth';
+import GeneralBasicsNonAuth from '../pages/NonAuthPages/NonAuthArticle/GeneralBasicsNonAuth';
+import CryptocurrenciesNonAuth from '../pages/NonAuthPages/NonAuthArticle/CryptocurrenciesNonAuth';
 
 export const authRoutes = [
     {
@@ -391,6 +394,18 @@ export const publicRoutes = [
     {
         path: ERROR_400,
         component: <Error400/>
+    },
+    {
+        path: '/before-start',
+        component: <BeforeYouStartNonAuth/>
+    },
+    {
+        path: '/general-basics',
+        component: <GeneralBasicsNonAuth/>
+    },
+    {
+        path: '/cryptocurrencies',
+        component: <CryptocurrenciesNonAuth/>
     },
 ]
 

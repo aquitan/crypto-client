@@ -297,7 +297,7 @@ const KYC = ({user}) => {
                     <Col className={'mb-2 col-12 col-md-4'}>
                         <InputRadio {...register('documentType', {
                             required: true,
-                        })} id={'passport'} name={'documentType'} classname={['radio_btn', `${errors.documentType ? 'error' : ''}`]} value='Passport' type='radio' label='Passport' />
+                        })} id={'passport'} name={'documentType'} classname={['radio_btn', `${errors.documentType ? 'error' : ''}`]} value='Passport' type='radio' label='Passport'/>
                         <ErrorMessage  name='documentType' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
                     </Col>
                     <Col className={'mb-2 col-12 col-md-4'}>
@@ -314,7 +314,7 @@ const KYC = ({user}) => {
                     </Col>
                 </Row>
                 <Row className='' style={{justifyContent: 'center', margin: '30px 0'}}>
-                    <Col className='d-flex flex-column'>
+                    <div className=''>
                         {/*<FileUpload {...register('doc')} name={'doc'} id={'doc'}/>*/}
                         {/*<FileUpload {...register('frontDocumentPhoto')} id={'frontDocumentPhoto'} name={'frontDocumentPhoto'} />*/}
                         {/*<input onChange={onImgChange} id={'frontDocumentPhoto'} name={'frontDocumentPhoto'} type="file" />*/}
@@ -323,16 +323,12 @@ const KYC = ({user}) => {
                         <div style={{color: 'grey', fontSize: '12px', marginBottom: '10px'}}>
                             Supported only *.png, *.jpg, *.jpeg, *.pdf file formats
                         </div>
-                        <div className='mb-2'>
+                        <div className='d-flex justify-content-between'>
                             <FileKyc text={'Front'} onChange={onImgChange} id={'frontDocumentPhoto'} name={'frontDocumentPhoto'} label={img.frontDocumentPhoto} />
-                        </div>
-                        <div className='mb-2'>
                             <FileKyc text={'Back'} onChange={onImgChange} id={'backDocumentPhoto'} name={'backDocumentPhoto'} label={img.backDocumentPhoto}/>
-                        </div>
-                        <div className='mb-2'>
                             <FileKyc text={'Selfie'} onChange={onImgChange} id={'selfieDocumentPhoto'} name={'selfieDocumentPhoto'} label={img.selfieDocumentPhoto}/>
                         </div>
-                    </Col>
+                    </div>
                 </Row>
                 <Row className={'mb-5 mt-5'} style={{
                     padding: '10px 0'}}>
@@ -347,7 +343,7 @@ const KYC = ({user}) => {
                 </Row>
 
                 <Row className={'justify-content-center'} style={{marginTop: 50}}>
-                    <Button classname='btnBlue'>Submit</Button>
+                    <Button style={{width: '200px'}} classname='btnBlue'>Submit</Button>
                 </Row>
             </Form>
             }

@@ -1,0 +1,15 @@
+<svg id="Outline_2_wallet" data-name="Outline 2=wallet" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 24 24">
+  <defs>
+    <clipPath id="clip-path">
+      <path id="icon" d="M2,19.675a2,2,0,0,1-2-2H.027A1.985,1.985,0,0,1,0,17.349V5.429A2.008,2.008,0,0,1,1.451,3.506l12-3.429A2,2,0,0,1,16,2V13.92a2.01,2.01,0,0,1-1.451,1.923L8.138,17.675H18v-8H16v-2h2v-2H16v-2h2a2,2,0,0,1,2,2v12a2,2,0,0,1-2,2ZM2,5.429V17.349L14,13.92V2Zm8,2.246a1,1,0,1,1,1,1A1,1,0,0,1,10,7.675Z" transform="translate(2 1.325)"/>
+    </clipPath>
+  </defs>
+  <rect id="Outline_2_wallet_Background_" data-name="Outline 2=wallet (Background)" width="24" height="24" fill="none"/>
+  <path id="icon-2" data-name="icon" d="M2,19.675a2,2,0,0,1-2-2H.027A1.985,1.985,0,0,1,0,17.349V5.429A2.008,2.008,0,0,1,1.451,3.506l12-3.429A2,2,0,0,1,16,2V13.92a2.01,2.01,0,0,1-1.451,1.923L8.138,17.675H18v-8H16v-2h2v-2H16v-2h2a2,2,0,0,1,2,2v12a2,2,0,0,1-2,2ZM2,5.429V17.349L14,13.92V2Zm8,2.246a1,1,0,1,1,1,1A1,1,0,0,1,10,7.675Z" transform="translate(2 1.325)"/>
+  <g id="Outline_2_wallet-2" data-name="Outline 2=wallet" clip-path="url(#clip-path)">
+    <g id="_Color" data-name="🎨 Color">
+      <rect id="_Color_Background_" data-name="🎨 Color (Background)" width="24" height="24" fill="none"/>
+      <rect id="Base" width="24" height="24" fill="#343c44"/>
+    </g>
+  </g>
+</svg>

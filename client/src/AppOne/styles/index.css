@@ -127,6 +127,9 @@ select:-webkit-autofill:focus {
   transition: background-color 5000s ease-in-out 0s;
 } */
 
+.nav-link.active {
+  color: #0083f8 !important;
+}
 
 
 button.accordion-button.collapsed, .accordion-flush .accordion-item .accordion-button {

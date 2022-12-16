@@ -1,5 +1,5 @@
-import React, {useContext, useState} from 'react'
-import {Col, Container, Nav, Navbar, Offcanvas, Row} from "react-bootstrap";
+import React, {useContext, useEffect, useRef, useState} from 'react'
+import {Col, Container, Nav, Navbar, Offcanvas, Overlay, OverlayTrigger, Popover, Row} from "react-bootstrap";
 import {AuthContext} from "../../../index";
 import {NavLink, useNavigate} from "react-router-dom";
 import {observer} from "mobx-react-lite";
@@ -12,11 +12,19 @@ import {
 import Logo from "../UI/Logo/Logo";import {ThemeContext, useThemeContext} from "../../context/ThemeContext";
 import Preloader from "../UI/Preloader/Preloader";
 import Notification from '../UI/Notification/Notification';
+import { countTotalBalance } from '../../utils/countTotalBalance';
+import { getData } from '../../services/StaffServices';
+import { getSwitchQuery } from '../../utils/getSwitchQuery';
 
 const NavBar = () => {
     const {theme, toggleTheme} = useThemeContext(ThemeContext)
+    const [balances, setBalances] = useState([])
+    const [balancesArr, setBalancesArr] = useState([])
     const [state, setState] = useState(false)
     const [show, setShow] = useState(false)
+    const [isOpen, setIsOpen] = useState(false)
+    const target = useRef(null);
+    const targetProfile = useRef(null);
     const navigate = useNavigate()
     const {store} = useContext(AuthContext)
 
@@ -35,6 +43,33 @@ const NavBar = () => {
         navigate('/wallet')
         handleClose()
     }
+
+    useEffect(() => {
+        getBalance()
+    }, [])
+
+    const getBalance = async () => {
+        const res = await getData(`${getSwitchQuery('/get_user_balance/')}${store.user.id}`)
+        setBalances(res.data)
+        console.log('balances---', res.data)
+        let arr = []
+        res.data.forEach((item, index, array) => {
+            if (!item.coinName === 'TRX/USDT') {
+                arr.push(Number((item.coinBalance * store.rates[item.coinName.toLowerCase()])))
+            }
+            else {
+                arr.push(Number((item.coinBalance * store.rates.trxusdt)))
+            }
+        })
+        setBalancesArr(arr)
+    }
+    const onLogout= async () => {
+        await store.logout()
+        await store.setIsStaff(false)
+        navigate('/')
+    }
+
+    
 
 
     return (
@@ -134,11 +169,51 @@ const NavBar = () => {
                                 <FontAwesomeIcon icon={faWallet}/> Wallet
                             </Button>
                         </div>
-                        <div style={{marginLeft: 15}}>
-                            <Nav.Link to={'/profile'} as={NavLink}>
-                                <img width={40} src={'/img/avatar-svg-round.svg'} alt=""/>
-                            </Nav.Link>
+                        <div ref={targetProfile} style={{marginLeft: 15, cursor: 'pointer'}} onClick={() => setIsOpen(prev => !prev)}>
+                            <img width={40} src={'/img/avatar-svg-round.svg'} alt=""/>
                         </div>
+                        <Overlay
+                            show={isOpen}
+                            rootClose
+                            onHide={() => setIsOpen(false)}
+                            target={targetProfile.current}
+                            placement="left"
+                            containerPadding={20}
+                        >
+                            <Popover id="popover-basic">
+                                <Popover.Header style={{backgroundColor: '#f5f6fa'}} as="h3">
+                                    <div className='d-flex align-items-center p-2'>
+                                        <img style={{marginRight: 10}} width={30} src={'/img/avatar-svg-round.svg'} alt=""/>
+                                        <div style={{fontSize: 12}}>
+                                            <div><b>{store.user.name ? store.user.name : ''}</b></div>
+                                            <div style={{color: 'grey'}}>{store.user.email}</div>
+                                        </div>
+                                    </div>
+                                </Popover.Header>
+                                <Popover.Body>
+                                    <div style={{fontSize: 12, fontWeight: 'bold', color: 'rgb(108, 112, 128)', textTransform: 'uppercase', }}>Wallet account:</div>
+                                    <div style={{fontWeight: 'bold', color: '#5367ff', borderBottom: '1px solid rgb(204, 206, 217)', paddingBottom: '10px'}}>
+                                        <span style={{marginRight: 5}}>
+                                        {
+                                            isNaN(countTotalBalance(balances).toLocaleString()) ? 0 : (countTotalBalance(balances) / store.rates.btc).toLocaleString()
+                                        }
+                                        </span>
+                                        <span>BTC</span>
+                                    </div>
+                                    <div onClick={() => setIsOpen(false)} style={{padding: '10px 0', borderBottom: '1px solid rgb(204, 206, 217)'}}>
+                                        <NavLink style={{color: 'rgb(108, 112, 128)', display: 'flex', alignItems: 'center'}} to='/profile'>
+                                            <img width={15} src="/img/profile-icon.svg" /><span>View Profile</span>
+                                        </NavLink>
+                                    </div>
+                                    <div style={{fontWeight: 'bold', color: 'rgb(108, 112, 128)', display: 'flex', margin: '20px 0 0 0', cursor: 'pointer'}}>
+                                        <div onClick={onLogout}>
+                                            <img src='/img/logout-icon.svg' />
+                                            <span>Sign Out</span>
+                                        </div>
+                                    </div>
+                                </Popover.Body>
+                            </Popover>
+                        </Overlay>
                     </div>
                     <div className='d-flex d-xl-none mx-3 align-items-center'>
                         <div onClick={toggleTheme} style={{cursor: 'pointer', marginRight: 10}}>

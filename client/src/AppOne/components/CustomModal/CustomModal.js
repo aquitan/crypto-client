@@ -8,7 +8,7 @@ const CustomModal = ({title, fullScreen, text, show, handleClose, btnClose, chil
     return (
         <Modal
             size={size}
-            animation={false}
+            animation={true}
             fullscreen={fullScreen}
             style={{opacity: 1, zIndex: 9999999, paddingTop: '2%'}}
             dialogClassName={`modal-window ${themeDark ? 'dark' : theme}`}

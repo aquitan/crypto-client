@@ -147,7 +147,7 @@ const Profile = () => {
                         {
                             profileData ?
                             <>
-                                <Row className='text-center mb-5'>
+                                <Row className='text-center mb-2'>
                                     <Row className='mb-3'>
                                         <div>
                                             <img height={70} width={'auto'} src={'/img/avatar-svg-round.svg'} alt=""/>
@@ -164,9 +164,9 @@ const Profile = () => {
                                         </div>
                                         <div>{profileData?.user === '' ? '-' : profileData?.user.email}</div>
                                     </Row>
-                                    <Row className='mb-2'>
-                                        <Button classname={['btnBlue', 'btnSmall', 'btnRed']} onClick={onLogout}>Logout</Button>
-                                    </Row>
+                                    {/* <Row className='mb-2 text-center justify-content-center'>
+                                        <Button style={{maxWidth: 150}} classname={['btnBlue', 'btnSmall', 'btnRed']} onClick={onLogout}>Logout</Button>
+                                    </Row> */}
                                 </Row>
                                 <Row className='d-flex flex-column align-items-start'>
                                     <div className={classes} onClick={() => setCurrentLink('account')}>

@@ -187,7 +187,7 @@ const LandingOne = ({state, theme, navigate}) => {
                           </Col>
                       </Row>
                   </LandingBlock>
-                  <LandingBlock classname='landingTransparentBlock'>
+                  <LandingBlock id='easy-block-wrap' classname='landingTransparentBlock'>
                       <Row>
                           <Col className='position-relative text-center landing-block-text-block'>
                               <h4 className='trusted-title'>Our Best Service</h4>
@@ -201,7 +201,7 @@ const LandingOne = ({state, theme, navigate}) => {
                                     </div>
                                     <div className='best-service-block'>
                                         <img src='/img/easy-deposit.svg' />
-                                        <div className='best-service-block__header'>Easy Deposit & Withdrawals</div>
+                                        <div className='best-service-block__header'>Deposit & Withdraw</div>
                                         <p>Lorem ipsum dolor sit amet, dui  consectetur adipiscing elit. Nibh aenean dui aliquet amet.</p>
                                     </div>
                                     <div className='best-service-block'>
@@ -342,21 +342,21 @@ const LandingOne = ({state, theme, navigate}) => {
                           <Col className='text-center'><Link to='/about-us'>About us</Link></Col>
                           <Col className='text-center'><Link to='/contact-us'>Contact us</Link></Col>
                       </Row> */}
-                            <div style={{width: '100%', justifyContent: 'space-between'}} className='d-flex flex-row'>
-                                <div className='d-flex flex-column'>
-                                    <Link className='me-2' to='/privacy-policy'>Privacy Policy</Link>
-                                    <Link className='me-2' to='/cookie-policy'>Cookie Policy</Link>
-                                    <Link className='me-2' to='/before-start'>Before you start</Link>
+                            <div style={{width: '100%', justifyContent: 'space-between'}} className='d-flex flex-column flex-sm-row'>
+                                <div className='d-flex flex-column justify-content-center justify-content-sm-between '>
+                                    <Link className='me-2 text-center' to='/privacy-policy'>Privacy Policy</Link>
+                                    <Link className='me-2 text-center' to='/cookie-policy'>Cookie Policy</Link>
+                                    <Link className='me-2 text-center' to='/before-start'>Before you start</Link>
                                 </div>
-                                <div className='d-flex flex-column'>
-                                    <Link className='me-2' to='/security-policy'>Security policy</Link>
-                                    <Link className='me-2' to='/terms-and-conditions'>Terms & Conditions</Link>
-                                    <Link className='me-2' to='/general-basics'>General Basics</Link>
+                                <div className='d-flex flex-column justify-content-center justify-content-sm-between '>
+                                    <Link className='me-2 text-center' to='/security-policy'>Security policy</Link>
+                                    <Link className='me-2 text-center' to='/terms-and-conditions'>Terms & Conditions</Link>
+                                    <Link className='me-2 text-center' to='/general-basics'>General Basics</Link>
                                 </div>
-                                <div className='d-flex flex-column'>
-                                    <Link className='me-2' to='/about-us'>About Us</Link>
-                                    <Link className='me-2' to='/contact-us'>Contact Us</Link>
-                                    <Link className='me-2' to='/cryptocurrencies'>Cryptocurrencies</Link>
+                                <div className='d-flex flex-column justify-content-center justify-content-sm-between '>
+                                    <Link className='me-2 text-center' to='/about-us'>About Us</Link>
+                                    <Link className='me-2 text-center' to='/contact-us'>Contact Us</Link>
+                                    <Link className='me-2 text-center' to='/cryptocurrencies'>Cryptocurrencies</Link>
                                 </div>
                             </div>
                       <div className='w-100 mt-4 text-center' style={{borderTop: '2px solid #2b3144'}}>

@@ -196,26 +196,26 @@ const Dashboard = () => {
                                                     <Input classname='inputTransparent' placeholder='Search Coin Name' type="text" onChange={handleChange}/>
                                                 </Col>
                                             </Row>
-                                            <Row style={{borderBottom: '1px solid rgb(204, 206, 217)', paddingBottom: 20, color: '#6c7080', fontSize: 14}}>
-                                                <Col>
+                                            <Row className='justify-content-center' style={{borderBottom: '1px solid rgb(204, 206, 217)', paddingBottom: 20, color: '#6c7080', fontSize: 14}}>
+                                                <Col className='col-4 col-md-2 text-center'>
                                                     Name
                                                 </Col>
-                                                <Col>
+                                                <Col className='col-4 col-md-2 text-center'>
                                                     Price
                                                 </Col>
-                                                <Col className='d-none d-xl-flex'>
+                                                <Col className='d-none d-xl-flex col-4 col-md-2 text-center'>
                                                     Market Capacity
                                                 </Col>
-                                                <Col>
+                                                <Col className='col-4 col-md-1 text-center'>
                                                     24h %
                                                 </Col>
-                                                <Col className='d-none d-sm-block'>
-                                                    Low 24h
+                                                <Col className='d-none d-sm-block col-4 col-md-2 text-center'>
+                                                    Low
                                                 </Col>
-                                                <Col className='d-none d-sm-block'>
-                                                    High 24h
+                                                <Col className='d-none d-sm-block col-4 col-md-1 text-center'>
+                                                    High
                                                 </Col>
-                                                <Col className='d-none d-xl-flex'>
+                                                <Col className='d-none d-md-flex col-4 col-md-2 justify-content-center'>
                                                     Chart
                                                 </Col>
 

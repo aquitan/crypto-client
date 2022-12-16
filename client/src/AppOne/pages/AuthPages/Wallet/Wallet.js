@@ -19,10 +19,13 @@ import { Skeleton } from '@mui/material';
 import { getSwitchQuery } from '../../../utils/getSwitchQuery';
 import SkeletonBlocks from '../../../components/SkeletonBlocks/SkeletonBlocks';
 import Watchlist from '../../../components/Watchlist/Watchlist';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const Wallet = () => {
     const [balances, setBalances] = useState([])
     const [percent, setPercent] = useState(0)
+    const [visiblePrice, setVisiblePrice] = useState(false)
     const [deposit, setDeposit] = useState({
         coin: '',
         coinsBalance: '',
@@ -82,6 +85,9 @@ const Wallet = () => {
         setMarkets(data)
     }
 
+    const showPrice = () => {
+        setVisiblePrice(prev => !prev)
+    }
 
 
     return (
@@ -113,21 +119,35 @@ const Wallet = () => {
                                     </Row>
                                     <Row>
                                         {
-                                            balances ? <h4 className='mt-4 align-items-center d-flex' style={{fontWeight: 'bold', color: theme === 'light' ? '#9295A6' : '#fff'}}>
-                                                <img src='/static/img/btc.svg' width={30} alt='btc'/> <span style={{marginLeft: 10}}>{isNaN(countTotalBalance(balances).toLocaleString()) ? 0 : (countTotalBalance(balances) / store.rates.btc).toLocaleString()}</span>
-                                            </h4> : <Preloader />
+                                            balances ? <div style={{display: 'flex', alignItems: 'end'}}>
+                                                <div style={{display: 'inline-block'}}>
+                                                    <h4 className='mt-4 align-items-center d-flex' style={{fontWeight: 'bold', color: theme === 'light' ? '#9295A6' : '#fff'}}>
+                                                        <img src='/static/img/btc.svg' width={30} alt='btc'/> 
+                                                        <span style={{marginLeft: 10}}>
+                                                            {
+                                                                visiblePrice ? isNaN(countTotalBalance(balances).toLocaleString()) ? 0 : (countTotalBalance(balances) / store.rates.btc).toLocaleString()
+                                                                : '*******'
+                                                            }
+                                                        </span>
+                                                    </h4>
+                                                </div>
+                                                <span onClick={showPrice}  style={{backgroundColor: theme === 'light' ? '#b9ddff' : 'rgb(18, 19, 24)', padding: 5, color: theme === 'light' ? 'grey' : '#fff', borderRadius: 5, fontSize: 12, marginLeft: 30, cursor: 'pointer'}}>{visiblePrice ? 'Hide' : 'Show'} Price
+                                                <FontAwesomeIcon style={{marginLeft: 5}} color='#9295a6'size='xs2' icon={visiblePrice ? faEye : faEyeSlash} />
+                                                </span>
+                                            </div> : <Preloader />
                                         }
                                     </Row>
                                 </Col>
                                 <Col className='d-flex justify-content-start justify-content-md-end align-items-end'>
                                     <div className='p-2' style={{
                                         backgroundColor: theme === 'light' ? '#b9ddff': 'rgb(18, 19, 24)',
-                                        color: theme === 'light' ? 'grey': '#fff'
+                                        color: theme === 'light' ? 'grey': '#fff',
+                                        borderRadius: 5
                                     }}>
                                         <Row className='p-2 flex-column flex-sm-row mb-2 d-flex justify-content-between align-items-center'>
-                                            <Col className='d-flex align-items-start flex-column' style={{fontSize: 20, color: theme === 'light' ? '#9295A6': '#fff'}}>
+                                            <Col className='d-flex align-items-center' style={{fontSize: 20, color: theme === 'light' ? '#9295A6': '#fff'}}>
                                                 
-                                                <div className='py-2'>
+                                                <div className='py-2 px-3'>
                                                     <img style={{marginRight: 10}} src={'/img/deposit-icon.svg'} alt=""/>
                                                     <span>Ballance in USD:</span>
                                                 </div>
@@ -162,6 +182,12 @@ const Wallet = () => {
                             typeof balances !== 'string' ?
                             <>
                                 <h2>Wallet list</h2>
+                                <Row style={{padding: '20px 0', borderBottom: '1px solid rgb(204, 206, 217)', color: 'rgb(108, 112, 128)', fontSize: '14px', marginBottom: 20}}>
+                                    <Col>Coin</Col>
+                                    <Col>Balance $</Col>
+                                    <Col>Balance Crypto</Col>
+                                    <Col>Action</Col>
+                                </Row>
                                 {
                                     typeof balances !== 'string' ?
                                         balances.map(item => {

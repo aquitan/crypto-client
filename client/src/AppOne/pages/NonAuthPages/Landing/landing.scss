@@ -351,9 +351,39 @@
     color: #232530;
     margin: 20px 0;
   }
+  @media(max-width: 1605px) {
+    min-height: 310px;
+    max-width: 250px;
+  }
+  @media(max-width: 1200px) {
+    min-height: 310px;
+    max-width: 220px;
+  }
+  @media(max-width: 1085px) {
+    min-height: 250px;
+    max-width: 320px;
+  }
+  @media(max-width: 790px) {
+    min-height: 310px;
+    max-width: 250px;
+  }
+  @media(max-width: 600px) {
+    min-height: 310px;
+    max-width: 220px;
+  }
+  @media(max-width: 520px) {
+    min-height: 250px;
+    max-width: 350px;
+  }
 }
 
 #dark .best-service-block {
   background-color: #121318;
   border-color: #000;
+}
+
+#easy-block-wrap {
+  @media(max-width: 1400px) {
+    padding: 40px 20px;
+  }
 }

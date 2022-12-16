@@ -1,39 +1,33 @@
 .inputFile {
   position: relative;
   display: inline-block;
+  max-width: 260.7px;
+  height: 100.5px;
+  width: 100%;
+  margin: 11.5px 0 0;
+  padding: 21.3px 0.2px 24.3px 0;
+  border-radius: 5px;
+  border: dashed 3px #ccced9;
+  background-color: #e2f2ff;
+  padding: 10px;
+  margin: 0 5px;
 }
-.inputFileText {
-  padding: 0 10px;
-  line-height: 40px;
-  text-align: left;
-  height: 40px;
-  display: block;
-  float: left;
-  box-sizing: border-box;
-  width: 200px;
-  border-radius: 6px 0px 0 6px;
-  border: 1px solid #ddd;
-  overflow: hidden;
-}
+// .inputFileText {
+//   padding: 0 10px;
+//   line-height: 40px;
+//   text-align: left;
+//   height: 40px;
+//   display: block;
+//   float: left;
+//   box-sizing: border-box;
+//   width: 200px;
+//   border-radius: 6px 0px 0 6px;
+//   border: 1px solid #ddd;
+//   overflow: hidden;
+// }
 .inputFileBtn {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-  outline: none;
-  text-decoration: none;
+  color: #6c7080;
   font-size: 14px;
-  vertical-align: middle;
-  color: rgb(255 255 255);
-  text-align: center;
-  border-radius: 0 4px 4px 0;
-  background-color: rgba(83, 103, 254, 1);
-  line-height: 22px;
-  height: 40px;
-  padding: 10px 20px;
-  box-sizing: border-box;
-  border: none;
-  margin: 0;
-  transition: background-color 0.2s;
 }
 .inputFile input[type=file] {
   position: absolute;
@@ -49,13 +43,13 @@
   box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
 }
 
-/* Hover/active */
-.inputFile:hover .inputFileBtn {
-  background-color: rgba(83, 103, 254, 1);
-}
-.inputFile:active .inputFileBtn {
-  background-color: rgba(83, 103, 254, 1);
-}
+// /* Hover/active */
+// .inputFile:hover .inputFileBtn {
+//   background-color: rgba(83, 103, 254, 1);
+// }
+// .inputFile:active .inputFileBtn {
+//   background-color: rgba(83, 103, 254, 1);
+// }
 
 /* Disabled */
 .inputFile input[type=file]:disabled + .inputFileBtn {
