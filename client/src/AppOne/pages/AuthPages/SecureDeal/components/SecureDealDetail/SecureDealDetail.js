@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import { Col, Container, Row} from "react-bootstrap";
+import { Accordion, Col, Container, Row} from "react-bootstrap";
 import classNames from "classnames/bind";
 import cls from './SecureDealDetail.module.scss'
 import TextArea from "../../../../../components/UI/TextArea/TextArea";
@@ -202,25 +202,17 @@ const SecureDealDetail = () => {
                                           </Row>
                                           : null
                                     }
+                                    <Row>
+                                        <h5 className={cls.card_header}>Detailed info</h5>
+                                        <TextArea rows={8} classname='textareaTransparent' value={dealData.dealCondition}/>
+                                    </Row>
                                 </ButtonCard>
                             </Col>
 
                             <Col className='col-12 col-xl-6'>
                                 <ButtonCard style={{minHeight: 400}} theme={theme} className='mt-4 p-3'>
-                                    <h5 className={cls.card_header}>Detailed info</h5>
                                     <Row className='mt-3'>
-                                        <TextArea rows={8} classname='textareaTransparent' value={dealData.dealCondition}/>
-                                    </Row>
-                                </ButtonCard>
-                            </Col>
-                        </Row>
-
-                        <Row>
-                            <Col>
-                                <ButtonCard theme={theme} className='mt-4 p-3 mb-4'>
-                                    <h5 className={cls.card_header}>Chat</h5>
-                                    <Row className='mt-3'>
-                                        <Col className='col-12 col-lg-8 mb-3'>
+                                        <Col className='col-12 mb-3'>
                                             <ChatWindow onUploadImg={onUploadImg} onClick={onClick} preloader={preloader}>
                                                 {
                                                     typeof msg !== 'string' ?
@@ -252,9 +244,16 @@ const SecureDealDetail = () => {
                                                     }
                                                 </Row> : null
                                             }
-                                        </Col>
-                                        <Col className='col-12 col-lg-4 mb-3'>
-                                            <ChatRules rulesDisclamer={secureDealRulesText} />
+                                            <Row>
+                                                <Accordion className='support-accordion'>
+                                                    <Accordion.Item style={{backgroundColor: '#fff'}} eventKey="0">
+                                                        <Accordion.Header>Rules</Accordion.Header>
+                                                        <Accordion.Body>
+                                                            <ChatRules rulesDisclamer={secureDealRulesText} />
+                                                        </Accordion.Body>
+                                                    </Accordion.Item>
+                                                </Accordion>
+                                            </Row>
                                         </Col>
                                     </Row>
                                 </ButtonCard>

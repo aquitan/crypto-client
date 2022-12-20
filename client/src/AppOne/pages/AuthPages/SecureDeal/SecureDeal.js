@@ -187,22 +187,22 @@ const SecureDeal = () => {
             </CustomModal>
 
             <Row>
-                <Col className='col-12 col-lg-7'>
+                <Col className='col-12 col-lg-8'>
                     <ButtonCard theme={theme}>
-                        <Row>
+                        <Row className='text-center'>
                             <h2>Create new secure deal</h2>
                         </Row>
                         <Form classnames='wide-form' onSubmit={handleSubmit(onSubmit)}>
-                            <Row className='mb-3 pb-2 secure_deal_row'>
+                            <Row className='mb-3 pb-2 secure_deal_row text-center'>
                                 <h4 className='mb-3'>
                                     <span className='step'>01</span>
                                     Step 1: Choose your role</h4>
                                 <p>You can buy or sell anything securely via our platform.</p>
-                                <div className='secure_deal_col mb-3 d-flex'>
+                                <div className='secure_deal_col mb-3 d-flex justify-content-center'>
                                     <div className='p-0 py-4' style={{marginRight: 20}}>
                                         <InputRadio {...register('role', {
                                             required: 'Chose the role',
-                                        })} classname={['radio_btn', `${errors.role ? 'error' : ''}`]} id='seller' label='Seller' value='seller' name='role' />
+                                        })} img={'/img/seller-icon.svg'} classname={['radio_btn', `${errors.role ? 'error' : ''}`]} id='seller' label='Seller' value='seller' name='role' />
                                         <ErrorMessage
                                           name='role'
                                           errors={errors}
@@ -211,7 +211,7 @@ const SecureDeal = () => {
                                     <div className='p-0 py-4'>
                                         <InputRadio {...register('role', {
                                             required: 'Chose the role',
-                                        })} classname={['radio_btn', `${errors.role ? 'error' : ''}`]} label='Buyer' id='buyer' value='buyer' name='role' />
+                                        })} img={'/img/buyer-icon.svg'} classname={['radio_btn', `${errors.role ? 'error' : ''}`]} label='Buyer' id='buyer' value='buyer' name='role' />
                                         <ErrorMessage
                                           name='role'
                                           errors={errors}
@@ -219,8 +219,8 @@ const SecureDeal = () => {
                                     </div>
                                 </div>
                             </Row>
-                            <Row className='mb-3 pb-2'>
-                                <Col>
+                            <Row className='mb-3 pb-2 justify-content-center'>
+                                <Col className='text-center'>
                                     <h4 className='mb-3'>
                                         <span className='step'>02</span>
                                         Step 2: Participant</h4>
@@ -238,7 +238,7 @@ const SecureDeal = () => {
                                 </Col>
                             </Row>
                             <Row className='mb-3 pb-2'>
-                                <Col>
+                                <Col className='text-center'>
                                     <h4 className='mb-3'>
                                         <span className='step'>03</span>
                                         Step 3: Deal conditions</h4>
@@ -294,14 +294,14 @@ const SecureDeal = () => {
                                 </Col>
                             </Row>
                             <Row>
-                                <Col>
-                                    <Button classname='btnBlue'>Create secure deal</Button>
+                                <Col className='d-flex justify-content-center'>
+                                    <Button style={{padding: '0 20px'}} classname='btnBlue'>Create secure deal</Button>
                                 </Col>
                             </Row>
                         </Form>
                     </ButtonCard>
                 </Col>
-                <Col className='col-12 col-lg-5'>
+                <Col className='col-12 col-lg-4'>
                     <ButtonCard theme={theme}>
                         <h2>Recent deals</h2>
                         <Row>

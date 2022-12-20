@@ -1,5 +1,4 @@
 .chat {
-  border: 1px solid #CCCED9;
   border-radius: 8px;
   &_message_area {
     background-color: transparent;
@@ -7,8 +6,8 @@
     width: 100%;
     flex-direction: column-reverse;
     display: flex;
-    max-height: 600px;
-    min-height: 450px;
+    max-height: 450px;
+    min-height: 350px;
     height: 100%;
     overflow-y: auto;
   }
@@ -16,4 +15,14 @@
     display: flex;
     width: 100%;
   }
+}
+
+.support-accordion button.accordion-button.collapsed {
+  background-color: #fff !important;
+  color: rgb(109, 112, 119) !important;
+}
+
+#dark .support-accordion button.accordion-button.collapsed {
+  background-color: #121318 !important;
+  color: #fff !important;
 }

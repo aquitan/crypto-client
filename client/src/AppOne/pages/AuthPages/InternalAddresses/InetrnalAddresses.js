@@ -128,7 +128,7 @@ const InternalAddresses = () => {
                     </Row>
                 </CustomModal>
 
-                <Col className='col-12 col-xl-6'>
+                <Col className='col-12 col-xl-8'>
                     <ButtonCard theme={theme}>
                         {
                             wallets.length ?
@@ -159,16 +159,16 @@ const InternalAddresses = () => {
                         }
                     </ButtonCard>
                 </Col>
-                <Col className='col-12 col-xl-6'>
+                <Col className='col-12 col-xl-4'>
                     <ButtonCard theme={theme}>
                         {
                             wallets.length ?
                             <Row>
-                                <Col>
+                                <Col className='p-0'>
                                     <Row>
-                                        <Col className={'d-none d-md-block text-center'}>Date</Col>
-                                        <Col className={'text-center'}>Transaction details</Col>
-                                        <Col className={'text-center'}>Amount</Col>
+                                        <Col style={{fontSize: '12px'}} className={'d-none d-md-block text-center'}>Date</Col>
+                                        <Col style={{fontSize: '12px'}} className={'text-center'}>Transaction details</Col>
+                                        <Col style={{fontSize: '12px'}} className={'text-center'}>Amount</Col>
                                     </Row>
                                     <TableBody>
                                         {

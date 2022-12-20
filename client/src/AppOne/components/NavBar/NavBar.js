@@ -205,9 +205,9 @@ const NavBar = () => {
                                             <img width={15} src="/img/profile-icon.svg" /><span>View Profile</span>
                                         </NavLink>
                                     </div>
-                                    <div style={{fontWeight: 'bold', color: 'rgb(108, 112, 128)', display: 'flex', margin: '20px 0 0 0', cursor: 'pointer'}}>
-                                        <div onClick={onLogout}>
-                                            <img src='/img/logout-icon.svg' />
+                                    <div style={{color: 'rgb(108, 112, 128)', display: 'flex', margin: '20px 0 0 0', cursor: 'pointer'}}>
+                                        <div style={{display: 'flex', alignItems: 'space-between'}} onClick={onLogout}>
+                                            <img width={15} src='/img/logout-icon.svg' />
                                             <span>Sign Out</span>
                                         </div>
                                     </div>

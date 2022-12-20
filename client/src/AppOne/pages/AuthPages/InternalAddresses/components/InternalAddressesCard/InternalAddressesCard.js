@@ -55,34 +55,31 @@ const InternalAddressesCard = ({currency, sum, onCopy, wallet, theme, onUpdateHi
             {
                 state.isOpen ? <FontAwesomeIcon
                     onClick={() => setState({...state, isOpen: false})}
-                    style={{position: 'absolute', right: 20, top: 10, cursor: 'pointer'}}
+                    style={{position: 'absolute', right: '-5px', top: '-10px', cursor: 'pointer'}}
                     icon={faTimesCircle} /> : null
             }
 
-            <Row>
-                <Row className='mb-4 pb-4 flex-column align-items-center flex-sm-row' style={{borderBottom: '1px solid #cecece'}}>
+            {
+                 state.isOpen ? null :
+                 <Row className='mb-2 pb-2 flex-column align-items-center flex-sm-row' style={{borderBottom: '1px solid #cecece'}}>
                     <Col className='d-flex align-items-center justify-content-center justify-content-sm-start mb-2'>
-                        <Image src={`${window.location.origin}/img/${imgMatch(currency).toLowerCase()}.svg`} height={60} alt={'crypto'} />
+                        <Image src={`${window.location.origin}/img/${imgMatch(currency).toLowerCase()}.svg`} height={30} alt={'crypto'} />
                         <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8'}} className='badge'>{currency === 'USDT' ? 'ERC20' : currency === 'TRX/USDT' ? 'TRC20' : currency}</div>
-                        <div style={{marginLeft: 10, fontSize: 18}}>{sum.toFixed(5)} {currency === 'TRX/USDT' ? 'USDT' : currency}</div>
+                        <div style={{marginLeft: 10, fontSize: 14}}>{sum.toFixed(5)} {currency === 'TRX/USDT' ? 'USDT' : currency}</div>
                     </Col>
                     <Col className='d-flex align-items-center justify-content-center justify-content-sm-start mb-2'>
                         <div className='d-flex align-items-center' onClick={() => onCopy(wallet)}>
                             <FontAwesomeIcon
                               style={{marginRight: 20}}
                               icon={faCopy} />
-                            <span style={{wordBreak: 'break-all', display: 'inline-block', margin: '0 10px 0 0'}} className='internal-address'>{wallet}</span>
+                            <span style={{wordBreak: 'break-all', display: 'inline-block', margin: '0 10px 0 0', fontSize: '14px'}} className='internal-address'>{wallet}</span>
                         </div>
                     </Col>
-
+                    <Col className='d-flex justify-content-end'>
+                        <Button style={{marginBottom: 5, width: 100}} classname={['btnBlue', 'btnSmall', theme]} onClick={makeOpen} >Send</Button>
+                    </Col>
                 </Row>
-                {
-                    state.isOpen ? null :
-                      <Row className='justify-content-center'>
-                          <Button style={{marginBottom: 5, width: 200}} classname={['btnBlue', theme]} onClick={makeOpen} >Send</Button>
-                      </Row>
-                }
-            </Row>
+            }
 
 
 

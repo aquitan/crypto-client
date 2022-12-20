@@ -1,8 +1,6 @@
 .light.internal_address_card {
   position: relative;
-  box-shadow: 0 0 10px 0 rgb(0, 0, 0, .3);
   width: 100%;
-  padding: 20px;
   box-sizing: border-box;
   outline: none;
   background-color: transparent;
@@ -17,9 +15,7 @@
 }
 .dark.internal_address_card {
   position: relative;
-  box-shadow: 0 0 10px 0 rgb(255, 255, 255, .3);
   width: 100%;
-  padding: 20px;
   box-sizing: border-box;
   outline: none;
   background-color: transparent;

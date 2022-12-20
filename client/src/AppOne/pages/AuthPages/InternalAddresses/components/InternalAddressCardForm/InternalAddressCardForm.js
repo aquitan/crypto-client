@@ -108,30 +108,30 @@ const InternalAddressCardForm = ({checkAddress, currency, setFormData, wallet, s
             </CustomModal>
 
 
-            <Row className='mb-3'>
-                <Col className='col mb-3'>
-                    <Input {...register('toAddress', {
-                        required: 'Invalid wallet',
-                        validate: (val) => checkWallet(val),
-                        onBlur: e => onBlur(e)
-                    })} classname='inputTransparent' placeholder='Address' />
-                    <ErrorMessage  name='toAddress' errors={errors} render={({message}) => <p className={error.error}>{message}</p>} />
-                </Col>
-                <Col className='col'>
-                    <Input {...register('amountInCrypto', {
-                        required: true,
-                        pattern: /(\d+(?:\.\d+)?)/,
-                        onBlur: () => onCheckAmount(),
-                        validate: value => checkValue(value)
-                    })} classname='inputTransparent' placeholder='Amount' />
-                    <ErrorMessage  name='amountInCrypto' errors={errors} render={() => <p className={error.error}>Check the value</p>} />
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <Button onClick={handleSubmit(onClick)} classname='btnBlue'>Send</Button>
-                </Col>
-            </Row>
+            <div style={{borderBottom: '1px solid #cecece'}}>
+                <Row style={{marginBottom: 20}} className='align-items-center justify-content-between'>
+                    <Col className=''>
+                        <Input {...register('toAddress', {
+                            required: 'Invalid wallet',
+                            validate: (val) => checkWallet(val),
+                            onBlur: e => onBlur(e)
+                        })} style={{border: 'none', borderRadius: 0, borderBottom: '1px solid #cecece'}}  classname='inputTransparent' placeholder='Address' />
+                        <ErrorMessage  name='toAddress' errors={errors} render={({message}) => <p className={error.error}>{message}</p>} />
+                    </Col>
+                    <Col className=''>
+                        <Input {...register('amountInCrypto', {
+                            required: true,
+                            pattern: /(\d+(?:\.\d+)?)/,
+                            onBlur: () => onCheckAmount(),
+                            validate: value => checkValue(value)
+                        })} style={{border: 'none', borderRadius: 0, borderBottom: '1px solid #cecece', width: '100%'}} classname='inputTransparent' placeholder='Amount' />
+                        <ErrorMessage  name='amountInCrypto' errors={errors} render={() => <p className={error.error}>Check the value</p>} />
+                    </Col>
+                    <Col className='d-flex justify-content-end'>
+                        <Button onClick={handleSubmit(onClick)} classname={['btnBlue', 'btnSmall']}>Send</Button>
+                    </Col>
+                </Row>
+            </div>
         </>
     )
 }

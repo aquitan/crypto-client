@@ -23,6 +23,7 @@ import UserPageSkeleton from '../../../components/UserPageSkeleton/UserPageSkele
 import { Skeleton } from '@mui/material';
 import { getSwitchQuery } from '../../../utils/getSwitchQuery';
 import CustomModal from '../../../components/CustomModal/CustomModal';
+import Support from '../Support/Support';
 
 const Profile = () => {
     const [profileData, setProfileData] = useState()
@@ -88,6 +89,8 @@ const Profile = () => {
             return <AccountSecurity data={profileData?.user} />
         } else if (currentLink === 'payment') {
             return <PaymentOptions />
+        } else if (currentLink === 'support') {
+            return <Support />
         } else {
             return <KYC user={profileData?.user}/>
         }
@@ -185,9 +188,9 @@ const Profile = () => {
                                         <FontAwesomeIcon icon={faWallet} />
                                         <div style={{marginLeft: 20}}>Payment Options</div>
                                     </div>
-                                    <div className={classes}>
+                                    <div className={classes} onClick={() => setCurrentLink('support')}>
                                         <FontAwesomeIcon icon={faHeadset} />
-                                        <Nav.Link className={classes} style={{padding: 0, marginLeft: 20}} to={'/support'} as={NavLink}>Profile Support</Nav.Link>
+                                        <div style={{marginLeft: 20}}>Profile Support</div>
                                     </div>
                                     {/* <div className={classes}>
                                         <FontAwesomeIcon icon={faPhone} />

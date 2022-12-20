@@ -6,7 +6,6 @@ const ChatRules = ({rulesDisclamer}) => {
   const {theme} = useThemeContext(ThemeContext)
     return (
         <div>
-            <h4>Information</h4>
             <Row>
                 {rulesDisclamer}
             </Row>

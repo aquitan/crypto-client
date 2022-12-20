@@ -6,7 +6,7 @@ const MarketOverviewItem = ({image, name, price, symbol, volume, priceChange, th
         <Row style={{borderBottom: '1px solid #CCCED9', color: theme === 'light' ? "#121318" : '#fff', fontSize: '12px'}} className='my-4 py-3 align-items-center justify-content-center'>
             <Col className='d-flex align-items-center justify-content-center col-4 col-md-2'>
                 <img height={35} src={image} alt=""/>
-                <b className='mx-3 d-none d-xl-flex'>{symbol === 'TRX/USDT' ? 'Tether' : name === 'Teaser' ? 'Tether' : name}</b>
+                <b style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className='mx-3 d-none d-xl-flex'>{symbol === 'TRX/USDT' ? 'Tether' : name === 'Teaser' ? 'Tether' : name}</b>
                 <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8'}} className="badge d-none d-xl-flex">
                   {symbol === 'USDT' ? 'ERC 20' : symbol.toUpperCase()}
                 </div>

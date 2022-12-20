@@ -38,7 +38,7 @@ const AuthWrap = () => {
             {
                 userLocation[1] === 'staff' ? null : <NavBar/>
             }
-            <div className={classes}>
+            <div id={theme} className={classes}>
 
                 <Routes>
                     {

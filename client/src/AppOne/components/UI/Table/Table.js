@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 const Table = ({children}) => {
     return (
-        <div>
+        <div style={{padding: '0'}}>
             {children}
         </div>
     )

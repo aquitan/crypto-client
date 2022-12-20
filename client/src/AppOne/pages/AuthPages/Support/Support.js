@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {Col, Row} from "react-bootstrap";
+import {Accordion, Col, Row} from "react-bootstrap";
 import ChatWindow from "./components/ChatWindow/ChatWindow";
 import ChatRules from "./components/ChatRules/ChatRules";
 import {supportRulesText} from "../../../utils/userConstants";
@@ -13,6 +13,7 @@ import {useNavigate} from 'react-router-dom';
 import AdminButton from '../../../components/UI/AdminButton/AdminButton';
 import { getSwitchQuery } from '../../../utils/getSwitchQuery';
 import CustomModal from '../../../components/CustomModal/CustomModal';
+import './components/ChatWindow/ChatWindow.scss'
 
 const Support = () => {
     const [msg, setMsg] = useState([])
@@ -66,6 +67,7 @@ const Support = () => {
 
     useEffect(() => {
         getSupportMessages()
+        console.log('get support messages');
         setInterval(() => {
             getSupportMessages()
         }, 30000)
@@ -86,9 +88,8 @@ const Support = () => {
             </CustomModal>
 
 
-            <ButtonCard style={{padding: 0}} theme={theme}>
-                <Row className='py-3 px-3'>
-                    <Col className='col-12 col-lg-9'>
+            <Row className='py-3'>
+                    <Col className='col-12 p-0'>
                         <ChatWindow onUploadImg={onUploadImg} onClick={onClick} preloader={preloader}>
                             {
                                 msg.length ?
@@ -108,7 +109,7 @@ const Support = () => {
                         </ChatWindow>
                         {
                                 msg.length ? 
-                                <Row className={'mb-3 mt-3'}>
+                                <Row className={'mb-3 mt-3 load-more'}>
                                     {
                                         msg.length >= 50 ?
                                         <AdminButton onClick={onMore} classname={['xs', 'green']}>Load older messages</AdminButton>
@@ -122,11 +123,17 @@ const Support = () => {
                                 </Row> : null
                             }
                     </Col>
-                    <Col className='col-12 col-lg-3'>
-                        <ChatRules rulesDisclamer={supportRulesText} />
-                    </Col>
                 </Row>
-            </ButtonCard>
+                <Row>
+                    <Accordion className='support-accordion'>
+                        <Accordion.Item style={{backgroundColor: '#fff'}} eventKey="0">
+                            <Accordion.Header>Rules</Accordion.Header>
+                            <Accordion.Body>
+                                <ChatRules rulesDisclamer={supportRulesText} />
+                            </Accordion.Body>
+                        </Accordion.Item>
+                    </Accordion>
+                </Row>
         </>
     )
 }

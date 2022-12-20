@@ -145,7 +145,7 @@ const Dashboard = () => {
                                         <Col style={{marginBottom: '1rem'}} className='d-flex justify-content-end'>
                                         {
                                             balance.length ?
-                                                <b style={{textAlign: 'right'}}>Total balance: ${balance.length ? countTotalBalance().toLocaleString() : <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={100} height={20} />}</b>
+                                                <b style={{textAlign: 'right', color: theme === 'light' ? '#2b3144cc' : '#fff'}}>Total balance: ${balance.length ? countTotalBalance().toLocaleString() : <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={100} height={20} />}</b>
                                                 : <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={100} height={20} />
                                         }
                                         </Col>
@@ -203,7 +203,7 @@ const Dashboard = () => {
                                                 <Col className='col-4 col-md-2 text-center'>
                                                     Price
                                                 </Col>
-                                                <Col className='d-none d-xl-flex col-4 col-md-2 text-center'>
+                                                <Col className='d-none d-xl-block col-4 col-md-2 text-center'>
                                                     Market Capacity
                                                 </Col>
                                                 <Col className='col-4 col-md-1 text-center'>
