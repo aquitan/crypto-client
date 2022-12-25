@@ -100,5 +100,8 @@ select.dark:-webkit-autofill:focus {
 .dark.input {
     background-color: #121318 !important;
     color: #fff !important;
+}
+
+.dark.error {
     border: 1px solid tomato !important;
 }
