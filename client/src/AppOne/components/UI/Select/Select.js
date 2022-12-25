@@ -3,12 +3,15 @@ import PropTypes from "prop-types";
 import classNames from "classnames/bind";
 import cls from './Select.module.scss'
 import {v4 as uuid} from 'uuid'
+import { useThemeContext } from '../../../context/ThemeContext';
 
 const Select = forwardRef(({options, getAvalue, classname, initial, ...attr}, ref) => {
+    const {theme} = useThemeContext()
+    
     let cx = classNames.bind(cls)
-
     const classes = cx(
         'default-select',
+        theme,
         classname
     )
 

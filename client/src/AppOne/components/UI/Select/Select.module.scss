@@ -25,6 +25,11 @@
   padding: 20px;
 }
 
+.dark {
+  background-color: #121318 !important;
+  border: none;
+}
+
 .transparent {
   color: #fff;
   background-color: transparent;
@@ -72,4 +77,7 @@
 }
 .error {
   border-color: tomato
+}
+.dark.error {
+  border: 1px solid tomato !important;
 }

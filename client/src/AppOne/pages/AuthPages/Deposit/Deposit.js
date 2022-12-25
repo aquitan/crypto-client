@@ -251,10 +251,6 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
                         eventKey='deposit'
                         title='Deposit'>
                         <Row className='mb-4 mt-4'>
-                            <div className='p-0 mb-3' style={{wordBreak: 'break-word'}}>{address ? <div className={cls.yourAddress}>
-                                Your address: <b>{address}</b>
-                            </div> :
-                                <Button classname={['btnSmall', 'btnGray']} onClick={getAddressForDeposit}>Generate address</Button>}</div>
                             {/*<Select {...register('coinName')} classname='transparent' options={statusOptions} />*/}
                                 <div style={{display: 'flex', justifyContent: 'space-between', padding: 0}}>
                                     <span className={cls.smal_label}>Coin:</span>
@@ -287,6 +283,12 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
                                 onChange: (val) => onChangeUsd(val)
                             })} placeholder='0.00' />
                             <ErrorMessage name='amount' errors={errors} render={() => <p className={cls.error}>Check the field</p>} />
+                        </Row>
+                        <Row>
+                            <div className='p-0 mb-3' style={{wordBreak: 'break-word'}}>{address ? <div className={cls.yourAddress}>
+                                Your address: <b>{address}</b>
+                            </div> :
+                            <div style={{color: 'rgb(108, 112, 128)', cursor: 'pointer'}} onClick={getAddressForDeposit}>Generate address</div>}</div>
                         </Row>
                         <i style={{fontSize: 12, color: 'grey'}}>Note: Minimum deposit amount is {store.domain.domainParams.minDepositSum} USD</i><br/>
                         <Row className='mb-3 mt-3 justify-content-center'>

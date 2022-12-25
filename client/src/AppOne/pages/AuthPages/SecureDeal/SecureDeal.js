@@ -194,24 +194,24 @@ const SecureDeal = () => {
                         </Row>
                         <Form classnames='wide-form' onSubmit={handleSubmit(onSubmit)}>
                             <Row className='mb-3 pb-2 secure_deal_row text-center'>
-                                <h4 className='mb-3'>
+                                <h4 style={{color: theme === 'dark' ? '#fff' : 'grey'}} className='mb-3'>
                                     <span className='step'>01</span>
                                     Step 1: Choose your role</h4>
                                 <p>You can buy or sell anything securely via our platform.</p>
                                 <div className='secure_deal_col mb-3 d-flex justify-content-center'>
-                                    <div className='p-0 py-4' style={{marginRight: 20}}>
+                                    <div className='p-0 py-4 text-center' style={{marginRight: 20}}>
                                         <InputRadio {...register('role', {
                                             required: 'Chose the role',
-                                        })} img={'/img/seller-icon.svg'} classname={['radio_btn', `${errors.role ? 'error' : ''}`]} id='seller' label='Seller' value='seller' name='role' />
+                                        })} img={'seller'} classname={['radio_btn', `${errors.role ? 'error' : ''}`]} id='seller' label='Seller' value='seller' name='role' />
                                         <ErrorMessage
                                           name='role'
                                           errors={errors}
                                           render={({message}) => <p className={error.error}>{message}</p>} />
                                     </div>
-                                    <div className='p-0 py-4'>
+                                    <div className='p-0 py-4 text-center'>
                                         <InputRadio {...register('role', {
                                             required: 'Chose the role',
-                                        })} img={'/img/buyer-icon.svg'} classname={['radio_btn', `${errors.role ? 'error' : ''}`]} label='Buyer' id='buyer' value='buyer' name='role' />
+                                        })} img={'buyer'} classname={['radio_btn', `${errors.role ? 'error' : ''}`]} label='Buyer' id='buyer' value='buyer' name='role' />
                                         <ErrorMessage
                                           name='role'
                                           errors={errors}
@@ -221,7 +221,7 @@ const SecureDeal = () => {
                             </Row>
                             <Row className='mb-3 pb-2 justify-content-center'>
                                 <Col className='text-center'>
-                                    <h4 className='mb-3'>
+                                    <h4 style={{color: theme === 'dark' ? '#fff' : 'grey'}} className='mb-3'>
                                         <span className='step'>02</span>
                                         Step 2: Participant</h4>
                                     <p>Please enter username or email of another participant. User should have account at localhost</p>
@@ -239,7 +239,7 @@ const SecureDeal = () => {
                             </Row>
                             <Row className='mb-3 pb-2'>
                                 <Col className='text-center'>
-                                    <h4 className='mb-3'>
+                                    <h4 style={{color: theme === 'dark' ? '#fff' : 'grey'}} className='mb-3'>
                                         <span className='step'>03</span>
                                         Step 3: Deal conditions</h4>
                                     <p>Please describe all aspects of the deal as accurately as possible.

@@ -197,3 +197,20 @@ button.accordion-button.collapsed, .accordion-flush .accordion-item .accordion-b
 .dark .am5stock-control-label {
   color: #fff !important;
 }
+
+.label-secure-deal span {
+  color: tomato;
+}
+.label-secure-deal {
+  font-size: 12px !important;
+  color: #2b3144cc;
+  margin-bottom: 5px;
+}
+
+.modal.show {
+  opacity: 1;
+  z-index: 9999999;
+  padding-top: 2%;
+  padding-left: 0px;
+  display: block;
+}

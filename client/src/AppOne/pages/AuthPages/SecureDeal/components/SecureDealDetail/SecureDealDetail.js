@@ -151,8 +151,14 @@ const SecureDealDetail = () => {
 
             <Row>
                 <Col>
-                    <h1>Deal #15</h1>
-                    <p>Full info about current secure deal</p>
+                    <ButtonCard theme={theme}>
+                        <Row>
+                            <Col>
+                                <h1 style={{color: theme === 'light' ? '#2b3144cc' : '#fff', marginBottom: '30px'}} >Deal #15</h1>
+                                <p>Full info about current secure deal</p>
+                            </Col>
+                        </Row>
+                    </ButtonCard>
                 </Col>
             </Row>
             {/*{*/}
@@ -164,20 +170,20 @@ const SecureDealDetail = () => {
                         <Row>
                             <Col className='col-12 col-xl-6'>
                                 <ButtonCard style={{minHeight: 400}} theme={theme}>
-                                    <h5 className={cls.card_header}>Base info</h5>
-                                    <Row className='mb-3 mt-3'>
+                                    <h5 style={{color: theme === 'light' ? '#2b3144cc' : '#fff', marginBottom: '30px'}} className={cls.card_header}>Base info</h5>
+                                    <Row style={{color:  theme === 'light' ? '#2b3144cc' : '#fff'}} className='mb-3 mt-3'>
                                         <Col>Seller</Col>
                                         <Col>{dealData.seller}</Col>
                                     </Row>
-                                    <Row className='mb-3'>
+                                    <Row style={{color:  theme === 'light' ? '#2b3144cc' : '#fff'}} className='mb-3'>
                                         <Col>Buyer</Col>
                                         <Col>{dealData.buyer}</Col>
                                     </Row>
-                                    <Row className='mb-3'>
+                                    <Row style={{color:  theme === 'light' ? '#2b3144cc' : '#fff'}} className='mb-3'>
                                         <Col>Price</Col>
                                         <Col>{dealData.amountInCrypto} {dealData.coinName}</Col>
                                     </Row>
-                                    <Row className='mb-3'>
+                                    <Row style={{color:  theme === 'light' ? '#2b3144cc' : '#fff'}} className='mb-3'>
                                         <Col>Deadline</Col>
                                         <Col>{getCurrentDate(dealData.dealDedline)}</Col>
                                     </Row>
@@ -191,19 +197,15 @@ const SecureDealDetail = () => {
                                     }
                                     {
                                         !dealData.acceptCode ?
-                                          <Row className='mb-3 py-1'>
-                                              <Col>Enter password</Col>
-                                              <Col>
-                                                  <Row className='align-items-center'>
-                                                      <Col className='col-12 col-md-4 p-0 py-1'><Input {...register('acceptCode')} classname='inputTransparent' placeholder='password' /></Col>
-                                                      <Col className='col-12 col-md-6 py-1'><Button style={{height: 50}} onClick={handleSubmit(sendRewardData)} classname='btnBlue'>Get reward</Button></Col>
-                                                  </Row>
-                                              </Col>
-                                          </Row>
+                                        <Row className='align-items-center mb-4'>
+                                            <Col className='px-3 py-1'>
+                                                <Input {...register('acceptCode')} classname='inputTransparent' placeholder='password' /></Col>
+                                            <Col className='py-1'><Button style={{height: 50}} onClick={handleSubmit(sendRewardData)} classname='btnBlue'>Get reward</Button></Col>
+                                        </Row>
                                           : null
                                     }
                                     <Row>
-                                        <h5 className={cls.card_header}>Detailed info</h5>
+                                        <h5 style={{color:  theme === 'light' ? '#2b3144cc' : '#fff', marginBottom: '30px'}} className={cls.card_header}>Detailed info</h5>
                                         <TextArea rows={8} classname='textareaTransparent' value={dealData.dealCondition}/>
                                     </Row>
                                 </ButtonCard>
@@ -211,9 +213,9 @@ const SecureDealDetail = () => {
 
                             <Col className='col-12 col-xl-6'>
                                 <ButtonCard style={{minHeight: 400}} theme={theme} className='mt-4 p-3'>
-                                    <Row className='mt-3'>
+                                    <Row className=''>
                                         <Col className='col-12 mb-3'>
-                                            <ChatWindow onUploadImg={onUploadImg} onClick={onClick} preloader={preloader}>
+                                            <ChatWindow onUploadImg={onUploadImg} onClick={onClick} preloader={preloader} chatHeader='Secure Deal Chat'>
                                                 {
                                                     typeof msg !== 'string' ?
                                                       msg.slice(0).reverse().map(item => {

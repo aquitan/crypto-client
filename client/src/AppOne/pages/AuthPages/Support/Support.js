@@ -90,7 +90,7 @@ const Support = () => {
 
             <Row className='py-3'>
                     <Col className='col-12 p-0'>
-                        <ChatWindow onUploadImg={onUploadImg} onClick={onClick} preloader={preloader}>
+                        <ChatWindow onUploadImg={onUploadImg} onClick={onClick} preloader={preloader} chatHeader='Chat support 24/7'>
                             {
                                 msg.length ?
                                   msg.map(item => {

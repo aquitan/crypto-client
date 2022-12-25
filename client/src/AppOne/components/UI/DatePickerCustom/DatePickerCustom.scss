@@ -56,6 +56,15 @@
   position: relative;
 }
 
+.dark {
+  background-color: #121318 !important;
+  border: none;
+}
+
 .error {
   border-color: tomato;
+}
+
+.dark.error {
+  border: 1px solid tomato !important;
 }

@@ -170,43 +170,47 @@ const KYC = ({user}) => {
                     borderBottom: '1px solid #cecece',
                     borderTop: '1px solid #cecece',
                     padding: '10px 0'}}>
-                    <div style={{fontWeight: 'bold'}}>
+                    <div style={{fontWeight: 'bold', color: '#2b3144cc'}}>
                         Personal Details
                     </div>
-                    <div>
+                    <div style={{color: '#2b3144cc'}}>
                         Your personal information is required for identification.
                     </div>
                 </Row>
                 <Row className={''}>
                     <Col className={'mb-3 col-12 col-md-6'}>
+                        <label className='label-secure-deal'>First name<span>*</span></label>
                         <Input classname={['inputTransparent', `${errors.firstName ? 'error' : ''}`]} {...register('firstName', {
                             required: true,
                             pattern: /^[^а-яё]+$/iu,
-                        })} placeholder='First name*' />
+                        })} placeholder='' />
                         <ErrorMessage  name='firstName' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
                     </Col>
                     <Col className={'mb-3 col-12 col-md-6'}>
+                        <label className='label-secure-deal'>Last name<span>*</span></label>
                         <Input classname={['inputTransparent', `${errors.lastName ? 'error' : ''}`]} {...register('lastName', {
                             required: true,
                             pattern: /^[^а-яё]+$/iu
-                        })} placeholder='Last name*'/>
+                        })} placeholder=''/>
                         <ErrorMessage  name='lastName' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
                     </Col>
                 </Row>
                 <Row className={''}>
                     <Col className={'mb-3 col-12 col-md-6'}>
+                        <label className='label-secure-deal'>Email address<span>*</span></label>
                         <Input classname={['inputTransparent', `${errors.userEmail ? 'error' : ''}`]} {...register('userEmail', {
                             required: 'This field is required',
                             validate: emailValidate,
-                        })} placeholder='Email address*' />
+                        })} placeholder='' />
                         <ErrorMessage  name='userEmail' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
                     </Col>
                     <Col className={'mb-3 col-12 col-md-6'}>
+                        <label className='label-secure-deal'>Date of Birth<span>*</span></label>
                         <DatePickert required
                                      customInput={<DatePickerCustom {...register('startDate', {
                                          required: 'Date is required',
                                      })} classname={['inputTransparent', `${errors.startDate ? 'error' : ''}`]}/>}
-                                     placeholderText='Date of Birth*'
+                                     placeholderText=''
                                      selected={startDate}
                                      dateFormat='yyyy/MM/dd'
                                      onChange={(date) => {onChangeDate(date)}} />
@@ -215,18 +219,20 @@ const KYC = ({user}) => {
                 </Row>
                 <Row className={''}>
                     <Col className={'mb-3 col-12 col-md-6'}>
+                        <label className='label-secure-deal'>Phone number<span>*</span></label>
                         <InputMask mask='9-(999)-999-99-99' {...register('phoneNumber', {
                             required: 'This field is required'
                         })}>
-                            {(inputProps) => <Input classname={['inputTransparent', `${errors.phoneNumber ? 'error' : ''}`]} {...inputProps} name='phoneNumber' placeholder='Phone number*' type='tel'/>}
+                            {(inputProps) => <Input classname={['inputTransparent', `${errors.phoneNumber ? 'error' : ''}`]} {...inputProps} name='phoneNumber' placeholder='' type='tel'/>}
                         </InputMask>
                         <ErrorMessage name='phoneNumber' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
                     </Col>
                     <Col className={'mb-3 col-12 col-md-6'}>
+                        <label className='label-secure-deal'>ID/Document Nr.<span>*</span></label>
                         <Input classname={['inputTransparent', `${errors.documentNumber ? 'error' : ''}`]} {...register('documentNumber', {
                             required: true,
                             pattern: /^[^а-яё]+$/iu
-                        })} placeholder='ID/Document Nr.*'/>
+                        })} placeholder=''/>
                         <ErrorMessage  name='documentNumber' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
                     </Col>
                 </Row>
@@ -234,49 +240,54 @@ const KYC = ({user}) => {
                     borderBottom: '1px solid #cecece',
                     borderTop: '1px solid #cecece',
                     padding: '10px 0'}}>
-                    <div style={{fontWeight: 'bold'}}>
+                    <div style={{fontWeight: 'bold', color: '#2b3144cc'}}>
                         Personal Details
                     </div>
-                    <div>
+                    <div style={{color: '#2b3144cc'}}>
                         Your personal information is required for identification.
                     </div>
                 </Row>
                 <Row className={''}>
                     <Col className={'mb-3 col-12 col-md-6'}>
+                        <label className='label-secure-deal'>Address line 1<span>*</span></label>
                         <Input classname={['inputTransparent', `${errors.mainAddress ? 'error' : ''}`]} {...register('mainAddress', {
                             required: true,
                             pattern: /^[^а-яё]+$/iu
-                        })} placeholder='Address line 1*' />
+                        })} placeholder='' />
                         <ErrorMessage  name='mainAddress' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
                     </Col>
                     <Col className={'mb-3 col-12 col-md-6'}>
+                        <label className='label-secure-deal'>Address line 2</label>
                         <Input classname='inputTransparent' {...register('subAddress', {
                             pattern: /^[^а-яё]+$/iu
-                        })} placeholder='Address line 2'/>
+                        })} placeholder=''/>
                         <ErrorMessage  name='subAddress' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
                     </Col>
                 </Row>
                 <Row className={''}>
                     <Col className={'mb-3 col-12 col-md-6'}>
+                        <label className='label-secure-deal'>City<span>*</span></label>
                         <Input classname={['inputTransparent', `${errors.city ? 'error' : ''}`]} {...register('city', {
                             required: true,
                             pattern: /^[^а-яё]+$/iu
-                        })} placeholder='City*' />
+                        })} placeholder='' />
                         <ErrorMessage  name='city' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
                     </Col>
                     <Col className={'mb-3 col-12 col-md-6'}>
+                        <label className='label-secure-deal'>Zip<span>*</span></label>
                         <Input classname={['inputTransparent', `${errors.zipCode ? 'error' : ''}`]} {...register('zipCode', {
                             required: true,
                             pattern: /^[^а-яё]+$/iu
-                        })} placeholder='Zip*'/>
+                        })} placeholder=''/>
                         <ErrorMessage  name='zipCode' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
                     </Col>
                 </Row>
                 <Row className={''}>
                     <Col className={'mb-3 col-12 col-md-6'}>
+                        <label className='label-secure-deal'>State</label>
                         <Input classname='inputTransparent' {...register('state', {
                             pattern: /^[^а-яё]+$/iu
-                        })} placeholder='State' />
+                        })} placeholder='' />
                         <ErrorMessage  name='state' errors={errors} render={() => <p className={'error'}>Check the field</p>} />
                     </Col>
                 </Row>
@@ -285,10 +296,10 @@ const KYC = ({user}) => {
                     borderBottom: '1px solid #cecece',
                     borderTop: '1px solid #cecece',
                     padding: '10px 0'}}>
-                    <div style={{fontWeight: 'bold'}}>
+                    <div style={{fontWeight: 'bold', color: '#2b3144cc'}}>
                         Document Upload
                     </div>
-                    <div>
+                    <div style={{color: '#2b3144cc'}}>
                         To verify your identity, please upload at least one of the required documents.
                     </div>
                 </Row>

@@ -9,7 +9,7 @@ import {faPaperPlane} from '@fortawesome/free-solid-svg-icons';
 import Button from '../../../../../components/UI/Button/Button';
 import Preloader from '../../../../../components/UI/Preloader/Preloader';
 
-const ChatWindow = ({children, onClick, edited, onUploadImg, showRules, preloader}) => {
+const ChatWindow = ({children, onClick, edited, onUploadImg, showRules, preloader, chatHeader}) => {
     const [state, setState] = useState('')
     const {theme} = useThemeContext(ThemeContext)
 
@@ -25,7 +25,7 @@ const ChatWindow = ({children, onClick, edited, onUploadImg, showRules, preloade
     return (
         <div className='chat'>
             <div style={{paddingBottom: '20px', fontWeight: 'bold', boxShadow: 'inset 0px -1px 0px #E5E5EA', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                Chat support 24/7
+                {chatHeader}
               {/*<Button onClick={showRules} style={{height: 30, margin: '0 20px'}} classname={'btnBlue'}>Show Rules</Button>*/}
             </div>
             <Row className='p-0'>

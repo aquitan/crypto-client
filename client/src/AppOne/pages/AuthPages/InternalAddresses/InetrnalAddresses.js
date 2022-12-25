@@ -16,6 +16,7 @@ import AdminButton from '../../../components/UI/AdminButton/AdminButton';
 import UserPageSkeleton from '../../../components/UserPageSkeleton/UserPageSkeleton';
 import { Skeleton } from '@mui/material';
 import { getSwitchQuery } from '../../../utils/getSwitchQuery';
+import Button from '../../../components/UI/Button/Button';
 
 const InternalAddresses = () => {
     const {theme} = useThemeContext(ThemeContext)
@@ -120,7 +121,7 @@ const InternalAddresses = () => {
                             <span>{modal?.to}</span>
                         </Col>
                     </Row>
-                    <Row className='mb-2'>
+                    <Row className='mb-4'>
                         <Col><b>Amount:</b></Col>
                         <Col style={{fontSize: 14, color: 'grey'}}>
                             {modal?.amount} USD

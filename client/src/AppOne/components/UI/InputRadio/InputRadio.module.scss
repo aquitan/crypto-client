@@ -1,6 +1,6 @@
 .radio_btn {
   display: inline-block;
-  margin-right: 10px;
+  margin: 0 10px;
 }
 .radio_btn input[type=radio] {
   display: none;
@@ -29,13 +29,26 @@
   }
 }
 
+svg path {
+  transition: all .2s linear;
+}
+
 /* Hover */
 .radio_btn label:hover {
-  color: rgba(83, 103, 254, .4);
+  background-color: rgba(83, 103, 254, .4);
+  transition: all .2s linear;
+  color: #fff;
+  svg path {
+    fill: #fff;
+    transition: all .2s linear;
+  }
 }
 
 /* Disabled */
 .radio_btn input[type=radio]:disabled + label {
   background: #efefef;
   color: #666;
+}
+svg {
+  width: 20px
 }

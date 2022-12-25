@@ -44,29 +44,32 @@ const UserNews = () => {
                         <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} />
                     </ButtonCard>
                     : 
-                    <>
+                    <ButtonCard theme={theme} style={{maxHeight: '1200px', overflowY: 'auto'}}>
                         {
                             typeof state !== 'string' ?
                                 state.slice(0).reverse('').map(item => {
                                     return (
-                                        <ButtonCard key={item._id} style={{maxWidth: 1024, margin: '20px auto', textAlign: 'center'}} theme={theme}>
+                                        <div style={{borderBottom: '1px solid #eee', marginBottom: '30px'}}>
                                             <h3 className='mb-3'>{item.newsTitle}</h3>
                                             <div className='mb-3'>
-                                                <img style={{maxWidth: 450, width: '100%'}} src={item.newsImage} alt=""/>
+                                                
                                             </div>
                                             <div className='mb-3'>
-                                                <p style={{textAlign: 'justify'}}>{item.newsBody}</p>
+                                                <p style={{textAlign: 'justify'}}>
+                                                    <img align='left' style={{maxWidth: 250, width: '100%', padding: '0 20px 0 0'}} src={item.newsImage} alt=""/>
+                                                    {item.newsBody}
+                                                </p>
                                             </div>
-                                            <div>
+                                            <div style={{clear: 'both', marginTop: '20px', paddingTop: '20px'}}>
                                                 <span style={{color: 'grey', fontSize: '14px'}}>{getCurrentDate(item.newsDate)}</span>
                                             </div>
-                                        </ButtonCard>
+                                        </div>
                                     )
                                 })
                                 : <h2>No news</h2>
                         }
                     
-                    </>
+                    </ButtonCard>
             }
         </>
     )

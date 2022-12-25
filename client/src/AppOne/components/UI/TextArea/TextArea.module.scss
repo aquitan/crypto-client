@@ -12,7 +12,7 @@
   border: 1px solid #cecece
 }
 .dark {
-  background-color: #444;
+  background-color: #121318 !important;
   border: none;
   color: #fff;
   padding: 20px;
@@ -32,4 +32,8 @@
 }
 .error {
   border-color: tomato;
+}
+
+.dark.error {
+  border: 1px solid tomato !important;
 }

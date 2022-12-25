@@ -1,6 +1,5 @@
 .inputFile {
   position: relative;
-  display: inline-block;
   max-width: 260.7px;
   height: 100.5px;
   width: 100%;
@@ -11,6 +10,9 @@
   background-color: #e2f2ff;
   padding: 10px;
   margin: 0 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 // .inputFileText {
 //   padding: 0 10px;
@@ -28,6 +30,10 @@
 .inputFileBtn {
   color: #6c7080;
   font-size: 14px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
 .inputFile input[type=file] {
   position: absolute;
