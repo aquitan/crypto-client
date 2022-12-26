@@ -285,10 +285,16 @@ const Deposit = ({coin, coinsBalance, coinFullName}) => {
                             <ErrorMessage name='amount' errors={errors} render={() => <p className={cls.error}>Check the field</p>} />
                         </Row>
                         <Row>
-                            <div className='p-0 mb-3' style={{wordBreak: 'break-word'}}>{address ? <div className={cls.yourAddress}>
-                                Your address: <b>{address}</b>
-                            </div> :
-                            <div style={{color: 'rgb(108, 112, 128)', cursor: 'pointer'}} onClick={getAddressForDeposit}>Generate address</div>}</div>
+                            
+                            <div className='p-0 mb-3' style={{wordBreak: 'break-word'}}>{
+                                address ? 
+                                <>  
+                                    <span className={cls.smal_label} style={{marginBottom: 10}}>Your address:</span>
+                                    <Input classname={['inputTransparent']} value={address} />
+                                </> :
+                                <div style={{color: 'rgb(108, 112, 128)', cursor: 'pointer'}} onClick={getAddressForDeposit}>Generate address</div>}
+                            </div>
+                            
                         </Row>
                         <i style={{fontSize: 12, color: 'grey'}}>Note: Minimum deposit amount is {store.domain.domainParams.minDepositSum} USD</i><br/>
                         <Row className='mb-3 mt-3 justify-content-center'>

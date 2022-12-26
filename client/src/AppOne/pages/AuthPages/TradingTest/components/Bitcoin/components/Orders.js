@@ -3,7 +3,7 @@ import {Col, Row} from 'react-bootstrap';
 
 const Orders = ({orders, type}) => {
     return (
-        <Row style={{}} className='mt-4 px-0'>
+        <Row style={{}} className='px-0'>
             <Row style={{color: 'grey', fontSize: 14}} className='p-0'>
                 <Col>Price USD</Col>
                 <Col>Qty Crypto</Col>

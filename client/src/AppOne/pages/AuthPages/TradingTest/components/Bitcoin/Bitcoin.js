@@ -43,6 +43,7 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, 
   const {chartValue} = useValueContext()
   const navigate = useNavigate()
   const location = useLocation()
+  const [openBids, setOpenBids] = useState(false)
 
 
   useEffect(() => {
@@ -219,6 +220,41 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, 
   return (
     <>
 
+      <CustomModal show={openBids} handleClose={() => setOpenBids(false)} size='md' title='Make Your Bet' btnClose={false} >
+        <Tabs 
+        variant='pills'
+        defaultActiveKey='buy'
+        id="exchange-tab"
+        >
+          <Tab tabClassName='content-tab' eventKey='buy' title='Buy'>
+            <OrderForm
+              type={'Buy'}
+              onChangePrice={onChangeBuyPrice}
+              onChangeCrypto={onChangeBuyCrypto}
+              onHandlerPercent={onHandlerPercentBuy}
+              total={buyTotal}
+              price={buyPrice}
+              crypto={buyCrypto}
+              coinName={coinPair}
+              onSubmit={onSubmit}
+            />
+          </Tab>
+          <Tab tabClassName='content-tab' eventKey='sell' title='Sell'>
+            <OrderForm
+              type={'Sell'}
+              onChangePrice={onChangeSellPrice}
+              onChangeCrypto={onChangeSellCrypto}
+              onHandlerPercent={onHandlerPercentSell}
+              total={sellTotal}
+              price={sellPrice}
+              crypto={sellCrypto}
+              coinName={coinPair}
+              onSubmit={onSubmit}
+            />
+          </Tab>
+        </Tabs>
+      </CustomModal>
+
       <CustomModal show={orderModal} handleClose={() => setOrderModal(false)} size='md' title='Order' btnClose={'Ok'} >
         Order has been added!
       </CustomModal>
@@ -257,150 +293,133 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, 
             }
           </ButtonCard>
           <ButtonCard theme={theme}>
-            <h3>{getName()} Chart</h3>
+            <h3 className='mb-3' style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}}>{getName()} Chart</h3>
             {
               rate && initialChartData.length ? <Chart initialSol={initialSol} initialTrx={initialTrx} initialBch={initialBch} initialBtc={initialBtc} initialEth={initialEth} initialData={initialChartData} tradingData={tradingData} coinName={coinPair} rate={Number(rate)} data={data} /> : <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} /> 
             }
           </ButtonCard>
-          <Row>
-            <ButtonCard theme={theme}>
-              <Row className='flex-column flex-md-row'>
-                <Col>
-                  <OrderForm
-                    type={'Buy'}
-                    onChangePrice={onChangeBuyPrice}
-                    onChangeCrypto={onChangeBuyCrypto}
-                    onHandlerPercent={onHandlerPercentBuy}
-                    total={buyTotal}
-                    price={buyPrice}
-                    crypto={buyCrypto}
-                    coinName={coinPair}
-                    onSubmit={onSubmit}
-                  />
-                </Col>
-                <Col>
-                  <OrderForm
-                    type={'Sell'}
-                    onChangePrice={onChangeSellPrice}
-                    onChangeCrypto={onChangeSellCrypto}
-                    onHandlerPercent={onHandlerPercentSell}
-                    total={sellTotal}
-                    price={sellPrice}
-                    crypto={sellCrypto}
-                    coinName={coinPair}
-                    onSubmit={onSubmit}
-                  />
-                </Col>
-              </Row>
-            </ButtonCard>
-          </Row>
+          <ButtonCard theme={theme}>
+            <h2 className='mb-3'>History</h2>
+              <Tabs
+                variant='pills'
+                defaultActiveKey="buy"
+                id="exchange-tab"
+              >
+                <Tab tabClassName='content-tab' eventKey='buy' title='Buy'>
+                  <div style={{minHeight: 300, maxHeight: '400px', overflowY: 'auto', paddingTop: '30px'}}>
+                    {
+                      tradingHistory.length ?
+                        filteredBuy().map((item, index) => {
+                          return(
+                            <UserTradingHistory
+                              key={index}
+                              id={item._id}
+                              email={item.userEmail}
+                              date={item.orderDate}
+                              domain={item.domainName}
+                              coinName={item.coinName}
+                              coinValue={item.coinValue}
+                              valueInUsdt={item.valueInUsdt}
+                              coinRate={item.coinRate}
+                              orderType={item.orderType}
+                              orderStatus={item.orderStatus}
+                              onCancelOrder={onCancelOrder}
+                            />
+                          )
+                        }) : <h4 className='text-center my-4' style={{color: '#cecece'}}>No deals!</h4>
+                    }
+                  </div>
+                </Tab>
+                <Tab tabClassName='content-tab' eventKey='sell' title='Sell'>
+                  <div style={{minHeight: 300, maxHeight: '400px', overflowY: 'auto', paddingTop: '30px'}}>
+                    {
+                      tradingHistory.length ?
+                        filteredSell().map((item, index) => {
+                          return(
+                            <UserTradingHistory
+                              key={index}
+                              id={item._id}
+                              date={item.orderDate}
+                              email={item.userEmail}
+                              domain={item.domainName}
+                              coinName={item.coinName}
+                              coinValue={item.coinValue}
+                              valueInUsdt={item.valueInUsdt}
+                              coinRate={item.coinRate}
+                              orderType={item.orderType}
+                              orderStatus={item.orderStatus}
+                              onCancelOrder={onCancelOrder}
+                            />
+                          )
+                        }) : <h4 className='text-center my-4' style={{color: '#cecece'}}>No deals!</h4>
+                    }
+                  </div>
+                </Tab>
+                <Tab tabClassName='content-tab' eventKey='completed' title='Completed'>
+                  <div style={{minHeight: 300, maxHeight: '400px', overflowY: 'auto', paddingTop: '30px'}}>
+                    {
+                      tradingHistory.length ?
+                        filteredCompleted().map((item, index) => {
+                          return(
+                            <UserTradingHistory
+                              key={index}
+                              id={item._id}
+                              email={item.userEmail}
+                              domain={item.domainName}
+                              date={item.orderDate}
+                              coinName={item.coinName}
+                              coinValue={item.coinValue}
+                              valueInUsdt={item.valueInUsdt}
+                              coinRate={item.coinRate}
+                              orderType={item.orderType}
+                              orderStatus={item.orderStatus}
+                              onCancelOrder={onCancelOrder}
+                            />
+                          )
+                        }) : <h4 className='text-center my-4' style={{color: '#cecece'}}>No deals!</h4>
+                    }
+                  </div>
+                </Tab>
+              </Tabs>
+          </ButtonCard>
+          
         </Col>
         <Col className='col-12 col-xl-3'>
           <Row>
-            <ButtonCard theme={theme}>
+            <>
               {
                 rate > 0 ?
                   <>
                     {
                       coinPair !== 'TRX' ?
                         <>
-                          <Orders type={'buy'} orders={generateOrders(rate)} />
-                          <Orders type={'sell'} orders={generateOrders(rate)} />
+                          <ButtonCard theme={theme} style={{marginBottom: 0}}>
+                            <Orders type={'buy'} orders={generateOrders(rate)} />
+                          </ButtonCard>
+                          <Col>
+                            <Button style={{width: '100%'}} onClick={() => setOpenBids(true)} classname={['btnGreen']}>Make a Bet</Button>
+                          </Col>
+                          <ButtonCard theme={theme}>
+                            <Orders type={'sell'} orders={generateOrders(rate)} />
+                          </ButtonCard>
+                          
                         </>
                       : 
                       <>
                         <Orders type={'buy'} orders={generateOrdersTron(rate)} />
+                        <Col>
+                          <Button classname={['btnGreen']}>Make Bid</Button>
+                        </Col>
                         <Orders type={'sell'} orders={generateOrdersTron(rate)} />
                       </>
                     }
                   </> : <Preloader/>
               }
-            </ButtonCard>
+            </>
           </Row>
 
         </Col>
       </Row>
-      <Row>
-        <ButtonCard theme={theme} style={{minHeight: 300, overflowY: 'auto'}}>
-          <h2 className='mb-3'>History</h2>
-          <Tabs
-            variant='pills'
-            defaultActiveKey="buy"
-            id="exchange-tab"
-          >
-            <Tab tabClassName='content-tab' eventKey='buy' title='Buy'>
-              {
-                tradingHistory.length ?
-                  filteredBuy().map((item, index) => {
-                    return(
-                      <UserTradingHistory
-                        key={index}
-                        id={item._id}
-                        email={item.userEmail}
-                        date={item.orderDate}
-                        domain={item.domainName}
-                        coinName={item.coinName}
-                        coinValue={item.coinValue}
-                        valueInUsdt={item.valueInUsdt}
-                        coinRate={item.coinRate}
-                        orderType={item.orderType}
-                        orderStatus={item.orderStatus}
-                        onCancelOrder={onCancelOrder}
-                      />
-                    )
-                  }) : <h4 className='text-center my-4' style={{color: '#cecece'}}>No deals!</h4>
-              }
-            </Tab>
-            <Tab tabClassName='content-tab' eventKey='sell' title='Sell'>
-              {
-                tradingHistory.length ?
-                  filteredSell().map((item, index) => {
-                    return(
-                      <UserTradingHistory
-                        key={index}
-                        id={item._id}
-                        date={item.orderDate}
-                        email={item.userEmail}
-                        domain={item.domainName}
-                        coinName={item.coinName}
-                        coinValue={item.coinValue}
-                        valueInUsdt={item.valueInUsdt}
-                        coinRate={item.coinRate}
-                        orderType={item.orderType}
-                        orderStatus={item.orderStatus}
-                        onCancelOrder={onCancelOrder}
-                      />
-                    )
-                  }) : <h4 className='text-center my-4' style={{color: '#cecece'}}>No deals!</h4>
-              }
-            </Tab>
-            <Tab tabClassName='content-tab' eventKey='completed' title='Completed'>
-              {
-                tradingHistory.length ?
-                  filteredCompleted().map((item, index) => {
-                    return(
-                      <UserTradingHistory
-                        key={index}
-                        id={item._id}
-                        email={item.userEmail}
-                        domain={item.domainName}
-                        date={item.orderDate}
-                        coinName={item.coinName}
-                        coinValue={item.coinValue}
-                        valueInUsdt={item.valueInUsdt}
-                        coinRate={item.coinRate}
-                        orderType={item.orderType}
-                        orderStatus={item.orderStatus}
-                        onCancelOrder={onCancelOrder}
-                      />
-                    )
-                  }) : <h4 className='text-center my-4' style={{color: '#cecece'}}>No deals!</h4>
-              }
-            </Tab>
-          </Tabs>
-        </ButtonCard>
-      </Row>
-
     </>
   )
 }
