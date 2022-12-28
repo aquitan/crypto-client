@@ -241,15 +241,15 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, 
                 <Row>
                   <Col className=''>
                     <div ref={target} onClick={() => setCoinsVariant(true)} className='d-flex align-items-center' style={{position: 'relative'}}>
-                      <img style={{marginRight: 20}} width={40} src={`/img/${coinPair.toLowerCase()}.svg`} alt=""/>
+                      <img className='trade-img' style={{marginRight: 20}} width={40} src={`/img/${coinPair.toLowerCase()}.svg`} alt=""/>
                       <div style={{cursor: 'pointer'}} className='d-flex align-items-center'>
-                        <span style={{fontSize: 28, marginRight: 20}}>{getName()}</span>
+                        <span className='trade-coin' style={{fontSize: 28, marginRight: 20}}>{getName()}</span>
                         <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8', width: 'fit-content', height: 'fit-content'}} className="badge d-none d-xl-flex">
                           {coinPair}
                         </div>
                       </div>
                     </div>
-                    <div style={{color: 'grey', fontSize: 16, marginTop: 20}}>Balance: {balance.coinBalance.toFixed(5)} {coinPair}</div>
+                    <div className='trade-balance' style={{color: 'grey', fontSize: 16, marginTop: 20}}>Balance: {balance.coinBalance.toFixed(5)} {coinPair}</div>
                       <Overlay
                             show={coinsVariant}
                             rootClose

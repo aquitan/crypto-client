@@ -13,7 +13,7 @@ const CurrencyPrice = () => {
         <Row className='align-items-center justify-content-end flex-column'>
             <Col className='text-end' style={{fontSize: 22, fontWeight: 'bold'}}>
 
-                <div style={{whiteSpace: 'nowrap'}}>
+                <div className='trade-changing-value' style={{whiteSpace: 'nowrap'}}>
                   {
                     chartValue ? `$ ${chartValue}` : <Skeleton sx={{ bgcolor: theme === 'dark' ? 'grey.900' : '',mb: 2}} variant="rectangular" width={'100%'} height={40} />
                   }
