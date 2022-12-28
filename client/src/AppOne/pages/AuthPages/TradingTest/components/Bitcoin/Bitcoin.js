@@ -221,42 +221,6 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, 
 
   return (
     <>
-
-      <CustomModal show={openBids} handleClose={() => setOpenBids(false)} size='md' title='Make Your Bet' btnClose={false} >
-        <Tabs 
-        variant='pills'
-        defaultActiveKey='buy'
-        id="exchange-tab"
-        >
-          <Tab tabClassName='content-tab' eventKey='buy' title='Buy'>
-            <OrderForm
-              type={'Buy'}
-              onChangePrice={onChangeBuyPrice}
-              onChangeCrypto={onChangeBuyCrypto}
-              onHandlerPercent={onHandlerPercentBuy}
-              total={buyTotal}
-              price={buyPrice}
-              crypto={buyCrypto}
-              coinName={coinPair}
-              onSubmit={onSubmit}
-            />
-          </Tab>
-          <Tab tabClassName='content-tab' eventKey='sell' title='Sell'>
-            <OrderForm
-              type={'Sell'}
-              onChangePrice={onChangeSellPrice}
-              onChangeCrypto={onChangeSellCrypto}
-              onHandlerPercent={onHandlerPercentSell}
-              total={sellTotal}
-              price={sellPrice}
-              crypto={sellCrypto}
-              coinName={coinPair}
-              onSubmit={onSubmit}
-            />
-          </Tab>
-        </Tabs>
-      </CustomModal>
-
       <CustomModal show={orderModal} handleClose={() => setOrderModal(false)} size='md' title='Order' btnClose={'Ok'} >
         Order has been added!
       </CustomModal>
@@ -436,6 +400,42 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, 
         </Col>
         <Col className='col-12 col-xl-3'>
           <Row>
+            <ButtonCard theme={theme}>
+            <Tabs 
+              variant='pills'
+              defaultActiveKey='buy'
+              id="exchange-tab"
+              >
+                <Tab tabClassName='content-tab' eventKey='buy' title='Buy'>
+                  <OrderForm
+                    type={'Buy'}
+                    onChangePrice={onChangeBuyPrice}
+                    onChangeCrypto={onChangeBuyCrypto}
+                    onHandlerPercent={onHandlerPercentBuy}
+                    total={buyTotal}
+                    price={buyPrice}
+                    crypto={buyCrypto}
+                    coinName={coinPair}
+                    onSubmit={onSubmit}
+                  />
+                </Tab>
+                <Tab tabClassName='content-tab' eventKey='sell' title='Sell'>
+                  <OrderForm
+                    type={'Sell'}
+                    onChangePrice={onChangeSellPrice}
+                    onChangeCrypto={onChangeSellCrypto}
+                    onHandlerPercent={onHandlerPercentSell}
+                    total={sellTotal}
+                    price={sellPrice}
+                    crypto={sellCrypto}
+                    coinName={coinPair}
+                    onSubmit={onSubmit}
+                  />
+                </Tab>
+              </Tabs>
+            </ButtonCard>
+          </Row>
+          <Row>
             <>
               {
                 rate > 0 ?
@@ -443,12 +443,12 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, 
                     {
                       coinPair !== 'TRX' ?
                         <>
-                          <ButtonCard theme={theme} style={{marginBottom: 0}}>
+                          <ButtonCard theme={theme} style={{marginBottom: 20}}>
                             <Orders type={'buy'} orders={generateOrders(rate)} />
                           </ButtonCard>
-                          <Col>
+                          {/* <Col>
                             <Button style={{width: '100%'}} onClick={() => setOpenBids(true)} classname={['btnGreen']}>Make a Bet</Button>
-                          </Col>
+                          </Col> */}
                           <ButtonCard theme={theme}>
                             <Orders type={'sell'} orders={generateOrders(rate)} />
                           </ButtonCard>
@@ -456,12 +456,12 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, 
                         </>
                       : 
                       <>
-                        <ButtonCard theme={theme} style={{marginBottom: 0}}>
+                        <ButtonCard theme={theme} style={{marginBottom: 20}}>
                           <Orders type={'buy'} orders={generateOrdersTron(rate)} />
                         </ButtonCard>
-                        <Col>
+                        {/* <Col>
                           <Button style={{width: '100%'}} onClick={() => setOpenBids(true)} classname={['btnGreen']}>Make a Bet</Button>
-                        </Col>
+                        </Col> */}
                         <ButtonCard theme={theme}>
                           <Orders type={'sell'} orders={generateOrdersTron(rate)} />
                         </ButtonCard>

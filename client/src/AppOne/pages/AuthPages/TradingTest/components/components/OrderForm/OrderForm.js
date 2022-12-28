@@ -53,15 +53,8 @@ const OrderForm = ({type, onChangePrice, onChangeCrypto, onHandlerPercent, total
               <Input readOnly disabled value={total.toFixed(5)}  placeholder={'Total in USD'} classname='inputTransparent' />
           </Row>
           <Row>
-              <Col>
+              <Col style={{width: '100%'}}>
                   <p style={{fontSize: 12}}>Transaction fee is 1%</p>
-              </Col>
-              <Col>
-                  {/*<p style={{fontSize: 12}}>Balance is:&nbsp;*/}
-                  {/*  {stateBalance.length*/}
-                  {/*    ? stateBalance.filter(el => el.coinName === 'ETH')[0].coinBalance.toFixed(5)*/}
-                  {/*    : <Preloader />}*/}
-                  {/*</p>*/}
               </Col>
           </Row>
 
