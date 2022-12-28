@@ -456,11 +456,15 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, 
                         </>
                       : 
                       <>
-                        <Orders type={'buy'} orders={generateOrdersTron(rate)} />
+                        <ButtonCard theme={theme} style={{marginBottom: 0}}>
+                          <Orders type={'buy'} orders={generateOrdersTron(rate)} />
+                        </ButtonCard>
                         <Col>
-                          <Button classname={['btnGreen']}>Make Bid</Button>
+                          <Button style={{width: '100%'}} onClick={() => setOpenBids(true)} classname={['btnGreen']}>Make a Bet</Button>
                         </Col>
-                        <Orders type={'sell'} orders={generateOrdersTron(rate)} />
+                        <ButtonCard theme={theme}>
+                          <Orders type={'sell'} orders={generateOrdersTron(rate)} />
+                        </ButtonCard>
                       </>
                     }
                   </> : <Preloader/>

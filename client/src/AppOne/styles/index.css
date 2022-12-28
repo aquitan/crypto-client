@@ -214,3 +214,11 @@ button.accordion-button.collapsed, .accordion-flush .accordion-item .accordion-b
   padding-left: 0px;
   display: block;
 }
+
+
+@media (max-width: 560px) {
+  h2.market-overview {
+    font-size: 18px;
+    align-items: center;
+  }
+}

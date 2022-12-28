@@ -20,7 +20,7 @@ const CustomModal = ({title, fullScreen, text, show, handleClose, btnClose, chil
                 </Modal.Title>
             </Modal.Header>
             {text || children && <Modal.Body>
-              <Row className='py-0 px-3'>
+              <Row className='py-0 px-0 px-sm-3'>
                   {children}
                   {text}
               </Row>

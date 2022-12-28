@@ -188,9 +188,9 @@ const Dashboard = () => {
                                 {
                                     store.ratesFull && balance.length ?
                                         <>
-                                            <Row className='mb-5'>
-                                                <Col>
-                                                    <h2>Market overview</h2>
+                                            <Row className='d-flex mb-5 flex-column flex-sm-row'>
+                                                <Col className='mb-3'>
+                                                    <h2 className='text-center flex-sm-left market-overview'>Market overview</h2>
                                                 </Col>
                                                 <Col>
                                                     <Input classname='inputTransparent' placeholder='Search Coin Name' type="text" onChange={handleChange}/>
