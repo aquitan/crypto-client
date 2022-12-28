@@ -14,8 +14,8 @@ const PrivacyPolicyAuth = () => {
     return (
         <ButtonCard theme={theme}>
             <div className={classes}>
-                <h1 className="article-title">Private Policy</h1>
-                <h4 className="article-subtitle">1. INTRODUCTION</h4>
+                <h1 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-title">Private Policy</h1>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">1. INTRODUCTION</h4>
                 <p className="article-text">Thank you for visiting {domain}, a digital asset trading website, which is
                     provided by
                     {domain}. By visiting, accessing, or using {domain} and associated application program
@@ -42,7 +42,7 @@ const PrivacyPolicyAuth = () => {
                     version. We
                     will
                     communicate any material changes to this Privacy Policy via email.</p>
-                <h4 className="article-subtitle">2. DEFINITIONS:</h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">2. DEFINITIONS:</h4>
                 <p className="article-text">Virtual Financial Asset</p>
                 <p className="article-text">As used herein, “Virtual Financial Asset” under Germany Virtual Financial
                     Asset
@@ -53,7 +53,7 @@ const PrivacyPolicyAuth = () => {
                     centralized or
                     decentralized, (ii) closed or open-source, and (iii) used as a medium of exchange and/or store of
                     value.</p>
-                <h4 className="article-subtitle">PERSONAL DATA</h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">PERSONAL DATA</h4>
                 <p className="article-text">As used herein, “Personal Data” means any information relating to an
                     identified or
                     identifiable natural person, such as a name, an identification number, location data, an online
@@ -62,7 +62,7 @@ const PrivacyPolicyAuth = () => {
                     or more factors specific to the physical, economic, cultural or social identity of you as a natural
                     person.
                 </p>
-                <h4 className="article-subtitle">3. WHAT PERSONAL DATA WE COLLECT</h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">3. WHAT PERSONAL DATA WE COLLECT</h4>
                 <p className="article-text">{domain} collects, processes, and stores Personal Data collected from you via
                     your use
                     of the Service or where you have given your consent. This Personal Data may include contact details,
@@ -84,7 +84,7 @@ const PrivacyPolicyAuth = () => {
                     Regulation (GDPR) and Data Protection Act. To understand more about how we protect the data
                     collected from
                     individuals and entities located within the EEA, please see the details below.</p>
-                <h4 className="article-subtitle">INDIVIDUAL CUSTOMERS:</h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">INDIVIDUAL CUSTOMERS:</h4>
                 <ul className="article-list">
                     <li className="article-list__item">
                         Email address
@@ -118,7 +118,7 @@ const PrivacyPolicyAuth = () => {
                     </li>
                 </ul>
 
-                <h4 className="article-subtitle">CORPORATE CUSTOMERS:</h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">CORPORATE CUSTOMERS:</h4>
                 <ul className="article-list">
                     <li className="article-list__item">
                         Corporate legal name (including the legal name in local language)
@@ -163,7 +163,7 @@ const PrivacyPolicyAuth = () => {
                     </li>
                 </ul>
 
-                <h4 className="article-subtitle">4. COLLECTION AND TRANSFER OF DATA OUTSIDE OF THE EEA</h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">4. COLLECTION AND TRANSFER OF DATA OUTSIDE OF THE EEA</h4>
                 <p className="article-text">As outlined above, we may collect Personal Data from customers located in
                     the EEA. To
                     facilitate the services we provide to customers located in the EEA, we request explicit consent for
@@ -177,7 +177,7 @@ const PrivacyPolicyAuth = () => {
                     ability to withdraw your digital assets; however, all other functionalities will be disabled.</p>
 
 
-                <h4 className="article-subtitle">5. HOW WE USE YOUR PERSONAL DATA</h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">5. HOW WE USE YOUR PERSONAL DATA</h4>
                 <p className="article-text">{domain} uses Personal Data to communicate with you and to administer,
                     deliver,
                     improve, and personalize the Service. {domain} might also generate generic data out of any Personal
@@ -192,7 +192,7 @@ const PrivacyPolicyAuth = () => {
                     consent and further detailed below.</p>
 
 
-                <h4 className="article-subtitle">WE MAY SHARE YOUR PERSONAL DATA WITH THIRD PARTIES:</h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">WE MAY SHARE YOUR PERSONAL DATA WITH THIRD PARTIES:</h4>
                 <p className="article-text">If we think that sharing is necessary to enforce the Terms of Service;</p>
                 <p className="article-text">To comply with government agencies, including regulators, law enforcement
                     and/or
@@ -216,7 +216,7 @@ const PrivacyPolicyAuth = () => {
                     your personal information.</p>
 
 
-                <h4 className="article-subtitle">6. HOW WE STORE YOUR PERSONAL DATA</h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">6. HOW WE STORE YOUR PERSONAL DATA</h4>
                 <p className="article-text">The data that we collect from you may be transferred to, and stored at, a
                     destination
                     outside
@@ -231,7 +231,7 @@ const PrivacyPolicyAuth = () => {
                     third party cloud servers in Germany.</p>
 
 
-                <h4 className="article-subtitle">7. ACCESS, CORRECTION, AND DELETION OF YOUR PERSONAL DATA</h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">7. ACCESS, CORRECTION, AND DELETION OF YOUR PERSONAL DATA</h4>
                 <p className="article-text">You have the right to obtain a copy of your Personal Data upon request and
                     ascertain
                     whether
@@ -257,7 +257,7 @@ const PrivacyPolicyAuth = () => {
                     repetitive or
                     onerous.</p>
 
-                <h4 className="article-subtitle">8. MARKETING</h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">8. MARKETING</h4>
                 <p className="article-text">We may communicate company news, promotions, and information relating to our
                     products
                     and
@@ -274,7 +274,7 @@ const PrivacyPolicyAuth = () => {
                     operational
                     notifications, you will not be able to opt out of receiving such information.</p>
 
-                <h4 className="article-subtitle">9. INFORMATION SECURITY</h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">9. INFORMATION SECURITY</h4>
                 <p className="article-text">We endeavor to protect {domain} and you from unauthorized access, alteration,
                     disclosure, or destruction of Personal Data we collect and store. We take various measures to ensure
                     information
@@ -287,7 +287,7 @@ const PrivacyPolicyAuth = () => {
                     to strict
                     contractual confidentiality obligations.</p>
 
-                <h4 className="article-subtitle">10. CONTACTING {domain} ABOUT PRIVACY QUESTIONS OR CONCERNS</h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">10. CONTACTING {domain} ABOUT PRIVACY QUESTIONS OR CONCERNS</h4>
                 <p className="article-text">If you have any questions about this Privacy Policy or the use of your
                     Personal Data,
                     please
@@ -295,7 +295,7 @@ const PrivacyPolicyAuth = () => {
                     “PRIVACY
                     REQUEST”.</p>
 
-                <h4 className="article-subtitle larger-subtitle">11. CHANGES TO OUR PRIVACY POLICY</h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle larger-subtitle mb-3">11. CHANGES TO OUR PRIVACY POLICY</h4>
                 <p className="article-text">If you want to know more about trading basics, you can easily find the rest
                     of the
                     information

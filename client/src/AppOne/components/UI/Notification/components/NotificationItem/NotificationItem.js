@@ -3,11 +3,14 @@ import {Col, Row} from "react-bootstrap";
 import cls from '../../Notification.module.scss'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTimes} from "@fortawesome/free-solid-svg-icons";
+import { useThemeContext } from '../../../../../context/ThemeContext';
 
 const NotificationItem = ({notif, removeNotif}) => {
+    const {theme} = useThemeContext()
+
     return (
         <div className={cls.notification_item}>
-            <Row>
+            <Row style={{color: theme === 'light' ? '#212529' : '#fff' }}>
                 <Col className='col-10'>
                     {notif.notifText}
                 </Col>

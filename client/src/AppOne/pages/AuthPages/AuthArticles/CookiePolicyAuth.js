@@ -14,8 +14,8 @@ const CookiePolicyAuth = () => {
     return (
         <ButtonCard theme={theme}>
             <div className={classes}>
-                <h1 className="article-title">Cookie Policy</h1>
-                <h4 className="article-subtitle">WHAT ARE COOKIES?</h4>
+                <h1 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-title mb-3">Cookie Policy</h1>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">WHAT ARE COOKIES?</h4>
                 <p className="article-text">
                     As is common practice with almost all professional websites this site uses cookies, which are tiny
                     files
@@ -31,7 +31,7 @@ const CookiePolicyAuth = () => {
                     information on "cookies" check the Wikipedia or open sources on the Internet.
                 </p>
 
-                <h4 className="article-subtitle">HOW WE USE COOKIES? </h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">HOW WE USE COOKIES? </h4>
                 <p className="article-text">
                     We use cookies for a variety of reasons detailed below. Unfortunately, in most cases there are no
                     industry
@@ -45,7 +45,7 @@ const CookiePolicyAuth = () => {
                     to provide a service that you use.
                 </p>
 
-                <h4 className="article-subtitle">DISABLING COOKIES? </h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">DISABLING COOKIES? </h4>
                 <p className="article-text">
                     You can prevent the setting of cookies by adjusting the settings on your browser. Be aware that
                     disabling
@@ -89,12 +89,12 @@ const CookiePolicyAuth = () => {
                     preferences.
                 </p>
 
-                <h4 className="article-subtitle">THIRD PARTY COOKIES </h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">THIRD PARTY COOKIES </h4>
                 <p className="article-text">
                     In some special cases we also use cookies provided by trusted third parties.
                 </p>
 
-                <h4 className="article-subtitle">MORE INFORMATION </h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">MORE INFORMATION </h4>
                 <p className="article-text">
                     Hopefully that has clarified things for you, and, as was previously mentioned, if there is something
                     that

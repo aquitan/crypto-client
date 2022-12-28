@@ -116,7 +116,7 @@ const PrivacyPolicy = () => {
                                         Protection Regulation (GDPR) and Data Protection Act. To understand more about how we protect
                                         the data collected
                                         from individuals and entities located within the EEA, please see the details below.</p>
-                                    <h4 className="article-subtitle">INDIVIDUAL CUSTOMERS:</h4>
+                                    <h4 className="article-subtitle mb-3">INDIVIDUAL CUSTOMERS:</h4>
                                     <ul className="article-list">
                                         <li className="article-list__item">
                                             Email address

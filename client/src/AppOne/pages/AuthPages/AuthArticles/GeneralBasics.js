@@ -13,8 +13,8 @@ const GeneralBasics = () => {
     return (
         <ButtonCard theme={theme}>
             <div className={classes}>
-                <h1 className="article-title">General Basics</h1>
-                <h4 className="article-subtitle">What are Crypto Trading?</h4>
+                <h1 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-title mb-3">General Basics</h1>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">What are Crypto Trading?</h4>
                 <p className="article-text">
                     What is the first thing that comes to your mind when you hear the word "trading"? - It's probably
                     numbers,
@@ -44,13 +44,13 @@ const GeneralBasics = () => {
                     stock.
                 </p>
 
-                <h4 className="article-subtitle">What assets can be traded at Crypto Trading?</h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">What assets can be traded at Crypto Trading?</h4>
                 <p className="article-text">Crypto Trading can be traded with various types of assets. Most commonly
                     they are
                     currency
                     pairs, commodities and indices.</p>
 
-                <h4 className="article-subtitle">How Crypto Trading work? </h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">How Crypto Trading work? </h4>
                 <p className="article-text">
                     One of the reasons Crypto Trading have become so popular is the simplicity of the process: there are
                     just
@@ -72,7 +72,7 @@ const GeneralBasics = () => {
                     loss is
                     only the initial investment which is $10.
                 </p>
-                <h4 className="article-subtitle">What is trading and why do we need it? </h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">What is trading and why do we need it? </h4>
                 <p className="article-text">
                     The main purpose of trading is to make a profit on trading assets. It can be money, stocks,
                     commodities,
@@ -86,7 +86,7 @@ const GeneralBasics = () => {
                     they do not
                     own.
                 </p>
-                <h4 className="article-subtitle">How to trade successfully? </h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">How to trade successfully? </h4>
                 <p className="article-text">
                     To predict the future market value of assets and make money on it, traders use different strategies.
                     One of
@@ -102,7 +102,7 @@ const GeneralBasics = () => {
                     rules of
                     risk management help to keep emotions under control.
                 </p>
-                <h4 className="article-subtitle">What are assets? </h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">What are assets? </h4>
                 <p className="article-text">
                     Assets in the trading world are a commodity. These include money, securities, raw materials, indices
                     and
@@ -123,7 +123,7 @@ const GeneralBasics = () => {
                     pairs,
                     stocks, indices, commodities and crypto currencies.
                 </p>
-                <h4 className="article-subtitle">Currency pairs? </h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">Currency pairs? </h4>
                 <p className="article-text">
                     Currency pairs are the price ratio of the currencies of two countries. This ratio shows how many
                     monetary
@@ -136,7 +136,7 @@ const GeneralBasics = () => {
                     EUR/USD,
                     GBP/USD, USD/JPY, CHF/USD.
                 </p>
-                <h4 className="article-subtitle">Shares and indexes? </h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">Shares and indexes? </h4>
                 <p className="article-text">
                     Features of trading stocks and indices are similar. Shares are securities that give the owner the
                     right to
@@ -149,14 +149,14 @@ const GeneralBasics = () => {
                     volatility.
                     They are better suited for longer-term trades and long-term investments.
                 </p>
-                <h4 className="article-subtitle">Commodities? </h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">Commodities? </h4>
                 <p className="article-text">
                     Commodities include oil, gas and metals. As a rule, commodities show high volatility and give a
                     large number
                     of
                     signals for intraday trades.
                 </p>
-                <h4 className="article-subtitle">Crypto currencies? </h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">Crypto currencies? </h4>
                 <p className="article-text">
                     Crypto Assets are digital financial instruments. They remain the most unpredictable and are high
                     risk

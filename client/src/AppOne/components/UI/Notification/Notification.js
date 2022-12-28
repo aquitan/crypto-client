@@ -43,14 +43,14 @@ const Notification = () => {
                 open ?
                   <Overlay rootClose onHide={() => setOpen(false)} id={theme} target={target.current} show={open} placement="right">
                       {(props) => (
-                        <Popover placement='bottom' id="overlay-example" {...props}>
-                            <Popover.Header style={{backgroundColor: '#fff'}}>
+                        <Popover style={{backgroundColor: theme === 'light' ? '#fff' : '#000'}} placement='bottom' id="overlay-example" {...props}>
+                            <Popover.Header style={{backgroundColor: theme === 'light' ? '#fff' : '#000', color: theme === 'light' ? '#212529' : '#fff'}}>
                                 <Row>
                                     <Col style={{fontSize: 13}}>Notifications</Col>
                                     <Col style={{fontSize: 13, cursor: 'pointer'}} onClick={onClearAll}>Clear all</Col>
                                 </Row>
                             </Popover.Header>
-                            <Popover.Body style={{overflowY: 'auto', height: 300}} >
+                            <Popover.Body style={{overflowY: 'auto', height: 300, backgroundColor: theme === 'light' ? '#fff' : '#000'}} >
                                 <div className={cls.notification_body}>
                                     <div>
                                         {

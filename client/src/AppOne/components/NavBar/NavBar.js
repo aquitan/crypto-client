@@ -180,8 +180,8 @@ const NavBar = () => {
                             placement="left"
                             containerPadding={20}
                         >
-                            <Popover id="popover-basic">
-                                <Popover.Header style={{backgroundColor: '#f5f6fa'}} as="h3">
+                            <Popover style={{backgroundColor: theme === 'light' ? '#fff' : '#000'}} id="popover-basic">
+                                <Popover.Header style={{backgroundColor:  theme === 'light' ? '#f5f6fa' : '#000'}} as="h3">
                                     <div className='d-flex align-items-center p-2'>
                                         <img style={{marginRight: 10}} width={30} src={'/img/avatar-svg-round.svg'} alt=""/>
                                         <div style={{fontSize: 12}}>

@@ -75,7 +75,7 @@ const InternalAddressesCard = ({currency, sum, onCopy, wallet, theme, onUpdateHi
                             <span style={{wordBreak: 'break-all', display: 'inline-block', margin: '0 10px 0 0', fontSize: '14px'}} className='internal-address'>{wallet}</span>
                         </div>
                     </Col>
-                    <Col className='d-flex justify-content-end'>
+                    <Col className='d-flex justify-content-center justify-content-sm-end'>
                         <Button style={{marginBottom: 5, width: 100}} classname={['btnBlue', 'btnSmall', theme]} onClick={makeOpen} >Send</Button>
                     </Col>
                 </Row>

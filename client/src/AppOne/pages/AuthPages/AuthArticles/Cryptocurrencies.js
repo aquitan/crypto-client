@@ -14,7 +14,7 @@ const Cryptocurrencies = () => {
     return (
         <ButtonCard theme={theme}>
             <div className={classes}>
-                <h1 className="article-title">Education</h1>
+                <h1 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-title mb-3">Education</h1>
                 <p className="article-text">
                     Bitcoin, Ethereum, and other crypto are revolutionizing how we invest, bank, and use money. Read
                     this
@@ -22,7 +22,7 @@ const Cryptocurrencies = () => {
                     guide to learn more.
                 </p>
 
-                <h4 className="article-subtitle">Education</h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">Education</h4>
                 <p className="article-text">
                     At its core, cryptocurrency is typically decentralized digital money designed to be used over the
                     Internet.
@@ -88,7 +88,7 @@ const Cryptocurrencies = () => {
                         assets.</b>
                 </p>
 
-                <h4 className="article-subtitle">Privacy</h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">Privacy</h4>
                 <p className="article-text">
                     When paying with cryptocurrency, you don’t need to provide unnecessary personal information to the
                     merchant.
@@ -103,7 +103,7 @@ const Cryptocurrencies = () => {
                     stolen.
                 </p>
 
-                <h4 className="article-subtitle">Security</h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">Security</h4>
                 <p className="article-text">
                     Almost all cryptocurrencies, including Bitcoin, Ethereum, Tezos, and Bitcoin Cash, are secured using
                     technology

@@ -1,10 +1,10 @@
 import ButtonCard from '../../../../../components/ButtonCard/ButtonCard';
 import {useThemeContext} from '../../../../../context/ThemeContext';
-import {Col, Form, Modal, Row, Tab, Tabs} from 'react-bootstrap';
+import {Col, Form, Modal, Overlay, Popover, Row, Tab, Tabs} from 'react-bootstrap';
 import CurrencyPrice from './components/CurrencyPrice';
 import Input from '../../../../../components/UI/Input/Input';
 import Button from '../../../../../components/UI/Button/Button';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {generateOrders} from './utils/generateOrders';
 import Orders from './components/Orders';
 import Chart from '../Chart/Chart';
@@ -25,7 +25,7 @@ import UserPageSkeleton from '../../../../../components/UserPageSkeleton/UserPag
 import { getSwitchQuery } from '../../../../../utils/getSwitchQuery';
 import { generateOrdersTron } from './utils/generateOrdersTron';
 
-const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, initialTrx, initialSol}) => {
+const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, initialTrx, initialSol, setCoinPair}) => {
   const {theme} = useThemeContext()
   const [rate, setRate] = useState(0)
   const [orders, setOrders] = useState([])
@@ -44,6 +44,8 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, 
   const navigate = useNavigate()
   const location = useLocation()
   const [openBids, setOpenBids] = useState(false)
+  const [coinsVariant, setCoinsVariant] = useState(false)
+  const target = useRef()
 
 
   useEffect(() => {
@@ -274,9 +276,9 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, 
                 </h2>
                 <Row>
                   <Col className=''>
-                    <div className='d-flex align-items-center'>
+                    <div ref={target} onClick={() => setCoinsVariant(true)} className='d-flex align-items-center' style={{position: 'relative'}}>
                       <img style={{marginRight: 20}} width={40} src={`/img/${coinPair.toLowerCase()}.svg`} alt=""/>
-                      <div className='d-flex align-items-center'>
+                      <div style={{cursor: 'pointer'}} className='d-flex align-items-center'>
                         <span style={{fontSize: 28, marginRight: 20}}>{getName()}</span>
                         <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8', width: 'fit-content', height: 'fit-content'}} className="badge d-none d-xl-flex">
                           {coinPair}
@@ -284,6 +286,54 @@ const TradingBitcoin = ({balance, coinPair, initialBtc, initialEth, initialBch, 
                       </div>
                     </div>
                     <div style={{color: 'grey', fontSize: 16, marginTop: 20}}>Balance: {balance.coinBalance.toFixed(5)} {coinPair}</div>
+                      <Overlay
+                            show={coinsVariant}
+                            rootClose
+                            onHide={() => setCoinsVariant(false)}
+                            target={target.current}
+                            placement="bottom"
+                            containerPadding={20}
+                        >
+                        <Popover style={{backgroundColor: theme === 'light' ? '#fff' : '#000'}}>
+                          <div style={{padding: '10px'}}>
+                            <div style={{padding: '0 5px', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: 10, borderRadius: '5px'}} onClick={() => setCoinPair('BTC')}>
+                                <img width={30} src='/img/btc.svg' alt='coin' />
+                                <span style={{fontSize: '14px', color: 'grey', margin: '0 10px'}}>Bitcoin</span>
+                                <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8'}} className="badge d-none d-xl-flex">
+                                    BTC
+                                </div>
+                            </div>
+                            <div style={{padding: '0 5px', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: 10, borderRadius: '5px'}} onClick={() => setCoinPair('ETH')}>
+                                <img width={30} src='/img/eth.svg' alt='coin' />
+                                <span style={{fontSize: '14px', color: 'grey', margin: '0 10px'}}>Ethereum</span>
+                                <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8'}} className="badge d-none d-xl-flex">
+                                    ETH
+                                </div>
+                            </div>
+                            <div style={{padding: '0 5px', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: 10, borderRadius: '5px'}} onClick={() => setCoinPair('BCH')}>
+                                <img width={30} src='/img/bch.svg' alt='coin' />
+                                <span style={{fontSize: '14px', color: 'grey', margin: '0 10px'}}>Bitcoin Cash</span>
+                                <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8'}} className="badge d-none d-xl-flex">
+                                    BCH
+                                </div>
+                            </div>
+                            <div style={{padding: '0 5px', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: 10, borderRadius: '5px'}} onClick={() => setCoinPair('TRX')}>
+                                <img width={30} src='/img/trx.svg' alt='coin' />
+                                <span style={{fontSize: '14px', color: 'grey', margin: '0 10px'}}>Tether</span>
+                                <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8'}} className="badge d-none d-xl-flex">
+                                    TRX
+                                </div>
+                            </div>
+                            <div style={{padding: '0 5px', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: 10, borderRadius: '5px'}} onClick={() => setCoinPair('SOL')}>
+                                <img width={30} src='/img/sol.svg' alt='coin' />
+                                <span style={{fontSize: '14px', color: 'grey', margin: '0 10px'}}>Solana</span>
+                                <div style={{backgroundColor: 'rgb(227, 228, 232)', color: '#0083f8'}} className="badge d-none d-xl-flex">
+                                    SOL
+                                </div>
+                            </div>
+                          </div>
+                        </Popover>
+                    </Overlay>
                   </Col>
                   <Col>
                     <CurrencyPrice />

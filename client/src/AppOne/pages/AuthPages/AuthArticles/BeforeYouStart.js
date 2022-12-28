@@ -14,7 +14,7 @@ const BeforeYouStart = () => {
     return (
         <ButtonCard theme={theme}>
             <div className={classes}>
-                <h1 className="article-title">Before You Start</h1>
+                <h1 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-title mb-3">Before You Start</h1>
                 <p className="article-text">Crypto Trading are all about making the right choice. That includes
                     predicting
                     correctly in
@@ -23,7 +23,7 @@ const BeforeYouStart = () => {
                     increase your profit. A strategy you choose depends on your experience and knowledge, but let's look
                     at some
                     basics that every trader should know:</p>
-                <h4 className="article-subtitle">Money Management Strategy!</h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">Money Management Strategy!</h4>
                 <p className="article-text">This is not the strategy which will help you predict assets movements, yet
                     it is the
                     most
@@ -40,7 +40,7 @@ const BeforeYouStart = () => {
                     should be
                     well thought out. Remember that you are here to do business and make money.</p>
 
-                <h4 className="article-subtitle">Analyzing markets!</h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">Analyzing markets!</h4>
                 <p className="article-text">Financial news is a great aid to use when building your trading strategy. If
                     you
                     follow and

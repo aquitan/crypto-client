@@ -14,15 +14,15 @@ const SecurityPolicyAuth = () => {
     return (
         <ButtonCard theme={theme}>
             <div className={classes}>
-                <h1 className="article-title">Security Policy</h1>
-                <h4 className="article-subtitle">User account protection</h4>
+                <h1 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-title mb-3">Security Policy</h1>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">User account protection</h4>
                 <p className="article-text">
                     Some of the security measures highlighted below are in place by default, and others can be activated
                     based
                     on
                     the security level you need. Please let {domain} check the security status of your account.
                 </p>
-                <h4 className="article-subtitle">
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">
                     Two-factor authentication (2FA):
                 </h4>
                 <p className="article-text">
@@ -32,7 +32,7 @@ const SecurityPolicyAuth = () => {
                     Security
                     Key.
                 </p>
-                <h4 className="article-subtitle">
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">
                     Advanced verification tools:
                 </h4>
                 <ul className="article-list">
@@ -56,7 +56,7 @@ const SecurityPolicyAuth = () => {
                     <li className="article-list__item">Email encryption with OpenPGP.</li>
                     <li className="article-list__item">Special wallet verifications.</li>
                 </ul>
-                <h4 className="article-subtitle">
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">
                     We always care about your safety!
                 </h4>
                 <p className="article-text">

@@ -15,8 +15,8 @@ const AboutUs = () => {
     return (
         <ButtonCard theme={theme}>
             <div className={classes}>
-                <h1 className="article-title">ABOUT US</h1>
-                <h4 className="article-subtitle">ABOUT {domain}</h4>
+                <h1 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-title mb-3">ABOUT US</h1>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">ABOUT {domain}</h4>
                 <p className="article-text">
                     Founded in 2015 by cybersecurity engineers, {domain} is the premier exchange and trading
                     platform, providing lightning-fast trade and exchange execution, dependable digital wallets and
@@ -26,7 +26,7 @@ const AboutUs = () => {
                     incubating new and emerging technology, and driving transformative change.
                 </p>
 
-                <h4 className="article-subtitle">WHAT MAKES {domain} DIFFERENT? </h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">WHAT MAKES {domain} DIFFERENT? </h4>
                 <p className="article-text">
                     Secure platform – {domain} employs the most reliable, effective security technologies available. We
                     leverage
@@ -106,7 +106,7 @@ const AboutUs = () => {
                     Thank you for having chosen our service!
                 </p>
 
-                <h4 className="article-subtitle">Our Founder: </h4>
+                <h4 style={{color: theme === 'light' ? '#2b3144cc' : '#fff'}} className="article-subtitle mb-3">Our Founder: </h4>
                 <p className="article-text">
                     {domainName} is Co-Founder and CEO of {domain}.
                 </p>
